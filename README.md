@@ -1,2 +1,2 @@
 # protti
-Picotti lab data analysis package.
+Picotti lab proteomics data analysis package.
