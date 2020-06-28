@@ -6,13 +6,13 @@ Authors@R:
            family = "Quast",
            role = c("aut", "cre"),
            email = "quast@imsb.biol.ethz.ch"),
-person(given = "Dina",
+	person(given = "Dina",
            family = "Schuster",
-           role = c("aut", "cre"),
+           role = c("aut"),
            email = "dschuster@ethz.ch"))
 Description: This package provides useful functions for proteomics data analysis. It can be used for DDA, DIA and SRM data. Both limited proteolysis and regular proteomics experiments can be analysed.
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-Imports: tidyverse
+Imports: dplyr, magrittr
 RoxygenNote: 7.1.0
