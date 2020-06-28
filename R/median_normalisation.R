@@ -8,6 +8,7 @@
 #' @param na.rm A logical indicating wther missing values should be removed.
 #'
 #' @return A data frame that contains the input data and an additional column with normalised intensity values.
+#' @importFrom magrittr %>%
 #' @export
 #'
 #' @examples

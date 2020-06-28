@@ -1,14 +1,18 @@
 Package: protti
-Title: What the Package Does (One Line, Title Case)
+Title: Proteomics data analysis from the Picotti lab
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    c(person(given = "Jan-Philipp",
+           family = "Quast",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: What license it uses
+           email = "quast@imsb.biol.ethz.ch"),
+	person(given = "Dina",
+           family = "Schuster",
+           role = c("aut"),
+           email = "dschuster@ethz.ch"))
+Description: This package provides useful functions for proteomics data analysis. It can be used for DDA, DIA and SRM data. Both limited proteolysis and regular proteomics experiments can be analysed.
+License: GPL-2
 Encoding: UTF-8
 LazyData: true
+Imports: dplyr, magrittr
 RoxygenNote: 7.1.0
