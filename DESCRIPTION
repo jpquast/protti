@@ -14,5 +14,5 @@ Description: This package provides useful functions for proteomics data analysis
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-Imports: dplyr, magrittr
+Imports: rlang, dplyr, stringr, magrittr
 RoxygenNote: 7.1.0
