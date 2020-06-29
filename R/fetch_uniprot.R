@@ -8,6 +8,9 @@
 #' @param show_progress Logical, if true, a progress bar will be shown
 #'
 #' @return A data frame that contains all protein metadata specified in \code{columns} for the proteins provided.
+#' @import janitor
+#' @import progress
+#' @import purrr
 #' @export
 #'
 #' @examples
@@ -39,7 +42,7 @@ fetch_uniprot <-
     columns <- c("id", columns)
     column_names <- janitor::make_clean_names(columns)
     collapsed_columns <- paste(columns, collapse = ",")
-    uniprot_ids <- na.omit(uniprot_ids)
+    uniprot_ids <- stats::na.omit(uniprot_ids)
     id_test <- stringr::str_detect(uniprot_ids, pattern = "^[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}$")
     uniprot_ids_filtered <- uniprot_ids[id_test]
     if (sum(!id_test) > 0) {
@@ -56,7 +59,7 @@ fetch_uniprot <-
       if(show_progress == TRUE) {
         pb$tick()}
       id_query <- paste(paste0("id:", x), collapse = "+or+")
-      query_url <- URLencode(paste0(url, id_query, "&format=tab&columns=",
+      query_url <- utils::URLencode(paste0(url, id_query, "&format=tab&columns=",
                                     collapsed_columns))
       try_query(query_url)
     })
