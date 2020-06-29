@@ -20,7 +20,7 @@
 find_peptide <- 
   function(data, protein_sequence, peptide_sequence){
   data%>%
-    mutate(start = str_locate({{protein_sequence}}, {{peptide_sequence}})[,1], end = str_locate({{protein_sequence}}, {{peptide_sequence}})[,2])%>%
-    mutate(aa_before = str_sub({{protein_sequence}}, start = .data$start-1, end = .data$start-1))%>%
-    mutate(last_aa = str_sub({{protein_sequence}}, start = .data$end, end = .data$end))
+    dplyr::mutate(start = stringr::str_locate({{protein_sequence}}, {{peptide_sequence}})[,1], end = stringr::str_locate({{protein_sequence}}, {{peptide_sequence}})[,2])%>%
+    dplyr::mutate(aa_before = stringr::str_sub({{protein_sequence}}, start = .data$start-1, end = .data$start-1))%>%
+    dplyr::mutate(last_aa = stringr::str_sub({{protein_sequence}}, start = .data$end, end = .data$end))
   }
