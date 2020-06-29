@@ -2,6 +2,7 @@
 
 export(find_peptide)
 export(median_normalisation)
+export(peptide_type)
 import(dplyr)
 import(stringr)
 importFrom(magrittr,"%>%")
