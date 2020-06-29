@@ -8,7 +8,9 @@
 #' @param na.rm A logical indicating wther missing values should be removed.
 #'
 #' @return A data frame that contains the input data and an additional column with normalised intensity values.
+#' @import dplyr
 #' @importFrom magrittr %>%
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples
@@ -17,14 +19,11 @@
 #' }
 median_normalisation <-
 function(data, file_column_name, intensity_column_name, na.rm = FALSE){
-  # define global variables to prevent notes in function check
-  median_run_intensity <- median_intensity <- NULL
-  # main function
   data %>%
     dplyr::group_by({{file_column_name}})%>%
     dplyr::mutate(median_run_intensity = stats::median({{intensity_column_name}}, na.rm = na.rm))%>%
     dplyr::ungroup()%>%
-    dplyr::mutate(median_intensity = stats::median(unique(median_run_intensity), na.rm = na.rm))%>%
-    dplyr::mutate(normalised_intensity_log2 = {{intensity_column_name}}/median_run_intensity*median_intensity)%>%
-    dplyr::select(- median_run_intensity, -median_intensity)
+    dplyr::mutate(median_intensity = stats::median(unique(.data$median_run_intensity), na.rm = na.rm))%>%
+    dplyr::mutate(normalised_intensity_log2 = {{intensity_column_name}}/.data$median_run_intensity*.data$median_intensity)%>%
+    dplyr::select(-.data$median_run_intensity, -.data$median_intensity)
 }
