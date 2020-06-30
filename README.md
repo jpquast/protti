@@ -1,5 +1,5 @@
-# protti
-Picotti lab proteomics data analysis package. <img src="man/figures/protti_logo.png" align="right" width="10%"/>
+# protti <img src="man/figures/protti_logo.png" align="right" width="12.5%"/>
+Picotti lab proteomics data analysis package. 
 
 ## Installation
 The package can be installed using the `devtools` package: 
