@@ -32,6 +32,6 @@ Fetches protein structural data from the RCSB database.
 }
 \examples{
 \dontrun{
-fetch_uniprot(c("3OFN", "3ZIA", "3ZRY"))
+fetch_pdb(c("3OFN", "3ZIA", "3ZRY"))
 }
 }
