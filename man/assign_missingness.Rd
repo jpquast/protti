@@ -20,14 +20,14 @@ assign_missingness(
 
 \item{condition}{the name of the column containing the conditions.}
 
-\item{grouping}{the name of the column containing peptide, precursor or protein information depending on which level data is evaluated.}
+\item{grouping}{the name of the column containing precursor or peptide identifiers.}
 
 \item{intensity}{the name of the column containing intensity values.}
 
 \item{ref_condition}{the condition that is used as a reference for missingness determination. By default \code{ref_condition = "control"}.}
 }
 \value{
-A data frame that contains the reference condition paired with each treatment condition. The \code{conditions} column contains the name of the treatment for the specific reference/treatment pair. The \code{missingness} column reports the type of missingness. 
+A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison name for the specific reference/treatment pair. The \code{missingness} column reports the type of missingness. 
 \itemize{
 \item{"complete": }{No missing values for every replicate of this reference/treatment pair for the specific grouping variable.}
 \item{"MNAR": }{Missing not at random. All replicates of either the reference or treatment condition have missing values for the specific grouping variable.}
