@@ -34,23 +34,23 @@ calculate_imputation <-
            skip_log2_transform_error = FALSE)
   {
     set.seed(123)
-    if ((ifelse(is.null(min), FALSE, min) > 40 | ifelse(is.null(mean), FALSE, mean) > 40 | ifelse(is.null(noise), FALSE, noise) > 40) & skip_log2_transform_error == FALSE) {
+    if ((ifelse(is.na(ifelse(is.null(min), 0, min) > 40), FALSE, ifelse(is.null(min), 0, min) > 40) | ifelse(is.na(ifelse(is.null(mean), 0, mean) > 40), FALSE, ifelse(is.null(mean), 0, mean) > 40) | ifelse(is.na(ifelse(is.null(noise), 0, noise) > 40), FALSE, ifelse(is.null(noise), 0, noise) > 40)) & skip_log2_transform_error == FALSE) {
       stop("Input intensities seem not to be log2 transformed. If they are and you want to proceed set the skip_log2_transform_error argument to TRUE. Notice that this function does not give correct results for non-log2 transformed data.")
     }
     if (method == "ludovic") {
       if (missingness == "MNAR") {
-        result <- stats::rnorm(n_replicates, mean = min - 3, sd = sd)
+        result <- suppressWarnings(stats::rnorm(n_replicates, mean = min - 3, sd = sd))
       }
       if (missingness == "MAR") {
-        result <- stats::rnorm(n_replicates, mean = mean, sd = sd)
+        result <- suppressWarnings(stats::rnorm(n_replicates, mean = mean, sd = sd))
       }
     }
     if (method == "noise") {
       if (missingness == "MNAR") {
-        result <- stats::rnorm(n_replicates, mean = noise, sd = sd)
+        result <- suppressWarnings(stats::rnorm(n_replicates, mean = noise, sd = sd))
       }
       if (missingness == "MAR") {
-        result <- stats::rnorm(n_replicates, mean = mean, sd = sd)
+        result <- suppressWarnings(stats::rnorm(n_replicates, mean = mean, sd = sd))
       }
     }
     result
