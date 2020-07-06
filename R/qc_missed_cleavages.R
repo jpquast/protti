@@ -8,7 +8,7 @@
 #' @param missed_cleavages The column in the data dataframe containing the counts of missed cleavages per peptide or precursor.
 #' @param intensity Optional column containing the corresponding intensity values to each peptide or precursor.
 #' @param plot A logical indicating whether the result should be plotted.
-#' @param method Method used for evaluation. "Count" calculates the percentage of missed cleavages based on counts or the corresponding peptide or precursor, "intensity" calculates the percentage of missed cleavages by intensity of the corresponding peptide or precursor.
+#' @param method Method used for evaluation. "count" calculates the percentage of missed cleavages based on counts of the corresponding peptide or precursor, "intensity" calculates the percentage of missed cleavages by intensity of the corresponding peptide or precursor.
 #'
 #' @return A data frame that contains the calculated percentage made up by the sum of all peptides or precursors containing the corresponding amount of missed cleavages.
 #' @import dplyr
