@@ -23,20 +23,20 @@ qc_charge_states(
 
 \item{charge_states}{The column in the data dataframe containing the different charge states assigned to the precursor or peptide.}
 
-\item{intensity}{Optional column containing the corresponding intensity values to each peptide or precursor.}
+\item{intensity}{Column containing the corresponding intensity values for each peptide or precursor. Required when "intensity" is chosen as the method.}
 
-\item{method}{Method used for evaluation. "count" calculates the charge state distribution based on counts of the corresponding peptides or precursors in the charge state group, "intensity" calculates the percentage of precursors or peptides in each charge state group.}
+\item{method}{Method used for evaluation. "count" calculates the charge state distribution based on counts of the corresponding peptides or precursors in the charge state group, "intensity" calculates the percentage of precursors or peptides in each charge state group based on the corresponding intensity values.}
 
 \item{plot}{A logical indicating whether the result should be plotted.}
 }
 \value{
-A data frame that contains the calculated percentage made up by the sum of all peptides or precursors of the corresponding of a specific charge state.
+A data frame that contains the calculated percentage made up by the sum of either all counts or intensities of peptides or precursors of the corresponding charge state (depending on which method is chosen).
 }
 \description{
 Calculates the charge state distribution for each sample (by count or intensity).
 }
 \examples{
 \dontrun{
-qc_charge_states(data, sample, grouping, charge_startes, intensity = NULL, plot = TRUE)
+qc_charge_states(data, sample, grouping, charge_states, intensity = NULL, plot = TRUE)
 }
 }
