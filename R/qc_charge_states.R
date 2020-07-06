@@ -29,6 +29,7 @@ qc_charge_states <-
     if (method == "count")
     {
       result <- data %>%
+          dplyr::distinct({{sample}}, {{grouping}}, {{charge_states}}) %>%
           dplyr::count({{sample}}, {{charge_states}}) %>%
           dplyr::group_by({{sample}}) %>%
           dplyr::mutate(total_peptides = sum(n)) %>%
