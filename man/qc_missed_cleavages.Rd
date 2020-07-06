@@ -25,7 +25,7 @@ qc_missed_cleavages(
 
 \item{intensity}{Optional column containing the corresponding intensity values to each peptide or precursor.}
 
-\item{method}{Method used for evaluation. "Count" calculates the percentage of missed cleavages based on counts or the corresponding peptide or precursor, "intensity" calculates the percentage of missed cleavages by intensity of the corresponding peptide or precursor.}
+\item{method}{Method used for evaluation. "count" calculates the percentage of missed cleavages based on counts of the corresponding peptide or precursor, "intensity" calculates the percentage of missed cleavages by intensity of the corresponding peptide or precursor.}
 
 \item{plot}{A logical indicating whether the result should be plotted.}
 }
