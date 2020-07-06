@@ -46,12 +46,13 @@ impute <- function(data, sample, grouping, intensity, condition, missingness, no
     dplyr::mutate(sd = stats::sd({{intensity}}, na.rm = TRUE)) %>%
     tidyr::chop(missingness) %>%
     dplyr::mutate(missingness = purrr::map_chr(missingness, function(x) {
-      case_when("complete" %in% x ~ "complete",
+      dplyr::case_when("complete" %in% x ~ "complete",
                 "MAR" %in% x ~ "MAR",
                 "MNAR" %in% x ~ "MNAR")
     })) %>%
-     dplyr::group_by({{grouping}}) %>%
-     dplyr::mutate(sd = mean(.data$sd, na.rm = TRUE)) %>%
+    dplyr::group_by({{grouping}}) %>%
+    dplyr::mutate(noise_mean = mean({{noise}}, na.rm = TRUE)) %>%
+    dplyr::mutate(sd = mean(.data$sd, na.rm = TRUE)) %>%
     dplyr::group_by({{grouping}}, {{condition}}) %>%
     dplyr::mutate(
       impute = dplyr::case_when(
@@ -59,7 +60,7 @@ impute <- function(data, sample, grouping, intensity, condition, missingness, no
           calculate_imputation(
             n_replicates,
             min = min,
-            noise = noise,
+            noise = noise_mean,
             mean = mean,
             sd = sd,
             missingness = "MNAR",
@@ -70,7 +71,7 @@ impute <- function(data, sample, grouping, intensity, condition, missingness, no
           calculate_imputation(
             n_replicates,
             min = min,
-            noise = noise,
+            noise = noise_mean,
             mean = mean,
             sd = sd,
             missingness = "MAR",
@@ -81,6 +82,6 @@ impute <- function(data, sample, grouping, intensity, condition, missingness, no
     ) %>%
     dplyr::mutate(imputed_intensity = ifelse(is.na({{intensity}}) == TRUE, .data$impute, {{intensity}})) %>%
     dplyr::mutate(imputed = is.na({{intensity}}) & !is.na(.data$imputed_intensity)) %>%
-    dplyr::select(-.data$impute, -.data$mean, -.data$sd, -.data$min, -.data$n_replicates) %>%
+    dplyr::select(-.data$impute, -.data$mean, -.data$sd, -.data$min, -.data$n_replicates, -.data$noise_mean) %>%
     dplyr::ungroup()
 }
