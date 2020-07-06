@@ -48,8 +48,7 @@ impute <- function(data, sample, grouping, intensity, condition, missingness, no
     dplyr::mutate(missingness = purrr::map_chr(missingness, function(x) {
       case_when("complete" %in% x ~ "complete",
                 "MAR" %in% x ~ "MAR",
-                "MNAR" %in% x ~ "MNAR",
-                TRUE ~ "none")
+                "MNAR" %in% x ~ "MNAR")
     })) %>%
      dplyr::group_by({{grouping}}) %>%
      dplyr::mutate(sd = mean(.data$sd, na.rm = TRUE)) %>%
