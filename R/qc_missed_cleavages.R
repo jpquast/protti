@@ -41,11 +41,11 @@ qc_missed_cleavages <-
     if(plot == FALSE)
     {return(result)
     } else {
-        result %>%
+        plot <- result %>%
         ggplot2::ggplot(aes(x = {{sample}}, y = .data$mc_percent, fill = {{missed_cleavages}})) +
         geom_col(col = "black") +
         geom_text(
-          data = subset(result, .data$mc_percent > 5),
+          data = result %>% dplyr::filter(.data$mc_percent > 5),
           aes(label = round(.data$mc_percent, digits = 1)),
           position = position_stack(vjust = 0.5)
         ) +
@@ -56,6 +56,7 @@ qc_missed_cleavages <-
              fill = "Missed cleavages") +
         theme_bw() +
         theme(axis.text.x = element_text(angle = 45, hjust = 1))
+        return(plot)
     }
    }
 
@@ -76,11 +77,11 @@ qc_missed_cleavages <-
         if(plot == FALSE)
         {return(result)
         } else {
-          result %>%
+          plot <- result %>%
             ggplot2::ggplot(aes(x = {{sample}}, y = .data$mc_percent, fill = {{missed_cleavages}})) +
             geom_col(col = "black") +
             geom_text(
-              data = subset(result, .data$mc_percent > 5),
+              data = result %>% dplyr::filter(.data$mc_percent > 5),
               aes(label = round(.data$mc_percent, digits = 1)),
               position = position_stack(vjust = 0.5)
             ) +
@@ -91,6 +92,7 @@ qc_missed_cleavages <-
                  fill = "Missed cleavages") +
             theme_bw() +
             theme(axis.text.x = element_text(angle = 45, hjust = 1))
+          return(plot)
         }
       }
     }
