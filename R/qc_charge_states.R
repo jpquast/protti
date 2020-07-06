@@ -8,7 +8,7 @@
 #' @param charge_states The column in the data dataframe containing the different charge states assigned to the precursor or peptide.
 #' @param intensity Optional column containing the corresponding intensity values to each peptide or precursor.
 #' @param plot A logical indicating whether the result should be plotted.
-#' @param method Method used for evaluation. "count" calculates the charge state distribution based on counts of the corresponding peptides or precursors in the charge state group, "intensity" calculates the percentage of precursors or peptides in each charge state group.
+#' @param method Method used for evaluation. "count" calculates the charge state distribution based on counts of the corresponding peptides or precursors in the charge state group, "intensity" calculates the percentage of precursors or peptides in each charge state group based on the corresponding intensity values.
 #'
 #' @return A data frame that contains the calculated percentage made up by the sum of all peptides or precursors of the corresponding of a specific charge state.
 #' @import dplyr
