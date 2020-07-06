@@ -51,18 +51,18 @@ impute <- function(data, sample, grouping, intensity, condition, missingness, no
                 "MNAR" %in% x ~ "MNAR",
                 TRUE ~ "none")
     })) %>%
-    dplyr::group_by({{grouping}}) %>%
-    dplyr::mutate(sd = mean(.data$sd, na.rm = TRUE)) %>%
-    dplyr::group_by({{grouping}}, {{condition}})%>%
+     dplyr::group_by({{grouping}}) %>%
+     dplyr::mutate(sd = mean(.data$sd, na.rm = TRUE)) %>%
+    dplyr::group_by({{grouping}}, {{condition}}) %>%
     dplyr::mutate(
       impute = dplyr::case_when(
           missingness == "MNAR" ~
           calculate_imputation(
-            .data$n_replicates,
-            min = .data$min,
-            noise = .data$noise,
-            mean = .data$mean,
-            sd = .data$sd,
+            n_replicates,
+            min = min,
+            noise = noise,
+            mean = mean,
+            sd = sd,
             missingness = "MNAR",
             method = rlang::as_name(enquo(method)),
             skip_log2_transform_error = skip_log2_transform_error
@@ -70,10 +70,10 @@ impute <- function(data, sample, grouping, intensity, condition, missingness, no
         missingness == "MAR" ~
           calculate_imputation(
             n_replicates,
-            min = .data$min,
-            noise = .data$noise,
-            mean = .data$mean,
-            sd = .data$sd,
+            min = min,
+            noise = noise,
+            mean = mean,
+            sd = sd,
             missingness = "MAR",
             method = rlang::as_name(enquo(method)),
             skip_log2_transform_error = skip_log2_transform_error
