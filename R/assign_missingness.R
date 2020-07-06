@@ -59,5 +59,6 @@ assign_missingness <- function(data, sample, condition, grouping, intensity, noi
     tidyr::fill(.data$missingness, .direction = "updown") %>%
     dplyr::select(-.data$n_detect, -.data$n_replicates) %>%
     dplyr::left_join(data, by = c("comparison", rlang::as_name(enquo(condition)), rlang::as_name(enquo(grouping)))) %>%
-    dplyr::select(-.data$n_detect, -.data$n_replicates, -.data$detect)
+    dplyr::select(-.data$n_detect, -.data$n_replicates, -.data$detect) %>%
+    dplyr::ungroup()
 }
