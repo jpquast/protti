@@ -10,6 +10,7 @@ assign_missingness(
   condition,
   grouping,
   intensity,
+  noise = NULL,
   ref_condition = "control"
 )
 }
@@ -23,6 +24,8 @@ assign_missingness(
 \item{grouping}{the name of the column containing precursor or peptide identifiers.}
 
 \item{intensity}{the name of the column containing intensity values.}
+
+\item{noise}{optional, the name of the column containing noise values for imputation. Only needed if noise imputation is performed.}
 
 \item{ref_condition}{the condition that is used as a reference for missingness determination. By default \code{ref_condition = "control"}.}
 }

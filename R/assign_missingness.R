@@ -7,6 +7,7 @@
 #' @param condition the name of the column containing the conditions.
 #' @param grouping the name of the column containing precursor or peptide identifiers.
 #' @param intensity the name of the column containing intensity values.
+#' @param noise optional, the name of the column containing noise values for imputation. Only needed if noise imputation is performed.
 #' @param ref_condition the condition that is used as a reference for missingness determination. By default \code{ref_condition = "control"}.
 #'
 #' @return A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison name for the specific reference/treatment pair. The \code{missingness} column reports the type of missingness. 
@@ -32,9 +33,9 @@
 #' intensity = normalised_intensity_log2
 #' )
 #' }
-assign_missingness <- function(data, sample, condition, grouping, intensity, ref_condition = "control"){
+assign_missingness <- function(data, sample, condition, grouping, intensity, noise = NULL, ref_condition = "control"){
   data <-  data %>%
-    dplyr::distinct({{sample}}, {{condition}}, {{grouping}}, {{intensity}}) %>%
+    dplyr::distinct({{sample}}, {{condition}}, {{grouping}}, {{intensity}}, {{noise}}) %>%
     tidyr::complete(nesting(!!ensym(sample), !!ensym(condition)), !!ensym(grouping)) %>%
     dplyr::mutate(detect = !is.na({{intensity}})) %>%
     dplyr::group_by({{grouping}}, {{condition}}) %>%
