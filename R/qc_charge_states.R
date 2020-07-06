@@ -21,7 +21,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' qc_charge_states(data, sample, grouping, charge_startes, intensity = NULL, plot = TRUE)
+#' qc_charge_states(data, sample, grouping, charge_states, intensity = NULL, plot = TRUE)
 #' }
 
 qc_charge_states <-
