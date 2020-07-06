@@ -9,6 +9,8 @@
 #' @param intensity the name of the column containing intensity values.
 #' @param noise optional, the name of the column containing noise values for imputation. Only needed if noise imputation is performed.
 #' @param ref_condition the condition that is used as a reference for missingness determination. By default \code{ref_condition = "control"}.
+#' @param completeness_MAR the minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7. It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each condition to be considered as MAR. This number is always at least 1. 
+#' @param completeness_MNAR the maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.25. It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one condition to be considered as MNAR when the other condition is complete.
 #'
 #' @return A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison name for the specific reference/treatment pair. The \code{missingness} column reports the type of missingness. 
 #' \itemize{
@@ -33,7 +35,7 @@
 #' intensity = normalised_intensity_log2
 #' )
 #' }
-assign_missingness <- function(data, sample, condition, grouping, intensity, noise = NULL, ref_condition = "control"){
+assign_missingness <- function(data, sample, condition, grouping, intensity, noise = NULL, ref_condition = "control", completeness_MAR = 0.7, completeness_MNAR = 0.25){
   data <-  data %>%
     dplyr::distinct({{sample}}, {{condition}}, {{grouping}}, {{intensity}}, {{noise}}) %>%
     tidyr::complete(nesting(!!ensym(sample), !!ensym(condition)), !!ensym(grouping)) %>%
@@ -53,9 +55,9 @@ assign_missingness <- function(data, sample, condition, grouping, intensity, noi
     dplyr::distinct({{condition}}, {{grouping}}, .data$n_detect, .data$n_replicates, .data$comparison) %>%
     dplyr::group_by({{grouping}}, .data$comparison) %>%
     dplyr::mutate(missingness = dplyr::case_when(.data$n_detect == .data$n_replicates & lag(.data$n_detect) == .data$n_replicates ~ "complete",
-                                                 .data$n_detect == 0 & lag(.data$n_detect) == .data$n_replicates ~ "MNAR",
-                                                 .data$n_detect == .data$n_replicates & lag(.data$n_detect) == 0 ~ "MNAR",
-                                                 .data$n_detect >= .data$n_replicates - 1 & lag(.data$n_detect) >= .data$n_replicates -1 ~ "MAR")) %>%
+                                                 .data$n_detect <= floor(n_replicates * completeness_MNAR) & lag(.data$n_detect) == .data$n_replicates ~ "MNAR",
+                                                 .data$n_detect == .data$n_replicates & lag(.data$n_detect) <= floor(n_replicates * completeness_MNAR) ~ "MNAR",
+                                                 .data$n_detect >= max(floor(.data$n_replicates * completeness_MAR), 1) & lag(.data$n_detect) >= max(floor(.data$n_replicates * completeness_MAR), 1) ~ "MAR")) %>%
     tidyr::fill(.data$missingness, .direction = "updown") %>%
     dplyr::select(-.data$n_detect, -.data$n_replicates) %>%
     dplyr::left_join(data, by = c("comparison", rlang::as_name(enquo(condition)), rlang::as_name(enquo(grouping)))) %>%

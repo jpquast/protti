@@ -11,7 +11,9 @@ assign_missingness(
   grouping,
   intensity,
   noise = NULL,
-  ref_condition = "control"
+  ref_condition = "control",
+  completeness_MAR = 0.7,
+  completeness_MNAR = 0.25
 )
 }
 \arguments{
@@ -28,6 +30,10 @@ assign_missingness(
 \item{noise}{optional, the name of the column containing noise values for imputation. Only needed if noise imputation is performed.}
 
 \item{ref_condition}{the condition that is used as a reference for missingness determination. By default \code{ref_condition = "control"}.}
+
+\item{completeness_MAR}{the minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7. It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each condition to be considered as MAR. This number is always at least 1.}
+
+\item{completeness_MNAR}{the maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.25. It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one condition to be considered as MNAR when the other condition is complete.}
 }
 \value{
 A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison name for the specific reference/treatment pair. The \code{missingness} column reports the type of missingness. 
