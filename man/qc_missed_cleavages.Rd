@@ -2,7 +2,7 @@
 % Please edit documentation in R/qc_missed_cleavages.R
 \name{qc_missed_cleavages}
 \alias{qc_missed_cleavages}
-\title{Check number of missed cleavages}
+\title{Check missed cleavages}
 \usage{
 qc_missed_cleavages(
   data,
@@ -10,6 +10,7 @@ qc_missed_cleavages(
   grouping,
   missed_cleavages,
   intensity = NULL,
+  method,
   plot = FALSE
 )
 }
@@ -24,13 +25,15 @@ qc_missed_cleavages(
 
 \item{intensity}{Optional column containing the corresponding intensity values to each peptide or precursor.}
 
+\item{method}{Method used for evaluation. "Count" calculates the percentage of missed cleavages based on counts or the corresponding peptide or precursor, "intensity" calculates the percentage of missed cleavages by intensity of the corresponding peptide or precursor.}
+
 \item{plot}{A logical indicating whether the result should be plotted.}
 }
 \value{
 A data frame that contains the calculated percentage made up by the sum of all peptides or precursors containing the corresponding amount of missed cleavages.
 }
 \description{
-Calculates the percentage of missed cleavages for each sample (by count).
+Calculates the percentage of missed cleavages for each sample (by count or intensity).
 }
 \examples{
 \dontrun{
