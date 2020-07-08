@@ -37,6 +37,12 @@ Calculates the charge state distribution for each sample (by count or intensity)
 }
 \examples{
 \dontrun{
-qc_charge_states(data, sample, grouping, charge_states, intensity = NULL, plot = TRUE)
+qc_charge_states(data,
+sample,
+grouping,
+charge_states,
+intensity = NULL,
+method = "count",
+plot = TRUE)
 }
 }

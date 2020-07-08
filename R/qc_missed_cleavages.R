@@ -21,7 +21,13 @@
 #'
 #' @examples
 #' \dontrun{
-#' qc_missed_cleavages(data, sample, grouping, missed_cleavages, intensity, method = "intensity", plot = TRUE)
+#' qc_missed_cleavages(data,
+#' sample,
+#' grouping,
+#' missed_cleavages,
+#' intensity,
+#' method = "intensity",
+#' plot = TRUE)
 #' }
 qc_missed_cleavages <-
   function(data, sample, grouping, missed_cleavages, intensity = NULL, method, plot = FALSE)

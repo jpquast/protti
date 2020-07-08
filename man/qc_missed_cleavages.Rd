@@ -37,6 +37,12 @@ Calculates the percentage of missed cleavages for each sample (by count or inten
 }
 \examples{
 \dontrun{
-qc_missed_cleavages(data, sample, grouping, missed_cleavages, intensity = NULL, plot = TRUE)
+qc_missed_cleavages(data,
+sample,
+grouping,
+missed_cleavages,
+intensity,
+method = "intensity",
+plot = TRUE)
 }
 }
