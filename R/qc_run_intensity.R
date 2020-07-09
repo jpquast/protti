@@ -27,11 +27,12 @@ qc_run_intensity <-
     result <- data %>%
       dplyr::distinct({{sample}}, {{grouping}}, {{intensity}}) %>%
       dplyr::filter(!is.na({{intensity}}))
-
+    
     plot <- result %>%
       ggplot2::ggplot(aes(x = {{sample}}, y = {{intensity}})) +
       geom_boxplot(fill = "cornflowerblue", outlier.color = "orchid3") +
       theme_bw() +
+      theme(axis.text.x = element_text(angle = 45, hjust =1)) +
       labs(title = "Run intensities", x = "sample", y = "intensity")
     return(plot)
   }
