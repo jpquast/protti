@@ -21,10 +21,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' qc_charge_states(data,
-#' sample,
-#' grouping,
-#' charge_states,
+#' qc_charge_states(
+#' data,
+#' sample = r_file_name,
+#' grouping = pep_stripped_sequence,
+#' charge_states = fg_charge,
 #' intensity = NULL,
 #' method = "count",
 #' plot = TRUE)
