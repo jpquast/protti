@@ -4,7 +4,7 @@
 \alias{qc_log2_intensity_distribution}
 \title{Check Log2 intensity distribution}
 \usage{
-qc_log2_intensity_distribution(data, sample, grouping, log2intensity)
+qc_log2_intensity_distribution(data, sample, grouping, log2_intensity)
 }
 \arguments{
 \item{data}{A dataframe containing at least sample names, peptide or precursor identifiers and log2 transformed intensities for each peptide or precursor.}
@@ -13,7 +13,7 @@ qc_log2_intensity_distribution(data, sample, grouping, log2intensity)
 
 \item{grouping}{The column in the data dataframe containing either precursor or peptide identifiers.}
 
-\item{log2intensity}{The column in the data dataframe containing the log2 transformed intensities of each precursor or peptide.}
+\item{log2_intensity}{The column in the data dataframe containing the log2 transformed intensities of each precursor or peptide.}
 }
 \value{
 A plot that shows the intensity distribution over all samples
@@ -23,9 +23,10 @@ Plots the overall distribution of all peptide intensities
 }
 \examples{
 \dontrun{
-qc_log2_distribution(data,
-sample,
-grouping,
-log2intensity)
+qc_log2_distribution(
+data,
+sample = r_file_name,
+grouping = pep_stripped_sequence,
+log2_intensity = normalised_intensity_log2)
 }
 }

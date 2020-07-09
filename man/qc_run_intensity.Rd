@@ -4,16 +4,16 @@
 \alias{qc_run_intensity}
 \title{Check run intensities of all samples}
 \usage{
-qc_run_intensity(data, sample, grouping, log2intensity)
+qc_run_intensity(data, sample, grouping, intensity)
 }
 \arguments{
-\item{data}{A dataframe containing at least sample names, peptide or precursor identifiers and log2 transformed intensities for each peptide or precursor.}
+\item{data}{A dataframe containing at least sample names, peptide or precursor identifiers and (log2 transformed) intensities for each peptide or precursor.}
 
 \item{sample}{The column in the data dataframe containing the sample name.}
 
 \item{grouping}{The column in the data dataframe containing either precursor or peptide identifiers.}
 
-\item{log2intensity}{The column in the data dataframe containing the log2 transformed intensities of each precursor or peptide.}
+\item{intensity}{The column in the data dataframe containing the (log2 transformed) intensities of each precursor or peptide.}
 }
 \value{
 A plot with one boxplot for each sample, depicting the peptide or precurosor intensities.
@@ -23,9 +23,10 @@ Plots the intensities in each sample as a boxplot
 }
 \examples{
 \dontrun{
-qc_run_intensity(data,
-sample,
-grouping,
-log2intensity)
+qc_run_intensity(
+data,
+sample = r_file_name,
+grouping = pep_stripped_sequence,
+intensity = normalised_intensity_log2)
 }
 }
