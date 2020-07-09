@@ -21,7 +21,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' qc_charge_states(data, sample, grouping, charge_states, intensity = NULL, method = "count", plot = TRUE)
+#' qc_charge_states(
+#' data,
+#' sample = r_file_name,
+#' grouping = pep_stripped_sequence,
+#' charge_states = fg_charge,
+#' intensity = NULL,
+#' method = "count",
+#' plot = TRUE)
 #' }
 qc_charge_states <-
   function(data, sample, grouping, charge_states, intensity = NULL, method, plot = FALSE)
