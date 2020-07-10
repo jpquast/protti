@@ -108,20 +108,18 @@ fit_drc_4p <- function(data, sample, grouping, response, dose){
   names_to_keep <- names(line_fit)
   
   pb <- progress::progress_bar$new(total = length(line_fit), format = "  4/4 Plotting curves [:bar] :percent :eta")
-  plots <- input %>%
-    .[names_to_keep] %>%
-    purrr::map2(line_fit, function(x, y){ 
-      pb$tick()
-      ggplot2::ggplot(data = x, ggplot2::aes(x = {{dose}}, y = {{response}})) +
-        ggplot2::geom_point() +
-        suppressWarnings(ggplot2::geom_ribbon(data = y, ggplot2::aes(x = dose, y = .data$Prediction, ymin = .data$Lower, ymax = .data$Upper), alpha = 0.2)) +
-        ggplot2::geom_line(data = y, ggplot2::aes(x=dose, y = .data$Prediction)) +
-        ggplot2::labs(title = names(.)) +
-        ggplot2::theme_bw()+
-        ggplot2::theme(axis.text.x = element_text(angle = 45, hjust =1)) +
-        ggplot2::scale_x_log10() 
-      }
-    )
+  plots <- purrr::pmap(list(x = input[names_to_keep], y = line_fit, z = names(line_fit)), function(x, y, z){
+    pb$tick()
+    ggplot2::ggplot(data = x, ggplot2::aes(x = {{dose}}, y = {{response}})) +
+      ggplot2::geom_point() +
+      suppressWarnings(ggplot2::geom_ribbon(data = y, ggplot2::aes(x = dose, y = .data$Prediction, ymin = .data$Lower, ymax = .data$Upper), alpha = 0.2)) +
+      ggplot2::geom_line(data = y, ggplot2::aes(x=dose, y = .data$Prediction)) +
+      ggplot2::labs(title = z) +
+      ggplot2::theme_bw()+
+      ggplot2::theme(axis.text.x = element_text(angle = 45, hjust =1)) +
+      ggplot2::scale_x_log10()
+  }
+  )
   
   correlation_output <- correlation_output %>%
     dplyr::left_join(p_value_correlation, by = "sequence")
