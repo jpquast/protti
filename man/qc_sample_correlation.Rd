@@ -10,7 +10,7 @@ qc_sample_correlation(
   grouping,
   intensity,
   condition,
-  pipeline = NULL,
+  digestion = NULL,
   run_order = NULL,
   method = "spearman",
   interactive = TRUE
@@ -27,7 +27,7 @@ qc_sample_correlation(
 
 \item{condition}{the name of the column containing the conditions.}
 
-\item{pipeline}{optional, the name of the column containing information about the pipline used. Eg. "LiP" or "tryptic control".}
+\item{digestion}{optional, the name of the column containing information about the digestion method used. Eg. "LiP" or "tryptic control".}
 
 \item{run_order}{optional, the name of the column containing the order in which samples were measured. Useful to investigate batch effects due to run order.}
 
