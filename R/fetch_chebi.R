@@ -2,6 +2,8 @@
 #'
 #' Fetches all information from the ChEBI database.
 #'
+#' @param relation a logical, if TRUE, ChEBI Ontology data will be returned instead the main compound data. This data can be used to check the relations of ChEBI ID's to eachother.
+#'
 #' @return A data frame that contains all information about each molecule in the ChEBI database. Only "3-star" observations are included in the result. These are entries manually annotated by the ChEBI curator team.
 #' @import dplyr
 #' @importFrom tidyr pivot_wider
@@ -17,20 +19,37 @@
 #' \dontrun{
 #' fetch_chebi()
 #' }
-fetch_chebi <- function() {
+fetch_chebi <- function(relation = FALSE) {
+  # Retrieve relational information
+  if (relation == TRUE) {
+    chebi_relation_download <- RCurl::getURL("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv")
+    chebi_relation <- data.table::fread(chebi_relation_download)
+    
+    chebi_relation_clean <- chebi_relation %>%
+      dplyr::filter(.data$STATUS == "C") %>%
+      dplyr::select(-c(.data$ID, .data$STATUS)) %>%
+      dplyr::rename(incoming = .data$FINAL_ID) %>%
+      dplyr::rename(ID = .data$INIT_ID) %>%
+      janitor::clean_names()
+    
+    return(chebi_relation_clean)
+  }
+  
+  # Download compound data
+  
   chebi_chemical_data_download <- RCurl::getURL("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv")
   chebi_chemical_data <- data.table::fread(chebi_chemical_data_download)
   
   chebi_compounds_download <- readLines(gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/compounds.tsv.gz")))
-  chebi_compounds <- utils::read.delim(textConnection(chebi_compounds_download), quote = "")
+  chebi_compounds <- utils::read.delim(textConnection(chebi_compounds_download), quote = "", stringsAsFactors = FALSE)
   
   chebi_names_download <- readLines(gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/names.tsv.gz")))
-  chebi_names <- utils::read.delim(textConnection(chebi_names_download), quote = "")
+  chebi_names <- utils::read.delim(textConnection(chebi_names_download), quote = "", stringsAsFactors = FALSE)
   
   chebi_accession_download <- RCurl::getURL("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv")
   chebi_accession <- data.table::fread(chebi_accession_download)
   
- # Create one file with all information after cleaning individual source files
+# Create one file with all information after cleaning individual source files
   
   chebi_compounds_clean <- chebi_compounds %>%
     dplyr::filter(.data$STAR == 3) %>%
@@ -41,7 +60,8 @@ fetch_chebi <- function() {
   
   chebi_accession_clean <- chebi_accession %>%
     dplyr::distinct(.data$COMPOUND_ID, .data$TYPE, .data$ACCESSION_NUMBER) %>%
-    dplyr::rename(ID = .data$COMPOUND_ID)
+    dplyr::rename(ID = .data$COMPOUND_ID) %>%
+    dplyr::rename(TYPE_ACCESSION = .data$TYPE)
     
   
   chebi_chemical_data_clean <- chebi_chemical_data %>%
@@ -62,17 +82,17 @@ fetch_chebi <- function() {
   # Add info to old compound IDs 
   
   parent_ids <- chebi %>%
-    dplyr::filter(.data$PARENT_ID != "null") %>%
+    dplyr::filter(!is.na(.data$PARENT_ID)) %>%
     dplyr::pull(var = .data$PARENT_ID) %>%
     unique()
   
   parent_info <- chebi %>%
     dplyr::filter(.data$ID %in% parent_ids) %>%
-    dplyr::select(c(.data$ID, .data$NAME, .data$DEFINITION, .data$TYPE, .data$ACCESSION_NUMBER, .data$FORMULA, .data$MASS, .data$CHARGE, .data$`MONOISOTOPIC MASS`))
+    dplyr::select(c(.data$ID, .data$NAME, .data$DEFINITION, .data$TYPE_ACCESSION, .data$ACCESSION_NUMBER, .data$FORMULA, .data$MASS, .data$CHARGE, .data$`MONOISOTOPIC MASS`))
   
   parent_complete <- chebi %>%
     dplyr::filter(!is.na(.data$PARENT_ID)) %>%
-    dplyr::select(-c(.data$NAME, .data$DEFINITION, .data$TYPE, .data$ACCESSION_NUMBER, .data$FORMULA, .data$MASS, .data$CHARGE, .data$`MONOISOTOPIC MASS`)) %>%
+    dplyr::select(-c(.data$NAME, .data$DEFINITION, .data$TYPE_ACCESSION, .data$ACCESSION_NUMBER, .data$FORMULA, .data$MASS, .data$CHARGE, .data$`MONOISOTOPIC MASS`)) %>%
     dplyr::left_join(parent_info, by = c("PARENT_ID" = "ID")) 
   
   chebi <- chebi %>%
