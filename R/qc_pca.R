@@ -7,12 +7,13 @@
 #' @param grouping The column in the data dataframe containing either precursor or peptide identifiers.
 #' @param intensity Column containing the corresponding intensity values for each peptide or precursor.
 #' @param condition Column indicating the treatment or condition for each sample.
+#' @param digestion Optional column indicating the mode of digestion (limited proteolysis or tryptic digest).
 #'
 #' @return A plotted principal component analysis showing PC1 and PC2
 #' @import dplyr
 #' @import ggplot2
 #' @import tidyr
-#' @import magrittr
+#' @importFrom magrittr %>%
 #' @importFrom stringr str_replace
 #' @importFrom stats prcomp
 #' @importFrom rlang .data
@@ -21,23 +22,22 @@
 #'
 #' @examples
 #' \dontrun{
-#' PCA_protti(
+#' qc_PCA(
 #' data,
 #' sample = r_file_name,
-#' grouping = pep_stripped_sequence,
+#' grouping = eg_precursor_id,
 #' intensity = normalised_intensity_log2,
 #' condition = r_condition
 #' )
 #' }
 #'
-PCA_protti <-
-  function(data, sample, grouping, intensity, condition)
+qc_pca <-
+  function(data, sample, grouping, intensity, condition, digestion = NULL)
   {
     . = NULL
 
     pca_input <- data %>%
-      dplyr::filter(!is.na({{intensity}})) %>%
-      dplyr::select({{sample}}, {{grouping}}, {{intensity}}) %>%
+      dplyr::distinct({{sample}}, {{grouping}}, {{intensity}}) %>%
       dplyr::group_by({{sample}}, {{grouping}}) %>%
       dplyr::summarise(intensity = sum({{intensity}})) %>%
       tidyr::pivot_wider(names_from = {{sample}}, values_from = intensity) %>%
@@ -46,24 +46,22 @@ PCA_protti <-
       t(.)
 
     annotation <- data %>%
-      dplyr::select({{sample}}, {{condition}}) %>%
-      magrittr::set_colnames(c("sample", "condition"))
+      dplyr::distinct({{sample}}, {{condition}}, {{digestion}})
 
     pca <- prcomp(pca_input, center = TRUE)
 
     pca_df <- as.data.frame(pca$x) %>%
-      dplyr::mutate(sample = factor(row.names(.))) %>%
-      dplyr::left_join(annotation, by = "sample") %>%
-      dplyr::distinct()
+      dplyr::mutate({{sample}} := factor(row.names(.))) %>%
+      dplyr::left_join(annotation, by = rlang::as_name(enquo(sample)))
 
     pca_sdev_df <- as.data.frame(pca$sdev)
 
     pca_sdev_df <- pca_sdev_df %>%
       dplyr::mutate(percent_variance = (pca$sdev ^ 2 / sum(pca$sdev ^ 2) * 100),
-             dimension = row.names(.))
+                    dimension = row.names(.))
 
     plot <- pca_df %>%
-      ggplot2::ggplot(aes(.data$PC1, .data$PC2, col = condition)) +
+      ggplot2::ggplot(aes(x = .data$PC1, y = .data$PC2, col = {{condition}}, shape = {{digestion}})) +
       ggplot2::geom_point(size = 3) +
       ggplot2::labs(
         title = "Principal component analysis",
@@ -71,7 +69,7 @@ PCA_protti <-
         y = paste("PC2", "(", round(pca_sdev_df$percent_variance[pca_sdev_df$dimension == 2], 1), "%)")
       ) +
       ggrepel::geom_text_repel(aes(label = paste(
-        stringr::str_replace_all(as.character(condition), fixed("_"), " ")
+        stringr::str_replace_all(as.character({{sample}}), fixed("_"), " ")
       )),
       size = 4,
       show.legend = FALSE) +
