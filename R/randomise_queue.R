@@ -1,0 +1,67 @@
+#' Randomise samples in MS queue
+#'
+#' This function randomises the order or samples in an MS queue. QC and Blank samples are left in place. It is also possible to randomise only parts of the queue. The randomisation is every time the same for the same input due to \code{set.seed(123)}.
+#' 
+#' @param data optional, a data frame containing a queue. If not provided a queue file can be chosen interactively.
+#' @param rows optional, a range of rows in for which samples should be randomized.
+#' @param export logical, if TRUE a \code{"randomised_queue.csv"} file will be saved in the working directory. If FALSE a data frame will be returned.
+#' 
+#' @return If \code{export = TRUE} a \code{"randomised_queue.csv"} file will be saved in the working directory. If \code{export = FALSE} a data frame that contains the randomised queue is returned.
+#' @import dplyr
+#' @importFrom data.table fread
+#' @importFrom data.table fwrite
+#' @importFrom magrittr %>%
+#' @importFrom rlang .data
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' randomise_queue(rows = 195:235, export = TRUE)
+#' }
+randomise_queue <-
+  function(data = NULL,
+           rows = NULL,
+           export = FALSE) {
+    set.seed(123)
+    
+    if (is.null(data)) {
+      path <- file.choose(".")
+      data <- data.table::fread(path, skip = 1)
+    }
+    
+    unused_data <- NULL
+    
+    if (!is.null(rows)) {
+      unused_data <- data %>%
+        dplyr::slice(-({{rows}}))
+      
+      data <- data %>%
+        dplyr::slice({{rows}}) %>%
+        dplyr::mutate(n = row_number())
+    } else {
+      data <- data %>%
+        dplyr::mutate(n = row_number())
+    }
+    
+    qc_samples <- data %>%
+      dplyr::filter(.data$`Sample Type` == "QC" | .data$`Sample Type` == "Blank")
+    
+    samples <- data %>%
+      dplyr::filter(.data$`Sample Type` == "Unknown") %>%
+      dplyr::mutate(n = sample(n))
+    
+    result <- qc_samples %>%
+      dplyr::bind_rows(samples) %>%
+      dplyr::arrange(n) %>%
+      dplyr::select(-n)
+    
+    result <- unused_data %>%
+      dplyr::bind_rows(result)
+    
+    if (export == TRUE) {
+      write("Bracket Type=4", file = "randomised_queue.csv")
+      data.table::fwrite(result, file = "randomised_queue.csv", append = TRUE, col.names = TRUE)
+    } else {
+      result
+    }
+  }
