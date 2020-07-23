@@ -1,6 +1,6 @@
 #' Randomise samples in MS queue
 #'
-#' This function randomises the order or samples in an MS queue. QC and Blank samples are left in place. It is also possible to randomise only parts of the queue. The randomisation is every time the same for the same input due to \code{set.seed(123)}.
+#' This function randomises the order of samples in an MS queue. QC and Blank samples are left in place. It is also possible to randomise only parts of the queue. The randomisation is every time the same for the same input due to \code{set.seed(123)}.
 #' 
 #' @param data optional, a data frame containing a queue. If not provided a queue file can be chosen interactively.
 #' @param rows optional, a range of rows in for which samples should be randomized.
@@ -22,8 +22,11 @@ randomise_queue <-
   function(data = NULL,
            rows = NULL,
            export = FALSE) {
+    
+    # set seed to make sampling reproducible
     set.seed(123)
     
+    # load data interactively if no data is provided in the data argument
     if (is.null(data)) {
       path <- file.choose(".")
       data <- data.table::fread(path, skip = 1)
@@ -31,6 +34,7 @@ randomise_queue <-
     
     unused_data <- NULL
     
+    # if rows argument is provided subset dataset
     if (!is.null(rows)) {
       unused_data <- data %>%
         dplyr::slice(-({{rows}}))
@@ -43,13 +47,16 @@ randomise_queue <-
         dplyr::mutate(n = row_number())
     }
     
+    # separate qc and blank samples
     qc_samples <- data %>%
       dplyr::filter(.data$`Sample Type` == "QC" | .data$`Sample Type` == "Blank")
     
+    # randomise sample order
     samples <- data %>%
       dplyr::filter(.data$`Sample Type` == "Unknown") %>%
       dplyr::mutate(n = sample(n))
     
+    # add back qc and blank samples and also parts of the queue that were not randomised
     result <- qc_samples %>%
       dplyr::bind_rows(samples) %>%
       dplyr::arrange(n) %>%
@@ -58,6 +65,7 @@ randomise_queue <-
     result <- unused_data %>%
       dplyr::bind_rows(result)
     
+    # export queue and add bracket type = 4 line in front of data for proper queue import in xcalibur
     if (export == TRUE) {
       write("Bracket Type=4", file = "randomised_queue.csv")
       data.table::fwrite(result, file = "randomised_queue.csv", append = TRUE, col.names = TRUE)

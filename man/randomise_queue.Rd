@@ -17,7 +17,7 @@ randomise_queue(data = NULL, rows = NULL, export = FALSE)
 If \code{export = TRUE} a \code{"randomised_queue.csv"} file will be saved in the working directory. If \code{export = FALSE} a data frame that contains the randomised queue is returned.
 }
 \description{
-This function randomises the order or samples in an MS queue. QC and Blank samples are left in place. It is also possible to randomise only parts of the queue. The randomisation is every time the same for the same input due to \code{set.seed(123)}.
+This function randomises the order of samples in an MS queue. QC and Blank samples are left in place. It is also possible to randomise only parts of the queue. The randomisation is every time the same for the same input due to \code{set.seed(123)}.
 }
 \examples{
 \dontrun{
