@@ -76,8 +76,8 @@ volcano_protti <- function(data, grouping, foldchange, p_value, method, protein_
       geom_vline(xintercept = -1 * foldchange_cutoff, linetype = "dashed") +
       theme(legend.position = "none")  +
       theme_bw() +
-      scale_x_continuous(breaks = seq(round(-1 * max(abs(pull(data, {{foldchange}}))) - 0.5, 0), round(max(abs(pull(data, {{foldchange}}))) + 0.5, 0), 1)) +
-      coord_cartesian(xlim = c(round(-1 * max(abs(pull(data, {{foldchange}}))) - 0.5, 0), round(max(abs(pull(data, {{foldchange}}))) + 0.5, 0)))
+      scale_x_continuous(breaks = seq(round(-1 * max(abs(dplyr::pull(data, {{foldchange}}))) - 0.5, 0), round(max(abs(dplyr::pull(data, {{foldchange}}))) + 0.5, 0), 1)) +
+      coord_cartesian(xlim = c(round(-1 * max(abs(dplyr::pull(data, {{foldchange}}))) - 0.5, 0), round(max(abs(dplyr::pull(data, {{foldchange}}))) + 0.5, 0)))
     return(plotly::ggplotly(plot))
   }
   if (method == "significant")
@@ -107,8 +107,8 @@ volcano_protti <- function(data, grouping, foldchange, p_value, method, protein_
       geom_vline(xintercept = -1 *foldchange_cutoff, linetype = "dashed") +
       theme(legend.position = "none")  +
       theme_bw() +
-      scale_x_continuous(breaks = seq(round(-1 * max(abs(pull(data, {{foldchange}}))) - 0.5, 0), round(max(abs(pull(data, {{foldchange}}))) + 0.5, 0), 1)) +
-      coord_cartesian(xlim = c(round(-1 * max(abs(pull(data, {{foldchange}}))) - 0.5, 0), round(max(abs(pull(data, {{foldchange}}))) + 0.5, 0)))
+      scale_x_continuous(breaks = seq(round(-1 * max(abs(dplyr::pull(data, {{foldchange}}))) - 0.5, 0), round(max(abs(dplyr::pull(data, {{foldchange}}))) + 0.5, 0), 1)) +
+      coord_cartesian(xlim = c(round(-1 * max(abs(dplyr::pull(data, {{foldchange}}))) - 0.5, 0), round(max(abs(dplyr::pull(data, {{foldchange}}))) + 0.5, 0)))
     return(plotly::ggplotly(plot))
   }
 }
