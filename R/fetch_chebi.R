@@ -49,7 +49,7 @@ fetch_chebi <- function(relation = FALSE) {
   chebi_accession_download <- RCurl::getURL("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv")
   chebi_accession <- data.table::fread(chebi_accession_download)
   
-# Create one file with all information after cleaning individual source files
+ # Create one file with all information after cleaning individual source files
   
   chebi_compounds_clean <- chebi_compounds %>%
     dplyr::filter(.data$STAR == 3) %>%
@@ -62,7 +62,6 @@ fetch_chebi <- function(relation = FALSE) {
     dplyr::distinct(.data$COMPOUND_ID, .data$TYPE, .data$ACCESSION_NUMBER) %>%
     dplyr::rename(ID = .data$COMPOUND_ID) %>%
     dplyr::rename(TYPE_ACCESSION = .data$TYPE)
-    
   
   chebi_chemical_data_clean <- chebi_chemical_data %>%
     dplyr::distinct(.data$COMPOUND_ID, .data$TYPE, .data$CHEMICAL_DATA) %>%
@@ -70,9 +69,18 @@ fetch_chebi <- function(relation = FALSE) {
     tidyr::pivot_wider(names_from = .data$TYPE, values_from = .data$CHEMICAL_DATA, values_fn = list) %>%
     tidyr::unnest(cols = c(.data$FORMULA, .data$MASS, .data$CHARGE, .data$`MONOISOTOPIC MASS`))
   
+  chebi_compounds_names_clean <- chebi_compounds %>%
+    dplyr::filter(.data$STAR == 3) %>%
+    dplyr::distinct(.data$ID, .data$NAME) %>%
+    dplyr::na_if("null") %>%
+    dplyr::filter(!is.na(.data$NAME)) %>%
+    dplyr::mutate(TYPE_NAME = "STANDARD") %>%
+    dplyr::select(.data$ID, .data$TYPE_NAME, .data$NAME)
+  
   chebi_names_clean <- chebi_names %>%
-    dplyr::distinct(.data$COMPOUND_ID, .data$NAME) %>%
-    dplyr::rename(ID = .data$COMPOUND_ID)
+    dplyr::distinct(.data$COMPOUND_ID, .data$NAME, .data$TYPE) %>%
+    dplyr::rename(ID = .data$COMPOUND_ID, TYPE_NAME = .data$TYPE) %>%
+    dplyr::bind_rows(chebi_compounds_names_clean)
   
   chebi <- chebi_compounds_clean %>%
     dplyr::left_join(chebi_names_clean, by = "ID") %>%
@@ -88,11 +96,11 @@ fetch_chebi <- function(relation = FALSE) {
   
   parent_info <- chebi %>%
     dplyr::filter(.data$ID %in% parent_ids) %>%
-    dplyr::select(c(.data$ID, .data$NAME, .data$DEFINITION, .data$TYPE_ACCESSION, .data$ACCESSION_NUMBER, .data$FORMULA, .data$MASS, .data$CHARGE, .data$`MONOISOTOPIC MASS`))
+    dplyr::select(c(.data$ID, .data$NAME, .data$TYPE_NAME, .data$DEFINITION, .data$TYPE_ACCESSION, .data$ACCESSION_NUMBER, .data$FORMULA, .data$MASS, .data$CHARGE, .data$`MONOISOTOPIC MASS`))
   
   parent_complete <- chebi %>%
     dplyr::filter(!is.na(.data$PARENT_ID)) %>%
-    dplyr::select(-c(.data$NAME, .data$DEFINITION, .data$TYPE_ACCESSION, .data$ACCESSION_NUMBER, .data$FORMULA, .data$MASS, .data$CHARGE, .data$`MONOISOTOPIC MASS`)) %>%
+    dplyr::select(-c(.data$NAME, .data$TYPE_NAME, .data$DEFINITION, .data$TYPE_ACCESSION, .data$ACCESSION_NUMBER, .data$FORMULA, .data$MASS, .data$CHARGE, .data$`MONOISOTOPIC MASS`)) %>%
     dplyr::left_join(parent_info, by = c("PARENT_ID" = "ID")) 
   
   chebi <- chebi %>%
