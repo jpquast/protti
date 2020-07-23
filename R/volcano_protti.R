@@ -34,6 +34,7 @@
 #' foldchange = Log2FC,
 #' p_value = p_value,
 #' method = "target",
+#' protein_identifier = uniprot_id,
 #' target = Q9Y6K9,
 #' title = "Finding Nemo",
 #' x_axis_label = "log2(fold change) treated vs untreated",
