@@ -14,7 +14,7 @@ replace_identified_by_x(sequence, positions_start, positions_end)
 \item{positions_end}{End position of the identified peptide.}
 }
 \value{
-A plotted principal component analysis showing PC1 and PC2
+A modified protein sequence with each identified position replaced by "x"
 }
 \description{
 Helper function for the calculation of sequence coverage, replaces identified positions with an "x"

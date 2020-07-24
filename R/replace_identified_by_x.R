@@ -6,7 +6,7 @@
 #' @param positions_start Start position of the identified peptide.
 #' @param positions_end End position of the identified peptide.
 #'
-#' @return A plotted principal component analysis showing PC1 and PC2
+#' @return A modified protein sequence with each identified position replaced by "x"
 #' @import dplyr
 #' @import purrr
 #' @import tidyr
