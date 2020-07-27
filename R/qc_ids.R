@@ -2,14 +2,14 @@
 #'
 #' Plots the number of IDs for each sample
 #'
-#' @param data Dataframe containing at least sample names and precursor IDs.
+#' @param data Dataframe containing at least sample names and precursor/peptide/protein IDs.
 #' @param sample Column in the dataframe specifying the sample name.
-#' @param grouping Column in the data dataframe containing either precursor or peptide identifiers.
-#' @param condition Optional column in the dataframe specifying the condition of the sample (e.g. LiP_reated, LiP_untreated).
+#' @param grouping Column in the data dataframe containing either precursor, peptide or protein identifiers.
+#' @param condition Optional column in the dataframe specifying the condition of the sample (e.g. LiP_treated, LiP_untreated), if column is provided, the bars in the plot will be coloured according to the condition.
 #' @param title Optional argument specifying the plot title (default is "ID count per sample").
+#' @param plot Argument specifying whether the output of the function should be plotted (default is TRUE).
 #'
-#'
-#' @return A bar plot with the height corresponding to the number of IDs, each bar represents one sample.
+#' @return A bar plot with the height corresponding to the number of IDs, each bar represents one sample (if \code{plot = TRUE}). If \code{plot = FALSE} a table with ID counts is returned.
 #' @import dplyr
 #' @import ggplot2
 #' @importFrom magrittr %>%
@@ -27,23 +27,34 @@
 #' )
 #' }
 qc_ids <-
-  function(data, sample, grouping, condition = NULL, title = "ID count per sample")
+  function(data, sample, grouping, condition = NULL, title = "ID count per sample", plot = TRUE)
   {
+    if (plot == TRUE)
+    {
     result <- data %>%
-      dplyr::select({{sample}}, {{grouping}}, {{condition}}) %>%
-      dplyr::distinct() %>%
+      dplyr::distinct({{sample}}, {{grouping}}, {{condition}}) %>%
       dplyr::group_by({{sample}}) %>%
-      dplyr::mutate(count = length({{grouping}})) %>%
+      dplyr::mutate(count = n()) %>%
+      dplyr::select(-{{grouping}}) %>%
       dplyr::distinct()
 
     plot <- result %>%
-      ggplot2::ggplot(aes(x = {{sample}}, y = .data$count, col = {{condition}})) +
-      geom_bar(stat = "identity", fill = "cornflowerblue", alpha = 1) +
+      ggplot2::ggplot(aes(x = {{sample}}, y = .data$count, fill = {{condition}})) +
+      geom_col(col = "black") +
+      {if(length(result %>% ungroup() %>% select({{condition}})) == 0 ) geom_col(fill = "cornflowerblue", col = "black")}  +
       labs(title = title,
            x = "sample",
            y = "count") +
       theme_bw() +
-      theme(axis.text.x = element_text(angle = 75, hjust = 1),
-            legend.position = "none")
+      theme(axis.text.x = element_text(angle = 75, hjust = 1))
     return(plotly::ggplotly(plot))
+    } else {
+      result <- data %>%
+        dplyr::distinct({{sample}}, {{grouping}}, {{condition}}) %>%
+        dplyr::group_by({{sample}}) %>%
+        dplyr::mutate(ID_count = n()) %>%
+        dplyr::select(-{{grouping}}) %>%
+        dplyr::distinct()
+      return(result)
+    }
   }
