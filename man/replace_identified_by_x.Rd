@@ -2,29 +2,29 @@
 % Please edit documentation in R/replace_identified_by_x.R
 \name{replace_identified_by_x}
 \alias{replace_identified_by_x}
-\title{Replace each identified positions in protein by "x"}
+\title{Replace identified positions in protein sequence by "x"}
 \usage{
 replace_identified_by_x(sequence, positions_start, positions_end)
 }
 \arguments{
-\item{sequence}{Protein sequence}
+\item{sequence}{Sequence a character vector that contains the protein sequence.}
 
-\item{positions_start}{Start position of the identified peptide.}
+\item{positions_start}{A vector of start positions of the identified peptides.}
 
-\item{positions_end}{End position of the identified peptide.}
+\item{positions_end}{A vector of end positions of the identified peptides.}
 }
 \value{
 A modified protein sequence with each identified position replaced by "x"
 }
 \description{
-Helper function for the calculation of sequence coverage, replaces identified positions with an "x"
+Helper function for the calculation of sequence coverage, replaces identified positions with an "x" within the protein sequence.
 }
 \examples{
 \dontrun{
 replace_identified_by_x(
-sequence = protein_sequence,
-positions_start = start,
-positions_end = end
+sequence = c("AEFGPEEAAVS"),
+positions_start = c(1, 5, 8),
+positions_end = c(3, 6, 11)
 )
 }
 
