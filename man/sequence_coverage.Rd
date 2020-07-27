@@ -2,7 +2,7 @@
 % Please edit documentation in R/sequence_coverage.R
 \name{sequence_coverage}
 \alias{sequence_coverage}
-\title{Sequence coverage}
+\title{Protein sequence coverage}
 \usage{
 sequence_coverage(data, protein_sequence, peptides)
 }
@@ -17,11 +17,12 @@ sequence_coverage(data, protein_sequence, peptides)
 A new column containing the calculated sequence coverages for each identified protein
 }
 \description{
-Calculate sequence coverage for each identified protein
+Calculate sequence coverage for each identified protein.
 }
 \examples{
 \dontrun{
 sequence_coverage(
+data,
 protein_sequence = protein_sequence,
 peptides = pep_stripped_sequence
 )
