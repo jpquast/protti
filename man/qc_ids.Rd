@@ -4,21 +4,33 @@
 \alias{qc_ids}
 \title{Check number of precursor/preptide/protein IDs}
 \usage{
-qc_ids(data, sample, grouping, condition = NULL, title = "ID count per sample")
+qc_ids(
+  data,
+  sample,
+  grouping,
+  condition = NULL,
+  title = "ID count per sample",
+  plot = TRUE,
+  interactive = TRUE
+)
 }
 \arguments{
-\item{data}{Dataframe containing at least sample names and precursor IDs.}
+\item{data}{Dataframe containing at least sample names and precursor/peptide/protein IDs.}
 
 \item{sample}{Column in the dataframe specifying the sample name.}
 
-\item{grouping}{Column in the data dataframe containing either precursor or peptide identifiers.}
+\item{grouping}{Column in the data dataframe containing either precursor, peptide or protein identifiers.}
 
-\item{condition}{Optional column in the dataframe specifying the condition of the sample (e.g. LiP_reated, LiP_untreated).}
+\item{condition}{Optional column in the dataframe specifying the condition of the sample (e.g. LiP_treated, LiP_untreated), if column is provided, the bars in the plot will be coloured according to the condition.}
 
 \item{title}{Optional argument specifying the plot title (default is "ID count per sample").}
+
+\item{plot}{Argument specifying whether the output of the function should be plotted (default is TRUE).}
+
+\item{interactive}{Argument specifying whether the plot should be interactive (default is TRUE).}
 }
 \value{
-A bar plot with the height corresponding to the number of IDs, each bar represents one sample.
+A bar plot with the height corresponding to the number of IDs, each bar represents one sample (if \code{plot = TRUE}). If \code{plot = FALSE} a table with ID counts is returned.
 }
 \description{
 Plots the number of IDs for each sample
