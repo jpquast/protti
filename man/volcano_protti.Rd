@@ -8,24 +8,24 @@ volcano_protti(
   data,
   grouping,
   foldchange,
-  p_value,
+  significance,
   method,
   protein_identifier = NULL,
   target = NULL,
   title = "Volcano plot",
   x_axis_label = "log2(fold change)",
   foldchange_cutoff = 1,
-  p_value_cutoff = 0.01
+  significance_cutoff = 0.01
 )
 }
 \arguments{
-\item{data}{Dataframe containing at least sample names, peptide or precursor identifiers and missed cleavage counts for each peptide or precursor.}
+\item{data}{Dataframe containing at least the input variables.}
 
 \item{grouping}{Column in the data dataframe containing either precursor or peptide identifiers.}
 
 \item{foldchange}{Column in the dataframe containing the fold changes (ideally log2 transformed) between two conditions}
 
-\item{p_value}{Column containing the p-value for the corresponding fold changes. P-value is ideally adjusted using e.g. Benjamini-Hochberg correction.}
+\item{significance}{Column containing the p-value or adjusted p-value for the corresponding fold changes. P-value is ideally adjusted using e.g. Benjamini-Hochberg correction.}
 
 \item{method}{Method used for the plot. \code{method = "target"} highlights your protein of interest in the volcano plot, \code{method = "significant"} highlights all significantly changing entities.}
 
@@ -39,13 +39,13 @@ volcano_protti(
 
 \item{foldchange_cutoff}{Optional argument specifying the fold change cutoff used for assessing whether changes are significant. As a log2 scale should be used, the default value is 1.}
 
-\item{p_value_cutoff}{Optional argument specifying the p-value cutoff used for assessing significance of changes. Default is 0.01.}
+\item{significance_cutoff}{Optional argument specifying the p-value cutoff used for assessing significance of changes. Default is 0.01.}
 }
 \value{
-Depending on the method used a volcano plot with either highlighted target protein (\code{method = "target"}) or highlighted significant proteins (\code{method = "significant"}).
+Depending on the method used a volcano plot with either highlighted target protein (\code{method = "target"}) or highlighted significant proteins (\code{method = "significant"}) is returned.
 }
 \description{
-Plots a volcano plot for the given input
+Plots a volcano plot for the given input.
 }
 \examples{
 \dontrun{
@@ -53,14 +53,14 @@ volcano_protti(
 data,
 grouping = pep_stripped_sequence,
 foldchange = Log2FC,
-p_value = p_value,
+significance = p_value,
 method = "target",
 protein_identifier = uniprot_id,
-target = Q9Y6K9,
+target = "Q9Y6K9",
 title = "Finding Nemo",
 x_axis_label = "log2(fold change) treated vs untreated",
 foldchange_cutoff = 0.5,
-p_value_cutoff = 0.05
+significance_cutoff = 0.05
 )
 }
 }
