@@ -4,12 +4,14 @@
 \alias{try_query}
 \title{Query from url}
 \usage{
-try_query(url, max_tries = 5)
+try_query(url, max_tries = 5, silent = TRUE)
 }
 \arguments{
 \item{url}{Url of website that contains the table that should be downloaded.}
 
 \item{max_tries}{Number of times the function tries to download the data in case an error occures.}
+
+\item{silent}{logical, if TRUE no individual messages are printed after each try that failed.}
 }
 \value{
 A data frame that contains the table from the url.

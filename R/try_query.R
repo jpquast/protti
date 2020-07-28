@@ -4,20 +4,20 @@
 #'
 #' @param url Url of website that contains the table that should be downloaded.
 #' @param max_tries Number of times the function tries to download the data in case an error occures.
+#' @param silent logical, if TRUE no individual messages are printed after each try that failed.
 #'
 #' @return A data frame that contains the table from the url.
-#' @importFrom data.table fread
 #'
 #' @examples
 #' \dontrun{
 #' try_query("http://www.uniprot.org/uniprot/?query=id:P36578&format=tab")
 #' }
 try_query <-
-  function (url, max_tries = 5)
+  function (url, max_tries = 5, silent = TRUE)
   {
     for (i in 1:max_tries) {
       result <- tryCatch({
-        data.table::fread(url, showProgress = FALSE)
+        utils::read.delim(url, quote = "", stringsAsFactors = FALSE, fill = FALSE)
       },
       error = function(error) {
         NULL
@@ -25,7 +25,7 @@ try_query <-
       if (!is.null(result)) {
         return(result)
       } else{
-        message(paste0(i, ". try failed!"))
+        if (!silent) {message(paste0(i, ". try failed!"))}
         Sys.sleep(3)
       }
     }
