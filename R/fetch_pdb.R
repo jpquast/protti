@@ -11,8 +11,8 @@
 #' @import janitor
 #' @import progress
 #' @import purrr
-#' @import RCurl
 #' @import dplyr
+#' @importFrom RCurl getURL
 #' @importFrom data.table fread
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
