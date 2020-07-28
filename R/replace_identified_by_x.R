@@ -2,7 +2,7 @@
 #'
 #' Helper function for the calculation of sequence coverage, replaces identified positions with an "x" within the protein sequence.
 #'
-#' @param sequence Sequence a character vector that contains the protein sequence.
+#' @param sequence A character vector that contains the protein sequence.
 #' @param positions_start A vector of start positions of the identified peptides.
 #' @param positions_end A vector of end positions of the identified peptides.
 #'

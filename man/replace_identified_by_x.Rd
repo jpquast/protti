@@ -7,7 +7,7 @@
 replace_identified_by_x(sequence, positions_start, positions_end)
 }
 \arguments{
-\item{sequence}{Sequence a character vector that contains the protein sequence.}
+\item{sequence}{A character vector that contains the protein sequence.}
 
 \item{positions_start}{A vector of start positions of the identified peptides.}
 
