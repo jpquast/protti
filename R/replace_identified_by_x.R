@@ -19,13 +19,21 @@
 #' )
 #' }
 #'
-replace_identified_by_x <- function(sequence, positions_start, positions_end)
+replace_identified_by_x <-
+  function(sequence, positions_start, positions_end)
   {
-  result <- purrr::map2(.x = positions_start, .y = positions_end,
-                        function(x, y){
-    times <- y-x + 1
-    stringr::str_sub(sequence, start = x, end = y) <- paste(rep("x", times = times), collapse = "")
-    sequence <<- sequence
-  })
-  result[[length(result)]]
-}
+    sequence <- unique(sequence)
+    if (sequence == "" | is.na(sequence)) {
+      return(NA)
+    }
+    remove_na <- !is.na(positions_start) & !is.na(positions_end)
+    positions_start <- positions_start[remove_na]
+    positions_end <- positions_end[remove_na]
+    result <- purrr::map2(.x = positions_start, .y = positions_end,
+                          function(x, y) {
+                            times <- y - x + 1
+                            stringr::str_sub(sequence, start = x, end = y) <- paste(rep("x", times = times), collapse = "")
+                            sequence <<- sequence
+                          })
+    result[[length(result)]]
+  }
