@@ -6,7 +6,7 @@
 #' @param positions_start A vector of start positions of the identified peptides.
 #' @param positions_end A vector of end positions of the identified peptides.
 #'
-#' @return A modified protein sequence with each identified position replaced by "x"
+#' @return A character vector that contains the modified protein sequence with each identified position replaced by "x".
 #' @importFrom purrr map2
 #' @importFrom stringr str_sub
 #'
