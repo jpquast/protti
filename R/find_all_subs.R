@@ -6,7 +6,7 @@
 #' @param id A character vector of ChEBI ID's for which sub ID's should be retreived. 
 #' @param type A character vector containing the type of relationship that should be considered for retreival. It is possible to use "all" relationships. The default type is "is_a". A list of possible relationships can be found \href{https://docs.google.com/document/d/1_w-DwBdCCOh1gMeeP6yqGzcnkpbHYOa3AGSODe5epcg/edit#heading=h.hnsqoqu978s5}{here}.
 #'
-#' @return A character vector containing the provided ID and all of its sub ID's.
+#' @return A list of character vector containing the provided ID and all of its sub ID's. It contains one element per input ID.
 #' @importFrom dplyr select filter
 #' @importFrom magrittr %>%
 #' @importFrom purrr map
@@ -37,5 +37,5 @@ find_all_subs <- function (data, id, type = "is_a") {
     r <- igraph::subcomponent(g, match(id, igraph::V(g)$name), "out")$name
     as.numeric(r)
   })
-  unlist(result)
+  result
 }

@@ -14,7 +14,7 @@ find_all_subs(data, id, type = "is_a")
 \item{type}{A character vector containing the type of relationship that should be considered for retreival. It is possible to use "all" relationships. The default type is "is_a". A list of possible relationships can be found \href{https://docs.google.com/document/d/1_w-DwBdCCOh1gMeeP6yqGzcnkpbHYOa3AGSODe5epcg/edit#heading=h.hnsqoqu978s5}{here}.}
 }
 \value{
-A character vector containing the provided ID and all of its sub ID's.
+A list of character vector containing the provided ID and all of its sub ID's. It contains one element per input ID.
 }
 \description{
 For a given ChEBI ID, find all ChEBI sub ID's (incoming ID's) and their sub ID's. The type of relationship can be selected to. This is a helper function for other functions.
