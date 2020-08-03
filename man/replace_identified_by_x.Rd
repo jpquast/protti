@@ -14,7 +14,7 @@ replace_identified_by_x(sequence, positions_start, positions_end)
 \item{positions_end}{A vector of end positions of the identified peptides.}
 }
 \value{
-A modified protein sequence with each identified position replaced by "x"
+A character vector that contains the modified protein sequence with each identified position replaced by "x".
 }
 \description{
 Helper function for the calculation of sequence coverage, replaces identified positions with an "x" within the protein sequence.
