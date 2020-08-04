@@ -1,0 +1,41 @@
+#' Find ChEBI ID's for name patterns
+#'
+#' A list of ChEBI ID's that contain a specific name pattern is returned.
+#'
+#' @param chebi_data A data frame that contains at least information on ChEBI ID's (id) and their names (name). 
+#' This data frame can be obtained by calling \code{fetch_chebi()}. Ideally this should be subsetted to only contain molecules of a specific type e.g. metals. 
+#' This can be achived by calling \code{find_all_subs} with a general ID such as "25213" (Metal cation) and then subset the complete ChEBI database to only include the returned sub-ID's.
+#' Using a subseted database ensures better search results.
+#' @param pattern A character vector that contains names or name patterns of molecules. Name patterns can be for example obtained with the \code{split_metal_name} function.
+#'
+#' @return A list of character vectors containing ChEBI ID's that have a name matching the supplied pattern.
+#' @importFrom dplyr distinct
+#' @importFrom magrittr %>%
+#' @importFrom purrr map
+#' @importFrom stringi stri_remove_empty
+#' @importFrom stringr str_detect regex
+#' @importFrom rlang .data
+#'
+#' @examples
+#' \dontrun{
+#' find_chebis(
+#' chebi_data = chebi_metal,
+#' pattern = c("magnesium", 
+#' "Magnesium or Manganese|Magnesium|Manganese", 
+#' "Iron-sulfur (2Fe-2S)|2Fe-2S|Iron")
+#' )
+#' }
+find_chebis <- function(chebi_data, pattern) {
+  data <- chebi_data %>%
+    dplyr::distinct(.data$id, .data$name)
+  
+  purrr::map(pattern, function(pattern) {
+    stringi::stri_remove_empty(stats::na.omit(unique(
+      ifelse(
+        stringr::str_detect(data$name, pattern = stringr::regex({{pattern}}, ignore_case = TRUE)),
+        data$id,
+        ""
+      )
+    )))
+  })
+}
