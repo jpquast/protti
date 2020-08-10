@@ -41,7 +41,7 @@ A data frame containing information on protein metal binding state. It contains 
 \item{\code{metal_type}: }{Metal name extracted from \code{feature_metal_binding} information. This is the name that is used as a search pattern in order to assign a ChEBI ID with the \code{split_metal_name} helper function within this function.}
 \item{\code{sub_ids}: }{ChEBI ID that is a sub-ID (incoming) of the ID in the \code{ids} column. Thus, they more specifically describe the potential nature of the metal ion.}
 \item{\code{main_id_name}: }{Official ChEBI name associated with the ID in the \code{ids} column.}
-\item{\code{multi_evidence}: }{If there is overlapping information in \code{feature_metal_binding} and \code{chebi_cofactor}, only \code{feature_metal_binding} is retained and multi_evidence is TRUE.}
+\item{\code{multi_evidence}: }{If there is overlapping information in \code{feature_metal_binding} and \code{chebi_cofactor} or \code{chebi_catalytic_activity}, only \code{feature_metal_binding} is retained and multi_evidence is TRUE.}
 \item{\code{sub_id_name}: }{Official ChEBI name associated with the ID in the \code{sub_ids} column.}
 }
 }

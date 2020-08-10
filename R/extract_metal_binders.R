@@ -22,7 +22,7 @@
 #' \item{\code{metal_type}: }{Metal name extracted from \code{feature_metal_binding} information. This is the name that is used as a search pattern in order to assign a ChEBI ID with the \code{split_metal_name} helper function within this function.}
 #' \item{\code{sub_ids}: }{ChEBI ID that is a sub-ID (incoming) of the ID in the \code{ids} column. Thus, they more specifically describe the potential nature of the metal ion.}
 #' \item{\code{main_id_name}: }{Official ChEBI name associated with the ID in the \code{ids} column.}
-#' \item{\code{multi_evidence}: }{If there is overlapping information in \code{feature_metal_binding} and \code{chebi_cofactor}, only \code{feature_metal_binding} is retained and multi_evidence is TRUE.}
+#' \item{\code{multi_evidence}: }{If there is overlapping information in \code{feature_metal_binding} and \code{chebi_cofactor} or \code{chebi_catalytic_activity}, only \code{feature_metal_binding} is retained and multi_evidence is TRUE.}
 #' \item{\code{sub_id_name}: }{Official ChEBI name associated with the ID in the \code{sub_ids} column.}
 #' } 
 #' @import dplyr
@@ -134,13 +134,15 @@ extract_metal_binders <-
       dplyr::left_join(chebi_names, by = c("ids" = "id")) %>%
       dplyr::rename(main_id_name = .data$name) %>%
       dplyr::distinct() %>%
-      dplyr::group_by(.data$protein_name, .data$metal_type) %>%
+      dplyr::group_by({{protein_id}}, .data$metal_type) %>%
       dplyr::mutate(n_position = dplyr::n_distinct(.data$metal_position, na.rm = TRUE)) %>%
-      dplyr::group_by(.data$protein_name, .data$sub_ids) %>%
+      dplyr::group_by({{protein_id}}, .data$sub_ids) %>%
       dplyr::mutate(n_ids = dplyr::n()) %>%
-      dplyr::mutate(multi_evidence = ifelse(.data$n_ids/.data$n_position > 1 & .data$n_position != 0, TRUE, FALSE)) %>%
+      dplyr::mutate(chebi_cofactor_id = ifelse((source == "chebi_cofactor" | source == "chebi_catalytic_activity") & .data$ids == .data$sub_ids, .data$ids, NA)) %>%
+      dplyr::group_by({{protein_id}}) %>%
+      dplyr::mutate(multi_evidence = ifelse(.data$sub_ids %in% .data$chebi_cofactor_id, TRUE, FALSE)) %>%
       dplyr::filter(!(.data$n_position == 0 & .data$n_ids > 1)) %>%
-      dplyr::select(-c(.data$is_metal, .data$n_position, .data$n_ids)) %>%
+      dplyr::select(-c(.data$is_metal, .data$n_position, .data$n_ids, .data$chebi_cofactor_id)) %>%
       dplyr::mutate(sub_ids = as.character(.data$sub_ids)) %>%
       dplyr::left_join(chebi_names, by = c("sub_ids" = "id")) %>%
       dplyr::rename(sub_id_name = .data$name)
