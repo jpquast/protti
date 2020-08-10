@@ -79,7 +79,7 @@ fetch_uniprot <-
     
     new_ids <- new$new
     
-    if(is.null(new_ids)) {return(result)}
+    if(all.equal(new_ids, logical(0)) == TRUE) {return(result)}
     
     new_id_query <- paste(paste0("id:", new_ids), collapse = "+or+")
     new_query_url <- utils::URLencode(paste0(url, new_id_query, "&format=tab&columns=",
