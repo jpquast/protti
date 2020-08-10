@@ -17,7 +17,7 @@ find_all_subs(data, id, type = "is_a")
 A list of character vector containing the provided ID and all of its sub ID's. It contains one element per input ID.
 }
 \description{
-For a given ChEBI ID, find all ChEBI sub ID's (incoming ID's) and their sub ID's. The type of relationship can be selected to. This is a helper function for other functions.
+For a given ChEBI ID, find all ChEBI sub ID's (incoming ID's) and their sub ID's. The type of relationship can be selected too. This is a helper function for other functions.
 }
 \examples{
 \dontrun{

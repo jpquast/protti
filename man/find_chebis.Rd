@@ -10,7 +10,7 @@ find_chebis(chebi_data, pattern)
 \item{chebi_data}{A data frame that contains at least information on ChEBI ID's (id) and their names (name). 
 This data frame can be obtained by calling \code{fetch_chebi()}. Ideally this should be subsetted to only contain molecules of a specific type e.g. metals. 
 This can be achived by calling \code{find_all_subs} with a general ID such as "25213" (Metal cation) and then subset the complete ChEBI database to only include the returned sub-ID's.
-Using a subseted database ensures better search results.}
+Using a subseted database ensures better search results. This is a helper function for other functions.}
 
 \item{pattern}{A character vector that contains names or name patterns of molecules. Name patterns can be for example obtained with the \code{split_metal_name} function.}
 }

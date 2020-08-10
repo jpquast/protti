@@ -1,6 +1,6 @@
 #' Find all ChEBI sub ID's of an ID
 #'
-#' For a given ChEBI ID, find all ChEBI sub ID's (incoming ID's) and their sub ID's. The type of relationship can be selected to. This is a helper function for other functions.
+#' For a given ChEBI ID, find all ChEBI sub ID's (incoming ID's) and their sub ID's. The type of relationship can be selected too. This is a helper function for other functions.
 #'
 #' @param data A data frame that contains information on ChEBI ID's (id), their sub ID's (incoming) and their relationship (type). This data frame can be obtained by calling \code{fetch_chebi(relation = TRUE)}.
 #' @param id A character vector of ChEBI ID's for which sub ID's should be retreived. 
