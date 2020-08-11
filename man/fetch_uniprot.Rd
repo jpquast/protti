@@ -32,6 +32,6 @@ Fetches protein metadata from UniProt.
 }
 \examples{
 \dontrun{
-fetch_uniprot(c("P36578" "O43324" "Q00796"))
+fetch_uniprot(c("P36578", "O43324", "Q00796"))
 }
 }

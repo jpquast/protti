@@ -45,7 +45,7 @@ A correlation heatmap is created that uses hirachical clustering to determine sa
 \dontrun{
 qc_sample_correlation(
 data,
-sample = r_file_name
+sample = r_file_name,
 grouping = eg_precursor_id,
 intensity = intensity_log2,
 condition = r_condition

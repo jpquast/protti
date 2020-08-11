@@ -19,7 +19,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' fetch_uniprot(c("P36578" "O43324" "Q00796"))
+#' fetch_uniprot(c("P36578", "O43324", "Q00796"))
 #' }
 fetch_uniprot <-
   function (uniprot_ids,
@@ -69,32 +69,32 @@ fetch_uniprot <-
       try_query(query_url)
     })
     colnames(result) <- column_names
-    
+
     # rescue cases in which the used ID is an old ID. The information is retreived for the new ID and then parsed to the old ID.
-    
+
     new <- result %>%
       dplyr::mutate(new = ifelse(stringr::str_detect(.[[2]], pattern = "Merged"), stringr::str_extract_all(.[[2]], pattern = "(?<=into )[A-Z0-9]+", simplify = TRUE), NA)) %>%
       dplyr::distinct(id, new) %>%
       tidyr::drop_na(new)
-    
+
     new_ids <- new$new
-    
+
     if(all.equal(new_ids, logical(0)) == TRUE) {return(result)}
-    
+
     new_id_query <- paste(paste0("id:", new_ids), collapse = "+or+")
     new_query_url <- utils::URLencode(paste0(url, new_id_query, "&format=tab&columns=",
                                              collapsed_columns))
-    
+
     new_result <- try_query(new_query_url)
     colnames(new_result) <- column_names
-    
+
     new_result <- new %>%
       dplyr::left_join(new_result, by = c("new" = "id")) %>%
-      dplyr::select(-new) 
-    
+      dplyr::select(-new)
+
     result <- result %>%
       dplyr::filter(!stringr::str_detect(.[[2]], pattern = "Merged")) %>%
       dplyr::bind_rows(new_result)
-    
+
     result
   }
