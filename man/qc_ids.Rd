@@ -39,7 +39,7 @@ Plots the number of IDs for each sample
 \dontrun{
 qc_ids(
 data,
-sample = r_file_name
+sample = r_file_name,
 grouping = eg_precursor_id,
 condition = r_condition,
 title = "Number of peptide IDs per sample"

@@ -22,7 +22,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' qc_PCA(
+#' qc_pca(
 #' data,
 #' sample = r_file_name,
 #' grouping = eg_precursor_id,
