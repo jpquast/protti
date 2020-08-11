@@ -19,8 +19,8 @@ try_query <-
   {
     for (i in 1:max_tries) {
       result <- tryCatch({
-        if(quote == FALSE) utils::read.delim(url, quote = "", stringsAsFactors = FALSE, fill = FALSE, sep = sep)
-        if(quote == TRUE) utils::read.delim(url, stringsAsFactors = FALSE, fill = FALSE, sep = sep)
+        if(quote == FALSE) {utils::read.delim(url, quote = "", stringsAsFactors = FALSE, fill = FALSE, sep = sep)
+        } else {utils::read.delim(url, stringsAsFactors = FALSE, fill = FALSE, sep = sep)}
       },
       error = function(error) {
         NULL
