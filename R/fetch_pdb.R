@@ -72,7 +72,7 @@ fetch_pdb <-
         pb$tick()}
       id_query <- paste0("pdbids=", paste(x, collapse = ","))
       query_url <- utils::URLencode(paste0(url, id_query, collapsed_columns, "&service=wsfile&format=csv"))
-      try_query(query_url)
+      try_query(query_url, sep = ",", quote = TRUE)
     })
     colnames(result) <- column_names
     pdb_uniprot_mapping_url <- RCurl::getURL("ftp.ebi.ac.uk/pub/databases/msd/sifts/csv/pdb_chain_uniprot.csv")
