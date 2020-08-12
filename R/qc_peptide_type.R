@@ -6,8 +6,8 @@
 #' @param sample the name of the column containing the sample names.
 #' @param peptide the name of the column containing the peptide sequence.
 #' @param pep_type the name of the column containing the peptide type. Can be obtained using the \code{find_peptide} and \code{peptide_type} function together.
-#' @param intensity column containing peptide intensity values (not log2 transformed), required for \code{method = "intensity"}
-#' @param method method used for calculation. \code{method = "intensity"} calculates the peptide type percentage by intensity, whereas \code{method = "count"} calculates the percentage by peptide ID count.
+#' @param intensity column containing peptide intensity values (not log2 transformed), required for \code{method = "intensity"}.
+#' @param method method used for calculation. \code{method = "intensity"} calculates the peptide type percentage by intensity, whereas \code{method = "count"} calculates the percentage by peptide ID count. Default is \code{method = count}.
 #' @param plot a logical indicating whether the result should be plotted.
 #' @param interactive a logical indicating whether the plot should be interactive.
 #'
@@ -28,10 +28,9 @@
 #' peptide = pep_stripped_sequence,
 #' pep_type = pep_type,
 #' intensity = fg_quantity,
-#' method = "intensity",
 #' plot = TRUE)
 #' }
-qc_peptide_type <- function(data, sample, peptide, pep_type, intensity = NULL, method, plot = FALSE, interactive = FALSE)
+qc_peptide_type <- function(data, sample, peptide, pep_type, intensity = NULL, method = "count", plot = FALSE, interactive = FALSE)
   {
   if(method == "count")
   {
