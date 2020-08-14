@@ -4,16 +4,16 @@
 \alias{ttest_protti}
 \title{Perform Welch's t-test}
 \usage{
-ttest_protti(mean1, mean2, stddev1, stddev2, n1, n2)
+ttest_protti(mean1, mean2, sd1, sd2, n1, n2)
 }
 \arguments{
 \item{mean1}{Vector containing the means of group1.}
 
 \item{mean2}{Vector containing the means of group2.}
 
-\item{stddev1}{Vector containing the standard deviations of group1.}
+\item{sd1}{Vector containing the standard deviations of group1.}
 
-\item{stddev2}{Vector containing the standard deviations of group2.}
+\item{sd2}{Vector containing the standard deviations of group2.}
 
 \item{n1}{Vector containing the number of replicates used for the calculation of each mean and standard deviation of group1.}
 
@@ -28,11 +28,11 @@ Performs a Welch's t-test and calculates p-values between two groups.
 \examples{
 \dontrun{
 ttest_protti(
-mean1 = mean_untreated,
-mean2 = mean_treated,
-stddev1 = sd_untreated,
-stddev2 = sd_treated,
-n1 = count_untreated,
-n2 = count_treated)
+mean1 = 10,
+mean2 = 15.5,
+sd1 = 1,
+sd2 = 0.5,
+n1 = 3,
+n2 = 3)
 }
 }
