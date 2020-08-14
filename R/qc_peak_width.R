@@ -2,8 +2,8 @@
 #'
 #' Plots median precursor elution peak width over retention time for each sample.
 #'
-#' @param data A data frame containing at least sample names and protein ID's.
-#' @param sample The column in the data frame containing the sample name.
+#' @param data A data frame containing at least sample names and protein IDs.
+#' @param sample The column in the data frame containing the sample names.
 #' @param retention_time The column in the data frame containing retention times of precursors.
 #' @param peak_width The column in the data frame containing peak width information. It is not required if \code{retention_time_start} and \code{retention_time_end} columns are provided.
 #' @param retention_time_start The column in the data frame containing the start time of the precursor elution peak. It is not required if the \code{peak_width} column is provided.
@@ -45,7 +45,7 @@ qc_peak_width <- function(data, sample, retention_time, peak_width = NULL, reten
   peak_width_plot <- result %>%
     ggplot2::ggplot(ggplot2::aes({{retention_time}}, .data$peak_width)) +
     ggplot2::stat_summary_bin(aes(col = {{sample}}), size = 1, geom = "line", binwidth = 1, fun = median) +
-    ggplot2::labs(title = "Median peak width over retention time", subtitle = "Including decoys, including contaminants", x = "Retention time [min]", y = "Median peak width [min]", color = "Experiment") +
+    ggplot2::labs(title = "Median peak width over retention time", x = "Retention time [min]", y = "Median peak width [min]", color = "Experiment") +
     ggplot2::theme_bw()
 
   if(interactive == FALSE) return(peak_width_plot)

@@ -15,9 +15,9 @@ qc_peak_width(
 )
 }
 \arguments{
-\item{data}{A data frame containing at least sample names and protein ID's.}
+\item{data}{A data frame containing at least sample names and protein IDs.}
 
-\item{sample}{The column in the data frame containing the sample name.}
+\item{sample}{The column in the data frame containing the sample names.}
 
 \item{retention_time}{The column in the data frame containing retention times of precursors.}
 
