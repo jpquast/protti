@@ -17,26 +17,31 @@ assign_missingness(
 )
 }
 \arguments{
-\item{data}{a data frame containing at least the input variables.}
+\item{data}{A data frame containing at least the input variables.}
 
-\item{sample}{the name of the column containing the sample names.}
+\item{sample}{The column in the data data frame containing the sample name.}
 
-\item{condition}{the name of the column containing the conditions.}
+\item{condition}{The column in the data data frame containing the conditions.}
 
-\item{grouping}{the name of the column containing precursor or peptide identifiers.}
+\item{grouping}{The column in the data data frame containing precursor or peptide identifiers.}
 
-\item{intensity}{the name of the column containing intensity values.}
+\item{intensity}{The column in the data data frame containing intensity values.}
 
-\item{noise}{optional, the name of the column containing noise values for imputation. Only needed if noise imputation is performed.}
+\item{noise}{optional, the column in the data data frame containing noise values for imputation. Only needed if noise imputation is performed.}
 
-\item{ref_condition}{the condition that is used as a reference for missingness determination. By default \code{ref_condition = "control"}.}
+\item{ref_condition}{The condition that is used as a reference for missingness determination. By default \code{ref_condition = "control"}.}
 
-\item{completeness_MAR}{the minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7. It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each condition to be considered as MAR. This number is always at least 1.}
+\item{completeness_MAR}{The minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7. 
+It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each 
+condition to be considered as MAR. This number is always at least 1.}
 
-\item{completeness_MNAR}{the maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.25. It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one condition to be considered as MNAR when the other condition is complete.}
+\item{completeness_MNAR}{The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.25. 
+It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one 
+condition to be considered as MNAR when the other condition is complete.}
 }
 \value{
-A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison name for the specific reference/treatment pair. The \code{missingness} column reports the type of missingness. 
+A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison 
+name for the specific treatment/reference pair. The \code{missingness} column reports the type of missingness. 
 \itemize{
 \item{"complete": }{No missing values for every replicate of this reference/treatment pair for the specific grouping variable.}
 \item{"MNAR": }{Missing not at random. All replicates of either the reference or treatment condition have missing values for the specific grouping variable.}
