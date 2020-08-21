@@ -15,7 +15,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' qc_log2_distribution(
+#' qc_log2_intensity_distribution(
 #' data,
 #' sample = r_file_name,
 #' grouping = pep_stripped_sequence,
@@ -27,7 +27,7 @@ qc_log2_intensity_distribution <-
     result <- data %>%
       dplyr::distinct({{sample}}, {{grouping}}, {{log2_intensity}}) %>%
       dplyr::filter(!is.na({{log2_intensity}}))
-    
+
     plot <- result %>%
       ggplot2::ggplot(aes(x = {{log2_intensity}})) +
       geom_histogram(binwidth = 0.5, color = "black", fill = "cornflowerblue") +

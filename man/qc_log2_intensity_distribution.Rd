@@ -23,7 +23,7 @@ Plots the overall distribution of all peptide intensities
 }
 \examples{
 \dontrun{
-qc_log2_distribution(
+qc_log2_intensity_distribution(
 data,
 sample = r_file_name,
 grouping = pep_stripped_sequence,

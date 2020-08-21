@@ -4,14 +4,18 @@
 \alias{try_query}
 \title{Query from url}
 \usage{
-try_query(url, max_tries = 5, silent = TRUE)
+try_query(url, max_tries = 5, silent = TRUE, sep = "\\t", quote = FALSE)
 }
 \arguments{
-\item{url}{Url of website that contains the table that should be downloaded.}
+\item{url}{The url of the website that contains the table that should be downloaded.}
 
 \item{max_tries}{Number of times the function tries to download the data in case an error occures.}
 
-\item{silent}{logical, if TRUE no individual messages are printed after each try that failed.}
+\item{silent}{Logical, if TRUE no individual messages are printed after each try that failed.}
+
+\item{sep}{The separator of the table at the target url. Default is tab.}
+
+\item{quote}{Logical, determines if quoting in character vectors should be considered or not. If TRUE, " and ' are escaped with \.}
 }
 \value{
 A data frame that contains the table from the url.

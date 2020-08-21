@@ -9,6 +9,8 @@ qc_peptide_type(
   sample,
   peptide,
   pep_type,
+  intensity = NULL,
+  method = "count",
   plot = FALSE,
   interactive = FALSE
 )
@@ -21,6 +23,10 @@ qc_peptide_type(
 \item{peptide}{the name of the column containing the peptide sequence.}
 
 \item{pep_type}{the name of the column containing the peptide type. Can be obtained using the \code{find_peptide} and \code{peptide_type} function together.}
+
+\item{intensity}{column containing peptide intensity values (not log2 transformed), required for \code{method = "intensity"}.}
+
+\item{method}{method used for calculation. \code{method = "intensity"} calculates the peptide type percentage by intensity, whereas \code{method = "count"} calculates the percentage by peptide ID count. Default is \code{method = count}.}
 
 \item{plot}{a logical indicating whether the result should be plotted.}
 
@@ -39,6 +45,7 @@ data,
 sample = r_file_name,
 peptide = pep_stripped_sequence,
 pep_type = pep_type,
+intensity = fg_quantity,
 plot = TRUE)
 }
 }
