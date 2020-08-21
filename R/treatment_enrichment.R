@@ -1,3 +1,38 @@
+#' Check treatment enrichment
+#'
+#' Check for an enrichment of proteins interacting with the treatment in significantly changing proteins as compared to all proteins.
+#'
+#' @param data A dataframe contains at least the input variables.
+#' @param protein_id The name of the column containing the protein accession numbers.
+#' @param is_significant The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide. The input data frame
+#' may contain peptide level information with significance information. The function is able to extract protein level information from this. 
+#' @param binds_treatment The name of the column containing a logical indicating if the corresponding protein binds to the treatment. This information can be obtained
+#' from different databases, e.g Uniprot. 
+#' @param treatment_name A character vector of the treatment name. It will be included in the plot tile.
+#' @param plot A logical indicating whether the result should be plotted or returned as a table.
+#'
+#' @return A bar plot displaying the percentage of all detect proteins and all significant proteins that bind to the treatment. A Fischer's exact test is performed to
+#' calculate the significance of the enrichment in significant proteins compared to all proteins. The result is reported as a p-value. If \code{plot = FALSE} a contingency
+#' table in long format is returned.
+#'
+#' @import dplyr
+#' @import ggplot2
+#' @importFrom tidyr pivot_wider pivot_longer
+#' @importFrom rlang .data as_name enquo ensym !!
+#' @importFrom tibble column_to_rownames
+#' @importFrom magrittr %>%
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' treatment_enrichment(
+#' data,
+#' protein_id = pg_protein_accessions,
+#' is_significant = signficiant,
+#' binds_treatment = binds_metals,
+#' treatment = "Metals"
+#' )
+#' }
 treatment_enrichment <- function(data, protein_id, is_significant, binds_treatment, treatment_name, plot = TRUE){
   data <- data %>%
     dplyr::distinct({{protein_id}}, {{is_significant}}, {{binds_treatment}}) %>%
@@ -20,7 +55,7 @@ treatment_enrichment <- function(data, protein_id, is_significant, binds_treatme
   
   if(plot == FALSE) return(cont_table)
   
-  plot <- cont_table %>%
+  enrichment_plot <- cont_table %>%
     dplyr::mutate(total = sum(.data$n)) %>%
     dplyr::mutate(
       name = dplyr::case_when(
@@ -43,10 +78,12 @@ treatment_enrichment <- function(data, protein_id, is_significant, binds_treatme
        cols = c(.data$`All detected proteins`, .data$`Significant proteins`),
        names_to = "name",
        values_to = "value"
-     ) %>%
+     )%>%
+    dplyr::mutate(count = ifelse(.data$name == "All detected proteins", .data$total_interactor, .data$sig_interactor)) %>%
     ggplot2::ggplot(ggplot2::aes(.data$name, .data$value)) +
-    ggplot2::geom_col(fill = "cornflowerblue", col = "black", size = 1) +
+    ggplot2::geom_col(fill = "cornflowerblue", col = "black", size = 1.2) +
     ggplot2::labs(title = paste0("Proteins interacting with ", treatment_name, " (p-value: ", round(cont_table$pval, digits = 3), ")"), x = "", y = paste("Interact with", treatment_name, "[%]")) +
+    ggplot2::geom_text(aes(label = paste("n =", count)), position = position_stack(vjust = 0.5), size = 8) +
     ggplot2::theme_bw() +
     ggplot2::theme(
       plot.title = ggplot2::element_text(
@@ -62,5 +99,5 @@ treatment_enrichment <- function(data, protein_id, is_significant, binds_treatme
         size = 15
       )
     )
-  if(plot == TRUE) return(plot)
+  if(plot == TRUE) return(enrichment_plot)
 }
