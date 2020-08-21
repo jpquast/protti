@@ -1,6 +1,6 @@
 #' Calculate differential abundance between conditions
 #'
-#' Performs differential abundance calculations and statistical testing on data frames with protein, peptide or precursor data. Different methods for statistical testin are available.
+#' Performs differential abundance calculations and statistical testing on data frames with protein, peptide or precursor data. Different methods for statistical testing are available.
 #'
 #' @param data A data frame containing at least the input variables that are required for the selected method. Ideally the output of \code{assign_missingness} or \code{impute} is used.
 #' @param sample The column in the data frame containing the sample name. Is not required if \code{method = "t-test_mean_sd"}.
@@ -15,7 +15,7 @@
 #' @param sd The column in the data frame containing standard deviations for two conditions. Is only required if \code{method = "t-test_mean_sd"}.
 #' @param n_samples The column in the data frame containing the number of samples per condition for two conditions. Is only required if \code{method = "t-test_mean_sd"}.
 #' @param ref_condition The condition that is used as a reference for differential abundance calculation.
-#' @param filter_NA_missingness A logical, default is \code{TRUE}. For all methods except \code{"t-test_mean_sd"} missingness information provided. 
+#' @param filter_NA_missingness A logical, default is \code{TRUE}. For all methods except \code{"t-test_mean_sd"} missingness information has to be provided. 
 #' If a reference/treatment pair has too few samples to be considered robust, it is annotated with \code{NA} as missingness. If this argument 
 #' is \code{TRUE}, these reference/treatment pairs are filtered out. 
 #' @param method A character vector, specifies the method used for statistical testing. Methods include Welch test ("\code{t-test}"), a Welch test on means, 
@@ -39,7 +39,7 @@
 #' \item{"moderated_t-test": }{\code{CI_2.5} and \code{CI_97.5} give the 2.5% and 97.5% confidence interval borders for the differential abundance. \code{avg_abundance} 
 #' contains average abundances for treatment/reference pairs (mean of the two group means). \code{t_statistic} contains the t_statistic for the t-test. \code{B} The 
 #' B-statistic is the log-odds that the protein, peptide or precursor (depending on \code{grouping}) has a differential abundance between the two groups. Suppose B=1.5. 
-#' The odds of differential abundance is exp(1.5)=4.48, i.e, about four and a half to one. The probability that there is a differentail abundance is 4.48/(1+4.48)=0.82, 
+#' The odds of differential abundance is exp(1.5)=4.48, i.e, about four and a half to one. The probability that there is a differential abundance is 4.48/(1+4.48)=0.82, 
 #' i.e., the probability is about 82% that this group is differentially abundant. A B-statistic of zero corresponds to a 50-50 chance that the group is differentially 
 #' abundant.\code{n_obs} contains the number of observations for the specific protein, peptide or precursor (depending on the \code{grouping} variable) and the 
 #' associated treatment/reference pair.}
