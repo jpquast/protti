@@ -25,18 +25,18 @@ extract_metal_binders(
 
 \item{chebi_catalytic_activity}{The name of the column containing ChEBI catalytic activity information from UniProt.}
 
-\item{chebi_data}{Optinal, a data frame that can be manually obtained with \code{fetch_chebi()}. If not provided it will be fetched within the function. 
-If the funciton is run many times it is recomended to provide the data frame to save time.}
+\item{chebi_data}{Optional, a data frame that can be manually obtained with \code{fetch_chebi()}. If not provided it will be fetched within the function. 
+If the function is run many times it is recommended to provide the data frame to save time.}
 
-\item{chebi_relation_data}{Optinal, a data frame that can be manually obtained with \code{fetch_chebi(relation = TRUE)}. If not provided it will be fetched within the function. 
-If the funciton is run many times it is recomended to provide the data frame to save time.}
+\item{chebi_relation_data}{Optional, a data frame that can be manually obtained with \code{fetch_chebi(relation = TRUE)}. If not provided it will be fetched within the function. 
+If the function is run many times it is recommended to provide the data frame to save time.}
 }
 \value{
 A data frame containing information on protein metal binding state. It contains the following types of columns (the naming might vary based on the input): 
 \itemize{
 \item{\code{protein_id}: }{UniProt protein identifier.}
 \item{\code{source}: }{The source of the information, can be either \code{feature_metal_binding}, \code{chebi_cofactor} or \code{chebi_catalytic_activity}.}
-\item{\code{ids}: }{ChEBI ID assigned to protein and binding site based on \code{metal_type} column name. These are general ID's that have sub-ID's. Thus, they generally describe the type of metal ion bound to the protein.}
+\item{\code{ids}: }{ChEBI ID assigned to protein and binding site based on \code{metal_type} column name. These are general IDs that have sub-IDs. Thus, they generally describe the type of metal ion bound to the protein.}
 \item{\code{metal_position}: }{Amino acid position within the protein that is involved in metal binding.}
 \item{\code{metal_type}: }{Metal name extracted from \code{feature_metal_binding} information. This is the name that is used as a search pattern in order to assign a ChEBI ID with the \code{split_metal_name} helper function within this function.}
 \item{\code{sub_ids}: }{ChEBI ID that is a sub-ID (incoming) of the ID in the \code{ids} column. Thus, they more specifically describe the potential nature of the metal ion.}
@@ -46,8 +46,8 @@ A data frame containing information on protein metal binding state. It contains 
 }
 }
 \description{
-Information of metal binding proteins is extracted from UniProt data retreived with \code{fetch_uniprot}. ChEBI ID's, potential
-sub-ID's for metal cations, binding site locations in the protein and sub-ID evidence level (based on metal presence as cofactor) are extracted.
+Information of metal binding proteins is extracted from UniProt data retrieved with \code{fetch_uniprot}. ChEBI IDs, potential
+sub-IDs for metal cations, binding site locations in the protein and sub-ID evidence level (based on metal presence as cofactor) are extracted.
 }
 \examples{
 \dontrun{

@@ -13,7 +13,7 @@ split_metal_name(metal_names)
 A character vector with metal name search patterns.
 }
 \description{
-Converts a vector of metal names extracted from the \code{feature_metal_binding} column obtained with \code{fetch_uniprot} to a pattern that can be used to search for corresponding ChEBI ID's. This is used as a helper function for other functions.
+Converts a vector of metal names extracted from the \code{feature_metal_binding} column obtained with \code{fetch_uniprot} to a pattern that can be used to search for corresponding ChEBI IDs. This is used as a helper function for other functions.
 }
 \examples{
 \dontrun{

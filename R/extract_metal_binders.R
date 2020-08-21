@@ -1,23 +1,23 @@
 #' Extract metal-bind protein information from UniProt 
 #'
-#' Information of metal binding proteins is extracted from UniProt data retreived with \code{fetch_uniprot}. ChEBI ID's, potential
-#' sub-ID's for metal cations, binding site locations in the protein and sub-ID evidence level (based on metal presence as cofactor) are extracted.
+#' Information of metal binding proteins is extracted from UniProt data retrieved with \code{fetch_uniprot}. ChEBI IDs, potential
+#' sub-IDs for metal cations, binding site locations in the protein and sub-ID evidence level (based on metal presence as cofactor) are extracted.
 #'
 #' @param data A data frame containing at least the input columns.
 #' @param protein_id The name of the column containing protein identifiers.
 #' @param feature_metal_binding The name of the column containing feature metal binding information from UniProt.
 #' @param chebi_cofactor The name of the column containing ChEBI cofactor information from UniProt.
 #' @param chebi_catalytic_activity The name of the column containing ChEBI catalytic activity information from UniProt.
-#' @param chebi_data Optinal, a data frame that can be manually obtained with \code{fetch_chebi()}. If not provided it will be fetched within the function. 
-#' If the funciton is run many times it is recomended to provide the data frame to save time.
-#' @param chebi_relation_data Optinal, a data frame that can be manually obtained with \code{fetch_chebi(relation = TRUE)}. If not provided it will be fetched within the function. 
-#' If the funciton is run many times it is recomended to provide the data frame to save time.
+#' @param chebi_data Optional, a data frame that can be manually obtained with \code{fetch_chebi()}. If not provided it will be fetched within the function. 
+#' If the function is run many times it is recommended to provide the data frame to save time.
+#' @param chebi_relation_data Optional, a data frame that can be manually obtained with \code{fetch_chebi(relation = TRUE)}. If not provided it will be fetched within the function. 
+#' If the function is run many times it is recommended to provide the data frame to save time.
 #' 
 #' @return A data frame containing information on protein metal binding state. It contains the following types of columns (the naming might vary based on the input): 
 #' \itemize{
 #' \item{\code{protein_id}: }{UniProt protein identifier.}
 #' \item{\code{source}: }{The source of the information, can be either \code{feature_metal_binding}, \code{chebi_cofactor} or \code{chebi_catalytic_activity}.}
-#' \item{\code{ids}: }{ChEBI ID assigned to protein and binding site based on \code{metal_type} column name. These are general ID's that have sub-ID's. Thus, they generally describe the type of metal ion bound to the protein.}
+#' \item{\code{ids}: }{ChEBI ID assigned to protein and binding site based on \code{metal_type} column name. These are general IDs that have sub-IDs. Thus, they generally describe the type of metal ion bound to the protein.}
 #' \item{\code{metal_position}: }{Amino acid position within the protein that is involved in metal binding.}
 #' \item{\code{metal_type}: }{Metal name extracted from \code{feature_metal_binding} information. This is the name that is used as a search pattern in order to assign a ChEBI ID with the \code{split_metal_name} helper function within this function.}
 #' \item{\code{sub_ids}: }{ChEBI ID that is a sub-ID (incoming) of the ID in the \code{ids} column. Thus, they more specifically describe the potential nature of the metal ion.}
@@ -58,7 +58,7 @@ extract_metal_binders <-
     } else {
       chebi_relation <- chebi_relation_data
     }
-    # Subset chebi data to sub id's of "metal cation" and "iron sulfur cluster"
+    # Subset chebi data to sub IDs of "metal cation" and "iron sulfur cluster"
     metal_cation <-
       find_all_subs(chebi_relation, id = "25213", type = "is_a")[[1]]
     iron_sulfur_cluster <-
@@ -129,7 +129,7 @@ extract_metal_binders <-
       dplyr::mutate(null = purrr::map(.data$sub_ids, ~is.null(.))) %>%
       dplyr::mutate(sub_ids = ifelse((source == rlang::as_name(rlang::enquo(chebi_cofactor)) | source == rlang::as_name(rlang::enquo(chebi_catalytic_activity))) & .data$null == TRUE, as.integer(.data$ids), .data$sub_ids)) %>%
       dplyr::select(-.data$null) %>%
-      # unnest removes all NULL values in sub_ids. This might cause some ID's without sub ID's to get lost.
+      # unnest removes all NULL values in sub_ids. This might cause some IDs without sub IDs to get lost.
       tidyr::unnest(.data$sub_ids) %>%
       dplyr::left_join(chebi_names, by = c("ids" = "id")) %>%
       dplyr::rename(main_id_name = .data$name) %>%
