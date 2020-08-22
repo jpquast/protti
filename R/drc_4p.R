@@ -9,7 +9,7 @@
 #'
 #' @return An object of class \code{drc}. If no fit was performed a character vector with content "no_fit". 
 #' @importFrom drc drm
-#' @importFrom drc LL.4
+#' @importFrom drc LL.4 drmc
 #'
 #' @examples
 #' \dontrun{
@@ -25,7 +25,8 @@ drc_4p <- function(data, response, dose, pb = NULL) {
     suppressWarnings(drc::drm(
       stats::as.formula(paste(ensym(response), "~", ensym(dose))),
       data = data,
-      fct = drc::LL.4(names = c("hill", "min_value", "max_value", "ec_50"))
+      fct = drc::LL.4(names = c("hill", "min_value", "max_value", "ec_50")),
+      control = drc::drmc(otrace = TRUE)
     ))
   }, error = function(error) {
     c("no_fit")
