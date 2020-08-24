@@ -10,6 +10,7 @@ impute(
   grouping,
   intensity,
   condition,
+  comparison,
   missingness,
   noise = NULL,
   method = c("ludovic", "noise"),
@@ -26,6 +27,8 @@ impute(
 \item{intensity}{the name of the column containing intensity values. Note: The input intensities should be log2 transformed.}
 
 \item{condition}{the name of the column containing the conditions.}
+
+\item{comparison}{the name of the column containing the comparisons of treatment/reference pairs. This is an output of the \code{assign_missingnes} function.}
 
 \item{missingness}{the name of the column that contains the missingness type of the data determines how values for imputation are sampled. This should at least contain \code{"MAR"} or \code{"MNAR"}.}
 
