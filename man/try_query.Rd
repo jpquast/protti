@@ -4,7 +4,14 @@
 \alias{try_query}
 \title{Query from url}
 \usage{
-try_query(url, max_tries = 5, silent = TRUE, sep = "\\t", quote = FALSE)
+try_query(
+  url,
+  max_tries = 5,
+  silent = TRUE,
+  header = TRUE,
+  sep = "\\t",
+  quote = FALSE
+)
 }
 \arguments{
 \item{url}{The url of the website that contains the table that should be downloaded.}
@@ -12,6 +19,8 @@ try_query(url, max_tries = 5, silent = TRUE, sep = "\\t", quote = FALSE)
 \item{max_tries}{Number of times the function tries to download the data in case an error occures.}
 
 \item{silent}{Logical, if TRUE no individual messages are printed after each try that failed.}
+
+\item{header}{Logical, indicates if the first row of the data frame contains variable names.}
 
 \item{sep}{The separator of the table at the target url. Default is tab.}
 
@@ -21,7 +30,7 @@ try_query(url, max_tries = 5, silent = TRUE, sep = "\\t", quote = FALSE)
 A data frame that contains the table from the url.
 }
 \description{
-Downloads data from url using the \code{fread} function from the \code{data.table} package. If an error occures during the query (for example due to no connection) the function waits 3 seconds and tries again.
+Downloads data from url. If an error occures during the query (for example due to no connection) the function waits 3 seconds and tries again.
 }
 \examples{
 \dontrun{
