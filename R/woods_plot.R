@@ -20,7 +20,7 @@
 #' @import ggplot2
 #' @importFrom magrittr %>%
 #' @importFrom dplyr pull
-#' @importFrom rlang new_formula enquo 
+#' @importFrom rlang new_formula enquo as_name
 #' @export
 #'
 #' @examples
@@ -38,6 +38,17 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
   if(!missing(protein_id)){
     if(length(unique(dplyr::pull(data, {{protein_id}}))) > 1){
       stop("If data contains information of multiple proteins use the facet argument, not the protein_id argument")
+    }
+  }
+  if(!missing(facet)){
+    if(length(unique(dplyr::pull(data, {{facet}}))) > 20){
+      n_proteins <- length(unique(dplyr::pull(data, {{facet}})))
+      twenty_proteins <- unique(dplyr::pull(data, {{facet}}))[1:20]
+      data <- data %>%
+        filter({{facet}} %in% twenty_proteins)
+      warning(paste("Only the first 20 proteins from", rlang::as_name(enquo(facet)), 
+                    "have been used for plotting since there are", n_proteins, 
+                    "proteins. Consider mapping over subsetted datasets." ))
     }
   }
   data %>%
