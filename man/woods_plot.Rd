@@ -10,6 +10,7 @@ woods_plot(
   start_position,
   end_position,
   protein_length,
+  coverage = NULL,
   protein_id = NULL,
   facet = NULL,
   coloring = NULL,
@@ -20,13 +21,15 @@ woods_plot(
 \item{data}{Data frame containing differential abundance, start and end peptide or precursor positions, protein 
 length and optionally a variable based on which peptides or precursors should be colored.}
 
-\item{fold_change}{Column in the data data frame containing log2 fold changes.}
+\item{fold_change}{Column in the data frame containing log2 fold changes.}
 
 \item{start_position}{Column in the data frame containing the start positions for each peptide or precursor.}
 
 \item{end_position}{Column in the data frame containing the end positions for each peptide or precursor.}
 
 \item{protein_length}{Column in the data frame containing the length of the protein.}
+
+\item{coverage}{Optional, column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.}
 
 \item{protein_id}{Optional argument, column in the data frame containing protein identifiers. Required if only one protein 
 should be plotted and the data frame contains only information for this protein.}
