@@ -7,6 +7,7 @@
 #' @param grouping the name of the column containing precursor or peptide identifiers.
 #' @param intensity the name of the column containing intensity values. Note: The input intensities should be log2 transformed.
 #' @param condition the name of the column containing the conditions.
+#' @param comparison the name of the column containing the comparisons of treatment/reference pairs. This is an output of the \code{assign_missingnes} function.
 #' @param missingness the name of the column that contains the missingness type of the data determines how values for imputation are sampled. This should at least contain \code{"MAR"} or \code{"MNAR"}. 
 #' @param noise the name of the column that contains the noise value for the precursor/peptide. Is only required if \code{method = "noise"}.
 #' @param method the method to be used for imputation. For \code{method = "ludovic"}, MNAR missingness is sampled around a value that is three lower (log2) than the lowest intensity value recorded for the precursor/peptide. For \code{method = "noise"}, MNAR missingness is sampled around the noise value for the precursor/peptide.
@@ -35,9 +36,9 @@
 #' method = "ludovic"
 #' )
 #' }
-impute <- function(data, sample, grouping, intensity, condition, missingness, noise = NULL, method = c("ludovic", "noise"), skip_log2_transform_error = FALSE){
+impute <- function(data, sample, grouping, intensity, condition, comparison, missingness, noise = NULL, method = c("ludovic", "noise"), skip_log2_transform_error = FALSE){
   data %>%
-    dplyr::distinct({{sample}}, {{grouping}}, {{intensity}}, {{condition}}, {{missingness}}, {{noise}}) %>%
+    dplyr::distinct({{sample}}, {{grouping}}, {{intensity}}, {{condition}}, {{comparison}}, {{missingness}}, {{noise}}) %>%
     dplyr::group_by({{grouping}}) %>%
     dplyr::mutate(min = min({{intensity}}, na.rm = TRUE)) %>%
     dplyr::group_by({{grouping}}, {{condition}}) %>%

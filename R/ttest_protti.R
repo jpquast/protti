@@ -30,6 +30,6 @@ ttest_protti <- function(mean1, mean2, sd1, sd2, n1, n2) {
   #t statistic calculation
   t <- (mean1 - mean2)/std_error
   result <- data.frame(cbind(mean1 - mean2, std_error, t, 2*pt(-abs(t),df)))
-  colnames(result) <- c("difference_of_means", "std_error", "t_statistic", "p_value")
+  colnames(result) <- c("diff", "std_error", "t_statistic", "pval")
   return(result)
 }
