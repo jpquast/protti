@@ -8,10 +8,10 @@
 #' may contain peptide level information with significance information. The function is able to extract protein level information from this. 
 #' @param binds_treatment The name of the column containing a logical indicating if the corresponding protein binds to the treatment. This information can be obtained
 #' from different databases, e.g Uniprot. 
-#' @param treatment_name A character vector of the treatment name. It will be included in the plot tile.
+#' @param treatment_name A character vector of the treatment name. It will be included in the plot title.
 #' @param plot A logical indicating whether the result should be plotted or returned as a table.
 #'
-#' @return A bar plot displaying the percentage of all detect proteins and all significant proteins that bind to the treatment. A Fischer's exact test is performed to
+#' @return A bar plot displaying the percentage of all detect proteins and all significant proteins that bind to the treatment. A Fisher's exact test is performed to
 #' calculate the significance of the enrichment in significant proteins compared to all proteins. The result is reported as a p-value. If \code{plot = FALSE} a contingency
 #' table in long format is returned.
 #'
@@ -28,7 +28,7 @@
 #' treatment_enrichment(
 #' data,
 #' protein_id = pg_protein_accessions,
-#' is_significant = signficiant,
+#' is_significant = significant,
 #' binds_treatment = binds_metals,
 #' treatment = "Metals"
 #' )
