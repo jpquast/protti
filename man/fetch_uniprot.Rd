@@ -6,11 +6,11 @@
 \usage{
 fetch_uniprot(
   uniprot_ids,
-  columns = c("protein names", "genes", "go(molecular function)", "interactor",
-    "feature(ACTIVE SITE)", "feature(BINDING SITE)", "feature(METAL BINDING)",
-    "chebi(Cofactor)", "chebi(Catalytic activity)", "feature(MODIFIED RESIDUE)",
-    "feature(LIPIDATION)", "feature(GLYCOSYLATION)", "database(PDB)", "length",
-    "sequence"),
+  columns = c("protein names", "genes", "database(GeneID)", "go(molecular function)",
+    "interactor", "feature(ACTIVE SITE)", "feature(BINDING SITE)",
+    "feature(METAL BINDING)", "chebi(Cofactor)", "chebi(Catalytic activity)",
+    "feature(MODIFIED RESIDUE)", "feature(LIPIDATION)", "feature(GLYCOSYLATION)",
+    "database(PDB)", "length", "sequence"),
   batchsize = 400,
   show_progress = TRUE
 )

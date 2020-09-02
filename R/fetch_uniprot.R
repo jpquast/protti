@@ -26,6 +26,7 @@ fetch_uniprot <-
             columns = c(
               "protein names",
               "genes",
+              "database(GeneID)",
               "go(molecular function)",
               "interactor",
               "feature(ACTIVE SITE)",
