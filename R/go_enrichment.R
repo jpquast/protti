@@ -93,6 +93,7 @@ go_enrichment <- function(data, protein_id, is_significant, go_annotations, plot
     ggplot2::ggplot(ggplot2::aes(stats::reorder(.data$term, .data$neg_log_qval), .data$neg_log_qval, fill = .data$direction)) +
     ggplot2::geom_col(col = "black", size = 1.5) +
     ggplot2::scale_fill_manual(values = c("#56B4E9", "#E76145")) +
+    ggplot2::scale_y_continuous(breaks = seq(0, 100, 2)) +
     ggplot2::coord_flip() +
     ggplot2::labs(title = "Gene ontology enrichment of significant proteins", y = "-log10 adjusted p-value") +
     ggplot2::theme_bw() +
