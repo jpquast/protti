@@ -3,7 +3,7 @@
 #' Creates a Wood's plot that plots log2 fold change of peptides or precursors along the protein sequence.
 #'
 #' @param data Data frame containing differential abundance, start and end peptide or precursor positions, protein 
-#' length and optionally a variable based on which peptides or precursors should be colored. 
+#' length and optionally a variable based on which peptides or precursors should be coloured. 
 #' @param fold_change Column in the data frame containing log2 fold changes.
 #' @param start_position Column in the data frame containing the start positions for each peptide or precursor.
 #' @param end_position Column in the data frame containing the end positions for each peptide or precursor.
@@ -13,11 +13,11 @@
 #' should be plotted and the data frame contains only information for this protein.
 #' @param facet Optional argument, column in the data frame containing information by which data should be faceted. This can be 
 #' protein identifiers. 
-#' @param coloring Optional argument, column in the data frame containing information by which peptide or precursors should
-#' be colored.
-#' @param fold_change_cutoff Optional argument specifying the fold change cutoff used for assessing whether changes are significant. The default value is 2.
+#' @param colouring Optional argument, column in the data frame containing information by which peptide or precursors should
+#' be coloured.
+#' @param fold_change_cutoff Optional argument specifying the log2 fold change cutoff used for assessing whether changes are significant. The default value is 2.
 #'
-#' @return A Wood's plot is returned.
+#' @return A Wood's plot is returned. Plotting peptide or precursor fold changes accross protein sequence.
 #' @import ggplot2
 #' @importFrom magrittr %>%
 #' @importFrom dplyr pull mutate filter
@@ -31,11 +31,11 @@
 #' start_position = start,
 #' end_position = end,
 #' protein_length = length,
-#' coloring = pep_type,
+#' colouring = pep_type,
 #' facet = pg_protein_accessions
 #')
 #' }
-woods_plot <- function(data, fold_change, start_position, end_position, protein_length, coverage = NULL, protein_id = NULL, facet = NULL, coloring = NULL, fold_change_cutoff = 2){
+woods_plot <- function(data, fold_change, start_position, end_position, protein_length, coverage = NULL, protein_id = NULL, facet = NULL, colouring = NULL, fold_change_cutoff = 2){
   # Check if there are more than one protein even though protein_id was specified.
   if(!missing(protein_id)){
     if(length(unique(dplyr::pull(data, {{protein_id}}))) > 1){
@@ -78,7 +78,7 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
       xmax= {{end_position}}, 
       ymin = {{fold_change}} - 0.5, 
       ymax = {{fold_change}} + 0.5,  
-      fill = {{coloring}}), 
+      fill = {{colouring}}), 
       col = "black", 
       size = 0.7
       ) +
@@ -96,7 +96,7 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
     ggplot2::scale_x_continuous(limits = NULL, expand = c(0, 0)) +
     ggplot2::labs(
       x = "Protein Sequence", 
-      y = "log2 Fold change", 
+      y = "log2(fold change)", 
       title = {if(!missing(protein_id)) unique(dplyr::pull(data, {{protein_id}}))}) +
     {if(!missing(facet)) ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet)), scales = "free", ncol = 4)} +
     ggplot2::guides(size = FALSE) +

@@ -13,13 +13,13 @@ woods_plot(
   coverage = NULL,
   protein_id = NULL,
   facet = NULL,
-  coloring = NULL,
+  colouring = NULL,
   fold_change_cutoff = 2
 )
 }
 \arguments{
 \item{data}{Data frame containing differential abundance, start and end peptide or precursor positions, protein 
-length and optionally a variable based on which peptides or precursors should be colored.}
+length and optionally a variable based on which peptides or precursors should be coloured.}
 
 \item{fold_change}{Column in the data frame containing log2 fold changes.}
 
@@ -37,13 +37,13 @@ should be plotted and the data frame contains only information for this protein.
 \item{facet}{Optional argument, column in the data frame containing information by which data should be faceted. This can be 
 protein identifiers.}
 
-\item{coloring}{Optional argument, column in the data frame containing information by which peptide or precursors should
-be colored.}
+\item{colouring}{Optional argument, column in the data frame containing information by which peptide or precursors should
+be coloured.}
 
-\item{fold_change_cutoff}{Optional argument specifying the fold change cutoff used for assessing whether changes are significant. The default value is 2.}
+\item{fold_change_cutoff}{Optional argument specifying the log2 fold change cutoff used for assessing whether changes are significant. The default value is 2.}
 }
 \value{
-A Wood's plot is returned.
+A Wood's plot is returned. Plotting peptide or precursor fold changes accross protein sequence.
 }
 \description{
 Creates a Wood's plot that plots log2 fold change of peptides or precursors along the protein sequence.
@@ -55,7 +55,7 @@ fold_change = diff,
 start_position = start,
 end_position = end,
 protein_length = length,
-coloring = pep_type,
+colouring = pep_type,
 facet = pg_protein_accessions
 )
 }
