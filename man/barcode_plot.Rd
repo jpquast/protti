@@ -40,7 +40,7 @@ should be plotted and the data frame contains only information for this protein.
 protein identifiers. Only 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a 
 subsetted data frame should be created.}
 
-\item{fold_change_cutoff}{Optional argument specifying the fold change cutoff used for assessing whether changes are significant. The default value is 2.}
+\item{fold_change_cutoff}{Optional argument specifying the log2 fold change cutoff used for assessing whether changes are significant. The default value is 2.}
 }
 \value{
 A barcode plot is returned.

@@ -16,7 +16,7 @@
 #' @param facet Optional argument, column in the data frame containing information by which data should be faceted. This can be 
 #' protein identifiers. Only 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a 
 #' subsetted data frame should be created.
-#' @param fold_change_cutoff Optional argument specifying the fold change cutoff used for assessing whether changes are significant. The default value is 2.
+#' @param fold_change_cutoff Optional argument specifying the log2 fold change cutoff used for assessing whether changes are significant. The default value is 2.
 #' 
 #' @return A barcode plot is returned.
 #' @import dplyr
@@ -38,7 +38,7 @@
 #' }
 barcode_plot <- function(data, start_position, end_position, protein_length, coverage = NULL, fold_change = NULL, coloring = NULL, protein_id = NULL, facet = NULL, fold_change_cutoff = 2)
 {
-  # Check if there are more than one protein even though protein_id was specified.
+  # Check if there is more than one protein even though protein_id was specified.
   if(!missing(protein_id)){
     if(length(unique(dplyr::pull(data, {{protein_id}}))) > 1){
       stop("If data contains information of multiple proteins use the facet argument, not the protein_id argument")
