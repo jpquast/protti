@@ -5,7 +5,7 @@
 #' @param data A data frame that contains at least the input variables.
 #' @param sample The name of the column containing the sample name.
 #' @param protein_id The name of the column containing the protein accession numbers.
-#' @param precursor  The name of the column containing precursors. 
+#' @param precursor The name of the column containing precursors. 
 #' @param intensity The name of the column containing log2 transformed precursor intensities. 
 #' @param method A character vector specifying with which method protein quantities should be calculated. Possible options include \code{"sum"},
 #' which takes the sum of all precursor intensities as the protein abundance. Another option is \code{"iq"}, which performs protein 
