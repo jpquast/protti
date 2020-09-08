@@ -11,8 +11,8 @@ Authors@R:
            role = c("aut"),
            email = "dschuster@ethz.ch"))
 Description: This package provides useful functions for proteomics data analysis. It can be used for DDA, DIA and SRM data. Both limited proteolysis and regular proteomics experiments can be analysed.
-License: GPL-2
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: rlang, dplyr, stringr, magrittr, data.table, janitor, progress, purrr, RCurl, tidyr, ggplot2, forcats, tibble, drc, plotly, viridis, dendextend, seriation, pheatmap, heatmaply, ggrepel, igraph, stringi, limma, proDA, jsonlite
+Imports: rlang, dplyr, stringr, magrittr, data.table, janitor, progress, purrr, RCurl, tidyr, ggplot2, forcats, tibble, drc, plotly, viridis, dendextend, seriation, pheatmap, heatmaply, ggrepel, igraph, stringi, limma, proDA, iq, jsonlite
 RoxygenNote: 7.1.1
