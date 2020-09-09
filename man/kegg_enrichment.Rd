@@ -28,7 +28,7 @@ The input data frame may contain peptide level information with significance inf
 \item{plot}{A logical indicating whether the result should be plotted or returned as a table.}
 }
 \value{
-A bar plot displaying negative log10 adjusted p-values for the top 10 enriched pathways. Bars are colored according to the direction of the 
+A bar plot displaying negative log10 adjusted p-values for the top 10 enriched pathways. Bars are coloured according to the direction of the 
 enrichment. If \code{plot = FALSE}, a data frame is returned.
 }
 \description{

@@ -11,7 +11,7 @@
 #' @param pathway_name The name of the column containing KEGG pathway names. These can be obtained from KEGG using \code{fetch_kegg}. 
 #' @param plot A logical indicating whether the result should be plotted or returned as a table.
 #' 
-#' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched pathways. Bars are colored according to the direction of the 
+#' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched pathways. Bars are coloured according to the direction of the 
 #' enrichment. If \code{plot = FALSE}, a data frame is returned.
 #'
 #' @import dplyr
