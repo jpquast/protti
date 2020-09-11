@@ -4,7 +4,17 @@
 \alias{go_enrichment}
 \title{Perform gene ontology enrichment analysis}
 \usage{
-go_enrichment(data, protein_id, is_significant, go_annotations, plot = TRUE)
+go_enrichment(
+  data,
+  protein_id,
+  is_significant,
+  ontology_type,
+  organism_id,
+  algorithm = "elim",
+  statistic = "fisher",
+  go_data = NULL,
+  plot = TRUE
+)
 }
 \arguments{
 \item{data}{A data frame that contains at least the input variables.}
@@ -14,25 +24,41 @@ go_enrichment(data, protein_id, is_significant, go_annotations, plot = TRUE)
 \item{is_significant}{The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide. 
 The input data frame may contain peptide level information with significance information. The function is able to extract protein level information from this.}
 
-\item{go_annotations}{The name of the column containing gene ontology annotations. These can be obtained from UniProt using \code{fetch_uniprot}.}
+\item{ontology_type}{A character vector specifying the type of ontology that should be used. Possible values 
+are molecular function (MF), biological process (BF), cellular component (CC).}
+
+\item{organism_id}{An NCBI taxonomy identifier of an organism (TaxId). Possible inputs inlude only: "9606" (Human), "559292" (Yeast) and 
+"83333" (E. coli). Is only necessary if gene_ontology data is not provided in \code{go_data}.}
+
+\item{algorithm}{A character vector specifying the type of algorithm that should be used to group GO terms. Default is \code{"elim"}, which
+simplifies GO terms. \code{"classic"} uses all available terms without simplification. Further options can be found [here](https://bioconductor.org/packages/release/bioc/vignettes/topGO/inst/doc/topGO.pdf).}
+
+\item{statistic}{A character vector specifying the type of test that should be performed. Default is \code{"fisher"}. Alternatively,
+a Kolmogorov-Smirnov test can be used. Further options can be found here https://bioconductor.org/packages/release/bioc/vignettes/topGO/inst/doc/topGO.pdf.}
+
+\item{go_data}{A list. If GO annotations should not be fetched automatically, a named list can be provided. Each element should be named
+with an ID that corresponds to the IDs in the data. The content of each element should be a character vector with associated GO terms.}
 
 \item{plot}{A logical indicating whether the result should be plotted or returned as a table.}
 }
 \value{
-A bar plot displaying negative log10 adjusted p-values for the top 10 enriched gene ontology terms. Bars are colored according to the direction of the 
-enrichment. If \code{plot = FALSE}, a data frame is returned.
+A bar plot displaying negative log10 adjusted p-values for the top 10 enriched gene ontology terms. 
+Bars are colored according to the direction of the enrichment. If \code{plot = FALSE}, a data frame is returned.
 }
 \description{
-Analyses enrichment of gene ontology terms associated with proteins in the fraction of significant proteins compared to all detected proteins. A Fisher's 
-exact test is performed to test significance of enrichment.
+Analyses enrichment of gene ontology terms associated with proteins in the fraction of significant proteins compared to all detected proteins. 
+The enrichment analysis is based on the topGO R package.
 }
 \examples{
 \dontrun{
 go_enrichment(
 data,
 protein_id = pg_protein_accessions,
-is_significant = significant,
-go_annotations = go_molecular_function
+is_significant = significant
+ontology_type = "MF",
+organism_id = "83333",
+algorithm = "elim",
+statistic = "fisher"
 )
 }
 }
