@@ -12,9 +12,9 @@
 #' @param organism_id An NCBI taxonomy identifier of an organism (TaxId). Possible inputs inlude only: "9606" (Human), "559292" (Yeast) and 
 #' "83333" (E. coli). Is only necessary if gene_ontology data is not provided in \code{go_data}.
 #' @param algorithm A character vector specifying the type of algorithm that should be used to group GO terms. Default is \code{"elim"}, which
-#' simplifies GO terms. \code{"classic"} uses all available terms without simplification. Further options can be foundhere \url{https://bioconductor.org/packages/release/bioc/vignettes/topGO/inst/doc/topGO.pdf}. 
+#' simplifies GO terms. \code{"classic"} uses all available terms without simplification. Further options can be found here \url{https://bioconductor.org/packages/release/bioc/vignettes/topGO/inst/doc/topGO.pdf}. 
 #' @param statistic A character vector specifying the type of test that should be performed. Default is \code{"fisher"}. Alternatively,
-#' a Kolmogorov-Smirnov test can be used. Further options can be found here https://bioconductor.org/packages/release/bioc/vignettes/topGO/inst/doc/topGO.pdf.
+#' a Kolmogorov-Smirnov test can be used. Further options can be found here \url{https://bioconductor.org/packages/release/bioc/vignettes/topGO/inst/doc/topGO.pdf}.
 #' @param go_data A list. If GO annotations should not be fetched automatically, a named list can be provided. Each element should be named
 #' with an ID that corresponds to the IDs in the data. The content of each element should be a character vector with associated GO terms.
 #' @param plot A logical indicating whether the result should be plotted or returned as a table.
