@@ -5,14 +5,14 @@
 #'
 #' @param data A data frame that contains at least the input variables.
 #' @param protein_id The name of the column containing the protein accession numbers.
-#' @param is_significant  The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide. 
+#' @param is_significant The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide. 
 #' The input data frame may contain peptide level information with significance information. The function is able to extract protein level information from this. 
 #' @param ontology_type A character vector specifying the type of ontology that should be used. Possible values 
 #' are molecular function (MF), biological process (BF), cellular component (CC).
 #' @param organism_id An NCBI taxonomy identifier of an organism (TaxId). Possible inputs inlude only: "9606" (Human), "559292" (Yeast) and 
 #' "83333" (E. coli). Is only necessary if gene_ontology data is not provided in \code{go_data}.
 #' @param algorithm A character vector specifying the type of algorithm that should be used to group GO terms. Default is \code{"elim"}, which
-#' simplifies GO terms. \code{"classic"} uses all available terms without simplification. Further options can be found [here](https://bioconductor.org/packages/release/bioc/vignettes/topGO/inst/doc/topGO.pdf). 
+#' simplifies GO terms. \code{"classic"} uses all available terms without simplification. Further options can be foundhere \url{https://bioconductor.org/packages/release/bioc/vignettes/topGO/inst/doc/topGO.pdf}. 
 #' @param statistic A character vector specifying the type of test that should be performed. Default is \code{"fisher"}. Alternatively,
 #' a Kolmogorov-Smirnov test can be used. Further options can be found here https://bioconductor.org/packages/release/bioc/vignettes/topGO/inst/doc/topGO.pdf.
 #' @param go_data A list. If GO annotations should not be fetched automatically, a named list can be provided. Each element should be named

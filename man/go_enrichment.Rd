@@ -31,7 +31,7 @@ are molecular function (MF), biological process (BF), cellular component (CC).}
 "83333" (E. coli). Is only necessary if gene_ontology data is not provided in \code{go_data}.}
 
 \item{algorithm}{A character vector specifying the type of algorithm that should be used to group GO terms. Default is \code{"elim"}, which
-simplifies GO terms. \code{"classic"} uses all available terms without simplification. Further options can be found [here](https://bioconductor.org/packages/release/bioc/vignettes/topGO/inst/doc/topGO.pdf).}
+simplifies GO terms. \code{"classic"} uses all available terms without simplification. Further options can be foundhere \url{https://bioconductor.org/packages/release/bioc/vignettes/topGO/inst/doc/topGO.pdf}.}
 
 \item{statistic}{A character vector specifying the type of test that should be performed. Default is \code{"fisher"}. Alternatively,
 a Kolmogorov-Smirnov test can be used. Further options can be found here https://bioconductor.org/packages/release/bioc/vignettes/topGO/inst/doc/topGO.pdf.}
