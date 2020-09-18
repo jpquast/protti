@@ -11,13 +11,13 @@
 #' @param fold_change Optional, column in the data frame containing log2 fold changes.
 #' @param coloring Optional argument, column in the data frame containing information by which peptide or precursors should
 #' be colored.
-#' @param protein_id Optional argument, column in the data frame containing protein identifiers. Required if only one protein 
+#' @param protein_id Optional argument, column in the data frame containing protein identifiers. Required if only one protein
 #' should be plotted and the data frame contains only information for this protein.
-#' @param facet Optional argument, column in the data frame containing information by which data should be faceted. This can be 
-#' protein identifiers. Only 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a 
+#' @param facet Optional argument, column in the data frame containing information by which data should be faceted. This can be
+#' protein identifiers. Only 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a
 #' subsetted data frame should be created.
 #' @param fold_change_cutoff Optional argument specifying the log2 fold change cutoff used for assessing whether changes are significant. The default value is 2.
-#' 
+#'
 #' @return A barcode plot is returned.
 #' @import dplyr
 #' @import ggplot2
@@ -51,8 +51,8 @@ barcode_plot <- function(data, start_position, end_position, protein_length, cov
       twenty_proteins <- unique(dplyr::pull(data, {{facet}}))[1:20]
       data <- data %>%
         dplyr::filter({{facet}} %in% twenty_proteins)
-      warning(paste("Only the first 20 proteins from", rlang::as_name(enquo(facet)), 
-                    "have been used for plotting since there are", n_proteins, 
+      warning(paste("Only the first 20 proteins from", rlang::as_name(enquo(facet)),
+                    "have been used for plotting since there are", n_proteins,
                     "proteins. Consider mapping over subsetted datasets." ))
     }
   }
@@ -63,7 +63,7 @@ barcode_plot <- function(data, start_position, end_position, protein_length, cov
       dplyr::mutate({{fold_change}} := forcats::fct_rev(ifelse(is.na({{fold_change}}), "Unchanged", {{fold_change}}))) %>%
       dplyr::arrange({{fold_change}})
   }
-  # Add coverage to protein ID name if present. 
+  # Add coverage to protein ID name if present.
   if(!missing(coverage) & !missing(facet)){
     data <- data %>%
       mutate({{facet}} := paste0({{facet}}, " (", round({{coverage}}, digits = 1), "%)"))
@@ -83,7 +83,8 @@ barcode_plot <- function(data, start_position, end_position, protein_length, cov
       fill = {{coloring}}),
       size = 0.7
     ) +
-    ggplot2::scale_fill_manual(values = c("#999999", "#E76145", "#E69F00", "#56B4E9")) +
+    ggplot2::scale_fill_manual(values = c("#999999", "#5680C1", "#B96DAD", "#64CACA", "#81ABE9", "#F6B8D1", "#99F1E4", "#9AD1FF", "#548BDF", "#A55098", "#3EB6B6",
+                                          "#87AEE8", "#CA91C1", "#A4E0E0", "#1D4F9A", "#D7ACD2","#49C1C1")) +
     ggplot2::scale_x_continuous(limits = c(0, 100), expand = c(0, 0)) +
     ggplot2::scale_y_continuous(limits = NULL, expand = c(0, 0)) +
     ggplot2::labs(x = "Protein Sequence", title = {if(!missing(protein_id)) unique(dplyr::pull(data, {{protein_id}}))}) +

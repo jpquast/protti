@@ -35,13 +35,13 @@ qc_proteome_coverage <- function(data, sample, protein_id, organism_id, plot = T
 
   proteome <- fetch_uniprot_proteome({{organism_id}}) %>%
     dplyr::summarize(proteins_proteome = dplyr::n_distinct(.data$id), .groups = "drop")
-  
+
   proteome_coverage <- data %>%
     dplyr::group_by({{sample}}) %>%
     dplyr::summarize(proteins_detected = dplyr::n_distinct(!!ensym(protein_id)), .groups = "drop") %>%
     dplyr::bind_rows(proteins_total) %>%
     dplyr::mutate(proteins_undetected = proteome$proteins_proteome - .data$proteins_detected) %>%
-    dplyr::mutate(proteins_undetected = .data$proteins_undetected/proteome$proteins_proteome*100, 
+    dplyr::mutate(proteins_undetected = .data$proteins_undetected/proteome$proteins_proteome*100,
                   proteins_detected = .data$proteins_detected/proteome$proteins_proteome*100) %>%
     tidyr::pivot_longer(cols = c(.data$proteins_detected, .data$proteins_undetected), names_to = "type", values_to = "percentage") %>%
     dplyr::mutate({{sample}} := stats::relevel(factor({{sample}}), ref = "Total"),
@@ -51,7 +51,7 @@ qc_proteome_coverage <- function(data, sample, protein_id, organism_id, plot = T
     ggplot2::ggplot(ggplot2::aes({{sample}}, .data$percentage, fill = .data$type)) +
     ggplot2::geom_col(col = "black") +
     ggplot2::labs(title = "Proteome coverage", x = "", y = "Proteome [%]")+
-    ggplot2::scale_fill_manual(values = c("proteins_detected" = "cornflowerblue", "proteins_undetected" = "brown1"), name = "Proteins", labels = c("Not detected", "Detected"))+
+    ggplot2::scale_fill_manual(values = c("proteins_detected" = "#5680C1", "proteins_undetected" = "#B96DAD"), name = "Proteins", labels = c("Not detected", "Detected"))+
     ggplot2::geom_text(ggplot2::aes(label = round(.data$percentage, digits = 1)), position = ggplot2::position_stack(vjust = 0.5), size=4)+
     ggplot2::theme_bw()+
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust =1))
@@ -64,7 +64,7 @@ qc_proteome_coverage <- function(data, sample, protein_id, organism_id, plot = T
         ggplot2::ggplot(ggplot2::aes({{sample}}, .data$percentage, fill = .data$type)) +
         ggplot2::geom_col(col = "black") +
         ggplot2::labs(title = "Proteome coverage per .raw file", x = "", y = "Proteome [%]")+
-        ggplot2::scale_fill_manual(values = c("proteins_detected" = "cornflowerblue", "proteins_undetected" = "brown1"), name = "Proteins")+
+        ggplot2::scale_fill_manual(values = c("proteins_detected" = "#5680C1", "proteins_undetected" = "#B96DAD"), name = "Proteins")+
         ggplot2::theme_bw()+
         ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust =1))
       plotly::ggplotly(proteome_coverage_plot)

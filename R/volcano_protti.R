@@ -66,7 +66,7 @@ volcano_protti <- function(data, grouping, foldchange, significance, method, pro
             y = -1 * log10({{significance}})),
         size = 3
       ) +
-      scale_color_manual(values = c("grey60", "blue")) +
+      scale_color_manual(values = c("grey60", "#5680C1")) +
       labs(
         title = title,
         x = x_axis_label,
@@ -96,7 +96,7 @@ volcano_protti <- function(data, grouping, foldchange, significance, method, pro
         aes(x = {{foldchange}},
             y = -1 * log10({{significance}})),
         size = 3,
-        col = "blue"
+        col = "#5680C1"
       ) +
       labs(
         title = title,
