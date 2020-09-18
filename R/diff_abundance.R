@@ -110,9 +110,10 @@ diff_abundance <-
       dplyr::distinct({{grouping}}, {{comparison}}, {{missingness}}, .data$n_obs)
     
     t_test_input <- data %>%
+      tidyr::drop_na({{intensity}}) %>%
       dplyr::group_by({{comparison}}, {{grouping}}, {{condition}}) %>%
       dplyr::summarize(intensity = list({{intensity}}), .groups = "drop") %>%
-      dplyr::mutate(type = ifelse({{condition}} == "control_AE", "control", "treated")) %>%
+      dplyr::mutate(type = ifelse({{condition}} == ref_condition, "control", "treated")) %>%
       dplyr::select(-{{condition}}) %>%
       tidyr::pivot_wider(names_from = .data$type, values_from = .data$intensity)
     
@@ -125,7 +126,7 @@ diff_abundance <-
         .y = .data$control,
         .f = function(.x, .y) {
           tryCatch({
-            stats::t.test(.x, .y)
+            suppressWarnings(stats::t.test(.x, .y))
           },
           error = function(error) {
             NA
@@ -152,7 +153,7 @@ diff_abundance <-
         .x = .data$treated,
         .y = .data$control,
         .f = function(.x, .y) {
-            mean(.x, na.rm = TRUE) - mean(.y, na.rm = TRUE)
+            suppressWarnings(mean(.x, na.rm = TRUE)) - suppressWarnings(mean(.y, na.rm = TRUE))
         }
       )) %>%
       dplyr::mutate(diff = ifelse(diff == "NaN", NA, diff)) %>%
@@ -200,10 +201,11 @@ diff_abundance <-
   message("[1/7] Creating moderated t-test input data ... ", appendLF = FALSE)
   moderated_t_test_input <- data %>%
     dplyr::distinct({{grouping}}, {{sample}}, {{intensity}}) %>%
+    tidyr::drop_na({{intensity}}) %>% 
     dplyr::arrange({{sample}}) %>% 
     tidyr::pivot_wider(names_from = {{sample}}, values_from = {{intensity}}) %>%
     tibble::column_to_rownames(var = rlang::as_name(rlang::enquo(grouping))) %>%
-    as.matrix()   
+    as.matrix() 
     
   message("DONE", appendLF = TRUE)
   message("[2/7] Defining moderated t-test design ... ", appendLF = FALSE)
