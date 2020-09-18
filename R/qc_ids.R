@@ -42,7 +42,7 @@ qc_ids <-
     plot <- result %>%
       ggplot2::ggplot(aes(x = {{sample}}, y = .data$count, fill = {{condition}})) +
       geom_col(col = "black") +
-      {if(length(result %>% ungroup() %>% select({{condition}})) == 0 ) geom_col(fill = "cornflowerblue", col = "black")}  +
+      {if(length(result %>% ungroup() %>% select({{condition}})) == 0 ) geom_col(fill = "#5680C1", col = "black")}  +
       labs(title = title,
            x = "sample",
            y = "count") +

@@ -49,7 +49,12 @@ qc_peptide_type <- function(data, sample, peptide, pep_type, intensity = NULL, m
       ggplot2::geom_text(ggplot2::aes(label = round(.data$peptide_type_percent, digits = 1), y = .data$peptide_type_percent + max(.data$peptide_type_percent) * 0.03), position = position_dodge(1), size = 4) +
       ggplot2::theme_bw() +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 75, hjust = 1)) +
-      ggplot2::coord_cartesian(ylim = c(0, (max(result$peptide_type_percent))))
+      ggplot2::coord_cartesian(ylim = c(0, (max(result$peptide_type_percent)))) +
+      ggplot2::scale_fill_manual(values = c("#5680C1",
+                                             "#B96DAD",
+                                             "#64CACA",
+                                             "#81ABE9"))
+
 
     return(plot)
   }
@@ -60,7 +65,11 @@ qc_peptide_type <- function(data, sample, peptide, pep_type, intensity = NULL, m
       ggplot2::labs(title = "Peptide types per .raw file", x = "Sample", y = "Percentage of peptides", fill = "Type") +
       ggplot2::theme_bw() +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 75, hjust = 1)) +
-      ggplot2::coord_cartesian(ylim = c(0, (max(result$peptide_type_percent))))
+      ggplot2::coord_cartesian(ylim = c(0, (max(result$peptide_type_percent))))+
+      ggplot2::scale_fill_manual(values = c("#5680C1",
+                                            "#B96DAD",
+                                            "#64CACA",
+                                            "#81ABE9"))
 
     interactive_plot <- plotly::ggplotly(plot)
 
@@ -91,7 +100,11 @@ qc_peptide_type <- function(data, sample, peptide, pep_type, intensity = NULL, m
         ggplot2::geom_text(ggplot2::aes(label = round(.data$peptide_type_percent, digits = 1), y = .data$peptide_type_percent + max(.data$peptide_type_percent) * 0.03), position = position_dodge(1), size = 4) +
         ggplot2::theme_bw() +
         ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 75, hjust = 1)) +
-        ggplot2::coord_cartesian(ylim = c(0, (max(result$peptide_type_percent))))
+        ggplot2::coord_cartesian(ylim = c(0, (max(result$peptide_type_percent)))) +
+        ggplot2::scale_fill_manual(values = c("#5680C1",
+                                              "#B96DAD",
+                                              "#64CACA",
+                                              "#81ABE9"))
 
       return(plot)
     }
@@ -102,7 +115,11 @@ qc_peptide_type <- function(data, sample, peptide, pep_type, intensity = NULL, m
         ggplot2::labs(title = "Peptide type intensity percentage per .raw file", x = "Sample", y = "Percentage of total peptide intensity", fill = "Type") +
         ggplot2::theme_bw() +
         ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 75, hjust = 1)) +
-        ggplot2::coord_cartesian(ylim = c(0, (max(result$peptide_type_percent))))
+        ggplot2::coord_cartesian(ylim = c(0, (max(result$peptide_type_percent)))) +
+        ggplot2::scale_fill_manual(values = c("#5680C1",
+                                              "#B96DAD",
+                                              "#64CACA",
+                                              "#81ABE9"))
 
       interactive_plot <- plotly::ggplotly(plot)
 

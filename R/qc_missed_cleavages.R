@@ -62,7 +62,25 @@ qc_missed_cleavages <-
              y = "% of total peptide count",
              fill = "Missed cleavages") +
         theme_bw() +
-        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+        theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+        scale_fill_manual(values = c("#5680C1",
+                                        "#B96DAD",
+                                        "#64CACA",
+                                        "#81ABE9",
+                                        "#F6B8D1",
+                                        "#99F1E4",
+                                        "#9AD1FF",
+                                        "#548BDF",
+                                        "#A55098",
+                                        "#3EB6B6",
+                                        "#87AEE8",
+                                        "#CA91C1",
+                                        "#A4E0E0",
+                                        "#1D4F9A",
+                                        "#D7ACD2",
+                                        "#49C1C1"))
+
+
         return(plot)
     }
    }
@@ -98,7 +116,23 @@ qc_missed_cleavages <-
                  y = "% of total intensity",
                  fill = "Missed cleavages") +
             theme_bw() +
-            theme(axis.text.x = element_text(angle = 45, hjust = 1))
+            theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+            scale_fill_manual(values = c("#5680C1",
+                                         "#B96DAD",
+                                         "#64CACA",
+                                         "#81ABE9",
+                                         "#F6B8D1",
+                                         "#99F1E4",
+                                         "#9AD1FF",
+                                         "#548BDF",
+                                         "#A55098",
+                                         "#3EB6B6",
+                                         "#87AEE8",
+                                         "#CA91C1",
+                                         "#A4E0E0",
+                                         "#1D4F9A",
+                                         "#D7ACD2",
+                                         "#49C1C1"))
           return(plot)
         }
       }
