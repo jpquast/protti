@@ -83,7 +83,8 @@ barcode_plot <- function(data, start_position, end_position, protein_length, cov
       fill = {{coloring}}),
       size = 0.7
     ) +
-    ggplot2::scale_fill_manual(values = c("#999999", "#5680C1", "#B96DAD", "#64CACA")) +
+    ggplot2::scale_fill_manual(values = c("#999999", "#5680C1", "#B96DAD", "#64CACA", "#81ABE9", "#F6B8D1", "#99F1E4", "#9AD1FF", "#548BDF", "#A55098", "#3EB6B6",
+                                          "#87AEE8", "#CA91C1", "#A4E0E0", "#1D4F9A", "#D7ACD2","#49C1C1")) +
     ggplot2::scale_x_continuous(limits = c(0, 100), expand = c(0, 0)) +
     ggplot2::scale_y_continuous(limits = NULL, expand = c(0, 0)) +
     ggplot2::labs(x = "Protein Sequence", title = {if(!missing(protein_id)) unique(dplyr::pull(data, {{protein_id}}))}) +
