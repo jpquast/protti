@@ -18,7 +18,9 @@ impute(
 )
 }
 \arguments{
-\item{data}{a dataframe that is ideally the output from the \code{assign_missingness} function. It should containing at least the input variables. For each "reference_vs_treatment" comparison, there should be the pair of the reference and treatment condition. That means the reference condition should be doublicated once for every treatment.}
+\item{data}{a dataframe that is ideally the output from the \code{assign_missingness} function. It should containing at least the 
+input variables. For each "reference_vs_treatment" comparison, there should be the pair of the reference and treatment condition. 
+That means the reference condition should be doublicated once for every treatment.}
 
 \item{sample}{the name of the column containing the sample names.}
 
@@ -28,18 +30,27 @@ impute(
 
 \item{condition}{the name of the column containing the conditions.}
 
-\item{comparison}{the name of the column containing the comparisons of treatment/reference pairs. This is an output of the \code{assign_missingnes} function.}
+\item{comparison}{the name of the column containing the comparisons of treatment/reference pairs. This is an output of the 
+\code{assign_missingnes} function.}
 
-\item{missingness}{the name of the column that contains the missingness type of the data determines how values for imputation are sampled. This should at least contain \code{"MAR"} or \code{"MNAR"}.}
+\item{missingness}{the name of the column that contains the missingness type of the data determines how values for imputation are sampled. 
+This should at least contain \code{"MAR"} or \code{"MNAR"}.}
 
-\item{noise}{the name of the column that contains the noise value for the precursor/peptide. Is only required if \code{method = "noise"}.}
+\item{noise}{the name of the column that contains the noise value for the precursor/peptide. Is only required if \code{method = "noise"}. 
+Note: Noise values need to be log2 transformed.}
 
-\item{method}{the method to be used for imputation. For \code{method = "ludovic"}, MNAR missingness is sampled around a value that is three lower (log2) than the lowest intensity value recorded for the precursor/peptide. For \code{method = "noise"}, MNAR missingness is sampled around the noise value for the precursor/peptide.}
+\item{method}{the method to be used for imputation. For \code{method = "ludovic"}, MNAR missingness is sampled from a normal distribution 
+around a value that is three lower (log2) than the lowest intensity value recorded for the precursor/peptide and that has a spread of
+the mean standard deviation for the precursor/peptide. For \code{method = "noise"}, MNAR missingness is sampled from a normal distribution 
+around the mean noise for the precursor/peptide and that has a spread of the mean standard deviation (from each condition) for the precursor/peptide.}
 
-\item{skip_log2_transform_error}{logical, if FALSE a check is performed to validate that input values are log2 transformed. If input values are > 40 the test is failed and an error is thrown.}
+\item{skip_log2_transform_error}{logical, if FALSE a check is performed to validate that input values are log2 transformed. If input 
+values are > 40 the test is failed and an error is thrown.}
 }
 \value{
-A dataframe that contains an \code{imputed_intensity} and \code{imputed} column in addition to the required input columns. The \code{imputed} column indicates if a value was imputed. The \code{imputed_intensity} column contains imputed intensity values for previously missing intensities.
+A data frame that contains an \code{imputed_intensity} and \code{imputed} column in addition to the required input columns. 
+The \code{imputed} column indicates if a value was imputed. The \code{imputed_intensity} column contains imputed intensity values 
+for previously missing intensities.
 }
 \description{
 \code{impute} is calculating imputation values for missing data depending on the selected method.
