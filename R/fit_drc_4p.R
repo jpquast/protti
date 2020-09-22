@@ -18,6 +18,7 @@
 #' @import tidyr
 #' @import purrr
 #' @import progress
+#' @import progressor
 #' @import ggplot2
 #' @import furrr
 #' @importFrom tibble tibble
@@ -58,9 +59,9 @@ fit_drc_4p <- function(data, sample, grouping, response, dose, parallel = FALSE)
                )
   } else {
 
+  p <- progressor(steps = length(input))
   fit_objects <- furrr::future_map(.x = input,
-                                   .f = ~ drc_4p(data = .x, {{response}}, {{dose}}), 
-                                   .progress = TRUE,
+                                   .f = ~{p(); drc_4p(data = .x, {{response}}, {{dose}})}, 
                                    .options = future_options(globals = FALSE)
       )
   }
