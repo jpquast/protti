@@ -133,6 +133,9 @@ fit_drc_4p <- function(data, sample, grouping, response, dose, include_models = 
     dplyr::left_join(correlation_output, by = "sequence")
   
   if(include_models == TRUE) result <- list(fit_objects = fit_objects, correlations = correlation_output, plots = plots)
-  if(include_models == FALSE) result <- list(correlations = correlation_output, plots = plots)
+  if(include_models == FALSE){ 
+    rm(fit_objects)
+    result <- list(correlations = correlation_output, plots = plots)
+  }
   result
 }
