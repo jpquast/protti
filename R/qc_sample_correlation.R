@@ -19,7 +19,6 @@
 #' @importFrom pheatmap pheatmap
 #' @importFrom heatmaply heatmaply
 #' @importFrom viridis viridis
-#' @importFrom seriation get_order
 #' @importFrom dendextend seriate_dendrogram
 #' @importFrom dendextend rotate
 #' @importFrom rlang .data
