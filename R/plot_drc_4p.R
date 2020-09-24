@@ -35,6 +35,12 @@
 plot_drc_4p <- function(data, grouping, response, dose, targets, unit = paste0("\U03BC","M"), y_axis_name = "Response", scales = "free"){
   . = NULL
   
+  #early filter to speed up function 
+  if(!"all" %in% targets){
+    data <- data %>% 
+      dplyr::filter({{grouping}} %in% targets)
+  }
+  
   data <- data %>% 
     dplyr::mutate(name = paste0({{grouping}}, " (correlation = ", round(.data$correlation, digits = 2), ", Kd = ", round(.data$`ec_50:(Intercept)`), ")"))
   
