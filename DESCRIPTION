@@ -15,5 +15,5 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 biocViews:
-Imports: rlang, dplyr, stringr, magrittr, data.table, janitor, progress, purrr, RCurl, tidyr, ggplot2, forcats, tibble, drc, plotly, viridis, dendextend, seriation, pheatmap, heatmaply, ggrepel, igraph, stringi, limma, proDA, iq, jsonlite, topGO, methods, utils
+Imports: rlang, dplyr, stringr, magrittr, data.table, janitor, progress, purrr, RCurl, tidyr, ggplot2, forcats, tibble, drc, plotly, viridis, dendextend, seriation, pheatmap, heatmaply, ggrepel, igraph, stringi, limma, proDA, iq, jsonlite, topGO, methods, utils, furrr, future, parallel
 RoxygenNote: 7.1.1
