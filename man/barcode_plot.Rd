@@ -33,11 +33,11 @@ barcode_plot(
 \item{coloring}{Optional argument, column in the data frame containing information by which peptide or precursors should
 be colored.}
 
-\item{protein_id}{Optional argument, column in the data frame containing protein identifiers. Required if only one protein 
+\item{protein_id}{Optional argument, column in the data frame containing protein identifiers. Required if only one protein
 should be plotted and the data frame contains only information for this protein.}
 
-\item{facet}{Optional argument, column in the data frame containing information by which data should be faceted. This can be 
-protein identifiers. Only 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a 
+\item{facet}{Optional argument, column in the data frame containing information by which data should be faceted. This can be
+protein identifiers. Only 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a
 subsetted data frame should be created.}
 
 \item{fold_change_cutoff}{Optional argument specifying the log2 fold change cutoff used for assessing whether changes are significant. The default value is 2.}

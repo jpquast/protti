@@ -26,7 +26,7 @@ qc_contaminants(
 
 \item{intensity}{The name of the column containing raw intensity values.}
 
-\item{n_contaminants}{Numeric, indicating how many contaminants should be displayed individually. The rest is combined to a group called "other". The 
+\item{n_contaminants}{Numeric, indicating how many contaminants should be displayed individually. The rest is combined to a group called "other". The
 default is 5.}
 
 \item{plot}{Logical, if TRUE a plot is returned. If FALSE a table is returned.}
@@ -42,8 +42,8 @@ Calculates the percentage of contaminating proteins as the share of total intens
 \examples{
 \dontrun{
 qc_contaminants(
-data, 
-sample = sample, 
+data,
+sample = sample,
 protein = leading_razor_protein,
 is_contaminant = potential_contaminant
 intensity = intensity
