@@ -1,0 +1,108 @@
+#' Check CV distribution
+#'
+#' Calculates and plots the coefficients of variation for the selected grouping.
+#'
+#' @param data A dataframe containing at least peptide, precursor or protein identifiers, information on conditions and intensity values for each peptide, precursor or protein.
+#' @param grouping The column in the input dataframe containing the grouping variables (e.g. peptides, precursors or proteins).
+#' @param condition The column in the data dataframe containing condition information (e.g. "treated" and "control").
+#' @param intensity Column containing the corresponding intensity values for each peptide or precursor.
+#' @param plot A logical indicating whether the result should be plotted. Default is TRUE.
+#' @param plot_style Variable indicating the plotting style. \code{plot_style = "boxplot"} plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution. Default is \code{plot_style = "density"}.
+#'
+#' @return Either the median CVs in % or a plot showing the distribution of the CVs.
+#' @import dplyr
+#' @import ggplot2
+#' @importFrom tidyr drop_na
+#' @importFrom magrittr %>%
+#' @importFrom rlang .data
+#' @importFrom stats sd
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' qc_cvs(
+#' data,
+#' grouping = pep_stripped_sequence,
+#' condition = condition,
+#' intensity = fg_quantity,
+#' plot = TRUE,
+#' plot_style = "density"
+#' )
+#' }
+qc_cvs <-
+  function(data, grouping, condition, intensity, plot = TRUE, plot_style = "density")
+  {
+    if(plot == FALSE)
+    {
+      result <- data %>%
+        tidyr::drop_na({{intensity}}) %>%
+        dplyr::group_by({{condition}}, {{grouping}}) %>%
+        dplyr::mutate(cv = (stats::sd({{intensity}}) / mean({{intensity}})) * 100) %>%
+        dplyr::group_by({{condition}}) %>%
+        dplyr::summarise(median_cv = stats::median(.data$cv))
+
+      return(result)
+    }
+
+    if(plot == TRUE)
+    {
+      result <- data %>%
+      dplyr::distinct({{condition}}, {{grouping}}, {{intensity}}) %>%
+      dplyr::group_by({{condition}}, {{grouping}}) %>%
+      dplyr::mutate(cv = (stats::sd({{intensity}}) / mean({{intensity}})) * 100)
+
+    if(plot_style == "boxplot")
+    {
+      plot <- ggplot2::ggplot(result, aes(x = {{condition}}, y = .data$cv, fill = {{condition}})) +
+        ggplot2::geom_boxplot() +
+        ggplot2::theme_bw() +
+        ggplot2::ylab("Coefficient of variation [%]") +
+        ggplot2::labs(title = "Coefficients of variation") +
+        ggplot2::scale_fill_manual(values = c("#5680C1",
+                                              "#B96DAD",
+                                              "#64CACA",
+                                              "#81ABE9",
+                                              "#F6B8D1",
+                                              "#99F1E4",
+                                              "#9AD1FF",
+                                              "#548BDF",
+                                              "#A55098",
+                                              "#3EB6B6",
+                                              "#87AEE8",
+                                              "#CA91C1",
+                                              "#A4E0E0",
+                                              "#1D4F9A",
+                                              "#D7ACD2",
+                                              "#49C1C1"))
+
+      return(plot)
+    }
+    if(plot_style == "density")
+    {
+      plot <- ggplot2::ggplot(result, aes(x = .data$cv, col = {{condition}})) +
+        ggplot2::geom_density(size = 1) +
+        ggplot2::theme_bw() +
+        ggplot2::ylab("Density") +
+        ggplot2::labs(title = "Coefficients of variation") +
+        ggplot2::xlab("Coefficient of variation [%]") +
+        ggplot2::scale_color_manual(values = c("#5680C1",
+                                              "#B96DAD",
+                                              "#64CACA",
+                                              "#81ABE9",
+                                              "#F6B8D1",
+                                              "#99F1E4",
+                                              "#9AD1FF",
+                                              "#548BDF",
+                                              "#A55098",
+                                              "#3EB6B6",
+                                              "#87AEE8",
+                                              "#CA91C1",
+                                              "#A4E0E0",
+                                              "#1D4F9A",
+                                              "#D7ACD2",
+                                              "#49C1C1"))
+
+      return(plot)
+    }
+    }
+  }
