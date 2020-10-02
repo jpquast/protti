@@ -4,30 +4,30 @@
 \alias{median_normalisation}
 \title{Median normalisation}
 \usage{
-median_normalisation(
-  data,
-  file_column_name,
-  intensity_column_name,
-  na.rm = FALSE
-)
+median_normalisation(data, sample, grouping, log2intensity, na.rm = TRUE)
 }
 \arguments{
-\item{data}{A data frame containing at least sample names and intensity values.}
+\item{data}{A data frame containing at least sample names, grouping variables and intensity values.}
 
-\item{file_column_name}{The name of the column containing the sample names.}
+\item{sample}{The name of the column containing the sample names.}
 
-\item{intensity_column_name}{The name of the column containing the intensity values.}
+\item{grouping}{The name of the column containing the grouping variable - this can be peptides, precursors or proteins.}
 
-\item{na.rm}{A logical indicating wther missing values should be removed.}
+\item{log2intensity}{The name of the column containing the log2 transformed intensity values to be normalised.}
+
+\item{na.rm}{Logical indicating whether missing values should be removed. Default is TRUE.}
 }
 \value{
-A data frame that contains the input data and an additional column with normalised intensity values.
+A new column in the original dataframe called \code{normalised_intensity_log2} containing the normalised intensity values.
 }
 \description{
-Median normalise intensity values for all samples of mass spectrometry data. The intensity values are ideally log2 transformed. The output is a new column called normalised_intensity_log2.
+Normalises the intensities in the way this is implemented in Spectronaut. The normalised intensity is the original intensity minus the run median plus the global median.
 }
 \examples{
 \dontrun{
-median_normalisation(data, sample_name, intensity_log2, na.rm = TRUE)
+median_normalisation(data,
+sample = r_file_name,
+grouping = eg_precursor_id,
+log2intensity = intensity_log2)
 }
 }

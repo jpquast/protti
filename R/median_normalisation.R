@@ -1,29 +1,36 @@
 #' Median normalisation
 #'
-#' Median normalise intensity values for all samples of mass spectrometry data. The intensity values are ideally log2 transformed. The output is a new column called normalised_intensity_log2.
+#' Normalises the intensities in the way this is implemented in Spectronaut. The normalised intensity is the original intensity minus the run median plus the global median.
 #'
-#' @param data A data frame containing at least sample names and intensity values.
-#' @param file_column_name The name of the column containing the sample names.
-#' @param intensity_column_name The name of the column containing the intensity values.
-#' @param na.rm A logical indicating wther missing values should be removed.
+#' @param data A data frame containing at least sample names, grouping variables and intensity values.
+#' @param sample The name of the column containing the sample names.
+#' @param grouping The name of the column containing the grouping variable - this can be peptides, precursors or proteins.
+#' @param log2intensity The name of the column containing the log2 transformed intensity values to be normalised.
+#' @param na.rm Logical indicating whether missing values should be removed. Default is TRUE.
 #'
-#' @return A data frame that contains the input data and an additional column with normalised intensity values.
+#' @return A new column in the original dataframe called \code{normalised_intensity_log2} containing the normalised intensity values.
 #' @import dplyr
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
+#' @importFrom stats median
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' median_normalisation(data, sample_name, intensity_log2, na.rm = TRUE)
+#' median_normalisation(data,
+#' sample = r_file_name,
+#' grouping = eg_precursor_id,
+#' log2intensity = intensity_log2)
 #' }
 median_normalisation <-
-function(data, file_column_name, intensity_column_name, na.rm = FALSE){
-  data %>%
-    dplyr::group_by({{file_column_name}})%>%
-    dplyr::mutate(median_run_intensity = stats::median({{intensity_column_name}}, na.rm = na.rm))%>%
-    dplyr::ungroup()%>%
-    dplyr::mutate(median_intensity = stats::median(unique(.data$median_run_intensity), na.rm = na.rm))%>%
-    dplyr::mutate(normalised_intensity_log2 = {{intensity_column_name}}/.data$median_run_intensity*.data$median_intensity)%>%
-    dplyr::select(-.data$median_run_intensity, -.data$median_intensity)
-}
+  function(data, sample, grouping, log2intensity, na.rm = TRUE)
+  {
+    data %>%
+      dplyr::filter(!is.na({{log2intensity}})) %>%
+      dplyr::mutate(global_median = stats::median({{log2intensity}}), na.rm = na.rm) %>%
+      dplyr::group_by({{sample}}) %>%
+      dplyr::mutate(run_median = stats::median({{log2intensity}}), na.rm = na.rm) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(normalised_intensity_log2 = {{log2intensity}} - .data$run_median + .data$global_median) %>%
+      dplyr::select(-.data$run_median, -.data$global_median)
+  }
