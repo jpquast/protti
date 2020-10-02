@@ -11,8 +11,9 @@
 #' @param target Optional argument required for \code{method = "target"}, protein identifier for your protein of interest.
 #' @param title Optional argument specifying the title of the volcano plot. Default is "Volcano plot".
 #' @param x_axis_label Optional argument specifying the x-axis label. Default is "log2(fold change)".
-#' @param foldchange_cutoff Optional argument specifying the fold change cutoff used for assessing whether changes are significant. As a log2 scale should be used, the default value is 1.
+#' @param foldchange_cutoff Optional argument specifying the fold change cutoff used for assessing whether changes are significant. Default is 2.
 #' @param significance_cutoff Optional argument specifying the p-value cutoff used for assessing significance of changes. Default is 0.01.
+#' @param interactive Optional argument specifying whether the plot should be interactive or non-interactive. Default is FALSE.
 #'
 #' @return Depending on the method used a volcano plot with either highlighted target protein (\code{method = "target"}) or highlighted significant proteins (\code{method = "significant"}) is returned.
 #' @import dplyr
@@ -38,11 +39,12 @@
 #' target = "Q9Y6K9",
 #' title = "Finding Nemo",
 #' x_axis_label = "log2(fold change) treated vs untreated",
-#' foldchange_cutoff = 0.5,
-#' significance_cutoff = 0.05
+#' foldchange_cutoff = 2,
+#' significance_cutoff = 0.05,
+#' interactive = TRUE
 #' )
 #' }
-volcano_protti <- function(data, grouping, foldchange, significance, method, protein_identifier = NULL, target = NULL, title = "Volcano plot", x_axis_label = "log2(fold change)", foldchange_cutoff = 1, significance_cutoff = 0.01)
+volcano_protti <- function(data, grouping, foldchange, significance, method, protein_identifier = NULL, target = NULL, title = "Volcano plot", x_axis_label = "log2(fold change)", foldchange_cutoff = 2, significance_cutoff = 0.01, interactive = FALSE)
 {
   if (method == "target")
   {
@@ -73,14 +75,21 @@ volcano_protti <- function(data, grouping, foldchange, significance, method, pro
         y = "-log10(p-value)"
       ) +
       geom_hline(yintercept = -1 * log10(significance_cutoff), linetype = "dashed") +
-      geom_vline(xintercept = foldchange_cutoff, linetype = "dashed") +
-      geom_vline(xintercept = -1 * foldchange_cutoff, linetype = "dashed") +
+      geom_vline(xintercept = log2(foldchange_cutoff), linetype = "dashed") +
+      geom_vline(xintercept = -1 * log2(foldchange_cutoff), linetype = "dashed") +
       theme(legend.position = "none")  +
       theme_bw() +
       scale_x_continuous(breaks = seq(round(-1 * max(abs(dplyr::pull(data, {{foldchange}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{foldchange}})), na.rm = TRUE) + 0.5, 0), 1)) +
       coord_cartesian(xlim = c(round(-1 * max(abs(dplyr::pull(data, {{foldchange}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{foldchange}})), na.rm = TRUE) + 0.5, 0)))
+  if (interactive == TRUE)
+    {
     return(plotly::ggplotly(plot))
+  } else {
+    return(plot)
   }
+}
+
+
   if (method == "significant")
   {
     plot <- data %>%
@@ -104,12 +113,18 @@ volcano_protti <- function(data, grouping, foldchange, significance, method, pro
         y = "-log10(p-value)"
       ) +
       geom_hline(yintercept = -1 * log10(significance_cutoff), linetype = "dashed") +
-      geom_vline(xintercept = foldchange_cutoff, linetype = "dashed") +
-      geom_vline(xintercept = -1 *foldchange_cutoff, linetype = "dashed") +
+      geom_vline(xintercept = log2(foldchange_cutoff), linetype = "dashed") +
+      geom_vline(xintercept = -1 * log2(foldchange_cutoff), linetype = "dashed") +
       theme(legend.position = "none")  +
       theme_bw() +
       scale_x_continuous(breaks = seq(round(-1 * max(abs(dplyr::pull(data, {{foldchange}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{foldchange}})), na.rm = TRUE) + 0.5, 0), 1)) +
       coord_cartesian(xlim = c(round(-1 * max(abs(dplyr::pull(data, {{foldchange}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{foldchange}})), na.rm = TRUE) + 0.5, 0)))
-    return(plotly::ggplotly(plot))
+    if (interactive == TRUE)
+    {
+     return(plotly::ggplotly(plot))
+    } else {
+    return(plot)
+    }
   }
 }
+
