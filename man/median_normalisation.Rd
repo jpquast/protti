@@ -4,7 +4,7 @@
 \alias{median_normalisation}
 \title{Median normalisation}
 \usage{
-median_normalisation(data, sample, grouping, log2intensity, na.rm = TRUE)
+median_normalisation(data, sample, grouping, intensity_log2)
 }
 \arguments{
 \item{data}{A data frame containing at least sample names, grouping variables and intensity values.}
@@ -13,21 +13,19 @@ median_normalisation(data, sample, grouping, log2intensity, na.rm = TRUE)
 
 \item{grouping}{The name of the column containing the grouping variable - this can be peptides, precursors or proteins.}
 
-\item{log2intensity}{The name of the column containing the log2 transformed intensity values to be normalised.}
-
-\item{na.rm}{Logical indicating whether missing values should be removed. Default is TRUE.}
+\item{intensity_log2}{The name of the column containing the log2 transformed intensity values to be normalised.}
 }
 \value{
-A new column in the original dataframe called \code{normalised_intensity_log2} containing the normalised intensity values.
+A dataframe with a column called \code{normalised_intensity_log2} containing the normalised intensity values.
 }
 \description{
-Normalises the intensities in the way this is implemented in Spectronaut. The normalised intensity is the original intensity minus the run median plus the global median.
+Performs median normalisation on intensities. The normalised intensity is the original intensity minus the run median plus the global median. This is also the way it is implemented in Spectronaut.
 }
 \examples{
 \dontrun{
 median_normalisation(data,
 sample = r_file_name,
 grouping = eg_precursor_id,
-log2intensity = intensity_log2)
+intensity_log2 = intensity_log2)
 }
 }
