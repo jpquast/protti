@@ -51,7 +51,7 @@ volcano_protti <- function(data, grouping, foldchange, significance, method, pro
     data <- data %>%
       mutate(!!rlang::ensym(target) := ifelse({{protein_identifier}} == rlang::as_name(rlang::enquo(target)), TRUE, FALSE))
 
-    plot <- data %>%
+    volcano_plot <- data %>%
       dplyr::arrange(!!rlang::ensym(target)) %>%
       dplyr::filter(!!rlang::ensym(target) == FALSE) %>%
       ggplot2::ggplot(aes(
@@ -83,16 +83,16 @@ volcano_protti <- function(data, grouping, foldchange, significance, method, pro
       coord_cartesian(xlim = c(round(-1 * max(abs(dplyr::pull(data, {{foldchange}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{foldchange}})), na.rm = TRUE) + 0.5, 0)))
   if (interactive == TRUE)
     {
-    return(plotly::ggplotly(plot))
+    return(plotly::ggplotly(volcano_plot))
   } else {
-    return(plot)
+    return(volcano_plot)
   }
 }
 
 
   if (method == "significant")
   {
-    plot <- data %>%
+    volcano_plot <- data %>%
       ggplot2::ggplot(aes(
         x = {{foldchange}},
         y = - 1 * log10({{significance}}),
@@ -121,9 +121,9 @@ volcano_protti <- function(data, grouping, foldchange, significance, method, pro
       coord_cartesian(xlim = c(round(-1 * max(abs(dplyr::pull(data, {{foldchange}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{foldchange}})), na.rm = TRUE) + 0.5, 0)))
     if (interactive == TRUE)
     {
-     return(plotly::ggplotly(plot))
+     return(plotly::ggplotly(volcano_plot))
     } else {
-    return(plot)
+    return(volcano_plot)
     }
   }
 }
