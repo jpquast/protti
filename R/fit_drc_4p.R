@@ -68,7 +68,7 @@ fit_drc_4p <- function(data, sample, grouping, response, dose, include_models = 
                     c("no_correlation")
                   })
                 }) %>%
-    purrr::keep(.p = ~ .x != "no_correlation") %>%
+    purrr::keep(.p = ~ .x != "no_correlation" & !is.na(.x)) %>%
     purrr::map(.f = ~ tibble::tibble(correlation = .x)) %>%
     purrr::map2_df(.y = names(.),
                    .f = ~ dplyr::mutate(.x, {{grouping}} := .y)
@@ -86,7 +86,7 @@ fit_drc_4p <- function(data, sample, grouping, response, dose, include_models = 
                     c("no_pvalue")
                   })
                 }) %>%
-    purrr::keep(.p = ~ .x != "no_pvalue") %>%
+    purrr::keep(.p = ~ .x != "no_pvalue" & !is.na(.x)) %>%
     purrr::map(.f = ~ tibble::tibble(p_value = .x)) %>%
     purrr::map2_df(.y = names(.),
                    .f = ~ dplyr::mutate(.x, {{grouping}} := .y)

@@ -1,7 +1,7 @@
 #' Fitting four-parameter dose response curves (using parallel processing)
 #'
 #' This function is a wrapper around \code{fit_drc_4p} that allows the use of all system cores for model fitting. It should only be used on systems that have enough memory available. 
-#' Workers can either be set up manually before running the function with \code{future::plan(multiprocess)} or automatically by the function. If workers are set up manually the 
+#' Workers can either be set up manually before running the function with \code{future::plan(multiprocess)} or automatically by the function (maximum number of workers is 12 in this case). If workers are set up manually the 
 #' number of cores should be provided to \code{n_cores}. Worker can be terminated after completion with \code{future::plan(sequential)}. It is not possible to export the 
 #' individual fit objects when using this function as compared to the non parallel function as they are too large for efficient export from the workers. 
 #'
@@ -38,11 +38,13 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, n_cores 
   . = NULL
   multiprocess = NULL
   sequential = NULL
+  terminate = FALSE
   
   if(missing(n_cores)){
     message("Setting up workers ... ", appendLF = FALSE)
     terminate = TRUE
     n_cores <- parallel::detectCores()
+    n_cores <- ifelse(n_cores > 12, 12, n_cores)
     future::plan(multiprocess)
     message("DONE", appendLF = TRUE)
   }
