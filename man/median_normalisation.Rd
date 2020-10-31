@@ -4,14 +4,12 @@
 \alias{median_normalisation}
 \title{Median normalisation}
 \usage{
-median_normalisation(data, sample, grouping, intensity_log2)
+median_normalisation(data, sample, intensity_log2)
 }
 \arguments{
 \item{data}{A data frame containing at least sample names, grouping variables and intensity values.}
 
 \item{sample}{The name of the column containing the sample names.}
-
-\item{grouping}{The name of the column containing the grouping variable - this can be peptides, precursors or proteins.}
 
 \item{intensity_log2}{The name of the column containing the log2 transformed intensity values to be normalised.}
 }
@@ -25,7 +23,6 @@ Performs median normalisation on intensities. The normalised intensity is the or
 \dontrun{
 median_normalisation(data,
 sample = r_file_name,
-grouping = eg_precursor_id,
 intensity_log2 = intensity_log2)
 }
 }
