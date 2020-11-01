@@ -82,7 +82,7 @@ treatment_enrichment <- function(data, protein_id, is_significant, binds_treatme
     dplyr::mutate(count = ifelse(.data$name == "All detected proteins", .data$total_interactor, .data$sig_interactor)) %>%
     ggplot2::ggplot(ggplot2::aes(.data$name, .data$value)) +
     ggplot2::geom_col(fill = "cornflowerblue", col = "black", size = 1.2) +
-    ggplot2::labs(title = paste0("Proteins interacting with ", treatment_name, " (p-value: ", round(cont_table$pval, digits = 3), ")"), x = "", y = paste("Interact with", treatment_name, "[%]")) +
+    ggplot2::labs(title = paste0("Proteins interacting with ", treatment_name, " (p-value: ", ifelse(cont_table$pval < 0.01, formatC(cont_table$pval, format = "e", digits = 1), round(cont_table$pval, digits = 2)), ")"), x = "", y = paste("Interact with", treatment_name, "[%]")) +
     ggplot2::geom_text(aes(label = paste("n =", count)), position = position_stack(vjust = 0.5), size = 8) +
     ggplot2::theme_bw() +
     ggplot2::theme(

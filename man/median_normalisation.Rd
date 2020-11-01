@@ -7,7 +7,7 @@
 median_normalisation(data, sample, intensity_log2)
 }
 \arguments{
-\item{data}{A data frame containing at least sample names, grouping variables and intensity values.}
+\item{data}{A data frame containing at least sample names and intensity values.}
 
 \item{sample}{The name of the column containing the sample names.}
 
