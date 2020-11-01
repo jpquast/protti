@@ -36,8 +36,6 @@
 #' }
 parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, n_cores = NULL){
   . = NULL
-  multiprocess = NULL
-  sequential = NULL
   terminate = FALSE
   
   if(missing(n_cores)){
@@ -45,7 +43,7 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, n_cores 
     terminate = TRUE
     n_cores <- parallel::detectCores()
     n_cores <- ifelse(n_cores > 12, 12, n_cores)
-    future::plan(multiprocess)
+    future::plan(future::multiprocess)
     message("DONE", appendLF = TRUE)
   }
   
@@ -67,7 +65,7 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, n_cores 
   message("DONE", appendLF = TRUE)
   
   if(terminate == TRUE){
-    future::plan(sequential)
+    future::plan(future::sequential)
   }
   
   result
