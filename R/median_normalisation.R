@@ -2,7 +2,7 @@
 #'
 #' Performs median normalisation on intensities. The normalised intensity is the original intensity minus the run median plus the global median. This is also the way it is implemented in Spectronaut.
 #'
-#' @param data A data frame containing at least sample names, grouping variables and intensity values.
+#' @param data A data frame containing at least sample names and intensity values.
 #' @param sample The name of the column containing the sample names.
 #' @param intensity_log2 The name of the column containing the log2 transformed intensity values to be normalised.
 #'
