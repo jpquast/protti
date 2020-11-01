@@ -11,6 +11,7 @@
 #' @param target Optional argument required for \code{method = "target"}, protein identifier for your protein of interest.
 #' @param title Optional argument specifying the title of the volcano plot. Default is "Volcano plot".
 #' @param x_axis_label Optional argument specifying the x-axis label. Default is "log2(fold change)".
+#' @param y_axis_label Optional argument specifying the y-axis label. Default is -log10(q-value)".
 #' @param log2FC_cutoff Optional argument specifying the log2 transformed fold change cutoff used for assessing whether changes are significant. Default value is 1.
 #' @param significance_cutoff Optional argument specifying the p-value cutoff used for assessing significance of changes. Default is 0.01.
 #'
@@ -38,11 +39,12 @@
 #' target = "Q9Y6K9",
 #' title = "Finding Nemo",
 #' x_axis_label = "log2(fold change) treated vs untreated",
+#' y_axis_label = "-log10(p-value)".
 #' log2FC_cutoff = 2,
 #' significance_cutoff = 0.05
 #' )
 #' }
-volcano_protti <- function(data, grouping, log2FC, significance, method, protein_identifier = NULL, target = NULL, title = "Volcano plot", x_axis_label = "log2(fold change)", log2FC_cutoff = 1, significance_cutoff = 0.01)
+volcano_protti <- function(data, grouping, log2FC, significance, method, protein_identifier = NULL, target = NULL, title = "Volcano plot", x_axis_label = "log2(fold change)", y_axis_label = "-log10(q-value)", log2FC_cutoff = 1, significance_cutoff = 0.01)
 {
   if (method == "target")
   {
@@ -70,7 +72,7 @@ volcano_protti <- function(data, grouping, log2FC, significance, method, protein
       labs(
         title = title,
         x = x_axis_label,
-        y = "-log10(p-value)"
+        y = y_axis_label
       ) +
       geom_hline(yintercept = -1 * log10(significance_cutoff), linetype = "dashed") +
       geom_vline(xintercept = log2FC_cutoff, linetype = "dashed") +
@@ -101,7 +103,7 @@ volcano_protti <- function(data, grouping, log2FC, significance, method, protein
       labs(
         title = title,
         x = x_axis_label,
-        y = "-log10(p-value)"
+        y = y_axis_label
       ) +
       geom_hline(yintercept = -1 * log10(significance_cutoff), linetype = "dashed") +
       geom_vline(xintercept = log2FC_cutoff, linetype = "dashed") +
