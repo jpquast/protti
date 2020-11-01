@@ -66,7 +66,7 @@ plot_drc_4p <- function(data, grouping, response, dose, targets, unit = paste0("
         ggplot2::geom_point(size = 2, col = "#5680C1") +
         suppressWarnings(ggplot2::geom_ribbon(data = y, ggplot2::aes(x = .data$dose, y = .data$Prediction, ymin = .data$Lower, ymax = .data$Upper), alpha = 0.2, fill = "#B96DAD")) +
         ggplot2::geom_line(data = y, ggplot2::aes(x=dose, y = .data$Prediction), size = 1.2) +
-        ggplot2::labs(title = z, x = paste0("log10 Concentration [", unit, "]"), y = y_axis_name) +
+        ggplot2::labs(title = z, x = paste0("Concentration [", unit, "]"), y = y_axis_name) +
         ggplot2::scale_x_log10() +
         ggplot2::theme_bw() +
         ggplot2::theme(
@@ -117,7 +117,7 @@ plot_drc_4p <- function(data, grouping, response, dose, targets, unit = paste0("
         ggplot2::geom_point(size = 2, col = "#5680C1") +
         suppressWarnings(ggplot2::geom_ribbon(data = input_curve_plot, ggplot2::aes(x = .data$dose, y = .data$Prediction, ymin = .data$Lower, ymax = .data$Upper), alpha = 0.2, fill = "#B96DAD")) +
         ggplot2::geom_line(data = input_curve_plot, ggplot2::aes(x = .data$dose, y = .data$Prediction), size = 1.2) +
-        ggplot2::labs(title = unique(input_points_plot$name), x = paste0("log10 Concentration [", unit, "]"), y = y_axis_name) +
+        ggplot2::labs(title = unique(input_points_plot$name), x = paste0("Concentration [", unit, "]"), y = y_axis_name) +
         ggplot2::scale_x_log10() +
         ggplot2::theme_bw() +
         ggplot2::theme(
@@ -177,7 +177,7 @@ plot_drc_4p <- function(data, grouping, response, dose, targets, unit = paste0("
         ggplot2::geom_point(size = 2, col = "#5680C1") +
         suppressWarnings(ggplot2::geom_ribbon(data = input_curve_plot, ggplot2::aes(x = .data$dose, y = .data$Prediction, ymin = .data$Lower, ymax = .data$Upper), alpha = 0.2, fill = "#B96DAD")) +
         ggplot2::geom_line(data = input_curve_plot, ggplot2::aes(x = .data$dose, y = .data$Prediction), size = 1.2) +
-        ggplot2::labs(title = "Dose response model curve fits", x = paste0("log10 Concentration [", unit, "]"), y = y_axis_name) +
+        ggplot2::labs(title = "Dose response model curve fits", x = paste0("Concentration [", unit, "]"), y = y_axis_name) +
         ggplot2::scale_x_log10() +
         ggplot2::facet_wrap(~ .data$name, scales = scales, ncol = 4) +
         ggplot2::theme_bw() +
