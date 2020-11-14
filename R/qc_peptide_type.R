@@ -31,44 +31,51 @@
 #' plot = TRUE)
 #' }
 qc_peptide_type <- function(data, sample, peptide, pep_type, intensity = NULL, method = "count", plot = FALSE, interactive = FALSE)
-  {
+{
   if(method == "count")
   {
-  result <- data %>%
-    dplyr::distinct({{sample}}, {{peptide}}, {{pep_type}}) %>%
-    tidyr::drop_na({{pep_type}}) %>%
-    dplyr::count({{sample}}, {{pep_type}}, name = "count") %>%
-    dplyr::group_by({{sample}}) %>%
-    dplyr::mutate(peptide_type_percent = .data$count/sum(.data$count)*100)
+    result <- data %>%
+      dplyr::distinct({{sample}}, {{peptide}}, {{pep_type}}) %>%
+      tidyr::drop_na({{pep_type}}) %>%
+      dplyr::count({{sample}}, {{pep_type}}, name = "count") %>%
+      dplyr::group_by({{sample}}) %>%
+      dplyr::mutate(peptide_type_percent = .data$count/sum(.data$count)*100) %>%
+      dplyr::distinct({{sample}}, {{pep_type}}, .data$peptide_type_percent) %>%
+      dplyr::mutate(pep_type = factor({{pep_type}}, levels = c("fully-tryptic", "semi-tryptic", "non-tryptic")))
 
-  if (plot == TRUE & interactive == FALSE){
-    plot <- result %>%
-      ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = {{pep_type}})) +
-      ggplot2::geom_bar(stat = "identity", position = "dodge", col = "black") +
-      ggplot2::labs(title = "Peptide types per .raw file", x = "Sample", y = "Percentage of peptides", fill = "Type") +
-      ggplot2::geom_text(ggplot2::aes(label = round(.data$peptide_type_percent, digits = 1), y = .data$peptide_type_percent + max(.data$peptide_type_percent) * 0.03), position = position_dodge(1), size = 4) +
-      ggplot2::theme_bw() +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 75, hjust = 1)) +
-      ggplot2::coord_cartesian(ylim = c(0, (max(result$peptide_type_percent))))
+    if (plot == TRUE & interactive == FALSE){
+      plot <- result %>%
+        ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = .data$pep_type)) +
+        ggplot2::geom_col(col = "black") +
+        ggplot2::labs(title = "Peptide types per .raw file", x = "Sample", y = "Percentage of peptides", fill = "Type") +
+        ggplot2::theme_bw() +
+        ggplot2::theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
+        ggplot2::scale_fill_manual(values = c("#5680C1",
+                                              "#B96DAD",
+                                              "#64CACA",
+                                              "#81ABE9"))
 
-    return(plot)
-  }
-  if (plot == TRUE & interactive == TRUE) {
-    plot <- result %>%
-      ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = {{pep_type}})) +
-      ggplot2::geom_bar(stat = "identity", position = "dodge", col = "black") +
-      ggplot2::labs(title = "Peptide types per .raw file", x = "Sample", y = "Percentage of peptides", fill = "Type") +
-      ggplot2::theme_bw() +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 75, hjust = 1)) +
-      ggplot2::coord_cartesian(ylim = c(0, (max(result$peptide_type_percent))))
+      return(plot)
+    }
+    if (plot == TRUE & interactive == TRUE) {
+      plot <- result %>%
+        ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = .data$pep_type)) +
+        ggplot2::geom_col(col = "black") +
+        ggplot2::labs(title = "Peptide types per .raw file", x = "Sample", y = "Percentage of peptides", fill = "Type") +
+        ggplot2::theme_bw() +
+        ggplot2::theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
+        ggplot2::scale_fill_manual(values = c("#5680C1",
+                                              "#B96DAD",
+                                              "#64CACA",
+                                              "#81ABE9"))
 
-    interactive_plot <- plotly::ggplotly(plot)
+      interactive_plot <- plotly::ggplotly(plot)
 
-    return(interactive_plot)
-  }
-  if (plot == FALSE){
-    return(result)
-  }
+      return(interactive_plot)
+    }
+    if (plot == FALSE){
+      return(result)
+    }
   }
 
   if(method == "intensity")
@@ -81,28 +88,34 @@ qc_peptide_type <- function(data, sample, peptide, pep_type, intensity = NULL, m
       dplyr::group_by({{sample}}, {{pep_type}}) %>%
       dplyr::mutate(pep_type_int = sum({{intensity}})) %>%
       dplyr::group_by({{sample}}) %>%
-      dplyr::mutate(peptide_type_percent = (.data$pep_type_int / .data$total_int) * 100)
+      dplyr::mutate(peptide_type_percent = (.data$pep_type_int / .data$total_int) * 100) %>%
+      dplyr::distinct({{sample}}, {{pep_type}}, .data$peptide_type_percent) %>%
+      dplyr::mutate(pep_type = factor({{pep_type}}, levels = c("fully-tryptic", "semi-tryptic", "non-tryptic")))
 
     if (plot == TRUE & interactive == FALSE){
       plot <- result %>%
-        ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = {{pep_type}})) +
-        ggplot2::geom_bar(stat = "identity", position = "dodge", col = "black") +
-        ggplot2::labs(title = "Peptide type intensity percentage per .raw file", x = "Sample", y = "Percentage of total peptide intensity", fill = "Type") +
-        ggplot2::geom_text(ggplot2::aes(label = round(.data$peptide_type_percent, digits = 1), y = .data$peptide_type_percent + max(.data$peptide_type_percent) * 0.03), position = position_dodge(1), size = 4) +
+        ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = .data$pep_type)) +
+        ggplot2::geom_col(col = "black") +
+        ggplot2::labs(title = "Peptide type intensity per .raw file", x = "Sample", y = "Percentage of total peptide intensity", fill = "Type") +
         ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 75, hjust = 1)) +
-        ggplot2::coord_cartesian(ylim = c(0, (max(result$peptide_type_percent))))
-
+        ggplot2::theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
+        ggplot2::scale_fill_manual(values = c("#5680C1",
+                                              "#B96DAD",
+                                              "#64CACA",
+                                              "#81ABE9"))
       return(plot)
     }
     if (plot == TRUE & interactive == TRUE) {
       plot <- result %>%
-        ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = {{pep_type}})) +
-        ggplot2::geom_bar(stat = "identity", position = "dodge", col = "black") +
-        ggplot2::labs(title = "Peptide type intensity percentage per .raw file", x = "Sample", y = "Percentage of total peptide intensity", fill = "Type") +
+        ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = .data$pep_type)) +
+        ggplot2::geom_col(col = "black") +
+        ggplot2::labs(title = "Peptide type intensity per .raw file", x = "Sample", y = "Percentage of total peptide intensity", fill = "Type") +
         ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 75, hjust = 1)) +
-        ggplot2::coord_cartesian(ylim = c(0, (max(result$peptide_type_percent))))
+        ggplot2::theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
+        ggplot2::scale_fill_manual(values = c("#5680C1",
+                                              "#B96DAD",
+                                              "#64CACA",
+                                              "#81ABE9"))
 
       interactive_plot <- plotly::ggplotly(plot)
 

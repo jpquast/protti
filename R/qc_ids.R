@@ -42,12 +42,28 @@ qc_ids <-
     plot <- result %>%
       ggplot2::ggplot(aes(x = {{sample}}, y = .data$count, fill = {{condition}})) +
       geom_col(col = "black") +
-      {if(length(result %>% ungroup() %>% select({{condition}})) == 0 ) geom_col(fill = "cornflowerblue", col = "black")}  +
+      {if(length(result %>% ungroup() %>% select({{condition}})) == 0 ) geom_col(fill = "#5680C1", col = "black")}  +
       labs(title = title,
            x = "sample",
            y = "count") +
       theme_bw() +
-      theme(axis.text.x = element_text(angle = 75, hjust = 1))
+      theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
+      scale_fill_manual(values = c("#5680C1",
+                                   "#B96DAD",
+                                   "#64CACA",
+                                   "#81ABE9",
+                                   "#F6B8D1",
+                                   "#99F1E4",
+                                   "#9AD1FF",
+                                   "#548BDF",
+                                   "#A55098",
+                                   "#3EB6B6",
+                                   "#87AEE8",
+                                   "#CA91C1",
+                                   "#A4E0E0",
+                                   "#1D4F9A",
+                                   "#D7ACD2",
+                                   "#49C1C1"))
     if (interactive == TRUE)
     {
       return(plotly::ggplotly(plot))

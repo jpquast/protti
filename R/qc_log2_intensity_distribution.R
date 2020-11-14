@@ -30,7 +30,7 @@ qc_log2_intensity_distribution <-
 
     plot <- result %>%
       ggplot2::ggplot(aes(x = {{log2_intensity}})) +
-      geom_histogram(binwidth = 0.5, color = "black", fill = "cornflowerblue") +
+      geom_histogram(binwidth = 0.5, color = "black", fill = "#5680C1") +
       theme_bw() +
       labs(title = "Log2(intensity) distribution over all samples", x = "log2(intensity)", y = "frequency")
     return(plot)

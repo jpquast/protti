@@ -14,8 +14,9 @@ volcano_protti(
   target = NULL,
   title = "Volcano plot",
   x_axis_label = "log2(fold change)",
-  foldchange_cutoff = 1,
-  significance_cutoff = 0.01
+  foldchange_cutoff = 2,
+  significance_cutoff = 0.01,
+  interactive = FALSE
 )
 }
 \arguments{
@@ -37,9 +38,11 @@ volcano_protti(
 
 \item{x_axis_label}{Optional argument specifying the x-axis label. Default is "log2(fold change)".}
 
-\item{foldchange_cutoff}{Optional argument specifying the fold change cutoff used for assessing whether changes are significant. As a log2 scale should be used, the default value is 1.}
+\item{foldchange_cutoff}{Optional argument specifying the fold change cutoff used for assessing whether changes are significant. Default is 2.}
 
 \item{significance_cutoff}{Optional argument specifying the p-value cutoff used for assessing significance of changes. Default is 0.01.}
+
+\item{interactive}{Optional argument specifying whether the plot should be interactive or non-interactive. Default is FALSE.}
 }
 \value{
 Depending on the method used a volcano plot with either highlighted target protein (\code{method = "target"}) or highlighted significant proteins (\code{method = "significant"}) is returned.
@@ -59,8 +62,9 @@ protein_identifier = uniprot_id,
 target = "Q9Y6K9",
 title = "Finding Nemo",
 x_axis_label = "log2(fold change) treated vs untreated",
-foldchange_cutoff = 0.5,
-significance_cutoff = 0.05
+foldchange_cutoff = 2,
+significance_cutoff = 0.05,
+interactive = TRUE
 )
 }
 }

@@ -1,5 +1,5 @@
 #' Protein coverage distribution
-#' 
+#'
 #' Plots the distribution of protein coverages in a histogram.
 #'
 #' @param data A data frame containing at least the input variables.
@@ -22,7 +22,7 @@
 #' coverage = coverage
 #' )
 #' }
-#' 
+#'
 #' @seealso \code{\link{sequence_coverage}}
 qc_sequence_coverage <- function(data, protein_identifier, coverage, interactive = TRUE) {
 result <- data %>%
@@ -30,7 +30,7 @@ result <- data %>%
 
 plot <- result %>%
   ggplot2::ggplot(ggplot2::aes({{coverage}})) +
-  ggplot2::geom_histogram(binwidth = 5, col = "black", fill = "cornflowerblue", boundary = 0) +
+  ggplot2::geom_histogram(binwidth = 5, col = "black", fill = "#5680C1", boundary = 0) +
   ggplot2::geom_vline(xintercept = stats::median(dplyr::pull(result, coverage)), linetype = "dashed") +
   ggplot2::labs(title = "Protein coverage distribution", x = "Coverage [%]", y = "Number of proteins") +
   ggplot2::scale_x_continuous(breaks = seq(from = 0, to = 100, by = 10)) +

@@ -4,25 +4,28 @@
 \alias{fit_drc_4p}
 \title{Fitting four-parameter dose response curves}
 \usage{
-fit_drc_4p(data, sample, grouping, response, dose)
+fit_drc_4p(data, sample, grouping, response, dose, include_models = FALSE)
 }
 \arguments{
-\item{data}{a data frame containing at least the input variables.}
+\item{data}{A data frame containing at least the input variables.}
 
-\item{sample}{the name of the column containing the sample names.}
+\item{sample}{The name of the column containing the sample names.}
 
-\item{grouping}{the name of the column containing precursor, peptide or protein identifiers.}
+\item{grouping}{The name of the column containing precursor, peptide or protein identifiers.}
 
-\item{response}{the name of the column containing response values, eg. log2 transformed intensities.}
+\item{response}{The name of the column containing response values, eg. log2 transformed intensities.}
 
-\item{dose}{the name of the column containing dose values, eg. the treatment concentrations.}
+\item{dose}{The name of the column containing dose values, eg. the treatment concentrations.}
+
+\item{include_models}{A logical indicating if model fit objects should be exported. These are usually very large and not necessary for further analysis.}
 }
 \value{
-A list that contains: 
+If \code{include_models = FALSE} a data frame is returned that contains correlations of predicted to measured values as a measure of the goodness of the curve fit,
+an associated p-value and the four parameters of the model for each group. Furthermore, input data for plots is returned in the columns \code{plot_curve} (curve and confidence interval) and \code{plot_points} (measured points).
+If \ code{include_models = TURE}, a list is returned that contains: 
 \itemize{
-\item{\code{fit_objects}: }{The fit objects of type \code{drc} for each group. }
-\item{\code{correlations}: }{A data frame that contains correlation of predicted to measured values as a measure of the goodness of the curve fit, an associated p-value and the four parameters of the model for each group.}
-\item{\code{plots}: }{The ggplot objects containing the curve plot. Printing these will print the plot.}
+\item{\code{fit_objects}: }{The fit objects of type \code{drc} for each group.}
+\item{\code{correlations}: }{The correlation data frame described above}
 }
 }
 \description{

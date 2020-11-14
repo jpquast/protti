@@ -4,30 +4,25 @@
 \alias{median_normalisation}
 \title{Median normalisation}
 \usage{
-median_normalisation(
-  data,
-  file_column_name,
-  intensity_column_name,
-  na.rm = FALSE
-)
+median_normalisation(data, sample, intensity_log2)
 }
 \arguments{
 \item{data}{A data frame containing at least sample names and intensity values.}
 
-\item{file_column_name}{The name of the column containing the sample names.}
+\item{sample}{The name of the column containing the sample names.}
 
-\item{intensity_column_name}{The name of the column containing the intensity values.}
-
-\item{na.rm}{A logical indicating wther missing values should be removed.}
+\item{intensity_log2}{The name of the column containing the log2 transformed intensity values to be normalised.}
 }
 \value{
-A data frame that contains the input data and an additional column with normalised intensity values.
+A dataframe with a column called \code{normalised_intensity_log2} containing the normalised intensity values.
 }
 \description{
-Median normalise intensity values for all samples of mass spectrometry data. The intensity values are ideally log2 transformed. The output is a new column called normalised_intensity_log2.
+Performs median normalisation on intensities. The normalised intensity is the original intensity minus the run median plus the global median. This is also the way it is implemented in Spectronaut.
 }
 \examples{
 \dontrun{
-median_normalisation(data, sample_name, intensity_log2, na.rm = TRUE)
+median_normalisation(data,
+sample = r_file_name,
+intensity_log2 = intensity_log2)
 }
 }
