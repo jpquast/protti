@@ -246,17 +246,3 @@ protein_abundance_normalisation <- function(lip_peptides, tc_proteins, sample, g
     return(ttest_output)
   }
 }
-# 
-# 
-# check2 <- protein_abundance_normalisation(lip_peptides = missingness_lip, 
-#                               tc_proteins = tc_prot, 
-#                               sample = r_file_name,
-#                               protein_id = pg_protein_accessions, 
-#                               grouping = eg_precursor_id, 
-#                               condition = r_condition,
-#                               peptide_intensity = normalised_intensity_log2,
-#                               protein_intensity = protein_intensity,
-#                               method = "ref_vs_rest",
-#                               comparison = comparison,
-#                               replicate_index = replicate_index,
-#                               paired = FALSE)
