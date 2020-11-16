@@ -20,7 +20,7 @@ qc_cvs(
 
 \item{condition}{The column in the data dataframe containing condition information (e.g. "treated" and "control").}
 
-\item{intensity}{Column containing the corresponding intensity values for each peptide or precursor.}
+\item{intensity}{Column containing the corresponding raw intensity values (not log2 transformed) for each peptide or precursor.}
 
 \item{plot}{A logical indicating whether the result should be plotted. Default is TRUE.}
 
