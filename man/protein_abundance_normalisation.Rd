@@ -43,10 +43,12 @@ are required. Ideally the output of \code{assign_missingness} or \code{impute} i
 
 \item{method}{A character vector specifying which method should be used. If \code{method = "all_vs_all"} an ANOVA based method will be performed that 
 compares all conditions with each other followed by Tukey's honestly significant difference test to identify pairs of conditions that are significantly different.
-If \code{mehtod = "ref_vs_rest"} a reference condition will be compared against all other conditions using a Welch t-test in order to identify significantly
+If \code{method = "ref_vs_rest"} a reference condition will be compared against all other conditions using a Welch t-test in order to identify significantly
 changing peptides or precursors.}
 
-\item{paired}{A logical indicating if LiP and tryptic control data are paired. In other words it indicates if replicates of LiP and tryptic control belong together.}
+\item{paired}{A logical indicating if LiP and tryptic control replicates for each condition are paired. That means they belong together because they were 
+taken from the exact same sample and then split in LiP and tryptic control conditions. If they are paired protein abundances are only used if there was a 
+corresponding peptide detected in the LiP condition.}
 
 \item{replicate_index}{The column in the data frame containing numbering for condition replicates. This column is only required if LiP and tryptic control samples are paired.
 In that case the corresponding samples in both files should have the same numbering.}
