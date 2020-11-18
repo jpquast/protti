@@ -24,7 +24,7 @@ qc_cvs(
 
 \item{plot}{A logical indicating whether the result should be plotted. Default is TRUE.}
 
-\item{plot_style}{Variable indicating the plotting style. \code{plot_style = "boxplot"} plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution. Default is \code{plot_style = "density"}.}
+\item{plot_style}{Variable indicating the plotting style. \code{plot_style = "boxplot"} plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution. \code{plot_style = "violin"} returns a violin plot. Default is \code{plot_style = "density"}.}
 }
 \value{
 Either the median CVs in % or a plot showing the distribution of the CVs.
