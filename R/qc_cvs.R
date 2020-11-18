@@ -76,6 +76,7 @@ qc_cvs <-
         tidyr::drop_na() %>%
         tidyr::pivot_longer(cols = starts_with("cv"), names_to = "type", values_to = "values") %>%
         dplyr::mutate(type = ifelse(.data$type == "cv", {{condition}}, "combined")) %>%
+        dplyr::mutate(type = fct_relevel(as.factor(type), "combined")) %>%
         dplyr::select(-{{condition}}) %>%
         dplyr::distinct()
 
@@ -87,7 +88,7 @@ qc_cvs <-
     if(plot_style == "boxplot")
     {
       plot <- ggplot2::ggplot(result) +
-        ggplot2::geom_boxplot(aes(x = .data$type, y = .data$values, fill = .data$type)) +
+        ggplot2::geom_boxplot(aes(x = .data$type, y = .data$values, fill = .data$type), na.rm = TRUE) +
         ggplot2::theme_bw() +
         ggplot2::ylab("Coefficient of variation [%]") +
         ggplot2::labs(title = "Coefficients of variation") +
@@ -116,7 +117,7 @@ qc_cvs <-
     if(plot_style == "density")
     {
       plot <- ggplot2::ggplot(result) +
-        ggplot2::geom_density(aes(x = .data$values, col = .data$type), size = 1) +
+        ggplot2::geom_density(aes(x = .data$values, col = .data$type), size = 1, na.rm = TRUE) +
         ggplot2::theme_bw() +
         ggplot2::ylab("Density") +
         ggplot2::labs(title = "Coefficients of variation") +
@@ -144,8 +145,9 @@ qc_cvs <-
     }
       if(plot_style == "violin")
       {
-        plot <- ggplot2::ggplot(result) +
-          ggplot2::geom_violin(aes(x = .data$type, y = .data$values, fill = .data$type)) +
+        plot <- ggplot2::ggplot(result, aes(x = .data$type, y = .data$values, fill = .data$type)) +
+          ggplot2::geom_violin(na.rm = TRUE) +
+          ggplot2::geom_boxplot(width = 0.15, fill = "white", na.rm = TRUE, alpha = 0.6) +
           ggplot2::theme_bw() +
           ggplot2::ylab("Coefficient of variation [%]") +
           ggplot2::labs(title = "Coefficients of variation") +
