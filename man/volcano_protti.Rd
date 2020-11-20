@@ -7,14 +7,15 @@
 volcano_protti(
   data,
   grouping,
-  foldchange,
+  log2FC,
   significance,
   method,
   protein_identifier = NULL,
   target = NULL,
   title = "Volcano plot",
   x_axis_label = "log2(fold change)",
-  foldchange_cutoff = 2,
+  y_axis_label = "-log10(q-value)",
+  log2FC_cutoff = 1,
   significance_cutoff = 0.01,
   interactive = FALSE
 )
@@ -24,7 +25,7 @@ volcano_protti(
 
 \item{grouping}{Column in the data dataframe containing either precursor or peptide identifiers.}
 
-\item{foldchange}{Column in the dataframe containing the fold changes (ideally log2 transformed) between two conditions}
+\item{log2FC}{Column in the dataframe containing the log2 transfromed fold changes between two conditions.}
 
 \item{significance}{Column containing the p-value or adjusted p-value for the corresponding fold changes. P-value is ideally adjusted using e.g. Benjamini-Hochberg correction.}
 
@@ -38,11 +39,13 @@ volcano_protti(
 
 \item{x_axis_label}{Optional argument specifying the x-axis label. Default is "log2(fold change)".}
 
-\item{foldchange_cutoff}{Optional argument specifying the fold change cutoff used for assessing whether changes are significant. Default is 2.}
+\item{y_axis_label}{Optional argument specifying the y-axis label. Default is -log10(q-value)".}
+
+\item{log2FC_cutoff}{Optional argument specifying the log2 transformed fold change cutoff used for assessing whether changes are significant. Default value is 1.}
 
 \item{significance_cutoff}{Optional argument specifying the p-value cutoff used for assessing significance of changes. Default is 0.01.}
 
-\item{interactive}{Optional argument specifying whether the plot should be interactive or non-interactive. Default is FALSE.}
+\item{interactive}{Logical, indicating whether the plot should be interactive or not. Default is \code{interactive = FALSE}.}
 }
 \value{
 Depending on the method used a volcano plot with either highlighted target protein (\code{method = "target"}) or highlighted significant proteins (\code{method = "significant"}) is returned.
@@ -55,14 +58,15 @@ Plots a volcano plot for the given input.
 volcano_protti(
 data,
 grouping = pep_stripped_sequence,
-foldchange = Log2FC,
+log2FC = log2FC,
 significance = p_value,
 method = "target",
 protein_identifier = uniprot_id,
 target = "Q9Y6K9",
 title = "Finding Nemo",
 x_axis_label = "log2(fold change) treated vs untreated",
-foldchange_cutoff = 2,
+y_axis_label = "-log10(p-value)",
+log2FC_cutoff = 2,
 significance_cutoff = 0.05,
 interactive = TRUE
 )

@@ -16,6 +16,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
 #' @importFrom stats sd
+#' @importFrom forcats fct_relevel
 #' @export
 #'
 #' @examples
@@ -76,7 +77,7 @@ qc_cvs <-
         tidyr::drop_na() %>%
         tidyr::pivot_longer(cols = starts_with("cv"), names_to = "type", values_to = "values") %>%
         dplyr::mutate(type = ifelse(.data$type == "cv", {{condition}}, "combined")) %>%
-        dplyr::mutate(type = fct_relevel(as.factor(type), "combined")) %>%
+        dplyr::mutate(type = forcats::fct_relevel(as.factor(.data$type), "combined")) %>%
         dplyr::select(-{{condition}}) %>%
         dplyr::distinct()
 

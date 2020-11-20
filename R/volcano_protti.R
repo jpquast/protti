@@ -14,6 +14,7 @@
 #' @param y_axis_label Optional argument specifying the y-axis label. Default is -log10(q-value)".
 #' @param log2FC_cutoff Optional argument specifying the log2 transformed fold change cutoff used for assessing whether changes are significant. Default value is 1.
 #' @param significance_cutoff Optional argument specifying the p-value cutoff used for assessing significance of changes. Default is 0.01.
+#' @param interactive Logical, indicating whether the plot should be interactive or not. Default is \code{interactive = FALSE}.
 #'
 #' @return Depending on the method used a volcano plot with either highlighted target protein (\code{method = "target"}) or highlighted significant proteins (\code{method = "significant"}) is returned.
 #' @import dplyr
@@ -39,12 +40,13 @@
 #' target = "Q9Y6K9",
 #' title = "Finding Nemo",
 #' x_axis_label = "log2(fold change) treated vs untreated",
-#' y_axis_label = "-log10(p-value)".
+#' y_axis_label = "-log10(p-value)",
 #' log2FC_cutoff = 2,
-#' significance_cutoff = 0.05
+#' significance_cutoff = 0.05,
+#' interactive = TRUE
 #' )
 #' }
-volcano_protti <- function(data, grouping, log2FC, significance, method, protein_identifier = NULL, target = NULL, title = "Volcano plot", x_axis_label = "log2(fold change)", y_axis_label = "-log10(q-value)", log2FC_cutoff = 1, significance_cutoff = 0.01)
+volcano_protti <- function(data, grouping, log2FC, significance, method, protein_identifier = NULL, target = NULL, title = "Volcano plot", x_axis_label = "log2(fold change)", y_axis_label = "-log10(q-value)", log2FC_cutoff = 1, significance_cutoff = 0.01, interactive = FALSE)
 {
   if (method == "target")
   {
@@ -81,6 +83,8 @@ volcano_protti <- function(data, grouping, log2FC, significance, method, protein
       theme_bw() +
       scale_x_continuous(breaks = seq(round(-1 * max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) + 0.5, 0), 1)) +
       coord_cartesian(xlim = c(round(-1 * max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) + 0.5, 0)))
+
+    if(interactive == FALSE) return(plot)
     return(plotly::ggplotly(plot))
   }
   if (method == "significant")
@@ -112,6 +116,8 @@ volcano_protti <- function(data, grouping, log2FC, significance, method, protein
       theme_bw() +
       scale_x_continuous(breaks = seq(round(-1 * max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) + 0.5, 0), 1)) +
       coord_cartesian(xlim = c(round(-1 * max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) + 0.5, 0)))
+
+    if(interactive == FALSE) return(plot)
     return(plotly::ggplotly(plot))
   }
 }
