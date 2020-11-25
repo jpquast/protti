@@ -124,7 +124,7 @@ protein_abundance_normalisation <- function(lip_peptides, tc_proteins, sample, g
       tidyr::drop_na()
     
     combined <- lip_peptides %>% 
-      dplyr::left_join(tc_proteins, by = c(rlang::as_name(rlang::enquo(protein_id)), rlang::as_name(rlang::enquo(condition)), rlang::as_name(rlang::enquo(replicate_index)))) %>% #if only peptides for which a protein intensity was measured should be included change to inner_join
+      dplyr::left_join(tc_proteins, by = c(rlang::as_name(rlang::enquo(protein_id)), rlang::as_name(rlang::enquo(condition)), rlang::as_name(rlang::enquo(replicate_index)), rlang::as_name(rlang::enquo(comparison)))) %>% #if only peptides for which a protein intensity was measured should be included change to inner_join
       dplyr::group_by({{grouping}}, {{condition}}, {{comparison}}) %>% 
       dplyr::mutate(n_replicates_peptide = dplyr::n(),
                     mean_peptide = mean({{peptide_intensity}}),
