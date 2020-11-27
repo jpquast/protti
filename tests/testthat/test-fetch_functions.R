@@ -8,3 +8,4 @@ test_that("fetch_uniprot works", {
   expect_equal(nrow(uniprot), 3)
   expect_equal(ncol(uniprot), 17)
 })
+
