@@ -1,17 +1,28 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-protti <img src='man/figures/protti_logo.png' align="right" width="12.5%" />
-============================================================================
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# protti <img src='man/figures/protti_logo.png' align="right" width="12.5%" />
 
 <!-- badges: start -->
 <!-- badges: end -->
-Overview
---------
+
+## Overview
 
 The goal of protti is to provide useful functions for proteomics data analysis. It can be used for DDA, DIA and SRM data. Both limited proteolysis and regular proteomics experiments can be analysed.
 
-Installation
-------------
+## Installation
 
 You can install the development version from [GitHub](https://github.com/) with:
 
