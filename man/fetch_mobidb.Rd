@@ -13,8 +13,8 @@ fetch_mobidb(organism_id, protein_ids)
 \item{protein_ids}{A character vector of UniProt identifiers. These need to be proteins from the organism provided in \code{organism_id}.}
 }
 \value{
-A data frame that contains start and end positions for disordered (D), structured (S) or conflict/context-dependent (C) regions 
-and their source for each protein provided. A full explanation of sources and regions can be found here: https://mobidb.bio.unipd.it/schema.
+A data frame that contains start and end positions for disordered regions for each protein provided. The \code{feature} column
+contains information on the source of this annotation. More information on the source can be found \href{https://mobidb.bio.unipd.it/about/mobidb}{here}.
 }
 \description{
 Fetches information about disordered protein regions from MobiDB.

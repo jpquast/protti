@@ -9,3 +9,11 @@ test_that("fetch_uniprot works", {
   expect_equal(ncol(uniprot), 17)
 })
 
+test_that("fetch_mobidb works", {
+  unis <- c("iRT", "P25437", "P30870", "P0A6P9")
+  expect_warning(mobidb <- fetch_mobidb("83333", unis))
+  expect_is(mobidb, "data.frame")
+  expect_equal(nrow(mobidb), 2)
+  expect_equal(ncol(mobidb), 7)
+})
+
