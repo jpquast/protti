@@ -105,32 +105,23 @@ create_synthetic_data <- function(
   # remove negative values for sd
   sampled_peptide_sd <- sampled_peptide_sd[sampled_peptide_sd > 0][1:n_proteins]
 
-  # sample peptide intensities
+  # sample peptide intensities and standard deviations
   proteins <- tibble::tibble(protein = paste0("protein_", 1:n_proteins), n = sampled_n_peptides, mean = sampled_protein_intensities, sd = sampled_peptide_sd) %>%
     dplyr::group_by(.data$protein) %>%
-    dplyr::mutate(peptide_intensity_mean = list(stats::rnorm(n = .data$n, mean = .data$mean, sd = .data$sd))) %>%
+    dplyr::mutate(peptide_intensity_mean = list(round(stats::rnorm(n = .data$n, mean = .data$mean, sd = .data$sd), digits = 4))) %>%
     tidyr::unnest(.data$peptide_intensity_mean) %>%
     dplyr::mutate(peptide = paste0("peptide_", stringr::str_extract(.data$protein, pattern = "\\d+"), "_", 1:dplyr::n())) %>%
+    dplyr::mutate(replicate_sd = round(stats::rlnorm(n = 1, meanlog = mean_log_replicates, sdlog = sd_log_replicates), digits = 4)) %>%
     dplyr::select(-c(.data$mean, .data$sd))
-
-  # total peptides
-  n_total_peptides <- nrow(proteins)
-
-  # sample standard deviations for replicates
-  replicate_sd <- stats::rlnorm(n = n_total_peptides, meanlog = mean_log_replicates, sdlog = sd_log_replicates)
-
-  proteins <- proteins %>%
-    bind_cols(replicate_sd = replicate_sd)
-
-  total_samples <- n_conditions * n_replicates
 
   # sample peptide intensities for replicates and conditions
   proteins_replicates <- proteins %>%
     dplyr::group_by(.data$peptide) %>%
-    dplyr::mutate(peptide_intensity = list(stats::rnorm(n = total_samples, mean = .data$peptide_intensity_mean, sd = .data$replicate_sd))) %>%
     dplyr::mutate(condition = list(sort(rep(paste0("condition_", 1:n_conditions), n_replicates)))) %>%
-    tidyr::unnest(c(.data$peptide_intensity, .data$condition)) %>%
-    dplyr::mutate(sample = paste0("sample_", 1:(n_conditions * n_replicates)))
+    tidyr::unnest(c(.data$condition)) %>%
+    dplyr::mutate(sample = paste0("sample_", 1:(n_conditions * n_replicates))) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(peptide_intensity = stats::rnorm(n = dplyr::n(), mean = .data$peptide_intensity_mean, sd = .data$replicate_sd))
 
   # sample significantly changing peptides
 
@@ -142,10 +133,11 @@ create_synthetic_data <- function(
       dplyr::mutate(n_change_peptide = ifelse(.data$change == TRUE, ceiling(stats::rgamma(1, shape = 0.7, rate = 0.4)), 0)) %>% # sample number of significant peptides based on gamma distribution
       dplyr::mutate(n_change_peptide = ifelse(.data$n_change_peptide >= .data$n, .data$n, .data$n_change_peptide)) %>%
       dplyr::mutate(change_peptide = .data$change & stringr::str_extract(.data$peptide, pattern = "\\d+$") %in% 1:unique(.data$n_change_peptide)) %>%
+      dplyr::mutate(effect = stats::rnorm(dplyr::n(), mean = 0, sd = effect_sd)) %>%
+      dplyr::mutate(effect = ifelse(.data$change_peptide == TRUE, .data$effect, 0)) %>%
       dplyr::group_by(.data$condition, .data$peptide) %>%
-      dplyr::mutate(effect = ifelse(.data$change_peptide == TRUE, stats::rnorm(1, mean = 0, sd = effect_sd), 0)) %>%
-      dplyr::mutate(peptide_intensity_mean = .data$peptide_intensity_mean + .data$effect) %>%
-      dplyr::mutate(peptide_intensity = ifelse(.data$change_peptide == TRUE, stats::rnorm(n_replicates, mean = .data$peptide_intensity_mean, sd = .data$replicate_sd), .data$peptide_intensity)) %>%
+      dplyr::mutate(effect = rep(.data$effect[1], n_replicates)) %>%
+      dplyr::mutate(peptide_intensity = .data$peptide_intensity + .data$effect) %>%
       dplyr::select(-c(.data$peptide_intensity_mean, .data$replicate_sd, .data$effect, .data$n, .data$n_change_peptide))
   }
 
@@ -161,13 +153,21 @@ create_synthetic_data <- function(
       dplyr::mutate(n_change_peptide = ifelse(.data$n_change_peptide >= .data$n, .data$n, .data$n_change_peptide)) %>%
       dplyr::mutate(change_peptide = .data$change & stringr::str_extract(.data$peptide, pattern = "\\d+$") %in% 1:unique(.data$n_change_peptide)) %>%
       dplyr::left_join(condition_concentration, by = "condition") %>%
+      dplyr::mutate(effect_total = stats::rnorm(dplyr::n(), mean = 0, sd = effect_sd)) %>%
+      dplyr::mutate(effect_total = ifelse(.data$change_peptide == TRUE, .data$effect_total, 0)) %>%
       dplyr::group_by(.data$peptide) %>%
-      dplyr::mutate(effect_total = ifelse(.data$change_peptide == TRUE, stats::rnorm(1, mean = 0, sd = effect_sd), 0)) %>%
-      dplyr::mutate(effect = ifelse(.data$change_peptide == TRUE, .data$effect_total * (1 + (-1 / (1 + (.data$concentration / stats::rlnorm(1, meanlog = log(mean(concentrations) / 2), sdlog = abs(log(mean(concentrations) / 2) / 3)))^sample(c(stats::rlnorm(1, meanlog = 0.6, sdlog = 0.4), -rlnorm(1, meanlog = 0.6, sdlog = 0.4)), size = 1)))), 0)) %>%
-      dplyr::mutate(peptide_intensity_mean = .data$peptide_intensity_mean + .data$effect) %>%
-      dplyr::group_by(.data$peptide, .data$condition) %>%
-      dplyr::mutate(peptide_intensity = ifelse(.data$change_peptide == TRUE, stats::rnorm(n_replicates, mean = .data$peptide_intensity_mean, sd = .data$replicate_sd), .data$peptide_intensity)) %>%
-      dplyr::select(-c(.data$peptide_intensity_mean, .data$replicate_sd, .data$n, .data$n_change_peptide, .data$effect, .data$effect_total))
+      dplyr::mutate(effect_total = rep(.data$effect_total[1], (n_replicates * n_conditions))) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(b = sample(c(stats::rlnorm(dplyr::n(), meanlog = 0.6, sdlog = 0.4), -rlnorm(dplyr::n(), meanlog = 0.6, sdlog = 0.4)), size = dplyr::n())) %>%
+      dplyr::mutate(c = stats::rlnorm(dplyr::n(), meanlog = log(mean(concentrations) / 2), sdlog = abs(log(mean(concentrations) / 2) / 3))) %>%
+      dplyr::mutate(b = ifelse(.data$change_peptide == TRUE, .data$b, 0)) %>%
+      dplyr::mutate(c = ifelse(.data$change_peptide == TRUE, .data$c, 0)) %>%
+      dplyr::group_by(.data$peptide) %>%
+      dplyr::mutate(b = rep(.data$b[1], (n_replicates * n_conditions))) %>%
+      dplyr::mutate(c = rep(.data$c[1], (n_replicates * n_conditions))) %>%
+      dplyr::mutate(effect = ifelse(.data$change_peptide == TRUE, .data$effect_total * (1 + (-1 / (1 + (.data$concentration / .data$c)^.data$b))), 0)) %>%
+      dplyr::mutate(peptide_intensity = .data$peptide_intensity + .data$effect) %>%
+      dplyr::select(-c(.data$peptide_intensity_mean, .data$replicate_sd, .data$n, .data$n_change_peptide, .data$effect, .data$effect_total, .data$b, .data$c))
     # formula for inflection point and slope sampling roughly simulates the behaviour of real data. They have been figured out by trial and error.
   }
 
