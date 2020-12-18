@@ -2,12 +2,14 @@
 % Please edit documentation in R/qc_ids.R
 \name{qc_ids}
 \alias{qc_ids}
-\title{Check number of precursor/preptide/protein IDs}
+\title{Check number of precursor, preptide or protein IDs}
 \usage{
 qc_ids(
   data,
   sample,
   grouping,
+  intensity,
+  remove_na_intensities = TRUE,
   condition = NULL,
   title = "ID count per sample",
   plot = TRUE,
@@ -17,11 +19,17 @@ qc_ids(
 \arguments{
 \item{data}{Dataframe containing at least sample names and precursor/peptide/protein IDs.}
 
-\item{sample}{Column in the dataframe specifying the sample name.}
+\item{sample}{Column in the data frame specifying the sample name.}
 
-\item{grouping}{Column in the data dataframe containing either precursor, peptide or protein identifiers.}
+\item{grouping}{Column in the data frame containing either precursor, peptide or protein identifiers.}
 
-\item{condition}{Optional column in the dataframe specifying the condition of the sample (e.g. LiP_treated, LiP_untreated), if column is provided, the bars in the plot will be coloured according to the condition.}
+\item{intensity}{Column in the data frame containing intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.}
+
+\item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be droped from the data frame. 
+Default is TRUE since we are usually interested in the number of quantifiable IDs.}
+
+\item{condition}{Optional column in the dataframe specifying the condition of the sample (e.g. LiP_treated, LiP_untreated), 
+if column is provided, the bars in the plot will be coloured according to the condition.}
 
 \item{title}{Optional argument specifying the plot title (default is "ID count per sample").}
 
@@ -30,10 +38,11 @@ qc_ids(
 \item{interactive}{Argument specifying whether the plot should be interactive (default is TRUE).}
 }
 \value{
-A bar plot with the height corresponding to the number of IDs, each bar represents one sample (if \code{plot = TRUE}). If \code{plot = FALSE} a table with ID counts is returned.
+A bar plot with the height corresponding to the number of IDs, each bar represents one sample 
+(if \code{plot = TRUE}). If \code{plot = FALSE} a table with ID counts is returned.
 }
 \description{
-Plots the number of IDs for each sample
+Returns a plot or table of the number of IDs for each sample.
 }
 \examples{
 \dontrun{

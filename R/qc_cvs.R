@@ -35,7 +35,7 @@ qc_cvs <-
   {
     if(plot == FALSE)
     {
-      if(max(dplyr::pull(data, {{intensity}})) < 1000)
+      if(max(dplyr::pull(data, {{intensity}}), na.rm = TRUE) < 1000)
       {
       stop("Please backtransform your data or use raw values. The function does not handle log2 transformed data.")
       }
@@ -61,7 +61,7 @@ qc_cvs <-
 
     if(plot == TRUE)
     {
-      if(max(dplyr::pull(data, {{intensity}})) < 1000)
+      if(max(dplyr::pull(data, {{intensity}}), na.rm = TRUE) < 1000)
       {
         stop("Please backtransform your data or use raw values. The function does not handle log2 transformed data.")
       }
