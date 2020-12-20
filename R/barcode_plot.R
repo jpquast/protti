@@ -9,7 +9,7 @@
 #' @param protein_length Column in the data frame containing the length of the protein.
 #' @param coverage Optional, column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.
 #' @param fold_change Optional, column in the data frame containing log2 fold changes.
-#' @param coloring Optional argument, column in the data frame containing information by which peptide or precursors should
+#' @param colouring Optional argument, column in the data frame containing information by which peptide or precursors should
 #' be colored.
 #' @param protein_id Optional argument, column in the data frame containing protein identifiers. Required if only one protein
 #' should be plotted and the data frame contains only information for this protein.
@@ -36,7 +36,7 @@
 #' facet = pg_protein_accessions
 #' )
 #' }
-barcode_plot <- function(data, start_position, end_position, protein_length, coverage = NULL, fold_change = NULL, coloring = NULL, protein_id = NULL, facet = NULL, fold_change_cutoff = 2)
+barcode_plot <- function(data, start_position, end_position, protein_length, coverage = NULL, fold_change = NULL, colouring = NULL, protein_id = NULL, facet = NULL, fold_change_cutoff = 2)
 {
   # Check if there is more than one protein even though protein_id was specified.
   if(!missing(protein_id)){
@@ -80,7 +80,7 @@ barcode_plot <- function(data, start_position, end_position, protein_length, cov
       ymax = 2.5,
       xmax = {{end_position}} / {{protein_length}} * 100,
       xmin = {{start_position}} / {{protein_length}} * 100,
-      fill = {{coloring}}),
+      fill = {{colouring}}),
       size = 0.7
     ) +
     ggplot2::scale_fill_manual(values = c("#999999", "#5680C1", "#B96DAD", "#64CACA", "#81ABE9", "#F6B8D1", "#99F1E4", "#9AD1FF", "#548BDF", "#A55098", "#3EB6B6",

@@ -11,7 +11,7 @@ barcode_plot(
   protein_length,
   coverage = NULL,
   fold_change = NULL,
-  coloring = NULL,
+  colouring = NULL,
   protein_id = NULL,
   facet = NULL,
   fold_change_cutoff = 2
@@ -30,7 +30,7 @@ barcode_plot(
 
 \item{fold_change}{Optional, column in the data frame containing log2 fold changes.}
 
-\item{coloring}{Optional argument, column in the data frame containing information by which peptide or precursors should
+\item{colouring}{Optional argument, column in the data frame containing information by which peptide or precursors should
 be colored.}
 
 \item{protein_id}{Optional argument, column in the data frame containing protein identifiers. Required if only one protein

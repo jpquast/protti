@@ -32,6 +32,8 @@
 #' @param blank_method_path The file path of the MS acquisition method of the blank. Backslashes should be escaped by another backslash. 
 #' Will be \code{NA} if not specified, but needs to be specified later on then.
 #' @param blank_inj_vol Injection volume of the blank sample. Will be \code{NA} if not specified, but needs to be specified later on then.
+#' @param export Logical, specifying if queue should be exported from R and saved as a .csv file. Default is TRUE. Further options for 
+#' export can be adjusted with the \code{export_to_queue} and \code{queue_path} arguments.
 #' @param export_to_queue Logical, specifying if the resulting queue should be appended to an already existing queue. If false result will be saved as \code{queue.csv}.
 #' @param queue_path Optional, file path to a queue file to which the generated queue should be appended if \code{export_to_queue = TRUE}. 
 #' If not specified queue file can be chosen interactively.
@@ -99,6 +101,7 @@ create_queue <-
            blank_position = NA,
            blank_method_path = NA,
            blank_inj_vol = 1,
+           export = TRUE,
            export_to_queue = FALSE,
            queue_path = NULL) {
     data <-
@@ -298,6 +301,9 @@ create_queue <-
         purrr::map2_dfr(.y = blank,
                         .f = ~ .y %>%
                           dplyr::bind_rows(.x))
+    }
+    if(export == FALSE){
+      return(result)
     }
     if (export_to_queue == FALSE) {
       # a file named queue.csv is exported

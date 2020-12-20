@@ -30,6 +30,7 @@ create_queue(
   blank_position = NA,
   blank_method_path = NA,
   blank_inj_vol = 1,
+  export = TRUE,
   export_to_queue = FALSE,
   queue_path = NULL
 )
@@ -88,6 +89,9 @@ of samples, positions will be repeated.}
 Will be \code{NA} if not specified, but needs to be specified later on then.}
 
 \item{blank_inj_vol}{Injection volume of the blank sample. Will be \code{NA} if not specified, but needs to be specified later on then.}
+
+\item{export}{Logical, specifying if queue should be exported from R and saved as a .csv file. Default is TRUE. Further options for 
+export can be adjusted with the \code{export_to_queue} and \code{queue_path} arguments.}
 
 \item{export_to_queue}{Logical, specifying if the resulting queue should be appended to an already existing queue. If false result will be saved as \code{queue.csv}.}
 
