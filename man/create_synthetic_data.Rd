@@ -11,6 +11,7 @@ create_synthetic_data(
   n_conditions,
   method = "random_effect",
   concentrations = NULL,
+  median_offset_sd = 0.05,
   mean_protein_intensity = 16.88,
   sd_protein_intensity = 1.4,
   mean_n_peptides = 12.75,
@@ -21,7 +22,8 @@ create_synthetic_data(
   sd_log_replicates = 1.05,
   effect_sd = 2,
   dropout_curve_inflection = 14,
-  dropout_curve_sd = -1.2
+  dropout_curve_sd = -1.2,
+  additional_metadata = TRUE
 )
 }
 \arguments{
@@ -70,6 +72,9 @@ dependent missing values. This argument determines how many missing values there
 
 \item{dropout_curve_sd}{Numeric, standard deviation of the probabilistic dropout curve. Needs to be negative to sample a droupout towards
 low intensities. Default: -1.2.}
+
+\item{additional_metadata}{Logical, determines if metadata such as protein coverage, missed cleavages and charge state should be 
+sampled and added to the list.}
 }
 \value{
 A data frame that contains complete peptide intensities and peptide intensities with values that were created based on a

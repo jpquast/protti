@@ -32,6 +32,8 @@
 #' dependent missing values. This argument determines how many missing values there are in the dataset. Default: 14.
 #' @param dropout_curve_sd Numeric, standard deviation of the probabilistic dropout curve. Needs to be negative to sample a droupout towards
 #' low intensities. Default: -1.2.
+#' @param additional_metadata Logical, determines if metadata such as protein coverage, missed cleavages and charge state should be 
+#' sampled and added to the list.
 #'
 #' @return A data frame that contains complete peptide intensities and peptide intensities with values that were created based on a
 #' probabilistic dropout curve.
@@ -79,6 +81,7 @@ create_synthetic_data <- function(
                                   n_conditions,
                                   method = "random_effect",
                                   concentrations = NULL,
+                                  median_offset_sd = 0.05,
                                   mean_protein_intensity = 16.88,
                                   sd_protein_intensity = 1.4,
                                   mean_n_peptides = 12.75,
@@ -89,7 +92,8 @@ create_synthetic_data <- function(
                                   sd_log_replicates = 1.05,
                                   effect_sd = 2,
                                   dropout_curve_inflection = 14,
-                                  dropout_curve_sd = -1.2) {
+                                  dropout_curve_sd = -1.2,
+                                  additional_metadata = TRUE) {
   # the amount of proteins that change
   n_change <- round(n_proteins * frac_change)
 
@@ -123,6 +127,10 @@ create_synthetic_data <- function(
     dplyr::ungroup() %>%
     dplyr::mutate(peptide_intensity = stats::rnorm(n = dplyr::n(), mean = .data$peptide_intensity_mean, sd = .data$replicate_sd))
 
+  # apply median offset for each sample to simulate measurement differences between samples. for example caused by differnt concentrations.
+  n_peptides <- length(unique(proteins_replicates$peptide))
+  offset <- rep(stats::rnorm(n_conditions * n_replicates, mean = 0, sd = median_offset_sd), n_peptides)
+  
   # sample significantly changing peptides
 
   if (method == "random_effect") {
@@ -138,7 +146,10 @@ create_synthetic_data <- function(
       dplyr::group_by(.data$condition, .data$peptide) %>%
       dplyr::mutate(effect = rep(.data$effect[1], n_replicates)) %>%
       dplyr::mutate(peptide_intensity = .data$peptide_intensity + .data$effect) %>%
-      dplyr::select(-c(.data$peptide_intensity_mean, .data$replicate_sd, .data$effect, .data$n, .data$n_change_peptide))
+      dplyr::bind_cols(offset = offset) %>% 
+      dplyr::ungroup() %>% 
+      dplyr::mutate(peptide_intensity = .data$peptide_intensity + .data$offset) %>% 
+      dplyr::select(-c(.data$peptide_intensity_mean, .data$replicate_sd, .data$effect, .data$n, .data$n_change_peptide, .data$offset))
   }
 
   if (method == "dose_response") {
@@ -167,7 +178,10 @@ create_synthetic_data <- function(
       dplyr::mutate(c = rep(.data$c[1], (n_replicates * n_conditions))) %>%
       dplyr::mutate(effect = ifelse(.data$change_peptide == TRUE, .data$effect_total * (1 + (-1 / (1 + (.data$concentration / .data$c)^.data$b))), 0)) %>%
       dplyr::mutate(peptide_intensity = .data$peptide_intensity + .data$effect) %>%
-      dplyr::select(-c(.data$peptide_intensity_mean, .data$replicate_sd, .data$n, .data$n_change_peptide, .data$effect, .data$effect_total, .data$b, .data$c))
+      dplyr::bind_cols(offset = offset) %>% 
+      dplyr::ungroup() %>% 
+      dplyr::mutate(peptide_intensity = .data$peptide_intensity + .data$offset) %>% 
+      dplyr::select(-c(.data$peptide_intensity_mean, .data$replicate_sd, .data$n, .data$n_change_peptide, .data$effect, .data$effect_total, .data$b, .data$c, .data$offset))
     # formula for inflection point and slope sampling roughly simulates the behaviour of real data. They have been figured out by trial and error.
   }
 
@@ -176,7 +190,48 @@ create_synthetic_data <- function(
     dplyr::mutate(dropout_probability = stats::pnorm(.data$peptide_intensity, mean = dropout_curve_inflection, sd = -dropout_curve_sd, lower.tail = FALSE)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(peptide_intensity_missing = ifelse(stats::runif(dplyr::n()) > .data$dropout_probability, .data$peptide_intensity, NA)) %>%
-    dplyr::select(-.data$dropout_probability)
-
-  proteins_replicates_change_missing
+    dplyr::select(-.data$dropout_probability) %>% 
+    dplyr::group_by(.data$peptide) %>% 
+    dplyr::mutate(isna = sum(!is.na(.data$peptide_intensity_missing))) %>% # remove peptides for which every intensity is NA after dropout
+    dplyr::filter(isna > 0) %>% 
+    dplyr::select(-.data$isna)
+  
+  if (additional_metadata == FALSE) return(proteins_replicates_change_missing)
+  if (additional_metadata == TRUE) {
+    # adding coverage estimates based on gamma distribution
+    coverage_sampled <- stats::rgamma(nrow(proteins_replicates_change_missing) * 2, shape = 1.2, rate = 0.05) 
+    coverage_sampled <- coverage_sampled[coverage_sampled <= 100] # remove coverage over 100% because not possible
+    
+    coverage_data <- proteins_replicates_change_missing %>% 
+      dplyr::mutate(coverage = coverage_sampled[1:dplyr::n()]) %>% 
+      dplyr::group_by(.data$protein) %>%
+      dplyr::mutate(coverage = rep(.data$coverage[1], dplyr::n())) %>% 
+      dplyr::mutate(coverage_peptide = .data$coverage / dplyr::n_distinct(.data$peptide)) %>% 
+      dplyr::group_by(.data$sample, .data$protein) %>% 
+      dplyr::mutate(coverage = sum(!is.na(.data$peptide_intensity_missing)) * .data$coverage_peptide) %>% 
+      dplyr::select(-.data$coverage_peptide) 
+    
+    # adding missed cleavage estimates based on poisson distribution
+    
+    missed_cleavage_sampled <- stats::rpois(length(unique(proteins_replicates_change_missing$peptide)) * 2, 0.28)
+    missed_cleavage_sampled <- missed_cleavage_sampled[missed_cleavage_sampled < 3] # remove missed cleavages over 3 because they should not occure in data
+    
+    missed_cleavages_data <- coverage_data %>% 
+      dplyr::mutate(n_missed_cleavage = missed_cleavage_sampled[1:dplyr::n()]) %>% 
+      dplyr::group_by(.data$peptide) %>% 
+      dplyr::mutate(n_missed_cleavage = rep(.data$n_missed_cleavage[1], dplyr::n()))
+    
+    # add charge state estimates based on rounded gamma distribution
+    
+    charge_sampled <- round(stats::rgamma(length(unique(proteins_replicates_change_missing$peptide)) * 2, shape = 13.06, rate = 5.63))
+    charge_sampled <- charge_sampled[charge_sampled > 0 & charge_sampled < 7] # remove chage state of 0 and higher than 6
+    
+    charge_data <- missed_cleavages_data %>% 
+      dplyr::mutate(charge = charge_sampled[1:dplyr::n()]) %>% 
+      dplyr::group_by(.data$peptide) %>% 
+      dplyr::mutate(charge = rep(.data$charge[1], dplyr::n()))
+    
+    charge_data
+  }
+  
 }
