@@ -1,5 +1,14 @@
 context("test-auxiliary_functions")
 
+test_that("read_protti works", {
+  test_data <- read_protti(test_path("test_import.csv"))
+  expect_is(test_data, "data.frame")
+  expect_equal(ncol(test_data), 3)
+  expect_equal(nrow(test_data), 3)
+  expect_equal(names(test_data), c("test_column", "test_column_2", "test_column_3"))
+  expect_equal(unname(unlist(lapply(test_data, class))), c("numeric", "character", "integer"))
+})
+
 protein <- fetch_uniprot(uniprot_ids = "P36578")
 data <- tibble::tibble(protein_id = rep("P36578", 3),
                        protein_sequence = rep(protein$sequence, 3), 
@@ -56,4 +65,12 @@ test_that("barcode_plot works", {
                     colouring = pep_type)
   expect_is(p,"ggplot")
   expect_error(print(p), NA)
+})
+
+test_that("scale_protti works", {
+  scale01 <- round(scale_protti(c(1, 2, 1, 4, 6, 8), method = "01"), digits = 1)
+  expect_equal(scale01, c(0.0, 0.1, 0.0, 0.4, 0.7, 1.0))
+  
+  scale_center <- round(scale_protti(c(1, 2, 1, 4, 6, 8), method = "center"), digits = 1)
+  expect_equal(scale_center, c(-0.9, -0.6, -0.9, 0.1, 0.8, 1.5))
 })
