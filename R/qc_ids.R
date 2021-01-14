@@ -21,6 +21,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom tidyr drop_na
 #' @importFrom plotly ggplotly
+#' @importFrom utils data
 #' @export
 #'
 #' @examples
@@ -34,8 +35,9 @@
 #' )
 #' }
 qc_ids <-
-  function(data, sample, grouping, intensity, remove_na_intensities = TRUE, condition = NULL, title = "ID count per sample", plot = TRUE, interactive = TRUE)
-  {
+  function(data, sample, grouping, intensity, remove_na_intensities = TRUE, condition = NULL, title = "ID count per sample", plot = TRUE, interactive = TRUE) {
+    protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+    utils::data("protti_colors", envir=environment()) # then overwrite it with real data
     if(remove_na_intensities == TRUE){
       data <- data %>% 
         tidyr::drop_na({{intensity}})
@@ -59,22 +61,7 @@ qc_ids <-
            y = "count") +
       theme_bw() +
       theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
-      scale_fill_manual(values = c("#5680C1",
-                                   "#B96DAD",
-                                   "#64CACA",
-                                   "#81ABE9",
-                                   "#F6B8D1",
-                                   "#99F1E4",
-                                   "#9AD1FF",
-                                   "#548BDF",
-                                   "#A55098",
-                                   "#3EB6B6",
-                                   "#87AEE8",
-                                   "#CA91C1",
-                                   "#A4E0E0",
-                                   "#1D4F9A",
-                                   "#D7ACD2",
-                                   "#49C1C1"))
+      scale_fill_manual(values = protti_colors)
     if (interactive == TRUE)
     {
       return(plotly::ggplotly(plot))

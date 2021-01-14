@@ -34,7 +34,7 @@
 #' pathway_name = pathway_name
 #' )
 #' }
-kegg_enrichment <- function(data, protein_id, is_significant, pathway_id, pathway_name, plot = TRUE){
+kegg_enrichment <- function(data, protein_id, is_significant, pathway_id = pathway_id, pathway_name = pathway_name, plot = TRUE){
   . = NULL
   n_sig = NULL
   kegg_term = NULL # to avoid node about no global variable binding. Usually this can be avoided with .data$ but not in nesting in complete function.
@@ -49,9 +49,8 @@ kegg_enrichment <- function(data, protein_id, is_significant, pathway_id, pathwa
     dplyr::group_by({{protein_id}}) %>%
     dplyr::mutate({{is_significant}} := ifelse(sum({{is_significant}}) > 0, TRUE, FALSE)) %>% # do this to remove accidental double annotations
     dplyr::distinct()
-  
-  if(length(unique(pull(data, {{protein_id}}))) != nrow(data)) stop("The data frame contains more rows than unique proteins. Make sure that there
-                                                                    are no double annotations.")
+
+  if(length(unique(pull(data, {{protein_id}}))) != nrow(data)) stop("The data frame contains more rows than unique proteins. Make sure that there are no double annotations.\nThere could be for example proteins annotated as significant and not significant.")
    cont_table <- data %>%
      dplyr::group_by({{is_significant}}) %>%
      dplyr::mutate(n_sig = dplyr::n()) %>%

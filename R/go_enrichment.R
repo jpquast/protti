@@ -47,7 +47,9 @@
 #' }
 go_enrichment <- function(data, protein_id, is_significant, ontology_type, organism_id, algorithm = "elim", statistic = "fisher", go_data = NULL, plot = TRUE){
   . = NULL # to avoid note about no global variable binding. Usually this can be avoided with .data$ but not in nesting in complete function.
-  
+  topGO::groupGOTerms(match(paste("package:", "protti", sep=""), search())) # adding the GOMFTerm, GOCCTerm and GOBPTerm environments 
+  # to the protti environment so that topGO works properly. Specifically the annFun.gene2GO function needs this. Could also be done by default
+  # at package startup but protti should not depend on topGO so it is done this way.
   if(length(unique(dplyr::pull(data, {{protein_id}}))) != nrow(data)){
     data <- data %>%
       dplyr::distinct({{protein_id}}, {{is_significant}}) %>%
@@ -89,7 +91,7 @@ go_enrichment <- function(data, protein_id, is_significant, ontology_type, organ
   go_data <- methods::new("topGOdata", 
                  ontology = ontology_type, 
                  allGenes = protein_list,
-                 annot = annFUN.gene2GO,
+                 annot = topGO::annFUN.gene2GO,
                  gene2GO = go_list)
   
   result <- topGO::runTest(go_data, algorithm = algorithm, statistic = statistic)
@@ -98,7 +100,7 @@ go_enrichment <- function(data, protein_id, is_significant, ontology_type, organ
                                   pval = result, 
                                   orderBy = "pval", 
                                   topNodes = length(result@score), 
-                                  numChar = 100) %>% 
+                                  numChar = 100) %>%
     dplyr::mutate(elim = algorithm == "elim") %>% 
     dplyr::mutate(pval = as.numeric(.data$pval)) %>% 
     dplyr::mutate(adj_pval = ifelse(elim, .data$pval, stats::p.adjust(.data$pval, method = "BH"))) %>%

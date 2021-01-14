@@ -46,8 +46,15 @@ qc_peak_width <- function(data, sample, retention_time, peak_width = NULL, reten
     ggplot2::ggplot(ggplot2::aes({{retention_time}}, .data$peak_width)) +
     ggplot2::stat_summary_bin(aes(col = {{sample}}), size = 1, geom = "line", binwidth = 1, fun = median) +
     ggplot2::labs(title = "Median peak width over retention time", x = "Retention time [min]", y = "Median peak width [min]", color = "Experiment") +
-    ggplot2::theme_bw()
-
+    ggplot2::theme_bw() + 
+    ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
+                   axis.title.x = ggplot2::element_text(size = 15),
+                   axis.text.y = ggplot2::element_text(size = 15),
+                   axis.text.x = ggplot2::element_text(size = 12),
+                   axis.title.y = ggplot2::element_text(size = 15),
+                   legend.title = ggplot2::element_text(size = 15),
+                   legend.text = ggplot2::element_text(size = 15))
+    
   if(interactive == FALSE) return(peak_width_plot)
   if(interactive == TRUE) plotly::ggplotly(peak_width_plot)
 }

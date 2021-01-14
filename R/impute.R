@@ -27,7 +27,7 @@
 #' for previously missing intensities. 
 #'
 #' @import dplyr
-#' @importFrom rlang .data as_name
+#' @importFrom rlang .data
 #' @importFrom magrittr %>%
 #' @export
 #' 
@@ -44,7 +44,8 @@
 #' method = "ludovic"
 #' )
 #' }
-impute <- function(data, sample, grouping, intensity, condition, comparison, missingness, noise = NULL, method = c("ludovic", "noise"), skip_log2_transform_error = FALSE){
+impute <- function(data, sample, grouping, intensity, condition, comparison, missingness, noise = NULL, method, skip_log2_transform_error = FALSE){
+  noise_missing <- missing(noise) # check if argument noise was provided or not
   result <- data %>%
     dplyr::distinct({{sample}}, {{grouping}}, {{intensity}}, {{condition}}, {{comparison}}, {{missingness}}, {{noise}}) %>%
     dplyr::group_by({{grouping}}, {{condition}}, {{comparison}}) %>%
@@ -53,7 +54,7 @@ impute <- function(data, sample, grouping, intensity, condition, comparison, mis
     dplyr::mutate(sd = stats::sd({{intensity}}, na.rm = TRUE)) %>%
     dplyr::group_by({{grouping}}) %>%
     dplyr::mutate(min = min({{intensity}}, na.rm = TRUE)) %>%
-    dplyr::mutate(noise_mean = mean({{noise}}, na.rm = TRUE)) %>%
+    dplyr::mutate(noise_mean = ifelse(noise_missing, NA, mean({{noise}}, na.rm = TRUE))) %>%
     dplyr::mutate(sd = mean(unique(.data$sd), na.rm = TRUE)) %>%
     dplyr::group_by({{grouping}}, {{comparison}}) %>%
     dplyr::mutate(
@@ -66,7 +67,7 @@ impute <- function(data, sample, grouping, intensity, condition, comparison, mis
             mean = mean,
             sd = sd,
             missingness = "MNAR",
-            method = rlang::as_name(enquo(method)),
+            method = method,
             skip_log2_transform_error = skip_log2_transform_error
           ),
         missingness == "MAR" ~
@@ -77,7 +78,7 @@ impute <- function(data, sample, grouping, intensity, condition, comparison, mis
             mean = mean,
             sd = sd,
             missingness = "MAR",
-            method = rlang::as_name(enquo(method)),
+            method = method,
             skip_log2_transform_error = skip_log2_transform_error
           )
       )

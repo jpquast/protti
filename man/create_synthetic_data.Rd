@@ -45,6 +45,9 @@ the concentrations argument needs to be specified.}
 This allows equal sampeling of peptide intensities. It ensures that the same positions of dose response curves are sampled for each peptide
 based on the provided concentrations.}
 
+\item{median_offset_sd}{Numeric, standard deviation of normal distribution that is used for sampling of inter-sample-differences. 
+Default is 0.05.}
+
 \item{mean_protein_intensity}{Numeric, mean of the protein intensity distribution. Default: 16.8.}
 
 \item{sd_protein_intensity}{Numeric, standard deviation of the protein intensity distribution. Default: 1.4.}

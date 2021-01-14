@@ -88,7 +88,7 @@ barcode_plot <- function(data, start_position, end_position, protein_length, cov
     ggplot2::scale_x_continuous(limits = c(0, 100), expand = c(0, 0)) +
     ggplot2::scale_y_continuous(limits = NULL, expand = c(0, 0)) +
     ggplot2::labs(x = "Protein Sequence", title = {if(!missing(protein_id)) unique(dplyr::pull(data, {{protein_id}}))}) +
-    {if(!missing(facet)) ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet)), scales = "free", ncol = 4)} +
+    {if(!missing(facet)) ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet)))} +
     ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
                    axis.title.y = element_blank(),
                    axis.text.y = element_blank(),

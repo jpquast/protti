@@ -25,6 +25,9 @@
 #' model. More information can be found in the \code{proDA} documentation.
 #' @param p_adj_method A character vector, specifies the p-value correction method. Possible methods are c("holm", "hochberg", "hommel", "bonferroni", "BH", 
 #' "BY", "fdr", "none"). Default method is \code{"BH"}.
+#' @param retain_columns A vector indicating if certain columns should be retained from the input dataframe. Default is not retaining 
+#' additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks, 
+#' just like other column names, but in a vector).
 #'
 #' @return A data frame that contains differential abundances (\code{diff}), p-values (\code{pval}) and adjusted p-values (\code{adj_pval}) for each protein, 
 #' peptide or precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.
@@ -86,7 +89,8 @@ diff_abundance <-
            ref_condition,
            filter_NA_missingness = TRUE,
            method = c("t-test", "t-test_mean_sd", "moderated_t-test", "proDA"),
-           p_adj_method = "BH") {
+           p_adj_method = "BH",
+           retain_columns = NULL) {
   . = NULL  
     
   method <- match.arg(method)
@@ -115,8 +119,8 @@ diff_abundance <-
       dplyr::summarize(intensity = list({{intensity}}), .groups = "drop") %>%
       dplyr::mutate(type = ifelse({{condition}} == ref_condition, "control", "treated")) %>%
       dplyr::select(-{{condition}}) %>%
-      tidyr::pivot_wider(names_from = .data$type, values_from = .data$intensity)
-    
+      tidyr::pivot_wider(names_from = .data$type, values_from = .data$intensity, values_fill = list(NA))
+   
     message("DONE", appendLF = TRUE)
     message("[2/2] Calculate t-tests ... ", appendLF = FALSE)
     
@@ -159,9 +163,19 @@ diff_abundance <-
       dplyr::mutate(diff = ifelse(diff == "NaN", NA, diff)) %>%
       dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
       dplyr::select(-c(.data$control, .data$treated)) %>%
-      dplyr::left_join(t_test_missingness_obs, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison"))
+      dplyr::left_join(t_test_missingness_obs, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison")) %>% 
+      dplyr::arrange(.data$adj_pval)
     
     message("DONE", appendLF = TRUE)
+    
+    if (!missing(retain_columns)) {
+      t_test_result <- data %>% 
+        dplyr::select(!!enquo(retain_columns), colnames(t_test_result)[!colnames(t_test_result) %in% c("pval", "std_error", "diff", "adj_pval", "n_obs")]) %>% 
+        tidyr::drop_na(!!enquo(retain_columns)) %>% 
+        dplyr::distinct() %>% 
+        dplyr::right_join(t_test_result, by = colnames(t_test_result)[!colnames(t_test_result) %in% c("pval", "std_error", "diff", "adj_pval", "n_obs")]) %>% 
+        dplyr::arrange(.data$adj_pval)
+    }
     
     if(filter_NA_missingness == TRUE){
       t_test_result <- t_test_result %>%
@@ -190,9 +204,18 @@ diff_abundance <-
                   dplyr::mutate(ttest_protti(.data$mean_treated, .data$mean_control, .data$sd_control, .data$sd_treated, .data$n_control, .data$n_treated))
                ) %>%
        tidyr::drop_na(.data$pval) %>%
-       dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method))
-
-    return(t_test_mean_sd_result)
+       dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>% 
+       dplyr::arrange(.data$adj_pval)
+    
+     if (!missing(retain_columns)) {
+       t_test_mean_sd_result <- data %>% 
+         dplyr::select(!!enquo(retain_columns), colnames(t_test_mean_sd_result)[!colnames(t_test_mean_sd_result) %in% c("mean_control", "mean_treated", "sd_control", "sd_treated", "n_control", "n_treated", "pval", "std_error", "diff", "adj_pval", "t_statistic", "comparison")]) %>% 
+         tidyr::drop_na(!!enquo(retain_columns)) %>% 
+         dplyr::distinct() %>% 
+         dplyr::right_join(t_test_mean_sd_result, by = colnames(t_test_mean_sd_result)[!colnames(t_test_mean_sd_result) %in% c("mean_control", "mean_treated", "sd_control", "sd_treated", "n_control", "n_treated", "pval", "std_error", "diff", "adj_pval", "t_statistic", "comparison")]) %>% 
+         dplyr::arrange(.data$adj_pval)
+     } 
+     return(t_test_mean_sd_result)
   }
   
   if(method == "moderated_t-test"){
@@ -268,6 +291,15 @@ diff_abundance <-
     dplyr::left_join(moderated_t_test_missingness, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison"))
   
   message("DONE", appendLF = TRUE)
+  
+  if (!missing(retain_columns)) {
+    moderated_t_test_result <- data %>% 
+      dplyr::select(!!enquo(retain_columns), colnames(moderated_t_test_result)[!colnames(moderated_t_test_result) %in% c("CI_2.5", "CI_97.5", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "B", "n_obs")]) %>% 
+      tidyr::drop_na(!!enquo(retain_columns)) %>% 
+      dplyr::distinct() %>% 
+      dplyr::right_join(moderated_t_test_result, by = colnames(moderated_t_test_result)[!colnames(moderated_t_test_result) %in% c("CI_2.5", "CI_97.5", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "B", "n_obs")]) %>% 
+      dplyr::arrange(.data$adj_pval)
+  } 
   
   if(filter_NA_missingness == TRUE){
     moderated_t_test_result <- moderated_t_test_result %>%
@@ -347,7 +379,6 @@ diff_abundance <-
   
   message("DONE", appendLF = TRUE)
   
-  return(proDA_result)
   }
   if(filter_NA_missingness == FALSE) {
     proDA_result <- proDA_result %>% 
@@ -361,7 +392,16 @@ diff_abundance <-
     
     message("DONE", appendLF = TRUE)
     
-    return(proDA_result)
   }
+  
+  if (!missing(retain_columns)) {
+    proDA_result <- data %>% 
+      dplyr::select(!!enquo(retain_columns), colnames(proDA_result)[!colnames(proDA_result) %in% c("std_error", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "df", "n_obs")]) %>% 
+      tidyr::drop_na(!!enquo(retain_columns)) %>% 
+      dplyr::distinct() %>% 
+      dplyr::right_join(proDA_result, by = colnames(proDA_result)[!colnames(proDA_result) %in% c("std_error", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "df", "n_obs")]) %>% 
+      dplyr::arrange(.data$adj_pval)
+  } 
+  return(proDA_result)
   }
 }

@@ -13,7 +13,7 @@ impute(
   comparison,
   missingness,
   noise = NULL,
-  method = c("ludovic", "noise"),
+  method,
   skip_log2_transform_error = FALSE
 )
 }

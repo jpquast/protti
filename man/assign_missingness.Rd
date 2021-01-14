@@ -13,7 +13,8 @@ assign_missingness(
   noise = NULL,
   ref_condition = "control",
   completeness_MAR = 0.7,
-  completeness_MNAR = 0.25
+  completeness_MNAR = 0.25,
+  retain_columns = NULL
 )
 }
 \arguments{
@@ -38,6 +39,10 @@ condition to be considered as MAR. This number is always at least 1.}
 \item{completeness_MNAR}{The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.25. 
 It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one 
 condition to be considered as MNAR when the other condition is complete.}
+
+\item{retain_columns}{Character vector indicating if certain columns should be retained from the input dataframe. Default is not retaining 
+additional columns \code{retain_columns = NULL}. All columns can be retained with \code{retain_columns = "all"}. Specific columns can be 
+retained by providing their names (not in quotations marks, just like other column names, but in a vector).}
 }
 \value{
 A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison 

@@ -11,7 +11,8 @@ calculate_protein_abundance(
   precursor,
   intensity,
   method = "iq",
-  for_plot = FALSE
+  for_plot = FALSE,
+  retain_columns = NULL
 )
 }
 \arguments{
@@ -32,6 +33,10 @@ package (https://academic.oup.com/bioinformatics/article/36/8/2611/5697917) are 
 
 \item{for_plot}{A logical indicating whether the result should be only protein intensities or protein intensities together with precursor 
 intensities that can be used for plotting using \code{qc_protein_abundance}. Default is \code{FALSE}.}
+
+\item{retain_columns}{A vector indicating if certain columns should be retained from the input dataframe. Default is not retaining 
+additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks, 
+just like other column names, but in a vector).}
 }
 \value{
 If \code{for_plot = FALSE}, protein abundances are returned, if \code{for_plot = TRUE} also precursor intensities are returned. The 

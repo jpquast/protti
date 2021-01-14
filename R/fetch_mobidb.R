@@ -37,8 +37,7 @@ fetch_mobidb <- function(organism_id, protein_ids){
   {
     message("Attempt to download data timed out. Trying again")
     mobidb <- httr::GET(query) %>% 
-      httr::content() %>% 
-      readr::read_tsv(col_types = readr::cols())
+      httr::content() 
     
     i <- i + 1
     

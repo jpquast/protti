@@ -20,6 +20,7 @@
 #' @importFrom plotly ggplotly
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data :=
+#' @importFrom utils data
 #' @export
 #'
 #' @examples
@@ -33,6 +34,8 @@
 #' )
 #' }
 qc_contaminants <- function(data, sample, protein, is_contaminant, intensity, n_contaminants = 5, plot = TRUE, interactive = FALSE){
+  protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+  utils::data("protti_colors", envir=environment()) # then overwrite it with real data
   result <- data %>%
     dplyr::distinct({{sample}}, {{protein}}, {{is_contaminant}}, {{intensity}}) %>%
     dplyr::group_by({{sample}}) %>%
@@ -56,34 +59,19 @@ qc_contaminants <- function(data, sample, protein, is_contaminant, intensity, n_
 
   plot_result <- result %>%
     ggplot2::ggplot(ggplot2::aes({{sample}}, .data$contaminant_percentage, fill = {{protein}})) +
-    ggplot2::geom_col(col = "black", size = 1.2) +
+    ggplot2::geom_col(col = "black", size = 1) +
     ggplot2::labs(title = "Contaminants per .raw file", x = "Sample", y = "% of total intensity", fill = "Contaminant Protein") +
     ggplot2::theme_bw() +
     ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
                    axis.title.x = ggplot2::element_text(size = 15),
                    axis.text.y = ggplot2::element_text(size = 15),
-                   axis.text.x = ggplot2::element_text(size = 12, angle = 45, hjust =1),
+                   axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
                    axis.title.y = ggplot2::element_text(size = 15),
                    legend.title = ggplot2::element_text(size = 15),
                    legend.text = ggplot2::element_text(size = 15),
                    panel.border = ggplot2::element_rect(fill = NA)
     ) +
-    ggplot2::scale_fill_manual(values = c("#5680C1",
-                                           "#B96DAD",
-                                           "#64CACA",
-                                           "#81ABE9",
-                                           "#F6B8D1",
-                                           "#99F1E4",
-                                           "#9AD1FF",
-                                           "#548BDF",
-                                           "#A55098",
-                                           "#3EB6B6",
-                                           "#87AEE8",
-                                           "#CA91C1",
-                                           "#A4E0E0",
-                                           "#1D4F9A",
-                                           "#D7ACD2",
-                                           "#49C1C1"))
+    ggplot2::scale_fill_manual(values = protti_colors)
 
   if(interactive == FALSE) return(plot_result)
 
