@@ -47,11 +47,12 @@
 #' }
 go_enrichment <- function(data, protein_id, is_significant, ontology_type, organism_id, algorithm = "elim", statistic = "fisher", go_data = NULL, plot = TRUE){
   . = NULL # to avoid note about no global variable binding. Usually this can be avoided with .data$ but not in nesting in complete function.
-  topGO::groupGOTerms(match(paste("package:", "protti", sep=""), search())) # adding the GOMFTerm, GOCCTerm and GOBPTerm environments 
+  #topGO::groupGOTerms(match(paste("package:", "protti", sep=""), search())) # adding the GOMFTerm, GOCCTerm and GOBPTerm environments 
   # to the protti environment so that topGO works properly. Specifically the annFun.gene2GO function needs this. Could also be done by default
   # at package startup but protti should not depend on topGO so it is done this way.
   if(length(unique(dplyr::pull(data, {{protein_id}}))) != nrow(data)){
     data <- data %>%
+      dplyr::ungroup() %>% 
       dplyr::distinct({{protein_id}}, {{is_significant}}) %>%
       dplyr::group_by({{protein_id}}) %>%
       dplyr::mutate({{is_significant}} := ifelse(sum({{is_significant}}) > 0, TRUE, FALSE)) %>% # do this to remove accidental double annotations
@@ -102,7 +103,7 @@ go_enrichment <- function(data, protein_id, is_significant, ontology_type, organ
                                   topNodes = length(result@score), 
                                   numChar = 100) %>%
     dplyr::mutate(elim = algorithm == "elim") %>% 
-    dplyr::mutate(pval = as.numeric(.data$pval)) %>% 
+    dplyr::mutate(pval = ifelse(is.na(suppressWarnings(as.numeric(.data$pval))), 1e-30, suppressWarnings(as.numeric(.data$pval)))) %>% 
     dplyr::mutate(adj_pval = ifelse(elim, .data$pval, stats::p.adjust(.data$pval, method = "BH"))) %>%
     dplyr::select(-elim) %>% 
     janitor::clean_names() %>% 
