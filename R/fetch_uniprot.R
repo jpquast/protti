@@ -41,7 +41,7 @@ fetch_uniprot <-
               "length",
               "sequence"
             ),
-            batchsize = 400,
+            batchsize = 200,
             show_progress = TRUE)
   {
     . = NULL
@@ -60,14 +60,16 @@ fetch_uniprot <-
     }
     url <- "http://www.uniprot.org/uniprot/?query="
     batches <- split(uniprot_ids_filtered, ceiling(seq_along(uniprot_ids_filtered)/batchsize))
-    pb <- progress::progress_bar$new(total = length(batches))
+    pb <- progress::progress_bar$new(total = length(batches), show_after = 0)
+    pb$tick(0)
     result <- purrr::map_df(batches, function(x) {
-      if(show_progress == TRUE) {
-        pb$tick()}
       id_query <- paste(paste0("id:", x), collapse = "+or+")
       query_url <- utils::URLencode(paste0(url, id_query, "&format=tab&columns=",
                                     collapsed_columns))
-      try_query(query_url)
+      query <- try_query(query_url)
+      if(show_progress == TRUE) {
+        pb$tick()}
+      return(query)
     })
     colnames(result) <- column_names
 

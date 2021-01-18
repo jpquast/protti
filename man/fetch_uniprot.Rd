@@ -11,7 +11,7 @@ fetch_uniprot(
     "feature(METAL BINDING)", "chebi(Cofactor)", "chebi(Catalytic activity)",
     "feature(MODIFIED RESIDUE)", "feature(LIPIDATION)", "feature(GLYCOSYLATION)",
     "database(PDB)", "length", "sequence"),
-  batchsize = 400,
+  batchsize = 200,
   show_progress = TRUE
 )
 }
