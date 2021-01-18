@@ -8,10 +8,10 @@ test_that("fetch_uniprot works", {
   expect_equal(ncol(uniprot), 17)
 })
 
+proteome <- fetch_uniprot_proteome(organism_id = "83333", columns = c("id", "go(molecular function)"))
 test_that("fetch_uniprot_proteome works", {
-  proteome <- fetch_uniprot_proteome(organism_id = "83333")
   expect_is(proteome, "data.frame")
-  expect_equal(ncol(proteome), 1)
+  expect_equal(ncol(proteome), 2)
   expect_gt(nrow(proteome), 10)
 })
 
@@ -23,8 +23,8 @@ test_that("fetch_mobidb works", {
   expect_equal(ncol(mobidb), 7)
 })
 
-  database <- fetch_chebi()
-  relations <- fetch_chebi(relation = TRUE)
+database <- fetch_chebi()
+relations <- fetch_chebi(relation = TRUE)
 test_that("fetch_chebi works", {
   expect_is(database, "data.frame")
   expect_is(relations, "data.frame")
@@ -68,84 +68,121 @@ test_that("extract_metal_binders works", {
 
 test_that("kegg_enrichment works", {
   # fist fake significances are generated based on the first 10 rows of every group
-  kegg_input <- kegg %>% 
-    dplyr::group_by(pathway_id) %>% 
-    dplyr::mutate(is_significant = ifelse((match(.data$kegg_id, .data$kegg_id) <= 10), TRUE, FALSE)) %>% 
-    dplyr::group_by(uniprot_id) %>% 
+  kegg_input <- kegg %>%
+    dplyr::group_by(pathway_id) %>%
+    dplyr::mutate(is_significant = ifelse((match(.data$kegg_id, .data$kegg_id) <= 10), TRUE, FALSE)) %>%
+    dplyr::group_by(uniprot_id) %>%
     dplyr::mutate(is_significant = rep(.data$is_significant[1], dplyr::n()))
-  
-  kegg_enriched <- kegg_enrichment(data = kegg_input,
-                                   protein_id = uniprot_id,
-                                   is_significant = is_significant,
-                                   pathway_id = pathway_id,
-                                   pathway_name = pathway_name,
-                                   plot = FALSE)
-  
+
+  kegg_enriched <- kegg_enrichment(
+    data = kegg_input,
+    protein_id = uniprot_id,
+    is_significant = is_significant,
+    pathway_id = pathway_id,
+    pathway_name = pathway_name,
+    plot = FALSE
+  )
+
   expect_is(kegg_enriched, "data.frame")
   expect_equal(ncol(kegg_enriched), 10)
   expect_gt(nrow(kegg_enriched), 100)
-  
-  p <- kegg_enrichment(data = kegg_input,
-                                   protein_id = uniprot_id,
-                                   is_significant = is_significant,
-                                   pathway_id = pathway_id,
-                                   pathway_name = pathway_name,
-                                   plot = TRUE)
+
+  p <- kegg_enrichment(
+    data = kegg_input,
+    protein_id = uniprot_id,
+    is_significant = is_significant,
+    pathway_id = pathway_id,
+    pathway_name = pathway_name,
+    plot = TRUE
+  )
   expect_is(p, "ggplot")
   expect_error(print(p), NA)
 })
 
 test_that("go_enrichment works", {
-  # does not test go_data argument. Also algorithm and statistic arguments are not changed.
-  go_input <- go_eco %>% 
-    dplyr::distinct(.data$db_id) %>% 
-    dplyr::mutate(is_significant = ifelse((match(.data$db_id, .data$db_id) <= 500), TRUE, FALSE)) %>% 
+  go_input <- proteome %>%
+    dplyr::distinct(.data$id, .data$go_molecular_function) %>%
+    dplyr::mutate(is_significant = ifelse((match(.data$id, .data$id) <= 500), TRUE, FALSE)) %>%
     dplyr::slice(1:3000)
-  
-  go_enriched <- go_enrichment(data = go_input,
-                               protein_id = db_id,
-                               is_significant = is_significant,
-                               ontology_type = "MF",
-                               organism_id = "83333",
-                               plot = FALSE)
-  
+
+  go_enriched <- go_enrichment(
+    data = go_input,
+    protein_id = id,
+    is_significant = is_significant,
+    ontology_type = "MF",
+    organism_id = "83333",
+    plot = FALSE
+  )
+
   expect_is(go_enriched, "data.frame")
-  expect_equal(ncol(go_enriched), 8)
+  expect_equal(ncol(go_enriched), 9)
   expect_gt(nrow(go_enriched), 1000)
-  
-  p <- go_enrichment(data = go_input,
-                     protein_id = db_id,
-                     is_significant = is_significant,
-                     ontology_type = "MF",
-                     organism_id = "83333",
-                     plot = TRUE)
+
+  go_enriched_data <- go_enrichment(
+    data = go_input,
+    protein_id = id,
+    is_significant = is_significant,
+    ontology_type = "MF",
+    go_data = go_eco,
+    plot = FALSE
+  )
+
+  expect_is(go_enriched_data, "data.frame")
+  expect_equal(ncol(go_enriched_data), 9)
+  expect_gt(nrow(go_enriched_data), 1000)
+
+  go_enriched_uniprot <- go_enrichment(
+    data = go_input,
+    protein_id = id,
+    is_significant = is_significant,
+    go_annotations_uniprot = go_molecular_function,
+    plot = FALSE
+  )
+
+  expect_is(go_enriched_uniprot, "data.frame")
+  expect_equal(ncol(go_enriched_uniprot), 10)
+  expect_gt(nrow(go_enriched_uniprot), 1000)
+
+  p <- go_enrichment(
+    data = go_input,
+    protein_id = id,
+    is_significant = is_significant,
+    ontology_type = "MF",
+    organism_id = "83333",
+    plot = TRUE,
+    plot_cutoff = "adj_pval 0.05"
+  )
   expect_is(p, "ggplot")
   expect_error(print(p), NA)
 })
 
 test_that("treatment_enrichment works", {
-  enrichment_input <- go_eco %>% 
-    dplyr::distinct(.data$db_id) %>% 
-    dplyr::mutate(binds_treatment = ifelse((match(.data$db_id, .data$db_id) <= 500), TRUE, FALSE)) %>% 
-    dplyr::arrange(.data$db_id) %>% 
+  enrichment_input <- go_eco %>%
+    dplyr::distinct(.data$db_id) %>%
+    dplyr::mutate(binds_treatment = ifelse((match(.data$db_id, .data$db_id) <= 500), TRUE, FALSE)) %>%
+    dplyr::arrange(.data$db_id) %>%
     dplyr::mutate(is_significant = ifelse((match(.data$db_id, .data$db_id) <= 500), TRUE, FALSE))
-  
-  treatment_enriched <- treatment_enrichment(data = enrichment_input,
-                                             protein_id = db_id,
-                                             is_significant = is_significant,
-                                             binds_treatment = binds_treatment,
-                                             treatment_name = "test treatment",
-                                             plot = FALSE)
+
+  treatment_enriched <- treatment_enrichment(
+    data = enrichment_input,
+    protein_id = db_id,
+    is_significant = is_significant,
+    binds_treatment = binds_treatment,
+    treatment_name = "test treatment",
+    plot = FALSE
+  )
   expect_is(treatment_enriched, "data.frame")
   expect_equal(ncol(treatment_enriched), 4)
   expect_equal(nrow(treatment_enriched), 4)
-  
-  p <- treatment_enrichment(data = enrichment_input,
-                                             protein_id = db_id,
-                                             is_significant = is_significant,
-                                             binds_treatment = binds_treatment,
-                                             treatment_name = "test treatment",
-                                             plot = TRUE)
+
+  p <- treatment_enrichment(
+    data = enrichment_input,
+    protein_id = db_id,
+    is_significant = is_significant,
+    binds_treatment = binds_treatment,
+    treatment_name = "test treatment",
+    plot = TRUE
+  )
   expect_is(p, "ggplot")
   expect_error(print(p), NA)
 })
