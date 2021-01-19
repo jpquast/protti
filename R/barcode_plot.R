@@ -31,6 +31,7 @@
 #' @examples
 #' \dontrun{
 #' barcode_plot(
+#' data,
 #' start_position = start,
 #' end_position = end,
 #' protein_length = length,

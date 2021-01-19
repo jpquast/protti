@@ -5,7 +5,7 @@ test_that("fetch_uniprot works", {
   expect_warning(uniprot <- fetch_uniprot(unis))
   expect_is(uniprot, "data.frame")
   expect_equal(nrow(uniprot), 3)
-  expect_equal(ncol(uniprot), 17)
+  expect_equal(ncol(uniprot), 18)
 })
 
 proteome <- fetch_uniprot_proteome(organism_id = "83333", columns = c("id", "go(molecular function)"))
