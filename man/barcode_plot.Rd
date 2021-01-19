@@ -10,11 +10,10 @@ barcode_plot(
   end_position,
   protein_length,
   coverage = NULL,
-  fold_change = NULL,
   colouring = NULL,
   protein_id = NULL,
   facet = NULL,
-  fold_change_cutoff = 2
+  cutoffs = NULL
 )
 }
 \arguments{
@@ -28,8 +27,6 @@ barcode_plot(
 
 \item{coverage}{Optional, column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.}
 
-\item{fold_change}{Optional, column in the data frame containing log2 fold changes.}
-
 \item{colouring}{Optional argument, column in the data frame containing information by which peptide or precursors should
 be colored.}
 
@@ -40,7 +37,10 @@ should be plotted and the data frame contains only information for this protein.
 protein identifiers. Only 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a
 subsetted data frame should be created.}
 
-\item{fold_change_cutoff}{Optional argument specifying the log2 fold change cutoff used for assessing whether changes are significant. The default value is 2.}
+\item{cutoffs}{Optional argument specifying the log2 fold change and significance cutoffs used for highlighting peptides.
+If this argument is provided colouring information will be overwritten with peptides that fulfill this condition.
+The cutoff should be provided in a vector of the form c(diff = 2, pval = 0.05). The name of the cutoff should reflect the 
+column name that contains this information (log2 fold changes, p-values or adjusted p-values).}
 }
 \value{
 A barcode plot is returned.
@@ -52,11 +52,11 @@ abundance can be displayed.
 \examples{
 \dontrun{
 barcode_plot(
-fold_change = diff,
 start_position = start,
 end_position = end,
 protein_length = length,
-facet = pg_protein_accessions
+facet = pg_protein_accessions,
+cutoffs = c(diff = 2, pval = 0.05)
 )
 }
 }

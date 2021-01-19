@@ -8,7 +8,6 @@
 #' @param end_position Column in the data frame containing the end positions for each peptide or precursor.
 #' @param protein_length Column in the data frame containing the length of the protein.
 #' @param coverage Optional, column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.
-#' @param fold_change Optional, column in the data frame containing log2 fold changes.
 #' @param colouring Optional argument, column in the data frame containing information by which peptide or precursors should
 #' be colored.
 #' @param protein_id Optional argument, column in the data frame containing protein identifiers. Required if only one protein
@@ -16,7 +15,10 @@
 #' @param facet Optional argument, column in the data frame containing information by which data should be faceted. This can be
 #' protein identifiers. Only 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a
 #' subsetted data frame should be created.
-#' @param fold_change_cutoff Optional argument specifying the log2 fold change cutoff used for assessing whether changes are significant. The default value is 2.
+#' @param cutoffs Optional argument specifying the log2 fold change and significance cutoffs used for highlighting peptides.
+#' If this argument is provided colouring information will be overwritten with peptides that fulfill this condition.
+#' The cutoff should be provided in a vector of the form c(diff = 2, pval = 0.05). The name of the cutoff should reflect the 
+#' column name that contains this information (log2 fold changes, p-values or adjusted p-values). 
 #'
 #' @return A barcode plot is returned.
 #' @import dplyr
@@ -29,14 +31,14 @@
 #' @examples
 #' \dontrun{
 #' barcode_plot(
-#' fold_change = diff,
 #' start_position = start,
 #' end_position = end,
 #' protein_length = length,
-#' facet = pg_protein_accessions
+#' facet = pg_protein_accessions,
+#' cutoffs = c(diff = 2, pval = 0.05)
 #' )
 #' }
-barcode_plot <- function(data, start_position, end_position, protein_length, coverage = NULL, fold_change = NULL, colouring = NULL, protein_id = NULL, facet = NULL, fold_change_cutoff = 2)
+barcode_plot <- function(data, start_position, end_position, protein_length, coverage = NULL, colouring = NULL, protein_id = NULL, facet = NULL, cutoffs = NULL)
 {
   # Check if there is more than one protein even though protein_id was specified.
   if(!missing(protein_id)){
@@ -56,12 +58,19 @@ barcode_plot <- function(data, start_position, end_position, protein_length, cov
                     "proteins. Consider mapping over subsetted datasets." ))
     }
   }
-  # Apply fold change cutoff if fold change is provided
-  if(!missing(fold_change)){
+  # Apply fold change  and significance cutoff if fold change is provided
+  if(!missing(cutoffs)){
+    fc_name <- names(cutoffs)[1]
+    sig_name <- names(cutoffs)[2]
+    fc <- cutoffs[1]
+    sig <- cutoffs[2]
+    
+    colouring = sym("change")
+    
     data <- data %>%
-      dplyr::mutate({{fold_change}} := ifelse(({{fold_change}} > fold_change_cutoff | {{fold_change}} < -fold_change_cutoff), "Structural change", "Unchanged")) %>%
-      dplyr::mutate({{fold_change}} := forcats::fct_rev(ifelse(is.na({{fold_change}}), "Unchanged", {{fold_change}}))) %>%
-      dplyr::arrange({{fold_change}})
+      dplyr::mutate({{colouring}} := ifelse(((!!ensym(fc_name) >= fc | !!ensym(fc_name) <= -fc) & !!ensym(sig_name) <= sig), "Structural change", "Unchanged")) %>%
+      dplyr::mutate({{colouring}} := forcats::fct_rev(ifelse(is.na({{colouring}}), "Unchanged", {{colouring}}))) %>%
+      dplyr::arrange({{colouring}})
   }
   # Add coverage to protein ID name if present.
   if(!missing(coverage) & !missing(facet)){

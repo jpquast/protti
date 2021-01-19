@@ -101,7 +101,8 @@ intensity = normalised_intensity_log2,
 missingness = missingness,
 comparison = comparison,
 ref_condition = "control",
-method = "t-test"
+method = "t-test",
+retain_columns = c(pg_protein_accessions)
 )
 }
 }

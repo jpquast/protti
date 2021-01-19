@@ -2,7 +2,7 @@
 % Please edit documentation in R/qc_ids.R
 \name{qc_ids}
 \alias{qc_ids}
-\title{Check number of precursor, preptide or protein IDs}
+\title{Check number of precursor, peptide or protein IDs}
 \usage{
 qc_ids(
   data,
@@ -28,7 +28,7 @@ qc_ids(
 \item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be droped from the data frame. 
 Default is TRUE since we are usually interested in the number of quantifiable IDs.}
 
-\item{condition}{Optional column in the dataframe specifying the condition of the sample (e.g. LiP_treated, LiP_untreated), 
+\item{condition}{Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated), 
 if column is provided, the bars in the plot will be coloured according to the condition.}
 
 \item{title}{Optional argument specifying the plot title (default is "ID count per sample").}

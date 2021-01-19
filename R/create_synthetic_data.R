@@ -8,11 +8,11 @@
 #' @param n_replicates Numeric, the number of replicates per condition.
 #' @param n_conditions Numeric, the number of conditions.
 #' @param method Character, specifies the method type for the random sampling of significantly changing peptides. If \code{method = "random_effect"},
-#' the effect for each condition is randomly sampled and conditions do not depend on eachother. If \code{method = "dose_response"},
-#' the effect is sampled based on a dose response curve and conditions are related to eachother depending on the curve shape. In this case
+#' the effect for each condition is randomly sampled and conditions do not depend on each other. If \code{method = "dose_response"},
+#' the effect is sampled based on a dose response curve and conditions are related to each other depending on the curve shape. In this case
 #' the concentrations argument needs to be specified.
 #' @param concentrations Numeric vector of the length of number of conditions, only needs to be specified if \code{method = "dose_response"}.
-#' This allows equal sampeling of peptide intensities. It ensures that the same positions of dose response curves are sampled for each peptide
+#' This allows equal sampling of peptide intensities. It ensures that the same positions of dose response curves are sampled for each peptide
 #' based on the provided concentrations.
 #' @param median_offset_sd Numeric, standard deviation of normal distribution that is used for sampling of inter-sample-differences. 
 #' Default is 0.05.
@@ -218,7 +218,7 @@ create_synthetic_data <- function(
     # adding missed cleavage estimates based on poisson distribution
     
     missed_cleavage_sampled <- stats::rpois(nrow(proteins_replicates_change_missing) * 2, 0.28)
-    missed_cleavage_sampled <- missed_cleavage_sampled[missed_cleavage_sampled < 3] # remove missed cleavages over 3 because they should not occure in data
+    missed_cleavage_sampled <- missed_cleavage_sampled[missed_cleavage_sampled < 3] # remove missed cleavages over 3 because they should not occur in data
     
     missed_cleavages_data <- coverage_data %>% 
       dplyr::mutate(n_missed_cleavage = missed_cleavage_sampled[1:dplyr::n()]) %>% 
@@ -229,7 +229,7 @@ create_synthetic_data <- function(
     # add charge state estimates based on rounded gamma distribution
     
     charge_sampled <- round(stats::rgamma(nrow(proteins_replicates_change_missing) * 2, shape = 13.06, rate = 5.63))
-    charge_sampled <- charge_sampled[charge_sampled > 0 & charge_sampled < 7] # remove chage state of 0 and higher than 6
+    charge_sampled <- charge_sampled[charge_sampled > 0 & charge_sampled < 7] # remove charge state of 0 and higher than 6
 
     charge_data <- missed_cleavages_data %>% 
       dplyr::mutate(charge = charge_sampled[1:dplyr::n()]) %>% 
@@ -247,7 +247,7 @@ create_synthetic_data <- function(
       dplyr::ungroup()
     
     # add peak width estimates based on gamma distribution, an associated retention time is sampled with a uniform
-    # distribution form 0 to 120. This is not how peak width is actually associated with retention time, but a simple way of
+    # distribution from 0 to 120. This is not how peak width is actually associated with retention time, but a simple way of
     # obtaining values. The real relationship is very complex and not easy to sample.
     
     peak_width_sampled <- stats::rgamma(nrow(proteins_replicates_change_missing), shape = 10.4, rate = 36.21)

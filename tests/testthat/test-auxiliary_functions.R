@@ -56,7 +56,6 @@ test_that("woods_plot works", {
 
 test_that("barcode_plot works", {
   p <- barcode_plot(data = plot_data, 
-                    fold_change = fold_change, 
                     start_position = start, 
                     end_position = end, 
                     protein_length = protein_length,

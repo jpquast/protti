@@ -37,12 +37,12 @@ is changing.}
 \item{n_conditions}{Numeric, the number of conditions.}
 
 \item{method}{Character, specifies the method type for the random sampling of significantly changing peptides. If \code{method = "random_effect"},
-the effect for each condition is randomly sampled and conditions do not depend on eachother. If \code{method = "dose_response"},
-the effect is sampled based on a dose response curve and conditions are related to eachother depending on the curve shape. In this case
+the effect for each condition is randomly sampled and conditions do not depend on each other. If \code{method = "dose_response"},
+the effect is sampled based on a dose response curve and conditions are related to each other depending on the curve shape. In this case
 the concentrations argument needs to be specified.}
 
 \item{concentrations}{Numeric vector of the length of number of conditions, only needs to be specified if \code{method = "dose_response"}.
-This allows equal sampeling of peptide intensities. It ensures that the same positions of dose response curves are sampled for each peptide
+This allows equal sampling of peptide intensities. It ensures that the same positions of dose response curves are sampled for each peptide
 based on the provided concentrations.}
 
 \item{median_offset_sd}{Numeric, standard deviation of normal distribution that is used for sampling of inter-sample-differences. 

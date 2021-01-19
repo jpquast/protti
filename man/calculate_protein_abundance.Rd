@@ -53,7 +53,8 @@ sample = r_file_name,
 protein_id = pg_protein_accessions,
 precursor = eg_precursor_id,
 intensity = log2_normalised_intensity,
-method = "iq"
+method = "iq",
+retain_columns = c(pg_protein_accessions)
 )
 }
 }

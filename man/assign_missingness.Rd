@@ -63,7 +63,8 @@ data,
 sample = r_file_name,
 condition = r_condition,
 grouping = eg_precursor_id,
-intensity = normalised_intensity_log2
+intensity = normalised_intensity_log2,
+retain_columns = c(pg_protein_accessions)
 )
 }
 }

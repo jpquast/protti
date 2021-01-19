@@ -50,7 +50,7 @@ create_queue(
 
 \item{treatment_type_1}{Optional, name of the treatment.}
 
-\item{treatment_type_2}{Optinal, name of a second treatment that was combined with the first treatment.}
+\item{treatment_type_2}{Optional, name of a second treatment that was combined with the first treatment.}
 
 \item{treatment_dose_1}{Optional, doses used for treatment 1. These can be concentrations or times etc.}
 
@@ -69,7 +69,7 @@ create_queue(
 \item{exclude_combinations}{Optional, list of lists that contains vectors treatment types and treatment doses whos combinations should be 
 excluded from the final queue.}
 
-\item{inj_vol}{The volume used for injection in microliter. Will be \code{NA} if not specified, but needs to be specified later on then.}
+\item{inj_vol}{The volume used for injection in microliter. Will be \code{NA} if not specified. Then it needs to be manually specified before the queue can be used.}
 
 \item{data_path}{The file path where the MS raw data should be saved. Backslashes should be escaped by another backslash. Will be \code{NA} if not specified, but needs to be specified later on then.}
 

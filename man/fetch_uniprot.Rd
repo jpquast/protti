@@ -6,11 +6,11 @@
 \usage{
 fetch_uniprot(
   uniprot_ids,
-  columns = c("protein names", "genes", "database(GeneID)", "go(molecular function)",
-    "interactor", "feature(ACTIVE SITE)", "feature(BINDING SITE)",
-    "feature(METAL BINDING)", "chebi(Cofactor)", "chebi(Catalytic activity)",
-    "feature(MODIFIED RESIDUE)", "feature(LIPIDATION)", "feature(GLYCOSYLATION)",
-    "database(PDB)", "length", "sequence"),
+  columns = c("protein names", "genes", "database(GeneID)", "database(String)",
+    "go(molecular function)", "interactor", "feature(ACTIVE SITE)",
+    "feature(BINDING SITE)", "feature(METAL BINDING)", "chebi(Cofactor)",
+    "chebi(Catalytic activity)", "feature(MODIFIED RESIDUE)", "feature(LIPIDATION)",
+    "feature(GLYCOSYLATION)", "database(PDB)", "length", "sequence"),
   batchsize = 200,
   show_progress = TRUE
 )
@@ -18,7 +18,7 @@ fetch_uniprot(
 \arguments{
 \item{uniprot_ids}{A character vector of UniProt accession numbers}
 
-\item{columns}{Metadata columns that should be imported from UniProt (all possible columns can be found here: https://www.uniprot.org/help/uniprotkb_column_names)}
+\item{columns}{Metadata columns that should be imported from UniProt (all possible columns can be found \href{https://www.uniprot.org/help/uniprotkb_column_names}{here}.)}
 
 \item{batchsize}{Size of batch of proteins for a single query}
 

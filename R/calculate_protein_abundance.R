@@ -38,7 +38,8 @@
 #' protein_id = pg_protein_accessions,
 #' precursor = eg_precursor_id,
 #' intensity = log2_normalised_intensity,
-#' method = "iq"
+#' method = "iq",
+#' retain_columns = c(pg_protein_accessions)
 #' )
 #' }
 calculate_protein_abundance <- function(data, sample, protein_id, precursor, intensity, method = "iq", for_plot = FALSE, retain_columns = NULL){

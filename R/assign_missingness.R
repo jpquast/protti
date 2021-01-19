@@ -40,7 +40,8 @@
 #' sample = r_file_name,
 #' condition = r_condition,
 #' grouping = eg_precursor_id,
-#' intensity = normalised_intensity_log2
+#' intensity = normalised_intensity_log2,
+#' retain_columns = c(pg_protein_accessions)
 #' )
 #' }
 assign_missingness <- function(data, sample, condition, grouping, intensity, noise = NULL, ref_condition = "control", completeness_MAR = 0.7, completeness_MNAR = 0.25, retain_columns = NULL){
