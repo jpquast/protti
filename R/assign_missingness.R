@@ -15,6 +15,9 @@
 #' @param completeness_MNAR The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.25. 
 #' It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one 
 #' condition to be considered as MNAR when the other condition is complete.
+#' @param retain_columns Character vector indicating if certain columns should be retained from the input dataframe. Default is not retaining 
+#' additional columns \code{retain_columns = NULL}. All columns can be retained with \code{retain_columns = "all"}. Specific columns can be 
+#' retained by providing their names (not in quotations marks, just like other column names, but in a vector).
 #'
 #' @return A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison 
 #' name for the specific treatment/reference pair. The \code{missingness} column reports the type of missingness. 
@@ -25,7 +28,7 @@
 #' } 
 #' @import dplyr
 #' @import tidyr
-#' @importFrom rlang .data
+#' @importFrom rlang .data enquo !!
 #' @importFrom purrr map_df
 #' @importFrom magrittr %>%
 #' @export
@@ -37,14 +40,15 @@
 #' sample = r_file_name,
 #' condition = r_condition,
 #' grouping = eg_precursor_id,
-#' intensity = normalised_intensity_log2
+#' intensity = normalised_intensity_log2,
+#' retain_columns = c(pg_protein_accessions)
 #' )
 #' }
-assign_missingness <- function(data, sample, condition, grouping, intensity, noise = NULL, ref_condition = "control", completeness_MAR = 0.7, completeness_MNAR = 0.25){
+assign_missingness <- function(data, sample, condition, grouping, intensity, noise = NULL, ref_condition = "control", completeness_MAR = 0.7, completeness_MNAR = 0.25, retain_columns = NULL){
   . = NULL
   conditions_no_ref <- unique(pull(data, !!ensym(condition)))[!unique(pull(data, !!ensym(condition))) %in% ref_condition]
   
-  data <-  data %>%
+  data_prep <-  data %>%
     dplyr::distinct({{sample}}, {{condition}}, {{grouping}}, {{intensity}}, {{noise}}) %>%
     tidyr::complete(nesting(!!ensym(sample), !!ensym(condition)), !!ensym(grouping)) %>%
     dplyr::group_by({{grouping}}, {{condition}}) %>%
@@ -58,7 +62,7 @@ assign_missingness <- function(data, sample, condition, grouping, intensity, noi
     ))%>%
     tidyr::unnest(.data$comparison) 
   
-  data %>%
+  result <- data_prep %>%
     dplyr::mutate(type = ifelse({{condition}} == ref_condition, "control", "treated")) %>%
     split(.$comparison) %>%
     purrr::map_df(~ .x %>%
@@ -73,4 +77,21 @@ assign_missingness <- function(data, sample, condition, grouping, intensity, noi
     ) %>%
     dplyr::select(-c(.data$control, .data$n_replicates, .data$treated)) %>%
     dplyr::ungroup()
+  
+  if (missing(retain_columns)) return(result)
+
+  if (length(quo(retain_columns)) == 1 && retain_columns == "all") {
+    join_result <- data %>% 
+      dplyr::distinct() %>% 
+      dplyr::right_join(result, by = colnames(result)[!colnames(result) %in% c("comparison", "missingness")])
+      
+    return(join_result)
+  } else {
+    join_result <- data %>% 
+      dplyr::select(!!enquo(retain_columns), colnames(result)[!colnames(result) %in% c("comparison", "missingness")]) %>% 
+      dplyr::distinct() %>% 
+      dplyr::right_join(result, by = colnames(result)[!colnames(result) %in% c("comparison", "missingness")])
+    
+    return(join_result)
+  }
 }

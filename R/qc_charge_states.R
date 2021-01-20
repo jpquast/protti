@@ -15,8 +15,9 @@
 #' @import ggplot2
 #' @importFrom magrittr %>%
 #' @importFrom forcats fct_inorder
-#' @importFrom rlang .data
-#' @importFrom rlang :=
+#' @importFrom rlang .data :=
+#' @importFrom tidyr drop_na
+#' @importFrom utils data
 #' @export
 #'
 #' @examples
@@ -33,6 +34,8 @@
 qc_charge_states <-
   function(data, sample, grouping, charge_states, intensity = NULL, method, plot = FALSE)
   {
+    protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+    utils::data("protti_colors", envir=environment()) # then overwrite it with real data
     if (method == "count")
     {
       result <- data %>%
@@ -45,16 +48,16 @@ qc_charge_states <-
           dplyr::ungroup() %>%
           dplyr::mutate({{charge_states}} := forcats::fct_inorder(factor({{charge_states}})))
 
-      if(plot == FALSE)
-      {return(result)
+      if(plot == FALSE) {
+        return(result)
       } else {
         plot <- result %>%
           ggplot2::ggplot(aes(x = {{sample}}, y = .data$charge_per, fill = {{charge_states}})) +
-          geom_col(col = "black") +
+          geom_col(col = "black", size = 1) +
           geom_text(
             data = result %>% dplyr::filter(.data$charge_per > 5),
             aes(label = round(.data$charge_per, digits = 1)),
-            position = position_stack(vjust = 0.5)
+            position = position_stack(vjust = 0.9)
           ) +
           labs(title = "Charge distribution per .raw file",
                subtitle = "By percent of total peptide count",
@@ -62,23 +65,14 @@ qc_charge_states <-
                y = "% of total peptide count",
                fill = "Charge") +
           theme_bw() +
-          theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-          scale_fill_manual(values = c("#5680C1",
-                                        "#B96DAD",
-                                        "#64CACA",
-                                        "#81ABE9",
-                                        "#F6B8D1",
-                                        "#99F1E4",
-                                        "#9AD1FF",
-                                        "#548BDF",
-                                        "#A55098",
-                                        "#3EB6B6",
-                                        "#87AEE8",
-                                        "#CA91C1",
-                                        "#A4E0E0",
-                                        "#1D4F9A",
-                                        "#D7ACD2",
-                                        "#49C1C1"))
+          theme(plot.title = ggplot2::element_text(size = 20),
+                axis.title.x = ggplot2::element_text(size = 15),
+                axis.text.y = ggplot2::element_text(size = 15),
+                axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
+                axis.title.y = ggplot2::element_text(size = 15),
+                legend.title = ggplot2::element_text(size = 15),
+                legend.text = ggplot2::element_text(size = 15)) +
+          scale_fill_manual(values = protti_colors)
         return(plot)
       }
     }
@@ -86,6 +80,7 @@ qc_charge_states <-
     if (method == "intensity")
     {
       result <- data %>%
+        tidyr::drop_na({{intensity}}) %>% 
         dplyr::distinct({{sample}}, {{grouping}}, {{charge_states}}, {{intensity}}) %>%
         dplyr::group_by({{sample}}) %>%
         dplyr::mutate(total_intensity = sum({{intensity}})) %>%
@@ -101,11 +96,11 @@ qc_charge_states <-
       } else {
         plot <- result %>%
           ggplot2::ggplot(aes(x = {{sample}}, y = .data$charge_per, fill = {{charge_states}})) +
-          geom_col(col = "black") +
+          geom_col(col = "black", size = 1) +
           geom_text(
             data = result %>% dplyr::filter(.data$charge_per > 5),
             aes(label = round(.data$charge_per, digits = 1)),
-            position = position_stack(vjust = 0.5)
+            position = position_stack(vjust = 0.9)
           ) +
           labs(title = "Charge distribution per .raw file",
                subtitle = "By percent of total intensity",
@@ -113,23 +108,14 @@ qc_charge_states <-
                y = "% of total intensity",
                fill = "Charge") +
           theme_bw() +
-          theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-          scale_fill_manual(values = c("#5680C1",
-                                        "#B96DAD",
-                                        "#64CACA",
-                                        "#81ABE9",
-                                        "#F6B8D1",
-                                        "#99F1E4",
-                                        "#9AD1FF",
-                                        "#548BDF",
-                                        "#A55098",
-                                        "#3EB6B6",
-                                        "#87AEE8",
-                                        "#CA91C1",
-                                        "#A4E0E0",
-                                        "#1D4F9A",
-                                        "#D7ACD2",
-                                        "#49C1C1"))
+          theme(plot.title = ggplot2::element_text(size = 20),
+                axis.title.x = ggplot2::element_text(size = 15),
+                axis.text.y = ggplot2::element_text(size = 15),
+                axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
+                axis.title.y = ggplot2::element_text(size = 15),
+                legend.title = ggplot2::element_text(size = 15),
+                legend.text = ggplot2::element_text(size = 15)) +
+          scale_fill_manual(values = protti_colors)
         return(plot)
       }
     }

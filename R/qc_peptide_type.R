@@ -18,6 +18,8 @@
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
 #' @importFrom plotly ggplotly
+#' @importFrom tidyr drop_na
+#' @importFrom utils data
 #' @export
 #'
 #' @examples
@@ -30,8 +32,9 @@
 #' intensity = fg_quantity,
 #' plot = TRUE)
 #' }
-qc_peptide_type <- function(data, sample, peptide, pep_type, intensity = NULL, method = "count", plot = FALSE, interactive = FALSE)
-{
+qc_peptide_type <- function(data, sample, peptide, pep_type, intensity = NULL, method = "count", plot = FALSE, interactive = FALSE) {
+  protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+  utils::data("protti_colors", envir=environment()) # then overwrite it with real data
   if(method == "count")
   {
     result <- data %>%
@@ -46,28 +49,39 @@ qc_peptide_type <- function(data, sample, peptide, pep_type, intensity = NULL, m
     if (plot == TRUE & interactive == FALSE){
       plot <- result %>%
         ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = .data$pep_type)) +
-        ggplot2::geom_col(col = "black") +
+        ggplot2::geom_col(col = "black", size = 1) +
+        geom_text(
+          data = result %>% dplyr::filter(.data$peptide_type_percent > 10),
+          aes(label = round(.data$peptide_type_percent, digits = 1)),
+          position = position_stack(vjust = 0.9)
+        ) +
         ggplot2::labs(title = "Peptide types per .raw file", x = "Sample", y = "Percentage of peptides", fill = "Type") +
         ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
-        ggplot2::scale_fill_manual(values = c("#5680C1",
-                                              "#B96DAD",
-                                              "#64CACA",
-                                              "#81ABE9"))
+        ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
+                       axis.title.x = ggplot2::element_text(size = 15),
+                       axis.text.y = ggplot2::element_text(size = 15),
+                       axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
+                       axis.title.y = ggplot2::element_text(size = 15),
+                       legend.title = ggplot2::element_text(size = 15),
+                       legend.text = ggplot2::element_text(size = 15)) +
+        ggplot2::scale_fill_manual(values = protti_colors)
 
       return(plot)
     }
     if (plot == TRUE & interactive == TRUE) {
       plot <- result %>%
         ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = .data$pep_type)) +
-        ggplot2::geom_col(col = "black") +
+        ggplot2::geom_col(col = "black", size = 1) +
         ggplot2::labs(title = "Peptide types per .raw file", x = "Sample", y = "Percentage of peptides", fill = "Type") +
         ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
-        ggplot2::scale_fill_manual(values = c("#5680C1",
-                                              "#B96DAD",
-                                              "#64CACA",
-                                              "#81ABE9"))
+        ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
+                       axis.title.x = ggplot2::element_text(size = 15),
+                       axis.text.y = ggplot2::element_text(size = 15),
+                       axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
+                       axis.title.y = ggplot2::element_text(size = 15),
+                       legend.title = ggplot2::element_text(size = 15),
+                       legend.text = ggplot2::element_text(size = 15)) +
+        ggplot2::scale_fill_manual(values = protti_colors)
 
       interactive_plot <- plotly::ggplotly(plot)
 
@@ -81,6 +95,7 @@ qc_peptide_type <- function(data, sample, peptide, pep_type, intensity = NULL, m
   if(method == "intensity")
   {
     result <- data %>%
+      tidyr::drop_na({{intensity}}) %>% 
       dplyr::distinct({{sample}}, {{peptide}}, {{pep_type}}, {{intensity}}) %>%
       tidyr::drop_na({{pep_type}}) %>%
       dplyr::group_by({{sample}}) %>%
@@ -95,27 +110,38 @@ qc_peptide_type <- function(data, sample, peptide, pep_type, intensity = NULL, m
     if (plot == TRUE & interactive == FALSE){
       plot <- result %>%
         ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = .data$pep_type)) +
-        ggplot2::geom_col(col = "black") +
+        ggplot2::geom_col(col = "black", size = 1) +
+        geom_text(
+          data = result %>% dplyr::filter(.data$peptide_type_percent > 10),
+          aes(label = round(.data$peptide_type_percent, digits = 1)),
+          position = position_stack(vjust = 0.9)
+        ) +
         ggplot2::labs(title = "Peptide type intensity per .raw file", x = "Sample", y = "Percentage of total peptide intensity", fill = "Type") +
         ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
-        ggplot2::scale_fill_manual(values = c("#5680C1",
-                                              "#B96DAD",
-                                              "#64CACA",
-                                              "#81ABE9"))
+        ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
+                       axis.title.x = ggplot2::element_text(size = 15),
+                       axis.text.y = ggplot2::element_text(size = 15),
+                       axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
+                       axis.title.y = ggplot2::element_text(size = 15),
+                       legend.title = ggplot2::element_text(size = 15),
+                       legend.text = ggplot2::element_text(size = 15)) +
+        ggplot2::scale_fill_manual(values = protti_colors)
       return(plot)
     }
     if (plot == TRUE & interactive == TRUE) {
       plot <- result %>%
         ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = .data$pep_type)) +
-        ggplot2::geom_col(col = "black") +
+        ggplot2::geom_col(col = "black", size = 1) +
         ggplot2::labs(title = "Peptide type intensity per .raw file", x = "Sample", y = "Percentage of total peptide intensity", fill = "Type") +
         ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
-        ggplot2::scale_fill_manual(values = c("#5680C1",
-                                              "#B96DAD",
-                                              "#64CACA",
-                                              "#81ABE9"))
+        ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
+                       axis.title.x = ggplot2::element_text(size = 15),
+                       axis.text.y = ggplot2::element_text(size = 15),
+                       axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
+                       axis.title.y = ggplot2::element_text(size = 15),
+                       legend.title = ggplot2::element_text(size = 15),
+                       legend.text = ggplot2::element_text(size = 15)) +
+        ggplot2::scale_fill_manual(values = protti_colors)
 
       interactive_plot <- plotly::ggplotly(plot)
 

@@ -10,7 +10,7 @@
 #' @param experiment_name Optional, name of the experiment.
 #' @param digestion Optional, the digestion types used in this experiment (e.g "LiP" and/or "tryptic control").
 #' @param treatment_type_1 Optional, name of the treatment.
-#' @param treatment_type_2 Optinal, name of a second treatment that was combined with the first treatment.
+#' @param treatment_type_2 Optional, name of a second treatment that was combined with the first treatment.
 #' @param treatment_dose_1 Optional, doses used for treatment 1. These can be concentrations or times etc.
 #' @param treatment_dose_2 Optional, doses used for treatment 2. These can be concentrations or times etc.
 #' @param treatment_unit_1 Optional, unit of the doses for treatment 1 (e.g min, mM, etc.).
@@ -20,7 +20,7 @@
 #' @param organism Optional, name of the organism used.
 #' @param exclude_combinations Optional, list of lists that contains vectors treatment types and treatment doses whos combinations should be 
 #' excluded from the final queue. 
-#' @param inj_vol The volume used for injection in microliter. Will be \code{NA} if not specified, but needs to be specified later on then.
+#' @param inj_vol The volume used for injection in microliter. Will be \code{NA} if not specified. Then it needs to be manually specified before the queue can be used.
 #' @param data_path The file path where the MS raw data should be saved. Backslashes should be escaped by another backslash. Will be \code{NA} if not specified, but needs to be specified later on then.
 #' @param method_path The file path of the MS acquisition method. Backslashes should be escaped by another backslash. Will be \code{NA} if not specified, but needs to be specified later on then.
 #' @param position_row The row positions that can be used for the samples (e.g c("A", "B")). If the number of specified rows and columns does not equal the total number 
@@ -32,6 +32,8 @@
 #' @param blank_method_path The file path of the MS acquisition method of the blank. Backslashes should be escaped by another backslash. 
 #' Will be \code{NA} if not specified, but needs to be specified later on then.
 #' @param blank_inj_vol Injection volume of the blank sample. Will be \code{NA} if not specified, but needs to be specified later on then.
+#' @param export Logical, specifying if queue should be exported from R and saved as a .csv file. Default is TRUE. Further options for 
+#' export can be adjusted with the \code{export_to_queue} and \code{queue_path} arguments.
 #' @param export_to_queue Logical, specifying if the resulting queue should be appended to an already existing queue. If false result will be saved as \code{queue.csv}.
 #' @param queue_path Optional, file path to a queue file to which the generated queue should be appended if \code{export_to_queue = TRUE}. 
 #' If not specified queue file can be chosen interactively.
@@ -99,6 +101,7 @@ create_queue <-
            blank_position = NA,
            blank_method_path = NA,
            blank_inj_vol = 1,
+           export = TRUE,
            export_to_queue = FALSE,
            queue_path = NULL) {
     data <-
@@ -298,6 +301,9 @@ create_queue <-
         purrr::map2_dfr(.y = blank,
                         .f = ~ .y %>%
                           dplyr::bind_rows(.x))
+    }
+    if(export == FALSE){
+      return(result)
     }
     if (export_to_queue == FALSE) {
       # a file named queue.csv is exported

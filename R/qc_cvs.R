@@ -17,6 +17,7 @@
 #' @importFrom rlang .data
 #' @importFrom stats sd
 #' @importFrom forcats fct_relevel
+#' @importFrom utils data
 #' @export
 #'
 #' @examples
@@ -31,11 +32,12 @@
 #' )
 #' }
 qc_cvs <-
-  function(data, grouping, condition, intensity, plot = TRUE, plot_style = "density")
-  {
+  function(data, grouping, condition, intensity, plot = TRUE, plot_style = "density") {
+    protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+    utils::data("protti_colors", envir=environment()) # then overwrite it with real data
     if(plot == FALSE)
     {
-      if(max(dplyr::pull(data, {{intensity}})) < 1000)
+      if(max(dplyr::pull(data, {{intensity}}), na.rm = TRUE) < 1000)
       {
       stop("Please backtransform your data or use raw values. The function does not handle log2 transformed data.")
       }
@@ -61,7 +63,7 @@ qc_cvs <-
 
     if(plot == TRUE)
     {
-      if(max(dplyr::pull(data, {{intensity}})) < 1000)
+      if(max(dplyr::pull(data, {{intensity}}), na.rm = TRUE) < 1000)
       {
         stop("Please backtransform your data or use raw values. The function does not handle log2 transformed data.")
       }
@@ -95,23 +97,7 @@ qc_cvs <-
         ggplot2::labs(title = "Coefficients of variation") +
         ggplot2::theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
         ggplot2::scale_y_continuous(limits = c(0, 200)) +
-        ggplot2::scale_fill_manual(values = c("#8D8D8D",
-                                              "#5680C1",
-                                              "#B96DAD",
-                                              "#64CACA",
-                                              "#81ABE9",
-                                              "#F6B8D1",
-                                              "#99F1E4",
-                                              "#9AD1FF",
-                                              "#548BDF",
-                                              "#A55098",
-                                              "#3EB6B6",
-                                              "#87AEE8",
-                                              "#CA91C1",
-                                              "#A4E0E0",
-                                              "#1D4F9A",
-                                              "#D7ACD2",
-                                              "#49C1C1"))
+        ggplot2::scale_fill_manual(values = protti_colors)
 
       return(plot)
     }
@@ -124,23 +110,7 @@ qc_cvs <-
         ggplot2::labs(title = "Coefficients of variation") +
         ggplot2::xlab("Coefficient of variation [%]") +
         ggplot2::scale_x_continuous(limits = c(0, 200)) +
-        ggplot2::scale_color_manual(values = c("#8D8D8D",
-                                              "#5680C1",
-                                              "#B96DAD",
-                                              "#64CACA",
-                                              "#81ABE9",
-                                              "#F6B8D1",
-                                              "#99F1E4",
-                                              "#9AD1FF",
-                                              "#548BDF",
-                                              "#A55098",
-                                              "#3EB6B6",
-                                              "#87AEE8",
-                                              "#CA91C1",
-                                              "#A4E0E0",
-                                              "#1D4F9A",
-                                              "#D7ACD2",
-                                              "#49C1C1"))
+        ggplot2::scale_color_manual(values = protti_colors)
 
       return(plot)
     }
@@ -154,23 +124,7 @@ qc_cvs <-
           ggplot2::labs(title = "Coefficients of variation") +
           ggplot2::theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
           ggplot2::scale_y_continuous(limits = c(0, 200)) +
-          ggplot2::scale_fill_manual(values = c("#8D8D8D",
-                                                "#5680C1",
-                                                "#B96DAD",
-                                                "#64CACA",
-                                                "#81ABE9",
-                                                "#F6B8D1",
-                                                "#99F1E4",
-                                                "#9AD1FF",
-                                                "#548BDF",
-                                                "#A55098",
-                                                "#3EB6B6",
-                                                "#87AEE8",
-                                                "#CA91C1",
-                                                "#A4E0E0",
-                                                "#1D4F9A",
-                                                "#D7ACD2",
-                                                "#49C1C1"))
+          ggplot2::scale_fill_manual(values = protti_colors)
         return(plot)
       }
     }

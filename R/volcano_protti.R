@@ -79,8 +79,13 @@ volcano_protti <- function(data, grouping, log2FC, significance, method, protein
       geom_hline(yintercept = -1 * log10(significance_cutoff), linetype = "dashed") +
       geom_vline(xintercept = log2FC_cutoff, linetype = "dashed") +
       geom_vline(xintercept = -1 * log2FC_cutoff, linetype = "dashed") +
-      theme(legend.position = "none")  +
       theme_bw() +
+      theme(plot.title = ggplot2::element_text(size = 20),
+            axis.title.x = ggplot2::element_text(size = 15),
+            axis.text.y = ggplot2::element_text(size = 15),
+            axis.text.x = ggplot2::element_text(size = 12),
+            axis.title.y = ggplot2::element_text(size = 15),
+            legend.position = "none")  +
       scale_x_continuous(breaks = seq(round(-1 * max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) + 0.5, 0), 1)) +
       coord_cartesian(xlim = c(round(-1 * max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) + 0.5, 0)))
 
@@ -112,8 +117,13 @@ volcano_protti <- function(data, grouping, log2FC, significance, method, protein
       geom_hline(yintercept = -1 * log10(significance_cutoff), linetype = "dashed") +
       geom_vline(xintercept = log2FC_cutoff, linetype = "dashed") +
       geom_vline(xintercept = -1 *log2FC_cutoff, linetype = "dashed") +
-      theme(legend.position = "none")  +
       theme_bw() +
+      theme(plot.title = ggplot2::element_text(size = 20),
+            axis.title.x = ggplot2::element_text(size = 15),
+            axis.text.y = ggplot2::element_text(size = 15),
+            axis.text.x = ggplot2::element_text(size = 12),
+            axis.title.y = ggplot2::element_text(size = 15),
+            legend.position = "none")  +
       scale_x_continuous(breaks = seq(round(-1 * max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) + 0.5, 0), 1)) +
       coord_cartesian(xlim = c(round(-1 * max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) + 0.5, 0)))
 

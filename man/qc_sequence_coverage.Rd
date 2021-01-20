@@ -4,14 +4,27 @@
 \alias{qc_sequence_coverage}
 \title{Protein coverage distribution}
 \usage{
-qc_sequence_coverage(data, protein_identifier, coverage, interactive = TRUE)
+qc_sequence_coverage(
+  data,
+  protein_identifier,
+  coverage,
+  facet_by_sample = FALSE,
+  sample = NULL,
+  interactive = TRUE
+)
 }
 \arguments{
 \item{data}{A data frame containing at least the input variables.}
 
 \item{protein_identifier}{Column in the data frame containing protein identifiers.}
 
-\item{coverage}{Column in the data frame containing protein coverage in percent. This information can be obtained using the \code{\link{sequence_coverage}} function.}
+\item{coverage}{Column in the data frame containing protein coverage in percent. This information can be obtained using 
+the \code{\link{sequence_coverage}} function.}
+
+\item{facet_by_sample}{Logical that determines if the plot should be faceted by sample. If \code{TRUE}, \code{sample} needs to be 
+provided. Default is \code{FALSE}.}
+
+\item{sample}{Column in the data frame containing sample names. Only required if \code{facet_by_sample = TRUE}.}
 
 \item{interactive}{A logical, if TRUE the plot is interactive (default is TRUE).}
 }

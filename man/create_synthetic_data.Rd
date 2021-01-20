@@ -11,6 +11,7 @@ create_synthetic_data(
   n_conditions,
   method = "random_effect",
   concentrations = NULL,
+  median_offset_sd = 0.05,
   mean_protein_intensity = 16.88,
   sd_protein_intensity = 1.4,
   mean_n_peptides = 12.75,
@@ -21,7 +22,8 @@ create_synthetic_data(
   sd_log_replicates = 1.05,
   effect_sd = 2,
   dropout_curve_inflection = 14,
-  dropout_curve_sd = -1.2
+  dropout_curve_sd = -1.2,
+  additional_metadata = TRUE
 )
 }
 \arguments{
@@ -35,13 +37,16 @@ is changing.}
 \item{n_conditions}{Numeric, the number of conditions.}
 
 \item{method}{Character, specifies the method type for the random sampling of significantly changing peptides. If \code{method = "random_effect"},
-the effect for each condition is randomly sampled and conditions do not depend on eachother. If \code{method = "dose_response"},
-the effect is sampled based on a dose response curve and conditions are related to eachother depending on the curve shape. In this case
+the effect for each condition is randomly sampled and conditions do not depend on each other. If \code{method = "dose_response"},
+the effect is sampled based on a dose response curve and conditions are related to each other depending on the curve shape. In this case
 the concentrations argument needs to be specified.}
 
 \item{concentrations}{Numeric vector of the length of number of conditions, only needs to be specified if \code{method = "dose_response"}.
-This allows equal sampeling of peptide intensities. It ensures that the same positions of dose response curves are sampled for each peptide
+This allows equal sampling of peptide intensities. It ensures that the same positions of dose response curves are sampled for each peptide
 based on the provided concentrations.}
+
+\item{median_offset_sd}{Numeric, standard deviation of normal distribution that is used for sampling of inter-sample-differences. 
+Default is 0.05.}
 
 \item{mean_protein_intensity}{Numeric, mean of the protein intensity distribution. Default: 16.8.}
 
@@ -70,6 +75,9 @@ dependent missing values. This argument determines how many missing values there
 
 \item{dropout_curve_sd}{Numeric, standard deviation of the probabilistic dropout curve. Needs to be negative to sample a droupout towards
 low intensities. Default: -1.2.}
+
+\item{additional_metadata}{Logical, determines if metadata such as protein coverage, missed cleavages and charge state should be 
+sampled and added to the list.}
 }
 \value{
 A data frame that contains complete peptide intensities and peptide intensities with values that were created based on a

@@ -18,7 +18,8 @@ diff_abundance(
   ref_condition,
   filter_NA_missingness = TRUE,
   method = c("t-test", "t-test_mean_sd", "moderated_t-test", "proDA"),
-  p_adj_method = "BH"
+  p_adj_method = "BH",
+  retain_columns = NULL
 )
 }
 \arguments{
@@ -58,6 +59,10 @@ model. More information can be found in the \code{proDA} documentation.}
 
 \item{p_adj_method}{A character vector, specifies the p-value correction method. Possible methods are c("holm", "hochberg", "hommel", "bonferroni", "BH", 
 "BY", "fdr", "none"). Default method is \code{"BH"}.}
+
+\item{retain_columns}{A vector indicating if certain columns should be retained from the input dataframe. Default is not retaining 
+additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks, 
+just like other column names, but in a vector).}
 }
 \value{
 A data frame that contains differential abundances (\code{diff}), p-values (\code{pval}) and adjusted p-values (\code{adj_pval}) for each protein, 
@@ -96,7 +101,8 @@ intensity = normalised_intensity_log2,
 missingness = missingness,
 comparison = comparison,
 ref_condition = "control",
-method = "t-test"
+method = "t-test",
+retain_columns = c(pg_protein_accessions)
 )
 }
 }

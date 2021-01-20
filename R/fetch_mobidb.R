@@ -9,7 +9,6 @@
 #' @return A data frame that contains start and end positions for disordered regions for each protein provided. The \code{feature} column
 #' contains information on the source of this annotation. More information on the source can be found \href{https://mobidb.bio.unipd.it/about/mobidb}{here}.
 #' @importFrom httr GET content
-#' @importFrom readr read_tsv
 #' @importFrom rlang .data 
 #' @importFrom dplyr filter mutate
 #' @importFrom tidyr unnest separate
@@ -31,16 +30,14 @@ fetch_mobidb <- function(organism_id, protein_ids){
   query <- paste0("https://mobidb.bio.unipd.it/api/download?ncbi_taxon_id=", organism_id, "&projection=prediction-disorder-mobidb_lite,curated-disorder-merge,derived-missing_residues-th_90,derived-mobile_residues-th_90,acc,name,length&format=tsv")
   
   mobidb <- httr::GET(query) %>% 
-    httr::content() %>% 
-    readr::read_tsv(col_types = readr::cols()) 
+    httr::content() 
   
   i  <- 0
   while (("ERROR: operation exceeded time limit" %in% mobidb$acc) & i < 4)
   {
     message("Attempt to download data timed out. Trying again")
     mobidb <- httr::GET(query) %>% 
-      httr::content() %>% 
-      readr::read_tsv(col_types = readr::cols())
+      httr::content() 
     
     i <- i + 1
     

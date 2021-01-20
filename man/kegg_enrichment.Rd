@@ -8,8 +8,8 @@ kegg_enrichment(
   data,
   protein_id,
   is_significant,
-  pathway_id,
-  pathway_name,
+  pathway_id = pathway_id,
+  pathway_name = pathway_name,
   plot = TRUE
 )
 }

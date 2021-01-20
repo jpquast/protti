@@ -3,7 +3,7 @@
 #' Fetches protein metadata from UniProt.
 #'
 #' @param uniprot_ids A character vector of UniProt accession numbers
-#' @param columns Metadata columns that should be imported from UniProt (all possible columns can be found here: https://www.uniprot.org/help/uniprotkb_column_names)
+#' @param columns Metadata columns that should be imported from UniProt (all possible columns can be found \href{https://www.uniprot.org/help/uniprotkb_column_names}{here}.)
 #' @param batchsize Size of batch of proteins for a single query
 #' @param show_progress Logical, if true, a progress bar will be shown
 #'
@@ -27,6 +27,7 @@ fetch_uniprot <-
               "protein names",
               "genes",
               "database(GeneID)",
+              "database(String)",
               "go(molecular function)",
               "interactor",
               "feature(ACTIVE SITE)",
@@ -41,7 +42,7 @@ fetch_uniprot <-
               "length",
               "sequence"
             ),
-            batchsize = 400,
+            batchsize = 200,
             show_progress = TRUE)
   {
     . = NULL
@@ -60,14 +61,16 @@ fetch_uniprot <-
     }
     url <- "http://www.uniprot.org/uniprot/?query="
     batches <- split(uniprot_ids_filtered, ceiling(seq_along(uniprot_ids_filtered)/batchsize))
-    pb <- progress::progress_bar$new(total = length(batches))
+    pb <- progress::progress_bar$new(total = length(batches), show_after = 0)
+    pb$tick(0)
     result <- purrr::map_df(batches, function(x) {
-      if(show_progress == TRUE) {
-        pb$tick()}
       id_query <- paste(paste0("id:", x), collapse = "+or+")
       query_url <- utils::URLencode(paste0(url, id_query, "&format=tab&columns=",
                                     collapsed_columns))
-      try_query(query_url)
+      query <- try_query(query_url)
+      if(show_progress == TRUE) {
+        pb$tick()}
+      return(query)
     })
     colnames(result) <- column_names
 
