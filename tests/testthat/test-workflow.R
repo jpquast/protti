@@ -94,14 +94,35 @@ test_that("impute works", {
 })
 
 protein_abundance <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide, intensity = normalised_intensity_log2, method = "iq", retain_columns = condition)
+protein_abundance_all <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide, intensity = normalised_intensity_log2, method = "iq", for_plot = TRUE)
 
 test_that("calculate_protein_abundance works", {
   expect_is(protein_abundance, "data.frame")
   expect_equal(round(protein_abundance$normalised_intensity_log2[1:6], digits = 2), c(16.24, 16.15, 16.23, 16.25, 16.06, 16.06))
+  expect_equal(nrow(protein_abundance), 2496)
+  expect_equal(ncol(protein_abundance), 4)
+  
+  expect_is(protein_abundance_all, "data.frame")
+  expect_equal(nrow(protein_abundance_all), 37022)
+  expect_equal(ncol(protein_abundance_all), 4)
 
   protein_abundance_sum <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide, intensity = normalised_intensity_log2, method = "sum", retain_columns = condition)
   expect_is(protein_abundance_sum, "data.frame")
   expect_equal(round(protein_abundance_sum$normalised_intensity_log2[1:6], digits = 2), c(18.21, 18.31, 18.24, 18.01, 17.82, 17.77))
+})
+
+test_that("plot_peptide_profiles works", {
+  # not testing split_all = TRUE. Also not testing protein_abundance_plot = FALSE.
+  p <- plot_peptide_profiles(data = protein_abundance_all,
+                             sample = sample,
+                             peptide = peptide,
+                             intensity = normalised_intensity_log2,
+                             grouping = protein,
+                             targets = c("protein_1", "protein_2"),
+                             protein_abundance_plot = TRUE)
+  expect_is(p,"list")
+  expect_is(p[[1]], "ggplot")
+  expect_error(print(p[[1]]), NA)
 })
 
 diff <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity = normalised_intensity_log2, missingness = missingness, comparison = comparison, ref_condition = "condition_1", method = "t-test", retain_columns = c(protein))
