@@ -39,7 +39,7 @@ test_that("median_normalization works", {
 
   all_equal_normalised <- range(normalised$median) / mean(normalised$median)
   expect_equal(all_equal_normalised[1], all_equal_normalised[2]) # test that medians are equal after normalizing
-  
+
   ## test drc data
   non_normalised_drc <- normalised_data_drc %>%
     dplyr::group_by(sample) %>%
@@ -47,10 +47,10 @@ test_that("median_normalization works", {
   normalised_drc <- normalised_data_drc %>%
     dplyr::group_by(sample) %>%
     dplyr::summarise(median = median(normalised_intensity_log2, na.rm = TRUE), .groups = "drop")
-  
+
   all_equal_non_normalised_drc <- range(non_normalised_drc$median) / mean(non_normalised_drc$median)
   expect_false(isTRUE(all.equal(all_equal_non_normalised_drc[1], all_equal_non_normalised_drc[2]))) # test that medians are unequal before normalizing
-  
+
   all_equal_normalised_drc <- range(normalised_drc$median) / mean(normalised_drc$median)
   expect_equal(all_equal_normalised_drc[1], all_equal_normalised_drc[2]) # test that medians are equal after normalizing
 })
@@ -70,15 +70,15 @@ test_that("assign_missingness works", {
     dplyr::count(missingness)
 
   expect_equal(sort(missingness_count$n), c(222, 4134, 5550, 28926))
-  
+
   ## test drc data
-  
+
   expect_equal(nrow(missing_data_drc), 49812)
   expect_true("missingness" %in% colnames(missing_data_drc))
-  
+
   missingness_count_drc <- missing_data_drc %>%
     dplyr::count(missingness)
-  
+
   expect_equal(sort(missingness_count_drc$n), c(198, 4590, 5304, 39720))
 })
 
@@ -101,7 +101,7 @@ test_that("calculate_protein_abundance works", {
   expect_equal(round(protein_abundance$normalised_intensity_log2[1:6], digits = 2), c(16.24, 16.15, 16.23, 16.25, 16.06, 16.06))
   expect_equal(nrow(protein_abundance), 2496)
   expect_equal(ncol(protein_abundance), 4)
-  
+
   expect_is(protein_abundance_all, "data.frame")
   expect_equal(nrow(protein_abundance_all), 37022)
   expect_equal(ncol(protein_abundance_all), 4)
@@ -136,7 +136,7 @@ test_that("diff_abundance works", {
   diff_mean_sd <- diff_abundance(data = data_mean_sd, condition = condition, grouping = peptide, mean = mean, sd = sd, n_samples = n, ref_condition = "condition_1", method = "t-test_mean_sd", retain_columns = c(protein))
   diff_moderated <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity = normalised_intensity_log2, missingness = missingness, comparison = comparison, ref_condition = "condition_1", method = "moderated_t-test", retain_columns = c(protein))
   diff_proDA <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity = normalised_intensity_log2, missingness = missingness, comparison = comparison, ref_condition = "condition_1", method = "proDA", retain_columns = c(protein))
-  
+
   expect_is(diff, "data.frame")
   expect_is(diff_mean_sd, "data.frame")
   expect_is(diff_moderated, "data.frame")
@@ -157,48 +157,48 @@ test_that("diff_abundance works", {
 
 test_that("volcano_protti works", {
   sig_prots <- paste0("protein_", 1:25)
-  p <- volcano_protti(data = diff, 
-                      grouping = peptide, 
-                      log2FC = diff, 
-                      significance = adj_pval, 
-                      method = "significant", 
-                      protein_identifier = protein, 
-                      title = "Test tile", 
-                      x_axis_label = "test x-Axis", 
-                      y_axis_label = "test y-Axis", 
-                      log2FC_cutoff = 1, 
-                      significance_cutoff = 0.05, 
+  p <- volcano_protti(data = diff,
+                      grouping = peptide,
+                      log2FC = diff,
+                      significance = adj_pval,
+                      method = "significant",
+                      protein_identifier = protein,
+                      title = "Test tile",
+                      x_axis_label = "test x-Axis",
+                      y_axis_label = "test y-Axis",
+                      log2FC_cutoff = 1,
+                      significance_cutoff = 0.05,
                       interactive = FALSE)
   expect_is(p,"ggplot")
   expect_warning(expect_error(print(p), NA))
-  
-  p_interactive <- volcano_protti(data = diff, 
-                      grouping = peptide, 
-                      log2FC = diff, 
-                      significance = adj_pval, 
-                      method = "significant", 
-                      protein_identifier = protein, 
-                      title = "Test tile", 
-                      x_axis_label = "test x-Axis", 
-                      y_axis_label = "test y-Axis", 
-                      log2FC_cutoff = 1, 
-                      significance_cutoff = 0.05, 
+
+  p_interactive <- volcano_protti(data = diff,
+                      grouping = peptide,
+                      log2FC = diff,
+                      significance = adj_pval,
+                      method = "significant",
+                      protein_identifier = protein,
+                      title = "Test tile",
+                      x_axis_label = "test x-Axis",
+                      y_axis_label = "test y-Axis",
+                      log2FC_cutoff = 1,
+                      significance_cutoff = 0.05,
                       interactive = TRUE)
   expect_is(p_interactive,"plotly")
   expect_error(print(p_interactive), NA)
-  
-  p_target <- volcano_protti(data = diff, 
-                      grouping = peptide, 
-                      log2FC = diff, 
-                      significance = adj_pval, 
-                      method = "target", 
+
+  p_target <- volcano_protti(data = diff,
+                      grouping = peptide,
+                      log2FC = diff,
+                      significance = adj_pval,
+                      method = "target",
                       target = "protein_3",
-                      protein_identifier = protein, 
-                      title = "Test tile", 
-                      x_axis_label = "test x-Axis", 
-                      y_axis_label = "test y-Axis", 
-                      log2FC_cutoff = 1, 
-                      significance_cutoff = 0.05, 
+                      protein_identifier = protein,
+                      title = "Test tile",
+                      x_axis_label = "test x-Axis",
+                      y_axis_label = "test y-Axis",
+                      log2FC_cutoff = 1,
+                      significance_cutoff = 0.05,
                       interactive = FALSE)
   expect_is(p_target,"ggplot")
   expect_warning(expect_error(print(p_target), NA))
@@ -206,19 +206,19 @@ test_that("volcano_protti works", {
 
 test_that("protein_abundance_normalisation works", {
   # does not test the paired argument. No change of the completeness argument is tested
-  protein_abundance <- protein_abundance %>% 
-    dplyr::rename(protein_intensity = normalised_intensity_log2) %>% 
+  protein_abundance <- protein_abundance %>%
+    dplyr::rename(protein_intensity = normalised_intensity_log2) %>%
     assign_missingness(sample = sample,
                        condition = condition,
                        grouping = protein,
                        intensity = protein_intensity,
                        ref_condition = "condition_1")
-  
-  abundance_normalised_ref <- protein_abundance_normalisation(lip_peptides = missing_data, 
-                                                          tc_proteins = protein_abundance, 
+
+  abundance_normalised_ref <- protein_abundance_normalisation(lip_peptides = missing_data,
+                                                          tc_proteins = protein_abundance,
                                                           sample = sample,
                                                           grouping = peptide,
-                                                          condition = condition, 
+                                                          condition = condition,
                                                           protein_id = protein,
                                                           peptide_intensity = normalised_intensity_log2,
                                                           protein_intensity = protein_intensity,
@@ -228,12 +228,12 @@ test_that("protein_abundance_normalisation works", {
   expect_equal(nrow(abundance_normalised_ref), 5648)
   expect_equal(ncol(abundance_normalised_ref), 14)
   expect_equal(round(min(abundance_normalised_ref$adj_pval, na.rm = TRUE), digits = 9), 0.01394052)
-  
-  abundance_normalised_all <- protein_abundance_normalisation(lip_peptides = missing_data, 
-                                                              tc_proteins = protein_abundance, 
+
+  abundance_normalised_all <- protein_abundance_normalisation(lip_peptides = missing_data,
+                                                              tc_proteins = protein_abundance,
                                                               sample = sample,
                                                               grouping = peptide,
-                                                              condition = condition, 
+                                                              condition = condition,
                                                               protein_id = protein,
                                                               peptide_intensity = normalised_intensity_log2,
                                                               protein_intensity = protein_intensity,
@@ -258,24 +258,50 @@ test_that("fit_drc_4p works", {
 })
 
 test_that("plot_drc_4p works", {
-  p <- plot_drc_4p(data = drc_fit, 
+  p <- plot_drc_4p(data = drc_fit,
                    grouping = peptide,
                    response = normalised_intensity_log2,
                    dose = concentration,
                    targets = c("peptide_4_1"),
                    unit = "uM",
                    y_axis_name = "test y-Axis")
-  
+
   expect_is(p,"ggplot")
   expect_warning(expect_error(print(p), NA))
-  
-  p_facet <- plot_drc_4p(data = drc_fit, 
+
+  p_facet <- plot_drc_4p(data = drc_fit,
                    grouping = peptide,
                    response = normalised_intensity_log2,
                    dose = concentration,
                    targets = c("peptide_2_1", "peptide_2_4"),
                    unit = "uM")
-  
+
   expect_is(p_facet,"ggplot")
   expect_warning(expect_error(print(p_facet), NA))
+})
+
+test_that("filter_cv works", {
+  normalised_data_filtered <- normalised_data %>%
+    filter_cv(peptide, condition, peptide_intensity_missing, cv_limit = 0.25, min_conditions = 2)
+
+  normalised_data_filtered_cv_count <- normalised_data_filtered %>%
+    dplyr::group_by(peptide, condition) %>%
+    dplyr::summarise(cv_count = sum( (sd(2^peptide_intensity_missing, na.rm = TRUE) / mean(2^peptide_intensity_missing, na.rm = TRUE)) > 0.25 ), .groups = 'drop') %>%
+    dplyr::filter(cv_count > 0)
+
+  expect_is(normalised_data_filtered, "data.frame")
+  expect_gt(nrow(normalised_data), nrow(normalised_data_filtered))
+  expect_equal(nrow(normalised_data_filtered_cv_count), 0)
+
+  normalised_data_drc_filtered <- normalised_data_drc %>%
+    filter_cv(peptide, condition, peptide_intensity_missing, cv_limit = 0.25, min_conditions = 6)
+
+  normalised_data_filtered_drc_cv_count <- normalised_data_drc_filtered %>%
+    dplyr::group_by(peptide, condition) %>%
+    dplyr::summarise(cv_count = sum( (sd(2^peptide_intensity_missing, na.rm = TRUE) / mean(2^peptide_intensity_missing, na.rm = TRUE)) > 0.25 ), .groups = 'drop') %>%
+    dplyr::filter(cv_count > 0)
+
+  expect_is(normalised_data_drc_filtered, "data.frame")
+  expect_gt(nrow(normalised_data_drc), nrow(normalised_data_drc_filtered))
+  expect_gt(nrow(normalised_data_filtered_drc_cv_count), 0)
 })
