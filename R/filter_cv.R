@@ -1,6 +1,12 @@
 #' Data filtering based on coefficients of variation (CV)
 #'
 #' Filters the input data based on precursor, peptide or protein intensity coefficients of variation.
+#' The function should be used to ensure that only robust measurements and quantifications are used for
+#' data analysis. It is advised to use the function after inspection of raw values (quality control) and
+#' median normalisation. Generally, the function calculates CVs of each peptide, precursor or protein for
+#' each condition and removes peptides, precursors or proteins that have a CV above the cutoff in less
+#' than the (user-defined) required number of conditions. Since the user-defined cutoff is fixed and does not
+#' depend on the number of conditions that have detected values, the function might bias for data completeness.
 #'
 #' @param data Data frame containing at least the input variables.
 #' @param grouping Column in the data frame containing the grouping variable that can be either precursors, peptides or proteins.
@@ -10,10 +16,8 @@
 #' @param min_conditions The minimum number of conditions for which grouping CVs should be below the cutoff.
 #'
 #' @return The CV filtered data frame.
-#' @import ggplot2
 #' @importFrom magrittr %>%
-#' @importFrom dplyr group_by summarise pull filter
-#' @importFrom utils data
+#' @importFrom dplyr group_by mutate filter ungroup
 #' @export
 #'
 #' @examples
@@ -21,29 +25,23 @@
 #' filter_cv(
 #'   data,
 #'   grouping = eg_precursor_id,
-#'   intensity = log2_intensity,
 #'   condition = r_condition,
 #'   log2_intensity = normalised_intensity_log2,
 #'   cv_limit = 0.25,
 #'   min_conditions = 5
 #' )
 #' }
-filter_cv <- function (data, grouping, condition, log2_intensity, cv_limit = 0.25, min_conditions)
-{
-
-  if(max(dplyr::pull(data, {{log2_intensity}}), na.rm = TRUE) > 50)
-  {
+filter_cv <- function(data, grouping, condition, log2_intensity, cv_limit = 0.25, min_conditions) {
+  if (max(dplyr::pull(data, {{ log2_intensity }}), na.rm = TRUE) > 50) {
     stop("Please transform your data. The function requires your data to be log2 transformed.")
   }
 
   peptide_list <- data %>%
-    dplyr::group_by({{grouping}}, {{condition}}) %>%
-    dplyr::summarise(cv_count = sum( sd(2^{{log2_intensity}}, na.rm = TRUE) / mean(2^{{log2_intensity}}, na.rm = TRUE) < {{cv_limit}} ), .groups = 'drop') %>%
-    dplyr::filter(.data$cv_count >= 1) %>%
-    dplyr::group_by({{grouping}}) %>%
-    dplyr::summarise(cv_count2 = sum(.data$cv_count), .groups = 'drop') %>%
-    dplyr::filter(.data$cv_count2 >= {{min_conditions}}) %>%
-    dplyr::pull({{grouping}})
-
-  dplyr::filter(data, {{grouping}} %in% peptide_list)
+    dplyr::group_by({{ grouping }}, {{ condition }}) %>%
+    dplyr::mutate(cv_small = (sd(2^{{ log2_intensity }}, na.rm = TRUE) / mean(2^{{ log2_intensity }}, na.rm = TRUE) < {{ cv_limit }}) / dplyr::n()) %>%
+    dplyr::group_by({{ grouping }}) %>%
+    dplyr::mutate(cv_count = sum(.data$cv_small, na.rm = TRUE)) %>%
+    dplyr::filter(.data$cv_count >= {{ min_conditions }}) %>%
+    dplyr::select(-c(.data$cv_small, .data$cv_count)) %>%
+    dplyr::ungroup()
 }

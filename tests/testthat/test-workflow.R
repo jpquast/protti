@@ -281,7 +281,6 @@ test_that("plot_drc_4p works", {
 })
 
 test_that("filter_cv works", {
-
   normalised_data_filtered <- normalised_data %>%
     filter_cv(peptide, condition, peptide_intensity_missing, cv_limit = 0.25, min_conditions = 2)
 
@@ -291,8 +290,8 @@ test_that("filter_cv works", {
     dplyr::filter(cv_count > 0)
 
   expect_is(normalised_data_filtered, "data.frame")
-  expect_true(isTRUE(nrow(normalised_data) > nrow(normalised_data_filtered)))
-  expect_true(isTRUE(nrow(normalised_data_filtered_cv_count) == 0))
+  expect_gt(nrow(normalised_data), nrow(normalised_data_filtered))
+  expect_equal(nrow(normalised_data_filtered_cv_count), 0)
 
   normalised_data_drc_filtered <- normalised_data_drc %>%
     filter_cv(peptide, condition, peptide_intensity_missing, cv_limit = 0.25, min_conditions = 6)
@@ -303,6 +302,6 @@ test_that("filter_cv works", {
     dplyr::filter(cv_count > 0)
 
   expect_is(normalised_data_drc_filtered, "data.frame")
-  expect_true(isTRUE(nrow(normalised_data_drc) > nrow(normalised_data_drc_filtered)))
-  expect_true(isTRUE(nrow(normalised_data_filtered_drc_cv_count) != 0))
+  expect_gt(nrow(normalised_data_drc), nrow(normalised_data_drc_filtered))
+  expect_gt(nrow(normalised_data_filtered_drc_cv_count), 0)
 })
