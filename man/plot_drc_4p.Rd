@@ -10,7 +10,7 @@ plot_drc_4p(
   response,
   dose,
   targets,
-  unit = paste0("μ", "M"),
+  unit = paste0("µ", "M"),
   y_axis_name = "Response",
   scales = "free"
 )
