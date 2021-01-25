@@ -14,8 +14,41 @@ Description: This package provides useful functions for proteomics data analysis
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-biocViews:
-Imports: rlang, dplyr, stringr, magrittr, data.table, janitor, progress, purrr, RCurl, tidyr, ggplot2, forcats, tibble, drc, plotly, viridis, dendextend, seriation, pheatmap, heatmaply, ggrepel, igraph, stringi, limma, proDA, iq, jsonlite, methods, utils, furrr, future, parallel, naniar, httr
+Imports: 
+    rlang, 
+    dplyr, 
+    stringr, 
+    magrittr, 
+    data.table, 
+    janitor, 
+    progress, 
+    purrr, 
+    tidyr, 
+    ggplot2, 
+    forcats, 
+    tibble, 
+    drc, 
+    plotly, 
+    viridis, 
+    dendextend, 
+    seriation, 
+    pheatmap, 
+    heatmaply, 
+    ggrepel, 
+    igraph, 
+    stringi, 
+    limma, 
+    proDA, 
+    iq, 
+    jsonlite, 
+    methods, 
+    utils, 
+    furrr, 
+    future, 
+    parallel, 
+    naniar, 
+    httr,
+    STRINGdb
 RoxygenNote: 7.1.1
 Suggests: 
     testthat
