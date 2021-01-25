@@ -30,11 +30,11 @@ filter_cv(
 The CV filtered data frame.
 }
 \description{
-Filters the input data based on precursor, peptide or protein intensity coefficients of variation. 
-The function should be used to ensure that only robust measurements and quantifications are used for 
-data analysis. It is advised to use the function after inspection of raw values (quality control) and 
-median normalisation. Generally, the function calculates CVs of each peptide, precursor or protein for 
-each condition and removes peptides, precursors or proteins that have a CV above the cutoff in less 
+Filters the input data based on precursor, peptide or protein intensity coefficients of variation.
+The function should be used to ensure that only robust measurements and quantifications are used for
+data analysis. It is advised to use the function after inspection of raw values (quality control) and
+median normalisation. Generally, the function calculates CVs of each peptide, precursor or protein for
+each condition and removes peptides, precursors or proteins that have a CV above the cutoff in less
 than the (user-defined) required number of conditions. Since the user-defined cutoff is fixed and does not
 depend on the number of conditions that have detected values, the function might bias for data completeness.
 }

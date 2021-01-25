@@ -32,7 +32,7 @@
 #' targets = c("ABCDEFK")
 #' )
 #' }
-plot_drc_4p <- function(data, grouping, response, dose, targets, unit = paste0("\U03BC","M"), y_axis_name = "Response", scales = "free"){
+plot_drc_4p <- function(data, grouping, response, dose, targets, unit = "uM", y_axis_name = "Response", scales = "free"){
   . = NULL
   
   #early filter to speed up function 

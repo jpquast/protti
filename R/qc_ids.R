@@ -46,7 +46,7 @@ qc_ids <-
    result <- data %>%
       dplyr::distinct({{sample}}, {{grouping}}, {{condition}}) %>%
       dplyr::group_by({{sample}}) %>%
-      dplyr::mutate(count = n()) %>%
+      dplyr::mutate(count = dplyr::n()) %>%
       dplyr::select(-c({{grouping}})) %>%
       dplyr::distinct()
 
@@ -54,14 +54,14 @@ qc_ids <-
     {
     plot <- result %>%
       ggplot2::ggplot(aes(x = {{sample}}, y = .data$count, fill = {{condition}})) +
-      geom_col(col = "black") +
-      {if(length(result %>% ungroup() %>% select({{condition}})) == 0 ) geom_col(fill = "#5680C1", col = "black")}  +
-      labs(title = title,
+      ggplot2::geom_col(col = "black") +
+      {if(length(result %>% ungroup() %>% select({{condition}})) == 0 ) ggplot2::geom_col(fill = "#5680C1", col = "black")}  +
+      ggplot2::labs(title = title,
            x = "sample",
            y = "count") +
-      theme_bw() +
-      theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
-      scale_fill_manual(values = protti_colors)
+      ggplot2::theme_bw() +
+      ggplot2::theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
+      ggplot2::scale_fill_manual(values = protti_colors)
     if (interactive == TRUE)
     {
       return(plotly::ggplotly(plot))
