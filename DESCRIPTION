@@ -49,6 +49,7 @@ Imports:
     parallel, 
     naniar, 
     httr,
+    Rcurl,
     STRINGdb
 RoxygenNote: 7.1.1
 Suggests: 
