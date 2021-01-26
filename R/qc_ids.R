@@ -6,7 +6,7 @@
 #' @param sample Column in the data frame specifying the sample name.
 #' @param grouping Column in the data frame containing either precursor, peptide or protein identifiers.
 #' @param intensity Column in the data frame containing intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.
-#' @param remove_na_intensities Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be droped from the data frame. 
+#' @param remove_na_intensities Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame. 
 #' Default is TRUE since we are usually interested in the number of quantifiable IDs.
 #' @param condition Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated), 
 #' if column is provided, the bars in the plot will be coloured according to the condition.

@@ -6,7 +6,10 @@
 #' @param sample The column in the data dataframe containing the sample name.
 #' @param grouping The column in the data dataframe containing either precursor or peptide identifiers.
 #' @param missed_cleavages The column in the data dataframe containing the counts of missed cleavages per peptide or precursor.
-#' @param intensity Optional column containing the corresponding intensity values to each peptide or precursor.
+#' @param intensity Column containing the corresponding intensity values to each peptide or precursor (not log2 transformed).
+#' @param remove_na_intensities Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should 
+#' be dropped from the data frame for analysis of missed cleavages. Default is TRUE since we are usually 
+#' interested in quantifiable peptides.
 #' @param plot A logical indicating whether the result should be plotted.
 #' @param method Method used for evaluation. "count" calculates the percentage of missed cleavages based on counts of the corresponding peptide or precursor, "intensity" calculates the percentage of missed cleavages by intensity of the corresponding peptide or precursor.
 #'
@@ -27,14 +30,18 @@
 #' sample = r_file_name,
 #' grouping = pep_stripped_sequence,
 #' missed_cleavages = pep_nr_of_missed_clavages,
-#' intensity = normalised_intensity_log2,
+#' intensity = fg_quantity,
 #' method = "intensity",
 #' plot = TRUE)
 #' }
 qc_missed_cleavages <-
-  function(data, sample, grouping, missed_cleavages, intensity = NULL, method, plot = FALSE) {
+  function(data, sample, grouping, missed_cleavages, intensity, remove_na_intensities = TRUE, method, plot = FALSE) {
     protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
     utils::data("protti_colors", envir=environment()) # then overwrite it with real data
+    if(remove_na_intensities == TRUE){
+      data <- data %>% 
+        tidyr::drop_na({{intensity}})
+    }
     if (method == "count")
     {
     result <- data %>%

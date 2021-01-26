@@ -9,7 +9,8 @@ qc_peptide_type(
   sample,
   peptide,
   pep_type,
-  intensity = NULL,
+  intensity,
+  remove_na_intensities = TRUE,
   method = "count",
   plot = FALSE,
   interactive = FALSE
@@ -24,7 +25,11 @@ qc_peptide_type(
 
 \item{pep_type}{the name of the column containing the peptide type. Can be obtained using the \code{find_peptide} and \code{peptide_type} function together.}
 
-\item{intensity}{column containing peptide intensity values (not log2 transformed), required for \code{method = "intensity"}.}
+\item{intensity}{column containing peptide intensity values (not log2 transformed).}
+
+\item{remove_na_intensities}{Logical specifying if sample/peptide combinations with intensities that are NA (not quantified IDs) should 
+be dropped from the data frame for analysis of peptide type distributions. Default is TRUE since we are usually 
+interested in the peptide type distribution of quantifiable IDs.}
 
 \item{method}{method used for calculation. \code{method = "intensity"} calculates the peptide type percentage by intensity, whereas \code{method = "count"} calculates the percentage by peptide ID count. Default is \code{method = count}.}
 
@@ -46,6 +51,7 @@ sample = r_file_name,
 peptide = pep_stripped_sequence,
 pep_type = pep_type,
 intensity = fg_quantity,
+method = "intensity",
 plot = TRUE)
 }
 }

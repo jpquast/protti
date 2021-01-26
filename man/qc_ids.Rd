@@ -25,7 +25,7 @@ qc_ids(
 
 \item{intensity}{Column in the data frame containing intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.}
 
-\item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be droped from the data frame. 
+\item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame. 
 Default is TRUE since we are usually interested in the number of quantifiable IDs.}
 
 \item{condition}{Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated), 
