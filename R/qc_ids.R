@@ -6,15 +6,15 @@
 #' @param sample Column in the data frame specifying the sample name.
 #' @param grouping Column in the data frame containing either precursor, peptide or protein identifiers.
 #' @param intensity Column in the data frame containing intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.
-#' @param remove_na_intensities Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be droped from the data frame. 
+#' @param remove_na_intensities Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be droped from the data frame.
 #' Default is TRUE since we are usually interested in the number of quantifiable IDs.
-#' @param condition Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated), 
+#' @param condition Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated),
 #' if column is provided, the bars in the plot will be coloured according to the condition.
 #' @param title Optional argument specifying the plot title (default is "ID count per sample").
 #' @param plot Argument specifying whether the output of the function should be plotted (default is TRUE).
 #' @param interactive Argument specifying whether the plot should be interactive (default is TRUE).
 #'
-#' @return A bar plot with the height corresponding to the number of IDs, each bar represents one sample 
+#' @return A bar plot with the height corresponding to the number of IDs, each bar represents one sample
 #' (if \code{plot = TRUE}). If \code{plot = FALSE} a table with ID counts is returned.
 #' @import dplyr
 #' @import ggplot2
@@ -35,14 +35,14 @@
 #' )
 #' }
 qc_ids <-
-  function(data, sample, grouping, intensity, remove_na_intensities = TRUE, condition = NULL, title = "ID count per sample", plot = TRUE, interactive = TRUE) {
+  function(data, sample, grouping, intensity = NULL, remove_na_intensities = TRUE, condition = NULL, title = "ID count per sample", plot = TRUE, interactive = TRUE) {
     protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
     utils::data("protti_colors", envir=environment()) # then overwrite it with real data
     if(remove_na_intensities == TRUE){
-      data <- data %>% 
+      data <- data %>%
+        dplyr::distinct({{sample}}, {{grouping}}, {{condition}}, {{intensity}}) %>%
         tidyr::drop_na({{intensity}})
     }
-    
    result <- data %>%
       dplyr::distinct({{sample}}, {{grouping}}, {{condition}}) %>%
       dplyr::group_by({{sample}}) %>%

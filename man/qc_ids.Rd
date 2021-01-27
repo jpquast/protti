@@ -8,7 +8,7 @@ qc_ids(
   data,
   sample,
   grouping,
-  intensity,
+  intensity = NULL,
   remove_na_intensities = TRUE,
   condition = NULL,
   title = "ID count per sample",
@@ -25,10 +25,10 @@ qc_ids(
 
 \item{intensity}{Column in the data frame containing intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.}
 
-\item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be droped from the data frame. 
+\item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be droped from the data frame.
 Default is TRUE since we are usually interested in the number of quantifiable IDs.}
 
-\item{condition}{Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated), 
+\item{condition}{Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated),
 if column is provided, the bars in the plot will be coloured according to the condition.}
 
 \item{title}{Optional argument specifying the plot title (default is "ID count per sample").}
@@ -38,7 +38,7 @@ if column is provided, the bars in the plot will be coloured according to the co
 \item{interactive}{Argument specifying whether the plot should be interactive (default is TRUE).}
 }
 \value{
-A bar plot with the height corresponding to the number of IDs, each bar represents one sample 
+A bar plot with the height corresponding to the number of IDs, each bar represents one sample
 (if \code{plot = TRUE}). If \code{plot = FALSE} a table with ID counts is returned.
 }
 \description{

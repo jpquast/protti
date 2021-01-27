@@ -39,6 +39,7 @@ qc_missed_cleavages <-
     {
     result <- data %>%
       dplyr::distinct({{sample}}, {{grouping}}, {{missed_cleavages}}, {{intensity}}) %>%
+      tidyr::drop_na() %>%
       dplyr::count({{sample}}, {{missed_cleavages}}) %>%
       dplyr::group_by({{sample}}) %>%
       dplyr::mutate(total_peptide_count = sum(n)) %>%
@@ -81,8 +82,8 @@ qc_missed_cleavages <-
     if (method == "intensity")
     {
       result <- data %>%
-        tidyr::drop_na() %>% 
         dplyr::distinct({{sample}}, {{grouping}}, {{missed_cleavages}}, {{intensity}}) %>%
+        tidyr::drop_na() %>%
         dplyr::group_by({{sample}}) %>%
         dplyr::mutate(total_intensity = sum({{intensity}})) %>%
         dplyr::group_by({{sample}}, {{missed_cleavages}}) %>%
