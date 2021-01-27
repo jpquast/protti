@@ -1,6 +1,6 @@
 ---
 title: "Qualtiy control (QC) workflow"
-author: "Dina"
+author: "Dina Schuster"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
