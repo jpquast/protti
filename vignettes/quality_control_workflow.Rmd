@@ -29,7 +29,7 @@ When working with proteomics and limited-proteolysis mass spectrometry [LiP-MS](
   * Different search engines offer quality control functionalities (e.g. [Spectronaut™](https://biognosys.com/shop/spectronaut) offers a lot of QC options)
   * R packages (e.g. [PTXQC](https://doi.org/10.1021/acs.jproteome.5b00780) which runs on [MaxQuant](https://www.maxquant.org/) output or [rawDiag](https://doi.org/10.1021/acs.jproteome.8b00173) which can be used directly on raw files) 
 
-_Please note that this is not a complete list, it is just intended to give you an idea of the different possibilities. There are way more software options and R packages published to date._
+_Please note that this is not a complete list, it is just intended to give you an idea of the different possibilities. There are many more software options and R packages published to date._
 
 The idea behind all of these options listed above is to assess if the data quality is homogenous among the different measurements of an experiment and if there are any outliers that should be excluded. 
 
