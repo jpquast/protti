@@ -35,7 +35,7 @@ The idea behind all of these options listed above is to assess if the data quali
 
 # protti
 
-**protti** includes several functions that make it easy for the end-user to compare the different samples in one experiment. Some of the functions in the R package are specific for LiP-MS data analyses, whereas others can also be used for general proteomics analyses. 
+**protti** includes several functions that make it easy for the user to compare the different samples in one experiment. Some functions in this R package are specific for LiP-MS data analyses, whereas others can also be used for general proteomics analyses. 
 
 This document will give you an overview of the QC functions included in **protti** and will show you how these can be applied to your data. The examples in this file are run on synthetic data, which is created with the function `create_synthetic_data()`.
 
