@@ -23,6 +23,7 @@
 #' @importFrom plotly ggplotly
 #' @importFrom tidyr drop_na
 #' @importFrom utils data
+#' @importFrom stringr str_sort
 #' @export
 #'
 #' @examples
@@ -51,11 +52,13 @@ qc_peptide_type <- function(data, sample, peptide, pep_type, intensity, remove_n
       dplyr::count({{sample}}, {{pep_type}}, name = "count") %>%
       dplyr::group_by({{sample}}) %>%
       dplyr::mutate(peptide_type_percent = .data$count/sum(.data$count)*100) %>%
+      dplyr::ungroup() %>% 
       dplyr::distinct({{sample}}, {{pep_type}}, .data$peptide_type_percent) %>%
       dplyr::mutate(pep_type = factor({{pep_type}}, levels = c("fully-tryptic", "semi-tryptic", "non-tryptic")))
 
     if (plot == TRUE & interactive == FALSE){
       plot <- result %>%
+        dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
         ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = .data$pep_type)) +
         ggplot2::geom_col(col = "black", size = 1) +
         geom_text(
@@ -78,6 +81,7 @@ qc_peptide_type <- function(data, sample, peptide, pep_type, intensity, remove_n
     }
     if (plot == TRUE & interactive == TRUE) {
       plot <- result %>%
+        dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
         ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = .data$pep_type)) +
         ggplot2::geom_col(col = "black", size = 1) +
         ggplot2::labs(title = "Peptide types per .raw file", x = "Sample", y = "Percentage of peptides", fill = "Type") +
@@ -112,11 +116,13 @@ qc_peptide_type <- function(data, sample, peptide, pep_type, intensity, remove_n
       dplyr::mutate(pep_type_int = sum({{intensity}})) %>%
       dplyr::group_by({{sample}}) %>%
       dplyr::mutate(peptide_type_percent = (.data$pep_type_int / .data$total_int) * 100) %>%
+      dplyr::ungroup() %>% 
       dplyr::distinct({{sample}}, {{pep_type}}, .data$peptide_type_percent) %>%
       dplyr::mutate(pep_type = factor({{pep_type}}, levels = c("fully-tryptic", "semi-tryptic", "non-tryptic")))
 
     if (plot == TRUE & interactive == FALSE){
       plot <- result %>%
+        dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
         ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = .data$pep_type)) +
         ggplot2::geom_col(col = "black", size = 1) +
         geom_text(
@@ -138,6 +144,7 @@ qc_peptide_type <- function(data, sample, peptide, pep_type, intensity, remove_n
     }
     if (plot == TRUE & interactive == TRUE) {
       plot <- result %>%
+        dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
         ggplot2::ggplot(ggplot2::aes({{sample}}, .data$peptide_type_percent, fill = .data$pep_type)) +
         ggplot2::geom_col(col = "black", size = 1) +
         ggplot2::labs(title = "Peptide type intensity per .raw file", x = "Sample", y = "Percentage of total peptide intensity", fill = "Type") +

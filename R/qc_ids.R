@@ -12,7 +12,7 @@
 #' if column is provided, the bars in the plot will be coloured according to the condition.
 #' @param title Optional argument specifying the plot title (default is "ID count per sample").
 #' @param plot Argument specifying whether the output of the function should be plotted (default is TRUE).
-#' @param interactive Argument specifying whether the plot should be interactive (default is TRUE).
+#' @param interactive Argument specifying whether the plot should be interactive (default is FALSE).
 #'
 #' @return A bar plot with the height corresponding to the number of IDs, each bar represents one sample 
 #' (if \code{plot = TRUE}). If \code{plot = FALSE} a table with ID counts is returned.
@@ -22,6 +22,7 @@
 #' @importFrom tidyr drop_na
 #' @importFrom plotly ggplotly
 #' @importFrom utils data
+#' @importFrom stringr str_sort
 #' @export
 #'
 #' @examples
@@ -35,7 +36,7 @@
 #' )
 #' }
 qc_ids <-
-  function(data, sample, grouping, intensity, remove_na_intensities = TRUE, condition = NULL, title = "ID count per sample", plot = TRUE, interactive = TRUE) {
+  function(data, sample, grouping, intensity, remove_na_intensities = TRUE, condition = NULL, title = "ID count per sample", plot = TRUE, interactive = FALSE) {
     protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
     utils::data("protti_colors", envir=environment()) # then overwrite it with real data
     if(remove_na_intensities == TRUE){
@@ -48,20 +49,29 @@ qc_ids <-
       dplyr::group_by({{sample}}) %>%
       dplyr::mutate(count = dplyr::n()) %>%
       dplyr::select(-c({{grouping}})) %>%
-      dplyr::distinct()
+      dplyr::distinct() %>% 
+      dplyr::ungroup()
 
  if (plot == TRUE)
     {
     plot <- result %>%
+      dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>%
       ggplot2::ggplot(aes(x = {{sample}}, y = .data$count, fill = {{condition}})) +
       ggplot2::geom_col(col = "black") +
-      {if(length(result %>% ungroup() %>% select({{condition}})) == 0 ) ggplot2::geom_col(fill = "#5680C1", col = "black")}  +
+      {if(missing(condition)) ggplot2::geom_col(fill = "#5680C1", col = "black")}  +
       ggplot2::labs(title = title,
-           x = "sample",
-           y = "count") +
+           x = "Sample",
+           y = "Count",
+           fill = "Condition") +
       ggplot2::theme_bw() +
-      ggplot2::theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
-      ggplot2::scale_fill_manual(values = protti_colors)
+      ggplot2::scale_fill_manual(values = protti_colors) +
+      ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
+                     axis.title.x = ggplot2::element_text(size = 15),
+                     axis.text.y = ggplot2::element_text(size = 15),
+                     axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
+                     axis.title.y = ggplot2::element_text(size = 15),
+                     legend.title = ggplot2::element_text(size = 15),
+                     legend.text = ggplot2::element_text(size = 15))
     if (interactive == TRUE)
     {
       return(plotly::ggplotly(plot))

@@ -13,7 +13,7 @@ qc_ids(
   condition = NULL,
   title = "ID count per sample",
   plot = TRUE,
-  interactive = TRUE
+  interactive = FALSE
 )
 }
 \arguments{
@@ -35,7 +35,7 @@ if column is provided, the bars in the plot will be coloured according to the co
 
 \item{plot}{Argument specifying whether the output of the function should be plotted (default is TRUE).}
 
-\item{interactive}{Argument specifying whether the plot should be interactive (default is TRUE).}
+\item{interactive}{Argument specifying whether the plot should be interactive (default is FALSE).}
 }
 \value{
 A bar plot with the height corresponding to the number of IDs, each bar represents one sample 

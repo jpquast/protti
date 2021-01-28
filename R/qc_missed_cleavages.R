@@ -21,6 +21,7 @@
 #' @importFrom rlang .data :=
 #' @importFrom tidyr drop_na
 #' @importFrom utils data
+#' @importFrom stringr str_sort
 #' @export
 #'
 #' @examples
@@ -52,7 +53,8 @@ qc_missed_cleavages <-
       dplyr::group_by({{sample}}, {{missed_cleavages}}) %>%
       dplyr::summarise(mc_percent = n / .data$total_peptide_count * 100) %>%
       dplyr::ungroup() %>%
-      dplyr::mutate({{missed_cleavages}} := forcats::fct_inorder(factor({{missed_cleavages}})))
+      dplyr::mutate({{missed_cleavages}} := forcats::fct_inorder(factor({{missed_cleavages}}))) %>% 
+      dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE))))
 
     if(plot == FALSE){
       return(result)
@@ -97,6 +99,7 @@ qc_missed_cleavages <-
         dplyr::summarise(mc_percent = .data$sum_intensity_mc / .data$total_intensity * 100) %>%
         dplyr::ungroup() %>%
         dplyr::mutate({{missed_cleavages}} := forcats::fct_inorder(factor({{missed_cleavages}}))) %>%
+        dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
         dplyr::distinct()
 
 
