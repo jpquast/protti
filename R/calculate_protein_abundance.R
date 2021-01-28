@@ -13,7 +13,7 @@
 #' package (https://academic.oup.com/bioinformatics/article/36/8/2611/5697917) are used. Default is \code{"iq"}. 
 #' @param for_plot A logical indicating whether the result should be only protein intensities or protein intensities together with precursor 
 #' intensities that can be used for plotting using \code{qc_protein_abundance}. Default is \code{FALSE}.
-#' @param retain_columns A vector indicating if certain columns should be retained from the input dataframe. Default is not retaining 
+#' @param retain_columns A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
 #' additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks, 
 #' just like other column names, but in a vector).
 #' 
@@ -104,7 +104,6 @@ calculate_protein_abundance <- function(data, sample, protein_id, precursor, int
   if (!missing(retain_columns) & for_plot == FALSE) {
     result <- data %>% 
       dplyr::select(!!enquo(retain_columns), colnames(result)[!colnames(result) %in% c(rlang::as_name(rlang::enquo(intensity)))]) %>% 
-      tidyr::drop_na(!!enquo(retain_columns)) %>% 
       dplyr::distinct() %>% 
       dplyr::right_join(result, by = colnames(result)[!colnames(result) %in% c(rlang::as_name(rlang::enquo(intensity)))])
     
@@ -113,7 +112,6 @@ calculate_protein_abundance <- function(data, sample, protein_id, precursor, int
   if (!missing(retain_columns) & for_plot == TRUE) {
     combined <- data %>% 
       dplyr::select(!!enquo(retain_columns), colnames(combined)[!colnames(combined) %in% c(rlang::as_name(rlang::enquo(intensity)), rlang::as_name(rlang::enquo(precursor)))]) %>% 
-      tidyr::drop_na(!!enquo(retain_columns)) %>% 
       dplyr::distinct() %>% 
       dplyr::right_join(combined, by = colnames(combined)[!colnames(combined) %in% c(rlang::as_name(rlang::enquo(intensity)), rlang::as_name(rlang::enquo(precursor)))])
     

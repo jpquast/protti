@@ -14,7 +14,8 @@ impute(
   missingness,
   noise = NULL,
   method,
-  skip_log2_transform_error = FALSE
+  skip_log2_transform_error = FALSE,
+  retain_columns = NULL
 )
 }
 \arguments{
@@ -46,6 +47,10 @@ around the mean noise for the precursor/peptide and that has a spread of the mea
 
 \item{skip_log2_transform_error}{logical, if FALSE a check is performed to validate that input values are log2 transformed. If input 
 values are > 40 the test is failed and an error is thrown.}
+
+\item{retain_columns}{A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
+additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks, 
+just like other column names, but in a vector).}
 }
 \value{
 A data frame that contains an \code{imputed_intensity} and \code{imputed} column in addition to the required input columns. 

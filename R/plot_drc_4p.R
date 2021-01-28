@@ -6,11 +6,12 @@
 #' @param grouping The name of the column containing precursor, peptide or protein identifiers.
 #' @param response The name of the column containing response values, eg. log2 transformed intensities.
 #' @param dose The name of the column containing dose values, eg. the treatment concentrations.
-#' @param targets A character vector that specifies the names of the precursors, peptides or proteins (depending on \code{grouping}) that should be plottet. This can also be \code{"all"} if plots for all curve fits
-#' should be created. If names are provided maximally 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over asubsetted data frame should be created.
-#' @param unit A character vector specifiying the unit of the concentration.
-#' @param y_axis_name A character vector specifiying the name of the y-axis of the plot.
-#' @param scales A character vector that specifies if the scales in facetted plots (if more than one target was provided) should be \code{"free"} or \code{"fixed"}.
+#' @param targets A character vector that specifies the names of the precursors, peptides or proteins (depending on \code{grouping}) that should be plotted. This can also be \code{"all"} if plots for all curve fits
+#' should be created. If names are provided maximally 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a subsetted data frame should be created.
+#' @param unit A character vector specifying the unit of the concentration.
+#' @param y_axis_name A character vector specifying the name of the y-axis of the plot.
+#' @param scales A character vector that specifies if the scales in faceted plots (if more than one target was provided) should be \code{"free"} or \code{"fixed"}.
+#' @param x_axis_scale_log10 A logical indicating if the x-axis scale should be log10 transformed. 
 #' 
 #' @return If \code{targets = "all"} a list containing plots for every unique identifier in the \code{grouping} variable is created. Otherwise a plot for the specified targets is created with maximally 20 facets. 
 #' @import dplyr
@@ -32,17 +33,18 @@
 #' targets = c("ABCDEFK")
 #' )
 #' }
-plot_drc_4p <- function(data, grouping, response, dose, targets, unit = "uM", y_axis_name = "Response", scales = "free"){
+plot_drc_4p <- function(data, grouping, response, dose, targets, unit = "uM", y_axis_name = "Response", scales = "free", x_axis_scale_log10 = TRUE){
   . = NULL
   
   #early filter to speed up function 
   if(!"all" %in% targets){
     data <- data %>% 
       dplyr::filter({{grouping}} %in% targets)
+    if(nrow(data) == 0) stop("Target not found in data!")
   }
   
   data <- data %>% 
-    dplyr::mutate(name = paste0({{grouping}}, " (correlation = ", round(.data$correlation, digits = 2), ", Kd = ", round(.data$`ec_50:(Intercept)`), ")"))
+    dplyr::mutate(name = paste0({{grouping}}, " (correlation = ", round(.data$correlation, digits = 2), ", Kd = ", round(.data$ec_50), ")"))
   
   input_points <- data %>% 
     dplyr::select({{grouping}}, .data$name, .data$plot_points) %>% 
@@ -67,7 +69,7 @@ plot_drc_4p <- function(data, grouping, response, dose, targets, unit = "uM", y_
         suppressWarnings(ggplot2::geom_ribbon(data = y, ggplot2::aes(x = .data$dose, y = .data$Prediction, ymin = .data$Lower, ymax = .data$Upper), alpha = 0.2, fill = "#B96DAD")) +
         ggplot2::geom_line(data = y, ggplot2::aes(x=dose, y = .data$Prediction), size = 1.2) +
         ggplot2::labs(title = z, x = paste0("Concentration [", unit, "]"), y = y_axis_name) +
-        ggplot2::scale_x_log10() +
+        {if(x_axis_scale_log10 == TRUE) ggplot2::scale_x_log10()} +
         ggplot2::theme_bw() +
         ggplot2::theme(
           plot.title = ggplot2::element_text(
