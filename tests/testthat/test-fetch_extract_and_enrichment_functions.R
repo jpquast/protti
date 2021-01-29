@@ -8,10 +8,10 @@ test_that("fetch_uniprot works", {
   expect_equal(ncol(uniprot), 18)
 })
 
-proteome <- fetch_uniprot_proteome(organism_id = "83333", columns = c("id", "go(molecular function)"))
+proteome <- fetch_uniprot_proteome(organism_id = "83333", columns = c("id", "go(molecular function)", "database(String)"))
 test_that("fetch_uniprot_proteome works", {
   expect_is(proteome, "data.frame")
-  expect_equal(ncol(proteome), 2)
+  expect_equal(ncol(proteome), 3)
   expect_gt(nrow(proteome), 10)
 })
 
@@ -185,4 +185,38 @@ test_that("treatment_enrichment works", {
   )
   expect_is(p, "ggplot")
   expect_error(print(p), NA)
+})
+
+test_that("network_analysis works", {
+  # does not check halo_color argument. value of score_threshold is not changed. Only E. coli protein interactions are checked.
+  input <- proteome %>%
+    dplyr::slice(1:400) %>%
+    dplyr::mutate(is_known = c(rep(TRUE, 100), rep(FALSE, 300)))
+
+  input_many <- proteome %>%
+    dplyr::slice(1:1000) %>%
+    dplyr::mutate(is_known = c(rep(TRUE, 100), rep(FALSE, 900)))
+
+  network <- network_analysis(
+    data = input_many,
+    protein_id = id,
+    string_id = database_string,
+    organism_id = 511145,
+    score_threshold = 900,
+    binds_treatment = is_known,
+    plot = FALSE
+  )
+  expect_is(network, "data.frame")
+  expect_equal(ncol(network), 5)
+  expect_gt(nrow(network), 100)
+
+  expect_error(network_analysis(
+    data = input,
+    protein_id = id,
+    string_id = database_string,
+    organism_id = 511145,
+    score_threshold = 900,
+    binds_treatment = is_known,
+    plot = TRUE
+  ), NA)
 })
