@@ -1,14 +1,15 @@
 #' Check missed cleavages
 #'
-#' Calculates the percentage of missed cleavages for each sample (by count or intensity).
+#' Calculates the percentage of missed cleavages for each sample (by count or intensity).The default settings remove grouping variables without quantitative information (intensity is NA).
+#' These will not be used for the calculation of missed cleavage percentages.
 #'
 #' @param data A dataframe containing at least sample names, peptide or precursor identifiers and missed cleavage counts for each peptide or precursor.
 #' @param sample The column in the data dataframe containing the sample name.
 #' @param grouping The column in the data dataframe containing either precursor or peptide identifiers.
 #' @param missed_cleavages The column in the data dataframe containing the counts of missed cleavages per peptide or precursor.
 #' @param intensity Column containing the corresponding intensity values to each peptide or precursor (not log2 transformed).
-#' @param remove_na_intensities Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should 
-#' be dropped from the data frame for analysis of missed cleavages. Default is TRUE since we are usually 
+#' @param remove_na_intensities Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should
+#' be dropped from the data frame for analysis of missed cleavages. Default is TRUE since we are usually
 #' interested in quantifiable peptides.
 #' @param plot A logical indicating whether the result should be plotted.
 #' @param method Method used for evaluation. "count" calculates the percentage of missed cleavages based on counts of the corresponding peptide or precursor, "intensity" calculates the percentage of missed cleavages by intensity of the corresponding peptide or precursor.
@@ -30,7 +31,7 @@
 #' data,
 #' sample = r_file_name,
 #' grouping = pep_stripped_sequence,
-#' missed_cleavages = pep_nr_of_missed_clavages,
+#' missed_cleavages = pep_nr_of_missed_cleavages,
 #' intensity = fg_quantity,
 #' method = "intensity",
 #' plot = TRUE)
@@ -40,7 +41,10 @@ qc_missed_cleavages <-
     protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
     utils::data("protti_colors", envir=environment()) # then overwrite it with real data
     if(remove_na_intensities == TRUE){
-      data <- data %>% 
+
+      if(missing(intensity)) stop("Please provide a column containing intensities or set remove_na_intensities to FALSE")
+
+      data <- data %>%
         tidyr::drop_na({{intensity}})
     }
     if (method == "count")
@@ -53,7 +57,7 @@ qc_missed_cleavages <-
       dplyr::group_by({{sample}}, {{missed_cleavages}}) %>%
       dplyr::summarise(mc_percent = n / .data$total_peptide_count * 100) %>%
       dplyr::ungroup() %>%
-      dplyr::mutate({{missed_cleavages}} := forcats::fct_inorder(factor({{missed_cleavages}}))) %>% 
+      dplyr::mutate({{missed_cleavages}} := forcats::fct_inorder(factor({{missed_cleavages}}))) %>%
       dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE))))
 
     if(plot == FALSE){
@@ -90,7 +94,6 @@ qc_missed_cleavages <-
     if (method == "intensity")
     {
       result <- data %>%
-        tidyr::drop_na() %>% 
         dplyr::distinct({{sample}}, {{grouping}}, {{missed_cleavages}}, {{intensity}}) %>%
         dplyr::group_by({{sample}}) %>%
         dplyr::mutate(total_intensity = sum({{intensity}})) %>%
@@ -99,7 +102,7 @@ qc_missed_cleavages <-
         dplyr::summarise(mc_percent = .data$sum_intensity_mc / .data$total_intensity * 100) %>%
         dplyr::ungroup() %>%
         dplyr::mutate({{missed_cleavages}} := forcats::fct_inorder(factor({{missed_cleavages}}))) %>%
-        dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
+        dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>%
         dplyr::distinct()
 
 

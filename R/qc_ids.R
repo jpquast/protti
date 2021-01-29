@@ -1,20 +1,21 @@
 #' Check number of precursor, peptide or protein IDs
 #'
-#' Returns a plot or table of the number of IDs for each sample.
+#' Returns a plot or table of the number of IDs for each sample. The default settings remove grouping variables without quantitative information (intensity is NA).
+#' These will not be counted as IDs.
 #'
 #' @param data Dataframe containing at least sample names and precursor/peptide/protein IDs.
 #' @param sample Column in the data frame specifying the sample name.
 #' @param grouping Column in the data frame containing either precursor, peptide or protein identifiers.
 #' @param intensity Column in the data frame containing intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.
-#' @param remove_na_intensities Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame. 
+#' @param remove_na_intensities Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
 #' Default is TRUE since we are usually interested in the number of quantifiable IDs.
-#' @param condition Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated), 
+#' @param condition Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated),
 #' if column is provided, the bars in the plot will be coloured according to the condition.
 #' @param title Optional argument specifying the plot title (default is "ID count per sample").
 #' @param plot Argument specifying whether the output of the function should be plotted (default is TRUE).
 #' @param interactive Argument specifying whether the plot should be interactive (default is FALSE).
 #'
-#' @return A bar plot with the height corresponding to the number of IDs, each bar represents one sample 
+#' @return A bar plot with the height corresponding to the number of IDs, each bar represents one sample
 #' (if \code{plot = TRUE}). If \code{plot = FALSE} a table with ID counts is returned.
 #' @import dplyr
 #' @import ggplot2
@@ -31,6 +32,7 @@
 #' data,
 #' sample = r_file_name,
 #' grouping = eg_precursor_id,
+#' intensity = fg_quantity,
 #' condition = r_condition,
 #' title = "Number of peptide IDs per sample"
 #' )
@@ -40,16 +42,19 @@ qc_ids <-
     protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
     utils::data("protti_colors", envir=environment()) # then overwrite it with real data
     if(remove_na_intensities == TRUE){
-      data <- data %>% 
+
+      if(missing(intensity)) stop("Please provide a column containing intensities or set remove_na_intensities to FALSE")
+
+      data <- data %>%
         tidyr::drop_na({{intensity}})
     }
-    
+
    result <- data %>%
       dplyr::distinct({{sample}}, {{grouping}}, {{condition}}) %>%
       dplyr::group_by({{sample}}) %>%
       dplyr::mutate(count = dplyr::n()) %>%
       dplyr::select(-c({{grouping}})) %>%
-      dplyr::distinct() %>% 
+      dplyr::distinct() %>%
       dplyr::ungroup()
 
  if (plot == TRUE)

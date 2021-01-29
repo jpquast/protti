@@ -25,10 +25,10 @@ qc_ids(
 
 \item{intensity}{Column in the data frame containing intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.}
 
-\item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame. 
+\item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
 Default is TRUE since we are usually interested in the number of quantifiable IDs.}
 
-\item{condition}{Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated), 
+\item{condition}{Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated),
 if column is provided, the bars in the plot will be coloured according to the condition.}
 
 \item{title}{Optional argument specifying the plot title (default is "ID count per sample").}
@@ -38,11 +38,12 @@ if column is provided, the bars in the plot will be coloured according to the co
 \item{interactive}{Argument specifying whether the plot should be interactive (default is FALSE).}
 }
 \value{
-A bar plot with the height corresponding to the number of IDs, each bar represents one sample 
+A bar plot with the height corresponding to the number of IDs, each bar represents one sample
 (if \code{plot = TRUE}). If \code{plot = FALSE} a table with ID counts is returned.
 }
 \description{
-Returns a plot or table of the number of IDs for each sample.
+Returns a plot or table of the number of IDs for each sample. The default settings remove grouping variables without quantitative information (intensity is NA).
+These will not be counted as IDs.
 }
 \examples{
 \dontrun{
@@ -50,6 +51,7 @@ qc_ids(
 data,
 sample = r_file_name,
 grouping = eg_precursor_id,
+intensity = fg_quantity,
 condition = r_condition,
 title = "Number of peptide IDs per sample"
 )
