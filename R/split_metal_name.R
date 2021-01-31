@@ -6,7 +6,7 @@
 #'
 #' @return A character vector with metal name search patterns.
 #' @importFrom purrr map
-#' @importFrom stringr str_detect str_split str_replace_all str_extract_all
+#' @importFrom stringr str_detect str_split str_replace_all str_extract_all str_squish
 #'
 #' @examples
 #' \dontrun{
@@ -30,11 +30,11 @@ split_metal_name <- function(metal_names) {
     # Add full name to pattern
     result <- x
     # Add split name to pattern
+    x <- stringr::str_squish(stringr::str_replace_all(x, pattern = "[//(//)]", replacement = " ")) # replace bracket with one whitespace
     if (stringr::str_detect(x, pattern = " ")) {
       x1 <- as.vector(stringr::str_split(x, pattern = " ", simplify = TRUE))
-      x1 <- stringr::str_replace_all(x1, pattern = "[//(//)]", replacement = "")
       # Remove specific words from split name
-      x1 <- x1[!x1 %in% c("or", "Divalent", "metal", "cation", "Iron-sulfur")]
+      x1 <- x1[!x1 %in% c("or", "Divalent", "metal", "cation", "Iron-sulfur", "A", "A1", "A2", "A3", "C", "1", "1+", "2+", "2", "3", "4", "5", "B", "b", "o", "distal", "axial", "proximal", "ligand", "heme", "siroheme")]
       result <- append(result, x1)
     }
     # Add split "-"-containing name to pattern

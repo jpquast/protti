@@ -17,6 +17,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data as_label enquo
 #' @importFrom plotly ggplotly
+#' @importFrom stringr str_sort
 #' @export
 #'
 #' @examples
@@ -43,9 +44,10 @@ qc_peak_width <- function(data, sample, retention_time, peak_width = NULL, reten
   }
 
   peak_width_plot <- result %>%
+    dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
     ggplot2::ggplot(ggplot2::aes({{retention_time}}, .data$peak_width)) +
     ggplot2::stat_summary_bin(aes(col = {{sample}}), size = 1, geom = "line", binwidth = 1, fun = median) +
-    ggplot2::labs(title = "Median peak width over retention time", x = "Retention time [min]", y = "Median peak width [min]", color = "Experiment") +
+    ggplot2::labs(title = "Median peak width over retention time", x = "Retention time [min]", y = "Median peak width [min]", color = "Sample") +
     ggplot2::theme_bw() + 
     ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
                    axis.title.x = ggplot2::element_text(size = 15),

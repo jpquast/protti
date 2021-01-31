@@ -92,12 +92,17 @@ qc_cvs <-
     {
       plot <- ggplot2::ggplot(result) +
         ggplot2::geom_boxplot(aes(x = .data$type, y = .data$values, fill = .data$type), na.rm = TRUE) +
-        ggplot2::theme_bw() +
-        ggplot2::ylab("Coefficient of variation [%]") +
-        ggplot2::labs(title = "Coefficients of variation") +
-        ggplot2::theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
+        ggplot2::labs(title = "Coefficients of variation", y = "Coefficient of variation [%]", fill = "Condition") +
         ggplot2::scale_y_continuous(limits = c(0, 200)) +
-        ggplot2::scale_fill_manual(values = protti_colors)
+        ggplot2::scale_fill_manual(values = protti_colors) +
+        ggplot2::theme_bw() +
+        ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
+                       axis.title.x = ggplot2::element_text(size = 15),
+                       axis.text.y = ggplot2::element_text(size = 15),
+                       axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
+                       axis.title.y = ggplot2::element_text(size = 15),
+                       legend.title = ggplot2::element_text(size = 15),
+                       legend.text = ggplot2::element_text(size = 15)) 
 
       return(plot)
     }
@@ -105,12 +110,17 @@ qc_cvs <-
     {
       plot <- ggplot2::ggplot(result) +
         ggplot2::geom_density(aes(x = .data$values, col = .data$type), size = 1, na.rm = TRUE) +
-        ggplot2::theme_bw() +
-        ggplot2::ylab("Density") +
-        ggplot2::labs(title = "Coefficients of variation") +
-        ggplot2::xlab("Coefficient of variation [%]") +
+        ggplot2::labs(title = "Coefficients of variation", x = "Coefficient of variation [%]", y = "Density", color = "Condition") +
         ggplot2::scale_x_continuous(limits = c(0, 200)) +
-        ggplot2::scale_color_manual(values = protti_colors)
+        ggplot2::scale_color_manual(values = protti_colors)+
+        ggplot2::theme_bw() +
+        ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
+                       axis.title.x = ggplot2::element_text(size = 15),
+                       axis.text.y = ggplot2::element_text(size = 15),
+                       axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
+                       axis.title.y = ggplot2::element_text(size = 15),
+                       legend.title = ggplot2::element_text(size = 15),
+                       legend.text = ggplot2::element_text(size = 15)) 
 
       return(plot)
     }
@@ -119,12 +129,17 @@ qc_cvs <-
         plot <- ggplot2::ggplot(result, aes(x = .data$type, y = .data$values, fill = .data$type)) +
           ggplot2::geom_violin(na.rm = TRUE) +
           ggplot2::geom_boxplot(width = 0.15, fill = "white", na.rm = TRUE, alpha = 0.6) +
-          ggplot2::theme_bw() +
-          ggplot2::ylab("Coefficient of variation [%]") +
-          ggplot2::labs(title = "Coefficients of variation") +
-          ggplot2::theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
+          ggplot2::labs(title = "Coefficients of variation", y = "Coefficient of variation [%]", fill = "Condition") +
           ggplot2::scale_y_continuous(limits = c(0, 200)) +
-          ggplot2::scale_fill_manual(values = protti_colors)
+          ggplot2::scale_fill_manual(values = protti_colors) +
+          ggplot2::theme_bw() +
+          ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
+                         axis.title.x = ggplot2::element_text(size = 15),
+                         axis.text.y = ggplot2::element_text(size = 15),
+                         axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
+                         axis.title.y = ggplot2::element_text(size = 15),
+                         legend.title = ggplot2::element_text(size = 15),
+                         legend.text = ggplot2::element_text(size = 15)) 
         return(plot)
       }
     }

@@ -15,6 +15,7 @@
 #' @importFrom plotly ggplotly
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
+#' @importFrom stringr str_sort
 #' @export
 #'
 #' @examples
@@ -35,11 +36,12 @@ qc_median_intensities <- function(data, sample, grouping, intensity, plot = TRUE
   if(plot == FALSE) return(table)
   
   plot <- table %>%
+    mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
     ggplot2::ggplot(ggplot2::aes({{sample}}, .data$median_intensity, group = 1))+
     ggplot2::geom_line(size = 1)+
     ggplot2::labs(title = "Medians of run intensities", x = "Sample", y = "Intensity")+
     ggplot2::theme_bw() +
-    ggplot2::theme(axis.text.x = element_text(angle = 45, hjust =1))
+    ggplot2::theme(axis.text.x = element_text(angle = 75, hjust =1))
   
   if(interactive == FALSE) return(plot)
   

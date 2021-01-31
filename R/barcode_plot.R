@@ -24,7 +24,7 @@
 #' @import dplyr
 #' @import ggplot2
 #' @importFrom magrittr %>%
-#' @importFrom rlang as_name := enquo new_formula
+#' @importFrom rlang as_name := enquo new_formula !! ensym
 #' @importFrom forcats fct_rev
 #' @export
 #'

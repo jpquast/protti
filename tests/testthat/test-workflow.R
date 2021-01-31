@@ -59,7 +59,7 @@ missing_data <- normalised_data %>%
   assign_missingness(sample = sample, condition = condition, grouping = peptide, intensity = normalised_intensity_log2, ref_condition = "condition_1", retain_columns = c(protein))
 
 missing_data_drc <- normalised_data_drc %>%
-  assign_missingness(sample = sample, condition = concentration, grouping = peptide, intensity = normalised_intensity_log2, ref_condition = "0", retain_columns = c(protein))
+  assign_missingness(sample = sample, condition = concentration, grouping = peptide, intensity = normalised_intensity_log2, ref_condition = "0", retain_columns = protein)
 
 test_that("assign_missingness works", {
   # not testing noise argument. Also no change of default values for completeness_MAR and completeness_MNAR
@@ -84,21 +84,23 @@ test_that("assign_missingness works", {
 
 test_that("impute works", {
   # only test method = "ludovic" and not method = "noise". Does not test switching off log2 transformation error.
-  imputed_data <- impute(missing_data, sample = sample, grouping = peptide, intensity = normalised_intensity_log2, condition = condition, comparison = comparison, missingness = missingness, method = "ludovic")
+  imputed_data <- impute(missing_data, sample = sample, grouping = peptide, intensity = normalised_intensity_log2, condition = condition, comparison = comparison, missingness = missingness, method = "ludovic", retain_columns = protein)
 
   expect_is(imputed_data, "data.frame")
   expect_equal(sum(imputed_data$imputed), 1259)
   arranged_data <- imputed_data %>%
     dplyr::filter(peptide == "peptide_1_1")
-  expect_equal(round(arranged_data$imputed_intensity, digits = 1), c(15.9, 15.6, 15.6, 12.6, 12.6, 12.9))
+  expect_equal(round(arranged_data$imputed_intensity, digits = 1), c(12.5, 12.5, 12.8, 15.9, 15.6, 15.6))
 })
 
 protein_abundance <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide, intensity = normalised_intensity_log2, method = "iq", retain_columns = condition)
 protein_abundance_all <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide, intensity = normalised_intensity_log2, method = "iq", for_plot = TRUE)
 
 test_that("calculate_protein_abundance works", {
+  arranged_data <- protein_abundance %>%
+    dplyr::filter(protein == "protein_1")
   expect_is(protein_abundance, "data.frame")
-  expect_equal(round(protein_abundance$normalised_intensity_log2[1:6], digits = 2), c(16.24, 16.15, 16.23, 16.25, 16.06, 16.06))
+  expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(16.06, 16.06, 16.25, 16.24, 16.15, 16.23))
   expect_equal(nrow(protein_abundance), 2496)
   expect_equal(ncol(protein_abundance), 4)
 
@@ -107,8 +109,10 @@ test_that("calculate_protein_abundance works", {
   expect_equal(ncol(protein_abundance_all), 4)
 
   protein_abundance_sum <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide, intensity = normalised_intensity_log2, method = "sum", retain_columns = condition)
+  arranged_data <- protein_abundance_sum %>%
+    dplyr::filter(protein == "protein_1")
   expect_is(protein_abundance_sum, "data.frame")
-  expect_equal(round(protein_abundance_sum$normalised_intensity_log2[1:6], digits = 2), c(18.21, 18.31, 18.24, 18.01, 17.82, 17.77))
+  expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(17.82, 17.77, 18.01, 18.21, 18.31, 18.24))
 })
 
 test_that("plot_peptide_profiles works", {
@@ -246,15 +250,15 @@ test_that("protein_abundance_normalisation works", {
   expect_equal(round(min(abundance_normalised_all$pval_tukey, na.rm = TRUE), digits = 9), 0)
 })
 
-drc_fit <- fit_drc_4p(data = missing_data_drc, sample = sample, grouping = peptide, response = normalised_intensity_log2, dose = concentration)
+drc_fit <- fit_drc_4p(data = missing_data_drc, sample = sample, grouping = peptide, response = normalised_intensity_log2, dose = concentration, log_logarithmic = TRUE, retain_columns = c(protein))
 
 test_that("fit_drc_4p works", {
   # did not test the argument include_models = TRUE
   expect_is(drc_fit, "data.frame")
   expect_equal(nrow(drc_fit), 1067)
-  expect_equal(ncol(drc_fit), 9)
+  expect_equal(ncol(drc_fit), 10)
   expect_equal(round(max(drc_fit$correlation, na.rm = TRUE), digits = 3), 0.995)
-  expect_equal(round(min(drc_fit$p_value, na.rm = TRUE), digits = 40), 2.318708e-21)
+  expect_equal(round(min(drc_fit$pval, na.rm = TRUE), digits = 40), 2.318708e-21)
 })
 
 test_that("plot_drc_4p works", {

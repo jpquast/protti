@@ -20,6 +20,7 @@
 #' @importFrom plotly ggplotly
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data := new_formula enquo
+#' @importFrom stringr str_sort
 #' @export
 #'
 #' @examples
@@ -57,6 +58,7 @@ qc_data_completeness <- function(data, sample, grouping, intensity, digestion = 
   if(plot == FALSE) return(result)
   
   completeness_plot <- result %>% 
+    dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
     ggplot2::ggplot(ggplot2::aes({{sample}}, .data$completeness)) +
     ggplot2::geom_col(fill = "#5680C1", col = "black", size = 1.5) +
     {if(interactive == FALSE) geom_text(

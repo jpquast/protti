@@ -40,9 +40,9 @@ condition to be considered as MAR. This number is always at least 1.}
 It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one 
 condition to be considered as MNAR when the other condition is complete.}
 
-\item{retain_columns}{Character vector indicating if certain columns should be retained from the input dataframe. Default is not retaining 
-additional columns \code{retain_columns = NULL}. All columns can be retained with \code{retain_columns = "all"}. Specific columns can be 
-retained by providing their names (not in quotations marks, just like other column names, but in a vector).}
+\item{retain_columns}{A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
+additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks, 
+just like other column names, but in a vector).}
 }
 \value{
 A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison 

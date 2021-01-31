@@ -8,6 +8,8 @@
 #' @param sd2 Vector containing the standard deviations of group2.
 #' @param n1 Vector containing the number of replicates used for the calculation of each mean and standard deviation of group1.
 #' @param n2 Vector containing the number of replicates used for the calculation of each mean and standard deviation of group2.
+#' @param log_values Logical indicating if values are log transformed. This determines how fold changes are calculated. 
+#' Default is \code{log_values = TRUE}.
 #'
 #' @return A data frame that contains the calculated differences of means, standard error, t statistic and p-values.
 #' @importFrom stats pt
@@ -23,13 +25,19 @@
 #' n1 = 3,
 #' n2 = 3)
 #' }
-ttest_protti <- function(mean1, mean2, sd1, sd2, n1, n2) {
+ttest_protti <- function(mean1, mean2, sd1, sd2, n1, n2, log_values = TRUE) {
   std_error <- sqrt( (sd1^2/n1) + (sd2^2/n2))
   #Welch-Satterwhite equation to estimate the degrees of freedom
   df <- ((sd1^2/n1) + (sd2^2/n2))^2 / (sd1^4/(n1^2 * (n1-1)) + sd2^4/(n2^2 * (n2-1)))
+  # fold change calculation
+  if(log_values == TRUE){
+    diff <- mean1 - mean2
+  } else {
+    diff <- mean1 / mean2
+  }
   #t statistic calculation
-  t <- (mean1 - mean2)/std_error
-  result <- data.frame(cbind(mean1 - mean2, std_error, t, 2*pt(-abs(t),df)))
+  t <- (diff)/std_error
+  result <- data.frame(cbind(diff, std_error, t, 2*pt(-abs(t),df)))
   colnames(result) <- c("diff", "std_error", "t_statistic", "pval")
   return(result)
 }

@@ -25,7 +25,7 @@
 #' model. More information can be found in the \code{proDA} documentation.
 #' @param p_adj_method A character vector, specifies the p-value correction method. Possible methods are c("holm", "hochberg", "hommel", "bonferroni", "BH", 
 #' "BY", "fdr", "none"). Default method is \code{"BH"}.
-#' @param retain_columns A vector indicating if certain columns should be retained from the input dataframe. Default is not retaining 
+#' @param retain_columns A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
 #' additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks, 
 #' just like other column names, but in a vector).
 #'
@@ -172,7 +172,6 @@ diff_abundance <-
     if (!missing(retain_columns)) {
       t_test_result <- data %>% 
         dplyr::select(!!enquo(retain_columns), colnames(t_test_result)[!colnames(t_test_result) %in% c("pval", "std_error", "diff", "adj_pval", "n_obs")]) %>% 
-        tidyr::drop_na(!!enquo(retain_columns)) %>% 
         dplyr::distinct() %>% 
         dplyr::right_join(t_test_result, by = colnames(t_test_result)[!colnames(t_test_result) %in% c("pval", "std_error", "diff", "adj_pval", "n_obs")]) %>% 
         dplyr::arrange(.data$adj_pval)
@@ -211,7 +210,6 @@ diff_abundance <-
      if (!missing(retain_columns)) {
        t_test_mean_sd_result <- data %>% 
          dplyr::select(!!enquo(retain_columns), colnames(t_test_mean_sd_result)[!colnames(t_test_mean_sd_result) %in% c("mean_control", "mean_treated", "sd_control", "sd_treated", "n_control", "n_treated", "pval", "std_error", "diff", "adj_pval", "t_statistic", "comparison")]) %>% 
-         tidyr::drop_na(!!enquo(retain_columns)) %>% 
          dplyr::distinct() %>% 
          dplyr::right_join(t_test_mean_sd_result, by = colnames(t_test_mean_sd_result)[!colnames(t_test_mean_sd_result) %in% c("mean_control", "mean_treated", "sd_control", "sd_treated", "n_control", "n_treated", "pval", "std_error", "diff", "adj_pval", "t_statistic", "comparison")]) %>% 
          dplyr::arrange(.data$adj_pval)
@@ -296,7 +294,6 @@ diff_abundance <-
   if (!missing(retain_columns)) {
     moderated_t_test_result <- data %>% 
       dplyr::select(!!enquo(retain_columns), colnames(moderated_t_test_result)[!colnames(moderated_t_test_result) %in% c("CI_2.5", "CI_97.5", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "B", "n_obs")]) %>% 
-      tidyr::drop_na(!!enquo(retain_columns)) %>% 
       dplyr::distinct() %>% 
       dplyr::right_join(moderated_t_test_result, by = colnames(moderated_t_test_result)[!colnames(moderated_t_test_result) %in% c("CI_2.5", "CI_97.5", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "B", "n_obs")]) %>% 
       dplyr::arrange(.data$adj_pval)
@@ -398,7 +395,6 @@ diff_abundance <-
   if (!missing(retain_columns)) {
     proDA_result <- data %>% 
       dplyr::select(!!enquo(retain_columns), colnames(proDA_result)[!colnames(proDA_result) %in% c("std_error", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "df", "n_obs")]) %>% 
-      tidyr::drop_na(!!enquo(retain_columns)) %>% 
       dplyr::distinct() %>% 
       dplyr::right_join(proDA_result, by = colnames(proDA_result)[!colnames(proDA_result) %in% c("std_error", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "df", "n_obs")]) %>% 
       dplyr::arrange(.data$adj_pval)
