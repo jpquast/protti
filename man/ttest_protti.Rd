@@ -4,7 +4,7 @@
 \alias{ttest_protti}
 \title{Perform Welch's t-test}
 \usage{
-ttest_protti(mean1, mean2, sd1, sd2, n1, n2)
+ttest_protti(mean1, mean2, sd1, sd2, n1, n2, log_values = TRUE)
 }
 \arguments{
 \item{mean1}{Vector containing the means of group1.}
@@ -18,6 +18,9 @@ ttest_protti(mean1, mean2, sd1, sd2, n1, n2)
 \item{n1}{Vector containing the number of replicates used for the calculation of each mean and standard deviation of group1.}
 
 \item{n2}{Vector containing the number of replicates used for the calculation of each mean and standard deviation of group2.}
+
+\item{log_values}{Logical indicating if values are log transformed. This determines how fold changes are calculated. 
+Default is \code{log_values = TRUE}.}
 }
 \value{
 A data frame that contains the calculated differences of means, standard error, t statistic and p-values.

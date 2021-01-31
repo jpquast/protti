@@ -9,7 +9,8 @@ qc_missed_cleavages(
   sample,
   grouping,
   missed_cleavages,
-  intensity = NULL,
+  intensity,
+  remove_na_intensities = TRUE,
   method,
   plot = FALSE
 )
@@ -23,7 +24,11 @@ qc_missed_cleavages(
 
 \item{missed_cleavages}{The column in the data dataframe containing the counts of missed cleavages per peptide or precursor.}
 
-\item{intensity}{Optional column containing the corresponding intensity values to each peptide or precursor.}
+\item{intensity}{Column containing the corresponding intensity values to each peptide or precursor (not log2 transformed).}
+
+\item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should
+be dropped from the data frame for analysis of missed cleavages. Default is TRUE since we are usually
+interested in quantifiable peptides.}
 
 \item{method}{Method used for evaluation. "count" calculates the percentage of missed cleavages based on counts of the corresponding peptide or precursor, "intensity" calculates the percentage of missed cleavages by intensity of the corresponding peptide or precursor.}
 
@@ -33,7 +38,8 @@ qc_missed_cleavages(
 A data frame that contains the calculated percentage made up by the sum of all peptides or precursors containing the corresponding amount of missed cleavages.
 }
 \description{
-Calculates the percentage of missed cleavages for each sample (by count or intensity).
+Calculates the percentage of missed cleavages for each sample (by count or intensity).The default settings remove grouping variables without quantitative information (intensity is NA).
+These will not be used for the calculation of missed cleavage percentages.
 }
 \examples{
 \dontrun{
@@ -41,8 +47,8 @@ qc_missed_cleavages(
 data,
 sample = r_file_name,
 grouping = pep_stripped_sequence,
-missed_cleavages = pep_nr_of_missed_clavages,
-intensity = normalised_intensity_log2,
+missed_cleavages = pep_nr_of_missed_cleavages,
+intensity = fg_quantity,
 method = "intensity",
 plot = TRUE)
 }

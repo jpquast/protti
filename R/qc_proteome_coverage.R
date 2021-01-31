@@ -50,11 +50,11 @@ qc_proteome_coverage <- function(data, sample, protein_id, organism_id, plot = T
   proteome_coverage_plot <- proteome_coverage %>%
     ggplot2::ggplot(ggplot2::aes({{sample}}, .data$percentage, fill = .data$type)) +
     ggplot2::geom_col(col = "black") +
-    ggplot2::labs(title = "Proteome coverage", x = "", y = "Proteome [%]")+
+    ggplot2::labs(title = "Proteome coverage per .raw file", x = "", y = "Proteome [%]")+
     ggplot2::scale_fill_manual(values = c("proteins_detected" = "#5680C1", "proteins_undetected" = "#B96DAD"), name = "Proteins", labels = c("Not detected", "Detected"))+
-    ggplot2::geom_text(ggplot2::aes(label = round(.data$percentage, digits = 1)), position = ggplot2::position_stack(vjust = 0.5), size=4)+
+    ggplot2::geom_text(data = proteome_coverage %>% dplyr::filter(.data$percentage > 5), ggplot2::aes(label = round(.data$percentage, digits = 1)), position = ggplot2::position_stack(vjust = 0.5), size = 4)+
     ggplot2::theme_bw()+
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust =1))
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 75, hjust =1))
 
   if(plot == FALSE) return(proteome_coverage)
   if(plot == TRUE){
@@ -66,7 +66,7 @@ qc_proteome_coverage <- function(data, sample, protein_id, organism_id, plot = T
         ggplot2::labs(title = "Proteome coverage per .raw file", x = "", y = "Proteome [%]")+
         ggplot2::scale_fill_manual(values = c("proteins_detected" = "#5680C1", "proteins_undetected" = "#B96DAD"), name = "Proteins")+
         ggplot2::theme_bw()+
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust =1))
+        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 75, hjust =1))
       plotly::ggplotly(proteome_coverage_plot)
     }
   }

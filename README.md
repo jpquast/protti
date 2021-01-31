@@ -4,7 +4,8 @@ protti <img src='man/figures/protti_logo.png' align="right" width="12.5%" />
 ============================================================================
 
 <!-- badges: start -->
-<!-- badges: end -->
+[![Travis build status](https://travis-ci.com/jpquast/protti.svg?branch=master)](https://travis-ci.com/jpquast/protti) <!-- badges: end -->
+
 Overview
 --------
 

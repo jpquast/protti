@@ -4,7 +4,16 @@
 \alias{fit_drc_4p}
 \title{Fitting four-parameter dose response curves}
 \usage{
-fit_drc_4p(data, sample, grouping, response, dose, include_models = FALSE)
+fit_drc_4p(
+  data,
+  sample,
+  grouping,
+  response,
+  dose,
+  log_logarithmic = TRUE,
+  include_models = FALSE,
+  retain_columns = NULL
+)
 }
 \arguments{
 \item{data}{A data frame containing at least the input variables.}
@@ -17,7 +26,16 @@ fit_drc_4p(data, sample, grouping, response, dose, include_models = FALSE)
 
 \item{dose}{The name of the column containing dose values, eg. the treatment concentrations.}
 
+\item{log_logarithmic}{logical indicating if a logarithmic or log-logarithmic model is fitted. 
+If response values form a symmetric curve for non-log transformed dose values, a logarithmic model instead
+of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the 
+reason this is the default. Log-logarithmic models are symmetric if dose values are log transformed.}
+
 \item{include_models}{A logical indicating if model fit objects should be exported. These are usually very large and not necessary for further analysis.}
+
+\item{retain_columns}{A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
+additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks, 
+just like other column names, but in a vector).}
 }
 \value{
 If \code{include_models = FALSE} a data frame is returned that contains correlations of predicted to measured values as a measure of the goodness of the curve fit,

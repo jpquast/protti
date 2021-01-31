@@ -21,6 +21,9 @@
 #' around the mean noise for the precursor/peptide and that has a spread of the mean standard deviation (from each condition) for the precursor/peptide.
 #' @param skip_log2_transform_error logical, if FALSE a check is performed to validate that input values are log2 transformed. If input 
 #' values are > 40 the test is failed and an error is thrown. 
+#' @param retain_columns A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
+#' additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks, 
+#' just like other column names, but in a vector).
 #' 
 #' @return A data frame that contains an \code{imputed_intensity} and \code{imputed} column in addition to the required input columns. 
 #' The \code{imputed} column indicates if a value was imputed. The \code{imputed_intensity} column contains imputed intensity values 
@@ -44,7 +47,7 @@
 #' method = "ludovic"
 #' )
 #' }
-impute <- function(data, sample, grouping, intensity, condition, comparison, missingness, noise = NULL, method, skip_log2_transform_error = FALSE){
+impute <- function(data, sample, grouping, intensity, condition, comparison, missingness, noise = NULL, method, skip_log2_transform_error = FALSE, retain_columns = NULL){
   noise_missing <- missing(noise) # check if argument noise was provided or not
   result <- data %>%
     dplyr::distinct({{sample}}, {{grouping}}, {{intensity}}, {{condition}}, {{comparison}}, {{missingness}}, {{noise}}) %>%
@@ -86,7 +89,18 @@ impute <- function(data, sample, grouping, intensity, condition, comparison, mis
     dplyr::ungroup() %>% 
     dplyr::mutate(imputed_intensity = ifelse(is.na({{intensity}}) == TRUE, .data$impute, {{intensity}})) %>%
     dplyr::mutate(imputed = is.na({{intensity}}) & !is.na(.data$imputed_intensity)) %>%
-    dplyr::select(-.data$impute, -.data$mean, -.data$sd, -.data$min, -.data$n_replicates, -.data$noise_mean)
+    dplyr::select(-.data$impute, -.data$mean, -.data$sd, -.data$min, -.data$n_replicates, -.data$noise_mean) %>% 
+    dplyr::arrange({{grouping}})
   
-  result
+  if(missing(retain_columns)){ 
+    return(result)
+  } else {
+    result <- data %>% 
+      dplyr::select(!!enquo(retain_columns), colnames(result)[!colnames(result) %in% c("imputed_intensity", "imputed")]) %>% 
+      dplyr::distinct() %>% 
+      dplyr::right_join(result, by = colnames(result)[!colnames(result) %in% c("imputed_intensity", "imputed")]) %>% 
+      dplyr::arrange({{grouping}})
+    return(result)
+  }
+  
 }

@@ -16,6 +16,7 @@
 #' @import ggplot2
 #' @importFrom magrittr %>%
 #' @importFrom plotly ggplotly
+#' @importFrom stringr str_sort
 #' @export
 #'
 #' @examples
@@ -31,6 +32,11 @@
 qc_sequence_coverage <- function(data, protein_identifier, coverage, facet_by_sample = FALSE, sample = NULL, interactive = TRUE) {
 result <- data %>%
   dplyr::distinct({{protein_identifier}}, {{coverage}}, {{sample}})
+
+if(!missing(sample)){
+  result <- result %>% 
+    dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE))))
+}
 
 plot <- result %>%
   ggplot2::ggplot(ggplot2::aes({{coverage}})) +

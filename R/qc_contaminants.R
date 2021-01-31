@@ -21,6 +21,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data :=
 #' @importFrom utils data
+#' @importFrom stringr str_sort
 #' @export
 #'
 #' @examples
@@ -58,6 +59,7 @@ qc_contaminants <- function(data, sample, protein, is_contaminant, intensity, n_
   if(plot == FALSE) return(result)
 
   plot_result <- result %>%
+    dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
     ggplot2::ggplot(ggplot2::aes({{sample}}, .data$contaminant_percentage, fill = {{protein}})) +
     ggplot2::geom_col(col = "black", size = 1) +
     ggplot2::labs(title = "Contaminants per .raw file", x = "Sample", y = "% of total intensity", fill = "Contaminant Protein") +

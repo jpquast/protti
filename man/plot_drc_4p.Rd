@@ -10,9 +10,10 @@ plot_drc_4p(
   response,
   dose,
   targets,
-  unit = paste0("µ", "M"),
+  unit = "uM",
   y_axis_name = "Response",
-  scales = "free"
+  scales = "free",
+  x_axis_scale_log10 = TRUE
 )
 }
 \arguments{
@@ -24,14 +25,16 @@ plot_drc_4p(
 
 \item{dose}{The name of the column containing dose values, eg. the treatment concentrations.}
 
-\item{targets}{A character vector that specifies the names of the precursors, peptides or proteins (depending on \code{grouping}) that should be plottet. This can also be \code{"all"} if plots for all curve fits
-should be created. If names are provided maximally 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over asubsetted data frame should be created.}
+\item{targets}{A character vector that specifies the names of the precursors, peptides or proteins (depending on \code{grouping}) that should be plotted. This can also be \code{"all"} if plots for all curve fits
+should be created. If names are provided maximally 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a subsetted data frame should be created.}
 
-\item{unit}{A character vector specifiying the unit of the concentration.}
+\item{unit}{A character vector specifying the unit of the concentration.}
 
-\item{y_axis_name}{A character vector specifiying the name of the y-axis of the plot.}
+\item{y_axis_name}{A character vector specifying the name of the y-axis of the plot.}
 
-\item{scales}{A character vector that specifies if the scales in facetted plots (if more than one target was provided) should be \code{"free"} or \code{"fixed"}.}
+\item{scales}{A character vector that specifies if the scales in faceted plots (if more than one target was provided) should be \code{"free"} or \code{"fixed"}.}
+
+\item{x_axis_scale_log10}{A logical indicating if the x-axis scale should be log10 transformed.}
 }
 \value{
 If \code{targets = "all"} a list containing plots for every unique identifier in the \code{grouping} variable is created. Otherwise a plot for the specified targets is created with maximally 20 facets.

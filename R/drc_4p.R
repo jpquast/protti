@@ -5,30 +5,56 @@
 #' @param data a data frame that contains at least the dose and response column the model should be fitted to.
 #' @param response the name of the column that contains the response values.
 #' @param dose the name of the column that contains the dose values.
-#' @param pb progress bar object. This is only necessary if the function is used in an iteration. 
+#' @param log_logarithmic logical indicating if a logarithmic or log-logarithmic model is fitted. 
+#' If response values form a symmetric curve for non-log transformed dose values, a logarithmic model instead
+#' of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the 
+#' reason this is the default. Log-logarithmic models are symmetric if dose values are log transformed. 
+#' @param pb progress bar object. This is only necessary if the function is used in an iteration.
 #'
-#' @return An object of class \code{drc}. If no fit was performed a character vector with content "no_fit". 
+#' @return An object of class \code{drc}. If no fit was performed a character vector with content "no_fit".
 #' @importFrom drc drm
-#' @importFrom drc LL.4 drmc
+#' @importFrom drc LL.4 L.4 drmc
 #'
 #' @examples
 #' \dontrun{
 #' drc_4p(
-#' data,
-#' response = intensity,
-#' dose = concentration
+#'   data,
+#'   response = intensity,
+#'   dose = concentration
 #' )
 #' }
-drc_4p <- function(data, response, dose, pb = NULL) {
+drc_4p <- function(data, response, dose, log_logarithmic = TRUE, pb = NULL) {
   if (!is.null(pb)) pb$tick()
-  tryCatch({
-    suppressWarnings(drc::drm(
-      stats::as.formula(paste(ensym(response), "~", ensym(dose))),
-      data = data,
-      fct = drc::LL.4(names = c("hill", "min_value", "max_value", "ec_50")),
-      control = drc::drmc(otrace = TRUE)
-    ))
-  }, error = function(error) {
-    c("no_fit")
-  })
+  if (log_logarithmic == TRUE) {
+    result <- tryCatch(
+      {
+        suppressWarnings(drc::drm(
+          stats::as.formula(paste(ensym(response), "~", ensym(dose))),
+          data = data,
+          fct = drc::LL.4(names = c("hill", "min_value", "max_value", "ec_50")),
+          control = drc::drmc(otrace = TRUE)
+        ))
+      },
+      error = function(error) {
+        c("no_fit")
+      }
+    )
+    return(result)
+  }
+  if (log_logarithmic == FALSE) {
+    result <- tryCatch(
+      {
+        suppressWarnings(drc::drm(
+          stats::as.formula(paste(ensym(response), "~", ensym(dose))),
+          data = data,
+          fct = drc::L.4(names = c("hill", "min_value", "max_value", "ec_50")),
+          control = drc::drmc(otrace = TRUE)
+        ))
+      },
+      error = function(error) {
+        c("no_fit")
+      }
+    )
+    return(result)
+  }
 }

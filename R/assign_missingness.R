@@ -15,9 +15,9 @@
 #' @param completeness_MNAR The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.25. 
 #' It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one 
 #' condition to be considered as MNAR when the other condition is complete.
-#' @param retain_columns Character vector indicating if certain columns should be retained from the input dataframe. Default is not retaining 
-#' additional columns \code{retain_columns = NULL}. All columns can be retained with \code{retain_columns = "all"}. Specific columns can be 
-#' retained by providing their names (not in quotations marks, just like other column names, but in a vector).
+#' @param retain_columns A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
+#' additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks, 
+#' just like other column names, but in a vector).
 #'
 #' @return A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison 
 #' name for the specific treatment/reference pair. The \code{missingness} column reports the type of missingness. 
@@ -28,7 +28,7 @@
 #' } 
 #' @import dplyr
 #' @import tidyr
-#' @importFrom rlang .data enquo !!
+#' @importFrom rlang .data enquo !! as_name
 #' @importFrom purrr map_df
 #' @importFrom magrittr %>%
 #' @export
@@ -76,21 +76,18 @@ assign_missingness <- function(data, sample, condition, grouping, intensity, noi
                                                                  .data$control >= max(floor(.data$n_replicates * completeness_MAR), 1) & .data$treated >= max(floor(.data$n_replicates * completeness_MAR), 1) ~ "MAR"))
     ) %>%
     dplyr::select(-c(.data$control, .data$n_replicates, .data$treated)) %>%
-    dplyr::ungroup()
+    dplyr::ungroup() %>% 
+    dplyr::arrange({{grouping}})
   
-  if (missing(retain_columns)) return(result)
-
-  if (length(quo(retain_columns)) == 1 && retain_columns == "all") {
-    join_result <- data %>% 
-      dplyr::distinct() %>% 
-      dplyr::right_join(result, by = colnames(result)[!colnames(result) %in% c("comparison", "missingness")])
-      
-    return(join_result)
+  if (missing(retain_columns)){
+    return(result)
   } else {
+
     join_result <- data %>% 
       dplyr::select(!!enquo(retain_columns), colnames(result)[!colnames(result) %in% c("comparison", "missingness")]) %>% 
       dplyr::distinct() %>% 
-      dplyr::right_join(result, by = colnames(result)[!colnames(result) %in% c("comparison", "missingness")])
+      dplyr::right_join(result, by = colnames(result)[!colnames(result) %in% c("comparison", "missingness")]) %>% 
+      dplyr::arrange({{grouping}})
     
     return(join_result)
   }

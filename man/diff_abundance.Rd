@@ -60,7 +60,7 @@ model. More information can be found in the \code{proDA} documentation.}
 \item{p_adj_method}{A character vector, specifies the p-value correction method. Possible methods are c("holm", "hochberg", "hommel", "bonferroni", "BH", 
 "BY", "fdr", "none"). Default method is \code{"BH"}.}
 
-\item{retain_columns}{A vector indicating if certain columns should be retained from the input dataframe. Default is not retaining 
+\item{retain_columns}{A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
 additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks, 
 just like other column names, but in a vector).}
 }

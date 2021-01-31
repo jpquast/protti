@@ -4,7 +4,7 @@
 \alias{drc_4p}
 \title{Dose response curve helper function}
 \usage{
-drc_4p(data, response, dose, pb = NULL)
+drc_4p(data, response, dose, log_logarithmic = TRUE, pb = NULL)
 }
 \arguments{
 \item{data}{a data frame that contains at least the dose and response column the model should be fitted to.}
@@ -12,6 +12,11 @@ drc_4p(data, response, dose, pb = NULL)
 \item{response}{the name of the column that contains the response values.}
 
 \item{dose}{the name of the column that contains the dose values.}
+
+\item{log_logarithmic}{logical indicating if a logarithmic or log-logarithmic model is fitted. 
+If response values form a symmetric curve for non-log transformed dose values, a logarithmic model instead
+of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the 
+reason this is the default. Log-logarithmic models are symmetric if dose values are log transformed.}
 
 \item{pb}{progress bar object. This is only necessary if the function is used in an iteration.}
 }
@@ -24,9 +29,9 @@ This function peforms the four-parameter dose response curve fit. It is the help
 \examples{
 \dontrun{
 drc_4p(
-data,
-response = intensity,
-dose = concentration
+  data,
+  response = intensity,
+  dose = concentration
 )
 }
 }

@@ -18,6 +18,7 @@
 #' @importFrom rlang .data :=
 #' @importFrom tidyr drop_na
 #' @importFrom utils data
+#' @importFrom stringr str_sort
 #' @export
 #'
 #' @examples
@@ -46,7 +47,8 @@ qc_charge_states <-
           dplyr::group_by({{sample}}, {{charge_states}}) %>%
           dplyr::summarise(charge_per = n / .data$total_peptides * 100) %>%
           dplyr::ungroup() %>%
-          dplyr::mutate({{charge_states}} := forcats::fct_inorder(factor({{charge_states}})))
+          dplyr::mutate({{charge_states}} := forcats::fct_inorder(factor({{charge_states}}))) %>% 
+          dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE))))
 
       if(plot == FALSE) {
         return(result)
@@ -89,6 +91,7 @@ qc_charge_states <-
         dplyr::summarise(charge_per = .data$sum_intensity_cs / .data$total_intensity * 100) %>%
         dplyr::ungroup() %>%
         dplyr::mutate({{charge_states}} := forcats::fct_inorder(factor({{charge_states}}))) %>%
+        dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
         dplyr::distinct()
 
       if(plot == FALSE)
