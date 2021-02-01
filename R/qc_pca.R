@@ -18,6 +18,7 @@
 #' @importFrom stats prcomp
 #' @importFrom rlang .data
 #' @importFrom ggrepel geom_text_repel
+#' @importFrom utils data
 #' @export
 #'
 #' @examples
@@ -32,8 +33,9 @@
 #' }
 #'
 qc_pca <-
-  function(data, sample, grouping, intensity, condition, digestion = NULL)
-  {
+  function(data, sample, grouping, intensity, condition, digestion = NULL){
+    protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+    utils::data("protti_colors", envir=environment()) # then overwrite it with real data
     . = NULL
 
     pca_input <- data %>%
@@ -66,35 +68,28 @@ qc_pca <-
       ggplot2::labs(
         title = "Principal component analysis",
         x = paste("PC1", "(", round(pca_sdev_df$percent_variance[pca_sdev_df$dimension == 1], 1), "%)"),
-        y = paste("PC2", "(", round(pca_sdev_df$percent_variance[pca_sdev_df$dimension == 2], 1), "%)")
+        y = paste("PC2", "(", round(pca_sdev_df$percent_variance[pca_sdev_df$dimension == 2], 1), "%)"),
+        color = "Condition"
       ) +
       ggrepel::geom_text_repel(aes(label = paste(
         stringr::str_replace_all(as.character({{sample}}), fixed("_"), " ")
       )),
       size = 4,
       show.legend = FALSE) +
+      ggplot2::scale_color_manual(values = protti_colors) +
       ggplot2::theme(
         panel.background = element_blank(),
         panel.border = element_rect(colour = "black", fill = NA),
         axis.title = element_text(face = "italic"),
-        title = element_text(face = "bold")
-      ) +
-      ggplot2::scale_color_manual(values = c("#5680C1",
-                                             "#B96DAD",
-                                             "#64CACA",
-                                             "#81ABE9",
-                                             "#F6B8D1",
-                                             "#99F1E4",
-                                             "#9AD1FF",
-                                             "#548BDF",
-                                             "#A55098",
-                                             "#3EB6B6",
-                                             "#87AEE8",
-                                             "#CA91C1",
-                                             "#A4E0E0",
-                                             "#1D4F9A",
-                                             "#D7ACD2",
-                                             "#49C1C1"))
+        title = element_text(face = "bold"),
+        plot.title = ggplot2::element_text(size = 20),
+        axis.title.x = ggplot2::element_text(size = 15),
+        axis.text.y = ggplot2::element_text(size = 15),
+        axis.text.x = ggplot2::element_text(size = 12),
+        axis.title.y = ggplot2::element_text(size = 15),
+        legend.title = ggplot2::element_text(size = 15),
+        legend.text = ggplot2::element_text(size = 15)
+      ) 
 
 
     return(plot)

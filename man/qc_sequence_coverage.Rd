@@ -10,7 +10,7 @@ qc_sequence_coverage(
   coverage,
   facet_by_sample = FALSE,
   sample = NULL,
-  interactive = TRUE
+  interactive = FALSE
 )
 }
 \arguments{

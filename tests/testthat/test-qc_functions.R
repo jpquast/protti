@@ -224,11 +224,11 @@ test_that("qc_peak_width works", {
   # not testing retention_time_start and retention_time_end arguments
   data_no_na <- data %>% 
     tidyr::drop_na(peptide_intensity_missing)
-  p <- qc_peak_width(data_no_na, sample = sample, retention_time = retention_time, peak_width = peak_width, interactive = FALSE)
+  p <- qc_peak_width(data_no_na, sample = sample, intensity = peptide_intensity_missing, retention_time = retention_time, peak_width = peak_width, interactive = FALSE)
   expect_is(p, "ggplot")
   expect_error(print(p), NA)
   
-  p_interactive <- qc_peak_width(data_no_na, sample = sample, retention_time = retention_time, peak_width = peak_width, interactive = TRUE)
+  p_interactive <- qc_peak_width(data_no_na, sample = sample, intensity = peptide_intensity_missing, retention_time = retention_time, peak_width = peak_width, interactive = TRUE)
   expect_is(p_interactive, "plotly")
   expect_error(print(p_interactive), NA)
 })

@@ -27,7 +27,7 @@
 #' intensity = log2_intensity
 #' )
 #' }
-qc_median_intensities <- function(data, sample, grouping, intensity, plot = TRUE, interactive = TRUE){
+qc_median_intensities <- function(data, sample, grouping, intensity, plot = TRUE, interactive = FALSE){
   table <- data %>%
     dplyr::distinct({{sample}}, {{grouping}}, {{intensity}}) %>%
     dplyr::group_by({{sample}}) %>%
@@ -39,9 +39,13 @@ qc_median_intensities <- function(data, sample, grouping, intensity, plot = TRUE
     mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
     ggplot2::ggplot(ggplot2::aes({{sample}}, .data$median_intensity, group = 1))+
     ggplot2::geom_line(size = 1)+
-    ggplot2::labs(title = "Medians of run intensities", x = "Sample", y = "Intensity")+
+    ggplot2::labs(title = "Medians of run intensities", x = "", y = "Intensity")+
     ggplot2::theme_bw() +
-    ggplot2::theme(axis.text.x = element_text(angle = 75, hjust =1))
+    ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
+                   axis.title.x = ggplot2::element_text(size = 15),
+                   axis.text.y = ggplot2::element_text(size = 15),
+                   axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
+                   axis.title.y = ggplot2::element_text(size = 15))
   
   if(interactive == FALSE) return(plot)
   

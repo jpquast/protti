@@ -129,7 +129,7 @@ qc_cvs <-
         plot <- ggplot2::ggplot(result, aes(x = .data$type, y = .data$values, fill = .data$type)) +
           ggplot2::geom_violin(na.rm = TRUE) +
           ggplot2::geom_boxplot(width = 0.15, fill = "white", na.rm = TRUE, alpha = 0.6) +
-          ggplot2::labs(title = "Coefficients of variation", y = "Coefficient of variation [%]", fill = "Condition") +
+          ggplot2::labs(title = "Coefficients of variation", x = "", y = "Coefficient of variation [%]", fill = "Condition") +
           ggplot2::scale_y_continuous(limits = c(0, 200)) +
           ggplot2::scale_fill_manual(values = protti_colors) +
           ggplot2::theme_bw() +

@@ -63,7 +63,7 @@ qc_charge_states <-
           ) +
           labs(title = "Charge distribution per .raw file",
                subtitle = "By percent of total peptide count",
-               x = "Sample",
+               x = "",
                y = "% of total peptide count",
                fill = "Charge") +
           theme_bw() +

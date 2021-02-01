@@ -6,3 +6,5 @@
 ^\.travis\.yml$
 ^\.github$
 ^codecov\.yml$
+^doc$
+^Meta$

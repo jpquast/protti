@@ -53,8 +53,11 @@ Imports:
 RoxygenNote: 7.1.1
 Suggests: 
     testthat,
-    covr
+    covr,
+    knitr,
+    rmarkdown
 Depends: 
     R (>= 4.0)
 URL: https://github.com/jpquast/protti
 BugReports: https://github.com/jpquast/protti/issues
+VignetteBuilder: knitr
