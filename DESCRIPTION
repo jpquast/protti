@@ -1,5 +1,5 @@
 Package: protti
-Title: Proteomics data analysis from the Picotti lab
+Title: Proteomics Data Analysis from the Picotti Lab
 Version: 0.0.0.9000
 Authors@R: 
     c(person(given = "Jan-Philipp",
@@ -10,7 +10,7 @@ Authors@R:
            family = "Schuster",
            role = c("aut"),
            email = "dschuster@ethz.ch"))
-Description: This package provides useful functions for proteomics data analysis. It can be used for DDA, DIA and SRM data. Both limited proteolysis and regular proteomics experiments can be analysed.
+Description: Useful functions and workflows for proteomics data analysis of both limited proteolysis and regular proteomics experiments. Data generated with search tools such as Spectronaut, MaxQuant and Proteome Discover can be easily used due to flexibility of functions.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -55,6 +55,6 @@ Suggests:
     testthat,
     covr
 Depends: 
-    R (>= 2.10)
+    R (>= 4.0)
 URL: https://github.com/jpquast/protti
 BugReports: https://github.com/jpquast/protti/issues
