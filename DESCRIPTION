@@ -1,5 +1,5 @@
 Package: protti
-Title: Proteomics Data Analysis from the Picotti Lab
+Title: Bottom-Up Proteomics and LiP-MS Quality Control and Data Analysis Tools
 Version: 0.0.0.9000
 Authors@R: 
     c(person(given = "Jan-Philipp",
@@ -10,7 +10,7 @@ Authors@R:
            family = "Schuster",
            role = c("aut"),
            email = "dschuster@ethz.ch"))
-Description: Useful functions and workflows for proteomics data analysis of both limited proteolysis and regular proteomics experiments. Data generated with search tools such as Spectronaut, MaxQuant and Proteome Discover can be easily used due to flexibility of functions.
+Description: Useful functions and workflows for proteomics quality control and data analysis of both limited proteolysis mass spectrometry (LiP-MS) and regular bottom-up proteomics experiments. Data generated with search tools such as Spectronaut, MaxQuant and Proteome Discover can be easily used due to flexibility of functions.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

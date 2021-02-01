@@ -67,7 +67,7 @@ test_that("extract_metal_binders works", {
 })
 
 test_that("kegg_enrichment works", {
-  # fist fake significances are generated based on the first 10 rows of every group
+  # first fake significances are generated based on the first 10 rows of every group
   kegg_input <- kegg %>%
     dplyr::group_by(pathway_id) %>%
     dplyr::mutate(is_significant = ifelse((match(.data$kegg_id, .data$kegg_id) <= 10), TRUE, FALSE)) %>%
