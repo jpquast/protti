@@ -4,5 +4,7 @@
 ^README\.Rmd$
 ^data-raw$
 ^\.travis\.yml$
+^\.github$
+^codecov\.yml$
 ^doc$
 ^Meta$

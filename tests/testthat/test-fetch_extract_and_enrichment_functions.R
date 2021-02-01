@@ -23,16 +23,16 @@ test_that("fetch_mobidb works", {
   expect_equal(ncol(mobidb), 7)
 })
 
-# database <- fetch_chebi()
-# relations <- fetch_chebi(relation = TRUE)
-# test_that("fetch_chebi works", {
-#   expect_is(database, "data.frame")
-#   expect_is(relations, "data.frame")
-#   expect_equal(ncol(database), 13)
-#   expect_equal(ncol(relations), 3)
-#   expect_gt(nrow(database), 10)
-#   expect_gt(nrow(relations), 10)
-# })
+database <- fetch_chebi()
+relations <- fetch_chebi(relation = TRUE)
+test_that("fetch_chebi works", {
+  expect_is(database, "data.frame")
+  expect_is(relations, "data.frame")
+  expect_equal(ncol(database), 13)
+  expect_equal(ncol(relations), 3)
+  expect_gt(nrow(database), 10)
+  expect_gt(nrow(relations), 10)
+})
 
 kegg <- fetch_kegg(species = "eco")
 test_that("fetch_kegg works", {
@@ -57,17 +57,17 @@ test_that("fetch_go works", {
   expect_gt(nrow(go_hs), 10)
 })
 
-# test_that("extract_metal_binders works", {
-#   data_uniprot <- fetch_uniprot(c("Q03640", "Q03778", "P22276"))
-#   metal_info <- extract_metal_binders(data = data_uniprot, chebi_data = database, chebi_relation_data = relations)
-# 
-#   expect_is(metal_info, "data.frame")
-#   expect_equal(ncol(metal_info), 9)
-#   expect_gt(nrow(metal_info), 40)
-# })
+test_that("extract_metal_binders works", {
+  data_uniprot <- fetch_uniprot(c("Q03640", "Q03778", "P22276"))
+  metal_info <- extract_metal_binders(data = data_uniprot, chebi_data = database, chebi_relation_data = relations)
+
+  expect_is(metal_info, "data.frame")
+  expect_equal(ncol(metal_info), 9)
+  expect_gt(nrow(metal_info), 40)
+})
 
 test_that("kegg_enrichment works", {
-  # fist fake significances are generated based on the first 10 rows of every group
+  # first fake significances are generated based on the first 10 rows of every group
   kegg_input <- kegg %>%
     dplyr::group_by(pathway_id) %>%
     dplyr::mutate(is_significant = ifelse((match(.data$kegg_id, .data$kegg_id) <= 10), TRUE, FALSE)) %>%
