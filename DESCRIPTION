@@ -52,7 +52,8 @@ Imports:
     STRINGdb
 RoxygenNote: 7.1.1
 Suggests: 
-    testthat
+    testthat,
+    covr
 Depends: 
     R (>= 2.10)
 URL: https://github.com/jpquast/protti

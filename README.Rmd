@@ -16,7 +16,8 @@ knitr::opts_chunk$set(
 # protti <img src='man/figures/protti_logo.png' align="right" width="12.5%" />
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.com/jpquast/protti.svg?branch=master)](https://travis-ci.com/jpquast/protti)
+[![Codecov test coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](https://codecov.io/gh/jpquast/protti?branch=master)
+[![R-CMD-check](https://github.com/jpquast/protti/workflows/R-CMD-check/badge.svg)](https://github.com/jpquast/protti/actions)
 <!-- badges: end -->
 
 ## Overview
