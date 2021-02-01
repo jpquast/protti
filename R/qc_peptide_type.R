@@ -66,7 +66,7 @@ qc_peptide_type <- function(data, sample, peptide, pep_type, intensity, remove_n
           aes(label = round(.data$peptide_type_percent, digits = 1)),
           position = position_stack(vjust = 0.9)
         ) +
-        ggplot2::labs(title = "Peptide types per .raw file", x = "Sample", y = "Percentage of peptides", fill = "Type") +
+        ggplot2::labs(title = "Peptide types per .raw file", x = "", y = "Percentage of peptides", fill = "Type") +
         ggplot2::theme_bw() +
         ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
                        axis.title.x = ggplot2::element_text(size = 15),

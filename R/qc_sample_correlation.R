@@ -10,7 +10,7 @@
 #' @param digestion optional, the name of the column containing information about the digestion method used. Eg. "LiP" or "tryptic control".
 #' @param run_order optional, the name of the column containing the order in which samples were measured. Useful to investigate batch effects due to run order.
 #' @param method the method to be used for correlation. \code{"spearman"} is the default but can be changed to \code{"pearson"} or \code{"kendall"}.
-#' @param interactive logical, default is \code{TRUE}. Determines if an interactive or static heatmap should be created using \code{heatmaply} or \code{pheatmap}, respectively.
+#' @param interactive logical, default is \code{FALSE}. Determines if an interactive or static heatmap should be created using \code{heatmaply} or \code{pheatmap}, respectively.
 #'
 #' @return A correlation heatmap that compares each sample. The dendrogram is sorted by optimal leaf ordering.
 #'
@@ -36,7 +36,7 @@
 #' condition = r_condition
 #' )
 #' }
-qc_sample_correlation <- function(data, sample, grouping, intensity, condition, digestion = NULL, run_order = NULL, method = "spearman", interactive = TRUE){
+qc_sample_correlation <- function(data, sample, grouping, intensity, condition, digestion = NULL, run_order = NULL, method = "spearman", interactive = FALSE){
   correlation <- data %>%
     dplyr::distinct({{sample}}, {{grouping}}, {{intensity}}) %>%
     tidyr::pivot_wider(names_from = {{sample}}, values_from = {{intensity}}) %>%

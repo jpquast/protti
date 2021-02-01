@@ -29,7 +29,7 @@
 #' }
 #'
 #' @seealso \code{\link{sequence_coverage}}
-qc_sequence_coverage <- function(data, protein_identifier, coverage, facet_by_sample = FALSE, sample = NULL, interactive = TRUE) {
+qc_sequence_coverage <- function(data, protein_identifier, coverage, facet_by_sample = FALSE, sample = NULL, interactive = FALSE) {
 result <- data %>%
   dplyr::distinct({{protein_identifier}}, {{coverage}}, {{sample}})
 

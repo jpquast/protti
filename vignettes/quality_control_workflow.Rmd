@@ -125,12 +125,14 @@ For the analysis of ID numbers we are using the function `qc_ids()`, this functi
 qc_ids(data = data,
        sample = sample,
        grouping = protein,
+       intensity = peptide_intensity_missing,
        condition = condition, 
        plot = FALSE)
 
 qc_ids(data = data,
        sample = sample,
        grouping = protein,
+       intensity = peptide_intensity_missing,
        condition = condition, 
        title = "Protein identifications per sample",
        plot = TRUE)
@@ -243,9 +245,9 @@ The peak widths should be similar for all the measured samples of the experiment
 ```{r qc_peak_width, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_peak_width(data = data,
               sample = sample, 
+              intensity = peptide_intensity_missing,
               retention_time = retention_time, 
-              peak_width = peak_width,
-              interactive = FALSE)
+              peak_width = peak_width)
 ``` 
 
 ### Data completeness

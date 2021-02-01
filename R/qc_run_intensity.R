@@ -33,7 +33,7 @@ qc_run_intensity <-
       dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
       ggplot2::ggplot(aes(x = {{sample}}, y = {{intensity}})) +
       geom_boxplot(fill = "#5680C1", outlier.color = "orchid3") +
-      labs(title = "Run intensities", x = "Sample", y = "Intensity") +
+      labs(title = "Run intensities", x = "", y = "Intensity") +
       theme_bw() +
       ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
                      axis.title.x = ggplot2::element_text(size = 15),

@@ -119,7 +119,7 @@ qc_missed_cleavages <-
             ) +
             labs(title = "Missed cleavages per .raw file",
                  subtitle = "By percent of total intensity",
-                 x = "Sample",
+                 x = "",
                  y = "% of total intensity",
                  fill = "Missed cleavages") +
             theme_bw() +

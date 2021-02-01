@@ -62,10 +62,10 @@ qc_ids <-
     plot <- result %>%
       dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>%
       ggplot2::ggplot(aes(x = {{sample}}, y = .data$count, fill = {{condition}})) +
-      ggplot2::geom_col(col = "black") +
+      ggplot2::geom_col(col = "black", size = 1) +
       {if(missing(condition)) ggplot2::geom_col(fill = "#5680C1", col = "black")}  +
       ggplot2::labs(title = title,
-           x = "Sample",
+           x = "",
            y = "Count",
            fill = "Condition") +
       ggplot2::theme_bw() +

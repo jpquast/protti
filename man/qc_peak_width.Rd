@@ -7,17 +7,21 @@
 qc_peak_width(
   data,
   sample,
+  intensity,
   retention_time,
   peak_width = NULL,
   retention_time_start = NULL,
   retention_time_end = NULL,
-  interactive = TRUE
+  remove_na_intensities = TRUE,
+  interactive = FALSE
 )
 }
 \arguments{
 \item{data}{A data frame containing at least sample names and protein IDs.}
 
 \item{sample}{The column in the data frame containing the sample names.}
+
+\item{intensity}{The column in the data frame containing intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.}
 
 \item{retention_time}{The column in the data frame containing retention times of precursors.}
 
@@ -26,6 +30,9 @@ qc_peak_width(
 \item{retention_time_start}{The column in the data frame containing the start time of the precursor elution peak. It is not required if the \code{peak_width} column is provided.}
 
 \item{retention_time_end}{The column in the data frame containing the end time of the precursor elution peak. It is not required if the \code{peak_width} column is provided.}
+
+\item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
+Default is TRUE since we are usually interested in the peak width of quantifiable data.}
 
 \item{interactive}{A logical indicating whether the plot should be interactive (default is TRUE).}
 }
@@ -40,6 +47,7 @@ Plots median precursor elution peak width over retention time for each sample.
 qc_peak_width(
 data,
 sample = r_file_name,
+intensity = fg_quantity,
 retention_time = eg_mean_apex_rt,
 retention_time_start = eg_start_rt,
 retention_time_end = eg_end_rt
