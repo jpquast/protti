@@ -60,13 +60,13 @@ qc_data_completeness <- function(data, sample, grouping, intensity, digestion = 
   completeness_plot <- result %>% 
     dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
     ggplot2::ggplot(ggplot2::aes({{sample}}, .data$completeness)) +
-    ggplot2::geom_col(fill = "#5680C1", col = "black", size = 1.5) +
+    ggplot2::geom_col(fill = "#5680C1", col = "black", size = 1) +
     {if(interactive == FALSE) geom_text(
       data = result,
       aes(label = round(.data$completeness, digits = 1)),
       position = position_stack(vjust = 0.5)
     )} +
-    ggplot2::scale_y_continuous(limits = c(0, 100), expand = c(0, 0)) +
+    ggplot2::scale_y_continuous(limits = c(0, 100)) +
     {if(!missing(digestion)) ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(digestion)), scales = "free", ncol = 2)} +
     ggplot2::labs(title = "Data completeness per .raw file", x = "", y = "Data Completeness [%]") +
     ggplot2::theme_bw() +

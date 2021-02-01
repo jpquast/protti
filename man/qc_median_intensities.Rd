@@ -10,7 +10,7 @@ qc_median_intensities(
   grouping,
   intensity,
   plot = TRUE,
-  interactive = TRUE
+  interactive = FALSE
 )
 }
 \arguments{

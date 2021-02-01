@@ -13,7 +13,7 @@ qc_sample_correlation(
   digestion = NULL,
   run_order = NULL,
   method = "spearman",
-  interactive = TRUE
+  interactive = FALSE
 )
 }
 \arguments{
@@ -33,7 +33,7 @@ qc_sample_correlation(
 
 \item{method}{the method to be used for correlation. \code{"spearman"} is the default but can be changed to \code{"pearson"} or \code{"kendall"}.}
 
-\item{interactive}{logical, default is \code{TRUE}. Determines if an interactive or static heatmap should be created using \code{heatmaply} or \code{pheatmap}, respectively.}
+\item{interactive}{logical, default is \code{FALSE}. Determines if an interactive or static heatmap should be created using \code{heatmaply} or \code{pheatmap}, respectively.}
 }
 \value{
 A correlation heatmap that compares each sample. The dendrogram is sorted by optimal leaf ordering.
