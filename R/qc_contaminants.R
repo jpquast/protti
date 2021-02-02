@@ -30,7 +30,7 @@
 #' data,
 #' sample = sample,
 #' protein = leading_razor_protein,
-#' is_contaminant = potential_contaminant
+#' is_contaminant = potential_contaminant,
 #' intensity = intensity
 #' )
 #' }

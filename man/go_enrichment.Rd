@@ -62,8 +62,8 @@ or GO annotations are fetched automatically by the function by providing \code{o
 go_enrichment(
 data,
 protein_id = pg_protein_accessions,
-is_significant = significant
-go_annotations_uniprot = go_molecular_function,
+is_significant = significant,
+go_annotations_uniprot = go_molecular_function
 )
 }
 }

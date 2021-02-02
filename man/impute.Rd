@@ -64,7 +64,7 @@ for previously missing intensities.
 \dontrun{
 impute(
 data,
-sample = r_file_name
+sample = r_file_name,
 grouping = eg_precursor_id,
 intensity = intensity_log2,
 condition = r_condition,

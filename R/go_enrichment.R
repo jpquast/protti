@@ -44,8 +44,8 @@
 #' go_enrichment(
 #' data,
 #' protein_id = pg_protein_accessions,
-#' is_significant = significant
-#' go_annotations_uniprot = go_molecular_function,
+#' is_significant = significant,
+#' go_annotations_uniprot = go_molecular_function
 #' )
 #' }
 go_enrichment <- function(data, protein_id, is_significant, go_annotations_uniprot = NULL, ontology_type, organism_id = NULL, go_data = NULL, plot = TRUE, plot_cutoff = "adj_pval top10") {
