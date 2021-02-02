@@ -38,7 +38,6 @@ Imports:
     ggrepel, 
     igraph, 
     stringi, 
-    limma, 
     proDA, 
     iq, 
     jsonlite, 
@@ -55,7 +54,8 @@ Suggests:
     testthat,
     covr,
     knitr,
-    rmarkdown
+    rmarkdown,
+    limma
 Depends: 
     R (>= 4.0)
 URL: https://github.com/jpquast/protti

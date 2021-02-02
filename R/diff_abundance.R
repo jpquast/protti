@@ -52,7 +52,6 @@
 #' } 
 #' @import dplyr
 #' @import tidyr
-#' @importFrom limma lmFit makeContrasts contrasts.fit eBayes topTable
 #' @importFrom proDA result_names proDA test_diff
 #' @importFrom rlang .data enquo ensym as_name as_label expr := !!
 #' @importFrom purrr map map2 map_df map_dbl map_chr map2_dbl reduce set_names
@@ -218,6 +217,10 @@ diff_abundance <-
   }
   
   if(method == "moderated_t-test"){
+    if (!requireNamespace("limma", quietly = TRUE)) {
+      stop("Package \"limma\" is needed for this function to work. Please install it.", call. = FALSE)
+    }
+    
   conditions_no_ref <- unique(pull(data, {{condition}}))[!unique(pull(data, {{condition}})) %in% ref_condition]
   
   message("[1/7] Creating moderated t-test input data ... ", appendLF = FALSE)
