@@ -29,16 +29,18 @@ test_that("qc_data_completeness works", {
   expect_error(print(p_interactive), NA)
 })
 
-test_that("qc_log2_intensity_distribution works", {
-  p <- qc_log2_intensity_distribution(data = data, sample = sample, grouping = peptide, log2_intensity = peptide_intensity_missing)
+test_that("qc_intensity_distribution works", {
+  p_facet <- qc_intensity_distribution(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, method = "histogram")
+  expect_is(p_facet,"ggplot")
+  expect_error(print(p_facet), NA)
+  
+  p <- qc_intensity_distribution(data = data, grouping = peptide, intensity = peptide_intensity_missing, method = "histogram")
   expect_is(p,"ggplot")
   expect_error(print(p), NA)
-})
-
-test_that("qc_run_intensity works", {
-  p <- qc_run_intensity(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing)
-  expect_is(p,"ggplot")
-  expect_error(print(p), NA)
+  
+  p_boxplot <- qc_intensity_distribution(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, method = "boxplot")
+  expect_is(p_boxplot,"ggplot")
+  expect_error(print(p_boxplot), NA)
 })
 
 test_that("qc_median_intensities works", {
