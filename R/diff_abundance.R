@@ -52,7 +52,6 @@
 #' } 
 #' @import dplyr
 #' @import tidyr
-#' @importFrom proDA result_names proDA test_diff
 #' @importFrom rlang .data enquo ensym as_name as_label expr := !!
 #' @importFrom purrr map map2 map_df map_dbl map_chr map2_dbl reduce set_names
 #' @importFrom magrittr %>%
@@ -313,6 +312,9 @@ diff_abundance <-
   }
   
   if(method == "proDA"){
+    if (!requireNamespace("proDA", quietly = TRUE)) {
+      stop("Package \"proDA\" is needed for this function to work. Please install it.", call. = FALSE)
+    }
   message("[1/5] Creating proDA input data ... ", appendLF = FALSE)
     
   proDA_input <- data %>%

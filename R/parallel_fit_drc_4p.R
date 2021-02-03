@@ -17,11 +17,8 @@
 #' (curve and confidence interval) and \code{plot_points} (measured points).
 #' 
 #' @import dplyr
-#' @importFrom furrr future_map_dfr
 #' @importFrom rlang .data as_name enquo
 #' @importFrom magrittr %>%
-#' @importFrom parallel detectCores
-#' @importFrom future plan
 #' @export
 #'
 #' @examples
@@ -35,6 +32,15 @@
 #' )
 #' }
 parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, n_cores = NULL){
+  dependency_test <- c(furrr = !requireNamespace("furrr", quietly = TRUE), future = !requireNamespace("future", quietly = TRUE), parallel = !requireNamespace("parallel", quietly = TRUE))
+  if (any(dependency_test)) {
+    dependency_name <- names(dependency_test[dependency_test == TRUE])
+    if(length(dependency_name) == 1){
+      stop("Package \"", paste(dependency_name), "\" is needed for this function to work. Please install it.", call. = FALSE)
+    } else{
+      stop("Packages \"", paste(dependency_name, collapse = "\" and \""), "\" are needed for this function to work. Please install them.", call. = FALSE)
+    }
+  }
   . = NULL
   terminate = FALSE
   

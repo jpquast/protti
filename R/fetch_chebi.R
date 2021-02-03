@@ -6,8 +6,7 @@
 #'
 #' @return A data frame that contains all information about each molecule in the ChEBI database. Only "3-star" observations are included in the result. These are entries manually annotated by the ChEBI curator team.
 #' @import dplyr
-#' @importFrom tidyr pivot_wider
-#' @importFrom tidyr unnest
+#' @importFrom tidyr pivot_wider unnest
 #' @importFrom janitor clean_names
 #' @importFrom data.table fread
 #' @importFrom magrittr %>%
