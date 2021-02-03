@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-When working with proteomics and limited-proteolysis mass spectrometry [LiP-MS](https://doi.org/10.1038/nprot.2017.100) data, it is important to ensure that the data is of sufficient quality before inferring biological relevance and meaning from it. In general, there are several ways in which this can be done: 
+When working with proteomics and limited proteolysis-coupled mass spectrometry ([LiP-MS](https://doi.org/10.1038/nprot.2017.100)) data, it is important to ensure that the data is of sufficient quality before inferring biological relevance and meaning from it. In general, there are several ways in which this can be done: 
 
   * Inspection of .raw files acquired directly on the mass spectrometer (e.g. using vendor specific applications to visualize mass spectrometry data, such as the Thermo Scientific applications XCalibur™ and FreeStyle™)
   * Different search engines offer quality control functionalities (e.g. [Spectronaut™](https://biognosys.com/shop/spectronaut) offers a lot of QC options)
@@ -37,9 +37,11 @@ The idea behind all of the options listed above is to assess if the data quality
 
 **protti** includes several functions that make it easy for the user to compare the different samples in one experiment. Some functions in this R package are specific for LiP-MS data analyses, whereas others can also be used for general proteomics analyses. 
 
+You can read more about specific functions and how to use them by calling e.g. `?qc_cvs` (for the `qc_cvs()` function). Calling `?` followed by the function name will display the function documentation and give you more detailed information about the function. This can be done for any of the functions included in the package.
+
 This document will give you an overview of QC functions included in **protti** and will show you how they can be applied to your data. The examples in this file are run on synthetic data, which is created with the function `create_synthetic_data()`.
 
-The functions in **protti** are tailored towards the analysis of DIA data, based on the output of the search engine [Spectronaut™](https://biognosys.com/shop/spectronaut). However, if you have any other data, such as DDA data that was searched with a different search engine, you can still apply our functions. Just make sure that your data frame contains [tidy data](https://r4ds.had.co.nz/tidy-data.html). That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the `pivot_longer` function from the `tidyr` package. If you are unsure about how your input data is supposed to look like, please use the `create_synthetic_data()` function and compare this to your data. 
+The functions in **protti** are tailored towards the analysis of DIA data, based on the output of the search engine [Spectronaut™](https://biognosys.com/shop/spectronaut). However, if you have any other data, such as DDA data that was searched with a different search engine, you can still apply our functions. Just make sure that your data frame contains [tidy data](https://r4ds.had.co.nz/tidy-data.html). That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the `pivot_longer()` function from the `tidyr` package. If you are unsure about how your input data is supposed to look like, please use the `create_synthetic_data()` function and compare this to your data. 
 
 The input data should have a similar structure to this example: 
 
@@ -56,7 +58,7 @@ The input data should have a similar structure to this example:
 
 Before we can start analysing our data, we need to load the **protti** package. This is done by using the base R function `library()`. In addition, we are also loading the packages `magrittr` and `dplyr`. Both `magrittr` and `dplyr` are part of the [tidyverse](https://www.tidyverse.org), a collection of packages that provide useful functionalities for data processing and visualisation. If you use many tidyverse packages in your workflow you can easily load all at once by calling `library(tidyverse)`.
 
-```{r setup, message = FALSE}
+```{r setup, message = FALSE, warning = FALSE}
 library(protti)
 library(magrittr)
 library(dplyr)
@@ -68,21 +70,19 @@ You can skip this step if you have your own data ready.
 
 We are creating a random dataset with 100 different proteins, out of which 5 % are significantly changing upon treatment. The dataset includes 3 replicates for 2 different conditions (treated and untreated).
 
-The `create_synthetic_data()` function is modeled after real LiP-MS data and its commonly observed data distributions.
+The output of the `create_synthetic_data()` function is modeled after real LiP-MS data and its commonly observed data distributions.
 
 Please note that generally, quality control should be conducted on raw unfiltered data (the direct output of your search engine of choice).
 
 ```{r create_synthetic_data}
 set.seed(123) # by setting the seed we are making sure that the random object generation can be reproduced
 
-data <- create_synthetic_data(
-  n_proteins = 100,
-  frac_change = 0.05,
-  n_replicates = 3,
-  n_conditions = 2,
-  method = "random_effect",
-  additional_metadata = TRUE
-)
+data <- create_synthetic_data(n_proteins = 100,
+                              frac_change = 0.05,
+                              n_replicates = 3,
+                              n_conditions = 2,
+                              method = "random_effect",
+                              additional_metadata = TRUE)
 
 ```
 
@@ -92,7 +92,7 @@ data <- create_synthetic_data(
 
 A good first step of quality control is to check if coefficients of variation between replicates are in a reasonable range. Ideally, these should be below 15-20 %. If you see groups with higher CVs, there might have been a sample preparation error or the instrument performance was not ideal at the time of measurement. You can check if after `median_normalisation()` (depending on whether your search engine has performed median normalisation already) your CVs improve.
 
-To conduct the CV based qualtiy control, we are making use of the function `qc_cvs()`. This function calculates the coefficients of variation. The output can either be a table or a plot of coefficients of variations for each condition. Below we are returning a CV table and a violin plot, showing the CVs for different conditions.
+To conduct the CV based quality control, we are making use of the function `qc_cvs()`. This function calculates the coefficients of variation. The output can either be a table or a plot of coefficients of variations for each condition. Below we are returning a CV table and a violin plot, showing the CVs for different conditions.
 
 The CVs (in percent) are calculated with the following formula: 
 
@@ -127,9 +127,9 @@ qc_cvs(data = input,
 
 ### Number of identifications (IDs)
 
-he number of protein or peptide identifications should be similar for different samples. If there are significanlty less observations in one sample, this might indicate a sample preparation or measurement error.
+The number of protein or peptide identifications should be similar for different samples. If there are significanlty less observations in one sample, this might indicate a sample preparation or measurement error.
 
-For the analysis of the number of identifications of precursors, peptides or proteins we are using the function `qc_ids()`. This function can return either a table or a plot. 
+For the analysis of the number of identifications of precursors, peptides or proteins we are using the function `qc_ids()`. This function can return either a table or a plot. The output of this function - and also of a lot of other **protti** functions - can be plotted in an interactive plot that makes use of the R package `plotly`. You can plot an interactive version of the plot by setting `interactive = TRUE` within the function call. 
 
 ```{r qc_ids, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_ids(data = input,
@@ -156,7 +156,7 @@ In a standard LiP-MS experiment we use 3 different proteases:
 
   * Proteinase K (unspecific, cleaves accessible protein regions)
   * Trypsin (specific, cleaves after lysines or arginines)
-  * Lys-C (specific, cleaves after lysines or arginines)
+  * Lys-C (specific, cleaves after lysines)
 
 Peptide types can be assessed in Spectronaut directly or by using the **protti** function `peptide_type()`. This function takes amino acids before and after the first and last amino acid in the peptide into account. A peptide that starts after a lysine or arginine and ends with a lysine or arginine is a _tryptic_ peptide. A peptide that has one proteinase K cleavage site (not lysine or arginine) and one trypsin cleavage site either at the beginning or at the end of the peptide is a _semi-tryptic_ peptide. A peptide that does not have any trypsin cleavage sites is a _non-tryptic_ peptide. If information about the amino acid before and the last amino acid of a peptide are not available in your data you can use the `find_peptide` function from the **protti** package to create it.
 
@@ -191,20 +191,16 @@ A similar way in which the run intensities can be assessed is to plot the median
 
 ```{r qc_intensity_distribution_boxplot, fig.width = 6, fig.height = 4, fig.align = "center"}
 
-qc_intensity_distribution(
-  data = input,
-  sample = sample,
-  grouping = peptide,
-  intensity = peptide_intensity_missing,
-  method = "boxplot"
-)
+qc_intensity_distribution(data = input,
+                          sample = sample,
+                          grouping = peptide,
+                          intensity = peptide_intensity_missing,
+                          method = "boxplot")
 
-qc_median_intensities(
-  data = input,
-  sample = sample,
-  grouping = peptide,
-  intensity = peptide_intensity_missing
-)
+qc_median_intensities(data = input,
+                      sample = sample,
+                      grouping = peptide,
+                      intensity = peptide_intensity_missing)
 ```
 
 ### Charge states
@@ -282,12 +278,10 @@ qc_data_completeness(data = input,
 For different kinds of analyses (e.g. t-tests) it is important that your data intensity follows a normal distribution. To ensure that this is the case, we are going to use the function `qc_intensity_distriubution()`. The function returns a histogram plot when `method = "histogram"` showing how the intensities are distributed.
 
 ```{r qc_intensity_distribution_histogram, fig.width = 6, fig.height = 4, fig.align = "center"}
-qc_intensity_distribution(
-  data = input,
-  grouping = peptide,
-  intensity = peptide_intensity_missing,
-  method = "histogram"
-)
+qc_intensity_distribution(data = input,
+                          grouping = peptide,
+                          intensity = peptide_intensity_missing,
+                          method = "histogram")
 ``` 
 
 ### Sample correlation
@@ -313,7 +307,6 @@ Another popular quality control method (which could also be considered part of d
         grouping = peptide, 
         intensity = peptide_intensity_missing, 
         condition = condition)
-
 ``` 
 
 ### Additional QC functions
