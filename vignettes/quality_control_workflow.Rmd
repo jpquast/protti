@@ -185,21 +185,26 @@ qc_peptide_type(data = input,
 
 ### Run intensities
 
-The function `qc_run_intensity()` plots all precursor, peptide or protein intensities for each sample as a boxplot. This is helpful for quick assessment of any major sample losses or measurement issues. 
+The function `qc_intensity_distribution()` plots all precursor, peptide or protein intensities for each sample as a boxplot if method "boxplot" is selected. This is helpful for quick assessment of any major sample losses or measurement issues. 
 
 A similar way in which the run intensities can be assessed is to plot the median run intensities as a line plot. This helps you quickly assess if there are any trends in your data. The function to use for this analysis is `qc_median_intensities()`. 
 
-```{r qc_run_intensity, fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r qc_intensity_distribution_boxplot, fig.width = 6, fig.height = 4, fig.align = "center"}
 
-qc_run_intensity(data = input,
-                 sample = sample, 
-                 grouping = peptide, 
-                 intensity = peptide_intensity_missing)
+qc_intensity_distribution(
+  data = input,
+  sample = sample,
+  grouping = peptide,
+  intensity = peptide_intensity_missing,
+  method = "boxplot"
+)
 
-qc_median_intensities(data = input,
-                 sample = sample, 
-                 grouping = peptide, 
-                 intensity = peptide_intensity_missing)
+qc_median_intensities(
+  data = input,
+  sample = sample,
+  grouping = peptide,
+  intensity = peptide_intensity_missing
+)
 ```
 
 ### Charge states
@@ -272,15 +277,17 @@ qc_data_completeness(data = input,
                      plot = TRUE)
 ``` 
 
-### Log2(intensity) distribution
+### Log2 Intensity distribution
 
-For different kinds of analyses (e.g. t-tests) it is important that your data intensity follows a normal distribution. To ensure that this is the case, we are going to use the function `qc_log2_intensity_distriubution()`. The function returns a plot showing how the intensities are distributed.
+For different kinds of analyses (e.g. t-tests) it is important that your data intensity follows a normal distribution. To ensure that this is the case, we are going to use the function `qc_intensity_distriubution()`. The function returns a histogram plot when `method = "histogram"` showing how the intensities are distributed.
 
-```{r qc_log2_distribution, fig.width = 6, fig.height = 4, fig.align = "center"}
-qc_log2_intensity_distribution(data = input,
-                               sample = sample, 
-                               grouping = peptide, 
-                               log2_intensity = peptide_intensity_missing)
+```{r qc_intensity_distribution_histogram, fig.width = 6, fig.height = 4, fig.align = "center"}
+qc_intensity_distribution(
+  data = input,
+  grouping = peptide,
+  intensity = peptide_intensity_missing,
+  method = "histogram"
+)
 ``` 
 
 ### Sample correlation
