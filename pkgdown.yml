@@ -1,0 +1,7 @@
+pandoc: 2.7.3
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  quality_control_workflow: quality_control_workflow.html
+last_built: 2021-02-03T10:27Z
+
