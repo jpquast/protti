@@ -67,7 +67,7 @@ qc_intensity_distribution <- function(data, sample = NULL, grouping, intensity, 
     if (missing(sample)) stop("Please provide a column with sample information when choosing boxplot as method!")
     plot <- input %>%
       ggplot2::ggplot(aes(x = {{ sample }}, y = {{ intensity }})) +
-      geom_boxplot(fill = "#5680C1", outlier.color = "orchid3") +
+      geom_boxplot(fill = "#5680C1", outlier.color = "#B96DAD") +
       labs(title = "Run intensities", x = "", y = "Intensity") +
       theme_bw() +
       ggplot2::theme(
