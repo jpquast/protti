@@ -22,7 +22,6 @@
 #'
 #' @import dplyr
 #' @import progress
-#' @importFrom iq maxLFQ
 #' @importFrom tidyr complete pivot_wider drop_na
 #' @importFrom rlang .data := !! ensym as_name enquo
 #' @importFrom tibble column_to_rownames as_tibble rownames_to_column
@@ -63,6 +62,9 @@ calculate_protein_abundance <- function(data, sample, protein_id, precursor, int
       dplyr::bind_rows(input)
   }
   if(method == "iq"){
+    if (!requireNamespace("iq", quietly = TRUE)) {
+      stop("Package \"iq\" is needed for this function to work. Please install it.", call. = FALSE)
+    }
   pb <- progress::progress_bar$new(total = length(unique(dplyr::pull(data, {{protein_id}}))), format = "  Preparing data [:bar] :current/:total (:percent) :eta")
   
   input <- data %>%

@@ -12,7 +12,6 @@
 #' @importFrom dplyr distinct
 #' @importFrom magrittr %>%
 #' @importFrom purrr map
-#' @importFrom stringi stri_remove_empty
 #' @importFrom stringr str_detect regex
 #' @importFrom rlang .data
 #'
@@ -26,6 +25,9 @@
 #' )
 #' }
 find_chebis <- function(chebi_data, pattern) {
+  if (!requireNamespace("stringi", quietly = TRUE)) {
+    stop("Package \"stringi\" is needed for this function to work. Please install it.", call. = FALSE)
+  }
   data <- chebi_data %>%
     dplyr::distinct(.data$id, .data$name)
   

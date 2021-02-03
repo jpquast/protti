@@ -46,6 +46,12 @@ extract_metal_binders <-
            chebi_catalytic_activity = chebi_catalytic_activity,
            chebi_data = NULL,
            chebi_relation_data = NULL) {
+    if (!requireNamespace("igraph", quietly = TRUE)) {
+      stop("Package \"igraph\" is needed for this function to work. Please install it.", call. = FALSE)
+    }
+    if (!requireNamespace("stringi", quietly = TRUE)) {
+      stop("Package \"stringi\" is needed for this function to work. Please install it.", call. = FALSE)
+    }
     # Download chebi database if not provided
     if (is.null(chebi_data)) {
       chebi <- fetch_chebi()

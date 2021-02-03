@@ -16,13 +16,7 @@
 #'
 #' @import dplyr
 #' @importFrom tidyr pivot_wider
-#' @importFrom pheatmap pheatmap
-#' @importFrom heatmaply heatmaply
-#' @importFrom viridis viridis
-#' @importFrom dendextend seriate_dendrogram
-#' @importFrom dendextend rotate
-#' @importFrom rlang .data
-#' @importFrom rlang as_name
+#' @importFrom rlang .data as_name
 #' @importFrom magrittr %>%
 #' @export
 #'
@@ -47,14 +41,10 @@ qc_sample_correlation <- function(data, sample, grouping, intensity, condition, 
     dplyr::distinct({{sample}}, {{condition}}, {{digestion}}, {{run_order}}) %>%
     tibble::column_to_rownames(var = rlang::as_name(enquo(sample)))
 
-  # Create heatmaply dendrogram for pheatmap
-  distance <- stats::dist(correlation)
-  hierachical_clustering <- stats::hclust(distance)
-  dendrogram <- stats::as.dendrogram(hierachical_clustering)
-  dendrogram_row <- dendextend::seriate_dendrogram(dendrogram, distance, method="OLO")
-  dendrogram_column <- dendextend::rotate(dendrogram_row, order = rev(labels(distance)[seriation::get_order(stats::as.hclust(dendrogram_row))]))
-
   if (interactive == TRUE) {
+    if (!requireNamespace("heatmaply", quietly = TRUE)) {
+      stop("Package \"heatmaply\" is needed for this function to work. Please install it.", call. = FALSE)
+    }
     heatmap_interactive <-
       heatmaply::heatmaply(
         correlation,
@@ -67,6 +57,26 @@ qc_sample_correlation <- function(data, sample, grouping, intensity, condition, 
     return(heatmap_interactive)
   }
   if (interactive == FALSE) {
+    dependency_test <- c(dendextend = !requireNamespace("dendextend", quietly = TRUE), 
+                         pheatmap = !requireNamespace("pheatmap", quietly = TRUE), 
+                         viridis = !requireNamespace("viridis", quietly = TRUE),
+                         seriation = !requireNamespace("seriation", quietly = TRUE))
+    if (any(dependency_test)) {
+      dependency_name <- names(dependency_test[dependency_test == TRUE])
+      if(length(dependency_name) == 1){
+        stop("Package \"", paste(dependency_name), "\" is needed for this function to work. Please install it.", call. = FALSE)
+      } else{
+        stop("Packages \"", paste(dependency_name, collapse = "\" and \""), "\" are needed for this function to work. Please install them.", call. = FALSE)
+      }
+    }
+
+    # Create heatmaply dendrogram for pheatmap
+    distance <- stats::dist(correlation)
+    hierachical_clustering <- stats::hclust(distance)
+    dendrogram <- stats::as.dendrogram(hierachical_clustering)
+    dendrogram_row <- dendextend::seriate_dendrogram(dendrogram, distance, method="OLO")
+    dendrogram_column <- dendextend::rotate(dendrogram_row, order = rev(labels(distance)[seriation::get_order(stats::as.hclust(dendrogram_row))]))
+    
     heatmap_static <-
       pheatmap::pheatmap(
         correlation,

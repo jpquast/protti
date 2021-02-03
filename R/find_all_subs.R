@@ -10,7 +10,6 @@
 #' @importFrom dplyr select filter
 #' @importFrom magrittr %>%
 #' @importFrom purrr map
-#' @importFrom igraph graph_from_data_frame subcomponent V 
 #'
 #' @examples
 #' \dontrun{
@@ -21,6 +20,9 @@
 #' )
 #' }
 find_all_subs <- function (data, id, type = "is_a") {
+  if (!requireNamespace("igraph", quietly = TRUE)) {
+    stop("Package \"igraph\" is needed for this function to work. Please install it.", call. = FALSE)
+  }
   if (type == "all") {
     data <- data %>%
       dplyr::select(-type)

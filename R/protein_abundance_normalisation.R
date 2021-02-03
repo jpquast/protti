@@ -36,7 +36,6 @@
 #' @import dplyr
 #' @import tidyr
 #' @importFrom stats sd
-#' @importFrom naniar replace_with_na
 #' @importFrom rlang .data enquo ensym as_name expr exprs := !!
 #' @importFrom purrr map_df 
 #' @importFrom magrittr %>%
@@ -58,6 +57,9 @@
 #' method = "all_vs_all")
 #' }
 protein_abundance_normalisation <- function(lip_peptides, tc_proteins, sample, grouping, condition, protein_id, peptide_intensity, protein_intensity, method, paired = FALSE, replicate_index = NULL, comparison = NULL, completeness = 0.7){
+  if (!requireNamespace("naniar", quietly = TRUE)) {
+    stop("Package \"naniar\" is needed for this function to work. Please install it.", call. = FALSE)
+  }
   .=NULL
   # keep copy of input data
   input_lip_peptides <- lip_peptides

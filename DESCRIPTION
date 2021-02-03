@@ -28,36 +28,35 @@ Imports:
     ggplot2, 
     forcats, 
     tibble, 
-    drc, 
-    plotly, 
-    viridis, 
-    dendextend, 
-    seriation, 
-    pheatmap, 
-    heatmaply, 
+    plotly,   
     ggrepel, 
-    igraph, 
-    stringi, 
-    limma, 
-    proDA, 
-    iq, 
-    jsonlite, 
     methods, 
     utils, 
-    furrr, 
-    future, 
-    parallel, 
-    naniar, 
-    httr,
     STRINGdb
 RoxygenNote: 7.1.1
 Suggests: 
     testthat,
     covr,
     knitr,
-    rmarkdown
+    rmarkdown,
+    proDA,
+    limma,
+    dendextend,
+    pheatmap, 
+    heatmaply,
+    viridis,
+    iq,
+    furrr, 
+    future, 
+    parallel,
+    seriation,
+    drc,
+    naniar, 
+    httr,
+    igraph,
+    stringi
 Depends: 
     R (>= 4.0)
-URL: https://github.com/jpquast/protti
+URL: https://github.com/jpquast/protti, https://jpquast.github.io/protti
 BugReports: https://github.com/jpquast/protti/issues
 VignetteBuilder: knitr

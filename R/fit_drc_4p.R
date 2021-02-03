@@ -43,6 +43,9 @@
 #' )
 #' }
 fit_drc_4p <- function(data, sample, grouping, response, dose, log_logarithmic = TRUE, include_models = FALSE, retain_columns = NULL){
+  if (!requireNamespace("drc", quietly = TRUE)) {
+    stop("Package \"drc\" is needed for this function to work. Please install it.", call. = FALSE)
+  }
   # to prevent no visible binding for global variable '.' note.
   . = NULL
   
