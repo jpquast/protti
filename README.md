@@ -12,24 +12,36 @@ coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](h
 
 ## Overview
 
-The goal of protti is to provide flexible functions and workflows for
-proteomics quality control and data analysis. It can be used for
+The goal of **protti** is to provide flexible functions and workflows
+for proteomics quality control and data analysis. It can be used for
 label-free DDA, DIA and SRM data generated with search tools such as
 Spectronaut, MaxQuant, Proteome Discover and Skyline. Both limited
 proteolysis mass spectrometry (LiP-MS) and regular bottom-up proteomics
 experiments can be analysed.
 
-protti is developed by the lab of Paola Picotti at the ETH Zurich.
+**protti** is developed and maintained by members of the lab of Paola
+Picotti at ETH Zurich. Our lab is focused on protein structural changes
+in response to perturbations such as metabolite, drug and protein
+binding-events([Piazza
+2018](https://www.sciencedirect.com/science/article/pii/S0092867417314484),
+[Piazza
+2020](https://www.nature.com/articles/s41467-020-18071-x#additional-information),
+[Cappelletti, Hauser & Piazza
+2021](https://www.sciencedirect.com/science/article/pii/S0092867420316913)).
+We have devoloped mass spectrometry-based structural and chemical
+proteomic methods aimed at monitoring protein conformational changes in
+the complex cellular milieu ([Schopper
+2017](https://www.nature.com/articles/nprot.2017.100)).
 
-There is a wide range of functionalities protti provides to the user.
-The main areas of application are:
+There is a wide range of functionalities **protti** provides to the
+user. The main areas of application are:
 
 -   **Quality control**: Check a multitude of quality control parameters
-    in you data.
+    in your data.
 -   **Filter for quality**: Prior to data analysis you can filter your
     data to exclude any low quality and potentially not trustworthy
     observations.
--   **Imputation**: You can chose to impute your data using several
+-   **Imputation**: You can choose to impute your data using several
     different methods.
 -   **Data analysis**: Analyse your data for differential abundance of
     proteins, peptides or precursors.
@@ -50,7 +62,7 @@ The main areas of application are:
 
 ## Installation
 
-Protti is implemented as an R package.
+**protti** is implemented as an R package.
 
 You can install the development version from
 [GitHub](https://github.com/jpquast/protti) using the
@@ -58,7 +70,7 @@ You can install the development version from
 following commands into R:
 
 Note: If you do not have `devtools` installed make sure to do so by
-removing the command sign (\#).
+removing the comment sign (\#).
 
 ``` r
 # install.packages("devtools")
@@ -67,11 +79,11 @@ devtools::install_github("jpquast/protti")
 
 ## Usage
 
-Since protti is designed to be a flexible tool for the analysis of your
-data, there are many ways in which it can be used. In this section I
-will give a general overview for a very simple pipeline that would take
-a search result from the search tool of your choice and in a few steps
-returns a list of significantly changing proteins or peptides.
+Since **protti** is designed to be a flexible tool for the analysis of
+your data, there are many ways in which it can be used. In this section
+we will give a general overview for a very simple pipeline that would
+take a search result from the search tool of your choice and in a few
+steps returns a list of significantly changing proteins or peptides.
 
 A complete list of functions and their documentation is available
 [here](https://jpquast.github.io/protti/reference/). Within R you can
@@ -95,12 +107,13 @@ can have a look at the packages vignettes. These include:
 In this example we are going to analyse synthetic data of which we know
 the ground truth. The same principles would apply to any real data.
 Before you start analysing your data you should load all required
-packages. protti is designed to work together well with the
+packages. **protti** is designed to work together well with the
 [`tidyverse`](https://www.tidyverse.org) package family and we will use
 them for this example. Therefore, you should also load them before you
 get started. Note: If you do not have the `tidyverse` installed you can
-do so by removing the command sign (\#) in front of the
-`install.packages` function. This will install them directly from CRAN.
+do so by removing the comment sign (\#) in front of the
+`install.packages()` function. This will install them directly from
+CRAN.
 
 ``` r
 # Load protti
@@ -118,9 +131,9 @@ library(magrittr)
 
 Usually the search tool of your choice generates a report for you that
 has either a `.txt` or `.csv` format. You can easily load reports into R
-by using the `read_protti` function. This function is a wrapper around
-the fast `fread` function from the `data.table` package and the
-`clean_names` function from the `janitor` package. This will allow you
+by using the `read_protti()` function. This function is a wrapper around
+the fast `fread()` function from the `data.table` package and the
+`clean_names()` function from the `janitor` package. This will allow you
 to not only load your data into R very fast, but also to clean up the
 column names into lower snake case. This will make it easier to remember
 them and to use them in your data analysis.
@@ -131,8 +144,8 @@ data <- read_protti("filename.csv")
 ```
 
 Since we will actually use synthetic data for this example we are going
-to call the `create_synthetic_data` function from protti. Of course you
-do not need to do this step in your analysis pipeline.
+to call the `create_synthetic_data()` function from **protti**. Of
+course you do not need to do this step in your analysis pipeline.
 
 The data this function creates is similar to data obtained from a LiP-MS
 experiment. Please note that any of the steps in this workflow can also
@@ -163,14 +176,14 @@ example:
 -   **Decoys**: Sometimes decoys are included in reports and it is
     advised to filter them out before data analysis.
 -   **Contaminants**: MaxQuant includes contaminant information in their
-    reports. They are useful for quality control purposes but should be
-    filtered out for analysis.
+    reports. Contaminants are useful for quality control purposes but
+    should be filtered out for analysis.
 -   **Non-Proteotypic Peptides**: For the analysis of LiP-MS data you
     should not include non-proteotypic peptides in your analysis since
     it is not possible to make sense of them in case they change
     significantly.
 
-On your own data you can easily achieve this with dplyrs `filter`
+On your own data you can easily achieve this with `dplyr`’s `filter()`
 function. Our synthetic data does not require any filtering at this
 step.
 
@@ -179,14 +192,17 @@ increase, statistical tests would have a bias towards lower intense
 peptides or proteins. Therefore you should log2 transform your data to
 correct for this mean-variance relationship. We do not need to do this
 for the synthetic data as it is already log2 transformed. For your own
-data just use dplyrs `mutate` together with `log2`.
+data just use `dplyr`’s `mutate()` together with `log2()`.
 
 In addition to filtering and log2 transformation it is also advised to
 median normalise your data to equal out small differences in overall
 sample intensities that result from unequal sample concentrations.
-protti provides the `median_normalisation` function for this purpose.
-This function generates an additional column called
+**protti** provides the `median_normalisation()` function for this
+purpose. This function generates an additional column called
 `normalised_intensity_log2` that contains the normalised intensities.
+
+Note: If your search tool already normalised your data you should not
+normalise it another time.
 
 ``` r
 normalised_data <- data %>% 
@@ -196,22 +212,25 @@ normalised_data <- data %>%
 
 #### Assign Missingness
 
-The next step is to deal with missing data points. You could chose to
+The next step is to deal with missing data points. You could choose to
 impute missing data in a later step, but this is only recommended if not
 a large proportion of your data is missing and if you know what you are
 doing. In order to calculate statistical significance of differentially
 abundant peptides or proteins we would like to have at least a minimum
-number of observations per condition. The protti function
-`assign_missingness` checks for each pair of treatment to reference
+number of observations per condition. The **protti** function
+`assign_missingness()` checks for each pair of treatment to reference
 condition if this number is satisfied and assigns a missingness type to
-each comparison. Comparisons that have too few observations are labeled
-`NA`. In order to be labeled as `NA` by default both conditions need to
-have less than 0.7 times the number of maximum observations adjusted
-downward. If you performed an experiment with 4 replicates that means
-that both conditions need to contain at least 2 observations. You can
-read the exact details in the documentation of this function and also
-adjust the thresholds if you want to be more or less conservative with
-how many datapoints to retain.
+each comparison. If a certain condition has all replicates while the
+other one has less than 25% (adjusted downward) of total possible
+replicates, the case is considered to be “missing not at random”
+(`MNAR`). In order to be labeled “missing at random” (`MAR`) 70%
+(adjusted downward) of total replicates need to be present in both
+conditions. Comparisons that have too few observations are labeled `NA`.
+If you performed an experiment with 4 replicates that means that both
+conditions need to contain at least 2 observations. You can read the
+exact details in the documentation of this function and also adjust the
+thresholds if you want to be more or less conservative with how many
+data points to retain.
 
 ``` r
 data_missing <- normalised_data %>% 
@@ -234,9 +253,11 @@ not peptide intensities.
 #### Calculate Differential Abundance and Significance
 
 For the calculation of abundance changes and the associated significance
-protti provides the function `diff_abundance`. You can choose between
-different statistical methods. For this example we will chose a Welch’s
-t-test.
+**protti** provides the function `diff_abundance()`. You can choose
+between different statistical methods. For this example we will chose a
+Welch’s t-test. Obtained p-values are adjusted for multiple testing
+using the Benjamini-Hochberg method ([Benjamini & Hochberg
+1995](https://www.jstor.org/stable/2346101?seq=1#metadata_info_tab_contents)).
 
 ``` r
 result <- data_missing %>% 
@@ -253,9 +274,9 @@ result <- data_missing %>%
 ```
 
 Next we can use a Volcano plot to visualize significantly changing
-peptides with the function `volcano_protti`. You can chose if you want
-to create an interactive plot with the `interactive` argument. Please
-note that this is not recommended for large datasets.
+peptides with the function `volcano_protti()`. You can choose if you
+want to create an interactive plot with the `interactive` argument.
+Please note that this is not recommended for large datasets.
 
 ``` r
 result %>% 
