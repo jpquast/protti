@@ -3,17 +3,17 @@
 \docType{data}
 \name{protti_colors}
 \alias{protti_colors}
-\title{Color scheme for protti}
+\title{Colour scheme for protti}
 \format{
-A vector containing 16 colors
+A vector containing 100 colours
 }
 \source{
-Dinas imagination.
+Dina's imagination.
 }
 \usage{
 protti_colors
 }
 \description{
-A color scheme for protti that contains 16 colors.
+A colour scheme for protti that contains 100 colours.
 }
 \keyword{datasets}

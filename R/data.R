@@ -1,7 +1,7 @@
-#' Color scheme for protti
+#' Colour scheme for protti
 #'
-#' A color scheme for protti that contains 16 colors.
+#' A colour scheme for protti that contains 100 colours.
 #'
-#' @format A vector containing 16 colors
-#' @source Dinas imagination.
+#' @format A vector containing 100 colours
+#' @source Dina's imagination.
 "protti_colors"
