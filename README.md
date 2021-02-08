@@ -21,8 +21,9 @@ experiments can be analysed.
 
 **protti** is developed and maintained by members of the lab of Paola
 Picotti at ETH Zurich. Our lab is focused on protein structural changes
-in response to perturbations such as metabolite, drug and protein
-binding-events([Piazza
+that occur in response to perturbations such as metabolite, drug and
+protein binding-events, as well as protein aggregation and enzyme
+activation ([Piazza
 2018](https://www.sciencedirect.com/science/article/pii/S0092867417314484),
 [Piazza
 2020](https://www.nature.com/articles/s41467-020-18071-x#additional-information),
