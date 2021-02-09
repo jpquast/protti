@@ -34,8 +34,8 @@
 #'
 qc_pca <-
   function(data, sample, grouping, intensity, condition, digestion = NULL){
-    protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
-    utils::data("protti_colors", envir=environment()) # then overwrite it with real data
+    protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+    utils::data("protti_colours", envir=environment()) # then overwrite it with real data
     . = NULL
 
     pca_input <- data %>%
@@ -76,7 +76,7 @@ qc_pca <-
       )),
       size = 4,
       show.legend = FALSE) +
-      ggplot2::scale_color_manual(values = protti_colors) +
+      ggplot2::scale_color_manual(values = protti_colours) +
       ggplot2::theme(
         panel.background = element_blank(),
         panel.border = element_rect(colour = "black", fill = NA),

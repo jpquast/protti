@@ -38,8 +38,8 @@
 #' }
 qc_missed_cleavages <-
   function(data, sample, grouping, missed_cleavages, intensity, remove_na_intensities = TRUE, method, plot = FALSE) {
-    protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
-    utils::data("protti_colors", envir=environment()) # then overwrite it with real data
+    protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+    utils::data("protti_colours", envir=environment()) # then overwrite it with real data
     if(remove_na_intensities == TRUE){
 
       if(missing(intensity)) stop("Please provide a column containing intensities or set remove_na_intensities to FALSE")
@@ -84,7 +84,7 @@ qc_missed_cleavages <-
               axis.title.y = ggplot2::element_text(size = 15),
               legend.title = ggplot2::element_text(size = 15),
               legend.text = ggplot2::element_text(size = 15)) +
-        scale_fill_manual(values = protti_colors)
+        scale_fill_manual(values = protti_colours)
 
 
         return(plot)
@@ -130,7 +130,7 @@ qc_missed_cleavages <-
                   axis.title.y = ggplot2::element_text(size = 15),
                   legend.title = ggplot2::element_text(size = 15),
                   legend.text = ggplot2::element_text(size = 15)) +
-            scale_fill_manual(values = protti_colors)
+            scale_fill_manual(values = protti_colours)
           return(plot)
         }
       }

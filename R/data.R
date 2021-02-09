@@ -4,4 +4,4 @@
 #'
 #' @format A vector containing 100 colours
 #' @source Dina's imagination.
-"protti_colors"
+"protti_colours"

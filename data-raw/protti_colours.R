@@ -1,4 +1,4 @@
-protti_colors <- c(
+protti_colours <- c(
   "#5680C1",
   "#B96DAD",
   "#64CACA",
@@ -100,4 +100,4 @@ protti_colors <- c(
   "#87BBBB",
   "#1E4381")
 
-usethis::use_data(protti_colors, overwrite = TRUE)
+usethis::use_data(protti_colours, overwrite = TRUE)

@@ -35,8 +35,8 @@
 #' )
 #' }
 qc_contaminants <- function(data, sample, protein, is_contaminant, intensity, n_contaminants = 5, plot = TRUE, interactive = FALSE){
-  protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
-  utils::data("protti_colors", envir=environment()) # then overwrite it with real data
+  protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+  utils::data("protti_colours", envir=environment()) # then overwrite it with real data
   result <- data %>%
     dplyr::distinct({{sample}}, {{protein}}, {{is_contaminant}}, {{intensity}}) %>%
     dplyr::group_by({{sample}}) %>%
@@ -73,7 +73,7 @@ qc_contaminants <- function(data, sample, protein, is_contaminant, intensity, n_
                    legend.text = ggplot2::element_text(size = 15),
                    panel.border = ggplot2::element_rect(fill = NA)
     ) +
-    ggplot2::scale_fill_manual(values = protti_colors)
+    ggplot2::scale_fill_manual(values = protti_colours)
 
   if(interactive == FALSE) return(plot_result)
 

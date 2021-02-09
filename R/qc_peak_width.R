@@ -36,8 +36,8 @@
 #' )
 #' }
 qc_peak_width <- function(data, sample, intensity, retention_time, peak_width = NULL, retention_time_start = NULL, retention_time_end = NULL, remove_na_intensities = TRUE, interactive = FALSE){
-  protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
-  utils::data("protti_colors", envir=environment()) # then overwrite it with real data
+  protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+  utils::data("protti_colours", envir=environment()) # then overwrite it with real data
   if(remove_na_intensities == TRUE){
     
     if(missing(intensity)) stop("Please provide a column containing intensities or set remove_na_intensities to FALSE")
@@ -62,7 +62,7 @@ qc_peak_width <- function(data, sample, intensity, retention_time, peak_width = 
     ggplot2::ggplot(ggplot2::aes({{retention_time}}, .data$peak_width)) +
     ggplot2::stat_summary_bin(aes(col = {{sample}}), size = 1, geom = "line", binwidth = 1, fun = median) +
     ggplot2::labs(title = "Median peak width over retention time", x = "Retention time [min]", y = "Median peak width [min]", color = "Sample") +
-    ggplot2::scale_color_manual(values = protti_colors) +
+    ggplot2::scale_color_manual(values = protti_colours) +
     ggplot2::theme_bw() + 
     ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
                    axis.title.x = ggplot2::element_text(size = 15),
