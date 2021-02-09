@@ -49,7 +49,7 @@ plot_peptide_abundance(
   peptide = eg_precursor_id,
   intensity = log2_intensity,
   grouping = pg_protein_accessions,
-  target = c("P03421")
+  targets = c("P03421")
 )
 }
 }

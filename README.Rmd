@@ -173,7 +173,9 @@ result %>%
   volcano_protti(grouping = peptide,
                  log2FC = diff,
                  significance = adj_pval,
-                 method = "significant",
+                 method = "target",
+                 target_column = change_peptide,
+                 target = TRUE,
                  significance_cutoff = 0.05,
                  interactive = FALSE)
 ```

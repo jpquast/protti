@@ -63,7 +63,7 @@ qc_pca <-
                     dimension = row.names(.))
 
     plot <- pca_df %>%
-      ggplot2::ggplot(aes(x = .data$PC1, y = .data$PC2, col = {{condition}}, shape = {{digestion}})) +
+      ggplot2::ggplot(aes(x = .data$PC1, y = .data$PC2, col = as.character({{condition}}), shape = {{digestion}})) +
       ggplot2::geom_point(size = 3) +
       ggplot2::labs(
         title = "Principal component analysis",

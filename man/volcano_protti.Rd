@@ -10,7 +10,7 @@ volcano_protti(
   log2FC,
   significance,
   method,
-  protein_identifier = NULL,
+  target_column = NULL,
   target = NULL,
   title = "Volcano plot",
   x_axis_label = "log2(fold change)",
@@ -21,19 +21,21 @@ volcano_protti(
 )
 }
 \arguments{
-\item{data}{Dataframe containing at least the input variables.}
+\item{data}{Data frame containing at least the input variables.}
 
-\item{grouping}{Column in the data dataframe containing either precursor or peptide identifiers.}
+\item{grouping}{Column in the data data frame containing either precursor or peptide identifiers.}
 
-\item{log2FC}{Column in the dataframe containing the log2 transfromed fold changes between two conditions.}
+\item{log2FC}{Column in the data frame containing the log2 transfromed fold changes between two conditions.}
 
 \item{significance}{Column containing the p-value or adjusted p-value for the corresponding fold changes. P-value is ideally adjusted using e.g. Benjamini-Hochberg correction.}
 
 \item{method}{Method used for the plot. \code{method = "target"} highlights your protein of interest in the volcano plot, \code{method = "significant"} highlights all significantly changing entities.}
 
-\item{protein_identifier}{Optional column required for \code{method = "target"}, contains protein identifiers (e.g. UniProt IDs).}
+\item{target_column}{Optional column required for \code{method = "target"}, can contain for example protein identifiers or a logical that marks 
+certain proteins such as proteins that are known to interact with the treatment.}
 
-\item{target}{Optional argument required for \code{method = "target"}, protein identifier for your protein of interest.}
+\item{target}{Optional argument required for \code{method = "target"}, a specific component of the column provided in \code{target_column}.
+This can be for example a protein ID if \code{target_column} contains protein IDs or TRUE or FALSE for a logical column.}
 
 \item{title}{Optional argument specifying the title of the volcano plot. Default is "Volcano plot".}
 
@@ -61,7 +63,7 @@ grouping = pep_stripped_sequence,
 log2FC = log2FC,
 significance = p_value,
 method = "target",
-protein_identifier = uniprot_id,
+target_column = uniprot_id,
 target = "Q9Y6K9",
 title = "Finding Nemo",
 x_axis_label = "log2(fold change) treated vs untreated",

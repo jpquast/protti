@@ -80,11 +80,10 @@ fetch_uniprot <-
       dplyr::mutate(new = ifelse(stringr::str_detect(.[[2]], pattern = "Merged"), stringr::str_extract_all(.[[2]], pattern = "(?<=into )[A-Z0-9]+", simplify = TRUE), NA)) %>%
       dplyr::distinct(id, new) %>%
       tidyr::drop_na(new)
-
+    
     new_ids <- new$new
 
-    if(all.equal(new_ids, logical(0)) == TRUE) {return(result)}
-
+    if(length(new_ids) == 0) {return(result)}
     new_id_query <- paste(paste0("id:", new_ids), collapse = "+or+")
     new_query_url <- utils::URLencode(paste0(url, new_id_query, "&format=tab&columns=",
                                              collapsed_columns))

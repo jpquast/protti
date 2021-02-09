@@ -30,15 +30,15 @@ test_that("qc_data_completeness works", {
 })
 
 test_that("qc_intensity_distribution works", {
-  p_facet <- qc_intensity_distribution(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, method = "histogram")
+  p_facet <- qc_intensity_distribution(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, plot_style = "histogram")
   expect_is(p_facet,"ggplot")
   expect_error(print(p_facet), NA)
   
-  p <- qc_intensity_distribution(data = data, grouping = peptide, intensity = peptide_intensity_missing, method = "histogram")
+  p <- qc_intensity_distribution(data = data, grouping = peptide, intensity = peptide_intensity_missing, plot_style = "histogram")
   expect_is(p,"ggplot")
   expect_error(print(p), NA)
   
-  p_boxplot <- qc_intensity_distribution(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, method = "boxplot")
+  p_boxplot <- qc_intensity_distribution(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, plot_style = "boxplot")
   expect_is(p_boxplot,"ggplot")
   expect_error(print(p_boxplot), NA)
 })
