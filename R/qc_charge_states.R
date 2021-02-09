@@ -35,8 +35,8 @@
 qc_charge_states <-
   function(data, sample, grouping, charge_states, intensity = NULL, method, plot = FALSE)
   {
-    protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
-    utils::data("protti_colors", envir=environment()) # then overwrite it with real data
+    protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+    utils::data("protti_colours", envir=environment()) # then overwrite it with real data
     if (method == "count")
     {
       result <- data %>%
@@ -74,7 +74,7 @@ qc_charge_states <-
                 axis.title.y = ggplot2::element_text(size = 15),
                 legend.title = ggplot2::element_text(size = 15),
                 legend.text = ggplot2::element_text(size = 15)) +
-          scale_fill_manual(values = protti_colors)
+          scale_fill_manual(values = protti_colours)
         return(plot)
       }
     }
@@ -118,7 +118,7 @@ qc_charge_states <-
                 axis.title.y = ggplot2::element_text(size = 15),
                 legend.title = ggplot2::element_text(size = 15),
                 legend.text = ggplot2::element_text(size = 15)) +
-          scale_fill_manual(values = protti_colors)
+          scale_fill_manual(values = protti_colours)
         return(plot)
       }
     }

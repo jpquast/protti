@@ -39,8 +39,8 @@
 #' }
 qc_ids <-
   function(data, sample, grouping, intensity, remove_na_intensities = TRUE, condition = NULL, title = "ID count per sample", plot = TRUE, interactive = FALSE) {
-    protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
-    utils::data("protti_colors", envir=environment()) # then overwrite it with real data
+    protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+    utils::data("protti_colours", envir=environment()) # then overwrite it with real data
     if(remove_na_intensities == TRUE){
 
       if(missing(intensity)) stop("Please provide a column containing intensities or set remove_na_intensities to FALSE")
@@ -69,7 +69,7 @@ qc_ids <-
            y = "Count",
            fill = "Condition") +
       ggplot2::theme_bw() +
-      ggplot2::scale_fill_manual(values = protti_colors) +
+      ggplot2::scale_fill_manual(values = protti_colours) +
       ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
                      axis.title.x = ggplot2::element_text(size = 15),
                      axis.text.y = ggplot2::element_text(size = 15),

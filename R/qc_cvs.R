@@ -33,8 +33,8 @@
 #' }
 qc_cvs <-
   function(data, grouping, condition, intensity, plot = TRUE, plot_style = "density") {
-    protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
-    utils::data("protti_colors", envir=environment()) # then overwrite it with real data
+    protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+    utils::data("protti_colours", envir=environment()) # then overwrite it with real data
     if(plot == FALSE)
     {
       if(max(dplyr::pull(data, {{intensity}}), na.rm = TRUE) < 1000)
@@ -94,7 +94,7 @@ qc_cvs <-
         ggplot2::geom_boxplot(aes(x = .data$type, y = .data$values, fill = .data$type), na.rm = TRUE) +
         ggplot2::labs(title = "Coefficients of variation", y = "Coefficient of variation [%]", fill = "Condition") +
         ggplot2::scale_y_continuous(limits = c(0, 200)) +
-        ggplot2::scale_fill_manual(values = protti_colors) +
+        ggplot2::scale_fill_manual(values = protti_colours) +
         ggplot2::theme_bw() +
         ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
                        axis.title.x = ggplot2::element_text(size = 15),
@@ -112,7 +112,7 @@ qc_cvs <-
         ggplot2::geom_density(aes(x = .data$values, col = .data$type), size = 1, na.rm = TRUE) +
         ggplot2::labs(title = "Coefficients of variation", x = "Coefficient of variation [%]", y = "Density", color = "Condition") +
         ggplot2::scale_x_continuous(limits = c(0, 200)) +
-        ggplot2::scale_color_manual(values = protti_colors)+
+        ggplot2::scale_color_manual(values = protti_colours)+
         ggplot2::theme_bw() +
         ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
                        axis.title.x = ggplot2::element_text(size = 15),
@@ -131,7 +131,7 @@ qc_cvs <-
           ggplot2::geom_boxplot(width = 0.15, fill = "white", na.rm = TRUE, alpha = 0.6) +
           ggplot2::labs(title = "Coefficients of variation", x = "", y = "Coefficient of variation [%]", fill = "Condition") +
           ggplot2::scale_y_continuous(limits = c(0, 200)) +
-          ggplot2::scale_fill_manual(values = protti_colors) +
+          ggplot2::scale_fill_manual(values = protti_colours) +
           ggplot2::theme_bw() +
           ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
                          axis.title.x = ggplot2::element_text(size = 15),

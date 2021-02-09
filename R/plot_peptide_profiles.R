@@ -36,8 +36,8 @@
 #' }
 plot_peptide_profiles <- function(data, sample, peptide, intensity, grouping, targets, split_all = FALSE, protein_abundance_plot = FALSE) {
   . <- NULL
-  protti_colors <- "placeholder" # assign a placeholder to prevent a missing global variable warning
-  utils::data("protti_colors", envir = environment()) # then overwrite it with real data
+  protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+  utils::data("protti_colours", envir = environment()) # then overwrite it with real data
   if (split_all == FALSE) {
     if (missing(targets)) stop("Please provide at least one target to plot!")
     input <- data %>%
@@ -75,7 +75,7 @@ plot_peptide_profiles <- function(data, sample, peptide, intensity, grouping, ta
           strip.background = ggplot2::element_blank()
         ) +
         {
-          if (protein_abundance_plot == FALSE) ggplot2::scale_color_manual(values = protti_colors)
+          if (protein_abundance_plot == FALSE) ggplot2::scale_color_manual(values = protti_colours)
         } +
         {
           if (protein_abundance_plot == TRUE) ggplot2::scale_color_manual(values = c(rep("gray", length(unique(dplyr::pull(.x, {{ peptide }}))) - 1), "green"))
