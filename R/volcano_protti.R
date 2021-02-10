@@ -2,13 +2,15 @@
 #'
 #' Plots a volcano plot for the given input.
 #'
-#' @param data Dataframe containing at least the input variables.
-#' @param grouping Column in the data dataframe containing either precursor or peptide identifiers.
-#' @param log2FC Column in the dataframe containing the log2 transfromed fold changes between two conditions.
+#' @param data Data frame containing at least the input variables.
+#' @param grouping Column in the data data frame containing either precursor or peptide identifiers.
+#' @param log2FC Column in the data frame containing the log2 transfromed fold changes between two conditions.
 #' @param significance Column containing the p-value or adjusted p-value for the corresponding fold changes. P-value is ideally adjusted using e.g. Benjamini-Hochberg correction.
 #' @param method Method used for the plot. \code{method = "target"} highlights your protein of interest in the volcano plot, \code{method = "significant"} highlights all significantly changing entities.
-#' @param protein_identifier Optional column required for \code{method = "target"}, contains protein identifiers (e.g. UniProt IDs).
-#' @param target Optional argument required for \code{method = "target"}, protein identifier for your protein of interest.
+#' @param target_column Optional column required for \code{method = "target"}, can contain for example protein identifiers or a logical that marks 
+#' certain proteins such as proteins that are known to interact with the treatment.
+#' @param target Optional argument required for \code{method = "target"}, a specific component of the column provided in \code{target_column}.
+#' This can be for example a protein ID if \code{target_column} contains protein IDs or TRUE or FALSE for a logical column.
 #' @param title Optional argument specifying the title of the volcano plot. Default is "Volcano plot".
 #' @param x_axis_label Optional argument specifying the x-axis label. Default is "log2(fold change)".
 #' @param y_axis_label Optional argument specifying the y-axis label. Default is -log10(q-value)".
@@ -19,12 +21,10 @@
 #' @return Depending on the method used a volcano plot with either highlighted target protein (\code{method = "target"}) or highlighted significant proteins (\code{method = "significant"}) is returned.
 #' @import dplyr
 #' @import ggplot2
+#' @importFrom rlang .data
 #' @importFrom magrittr %>%
+#' @importFrom tidyr drop_na
 #' @importFrom forcats fct_inorder
-#' @importFrom rlang as_name
-#' @importFrom rlang :=
-#' @importFrom rlang enquo
-#' @importFrom rlang ensym
 #' @importFrom plotly ggplotly
 #' @export
 #'
@@ -36,7 +36,7 @@
 #' log2FC = log2FC,
 #' significance = p_value,
 #' method = "target",
-#' protein_identifier = uniprot_id,
+#' target_column = uniprot_id,
 #' target = "Q9Y6K9",
 #' title = "Finding Nemo",
 #' x_axis_label = "log2(fold change) treated vs untreated",
@@ -46,26 +46,29 @@
 #' interactive = TRUE
 #' )
 #' }
-volcano_protti <- function(data, grouping, log2FC, significance, method, protein_identifier = NULL, target = NULL, title = "Volcano plot", x_axis_label = "log2(fold change)", y_axis_label = "-log10(q-value)", log2FC_cutoff = 1, significance_cutoff = 0.01, interactive = FALSE)
+volcano_protti <- function(data, grouping, log2FC, significance, method, target_column = NULL, target = NULL, title = "Volcano plot", x_axis_label = "log2(fold change)", y_axis_label = "-log10(q-value)", log2FC_cutoff = 1, significance_cutoff = 0.01, interactive = FALSE)
 {
+  data <- data %>% 
+    tidyr::drop_na({{log2FC}}, {{significance}})
+  
   if (method == "target")
   {
     data <- data %>%
-      mutate(!!rlang::ensym(target) := ifelse({{protein_identifier}} == rlang::as_name(rlang::enquo(target)), TRUE, FALSE))
+      dplyr::mutate(target = ifelse({{target_column}} == target, TRUE, FALSE))
 
     plot <- data %>%
-      dplyr::arrange(!!rlang::ensym(target)) %>%
-      dplyr::filter(!!rlang::ensym(target) == FALSE) %>%
+      dplyr::arrange(.data$target) %>%
+      dplyr::filter(.data$target == FALSE) %>%
       ggplot2::ggplot(aes(
         x = {{log2FC}},
         y = -1 * log10({{significance}}),
-        colour = !!rlang::ensym(target),
-        label1 = {{protein_identifier}},
+        colour = .data$target,
+        label1 = {{target_column}},
         label2 = {{grouping}}
       )) +
       geom_point() +
       geom_point(
-        data = dplyr::filter(data, !!rlang::ensym(target) == TRUE),
+        data = dplyr::filter(data, .data$target == TRUE),
         aes(x = {{log2FC}},
             y = -1 * log10({{significance}})),
         size = 3
@@ -76,9 +79,9 @@ volcano_protti <- function(data, grouping, log2FC, significance, method, protein
         x = x_axis_label,
         y = y_axis_label
       ) +
-      geom_hline(yintercept = -1 * log10(significance_cutoff), linetype = "dashed") +
+      geom_hline(yintercept = -log10(significance_cutoff), linetype = "dashed") +
       geom_vline(xintercept = log2FC_cutoff, linetype = "dashed") +
-      geom_vline(xintercept = -1 * log2FC_cutoff, linetype = "dashed") +
+      geom_vline(xintercept = -log2FC_cutoff, linetype = "dashed") +
       theme_bw() +
       theme(plot.title = ggplot2::element_text(size = 20),
             axis.title.x = ggplot2::element_text(size = 15),
@@ -94,16 +97,17 @@ volcano_protti <- function(data, grouping, log2FC, significance, method, protein
   }
   if (method == "significant")
   {
-    plot <- data %>%
+    plot <- data %>% 
+      dplyr::filter(!((( {{log2FC}} > log2FC_cutoff) & ({{significance}} < significance_cutoff) ) | ( ({{log2FC}} < -log2FC_cutoff) & ({{significance}} < significance_cutoff)))) %>% 
       ggplot2::ggplot(aes(
         x = {{log2FC}},
         y = - 1 * log10({{significance}}),
-        label1 = {{protein_identifier}},
+        label1 = {{target_column}},
         label2 = {{grouping}}
       )) +
       geom_point(col = "grey60") +
       geom_point(
-        data = dplyr::filter(data, (( {{log2FC}} > log2FC_cutoff) & ({{significance}} < significance_cutoff) ) | ( ({{log2FC}} < -1 * log2FC_cutoff) & ({{significance}} < significance_cutoff) )),
+        data = dplyr::filter(data, (( {{log2FC}} > log2FC_cutoff) & ({{significance}} < significance_cutoff) ) | ( ({{log2FC}} < -log2FC_cutoff) & ({{significance}} < significance_cutoff) )),
         aes(x = {{log2FC}},
             y = -1 * log10({{significance}})),
         size = 3,

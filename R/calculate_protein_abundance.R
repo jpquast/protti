@@ -119,4 +119,6 @@ calculate_protein_abundance <- function(data, sample, protein_id, precursor, int
     
     return(combined)
   } 
+  
+  return(result)
 }

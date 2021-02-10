@@ -127,6 +127,18 @@ test_that("plot_peptide_profiles works", {
   expect_is(p,"list")
   expect_is(p[[1]], "ggplot")
   expect_error(print(p[[1]]), NA)
+  
+  p_peptides <- plot_peptide_profiles(data = missing_data,
+                                     sample = sample,
+                                     peptide = peptide,
+                                     intensity = normalised_intensity_log2,
+                                     grouping = protein,
+                                     targets = c("protein_12"),
+                                     protein_abundance_plot = FALSE)
+  
+  expect_is(p_peptides,"list")
+  expect_is(p_peptides[[1]], "ggplot")
+  expect_error(print(p_peptides[[1]]), NA)
 })
 
 diff <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity = normalised_intensity_log2, missingness = missingness, comparison = comparison, ref_condition = "condition_1", method = "t-test", retain_columns = c(protein))
@@ -166,7 +178,7 @@ test_that("volcano_protti works", {
                       log2FC = diff,
                       significance = adj_pval,
                       method = "significant",
-                      protein_identifier = protein,
+                      target_column = protein,
                       title = "Test tile",
                       x_axis_label = "test x-Axis",
                       y_axis_label = "test y-Axis",
@@ -174,14 +186,14 @@ test_that("volcano_protti works", {
                       significance_cutoff = 0.05,
                       interactive = FALSE)
   expect_is(p,"ggplot")
-  expect_warning(expect_error(print(p), NA))
+  expect_error(print(p), NA)
 
   p_interactive <- volcano_protti(data = diff,
                       grouping = peptide,
                       log2FC = diff,
                       significance = adj_pval,
                       method = "significant",
-                      protein_identifier = protein,
+                      target_column = protein,
                       title = "Test tile",
                       x_axis_label = "test x-Axis",
                       y_axis_label = "test y-Axis",
@@ -197,7 +209,7 @@ test_that("volcano_protti works", {
                       significance = adj_pval,
                       method = "target",
                       target = "protein_3",
-                      protein_identifier = protein,
+                      target_column = protein,
                       title = "Test tile",
                       x_axis_label = "test x-Axis",
                       y_axis_label = "test y-Axis",
@@ -205,7 +217,7 @@ test_that("volcano_protti works", {
                       significance_cutoff = 0.05,
                       interactive = FALSE)
   expect_is(p_target,"ggplot")
-  expect_warning(expect_error(print(p_target), NA))
+  expect_error(print(p_target), NA)
 })
 
 test_that("protein_abundance_normalisation works", {

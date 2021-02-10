@@ -18,6 +18,7 @@
 #' @import ggplot2
 #' @importFrom magrittr %>%
 #' @importFrom dplyr distinct pull filter
+#' @importFrom tidyr drop_na
 #' @importFrom rlang !! ensym
 #' @importFrom purrr map2
 #' @importFrom utils data
@@ -31,7 +32,7 @@
 #'   peptide = eg_precursor_id,
 #'   intensity = log2_intensity,
 #'   grouping = pg_protein_accessions,
-#'   target = c("P03421")
+#'   targets = c("P03421")
 #' )
 #' }
 plot_peptide_profiles <- function(data, sample, peptide, intensity, grouping, targets, split_all = FALSE, protein_abundance_plot = FALSE) {
@@ -42,6 +43,7 @@ plot_peptide_profiles <- function(data, sample, peptide, intensity, grouping, ta
     if (missing(targets)) stop("Please provide at least one target to plot!")
     input <- data %>%
       dplyr::distinct({{ sample }}, {{ peptide }}, {{ intensity }}, {{ grouping }}) %>%
+      tidyr::drop_na({{ intensity }}) %>% 
       dplyr::filter({{ grouping }} %in% targets) %>%
       split(dplyr::pull(., !!ensym(grouping)))
   }
@@ -50,6 +52,7 @@ plot_peptide_profiles <- function(data, sample, peptide, intensity, grouping, ta
     message("Splitting into ", groups, " groups and returning ", groups, " plots.")
     input <- data %>%
       dplyr::distinct({{ sample }}, {{ peptide }}, {{ intensity }}, {{ grouping }}) %>%
+      tidyr::drop_na({{ intensity }}) %>% 
       split(dplyr::pull(., !!ensym(grouping)))
   }
 
@@ -60,8 +63,9 @@ plot_peptide_profiles <- function(data, sample, peptide, intensity, grouping, ta
       ggplot2::ggplot(.x, ggplot2::aes({{ sample }}, {{ intensity }}, group = {{ peptide }}, col = {{ peptide }})) +
         ggplot2::geom_point() +
         ggplot2::geom_line(size = 1) +
-        ggplot2::labs(title = paste("Peptide profiles:", .y), x = "Sample", y = "Intensity [log2]") +
+        ggplot2::labs(title = paste("Peptide profiles:", .y), x = "Sample", y = "Intensity [log2]", col = "Peptides") +
         ggplot2::theme_bw() +
+        {if(length(unique(dplyr::pull(.x, {{ peptide }}))) > 25) ggplot2::theme(legend.position = "none")} +
         ggplot2::theme(
           plot.title = ggplot2::element_text(size = 20),
           axis.title.x = ggplot2::element_text(size = 15),
@@ -75,7 +79,7 @@ plot_peptide_profiles <- function(data, sample, peptide, intensity, grouping, ta
           strip.background = ggplot2::element_blank()
         ) +
         {
-          if (protein_abundance_plot == FALSE) ggplot2::scale_color_manual(values = protti_colours)
+          if (protein_abundance_plot == FALSE) ggplot2::scale_color_manual(values = rep(protti_colours, 10)) # repeated colours to have enough even for proteins with many peptides
         } +
         {
           if (protein_abundance_plot == TRUE) ggplot2::scale_color_manual(values = c(rep("gray", length(unique(dplyr::pull(.x, {{ peptide }}))) - 1), "green"))
