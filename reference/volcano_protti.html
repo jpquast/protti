@@ -135,7 +135,7 @@
   <span class='va'>log2FC</span>,
   <span class='va'>significance</span>,
   <span class='va'>method</span>,
-  protein_identifier <span class='op'>=</span> <span class='cn'>NULL</span>,
+  target_column <span class='op'>=</span> <span class='cn'>NULL</span>,
   target <span class='op'>=</span> <span class='cn'>NULL</span>,
   title <span class='op'>=</span> <span class='st'>"Volcano plot"</span>,
   x_axis_label <span class='op'>=</span> <span class='st'>"log2(fold change)"</span>,
@@ -150,15 +150,15 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>Dataframe containing at least the input variables.</p></td>
+      <td><p>Data frame containing at least the input variables.</p></td>
     </tr>
     <tr>
       <th>grouping</th>
-      <td><p>Column in the data dataframe containing either precursor or peptide identifiers.</p></td>
+      <td><p>Column in the data data frame containing either precursor or peptide identifiers.</p></td>
     </tr>
     <tr>
       <th>log2FC</th>
-      <td><p>Column in the dataframe containing the log2 transfromed fold changes between two conditions.</p></td>
+      <td><p>Column in the data frame containing the log2 transfromed fold changes between two conditions.</p></td>
     </tr>
     <tr>
       <th>significance</th>
@@ -169,12 +169,14 @@
       <td><p>Method used for the plot. <code>method = "target"</code> highlights your protein of interest in the volcano plot, <code>method = "significant"</code> highlights all significantly changing entities.</p></td>
     </tr>
     <tr>
-      <th>protein_identifier</th>
-      <td><p>Optional column required for <code>method = "target"</code>, contains protein identifiers (e.g. UniProt IDs).</p></td>
+      <th>target_column</th>
+      <td><p>Optional column required for <code>method = "target"</code>, can contain for example protein identifiers or a logical that marks 
+certain proteins such as proteins that are known to interact with the treatment.</p></td>
     </tr>
     <tr>
       <th>target</th>
-      <td><p>Optional argument required for <code>method = "target"</code>, protein identifier for your protein of interest.</p></td>
+      <td><p>Optional argument required for <code>method = "target"</code>, a specific component of the column provided in <code>target_column</code>.
+This can be for example a protein ID if <code>target_column</code> contains protein IDs or TRUE or FALSE for a logical column.</p></td>
     </tr>
     <tr>
       <th>title</th>
@@ -214,7 +216,7 @@ grouping <span class='op'>=</span> <span class='va'>pep_stripped_sequence</span>
 log2FC <span class='op'>=</span> <span class='va'>log2FC</span>,
 significance <span class='op'>=</span> <span class='va'>p_value</span>,
 method <span class='op'>=</span> <span class='st'>"target"</span>,
-protein_identifier <span class='op'>=</span> <span class='va'>uniprot_id</span>,
+target_column <span class='op'>=</span> <span class='va'>uniprot_id</span>,
 target <span class='op'>=</span> <span class='st'>"Q9Y6K9"</span>,
 title <span class='op'>=</span> <span class='st'>"Finding Nemo"</span>,
 x_axis_label <span class='op'>=</span> <span class='st'>"log2(fold change) treated vs untreated"</span>,
