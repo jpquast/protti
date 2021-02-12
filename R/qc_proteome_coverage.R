@@ -7,7 +7,7 @@
 #' @param protein_id The column in the data data frame containing protein identifiers such as UniProt accessions.
 #' @param organism_id The NCBI taxonomy identifier (TaxId) of the organism used. Human: 9606, S. cerevisiae: 559292, E. coli: 83333.
 #' @param plot A logical indicating whether the result should be plotted (default is TRUE).
-#' @param interactive A logical indicating whether the plot should be interactive (default is TRUE).
+#' @param interactive A logical indicating whether the plot should be interactive (default is FALSE).
 #'
 #' @return A bar plot showing the percentage of of the proteome detected and undetected in total and for each sample. If \code{plot = FALSE} a data frame containing the numbers is returned.
 #' @import dplyr
@@ -28,7 +28,7 @@
 #' organism_id = 9606
 #' )
 #' }
-qc_proteome_coverage <- function(data, sample, protein_id, organism_id, plot = TRUE, interactive = TRUE) {
+qc_proteome_coverage <- function(data, sample, protein_id, organism_id, plot = TRUE, interactive = FALSE) {
   proteins_total <- data %>%
     dplyr::summarize(proteins_detected = dplyr::n_distinct(!!ensym(protein_id)), .groups = "drop") %>%
     dplyr::mutate({{sample}} := "Total")

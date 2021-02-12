@@ -23,7 +23,6 @@
 #' the proteins show which proteins interact with the treatment. If \code{plot = FALSE} a table with interaction information is
 #' returned.
 #'
-#' @import STRINGdb
 #' @importFrom dplyr distinct pull mutate filter rename
 #' @importFrom rlang .data ensym !! as_name enquo
 #' @importFrom magrittr %>%
@@ -43,6 +42,13 @@
 #' )
 #' }
 network_analysis <- function(data, protein_id, string_id, organism_id, score_threshold = 900, binds_treatment = NULL, halo_color = NULL, plot = TRUE) {
+  
+  if (!requireNamespace("STRINGdb", quietly = TRUE)) {
+    stop("Package \"STRINGdb\" is needed for this function to work. Please install it.", call. = FALSE)
+  }
+  
+  STRINGdb <- get("STRINGdb", envir = loadNamespace("STRINGdb"))
+  
   data <- data %>%
     dplyr::distinct({{ protein_id }}, {{ string_id }}, {{ binds_treatment }})
 
