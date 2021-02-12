@@ -39,6 +39,7 @@
 #' method = "target",
 #' target_column = uniprot_id,
 #' target = "Q9Y6K9",
+#' facet_by = comparison,
 #' title = "Finding Nemo",
 #' x_axis_label = "log2(fold change) treated vs untreated",
 #' y_axis_label = "-log10(p-value)",
