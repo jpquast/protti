@@ -11,6 +11,7 @@
 #' certain proteins such as proteins that are known to interact with the treatment.
 #' @param target Optional argument required for \code{method = "target"}, a specific component of the column provided in \code{target_column}.
 #' This can be for example a protein ID if \code{target_column} contains protein IDs or TRUE or FALSE for a logical column.
+#' @param facet_by Optional argument specifying a column that contains information by which the data should be faceted into multiple plots.
 #' @param title Optional argument specifying the title of the volcano plot. Default is "Volcano plot".
 #' @param x_axis_label Optional argument specifying the x-axis label. Default is "log2(fold change)".
 #' @param y_axis_label Optional argument specifying the y-axis label. Default is -log10(q-value)".
@@ -21,7 +22,7 @@
 #' @return Depending on the method used a volcano plot with either highlighted target protein (\code{method = "target"}) or highlighted significant proteins (\code{method = "significant"}) is returned.
 #' @import dplyr
 #' @import ggplot2
-#' @importFrom rlang .data
+#' @importFrom rlang .data new_formula enquo
 #' @importFrom magrittr %>%
 #' @importFrom tidyr drop_na
 #' @importFrom forcats fct_inorder
@@ -38,6 +39,7 @@
 #' method = "target",
 #' target_column = uniprot_id,
 #' target = "Q9Y6K9",
+#' facet_by = comparison,
 #' title = "Finding Nemo",
 #' x_axis_label = "log2(fold change) treated vs untreated",
 #' y_axis_label = "-log10(p-value)",
@@ -46,7 +48,7 @@
 #' interactive = TRUE
 #' )
 #' }
-volcano_protti <- function(data, grouping, log2FC, significance, method, target_column = NULL, target = NULL, title = "Volcano plot", x_axis_label = "log2(fold change)", y_axis_label = "-log10(q-value)", log2FC_cutoff = 1, significance_cutoff = 0.01, interactive = FALSE)
+volcano_protti <- function(data, grouping, log2FC, significance, method, target_column = NULL, target = NULL, facet_by = NULL, title = "Volcano plot", x_axis_label = "log2(fold change)", y_axis_label = "-log10(q-value)", log2FC_cutoff = 1, significance_cutoff = 0.01, interactive = FALSE)
 {
   data <- data %>% 
     tidyr::drop_na({{log2FC}}, {{significance}})
@@ -82,12 +84,15 @@ volcano_protti <- function(data, grouping, log2FC, significance, method, target_
       geom_hline(yintercept = -log10(significance_cutoff), linetype = "dashed") +
       geom_vline(xintercept = log2FC_cutoff, linetype = "dashed") +
       geom_vline(xintercept = -log2FC_cutoff, linetype = "dashed") +
+      {if(!missing(facet_by)) ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet_by)), scales = "free")} +
       theme_bw() +
       theme(plot.title = ggplot2::element_text(size = 20),
             axis.title.x = ggplot2::element_text(size = 15),
             axis.text.y = ggplot2::element_text(size = 15),
             axis.text.x = ggplot2::element_text(size = 12),
             axis.title.y = ggplot2::element_text(size = 15),
+            strip.text = ggplot2::element_text(size = 15),
+            strip.background = element_blank(),
             legend.position = "none")  +
       scale_x_continuous(breaks = seq(round(-1 * max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) + 0.5, 0), 1)) +
       coord_cartesian(xlim = c(round(-1 * max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) + 0.5, 0)))
@@ -121,12 +126,15 @@ volcano_protti <- function(data, grouping, log2FC, significance, method, target_
       geom_hline(yintercept = -1 * log10(significance_cutoff), linetype = "dashed") +
       geom_vline(xintercept = log2FC_cutoff, linetype = "dashed") +
       geom_vline(xintercept = -1 *log2FC_cutoff, linetype = "dashed") +
+      {if(!missing(facet_by)) ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet_by)), scales = "free")} +
       theme_bw() +
       theme(plot.title = ggplot2::element_text(size = 20),
             axis.title.x = ggplot2::element_text(size = 15),
             axis.text.y = ggplot2::element_text(size = 15),
             axis.text.x = ggplot2::element_text(size = 12),
             axis.title.y = ggplot2::element_text(size = 15),
+            strip.text = ggplot2::element_text(size = 15),
+            strip.background = element_blank(),
             legend.position = "none")  +
       scale_x_continuous(breaks = seq(round(-1 * max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) + 0.5, 0), 1)) +
       coord_cartesian(xlim = c(round(-1 * max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) - 0.5, 0), round(max(abs(dplyr::pull(data, {{log2FC}})), na.rm = TRUE) + 0.5, 0)))

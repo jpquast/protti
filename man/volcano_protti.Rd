@@ -12,6 +12,7 @@ volcano_protti(
   method,
   target_column = NULL,
   target = NULL,
+  facet_by = NULL,
   title = "Volcano plot",
   x_axis_label = "log2(fold change)",
   y_axis_label = "-log10(q-value)",
@@ -36,6 +37,8 @@ certain proteins such as proteins that are known to interact with the treatment.
 
 \item{target}{Optional argument required for \code{method = "target"}, a specific component of the column provided in \code{target_column}.
 This can be for example a protein ID if \code{target_column} contains protein IDs or TRUE or FALSE for a logical column.}
+
+\item{facet_by}{Optional argument specifying a column that contains information by which the data should be faceted into multiple plots.}
 
 \item{title}{Optional argument specifying the title of the volcano plot. Default is "Volcano plot".}
 
@@ -65,6 +68,7 @@ significance = p_value,
 method = "target",
 target_column = uniprot_id,
 target = "Q9Y6K9",
+facet_by = comparison,
 title = "Finding Nemo",
 x_axis_label = "log2(fold change) treated vs untreated",
 y_axis_label = "-log10(p-value)",
