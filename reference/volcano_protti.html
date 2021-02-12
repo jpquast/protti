@@ -137,6 +137,7 @@
   <span class='va'>method</span>,
   target_column <span class='op'>=</span> <span class='cn'>NULL</span>,
   target <span class='op'>=</span> <span class='cn'>NULL</span>,
+  facet_by <span class='op'>=</span> <span class='cn'>NULL</span>,
   title <span class='op'>=</span> <span class='st'>"Volcano plot"</span>,
   x_axis_label <span class='op'>=</span> <span class='st'>"log2(fold change)"</span>,
   y_axis_label <span class='op'>=</span> <span class='st'>"-log10(q-value)"</span>,
@@ -179,6 +180,10 @@ certain proteins such as proteins that are known to interact with the treatment.
 This can be for example a protein ID if <code>target_column</code> contains protein IDs or TRUE or FALSE for a logical column.</p></td>
     </tr>
     <tr>
+      <th>facet_by</th>
+      <td><p>Optional argument specifying a column that contains information by which the data should be faceted into multiple plots.</p></td>
+    </tr>
+    <tr>
       <th>title</th>
       <td><p>Optional argument specifying the title of the volcano plot. Default is "Volcano plot".</p></td>
     </tr>
@@ -218,6 +223,7 @@ significance <span class='op'>=</span> <span class='va'>p_value</span>,
 method <span class='op'>=</span> <span class='st'>"target"</span>,
 target_column <span class='op'>=</span> <span class='va'>uniprot_id</span>,
 target <span class='op'>=</span> <span class='st'>"Q9Y6K9"</span>,
+facet_by <span class='op'>=</span> <span class='va'>comparison</span>,
 title <span class='op'>=</span> <span class='st'>"Finding Nemo"</span>,
 x_axis_label <span class='op'>=</span> <span class='st'>"log2(fold change) treated vs untreated"</span>,
 y_axis_label <span class='op'>=</span> <span class='st'>"-log10(p-value)"</span>,
