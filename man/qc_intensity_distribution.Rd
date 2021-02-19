@@ -17,7 +17,7 @@ do not provide the name of the sample column.}
 
 \item{intensity}{The column in the data frame containing the log2 transformed intensities of each grouping identifier sample combination.}
 
-\item{plot_style}{A character vector indicating the plot type. This can be either "histogram" or "boxplot". Plot style "boxplot" can
+\item{plot_style}{A character vector indicating the plot type. This can be either "histogram", "boxplot" or "violin". Plot style "boxplot" and "violin" can
 only be used if a sample column is provided.}
 }
 \value{

@@ -41,6 +41,10 @@ test_that("qc_intensity_distribution works", {
   p_boxplot <- qc_intensity_distribution(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, plot_style = "boxplot")
   expect_is(p_boxplot,"ggplot")
   expect_error(print(p_boxplot), NA)
+  
+  p_violin <- qc_intensity_distribution(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, plot_style = "violin")
+  expect_is(p_violin,"ggplot")
+  expect_error(print(p_violin), NA)
 })
 
 test_that("qc_median_intensities works", {
@@ -75,10 +79,18 @@ test_that("qc_cvs works", {
   data_non_log2 <- data %>%
     dplyr::mutate(peptide_intensity_missing = 2^peptide_intensity_missing)
 
-  p <- qc_cvs(data = data_non_log2, grouping = peptide, condition = condition, intensity = peptide_intensity_missing, plot = TRUE)
-  expect_is(p,"ggplot")
-  expect_error(print(p), NA)
-
+  p_density <- qc_cvs(data = data_non_log2, grouping = peptide, condition = condition, intensity = peptide_intensity_missing, plot = TRUE)
+  expect_is(p_density,"ggplot")
+  expect_error(print(p_density), NA)
+  
+  p_violin <- qc_cvs(data = data_non_log2, grouping = peptide, condition = condition, intensity = peptide_intensity_missing, plot = TRUE, plot_style = "violin")
+  expect_is(p_violin,"ggplot")
+  expect_error(print(p_violin), NA)
+  
+  p_boxplot <- qc_cvs(data = data_non_log2, grouping = peptide, condition = condition, intensity = peptide_intensity_missing, plot = TRUE, plot_style = "boxplot")
+  expect_is(p_boxplot,"ggplot")
+  expect_error(print(p_boxplot), NA)
+  
   cvs <- qc_cvs(data = data_non_log2, grouping = peptide, condition = condition, intensity = peptide_intensity_missing, plot = FALSE)
   expect_is(cvs, "data.frame")
   expect_equal(round(cvs$median_cv, digits = 2), c(5.93, 6.27))
