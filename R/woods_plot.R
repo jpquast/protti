@@ -100,6 +100,8 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
       title = {if(!missing(protein_id)) unique(dplyr::pull(data, {{protein_id}}))}) +
     {if(!missing(facet)) ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet)), scales = "free", ncol = 4)} +
     ggplot2::guides(size = FALSE) +
+    {if(!missing(colouring) && !is.numeric(dplyr::pull(data, {{colouring}}))) ggplot2::scale_fill_manual(values = protti_colours)} +
+    {if(!missing(colouring) && is.numeric(dplyr::pull(data, {{colouring}}))) ggplot2::scale_fill_gradient(low = protti_colours[1], high = protti_colours[2])} +
     ggplot2::theme_bw() +
     ggplot2::theme(
       plot.title = ggplot2::element_text(

@@ -33,7 +33,8 @@ volcano_protti(
 \item{method}{Method used for the plot. \code{method = "target"} highlights your protein of interest in the volcano plot, \code{method = "significant"} highlights all significantly changing entities.}
 
 \item{target_column}{Optional column required for \code{method = "target"}, can contain for example protein identifiers or a logical that marks 
-certain proteins such as proteins that are known to interact with the treatment.}
+certain proteins such as proteins that are known to interact with the treatment. Can also be provided if \code{method = "significant"} 
+to label data points in an interactive plot.}
 
 \item{target}{Optional argument required for \code{method = "target"}, a specific component of the column provided in \code{target_column}.
 This can be for example a protein ID if \code{target_column} contains protein IDs or TRUE or FALSE for a logical column.}
