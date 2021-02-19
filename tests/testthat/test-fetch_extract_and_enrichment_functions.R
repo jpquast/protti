@@ -93,7 +93,8 @@ test_that("kegg_enrichment works", {
     is_significant = is_significant,
     pathway_id = pathway_id,
     pathway_name = pathway_name,
-    plot = TRUE
+    plot = TRUE,
+    plot_cutoff = "adj_pval 0.01"
   )
   expect_is(p, "ggplot")
   expect_error(print(p), NA)
