@@ -22,6 +22,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom dplyr pull mutate filter
 #' @importFrom rlang new_formula enquo as_name :=
+#' @importFrom utils data
 #' @export
 #'
 #' @examples
@@ -36,6 +37,8 @@
 #')
 #' }
 woods_plot <- function(data, fold_change, start_position, end_position, protein_length, coverage = NULL, protein_id = NULL, facet = NULL, colouring = NULL, fold_change_cutoff = 2){
+  protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+  utils::data("protti_colours", envir=environment()) # then overwrite it with real data
   # Check if there are more than one protein even though protein_id was specified.
   if(!missing(protein_id)){
     if(length(unique(dplyr::pull(data, {{protein_id}}))) > 1){

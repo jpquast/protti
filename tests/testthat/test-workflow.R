@@ -292,7 +292,7 @@ test_that("plot_drc_4p works", {
                    targets = c("peptide_2_1", "peptide_2_4"),
                    unit = "uM")
 
-  expect_is(p_facet,"ggplot")
+  expect_is(p_facet,"list")
   expect_warning(expect_error(print(p_facet), NA))
 })
 

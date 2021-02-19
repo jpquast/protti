@@ -31,7 +31,8 @@ Imports:
     plotly,   
     ggrepel, 
     methods, 
-    utils
+    utils,
+    grDevices
 RoxygenNote: 7.1.1
 Suggests: 
     testthat,

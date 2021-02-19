@@ -12,8 +12,11 @@ plot_drc_4p(
   targets,
   unit = "uM",
   y_axis_name = "Response",
+  facet = TRUE,
   scales = "free",
-  x_axis_scale_log10 = TRUE
+  x_axis_scale_log10 = TRUE,
+  export = FALSE,
+  export_name = "dose-response_curves"
 )
 }
 \arguments{
@@ -32,9 +35,17 @@ should be created. If names are provided maximally 20 proteins are plotted at a 
 
 \item{y_axis_name}{A character vector specifying the name of the y-axis of the plot.}
 
+\item{facet}{A logical indicating if plots should be summarised into facets of 20 plots. This is recommended for many plots.}
+
 \item{scales}{A character vector that specifies if the scales in faceted plots (if more than one target was provided) should be \code{"free"} or \code{"fixed"}.}
 
 \item{x_axis_scale_log10}{A logical indicating if the x-axis scale should be log10 transformed.}
+
+\item{export}{A logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The 
+name of the file can be chosen using the \code{export_name} argument. If only one target is selected and \code{export = TRUE}, 
+the plot is exported and in addition returned in R.}
+
+\item{export_name}{A character vector providing the name of the exported file if \code{export = TRUE}.}
 }
 \value{
 If \code{targets = "all"} a list containing plots for every unique identifier in the \code{grouping} variable is created. Otherwise a plot for the specified targets is created with maximally 20 facets.
