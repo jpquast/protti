@@ -8,7 +8,7 @@
 #' do not provide the name of the sample column.
 #' @param grouping The column in the data frame containing either precursor, peptide or protein identifiers.
 #' @param intensity The column in the data frame containing the log2 transformed intensities of each grouping identifier sample combination.
-#' @param plot_style A character vector indicating the plot type. This can be either "histogram" or "boxplot". Plot style "boxplot" can
+#' @param plot_style A character vector indicating the plot type. This can be either "histogram", "boxplot" or "violin". Plot style "boxplot" and "violin" can
 #' only be used if a sample column is provided.
 #'
 #' @return A histogram or boxplot that shows the intensity distribution over all samples or by sample.
@@ -59,7 +59,6 @@ qc_intensity_distribution <- function(data, sample = NULL, grouping, intensity, 
         strip.text = ggplot2::element_text(size = 15),
         strip.background = element_blank()
       )
-
     return(plot)
   }
 
@@ -68,6 +67,24 @@ qc_intensity_distribution <- function(data, sample = NULL, grouping, intensity, 
     plot <- input %>%
       ggplot2::ggplot(aes(x = {{ sample }}, y = {{ intensity }})) +
       geom_boxplot(fill = "#5680C1", outlier.color = "#B96DAD") +
+      labs(title = "Run intensities", x = "", y = "Intensity") +
+      theme_bw() +
+      ggplot2::theme(
+        plot.title = ggplot2::element_text(size = 20),
+        axis.title.x = ggplot2::element_text(size = 15),
+        axis.text.y = ggplot2::element_text(size = 15),
+        axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
+        axis.title.y = ggplot2::element_text(size = 15)
+      )
+    return(plot)
+  }
+  
+  if (plot_style == "violin") {
+    if (missing(sample)) stop("Please provide a column with sample information when choosing violin as plot style!")
+    plot <- input %>%
+      ggplot2::ggplot(aes(x = {{ sample }}, y = {{ intensity }})) +
+      ggplot2::geom_violin(fill = "#5680C1", na.rm = TRUE) +
+      geom_boxplot(width = 0.15, fill = "white", na.rm = TRUE, alpha = 0.6) +
       labs(title = "Run intensities", x = "", y = "Intensity") +
       theme_bw() +
       ggplot2::theme(

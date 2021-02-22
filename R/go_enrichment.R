@@ -108,7 +108,7 @@ go_enrichment <- function(data, protein_id, is_significant, go_annotations_unipr
   if (!missing(go_annotations_uniprot)) go_data <- input
 
   cont_table <- go_data %>%
-    tidyr::drop_na(.data$go_id) %>%
+    tidyr::drop_na(.data$go_id, {{ is_significant }}) %>%
     dplyr::group_by({{ is_significant }}) %>%
     dplyr::mutate(n_sig = dplyr::n_distinct(.data$protein_id)) %>%
     dplyr::group_by(.data$go_id, {{ is_significant }}) %>%

@@ -1,11 +1,11 @@
 context("test-fetch_extract_and_enrichment_functions")
 
 test_that("fetch_uniprot works", {
-  unis <- c("iRT", "P36578", "O43324", "Q00796")
+  unis <- c("iRT", "P36578", "O43324", "Q00796", "P0CX31;P0CX32", "P00163;P03873;P03879", "P06873_1-100")
   expect_warning(uniprot <- fetch_uniprot(unis))
   expect_is(uniprot, "data.frame")
-  expect_equal(nrow(uniprot), 3)
-  expect_equal(ncol(uniprot), 18)
+  expect_equal(nrow(uniprot), 9)
+  expect_equal(ncol(uniprot), 19)
 })
 
 proteome <- fetch_uniprot_proteome(organism_id = "83333", columns = c("id", "go(molecular function)", "database(String)"))
@@ -93,7 +93,8 @@ test_that("kegg_enrichment works", {
     is_significant = is_significant,
     pathway_id = pathway_id,
     pathway_name = pathway_name,
-    plot = TRUE
+    plot = TRUE,
+    plot_cutoff = "adj_pval 0.01"
   )
   expect_is(p, "ggplot")
   expect_error(print(p), NA)

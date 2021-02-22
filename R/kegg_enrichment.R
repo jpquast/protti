@@ -10,6 +10,10 @@
 #' @param pathway_id The name of the column containing KEGG pathway identifiers. These can be obtained from KEGG using \code{fetch_kegg}. 
 #' @param pathway_name The name of the column containing KEGG pathway names. These can be obtained from KEGG using \code{fetch_kegg}. 
 #' @param plot A logical indicating whether the result should be plotted or returned as a table.
+#' @param plot_cutoff A character vector indicating if the plot should contain the top 10 most significant proteins (p-value or adjusted p-value), 
+#' or if a significance cutoff should be used to determine the number of GO terms in the plot. This information should be provided with the 
+#' type first followed by the threshold separated by a space. Example are \code{plot_cutoff = "adj_pval top10"}, \code{plot_cutoff = "pval 0.05"} 
+#' or \code{plot_cutoff = "adj_pval 0.01"}. The threshold can be chosen freely.
 #' 
 #' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched pathways. Bars are coloured according to the direction of the 
 #' enrichment. If \code{plot = FALSE}, a data frame is returned.
@@ -34,12 +38,13 @@
 #' pathway_name = pathway_name
 #' )
 #' }
-kegg_enrichment <- function(data, protein_id, is_significant, pathway_id = pathway_id, pathway_name = pathway_name, plot = TRUE){
+kegg_enrichment <- function(data, protein_id, is_significant, pathway_id = pathway_id, pathway_name = pathway_name, plot = TRUE, plot_cutoff = "adj_pval top10"){
   . = NULL
   n_sig = NULL
   kegg_term = NULL # to avoid node about no global variable binding. Usually this can be avoided with .data$ but not in nesting in complete function.
   
   data <- data %>%
+    dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ pathway_id }}, {{ pathway_name }}) %>% 
     tidyr::drop_na() %>%
     dplyr::mutate({{pathway_name}} := stringr::str_extract({{pathway_name}}, ".*(?=\\s\\-\\s)")) %>%
     tidyr::unite(col = "kegg_term", {{pathway_id}}, {{pathway_name}}, sep = ";") %>%
@@ -92,12 +97,28 @@ kegg_enrichment <- function(data, protein_id, is_significant, pathway_id = pathw
 
    if(plot == FALSE) return(result_table)
 
-  enrichment_plot <- result_table %>%
-    dplyr::mutate(neg_log_qval = -log10(.data$adj_pval)) %>%
-    dplyr::slice(1:10) %>%
-    ggplot2::ggplot(ggplot2::aes(stats::reorder(.data$pathway_name, .data$neg_log_qval), .data$neg_log_qval, fill = .data$direction)) +
+  # add cutoff for plot
+  if (stringr::str_detect(plot_cutoff, pattern = "top10")) {
+    split_cutoff <- stringr::str_split(plot_cutoff, pattern = " ", simplify = TRUE)
+    type <- split_cutoff[1]
+    plot_input <- result_table %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(neg_log_sig = -log10(!!rlang::ensym(type))) %>%
+      dplyr::slice(1:10)
+  } else {
+    split_cutoff <- stringr::str_split(plot_cutoff, pattern = " ", simplify = TRUE)
+    type <- split_cutoff[1]
+    threshold <- as.numeric(split_cutoff[2])
+    plot_input <- result_table %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(neg_log_sig = -log10(!!rlang::ensym(type))) %>%
+      dplyr::filter(!!rlang::ensym(type) <= threshold)
+  }
+  
+  enrichment_plot <- plot_input %>%
+    ggplot2::ggplot(ggplot2::aes(stats::reorder(.data$pathway_name, .data$neg_log_sig), .data$neg_log_sig, fill = .data$direction)) +
     ggplot2::geom_col(col = "black", size = 1.5) +
-    ggplot2::scale_fill_manual(values = c("#56B4E9", "#E76145")) +
+    ggplot2::scale_fill_manual(values = c(Down = "#56B4E9", Up = "#E76145")) +
     ggplot2::scale_y_continuous(breaks = seq(0, 100, 2)) +
     ggplot2::coord_flip() +
     ggplot2::labs(title = "KEGG pathway enrichment of significant proteins", y = "-log10 adjusted p-value") +

@@ -10,7 +10,7 @@ qc_proteome_coverage(
   protein_id,
   organism_id,
   plot = TRUE,
-  interactive = TRUE
+  interactive = FALSE
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ qc_proteome_coverage(
 
 \item{plot}{A logical indicating whether the result should be plotted (default is TRUE).}
 
-\item{interactive}{A logical indicating whether the plot should be interactive (default is TRUE).}
+\item{interactive}{A logical indicating whether the plot should be interactive (default is FALSE).}
 }
 \value{
 A bar plot showing the percentage of of the proteome detected and undetected in total and for each sample. If \code{plot = FALSE} a data frame containing the numbers is returned.

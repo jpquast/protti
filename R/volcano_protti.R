@@ -8,7 +8,8 @@
 #' @param significance Column containing the p-value or adjusted p-value for the corresponding fold changes. P-value is ideally adjusted using e.g. Benjamini-Hochberg correction.
 #' @param method Method used for the plot. \code{method = "target"} highlights your protein of interest in the volcano plot, \code{method = "significant"} highlights all significantly changing entities.
 #' @param target_column Optional column required for \code{method = "target"}, can contain for example protein identifiers or a logical that marks 
-#' certain proteins such as proteins that are known to interact with the treatment.
+#' certain proteins such as proteins that are known to interact with the treatment. Can also be provided if \code{method = "significant"} 
+#' to label data points in an interactive plot.
 #' @param target Optional argument required for \code{method = "target"}, a specific component of the column provided in \code{target_column}.
 #' This can be for example a protein ID if \code{target_column} contains protein IDs or TRUE or FALSE for a logical column.
 #' @param facet_by Optional argument specifying a column that contains information by which the data should be faceted into multiple plots.
@@ -59,23 +60,22 @@ volcano_protti <- function(data, grouping, log2FC, significance, method, target_
       dplyr::mutate(target = ifelse({{target_column}} == target, TRUE, FALSE))
 
     plot <- data %>%
-      dplyr::arrange(.data$target) %>%
       dplyr::filter(.data$target == FALSE) %>%
       ggplot2::ggplot(aes(
-        x = {{log2FC}},
-        y = -1 * log10({{significance}}),
-        colour = .data$target,
         label1 = {{target_column}},
-        label2 = {{grouping}}
-      )) +
-      geom_point() +
+        label2 = {{grouping}})) +
+      geom_point(aes(
+        x = {{log2FC}},
+        y = -1 * log10({{significance}})),
+        colour = "grey60"
+      ) +
       geom_point(
         data = dplyr::filter(data, .data$target == TRUE),
         aes(x = {{log2FC}},
             y = -1 * log10({{significance}})),
-        size = 3
+        size = 3,
+        colour = "#5680C1"
       ) +
-      scale_color_manual(values = c("grey60", "#5680C1")) +
       labs(
         title = title,
         x = x_axis_label,
@@ -104,20 +104,18 @@ volcano_protti <- function(data, grouping, log2FC, significance, method, target_
   {
     plot <- data %>% 
       dplyr::filter(!((( {{log2FC}} > log2FC_cutoff) & ({{significance}} < significance_cutoff) ) | ( ({{log2FC}} < -log2FC_cutoff) & ({{significance}} < significance_cutoff)))) %>% 
-      ggplot2::ggplot(aes(
+      ggplot2::ggplot(aes(label1 = {{target_column}},
+                          label2 = {{grouping}})) +
+      geom_point(aes(
         x = {{log2FC}},
-        y = - 1 * log10({{significance}}),
-        label1 = {{target_column}},
-        label2 = {{grouping}}
-      )) +
-      geom_point(col = "grey60") +
+        y = -log10({{significance}})),
+      colour = "grey60") +
       geom_point(
         data = dplyr::filter(data, (( {{log2FC}} > log2FC_cutoff) & ({{significance}} < significance_cutoff) ) | ( ({{log2FC}} < -log2FC_cutoff) & ({{significance}} < significance_cutoff) )),
         aes(x = {{log2FC}},
-            y = -1 * log10({{significance}})),
+            y = -log10({{significance}})),
         size = 3,
-        col = "#5680C1"
-      ) +
+        colour = "#5680C1") +
       labs(
         title = title,
         x = x_axis_label,
