@@ -23,6 +23,7 @@
 #' @import tidyr
 #' @import progress
 #' @import ggplot2
+#' @importFrom forcats fct_reorder
 #' @importFrom purrr pmap
 #' @importFrom rlang .data as_name enquo
 #' @importFrom magrittr %>%
@@ -50,7 +51,8 @@ plot_drc_4p <- function(data, grouping, response, dose, targets, unit = "uM", y_
   }
   
   data <- data %>% 
-    dplyr::mutate(name = paste0({{grouping}}, " (correlation = ", round(.data$correlation, digits = 2), ", Kd = ", round(.data$ec_50), ")")) %>% 
+    dplyr::mutate(name = paste0({{grouping}}, " (correlation = ", round(.data$correlation, digits = 2), ", Kd = ", round(.data$ec_50), ")")) %>%
+    dplyr::mutate(name = forcats::fct_reorder(.data$name, desc(.data$correlation))) %>% 
     dplyr::mutate(group_number = 1,
                   group_number = ceiling(cumsum(.data$group_number)/20)) # we do this in preparation for faceting later.
     

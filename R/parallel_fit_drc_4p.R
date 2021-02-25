@@ -10,6 +10,8 @@
 #' @param grouping The name of the column containing precursor, peptide or protein identifiers.
 #' @param response The name of the column containing response values, eg. log2 transformed intensities.
 #' @param dose The name of the column containing dose values, eg. the treatment concentrations.
+#' @param ... Any additional arguments that \code{fit_drc_4p} contains can be provided here. Note that include models always
+#' has to be \code{FALSE} for parallel fitting. You should not provide it in this argument. 
 #' @param n_cores Optional, the number of cores used if workers are set up manually.
 #' 
 #' @return A data frame is returned that contains correlations of predicted to measured values as a measure of the goodness of the curve fit, 
@@ -31,7 +33,7 @@
 #' dose = concentration
 #' )
 #' }
-parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, n_cores = NULL){
+parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, ..., n_cores = NULL){
   dependency_test <- c(furrr = !requireNamespace("furrr", quietly = TRUE), future = !requireNamespace("future", quietly = TRUE), parallel = !requireNamespace("parallel", quietly = TRUE))
   if (any(dependency_test)) {
     dependency_name <- names(dependency_test[dependency_test == TRUE])
@@ -64,7 +66,7 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, n_cores 
   message("Performing model fit (this may take a while) ... ", appendLF = FALSE)
   
   result <- furrr::future_map_dfr(.x = input,
-                                  .f = ~ protti::fit_drc_4p(.x, {{sample}}, {{grouping}}, {{response}}, {{dose}}, include_models = FALSE),
+                                  .f = ~ protti::fit_drc_4p(.x, {{sample}}, {{grouping}}, {{response}}, {{dose}}, ..., include_models = FALSE),
                                   .options = furrr::future_options(globals = FALSE)
   )
   

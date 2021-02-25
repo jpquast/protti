@@ -1,12 +1,32 @@
 #' Fitting four-parameter dose response curves
 #'
-#' Function for fitting four-parameter dose response curves for each group (precursor, peptide or protein). 
+#' Function for fitting four-parameter dose response curves for each group (precursor, peptide or protein). In addition it can
+#' filter data based on completeness, the completeness distribution and statistical testing using ANOVA. 
 #'
 #' @param data A data frame containing at least the input variables.
 #' @param sample The name of the column containing the sample names.
 #' @param grouping The name of the column containing precursor, peptide or protein identifiers.
 #' @param response The name of the column containing response values, eg. log2 transformed intensities.
 #' @param dose The name of the column containing dose values, eg. the treatment concentrations.
+#' @param filter A character vector indicating if models should be filtered and if they should be filtered before or after the curve
+#' fits. Filtering of models can be skipped with \code{filter = "none"}. The only criteria always used is that at least 5 data 
+#' points are present for any peptide. Otherwise no proper curves can be fit. Data can be filtered prior to model fitting with 
+#' \code{filter = "pre"}. In that case models will only be fitted for data that passed the filtering step. This will allow for faster
+#' model fitting since only fewer models will be fit. If you plan on performing an enrichment analysis you have to choose 
+#' \code{filter = "post"}. All models will be fit (even the ones that do not pass the filtering criteria) the subset of models that do 
+#' not fulfill the filtering criteria. The models that are no hits should be the ones used in enrichment analysis in combination with 
+#' the models that are hits. Therefore for post-filtering the full list is returned and it will only contain annotations that 
+#' indicate if the filtering was passed or not. Default is "post".
+#' @param replicate_completeness Similar to \code{completenss_MAR} of the \code{assign_missingness} function this argument sets a 
+#' threshold for the completeness of data. In contrast to \code{assign_missingness} it only determines the completeness for one 
+#' condition and not the comparison of two conditions. The threshold is used to calculate a minimal degree of data completeness. 
+#' The value provided to this argument has to be between 0 and 1, default is 0.7. It is multiplied with the number of replicates 
+#' and then adjusted downward. The resulting number is the minimal number of observations that a condition needs to have to be considered
+#' "complete enough" for the \code{condition_completeness} argument.
+#' @param condition_completeness This argument determines how many conditions need to at least fulfill the "complete enough" criteria 
+#' set with \code{replicate_completeness}. The value provided to this argument has to be between 0 and 1, default is 0.5. It is 
+#' multiplied with the number of conditions and then adjusted downward. The resulting number is the minimal number of conditions that
+#' need to fulfill the \code{replicate_completeness} argument for a peptide to pass the filtering.
 #' @param log_logarithmic logical indicating if a logarithmic or log-logarithmic model is fitted. 
 #' If response values form a symmetric curve for non-log transformed dose values, a logarithmic model instead
 #' of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the 
@@ -42,23 +62,102 @@
 #' dose = concentration
 #' )
 #' }
-fit_drc_4p <- function(data, sample, grouping, response, dose, log_logarithmic = TRUE, include_models = FALSE, retain_columns = NULL){
+fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", replicate_completeness = 0.7, condition_completeness = 0.5, log_logarithmic = TRUE, include_models = FALSE, retain_columns = NULL){
   if (!requireNamespace("drc", quietly = TRUE)) {
     stop("Package \"drc\" is needed for this function to work. Please install it.", call. = FALSE)
   }
   # to prevent no visible binding for global variable '.' note.
   . = NULL
   
+  # preprocessing of data 
+  data_prep <- data %>% 
+    dplyr::ungroup() %>% 
+    dplyr::distinct({{sample}}, {{grouping}}, {{response}}, {{dose}}) %>%
+    tidyr::complete(nesting(!!ensym(sample), !!ensym(dose)), !!ensym(grouping)) 
+  
+  if(filter != "none"){
+    n_conditions = length(unique(dplyr::pull(data_prep, {{ dose }})))
+    n_replicates = length(unique(dplyr::pull(data_prep, {{ sample }}))) / n_conditions
+    n_replicates_completeness <- floor(replicate_completeness * n_replicates)
+    n_conditions_completeness <- floor(condition_completeness * n_conditions)
+    
+    # perform anova on groups
+    anova <- data_prep %>% 
+      dplyr::group_by({{ grouping }}, {{ dose }}) %>% 
+      dplyr::mutate(
+        n = n_replicates,
+        mean_ratio = mean({{ response }}, na.rm = TRUE),
+        sd = sd({{ response }}, na.rm = TRUE)) %>% 
+      dplyr::distinct({{ grouping }}, {{ dose }}, .data$mean_ratio, .data$sd, .data$n) %>%
+      tidyr::drop_na(.data$mean_ratio, .data$sd) %>% 
+      anova_protti({{ grouping }}, {{ dose }}, .data$mean_ratio, .data$sd, .data$n) %>% 
+      dplyr::distinct({{ grouping }}, .data$pval) %>% 
+      dplyr::rename(anova_pval = .data$pval)
+    
+    # extract elements that pass anova significant threshold
+    anova_filtered <- anova %>% 
+      dplyr::filter(.data$anova_pval <= 0.05) %>% 
+      dplyr::pull({{ grouping }})
+    
+    # filter for data completeness based on replicates and conditions and based on the distribution of condition missingness
+    up <- ceiling(n_conditions * 0.5)
+    low <- floor(n_conditions * 0.5)
+    
+    # create vectors that define which distribution of data missingness is accepted and should be retained
+    vector <- c(up, low)
+    vector_rev <- rev(vector)
+    vector_add <- c(vector[1] + 1, vector[2] - 1)
+    vector_add_rev <- rev(vector_add)
+    
+    concentrations <- sort(unique(dplyr::pull(data_prep, {{ dose }})))
+    
+    lower_vector <- concentrations[1:vector[1]]
+    higher_vector <- concentrations[(n_conditions - vector[2]+1):n_conditions]
+    
+    lower_vector_rev <- concentrations[1:vector_rev[1]]
+    higher_vector_rev <- concentrations[(n_conditions - vector_rev[2]+1):n_conditions]
+    
+    lower_vector_add <- concentrations[1:vector_add[1]]
+    higher_vector_add <- concentrations[(n_conditions - vector_add[2]+1):n_conditions]
+    
+    lower_vector_add_rev <- concentrations[1:vector_add_rev[1]]
+    higher_vector_add_rev <- concentrations[(n_conditions - vector_add_rev[2]+1):n_conditions]
+    
+    filter_completeness <- data_prep %>% 
+      dplyr::group_by({{ grouping }}, {{ dose }}) %>% 
+      dplyr::mutate(enough_replicates = sum(!is.na({{ response }})) >= n_replicates_completeness) %>% 
+      dplyr::group_by({{ grouping }}) %>% 
+      dplyr::mutate(enough_conditions = sum(.data$enough_replicates) /n_replicates >= n_conditions_completeness) %>% 
+      dplyr::mutate(anova_significant = {{ grouping }} %in% anova_filtered) %>% 
+      dplyr::mutate(dose_MNAR = ifelse(all(({{ dose }} %in% lower_vector & .data$enough_replicates == FALSE)| ({{ dose }} %in% higher_vector & .data$enough_replicates == TRUE)) |
+                                      all(({{ dose }} %in% lower_vector & .data$enough_replicates == TRUE)| ({{ dose }} %in% higher_vector & .data$enough_replicates == FALSE)) |
+                                      all(({{ dose }} %in% lower_vector_rev & .data$enough_replicates == FALSE)| ({{ dose }} %in% higher_vector_rev & .data$enough_replicates == TRUE)) |
+                                      all(({{ dose }} %in% lower_vector_rev & .data$enough_replicates == TRUE)| ({{ dose }} %in% higher_vector_rev & .data$enough_replicates == FALSE)) |
+                                      all(({{ dose }} %in% lower_vector_add & .data$enough_replicates == FALSE)| ({{ dose }} %in% higher_vector_add & .data$enough_replicates == TRUE)) |
+                                      all(({{ dose }} %in% lower_vector_add & .data$enough_replicates == TRUE)| ({{ dose }} %in% higher_vector_add & .data$enough_replicates == FALSE)) |
+                                      all(({{ dose }} %in% lower_vector_add_rev & .data$enough_replicates == FALSE)| ({{ dose }} %in% higher_vector_add_rev & .data$enough_replicates == TRUE)) |
+                                      all(({{ dose }} %in% lower_vector_add_rev & .data$enough_replicates == TRUE)| ({{ dose }} %in% higher_vector_add_rev & .data$enough_replicates == FALSE)), TRUE, FALSE)) %>% 
+      dplyr::distinct({{ grouping }}, .data$enough_conditions, .data$anova_significant, .data$dose_MNAR) %>% 
+      dplyr::mutate(passed_filter = (.data$enough_conditions == TRUE & .data$anova_significant == TRUE) | .data$dose_MNAR == TRUE)
+    
+    if(filter == "pre"){
+      filtered_vector <- filter_completeness %>% 
+        dplyr::filter(.data$passed_filter == TRUE) %>% 
+        dplyr::pull({{ grouping }})
+      
+      data_prep <- data_prep %>% 
+        filter({{ grouping }} %in% filtered_vector)
+    }
+  }
   # prepare data
   
-  input <- data %>%
-    dplyr::distinct({{sample}}, {{grouping}}, {{response}}, {{dose}}) %>%
+  input <- data_prep %>%
     tidyr::drop_na({{response}}) %>%
     dplyr::group_by({{grouping}}) %>%
     dplyr::mutate(n_concentrations = dplyr::n_distinct(!!ensym(dose))) %>%
     dplyr::ungroup() %>%
     split(dplyr::pull(., !!ensym(grouping))) %>%
-    purrr::keep(.p = ~ unique(.x$n_concentrations) > 4) 
+    purrr::keep(.p = ~ unique(.x$n_concentrations) > 4) # make sure that there are enough data points to even fit a curve. This is not really filtering.
   
   # fit models
   
@@ -166,14 +265,20 @@ fit_drc_4p <- function(data, sample, grouping, response, dose, log_logarithmic =
                   max_model = .data$`max_value:(Intercept)`,
                   ec_50 = .data$`ec_50:(Intercept)`) %>% 
     dplyr::ungroup()
-  
+
+  # post filter and addition of columns if prefilter was performed
+  if(filter != "none"){
+    output <- output %>% 
+      dplyr::left_join(filter_completeness, by = rlang::as_name(rlang::enquo(grouping))) %>% 
+      dplyr::left_join(anova, by = rlang::as_name(rlang::enquo(grouping)))
+  }
   # return result
   
   if(!missing(retain_columns)){
   output <- data %>% 
-    dplyr::select(!!enquo(retain_columns), colnames(output)[!colnames(output) %in% c("pval", "hill_coefficient", "min_model", "max_model", "ec_50", "correlation", "plot_curve", "plot_points")]) %>% 
+    dplyr::select(!!enquo(retain_columns), colnames(output)[!colnames(output) %in% c("pval", "hill_coefficient", "min_model", "max_model", "ec_50", "correlation", "plot_curve", "plot_points", "enough_conditions", "anova_significant", "dose_MNAR", "anova_pval", "passed_filter")]) %>% 
     dplyr::distinct() %>% 
-    dplyr::right_join(output, by = colnames(output)[!colnames(output) %in% c("pval", "hill_coefficient", "min_model", "max_model", "ec_50", "correlation", "plot_curve", "plot_points")]) %>% 
+    dplyr::right_join(output, by = colnames(output)[!colnames(output) %in% c("pval", "hill_coefficient", "min_model", "max_model", "ec_50", "correlation", "plot_curve", "plot_points", "enough_conditions", "anova_significant", "dose_MNAR", "anova_pval", "passed_filter")]) %>% 
     dplyr::arrange(dplyr::desc(.data$correlation))
   }
   

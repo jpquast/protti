@@ -4,7 +4,15 @@
 \alias{parallel_fit_drc_4p}
 \title{Fitting four-parameter dose response curves (using parallel processing)}
 \usage{
-parallel_fit_drc_4p(data, sample, grouping, response, dose, n_cores = NULL)
+parallel_fit_drc_4p(
+  data,
+  sample,
+  grouping,
+  response,
+  dose,
+  ...,
+  n_cores = NULL
+)
 }
 \arguments{
 \item{data}{A data frame containing at least the input variables.}
@@ -16,6 +24,9 @@ parallel_fit_drc_4p(data, sample, grouping, response, dose, n_cores = NULL)
 \item{response}{The name of the column containing response values, eg. log2 transformed intensities.}
 
 \item{dose}{The name of the column containing dose values, eg. the treatment concentrations.}
+
+\item{...}{Any additional arguments that \code{fit_drc_4p} contains can be provided here. Note that include models always
+has to be \code{FALSE} for parallel fitting. You should not provide it in this argument.}
 
 \item{n_cores}{Optional, the number of cores used if workers are set up manually.}
 }
