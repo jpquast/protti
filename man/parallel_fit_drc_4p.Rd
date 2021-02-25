@@ -10,8 +10,8 @@ parallel_fit_drc_4p(
   grouping,
   response,
   dose,
-  ...,
-  n_cores = NULL
+  n_cores = NULL,
+  ...
 )
 }
 \arguments{
@@ -25,10 +25,10 @@ parallel_fit_drc_4p(
 
 \item{dose}{The name of the column containing dose values, eg. the treatment concentrations.}
 
+\item{n_cores}{Optional, the number of cores used if workers are set up manually.}
+
 \item{...}{Any additional arguments that \code{fit_drc_4p} contains can be provided here. Note that include models always
 has to be \code{FALSE} for parallel fitting. You should not provide it in this argument.}
-
-\item{n_cores}{Optional, the number of cores used if workers are set up manually.}
 }
 \value{
 A data frame is returned that contains correlations of predicted to measured values as a measure of the goodness of the curve fit, 

@@ -10,9 +10,9 @@
 #' @param grouping The name of the column containing precursor, peptide or protein identifiers.
 #' @param response The name of the column containing response values, eg. log2 transformed intensities.
 #' @param dose The name of the column containing dose values, eg. the treatment concentrations.
+#' @param n_cores Optional, the number of cores used if workers are set up manually.
 #' @param ... Any additional arguments that \code{fit_drc_4p} contains can be provided here. Note that include models always
 #' has to be \code{FALSE} for parallel fitting. You should not provide it in this argument. 
-#' @param n_cores Optional, the number of cores used if workers are set up manually.
 #' 
 #' @return A data frame is returned that contains correlations of predicted to measured values as a measure of the goodness of the curve fit, 
 #' an associated p-value and the four parameters of the model for each group. Furthermore, input data for plots is returned in the columns \code{plot_curve} 
@@ -33,7 +33,7 @@
 #' dose = concentration
 #' )
 #' }
-parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, ..., n_cores = NULL){
+parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, n_cores = NULL, ...){
   dependency_test <- c(furrr = !requireNamespace("furrr", quietly = TRUE), future = !requireNamespace("future", quietly = TRUE), parallel = !requireNamespace("parallel", quietly = TRUE))
   if (any(dependency_test)) {
     dependency_name <- names(dependency_test[dependency_test == TRUE])
@@ -51,7 +51,7 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, ..., n_c
     terminate = TRUE
     n_cores <- parallel::detectCores()
     n_cores <- ifelse(n_cores > 12, 12, n_cores)
-    future::plan(future::multiprocess)
+    future::plan(future::multiprocess, workers = n_cores)
     message("DONE", appendLF = TRUE)
   }
   
@@ -62,11 +62,11 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, ..., n_c
   input <- data %>%
     dplyr::left_join(pieces_mapping, by = rlang::as_name(rlang::enquo(grouping))) %>%
     split(dplyr::pull(., .data$piece))
-  
+
   message("Performing model fit (this may take a while) ... ", appendLF = FALSE)
   
   result <- furrr::future_map_dfr(.x = input,
-                                  .f = ~ protti::fit_drc_4p(.x, {{sample}}, {{grouping}}, {{response}}, {{dose}}, ..., include_models = FALSE),
+                                  .f = ~ protti::fit_drc_4p(.x, sample = {{sample}}, grouping = {{grouping}}, response = {{response}}, dose = {{dose}}, include_models = FALSE, ...),
                                   .options = furrr::future_options(globals = FALSE)
   )
   
@@ -76,5 +76,6 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, ..., n_c
     future::plan(future::sequential)
   }
   
-  result
+  result %>% 
+    dplyr::arrange(desc(.data$correlation))
 }
