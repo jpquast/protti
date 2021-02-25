@@ -91,7 +91,7 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter =
   message("Performing model fit (this may take a while) ... ", appendLF = FALSE)
   
   result <- furrr::future_map_dfr(.x = input,
-                                  .f = ~ protti::fit_drc_4p(.x, sample = {{sample}}, grouping = {{grouping}}, response = {{response}}, dose = {{dose}}, filter = filter, replicate_completeness = replicate_completeness, condition_completeness = condition_completeness, log_logarithmic = log_logarithmic, retain_columns = retain_columns, include_models = FALSE),
+                                  .f = ~ protti::fit_drc_4p(.x, sample = {{sample}}, grouping = {{grouping}}, response = {{response}}, dose = {{dose}}, filter = filter, replicate_completeness = replicate_completeness, condition_completeness = condition_completeness, log_logarithmic = log_logarithmic, retain_columns = {{retain_columns}}, include_models = FALSE),
                                   .options = furrr::future_options(globals = FALSE)
   )
   
