@@ -277,7 +277,13 @@ fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", 
   if(filter != "none"){
     output <- output %>% 
       dplyr::left_join(filter_completeness, by = rlang::as_name(rlang::enquo(grouping))) %>% 
-      dplyr::left_join(anova, by = rlang::as_name(rlang::enquo(grouping)))
+      dplyr::left_join(anova, by = rlang::as_name(rlang::enquo(grouping))) %>% 
+      dplyr::mutate(passed_filter = .data$passed_filter & .data$correlation >= 0.7 & .data$min_model < .data$max_model)
+  }
+  
+  if(filter == "pre"){
+    output <- output %>% 
+      filter(passed_filter)
   }
   # return result
 
