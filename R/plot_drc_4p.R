@@ -51,6 +51,7 @@ plot_drc_4p <- function(data, grouping, response, dose, targets, unit = "uM", y_
   }
   
   data <- data %>% 
+    dplyr::ungroup() %>% 
     dplyr::mutate(name = paste0({{grouping}}, " (correlation = ", round(.data$correlation, digits = 2), ", Kd = ", round(.data$ec_50), ")")) %>%
     dplyr::mutate(name = forcats::fct_reorder(.data$name, desc(.data$correlation))) %>% 
     dplyr::mutate(group_number = 1,
@@ -193,7 +194,7 @@ plot_drc_4p <- function(data, grouping, response, dose, targets, unit = "uM", y_
       if(facet == TRUE){
         grDevices::pdf(file = paste0(export_name, ".pdf"),
           width = 45,
-          height = 22.5)
+          height = 37.5)
       suppressWarnings(print(plots))
       grDevices::dev.off()
       } else {

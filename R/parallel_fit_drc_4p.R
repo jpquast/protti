@@ -10,15 +10,10 @@
 #' @param grouping The name of the column containing precursor, peptide or protein identifiers.
 #' @param response The name of the column containing response values, eg. log2 transformed intensities.
 #' @param dose The name of the column containing dose values, eg. the treatment concentrations.
-#' @param filter A character vector indicating if models should be filtered and if they should be filtered before or after the curve
-#' fits. Filtering of models can be skipped with \code{filter = "none"}. The only criteria always used is that at least 5 data 
-#' points are present for any peptide. Otherwise no proper curves can be fit. Data can be filtered prior to model fitting with 
-#' \code{filter = "pre"}. In that case models will only be fitted for data that passed the filtering step. This will allow for faster
-#' model fitting since only fewer models will be fit. If you plan on performing an enrichment analysis you have to choose 
-#' \code{filter = "post"}. All models will be fit (even the ones that do not pass the filtering criteria) the subset of models that do 
-#' not fulfill the filtering criteria. The models that are no hits should be the ones used in enrichment analysis in combination with 
-#' the models that are hits. Therefore for post-filtering the full list is returned and it will only contain annotations that 
-#' indicate if the filtering was passed or not. Default is "post".
+#' @param filter A character vector indicating if models should be filtered. The option \code{"pre"} is not available for
+#' parallel fitting of models. This is because ANOVA adjusted p-values would be calculated wrong because the dataset is split onto
+#' multiple cores. Default is "post" and we recommend always using "post" because compared to "none" only some additional columns are 
+#' added that contain the filter information. For ANOVA an adjusted p-value of 0.05 is used as a cutoff.
 #' @param replicate_completeness Similar to \code{completenss_MAR} of the \code{assign_missingness} function this argument sets a 
 #' threshold for the completeness of data. In contrast to \code{assign_missingness} it only determines the completeness for one 
 #' condition and not the comparison of two conditions. The threshold is used to calculate a minimal degree of data completeness. 
@@ -33,7 +28,6 @@
 #' If response values form a symmetric curve for non-log transformed dose values, a logarithmic model instead
 #' of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the 
 #' reason this is the default. Log-logarithmic models are symmetric if dose values are log transformed. 
-#' @param include_models A logical indicating if model fit objects should be exported. These are usually very large and not necessary for further analysis.
 #' @param retain_columns A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
 #' additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks, 
 #' just like other column names, but in a vector).
@@ -44,6 +38,7 @@
 #' (curve and confidence interval) and \code{plot_points} (measured points).
 #' 
 #' @import dplyr
+#' @importFrom stats p.adjust
 #' @importFrom rlang .data as_name enquo
 #' @importFrom magrittr %>%
 #' @export
@@ -67,6 +62,9 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter =
     } else{
       stop("Packages \"", paste(dependency_name, collapse = "\" and \""), "\" are needed for this function to work. Please install them.", call. = FALSE)
     }
+  }
+  if(filter == "pre"){
+    stop('"pre" cannot be selected as a filter option for parallel fitting. Use "post" or use the fit_drc_4p function.')
   }
   . = NULL
   terminate = FALSE
@@ -102,5 +100,8 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter =
   }
   
   result %>% 
+    dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$anova_pval, method = "BH")) %>% 
+    dplyr::mutate(anova_significant = ifelse(.data$anova_adj_pval > 0.05 | is.na(.data$anova_adj_pval), FALSE, TRUE)) %>% 
+    dplyr::mutate(passed_filter = (.data$enough_conditions == TRUE & .data$anova_significant == TRUE) | .data$dose_MNAR == TRUE) %>% 
     dplyr::arrange(desc(.data$correlation))
 }

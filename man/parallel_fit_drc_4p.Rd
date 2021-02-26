@@ -29,15 +29,10 @@ parallel_fit_drc_4p(
 
 \item{dose}{The name of the column containing dose values, eg. the treatment concentrations.}
 
-\item{filter}{A character vector indicating if models should be filtered and if they should be filtered before or after the curve
-fits. Filtering of models can be skipped with \code{filter = "none"}. The only criteria always used is that at least 5 data 
-points are present for any peptide. Otherwise no proper curves can be fit. Data can be filtered prior to model fitting with 
-\code{filter = "pre"}. In that case models will only be fitted for data that passed the filtering step. This will allow for faster
-model fitting since only fewer models will be fit. If you plan on performing an enrichment analysis you have to choose 
-\code{filter = "post"}. All models will be fit (even the ones that do not pass the filtering criteria) the subset of models that do 
-not fulfill the filtering criteria. The models that are no hits should be the ones used in enrichment analysis in combination with 
-the models that are hits. Therefore for post-filtering the full list is returned and it will only contain annotations that 
-indicate if the filtering was passed or not. Default is "post".}
+\item{filter}{A character vector indicating if models should be filtered. The option \code{"pre"} is not available for
+parallel fitting of models. This is because ANOVA adjusted p-values would be calculated wrong because the dataset is split onto
+multiple cores. Default is "post" and we recommend always using "post" because compared to "none" only some additional columns are 
+added that contain the filter information. For ANOVA an adjusted p-value of 0.05 is used as a cutoff.}
 
 \item{replicate_completeness}{Similar to \code{completenss_MAR} of the \code{assign_missingness} function this argument sets a 
 threshold for the completeness of data. In contrast to \code{assign_missingness} it only determines the completeness for one 
@@ -61,8 +56,6 @@ additional columns \code{retain_columns = NULL}. Specific columns can be retaine
 just like other column names, but in a vector).}
 
 \item{n_cores}{Optional, the number of cores used if workers are set up manually.}
-
-\item{include_models}{A logical indicating if model fit objects should be exported. These are usually very large and not necessary for further analysis.}
 }
 \value{
 A data frame is returned that contains correlations of predicted to measured values as a measure of the goodness of the curve fit, 

@@ -37,7 +37,7 @@ model fitting since only fewer models will be fit. If you plan on performing an 
 \code{filter = "post"}. All models will be fit (even the ones that do not pass the filtering criteria) the subset of models that do 
 not fulfill the filtering criteria. The models that are no hits should be the ones used in enrichment analysis in combination with 
 the models that are hits. Therefore for post-filtering the full list is returned and it will only contain annotations that 
-indicate if the filtering was passed or not. Default is "post".}
+indicate if the filtering was passed or not. Default is "post". For ANOVA an adjusted p-value of 0.05 is used as a cutoff.}
 
 \item{replicate_completeness}{Similar to \code{completenss_MAR} of the \code{assign_missingness} function this argument sets a 
 threshold for the completeness of data. In contrast to \code{assign_missingness} it only determines the completeness for one 
