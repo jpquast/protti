@@ -68,6 +68,27 @@ Workers can either be set up manually before running the function with \code{fut
 number of cores should be provided to \code{n_cores}. Worker can be terminated after completion with \code{future::plan(sequential)}. It is not possible to export the 
 individual fit objects when using this function as compared to the non parallel function as they are too large for efficient export from the workers.
 }
+\details{
+If data filtering options are selected, data is filtered based on multiple criteria. In general curves are only fitted 
+if there are at least 5 data points present to ensure that there is potential for a good curve fit. Therefore, this is also the 
+case if no filtering option is selected. Furthermore, by default each entity (e.g. precursor) is filtered to contain at least 70% 
+of replicates (adjusted downward) for at least 50% of all conditions (adjusted downward). This can be adjusted with the according
+arguments. ANOVA is used to compute the statistical significance of the change for each entity. The resulting p-value is adjusted 
+using the Benjamini-Hochberg method and a cutoff of 0.05 is applied. Curve fits that have a minimal value that is higher than the 
+maximal value are excluded as they were likely fitted wrong. Curves with a correlation below 0.7 are not passing the filtering. 
+If a fit does not fulfill the significance or completeness cutoff, it has a chance to still be considered if half of its 
+values (+/-1 value) pass the replicate completeness criteria and half do not pass it. The values need to be consecutive, furthermore,
+the values that do not pass it need to be lower in intensity. This allows curves to be considered that have missing values in half
+of their observations due to a decrease in intensity. It can be thought of as conditions that are missing not at random (MNAR). It 
+is often the case that those entities do not have a significant p-value since half of their conditions are not considered due to
+data missingness. 
+
+The final filtered list is ranked based on a score calculated on entities that pass the filter. The score is the negative log10 
+of the adjusted ANOVA p-value scaled between 0 and 1 and the correlation scaled between 0 and 1 summed up and divided by 2. Thus,
+the highest score an entity can have is 1 with both the highest correlation and adjusted p-value. The rank is corresponding to 
+this score. Please note, that entities with MNAR conditions might have a lower score due to the missing or non-significant ANOVA 
+p-value. You should have a look at curves that are TRUE for \code{dose_MNAR} in more detail.
+}
 \examples{
 \dontrun{
 parallel_fit_drc_4p(

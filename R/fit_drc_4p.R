@@ -2,6 +2,26 @@
 #'
 #' Function for fitting four-parameter dose response curves for each group (precursor, peptide or protein). In addition it can
 #' filter data based on completeness, the completeness distribution and statistical testing using ANOVA. 
+#' 
+#' @details If data filtering options are selected, data is filtered based on multiple criteria. In general curves are only fitted 
+#' if there are at least 5 data points present to ensure that there is potential for a good curve fit. Therefore, this is also the 
+#' case if no filtering option is selected. Furthermore, by default each entity (e.g. precursor) is filtered to contain at least 70% 
+#' of replicates (adjusted downward) for at least 50% of all conditions (adjusted downward). This can be adjusted with the according
+#' arguments. ANOVA is used to compute the statistical significance of the change for each entity. The resulting p-value is adjusted 
+#' using the Benjamini-Hochberg method and a cutoff of 0.05 is applied. Curve fits that have a minimal value that is higher than the 
+#' maximal value are excluded as they were likely fitted wrong. Curves with a correlation below 0.7 are not passing the filtering. 
+#' If a fit does not fulfill the significance or completeness cutoff, it has a chance to still be considered if half of its 
+#' values (+/-1 value) pass the replicate completeness criteria and half do not pass it. The values need to be consecutive, furthermore,
+#' the values that do not pass it need to be lower in intensity. This allows curves to be considered that have missing values in half
+#' of their observations due to a decrease in intensity. It can be thought of as conditions that are missing not at random (MNAR). It 
+#' is often the case that those entities do not have a significant p-value since half of their conditions are not considered due to
+#' data missingness. 
+#' 
+#' The final filtered list is ranked based on a score calculated on entities that pass the filter. The score is the negative log10 
+#' of the adjusted ANOVA p-value scaled between 0 and 1 and the correlation scaled between 0 and 1 summed up and divided by 2. Thus,
+#' the highest score an entity can have is 1 with both the highest correlation and adjusted p-value. The rank is corresponding to 
+#' this score. Please note, that entities with MNAR conditions might have a lower score due to the missing or non-significant ANOVA 
+#' p-value. You should have a look at curves that are TRUE for \code{dose_MNAR} in more detail. 
 #'
 #' @param data A data frame containing at least the input variables.
 #' @param sample The name of the column containing the sample names.
@@ -9,8 +29,7 @@
 #' @param response The name of the column containing response values, eg. log2 transformed intensities.
 #' @param dose The name of the column containing dose values, eg. the treatment concentrations.
 #' @param filter A character vector indicating if models should be filtered and if they should be filtered before or after the curve
-#' fits. Filtering of models can be skipped with \code{filter = "none"}. The only criteria always used is that at least 5 data 
-#' points are present for any peptide. Otherwise no proper curves can be fit. Data can be filtered prior to model fitting with 
+#' fits. Filtering of models can be skipped with \code{filter = "none"}. Data can be filtered prior to model fitting with 
 #' \code{filter = "pre"}. In that case models will only be fitted for data that passed the filtering step. This will allow for faster
 #' model fitting since only fewer models will be fit. If you plan on performing an enrichment analysis you have to choose 
 #' \code{filter = "post"}. All models will be fit (even the ones that do not pass the filtering criteria) the subset of models that do 
@@ -48,7 +67,7 @@
 #' @import progress
 #' @importFrom stats p.adjust
 #' @importFrom purrr keep map map2 map2_df pluck
-#' @importFrom tibble tibble as_tibble
+#' @importFrom tibble tibble as_tibble rownames_to_column
 #' @importFrom rlang .data ensym as_name enquo :=
 #' @importFrom magrittr %>%
 #' @export
@@ -271,28 +290,40 @@ fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", 
                   min_model = .data$`min_value:(Intercept)`,
                   max_model = .data$`max_value:(Intercept)`,
                   ec_50 = .data$`ec_50:(Intercept)`) %>% 
-    dplyr::ungroup()
+    dplyr::ungroup() %>% 
+    dplyr::arrange(dplyr::desc(.data$correlation))
 
   # post filter and addition of columns if prefilter was performed
   if(filter != "none"){
     output <- output %>% 
       dplyr::left_join(filter_completeness, by = rlang::as_name(rlang::enquo(grouping))) %>% 
       dplyr::left_join(anova, by = rlang::as_name(rlang::enquo(grouping))) %>% 
-      dplyr::mutate(passed_filter = .data$passed_filter & .data$correlation >= 0.7 & .data$min_model < .data$max_model)
+      dplyr::mutate(passed_filter = .data$passed_filter & .data$correlation >= 0.7 & .data$min_model < .data$max_model) %>% 
+      dplyr::group_by(.data$passed_filter) %>% 
+      dplyr::mutate(score = ifelse(.data$passed_filter, (scale_protti(-log10(.data$anova_pval), method = "01") + scale_protti(.data$correlation, method = "01")) / 2, NA)) %>% 
+      dplyr::ungroup() 
   }
   
   if(filter == "pre"){
     output <- output %>% 
-      filter(passed_filter)
+      filter(.data$passed_filter)
   }
   # return result
 
   if(!missing(retain_columns)){
   output <- data %>% 
-    dplyr::select(!!enquo(retain_columns), colnames(output)[!colnames(output) %in% c("pval", "hill_coefficient", "min_model", "max_model", "ec_50", "correlation", "plot_curve", "plot_points", "enough_conditions", "anova_significant", "dose_MNAR", "anova_pval", "anova_adj_pval", "passed_filter")]) %>% 
+    dplyr::select(!!enquo(retain_columns), colnames(output)[!colnames(output) %in% c("pval", "hill_coefficient", "min_model", "max_model", "ec_50", "correlation", "plot_curve", "plot_points", "enough_conditions", "anova_significant", "dose_MNAR", "anova_pval", "anova_adj_pval", "passed_filter", "score", "rank")]) %>% 
     dplyr::distinct() %>% 
-    dplyr::right_join(output, by = colnames(output)[!colnames(output) %in% c("pval", "hill_coefficient", "min_model", "max_model", "ec_50", "correlation", "plot_curve", "plot_points", "enough_conditions", "anova_significant", "dose_MNAR", "anova_pval", "anova_adj_pval", "passed_filter")]) %>% 
+    dplyr::right_join(output, by = colnames(output)[!colnames(output) %in% c("pval", "hill_coefficient", "min_model", "max_model", "ec_50", "correlation", "plot_curve", "plot_points", "enough_conditions", "anova_significant", "dose_MNAR", "anova_pval", "anova_adj_pval", "passed_filter", "score", "rank")]) %>% 
     dplyr::arrange(dplyr::desc(.data$correlation))
+  }
+  
+  if(filter != "none"){
+    output <- output %>% 
+      dplyr::arrange(dplyr::desc(.data$correlation)) %>%
+      dplyr::arrange(dplyr::desc(.data$score)) %>% 
+      tibble::rownames_to_column(var = "rank") %>% 
+      dplyr::mutate(rank = ifelse(!is.na(.data$score), as.numeric(.data$rank), NA))
   }
   
   if(include_models == TRUE){ 
