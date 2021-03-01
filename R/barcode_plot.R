@@ -89,7 +89,7 @@ barcode_plot <- function(data, start_position, end_position, protein_length, cov
       ymin = -2.5,
       ymax = 2.5,
       xmax = {{end_position}} / {{protein_length}} * 100,
-      xmin = {{start_position}} / {{protein_length}} * 100,
+      xmin = ({{start_position}} - 1) / {{protein_length}} * 100,
       fill = {{colouring}}),
       size = 0.7
     ) +
