@@ -3,16 +3,19 @@
 #' Function for fitting four-parameter dose response curves for each group (precursor, peptide or protein). In addition it can
 #' filter data based on completeness, the completeness distribution and statistical testing using ANOVA. 
 #' 
-#' @details If data filtering options are selected, data is filtered based on multiple criteria. In general curves are only fitted 
-#' if there are at least 5 data points present to ensure that there is potential for a good curve fit. Therefore, this is also the 
-#' case if no filtering option is selected. Furthermore, by default each entity (e.g. precursor) is filtered to contain at least 70% 
-#' of replicates (adjusted downward) for at least 50% of all conditions (adjusted downward). This can be adjusted with the according
-#' arguments. ANOVA is used to compute the statistical significance of the change for each entity. The resulting p-value is adjusted 
-#' using the Benjamini-Hochberg method and a cutoff of 0.05 is applied. Curve fits that have a minimal value that is higher than the 
-#' maximal value are excluded as they were likely fitted wrong. Curves with a correlation below 0.7 are not passing the filtering. 
-#' If a fit does not fulfill the significance or completeness cutoff, it has a chance to still be considered if half of its 
-#' values (+/-1 value) pass the replicate completeness criteria and half do not pass it. The values need to be consecutive, furthermore,
-#' the values that do not pass it need to be lower in intensity. This allows curves to be considered that have missing values in half
+#' @details If data filtering options are selected, data is filtered based on multiple criteria. In general, curves are only fitted 
+#' if there are at least 5 conditions with data points present to ensure that there is potential for a good curve fit. Therefore, 
+#' this is also the case if no filtering option is selected. Furthermore, a completeness cutoff is defined for filtering. By default 
+#' each entity (e.g. precursor) is filtered to contain at least 70% of total replicates (adjusted downward) for at least 50% of 
+#' all conditions (adjusted downward). This can be adjusted with the according arguments. In addition to the completeness cutoff, 
+#' also a significance cutoff is applied. ANOVA is used to compute the statistical significance of the change for each entity. 
+#' The resulting p-value is adjusted using the Benjamini-Hochberg method and a cutoff of q <= 0.05 is applied. Curve fits that have 
+#' a minimal value that is higher than the maximal value are excluded as they were likely wrongly fitted. Curves with a correlation 
+#' below 0.7 are not passing the filtering. If a fit does not fulfill the significance or completeness cutoff, it has a chance to 
+#' still be considered if half of its values (+/-1 value) pass the replicate completeness criteria and half do not pass it. In order 
+#' to fall into this category, the values that fulfill the completeness cutoff and the ones that do not fulfill it need to be 
+#' consecutive, meaning located next to each other based on their concentration values. Furthermore, the values that do not pass 
+#' the completeness cutoff need to be lower in intensity. This allows curves to be considered that have missing values in half
 #' of their observations due to a decrease in intensity. It can be thought of as conditions that are missing not at random (MNAR). It 
 #' is often the case that those entities do not have a significant p-value since half of their conditions are not considered due to
 #' data missingness. 
@@ -32,10 +35,10 @@
 #' fits. Filtering of models can be skipped with \code{filter = "none"}. Data can be filtered prior to model fitting with 
 #' \code{filter = "pre"}. In that case models will only be fitted for data that passed the filtering step. This will allow for faster
 #' model fitting since only fewer models will be fit. If you plan on performing an enrichment analysis you have to choose 
-#' \code{filter = "post"}. All models will be fit (even the ones that do not pass the filtering criteria) the subset of models that do 
-#' not fulfill the filtering criteria. The models that are no hits should be the ones used in enrichment analysis in combination with 
-#' the models that are hits. Therefore for post-filtering the full list is returned and it will only contain annotations that 
-#' indicate if the filtering was passed or not. Default is "post". For ANOVA an adjusted p-value of 0.05 is used as a cutoff.
+#' \code{filter = "post"}. All models will be fit (even the ones that do not pass the filtering criteria). For enrichment analysis 
+#' you should use both good (i.e. models that pass the filtering) and bad (i.e. models that do not pass the filtering) models. 
+#' Therefore, for post-filtering the full list is returned and it will only contain annotations that 
+#' indicate (\code{passed_filter}) if the filtering was passed or not. Default is "post". For ANOVA an adjusted p-value of 0.05 is used as a cutoff.
 #' @param replicate_completeness Similar to \code{completenss_MAR} of the \code{assign_missingness} function this argument sets a 
 #' threshold for the completeness of data. In contrast to \code{assign_missingness} it only determines the completeness for one 
 #' condition and not the comparison of two conditions. The threshold is used to calculate a minimal degree of data completeness. 
@@ -46,6 +49,7 @@
 #' set with \code{replicate_completeness}. The value provided to this argument has to be between 0 and 1, default is 0.5. It is 
 #' multiplied with the number of conditions and then adjusted downward. The resulting number is the minimal number of conditions that
 #' need to fulfill the \code{replicate_completeness} argument for a peptide to pass the filtering.
+#' @param correlation_cutoff A numeric vector specifying the correlation cutoff used for data filtering.
 #' @param log_logarithmic logical indicating if a logarithmic or log-logarithmic model is fitted. 
 #' If response values form a symmetric curve for non-log transformed dose values, a logarithmic model instead
 #' of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the 
@@ -82,7 +86,7 @@
 #' dose = concentration
 #' )
 #' }
-fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", replicate_completeness = 0.7, condition_completeness = 0.5, log_logarithmic = TRUE, include_models = FALSE, retain_columns = NULL){
+fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", replicate_completeness = 0.7, condition_completeness = 0.5, correlation_cutoff = 0.7, log_logarithmic = TRUE, include_models = FALSE, retain_columns = NULL){
   if (!requireNamespace("drc", quietly = TRUE)) {
     stop("Package \"drc\" is needed for this function to work. Please install it.", call. = FALSE)
   }
@@ -298,7 +302,7 @@ fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", 
     output <- output %>% 
       dplyr::left_join(filter_completeness, by = rlang::as_name(rlang::enquo(grouping))) %>% 
       dplyr::left_join(anova, by = rlang::as_name(rlang::enquo(grouping))) %>% 
-      dplyr::mutate(passed_filter = .data$passed_filter & .data$correlation >= 0.7 & .data$min_model < .data$max_model) %>% 
+      dplyr::mutate(passed_filter = .data$passed_filter & .data$correlation >= correlation_cutoff & .data$min_model < .data$max_model) %>% 
       dplyr::group_by(.data$passed_filter) %>% 
       dplyr::mutate(score = ifelse(.data$passed_filter, (scale_protti(-log10(.data$anova_pval), method = "01") + scale_protti(.data$correlation, method = "01")) / 2, NA)) %>% 
       dplyr::ungroup() 

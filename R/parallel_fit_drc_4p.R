@@ -5,16 +5,19 @@
 #' number of cores should be provided to \code{n_cores}. Worker can be terminated after completion with \code{future::plan(sequential)}. It is not possible to export the 
 #' individual fit objects when using this function as compared to the non parallel function as they are too large for efficient export from the workers. 
 #'
-#' @details If data filtering options are selected, data is filtered based on multiple criteria. In general curves are only fitted 
-#' if there are at least 5 data points present to ensure that there is potential for a good curve fit. Therefore, this is also the 
-#' case if no filtering option is selected. Furthermore, by default each entity (e.g. precursor) is filtered to contain at least 70% 
-#' of replicates (adjusted downward) for at least 50% of all conditions (adjusted downward). This can be adjusted with the according
-#' arguments. ANOVA is used to compute the statistical significance of the change for each entity. The resulting p-value is adjusted 
-#' using the Benjamini-Hochberg method and a cutoff of 0.05 is applied. Curve fits that have a minimal value that is higher than the 
-#' maximal value are excluded as they were likely fitted wrong. Curves with a correlation below 0.7 are not passing the filtering. 
-#' If a fit does not fulfill the significance or completeness cutoff, it has a chance to still be considered if half of its 
-#' values (+/-1 value) pass the replicate completeness criteria and half do not pass it. The values need to be consecutive, furthermore,
-#' the values that do not pass it need to be lower in intensity. This allows curves to be considered that have missing values in half
+#' @details If data filtering options are selected, data is filtered based on multiple criteria. In general, curves are only fitted 
+#' if there are at least 5 conditions with data points present to ensure that there is potential for a good curve fit. Therefore, 
+#' this is also the case if no filtering option is selected. Furthermore, a completeness cutoff is defined for filtering. By default 
+#' each entity (e.g. precursor) is filtered to contain at least 70% of total replicates (adjusted downward) for at least 50% of 
+#' all conditions (adjusted downward). This can be adjusted with the according arguments. In addition to the completeness cutoff, 
+#' also a significance cutoff is applied. ANOVA is used to compute the statistical significance of the change for each entity. 
+#' The resulting p-value is adjusted using the Benjamini-Hochberg method and a cutoff of q <= 0.05 is applied. Curve fits that have 
+#' a minimal value that is higher than the maximal value are excluded as they were likely wrongly fitted. Curves with a correlation 
+#' below 0.7 are not passing the filtering. If a fit does not fulfill the significance or completeness cutoff, it has a chance to 
+#' still be considered if half of its values (+/-1 value) pass the replicate completeness criteria and half do not pass it. In order 
+#' to fall into this category, the values that fulfill the completeness cutoff and the ones that do not fulfill it need to be 
+#' consecutive, meaning located next to each other based on their concentration values. Furthermore, the values that do not pass 
+#' the completeness cutoff need to be lower in intensity. This allows curves to be considered that have missing values in half
 #' of their observations due to a decrease in intensity. It can be thought of as conditions that are missing not at random (MNAR). It 
 #' is often the case that those entities do not have a significant p-value since half of their conditions are not considered due to
 #' data missingness. 
@@ -31,7 +34,7 @@
 #' @param response The name of the column containing response values, eg. log2 transformed intensities.
 #' @param dose The name of the column containing dose values, eg. the treatment concentrations.
 #' @param filter A character vector indicating if models should be filtered. The option \code{"pre"} is not available for
-#' parallel fitting of models. This is because ANOVA adjusted p-values would be calculated wrong because the dataset is split onto
+#' parallel fitting of models. This is because ANOVA adjusted p-values would be wrongly calculated because the dataset is split onto
 #' multiple cores. Default is "post" and we recommend always using "post" because compared to "none" only some additional columns are 
 #' added that contain the filter information. For ANOVA an adjusted p-value of 0.05 is used as a cutoff.
 #' @param replicate_completeness Similar to \code{completenss_MAR} of the \code{assign_missingness} function this argument sets a 
@@ -44,6 +47,7 @@
 #' set with \code{replicate_completeness}. The value provided to this argument has to be between 0 and 1, default is 0.5. It is 
 #' multiplied with the number of conditions and then adjusted downward. The resulting number is the minimal number of conditions that
 #' need to fulfill the \code{replicate_completeness} argument for a peptide to pass the filtering.
+#' @param correlation_cutoff A numeric vector specifying the correlation cutoff used for data filtering.
 #' @param log_logarithmic logical indicating if a logarithmic or log-logarithmic model is fitted. 
 #' If response values form a symmetric curve for non-log transformed dose values, a logarithmic model instead
 #' of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the 
@@ -73,7 +77,7 @@
 #' dose = concentration
 #' )
 #' }
-parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", replicate_completeness = 0.7, condition_completeness = 0.5, log_logarithmic = TRUE, retain_columns = NULL, n_cores = NULL){
+parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", replicate_completeness = 0.7, condition_completeness = 0.5, correlation_cutoff = 0.7, log_logarithmic = TRUE, retain_columns = NULL, n_cores = NULL){
   dependency_test <- c(furrr = !requireNamespace("furrr", quietly = TRUE), future = !requireNamespace("future", quietly = TRUE), parallel = !requireNamespace("parallel", quietly = TRUE))
   if (any(dependency_test)) {
     dependency_name <- names(dependency_test[dependency_test == TRUE])
@@ -109,7 +113,7 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter =
   message("Performing model fit (this may take a while) ... ", appendLF = FALSE)
   
   result <- furrr::future_map_dfr(.x = input,
-                                  .f = ~ protti::fit_drc_4p(.x, sample = {{sample}}, grouping = {{grouping}}, response = {{response}}, dose = {{dose}}, filter = filter, replicate_completeness = replicate_completeness, condition_completeness = condition_completeness, log_logarithmic = log_logarithmic, retain_columns = {{retain_columns}}, include_models = FALSE),
+                                  .f = ~ protti::fit_drc_4p(.x, sample = {{sample}}, grouping = {{grouping}}, response = {{response}}, dose = {{dose}}, filter = filter, replicate_completeness = replicate_completeness, condition_completeness = condition_completeness, correlation_cutoff = correlation_cutoff, log_logarithmic = log_logarithmic, retain_columns = {{retain_columns}}, include_models = FALSE),
                                   .options = furrr::future_options(globals = FALSE)
   )
   
