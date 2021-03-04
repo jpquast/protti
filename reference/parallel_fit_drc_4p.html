@@ -135,7 +135,20 @@ number of cores should be provided to <code>n_cores</code>. Worker can be termin
 individual fit objects when using this function as compared to the non parallel function as they are too large for efficient export from the workers.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>parallel_fit_drc_4p</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>sample</span>, <span class='va'>grouping</span>, <span class='va'>response</span>, <span class='va'>dose</span>, n_cores <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>parallel_fit_drc_4p</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  <span class='va'>sample</span>,
+  <span class='va'>grouping</span>,
+  <span class='va'>response</span>,
+  <span class='va'>dose</span>,
+  filter <span class='op'>=</span> <span class='st'>"post"</span>,
+  replicate_completeness <span class='op'>=</span> <span class='fl'>0.7</span>,
+  condition_completeness <span class='op'>=</span> <span class='fl'>0.5</span>,
+  correlation_cutoff <span class='op'>=</span> <span class='fl'>0.7</span>,
+  log_logarithmic <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  retain_columns <span class='op'>=</span> <span class='cn'>NULL</span>,
+  n_cores <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -161,6 +174,46 @@ individual fit objects when using this function as compared to the non parallel 
       <td><p>The name of the column containing dose values, eg. the treatment concentrations.</p></td>
     </tr>
     <tr>
+      <th>filter</th>
+      <td><p>A character vector indicating if models should be filtered. The option <code>"pre"</code> is not available for
+parallel fitting of models. This is because ANOVA adjusted p-values would be wrongly calculated because the dataset is split onto
+multiple cores. Default is "post" and we recommend always using "post" because compared to "none" only some additional columns are 
+added that contain the filter information. For ANOVA an adjusted p-value of 0.05 is used as a cutoff.</p></td>
+    </tr>
+    <tr>
+      <th>replicate_completeness</th>
+      <td><p>Similar to <code>completenss_MAR</code> of the <code>assign_missingness</code> function this argument sets a 
+threshold for the completeness of data. In contrast to <code>assign_missingness</code> it only determines the completeness for one 
+condition and not the comparison of two conditions. The threshold is used to calculate a minimal degree of data completeness. 
+The value provided to this argument has to be between 0 and 1, default is 0.7. It is multiplied with the number of replicates 
+and then adjusted downward. The resulting number is the minimal number of observations that a condition needs to have to be considered
+"complete enough" for the <code>condition_completeness</code> argument.</p></td>
+    </tr>
+    <tr>
+      <th>condition_completeness</th>
+      <td><p>This argument determines how many conditions need to at least fulfill the "complete enough" criteria 
+set with <code>replicate_completeness</code>. The value provided to this argument has to be between 0 and 1, default is 0.5. It is 
+multiplied with the number of conditions and then adjusted downward. The resulting number is the minimal number of conditions that
+need to fulfill the <code>replicate_completeness</code> argument for a peptide to pass the filtering.</p></td>
+    </tr>
+    <tr>
+      <th>correlation_cutoff</th>
+      <td><p>A numeric vector specifying the correlation cutoff used for data filtering.</p></td>
+    </tr>
+    <tr>
+      <th>log_logarithmic</th>
+      <td><p>logical indicating if a logarithmic or log-logarithmic model is fitted. 
+If response values form a symmetric curve for non-log transformed dose values, a logarithmic model instead
+of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the 
+reason this is the default. Log-logarithmic models are symmetric if dose values are log transformed.</p></td>
+    </tr>
+    <tr>
+      <th>retain_columns</th>
+      <td><p>A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
+additional columns <code>retain_columns = NULL</code>. Specific columns can be retained by providing their names (not in quotations marks, 
+just like other column names, but in a vector).</p></td>
+    </tr>
+    <tr>
       <th>n_cores</th>
       <td><p>Optional, the number of cores used if workers are set up manually.</p></td>
     </tr>
@@ -171,6 +224,29 @@ individual fit objects when using this function as compared to the non parallel 
     <p>A data frame is returned that contains correlations of predicted to measured values as a measure of the goodness of the curve fit, 
 an associated p-value and the four parameters of the model for each group. Furthermore, input data for plots is returned in the columns <code>plot_curve</code> 
 (curve and confidence interval) and <code>plot_points</code> (measured points).</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>If data filtering options are selected, data is filtered based on multiple criteria. In general, curves are only fitted 
+if there are at least 5 conditions with data points present to ensure that there is potential for a good curve fit. Therefore, 
+this is also the case if no filtering option is selected. Furthermore, a completeness cutoff is defined for filtering. By default 
+each entity (e.g. precursor) is filtered to contain at least 70<!-- % of total replicates (adjusted downward) for at least 50% of  -->
+all conditions (adjusted downward). This can be adjusted with the according arguments. In addition to the completeness cutoff, 
+also a significance cutoff is applied. ANOVA is used to compute the statistical significance of the change for each entity. 
+The resulting p-value is adjusted using the Benjamini-Hochberg method and a cutoff of q &lt;= 0.05 is applied. Curve fits that have 
+a minimal value that is higher than the maximal value are excluded as they were likely wrongly fitted. Curves with a correlation 
+below 0.7 are not passing the filtering. If a fit does not fulfill the significance or completeness cutoff, it has a chance to 
+still be considered if half of its values (+/-1 value) pass the replicate completeness criteria and half do not pass it. In order 
+to fall into this category, the values that fulfill the completeness cutoff and the ones that do not fulfill it need to be 
+consecutive, meaning located next to each other based on their concentration values. Furthermore, the values that do not pass 
+the completeness cutoff need to be lower in intensity. This allows curves to be considered that have missing values in half
+of their observations due to a decrease in intensity. It can be thought of as conditions that are missing not at random (MNAR). It 
+is often the case that those entities do not have a significant p-value since half of their conditions are not considered due to
+data missingness.</p>
+<p>The final filtered list is ranked based on a score calculated on entities that pass the filter. The score is the negative log10 
+of the adjusted ANOVA p-value scaled between 0 and 1 and the correlation scaled between 0 and 1 summed up and divided by 2. Thus,
+the highest score an entity can have is 1 with both the highest correlation and adjusted p-value. The rank is corresponding to 
+this score. Please note, that entities with MNAR conditions might have a lower score due to the missing or non-significant ANOVA 
+p-value. You should have a look at curves that are TRUE for <code>dose_MNAR</code> in more detail.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
