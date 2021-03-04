@@ -268,7 +268,7 @@ test_that("fit_drc_4p works", {
   # did not test the argument include_models = TRUE
   expect_is(drc_fit, "data.frame")
   expect_equal(nrow(drc_fit), 1067)
-  expect_equal(ncol(drc_fit), 10)
+  expect_equal(ncol(drc_fit), 18)
   expect_equal(round(max(drc_fit$correlation, na.rm = TRUE), digits = 3), 0.995)
   expect_equal(round(min(drc_fit$pval, na.rm = TRUE), digits = 40), 2.318708e-21)
 })

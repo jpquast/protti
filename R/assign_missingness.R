@@ -7,7 +7,6 @@
 #' @param condition The column in the data data frame containing the conditions.
 #' @param grouping The column in the data data frame containing precursor or peptide identifiers.
 #' @param intensity The column in the data data frame containing intensity values.
-#' @param noise optional, the column in the data data frame containing noise values for imputation. Only needed if noise imputation is performed.
 #' @param ref_condition The condition that is used as a reference for missingness determination. By default \code{ref_condition = "control"}.
 #' @param completeness_MAR The minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7. 
 #' It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each 
@@ -44,12 +43,12 @@
 #' retain_columns = c(pg_protein_accessions)
 #' )
 #' }
-assign_missingness <- function(data, sample, condition, grouping, intensity, noise = NULL, ref_condition = "control", completeness_MAR = 0.7, completeness_MNAR = 0.25, retain_columns = NULL){
+assign_missingness <- function(data, sample, condition, grouping, intensity, ref_condition = "control", completeness_MAR = 0.7, completeness_MNAR = 0.25, retain_columns = NULL){
   . = NULL
   conditions_no_ref <- unique(pull(data, !!ensym(condition)))[!unique(pull(data, !!ensym(condition))) %in% ref_condition]
   
   data_prep <-  data %>%
-    dplyr::distinct({{sample}}, {{condition}}, {{grouping}}, {{intensity}}, {{noise}}) %>%
+    dplyr::distinct({{sample}}, {{condition}}, {{grouping}}, {{intensity}}) %>%
     tidyr::complete(nesting(!!ensym(sample), !!ensym(condition)), !!ensym(grouping)) %>%
     dplyr::group_by({{grouping}}, {{condition}}) %>%
     dplyr::mutate(n_detect = sum(!is.na({{intensity}}))) %>%

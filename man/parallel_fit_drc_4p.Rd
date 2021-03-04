@@ -4,7 +4,20 @@
 \alias{parallel_fit_drc_4p}
 \title{Fitting four-parameter dose response curves (using parallel processing)}
 \usage{
-parallel_fit_drc_4p(data, sample, grouping, response, dose, n_cores = NULL)
+parallel_fit_drc_4p(
+  data,
+  sample,
+  grouping,
+  response,
+  dose,
+  filter = "post",
+  replicate_completeness = 0.7,
+  condition_completeness = 0.5,
+  correlation_cutoff = 0.7,
+  log_logarithmic = TRUE,
+  retain_columns = NULL,
+  n_cores = NULL
+)
 }
 \arguments{
 \item{data}{A data frame containing at least the input variables.}
@@ -16,6 +29,34 @@ parallel_fit_drc_4p(data, sample, grouping, response, dose, n_cores = NULL)
 \item{response}{The name of the column containing response values, eg. log2 transformed intensities.}
 
 \item{dose}{The name of the column containing dose values, eg. the treatment concentrations.}
+
+\item{filter}{A character vector indicating if models should be filtered. The option \code{"pre"} is not available for
+parallel fitting of models. This is because ANOVA adjusted p-values would be wrongly calculated because the dataset is split onto
+multiple cores. Default is "post" and we recommend always using "post" because compared to "none" only some additional columns are 
+added that contain the filter information. For ANOVA an adjusted p-value of 0.05 is used as a cutoff.}
+
+\item{replicate_completeness}{Similar to \code{completenss_MAR} of the \code{assign_missingness} function this argument sets a 
+threshold for the completeness of data. In contrast to \code{assign_missingness} it only determines the completeness for one 
+condition and not the comparison of two conditions. The threshold is used to calculate a minimal degree of data completeness. 
+The value provided to this argument has to be between 0 and 1, default is 0.7. It is multiplied with the number of replicates 
+and then adjusted downward. The resulting number is the minimal number of observations that a condition needs to have to be considered
+"complete enough" for the \code{condition_completeness} argument.}
+
+\item{condition_completeness}{This argument determines how many conditions need to at least fulfill the "complete enough" criteria 
+set with \code{replicate_completeness}. The value provided to this argument has to be between 0 and 1, default is 0.5. It is 
+multiplied with the number of conditions and then adjusted downward. The resulting number is the minimal number of conditions that
+need to fulfill the \code{replicate_completeness} argument for a peptide to pass the filtering.}
+
+\item{correlation_cutoff}{A numeric vector specifying the correlation cutoff used for data filtering.}
+
+\item{log_logarithmic}{logical indicating if a logarithmic or log-logarithmic model is fitted. 
+If response values form a symmetric curve for non-log transformed dose values, a logarithmic model instead
+of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the 
+reason this is the default. Log-logarithmic models are symmetric if dose values are log transformed.}
+
+\item{retain_columns}{A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
+additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks, 
+just like other column names, but in a vector).}
 
 \item{n_cores}{Optional, the number of cores used if workers are set up manually.}
 }
@@ -29,6 +70,30 @@ This function is a wrapper around \code{fit_drc_4p} that allows the use of all s
 Workers can either be set up manually before running the function with \code{future::plan(multiprocess)} or automatically by the function (maximum number of workers is 12 in this case). If workers are set up manually the 
 number of cores should be provided to \code{n_cores}. Worker can be terminated after completion with \code{future::plan(sequential)}. It is not possible to export the 
 individual fit objects when using this function as compared to the non parallel function as they are too large for efficient export from the workers.
+}
+\details{
+If data filtering options are selected, data is filtered based on multiple criteria. In general, curves are only fitted 
+if there are at least 5 conditions with data points present to ensure that there is potential for a good curve fit. Therefore, 
+this is also the case if no filtering option is selected. Furthermore, a completeness cutoff is defined for filtering. By default 
+each entity (e.g. precursor) is filtered to contain at least 70% of total replicates (adjusted downward) for at least 50% of 
+all conditions (adjusted downward). This can be adjusted with the according arguments. In addition to the completeness cutoff, 
+also a significance cutoff is applied. ANOVA is used to compute the statistical significance of the change for each entity. 
+The resulting p-value is adjusted using the Benjamini-Hochberg method and a cutoff of q <= 0.05 is applied. Curve fits that have 
+a minimal value that is higher than the maximal value are excluded as they were likely wrongly fitted. Curves with a correlation 
+below 0.7 are not passing the filtering. If a fit does not fulfill the significance or completeness cutoff, it has a chance to 
+still be considered if half of its values (+/-1 value) pass the replicate completeness criteria and half do not pass it. In order 
+to fall into this category, the values that fulfill the completeness cutoff and the ones that do not fulfill it need to be 
+consecutive, meaning located next to each other based on their concentration values. Furthermore, the values that do not pass 
+the completeness cutoff need to be lower in intensity. This allows curves to be considered that have missing values in half
+of their observations due to a decrease in intensity. It can be thought of as conditions that are missing not at random (MNAR). It 
+is often the case that those entities do not have a significant p-value since half of their conditions are not considered due to
+data missingness. 
+
+The final filtered list is ranked based on a score calculated on entities that pass the filter. The score is the negative log10 
+of the adjusted ANOVA p-value scaled between 0 and 1 and the correlation scaled between 0 and 1 summed up and divided by 2. Thus,
+the highest score an entity can have is 1 with both the highest correlation and adjusted p-value. The rank is corresponding to 
+this score. Please note, that entities with MNAR conditions might have a lower score due to the missing or non-significant ANOVA 
+p-value. You should have a look at curves that are TRUE for \code{dose_MNAR} in more detail.
 }
 \examples{
 \dontrun{
