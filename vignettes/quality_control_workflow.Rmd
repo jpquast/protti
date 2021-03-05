@@ -98,7 +98,7 @@ The CVs (in percent) are calculated with the following formula:
 
 ```{block, type='blackbox'}
 
-$$CV = \frac{standard deviation}{mean} * 100$$
+$$CV = \frac{standard ~ deviation}{mean} * 100$$
 ```
 
 
