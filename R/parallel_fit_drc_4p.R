@@ -77,7 +77,7 @@
 #' dose = concentration
 #' )
 #' }
-parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", replicate_completeness = 0.7, condition_completeness = 0.5, correlation_cutoff = 0.7, log_logarithmic = TRUE, retain_columns = NULL, n_cores = NULL){
+parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", replicate_completeness = 0.7, condition_completeness = 0.5, correlation_cutoff = 0.8, log_logarithmic = TRUE, retain_columns = NULL, n_cores = NULL){
   dependency_test <- c(furrr = !requireNamespace("furrr", quietly = TRUE), future = !requireNamespace("future", quietly = TRUE), parallel = !requireNamespace("parallel", quietly = TRUE))
   if (any(dependency_test)) {
     dependency_name <- names(dependency_test[dependency_test == TRUE])
@@ -114,7 +114,7 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter =
   
   result <- furrr::future_map_dfr(.x = input,
                                   .f = ~ protti::fit_drc_4p(.x, sample = {{sample}}, grouping = {{grouping}}, response = {{response}}, dose = {{dose}}, filter = filter, replicate_completeness = replicate_completeness, condition_completeness = condition_completeness, correlation_cutoff = correlation_cutoff, log_logarithmic = log_logarithmic, retain_columns = {{retain_columns}}, include_models = FALSE),
-                                  .options = furrr::future_options(globals = FALSE)
+                                  .options = furrr::furrr_options(globals = FALSE)
   )
   
   message("DONE", appendLF = TRUE)
@@ -124,18 +124,19 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter =
   }
   
   result <- result %>% 
-    dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$anova_pval, method = "BH")) %>% 
-    dplyr::mutate(anova_significant = ifelse(.data$anova_adj_pval > 0.05 | is.na(.data$anova_adj_pval), FALSE, TRUE)) %>% 
-    dplyr::mutate(passed_filter = (.data$enough_conditions == TRUE & .data$anova_significant == TRUE) | .data$dose_MNAR == TRUE) %>% 
     dplyr::arrange(desc(.data$correlation))
   
   if(filter == "post"){
     result <- result %>% 
-    dplyr::group_by(.data$passed_filter) %>% 
+      dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$anova_pval, method = "BH")) %>% 
+      dplyr::mutate(anova_significant = ifelse(.data$anova_adj_pval > 0.05 | is.na(.data$anova_adj_pval), FALSE, TRUE)) %>% 
+      dplyr::mutate(passed_filter = ((.data$enough_conditions == TRUE & .data$anova_significant == TRUE) | .data$dose_MNAR == TRUE) & .data$correlation >= correlation_cutoff & .data$min_model < .data$max_model) %>% 
+      dplyr::group_by(.data$passed_filter) %>% 
       dplyr::mutate(score = ifelse(.data$passed_filter, (scale_protti(-log10(.data$anova_pval), method = "01") + scale_protti(.data$correlation, method = "01")) / 2, NA)) %>% 
       dplyr::ungroup() %>% 
       dplyr::arrange(dplyr::desc(.data$correlation)) %>%
       dplyr::arrange(dplyr::desc(.data$score)) %>% 
+      dplyr::select(-.data$rank) %>% 
       tibble::rownames_to_column(var = "rank") %>% 
       dplyr::mutate(rank = ifelse(!is.na(.data$score), as.numeric(.data$rank), NA))
   }
