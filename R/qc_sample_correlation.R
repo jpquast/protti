@@ -38,6 +38,7 @@ qc_sample_correlation <- function(data, sample, grouping, intensity, condition, 
     stats::cor(method = {{method}}, use = "complete.obs")
 
   annotation <- data %>%
+    dplyr::mutate({{condition}} := as.character({{condition}})) %>% 
     dplyr::distinct({{sample}}, {{condition}}, {{digestion}}, {{run_order}}) %>%
     tibble::column_to_rownames(var = rlang::as_name(enquo(sample)))
 

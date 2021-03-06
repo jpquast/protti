@@ -13,14 +13,16 @@
 #' also a significance cutoff is applied. ANOVA is used to compute the statistical significance of the change for each entity. 
 #' The resulting p-value is adjusted using the Benjamini-Hochberg method and a cutoff of q <= 0.05 is applied. Curve fits that have 
 #' a minimal value that is higher than the maximal value are excluded as they were likely wrongly fitted. Curves with a correlation 
-#' below 0.7 are not passing the filtering. If a fit does not fulfill the significance or completeness cutoff, it has a chance to 
+#' below 0.8 are not passing the filtering. If a fit does not fulfill the significance or completeness cutoff, it has a chance to 
 #' still be considered if half of its values (+/-1 value) pass the replicate completeness criteria and half do not pass it. In order 
 #' to fall into this category, the values that fulfill the completeness cutoff and the ones that do not fulfill it need to be 
 #' consecutive, meaning located next to each other based on their concentration values. Furthermore, the values that do not pass 
-#' the completeness cutoff need to be lower in intensity. This allows curves to be considered that have missing values in half
-#' of their observations due to a decrease in intensity. It can be thought of as conditions that are missing not at random (MNAR). It 
-#' is often the case that those entities do not have a significant p-value since half of their conditions are not considered due to
-#' data missingness. 
+#' the completeness cutoff need to be lower in intensity. Lastly, the difference between the two groups is tested for statistical 
+#' significance using a Welch's t-test and a cutoff of p <= 0.1 (we want to mainly discard curves that falsly fit the other criteria 
+#' but that have clearly non-significant differences in mean). This allows curves to be considered that have missing values in 
+#' half of their observations due to a decrease in intensity. It can be thought of as conditions that are missing not 
+#' at random (MNAR). It is often the case that those entities do not have a significant p-value since half of their conditions 
+#' are not considered due to data missingness. 
 #' 
 #' The final filtered list is ranked based on a score calculated on entities that pass the filter. The score is the negative log10 
 #' of the adjusted ANOVA p-value scaled between 0 and 1 and the correlation scaled between 0 and 1 summed up and divided by 2. Thus,
@@ -77,7 +79,7 @@
 #' dose = concentration
 #' )
 #' }
-parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", replicate_completeness = 0.7, condition_completeness = 0.5, correlation_cutoff = 0.7, log_logarithmic = TRUE, retain_columns = NULL, n_cores = NULL){
+parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", replicate_completeness = 0.7, condition_completeness = 0.5, correlation_cutoff = 0.8, log_logarithmic = TRUE, retain_columns = NULL, n_cores = NULL){
   dependency_test <- c(furrr = !requireNamespace("furrr", quietly = TRUE), future = !requireNamespace("future", quietly = TRUE), parallel = !requireNamespace("parallel", quietly = TRUE))
   if (any(dependency_test)) {
     dependency_name <- names(dependency_test[dependency_test == TRUE])
@@ -114,7 +116,7 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter =
   
   result <- furrr::future_map_dfr(.x = input,
                                   .f = ~ protti::fit_drc_4p(.x, sample = {{sample}}, grouping = {{grouping}}, response = {{response}}, dose = {{dose}}, filter = filter, replicate_completeness = replicate_completeness, condition_completeness = condition_completeness, correlation_cutoff = correlation_cutoff, log_logarithmic = log_logarithmic, retain_columns = {{retain_columns}}, include_models = FALSE),
-                                  .options = furrr::future_options(globals = FALSE)
+                                  .options = furrr::furrr_options(globals = FALSE)
   )
   
   message("DONE", appendLF = TRUE)
@@ -124,18 +126,19 @@ parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter =
   }
   
   result <- result %>% 
-    dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$anova_pval, method = "BH")) %>% 
-    dplyr::mutate(anova_significant = ifelse(.data$anova_adj_pval > 0.05 | is.na(.data$anova_adj_pval), FALSE, TRUE)) %>% 
-    dplyr::mutate(passed_filter = (.data$enough_conditions == TRUE & .data$anova_significant == TRUE) | .data$dose_MNAR == TRUE) %>% 
     dplyr::arrange(desc(.data$correlation))
   
   if(filter == "post"){
     result <- result %>% 
-    dplyr::group_by(.data$passed_filter) %>% 
+      dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$anova_pval, method = "BH")) %>% 
+      dplyr::mutate(anova_significant = ifelse(.data$anova_adj_pval > 0.05 | is.na(.data$anova_adj_pval), FALSE, TRUE)) %>% 
+      dplyr::mutate(passed_filter = ((.data$enough_conditions == TRUE & .data$anova_significant == TRUE) | .data$dose_MNAR == TRUE) & .data$correlation >= correlation_cutoff & .data$min_model < .data$max_model) %>% 
+      dplyr::group_by(.data$passed_filter) %>% 
       dplyr::mutate(score = ifelse(.data$passed_filter, (scale_protti(-log10(.data$anova_pval), method = "01") + scale_protti(.data$correlation, method = "01")) / 2, NA)) %>% 
       dplyr::ungroup() %>% 
       dplyr::arrange(dplyr::desc(.data$correlation)) %>%
       dplyr::arrange(dplyr::desc(.data$score)) %>% 
+      dplyr::select(-.data$rank) %>% 
       tibble::rownames_to_column(var = "rank") %>% 
       dplyr::mutate(rank = ifelse(!is.na(.data$score), as.numeric(.data$rank), NA))
   }

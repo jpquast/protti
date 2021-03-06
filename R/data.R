@@ -19,7 +19,7 @@
 #' Rapamycin dose response example data
 #'
 #' Rapamycin example data used for the vignette about dose response data. The data is obtained from \href{https://www.nature.com/articles/s41467-020-18071-x}{Piazza 2020}
-#' and corresponds to experiment 18. FKBP1A the rapamycin binding protein and 86 (to not exceed file size limit) other randomly sampled proteins were used 
+#' and corresponds to experiment 18. FKBP1A the rapamycin binding protein and 39 other randomly sampled proteins were used 
 #' for this example dataset. The concentration range includes the following points: 0 (DMSO control), 10 pM, 100 pM, 1 nM, 10 nM, 100 nM, 1 uM, 10 uM and 100 uM.
 #'
 #' @format A data frame containing peptide level data from a Spectronaut report.
