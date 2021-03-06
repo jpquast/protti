@@ -11,14 +11,16 @@
 #' also a significance cutoff is applied. ANOVA is used to compute the statistical significance of the change for each entity. 
 #' The resulting p-value is adjusted using the Benjamini-Hochberg method and a cutoff of q <= 0.05 is applied. Curve fits that have 
 #' a minimal value that is higher than the maximal value are excluded as they were likely wrongly fitted. Curves with a correlation 
-#' below 0.7 are not passing the filtering. If a fit does not fulfill the significance or completeness cutoff, it has a chance to 
+#' below 0.8 are not passing the filtering. If a fit does not fulfill the significance or completeness cutoff, it has a chance to 
 #' still be considered if half of its values (+/-1 value) pass the replicate completeness criteria and half do not pass it. In order 
 #' to fall into this category, the values that fulfill the completeness cutoff and the ones that do not fulfill it need to be 
 #' consecutive, meaning located next to each other based on their concentration values. Furthermore, the values that do not pass 
-#' the completeness cutoff need to be lower in intensity. This allows curves to be considered that have missing values in half
-#' of their observations due to a decrease in intensity. It can be thought of as conditions that are missing not at random (MNAR). It 
-#' is often the case that those entities do not have a significant p-value since half of their conditions are not considered due to
-#' data missingness. 
+#' the completeness cutoff need to be lower in intensity. Lastly, the difference between the two groups is tested for statistical 
+#' significance using a Welch's t-test and a cutoff of p <= 0.1 (we want to mainly discard curves that falsly fit the other criteria 
+#' but that have clearly non-significant differences in mean). This allows curves to be considered that have missing values in 
+#' half of their observations due to a decrease in intensity. It can be thought of as conditions that are missing not 
+#' at random (MNAR). It is often the case that those entities do not have a significant p-value since half of their conditions 
+#' are not considered due to data missingness. 
 #' 
 #' The final filtered list is ranked based on a score calculated on entities that pass the filter. The score is the negative log10 
 #' of the adjusted ANOVA p-value scaled between 0 and 1 and the correlation scaled between 0 and 1 summed up and divided by 2. Thus,
@@ -86,7 +88,7 @@
 #' dose = concentration
 #' )
 #' }
-fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", replicate_completeness = 0.7, condition_completeness = 0.5, correlation_cutoff = 0.7, log_logarithmic = TRUE, include_models = FALSE, retain_columns = NULL){
+fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", replicate_completeness = 0.7, condition_completeness = 0.5, correlation_cutoff = 0.8, log_logarithmic = TRUE, include_models = FALSE, retain_columns = NULL){
   if (!requireNamespace("drc", quietly = TRUE)) {
     stop("Package \"drc\" is needed for this function to work. Please install it.", call. = FALSE)
   }
@@ -97,7 +99,8 @@ fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", 
   data_prep <- data %>% 
     dplyr::ungroup() %>% 
     dplyr::distinct({{sample}}, {{grouping}}, {{response}}, {{dose}}) %>%
-    tidyr::complete(nesting(!!ensym(sample), !!ensym(dose)), !!ensym(grouping)) 
+    tidyr::complete(nesting(!!ensym(sample), !!ensym(dose)), !!ensym(grouping)) %>% 
+    dplyr::mutate({{dose}} := as.numeric({{dose}}))
   
   if(filter != "none"){
     n_conditions = length(unique(dplyr::pull(data_prep, {{ dose }})))
@@ -147,26 +150,68 @@ fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", 
                     lower_vector_add = {{ dose }} %in% concentrations[1:vector_add[1]],
                     lower_vector_add_rev = {{ dose }} %in% concentrations[1:vector_add_rev[1]]) %>% 
       dplyr::group_by({{ grouping }}, .data$lower_vector) %>% 
-      dplyr::mutate(mean_vector = mean({{ response }}, na.rm = TRUE)) %>% 
+      dplyr::mutate(mean_vector = mean({{ response }}, na.rm = TRUE),
+                    sd_vector = sd({{ response }}, na.rm = TRUE),
+                    n_vector = sum(!is.na({{ response }}))) %>% 
       dplyr::group_by({{ grouping }}, .data$lower_vector_rev) %>% 
-      dplyr::mutate(mean_vector_rev = mean({{ response }}, na.rm = TRUE)) %>% 
+      dplyr::mutate(mean_vector_rev = mean({{ response }}, na.rm = TRUE),
+                    sd_vector_rev = sd({{ response }}, na.rm = TRUE),
+                    n_vector_rev = sum(!is.na({{ response }}))) %>% 
       dplyr::group_by({{ grouping }}, .data$lower_vector_add) %>% 
-      dplyr::mutate(mean_vector_add = mean({{ response }}, na.rm = TRUE)) %>% 
+      dplyr::mutate(mean_vector_add = mean({{ response }}, na.rm = TRUE),
+                    sd_vector_add = sd({{ response }}, na.rm = TRUE),
+                    n_vector_add = sum(!is.na({{ response }}))) %>% 
       dplyr::group_by({{ grouping }}, .data$lower_vector_add_rev) %>% 
-      dplyr::mutate(mean_vector_add_rev = mean({{ response }}, na.rm = TRUE)) %>% 
+      dplyr::mutate(mean_vector_add_rev = mean({{ response }}, na.rm = TRUE),
+                    sd_vector_add_rev = sd({{ response }}, na.rm = TRUE),
+                    n_vector_add_rev = sum(!is.na({{ response }}))) %>% 
+      dplyr::group_by({{ grouping }}) %>% 
+      dplyr::mutate(pval_vector = ttest_protti(list(unique(.data$mean_vector))[[1]][1], 
+                                              list(unique(.data$mean_vector))[[1]][2], 
+                                              list(unique(.data$sd_vector))[[1]][1], 
+                                              list(unique(.data$sd_vector))[[1]][2], 
+                                              list(unique(.data$n_vector))[[1]][1], 
+                                              list(unique(.data$n_vector))[[1]][2])$pval <= 0.1) %>% 
+      dplyr::mutate(pval_vector_rev = ttest_protti(list(unique(.data$mean_vector_rev))[[1]][1], 
+                                               list(unique(.data$mean_vector_rev))[[1]][2], 
+                                               list(unique(.data$sd_vector_rev))[[1]][1], 
+                                               list(unique(.data$sd_vector_rev))[[1]][2], 
+                                               list(unique(.data$n_vector_rev))[[1]][1], 
+                                               list(unique(.data$n_vector_rev))[[1]][2])$pval <= 0.1) %>%  
+      dplyr::mutate(pval_vector_add = ttest_protti(list(unique(.data$mean_vector_add))[[1]][1], 
+                                               list(unique(.data$mean_vector_add))[[1]][2], 
+                                               list(unique(.data$sd_vector_add))[[1]][1], 
+                                               list(unique(.data$sd_vector_add))[[1]][2], 
+                                               list(unique(.data$n_vector_add))[[1]][1], 
+                                               list(unique(.data$n_vector_add))[[1]][2])$pval <= 0.1) %>% 
+      dplyr::mutate(pval_vector_add_rev = ttest_protti(list(unique(.data$mean_vector_add_rev))[[1]][1], 
+                                                   list(unique(.data$mean_vector_add_rev))[[1]][2], 
+                                                   list(unique(.data$sd_vector_add_rev))[[1]][1], 
+                                                   list(unique(.data$sd_vector_add_rev))[[1]][2], 
+                                                   list(unique(.data$n_vector_add_rev))[[1]][1], 
+                                                   list(unique(.data$n_vector_add_rev))[[1]][2])$pval <= 0.1) %>% 
+      dplyr::ungroup() %>% 
+      dplyr::mutate(pval_vector = ifelse(is.na(.data$pval_vector), TRUE, .data$pval_vector),
+                    pval_vector_rev = ifelse(is.na(.data$pval_vector_rev), TRUE, .data$pval_vector_rev),
+                    pval_vector_add = ifelse(is.na(.data$pval_vector_add), TRUE, .data$pval_vector_add),
+                    pval_vector_add_rev = ifelse(is.na(.data$pval_vector_add_rev), TRUE, .data$pval_vector_add_rev)) %>% 
+      dplyr::mutate(mean_vector = ifelse(is.na(.data$mean_vector), 0, .data$mean_vector)) %>% 
+      dplyr::mutate(mean_vector_rev = ifelse(is.na(.data$mean_vector_rev), 0, .data$mean_vector_rev)) %>% 
+      dplyr::mutate(mean_vector_add = ifelse(is.na(.data$mean_vector_add), 0, .data$mean_vector_add)) %>% 
+      dplyr::mutate(mean_vector_add_rev = ifelse(is.na(.data$mean_vector_add_rev), 0, .data$mean_vector_add_rev)) %>% 
       dplyr::group_by({{ grouping }}) %>% 
       dplyr::mutate(mean_vector = min(.data$mean_vector) == .data$mean_vector) %>% 
       dplyr::mutate(mean_vector_rev = min(.data$mean_vector_rev) == .data$mean_vector_rev) %>% 
       dplyr::mutate(mean_vector_add = min(.data$mean_vector_add) == .data$mean_vector_add) %>% 
       dplyr::mutate(mean_vector_add_rev = min(.data$mean_vector_add_rev) == .data$mean_vector_add_rev) %>% 
-      dplyr::mutate(dose_MNAR = ifelse(all((.data$lower_vector & .data$enough_replicates == FALSE & .data$mean_vector)| (!.data$lower_vector & .data$enough_replicates == TRUE & !.data$mean_vector)) |
-                                      all((.data$lower_vector & .data$enough_replicates == TRUE & !.data$mean_vector)| (!.data$lower_vector & .data$enough_replicates == FALSE & .data$mean_vector)) |
-                                      all((.data$lower_vector_rev & .data$enough_replicates == FALSE & .data$mean_vector_rev)| (!.data$lower_vector_rev & .data$enough_replicates == TRUE & !.data$mean_vector_rev)) |
-                                      all((.data$lower_vector_rev & .data$enough_replicates == TRUE & !.data$mean_vector_rev)| (!.data$lower_vector_rev & .data$enough_replicates == FALSE & .data$mean_vector_rev)) |
-                                      all((.data$lower_vector_add & .data$enough_replicates == FALSE & .data$mean_vector_add)| (!.data$lower_vector_add & .data$enough_replicates == TRUE & !.data$mean_vector_add)) |
-                                      all((.data$lower_vector_add & .data$enough_replicates == TRUE & !.data$mean_vector_add)| (!.data$lower_vector_add & .data$enough_replicates == FALSE & .data$mean_vector_add)) |
-                                      all((.data$lower_vector_add_rev & .data$enough_replicates == FALSE & .data$mean_vector_add_rev)| (!.data$lower_vector_add_rev & .data$enough_replicates == TRUE & !.data$mean_vector_add_rev)) |
-                                      all((.data$lower_vector_add_rev & .data$enough_replicates == TRUE & !.data$mean_vector_add_rev)| (!.data$lower_vector_add_rev & .data$enough_replicates == FALSE & .data$mean_vector_add_rev)), TRUE, FALSE)) %>% 
+      dplyr::mutate(dose_MNAR = ifelse((all((.data$lower_vector & .data$enough_replicates == FALSE & .data$mean_vector)| (!.data$lower_vector & .data$enough_replicates == TRUE & !.data$mean_vector)) & .data$pval_vector) |
+                                      (all((.data$lower_vector & .data$enough_replicates == TRUE & !.data$mean_vector)| (!.data$lower_vector & .data$enough_replicates == FALSE & .data$mean_vector)) & .data$pval_vector) |
+                                      (all((.data$lower_vector_rev & .data$enough_replicates == FALSE & .data$mean_vector_rev)| (!.data$lower_vector_rev & .data$enough_replicates == TRUE & !.data$mean_vector_rev)) & .data$pval_vector_rev) |
+                                      (all((.data$lower_vector_rev & .data$enough_replicates == TRUE & !.data$mean_vector_rev)| (!.data$lower_vector_rev & .data$enough_replicates == FALSE & .data$mean_vector_rev)) & .data$pval_vector_rev) |
+                                      (all((.data$lower_vector_add & .data$enough_replicates == FALSE & .data$mean_vector_add)| (!.data$lower_vector_add & .data$enough_replicates == TRUE & !.data$mean_vector_add)) & .data$pval_vector_add) |
+                                      (all((.data$lower_vector_add & .data$enough_replicates == TRUE & !.data$mean_vector_add)| (!.data$lower_vector_add & .data$enough_replicates == FALSE & .data$mean_vector_add)) & .data$pval_vector_add) |
+                                      (all((.data$lower_vector_add_rev & .data$enough_replicates == FALSE & .data$mean_vector_add_rev)| (!.data$lower_vector_add_rev & .data$enough_replicates == TRUE & !.data$mean_vector_add_rev)) & .data$pval_vector_add_rev) |
+                                      (all((.data$lower_vector_add_rev & .data$enough_replicates == TRUE & !.data$mean_vector_add_rev)| (!.data$lower_vector_add_rev & .data$enough_replicates == FALSE & .data$mean_vector_add_rev)) & .data$pval_vector_add_rev), TRUE, FALSE)) %>% 
       dplyr::distinct({{ grouping }}, .data$enough_conditions, .data$anova_significant, .data$dose_MNAR) %>% 
       dplyr::mutate(passed_filter = (.data$enough_conditions == TRUE & .data$anova_significant == TRUE) | .data$dose_MNAR == TRUE)
 
@@ -190,7 +235,7 @@ fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", 
     purrr::keep(.p = ~ unique(.x$n_concentrations) > 4) # make sure that there are enough data points to even fit a curve. This is not really filtering.
   
   # fit models
-  
+
   pb <- progress::progress_bar$new(total = length(input), format = " 1/4 Model fitting [:bar] :current/:total (:percent) :eta")
   fit_objects <- purrr::map(.x = input,
                             .f = ~ drc_4p(data = .x, response = {{response}}, dose = {{dose}}, log_logarithmic = log_logarithmic, pb = pb))
@@ -214,7 +259,7 @@ fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", 
     )
   
   # calculate p-values
-  
+
   pb <- progress::progress_bar$new(total = length(input), format = "  3/4 Calculating p-values [:bar] :current/:total (:percent) :eta")
   p_value_correlation <- input %>%
     purrr::map2(.y = fit_objects, 
