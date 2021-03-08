@@ -57,7 +57,7 @@ go_enrichment <- function(data, protein_id, is_significant, go_annotations_unipr
       dplyr::ungroup() %>%
       dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}) %>%
       dplyr::group_by({{ protein_id }}) %>%
-      dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}) > 0, TRUE, FALSE)) %>% # do this to remove accidental double annotations
+      dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>% # do this to remove accidental double annotations
       dplyr::distinct()
   }
   if (!missing(go_annotations_uniprot)) {

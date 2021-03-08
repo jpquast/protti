@@ -14,10 +14,11 @@
 #' @param log2_intensity Column in the data frame containing log2 transformed intensities.
 #' @param cv_limit Optional argument specifying the CV cutoff that will be applied. Default is 0.25.
 #' @param min_conditions The minimum number of conditions for which grouping CVs should be below the cutoff.
+#' @param silent Logical argument specifiying if a message with the number of filtered out conditions should be returned.
 #'
 #' @return The CV filtered data frame.
 #' @importFrom magrittr %>%
-#' @importFrom dplyr group_by mutate filter ungroup
+#' @importFrom dplyr group_by mutate filter ungroup pull
 #' @export
 #'
 #' @examples
@@ -31,11 +32,12 @@
 #'   min_conditions = 5
 #' )
 #' }
-filter_cv <- function(data, grouping, condition, log2_intensity, cv_limit = 0.25, min_conditions) {
+filter_cv <- function(data, grouping, condition, log2_intensity, cv_limit = 0.25, min_conditions, silent = FALSE) {
   if (max(dplyr::pull(data, {{ log2_intensity }}), na.rm = TRUE) > 50) {
     stop("Please transform your data. The function requires your data to be log2 transformed.")
   }
-
+  n_groups_start <- length(unique(dplyr::pull(data, {{ grouping }})))
+  
   peptide_list <- data %>%
     dplyr::group_by({{ grouping }}, {{ condition }}) %>%
     dplyr::mutate(cv_small = (sd(2^{{ log2_intensity }}, na.rm = TRUE) / mean(2^{{ log2_intensity }}, na.rm = TRUE) < {{ cv_limit }}) / dplyr::n()) %>%
@@ -44,4 +46,12 @@ filter_cv <- function(data, grouping, condition, log2_intensity, cv_limit = 0.25
     dplyr::filter(.data$cv_count >= {{ min_conditions }}) %>%
     dplyr::select(-c(.data$cv_small, .data$cv_count)) %>%
     dplyr::ungroup()
+  
+  n_groups_end <- length(unique(dplyr::pull(peptide_list, {{ grouping }})))
+  
+  if(silent == FALSE){
+    message(n_groups_start - n_groups_end, " groups of ", n_groups_start, " were filtered out. ", round(n_groups_end / n_groups_start, digits = 2) * 100, "% of data remains.")
+  }
+  
+  peptide_list
 }

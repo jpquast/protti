@@ -14,7 +14,7 @@ woods_plot(
   protein_id = NULL,
   facet = NULL,
   colouring = NULL,
-  fold_change_cutoff = 2
+  fold_change_cutoff = 1
 )
 }
 \arguments{
