@@ -1,4 +1,4 @@
-#' plotting four-parameter dose response curves
+#' Plotting of four-parameter dose response curves
 #'
 #' Function for plotting four-parameter dose response curves for each group (precursor, peptide or protein), based on output from \code{fit_drc_4p} function.
 #'
@@ -23,6 +23,7 @@
 #' @import tidyr
 #' @import progress
 #' @import ggplot2
+#' @importFrom forcats fct_reorder
 #' @importFrom purrr pmap
 #' @importFrom rlang .data as_name enquo
 #' @importFrom magrittr %>%
@@ -50,7 +51,9 @@ plot_drc_4p <- function(data, grouping, response, dose, targets, unit = "uM", y_
   }
   
   data <- data %>% 
-    dplyr::mutate(name = paste0({{grouping}}, " (correlation = ", round(.data$correlation, digits = 2), ", Kd = ", round(.data$ec_50), ")")) %>% 
+    dplyr::ungroup() %>% 
+    dplyr::mutate(name = paste0({{grouping}}, " (correlation = ", round(.data$correlation, digits = 2), ", EC50 = ", round(.data$ec_50), ")")) %>%
+    dplyr::mutate(name = forcats::fct_reorder(.data$name, desc(.data$correlation))) %>% 
     dplyr::mutate(group_number = 1,
                   group_number = ceiling(cumsum(.data$group_number)/20)) # we do this in preparation for faceting later.
     
@@ -191,7 +194,7 @@ plot_drc_4p <- function(data, grouping, response, dose, targets, unit = "uM", y_
       if(facet == TRUE){
         grDevices::pdf(file = paste0(export_name, ".pdf"),
           width = 45,
-          height = 22.5)
+          height = 37.5)
       suppressWarnings(print(plots))
       grDevices::dev.off()
       } else {

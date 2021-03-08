@@ -17,7 +17,7 @@
 #'
 #' @import dplyr
 #' @import ggplot2
-#' @importFrom tidyr pivot_wider pivot_longer
+#' @importFrom tidyr pivot_wider pivot_longer complete
 #' @importFrom rlang .data as_name enquo ensym !!
 #' @importFrom tibble column_to_rownames
 #' @importFrom magrittr %>%
@@ -42,8 +42,9 @@ treatment_enrichment <- function(data, protein_id, is_significant, binds_treatme
  
   cont_table <- data %>%
     dplyr::group_by({{binds_treatment}}, {{is_significant}}) %>%
-    dplyr::summarize(n = dplyr::n_distinct(!!rlang::ensym(protein_id)), .groups = "drop") %>%
-    tidyr::complete({{is_significant}}, {{binds_treatment}}, fill = list(n = 0))
+    dplyr::summarize(n = dplyr::n_distinct(!!rlang::ensym(protein_id)), .groups = "drop") %>% 
+    tidyr::complete({{binds_treatment}}, {{is_significant}}, fill = list(n = 0))
+
 
   fisher_test <- cont_table %>%
     tidyr::pivot_wider(names_from = {{is_significant}}, values_from = .data$n) %>%

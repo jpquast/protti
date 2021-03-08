@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_drc_4p.R
 \name{plot_drc_4p}
 \alias{plot_drc_4p}
-\title{plotting four-parameter dose response curves}
+\title{Plotting of four-parameter dose response curves}
 \usage{
 plot_drc_4p(
   data,

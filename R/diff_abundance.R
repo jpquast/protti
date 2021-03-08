@@ -122,7 +122,7 @@ diff_abundance <-
    
     message("DONE", appendLF = TRUE)
     message("[2/2] Calculate t-tests ... ", appendLF = FALSE)
-    
+
     t_test_result <- t_test_input %>%
       dplyr::mutate(pval = purrr::map2(
         .x = .data$treated,
@@ -171,6 +171,7 @@ diff_abundance <-
       t_test_result <- data %>% 
         dplyr::select(!!enquo(retain_columns), colnames(t_test_result)[!colnames(t_test_result) %in% c("pval", "std_error", "diff", "adj_pval", "n_obs")]) %>% 
         dplyr::distinct() %>% 
+        tidyr::drop_na(!!enquo(retain_columns)) %>% 
         dplyr::right_join(t_test_result, by = colnames(t_test_result)[!colnames(t_test_result) %in% c("pval", "std_error", "diff", "adj_pval", "n_obs")]) %>% 
         dplyr::arrange(.data$adj_pval)
     }
@@ -209,6 +210,7 @@ diff_abundance <-
        t_test_mean_sd_result <- data %>% 
          dplyr::select(!!enquo(retain_columns), colnames(t_test_mean_sd_result)[!colnames(t_test_mean_sd_result) %in% c("mean_control", "mean_treated", "sd_control", "sd_treated", "n_control", "n_treated", "pval", "std_error", "diff", "adj_pval", "t_statistic", "comparison")]) %>% 
          dplyr::distinct() %>% 
+         tidyr::drop_na(!!enquo(retain_columns)) %>% 
          dplyr::right_join(t_test_mean_sd_result, by = colnames(t_test_mean_sd_result)[!colnames(t_test_mean_sd_result) %in% c("mean_control", "mean_treated", "sd_control", "sd_treated", "n_control", "n_treated", "pval", "std_error", "diff", "adj_pval", "t_statistic", "comparison")]) %>% 
          dplyr::arrange(.data$adj_pval)
      } 
@@ -297,6 +299,7 @@ diff_abundance <-
     moderated_t_test_result <- data %>% 
       dplyr::select(!!enquo(retain_columns), colnames(moderated_t_test_result)[!colnames(moderated_t_test_result) %in% c("CI_2.5", "CI_97.5", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "B", "n_obs")]) %>% 
       dplyr::distinct() %>% 
+      tidyr::drop_na(!!enquo(retain_columns)) %>% 
       dplyr::right_join(moderated_t_test_result, by = colnames(moderated_t_test_result)[!colnames(moderated_t_test_result) %in% c("CI_2.5", "CI_97.5", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "B", "n_obs")]) %>% 
       dplyr::arrange(.data$adj_pval)
   } 
@@ -401,6 +404,7 @@ diff_abundance <-
     proDA_result <- data %>% 
       dplyr::select(!!enquo(retain_columns), colnames(proDA_result)[!colnames(proDA_result) %in% c("std_error", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "df", "n_obs")]) %>% 
       dplyr::distinct() %>% 
+      tidyr::drop_na(!!enquo(retain_columns)) %>% 
       dplyr::right_join(proDA_result, by = colnames(proDA_result)[!colnames(proDA_result) %in% c("std_error", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "df", "n_obs")]) %>% 
       dplyr::arrange(.data$adj_pval)
   } 

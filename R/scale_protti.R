@@ -18,10 +18,10 @@ scale_protti <- function(x, method)
     stop("x is a ", typeof(x), " vector but needs to be a numeric vector!")
   }
   if (method == "01") {
-    result <- (x - min(x)) / (max(x) - min(x))
+    result <- (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
   }
   if (method == "center") {
-    result <- (x - mean(x)) / stats::sd(x)
+    result <- (x - mean(x, na.rm = TRUE)) / stats::sd(x, na.rm = TRUE)
   }
   result
 }
