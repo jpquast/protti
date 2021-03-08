@@ -1,10 +1,10 @@
 ---
-title: "Dose Response Data Analysis Workflow"
+title: "Dose-Response Data Analysis Workflow"
 author: "Jan-Philipp Quast"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Dose Response Data Analysis Workflow}
+  %\VignetteIndexEntry{Dose-Response Data Analysis Workflow}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -23,15 +23,15 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-This vignette will take you through all important steps for the analysis of dose response experiments with **protti**.
+This vignette will take you through all important steps for the analysis of dose-response experiments with **protti**.
 
 Before analysing your data please ensure that it is of sufficient quality by using **protti**'s quality control functions (see [Quality control (QC) workflow](https://jpquast.github.io/protti/articles/quality_control_workflow.html)) If you would like to compare a control condition with one treatment condition (or multiple unrelated treatments) you can check out the data analysis vignette for single dose treatment data. For experiments with treatment titrations (i.e. samples treated with different amounts of the same compound, protein, metabolite, element, ion, etc.) you can fit sigmoidal log-logistic regression curves to the data and determine significantly changing precursors, peptides or proteins based on Pearson correlation and ANOVA q-value.
 
-A typical dose response experiment contains multiple samples that were treated with different amounts of e.g. a drug. Replicates of samples treated with the same dose make up a condition. Commonly, the first concentration is 0 ( = control; e.g. the treatment with the solvent of the drug). Dose response treatments require a minimal number of treatments to fit curves with sufficient quality. In **protti** at least 5 different conditions should be present. Another consideration for your experiment is the range of concentrations. On the one hand they should not be too close together since effects are usually best identified over a larger concentration range. On the other hand you should make sure to not space them out too far from each other. It is generally advised to space them evenly on a logarithmic scale of the base 10 or $e$ (Euler's number). You can also include steps in between e.g. 100, 500, 1000 or 100, 200, 1000 for a log10 scale. Using a rather broad concentration range for an experiment in which you do not know what to expect is advisable. 
+A typical dose-response experiment contains multiple samples that were treated with different amounts of e.g. a drug. Replicates of samples treated with the same dose make up a condition. Commonly, the first concentration is 0 ( = control; e.g. the treatment with the solvent of the drug). Dose-response treatments require a minimal number of treatments to fit curves with sufficient quality. In **protti** at least 5 different conditions should be present. Another consideration for your experiment is the range of concentrations. On the one hand they should not be too close together since effects are usually best identified over a larger concentration range. On the other hand you should make sure to not space them out too far from each other. It is generally advised to space them evenly on a logarithmic scale of the base 10 or $e$ (Euler's number). You can also include steps in between e.g. 100, 500, 1000 or 100, 200, 1000 for a log10 scale. Using a rather broad concentration range for an experiment in which you do not know what to expect is advisable. 
 
-**protti** is fitting four-parameter log-logistic dose response models to your data. It utilizes the `drm()` and `LL.4()` functions from the [`drc`](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0146021) package for this.You can also select a non logarithmic model using the `L.4()` function in case your data does not follow a log-logistic but a logistic regression. 
+**protti** is fitting four-parameter log-logistic dose-response models to your data. It utilizes the `drm()` and `LL.4()` functions from the [`drc`](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0146021) package for this. You can also select a non logarithmic model using the `L.4()` function in case your data does not follow a log-logistic but a logistic regression. 
 
-For limited proteolysis-coupled to mass spectrometry ([LiP-MS](https://www.nature.com/articles/nbt.2999)) data, dose response curves have been used previously for the identification of drug binding sites in complex proteomes ([Piazza 2020](https://www.nature.com/articles/s41467-020-18071-x)). Since LiP-MS data is usually analysed on the peptide or precursor level, utilising additional information about peptide behaviour from multiple conditions reduces false discovery rate. 
+For limited proteolysis-coupled to mass spectrometry ([LiP-MS](https://www.nature.com/articles/nbt.2999)) data, dose-response curves have been used previously for the identification of drug binding sites in complex proteomes ([Piazza 2020](https://www.nature.com/articles/s41467-020-18071-x)). Since LiP-MS data is usually analysed on the peptide or precursor level, utilising additional information about peptide behaviour from multiple conditions reduces false discovery rate. 
 
 # Getting started
 
@@ -47,7 +47,7 @@ library(ggplot2)
 
 ## Loading data
 
-For this vignette we are using a subset of proteins from a rapamycin dose response experiment of HeLa cell lysates followed by LiP-MS. Rapamycin forms a gain-of-function complex with the FK506-binding protein (FKBP12) that binds and allosterically inhibits mTORC1 ([Sabatini 1994](https://www.sciencedirect.com/science/article/pii/0092867494905703?via%3Dihub)). Since Rapamycin is known to be a highly specific drug, we expect FKBP12 to show up as one of the only interacting proteins. 
+For this vignette we are using a subset of proteins from an experiment of HeLa cell lysates treated with 9 doses of Rapamycin followed by LiP-MS. Rapamycin forms a gain-of-function complex with the FK506-binding protein (FKBP12) that binds and allosterically inhibits mTORC1 ([Sabatini 1994](https://www.sciencedirect.com/science/article/pii/0092867494905703?via%3Dihub)). Since Rapamycin is known to be a highly specific drug, we expect FKBP12 to show up as one of the only interacting proteins. 
 
 We included 39 random proteins and FKBP12 in this sample data set. The proteins were sampled using the seed 123. 
 
@@ -58,7 +58,7 @@ If you want to read your data into R, we suggest using the `read_protti()` funct
 rapamycin_dose_response <- read_protti("your_data.csv")
 ```
 
-In this example the rapamycin dose response data set is included in protti and you can easily use it by calling the `data()` function. This will load the data into your R session.
+In this example the rapamycin dose-response data set is included in protti and you can easily use it by calling the `data()` function. This will load the data into your R session.
 
 ```{r load_data, warning = FALSE}
 utils::data("rapamycin_dose_response")
@@ -66,7 +66,7 @@ utils::data("rapamycin_dose_response")
 
 ## Cleaning data
 
-After loading data into R we would like to clean it up in order to remove rows that are problematic for our analysis. The `rapamycin_dose_response` data is based on a report from [Spectronaut™](https://biognosys.com/shop/spectronaut) software. It includes convenient columns that label peptides as being decoys (`eg_is_decoy`). Other software reports might have similar columns that should be checked. [MaxQuant](https://www.maxquant.org/) for example includes information on contaminating proteins that you should remove prior to data analysis. In this case we would like to remove any peptides left in the report that are decoys (used for false discovery rate estimation). It is a good practice to just run this even though usually decoys are already filtered out. 
+After loading data into R we would like to clean it up in order to remove rows that are problematic for our analysis. The `rapamycin_dose_response` data is based on a report from [Spectronaut™](https://biognosys.com/shop/spectronaut). It includes convenient columns that label peptides as being decoys (`eg_is_decoy`). Other software reports might have similar columns that should be checked. [MaxQuant](https://www.maxquant.org/) for example includes information on contaminating proteins that you should remove prior to data analysis. In this case we would like to remove any peptides left in the report that are decoys (used for false discovery rate estimation). It is a good practice to just run this even though usually decoys are already filtered out. 
 
 Due to the fact that with increasing raw intensities (`fg_quantity`) also variances increase, statistical tests would have a bias towards lower intense peptides or proteins. Therefore you should log2 transform your data to correct for this mean-variance relationship. We do this by using `dplyr`’s `mutate()` together with `log2()`.
 
@@ -104,7 +104,7 @@ data_normalised <- data_normalised %>%
 
 ## Clustering of samples
 
-Before we fit dose response models to our data, we can check how samples cluster. Ideally, samples that belong to the same treatment concentration cluster together. A common way that you can analyse this is correlation based hierachical clustering using the `qc_sample_correlation()` function from **protti**. Basically, the correlation of samples is calculated based on the correlation of precursor (or peptide/protein) intensities. By default `qc_sample_correlation()` uses spearman correlation, however you can change that to any correlation supported by the `cor()` function. 
+Before we fit dose-response models to our data, we can check how samples cluster. Ideally, samples that belong to the same treatment concentration cluster together. A common way that you can analyse this is correlation based hierachical clustering using the `qc_sample_correlation()` function from **protti**. Basically, the correlation of samples is calculated based on the correlation of precursor (or peptide/protein) intensities. By default `qc_sample_correlation()` uses spearman correlation, however you can change that to any correlation supported by the `cor()` function. 
 
 _Note: Many of **protti**'s plotting function also have the option to display an interactive version of the plot with an `interactive` argument._
 
@@ -128,9 +128,9 @@ qc_pca(data = data_normalised,
        condition = r_condition)
 ```
 
-# Fitting dose response curves
+# Fitting dose-response curves
 
-The main part of a dose response data analysis is the `fit_drc_4p()` function. It fits four-parameter log-logistic dose response curves for every precursor (or peptide/protein) with the following equation:
+The main part of a dose-response data analysis is the `fit_drc_4p()` function. It fits four-parameter log-logistic dose-response curves for every precursor (or peptide/protein) with the following equation:
 
 $$y = d + \frac{a - d}{1 + (\frac{x}{c})^{-b}}$$
 $x$ is the dependent variable  
@@ -174,7 +174,7 @@ parallel_fit <- data_normalised %>%
 future::plan(future::sequential)
 ```
 
-If we have a look at all precursors based on their rank (calculated from correlation and ANOVA q-value), we can see that as expected most of them are FKBP12 (P62942) peptides. One benefit of analysing LiP-MS data on the precursor level (rather than peptide data) is that multiple lines of evidence for a change in the specific peptide can be used (we have data for each different charge and modification state). Therefore, it is always good to check if there are other precursors of a good scoring peptide that do not show any regulation at all. This would mean that the reason for the observed response is not based on a biological effect.
+If we have a look at all precursors based on their rank (calculated from correlation and ANOVA q-value), we can see that as expected most of them are FKBP12 (P62942) peptides. One benefit of analysing LiP-MS data on the precursor level (rather than peptide level) is that multiple lines of evidence for a change in the specific peptide can be used (we have data for each different charge and modification state). Therefore, it is always good to check if there are other precursors of a good scoring peptide that do not show any regulation at all. This would mean that the reason for the observed response is not based on a biological effect.
 
 ```{r result_analysis, echo=FALSE, results='asis'}
 fit %>% 
