@@ -220,48 +220,6 @@ test_that("volcano_protti works", {
   expect_error(print(p_target), NA)
 })
 
-test_that("protein_abundance_normalisation works", {
-  # does not test the paired argument. No change of the completeness argument is tested
-  protein_abundance <- protein_abundance %>%
-    dplyr::rename(protein_intensity = normalised_intensity_log2) %>%
-    assign_missingness(sample = sample,
-                       condition = condition,
-                       grouping = protein,
-                       intensity = protein_intensity,
-                       ref_condition = "condition_1")
-
-  abundance_normalised_ref <- protein_abundance_normalisation(lip_peptides = missing_data,
-                                                          tc_proteins = protein_abundance,
-                                                          sample = sample,
-                                                          grouping = peptide,
-                                                          condition = condition,
-                                                          protein_id = protein,
-                                                          peptide_intensity = normalised_intensity_log2,
-                                                          protein_intensity = protein_intensity,
-                                                          method = "ref_vs_rest",
-                                                          comparison = comparison)
-  expect_is(abundance_normalised_ref, "data.frame")
-  expect_equal(nrow(abundance_normalised_ref), 5648)
-  expect_equal(ncol(abundance_normalised_ref), 14)
-  expect_equal(round(min(abundance_normalised_ref$adj_pval, na.rm = TRUE), digits = 9), 0.01394052)
-
-  abundance_normalised_all <- protein_abundance_normalisation(lip_peptides = missing_data,
-                                                              tc_proteins = protein_abundance,
-                                                              sample = sample,
-                                                              grouping = peptide,
-                                                              condition = condition,
-                                                              protein_id = protein,
-                                                              peptide_intensity = normalised_intensity_log2,
-                                                              protein_intensity = protein_intensity,
-                                                              method = "all_vs_all",
-                                                              comparison = comparison)
-  expect_is(abundance_normalised_all, "data.frame")
-  expect_equal(nrow(abundance_normalised_all), 5648)
-  expect_equal(ncol(abundance_normalised_all), 15)
-  expect_equal(round(min(abundance_normalised_all$adj_pval, na.rm = TRUE), digits = 9), 0.002556753)
-  expect_equal(round(min(abundance_normalised_all$pval_tukey, na.rm = TRUE), digits = 9), 0)
-})
-
 drc_fit <- fit_drc_4p(data = missing_data_drc, sample = sample, grouping = peptide, response = normalised_intensity_log2, dose = concentration, log_logarithmic = TRUE, retain_columns = c(protein))
 
 test_that("fit_drc_4p works", {

@@ -1,5 +1,5 @@
 ---
-title: "Qualtiy control (QC) workflow"
+title: "Qualtiy Control (QC) Workflow"
 author: "Dina Schuster"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -22,6 +22,9 @@ knitr::opts_chunk$set(
 ```
 
 # Introduction
+
+This vignette will give you an overview of how you can perform quality control of your bottom-up proteomics or LiP-MS data.
+For help with data analysis you can check out our [single dose treatment vignette](https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html) and our [data analysis vignette for dose response data](https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html).
 
 When working with proteomics and limited proteolysis-coupled mass spectrometry ([LiP-MS](https://doi.org/10.1038/nprot.2017.100)) data, it is important to ensure that the data is of sufficient quality before inferring biological relevance and meaning from it. In general, there are several ways in which this can be done: 
 
