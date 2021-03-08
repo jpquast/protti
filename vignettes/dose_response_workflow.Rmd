@@ -23,19 +23,21 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-After ensuring that your experiment generated data of sufficient quality by using **protti**s quality control functions (see [Quality control (QC) workflow](https://jpquast.github.io/protti/articles/quality_control_workflow.html)), you can continue with data analysis. If you just compare a control condition with one treatment condition (or multiple unrelated treatments) you can check out the vignette for the analysis of binary data. For experiments with a dose response treatment we can fit sigmoidal log-logistic regression curves to the data and determine significantly changing precursors, peptides or proteins. 
+This vignette will take you through all important steps for the analysis of dose response experiments with **protti**.
 
-An experiment with a dose response treatment usually contains multiple conditions that are treatments with e.g. a drug in increasing concentrations. Commonly, the first concentration is 0 (thus just the treatment with the solvent of the drug). Furthermore, dose response treatments require a minimal number of treatments to fit curves with sufficient quality. In **protti** at least 5 conditions should be present. Another consideration is the range of concentrations. On the one hand they should not be too close together since effects are usually best identified over a larger concentration range. On the other hand you should make sure to not space them out too far, however that is usually less of a problem. It is generally advised to space them evenly on a logarithmic scale of the base 10 or $e$ (Euler's number). You can also include steps in between e.g. 100, 500, 1000 or 100, 200, 1000 for a log10 scale. Using a rather broad concentration range for an experiment in which you do not know what to expect is generally advisable. 
+Before analysing your data please ensure that it is of sufficient quality by using **protti**'s quality control functions (see [Quality control (QC) workflow](https://jpquast.github.io/protti/articles/quality_control_workflow.html)) If you would like to compare a control condition with one treatment condition (or multiple unrelated treatments) you can check out the data analysis vignette for single dose treatment data. For experiments with treatment titrations (i.e. samples treated with different amounts of the same compound, protein, metabolite, element, ion, etc.) you can fit sigmoidal log-logistic regression curves to the data and determine significantly changing precursors, peptides or proteins based on Pearson correlation and ANOVA q-value.
 
-**protti** is fitting four-parameter log-logistic dose-response models to your data. It utilizes the `drm()` and `LL.4()` functions from the [`drc`](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0146021) package for this. If you chose to, you can also select a non logarithmic model using the `L.4()` function in case your data does not have a log-logistic but a logistic distribution. 
+A typical dose response experiment contains multiple samples that were treated with different amounts of e.g. a drug. Replicates of samples treated with the same dose make up a condition. Commonly, the first concentration is 0 ( = control; e.g. the treatment with the solvent of the drug). Dose response treatments require a minimal number of treatments to fit curves with sufficient quality. In **protti** at least 5 different conditions should be present. Another consideration for your experiment is the range of concentrations. On the one hand they should not be too close together since effects are usually best identified over a larger concentration range. On the other hand you should make sure to not space them out too far from each other. It is generally advised to space them evenly on a logarithmic scale of the base 10 or $e$ (Euler's number). You can also include steps in between e.g. 100, 500, 1000 or 100, 200, 1000 for a log10 scale. Using a rather broad concentration range for an experiment in which you do not know what to expect is advisable. 
 
-For limited proteolysis coupled to mass spectrometry ([LiP-MS](https://www.nature.com/articles/nbt.2999)) data, dose-response curves have been used previously for the identification of drug binding sites in complex proteomes ([Piazza 2020](https://www.nature.com/articles/s41467-020-18071-x)). Since LiP-MS data is usually analysed on the peptide or precursor level, utilizing additional information about peptide behavior from multiple conditions reduces false discovery rate. 
+**protti** is fitting four-parameter log-logistic dose response models to your data. It utilizes the `drm()` and `LL.4()` functions from the [`drc`](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0146021) package for this.You can also select a non logarithmic model using the `L.4()` function in case your data does not follow a log-logistic but a logistic regression. 
+
+For limited proteolysis-coupled to mass spectrometry ([LiP-MS](https://www.nature.com/articles/nbt.2999)) data, dose response curves have been used previously for the identification of drug binding sites in complex proteomes ([Piazza 2020](https://www.nature.com/articles/s41467-020-18071-x)). Since LiP-MS data is usually analysed on the peptide or precursor level, utilising additional information about peptide behaviour from multiple conditions reduces false discovery rate. 
 
 # Getting started
 
-Before starting the analysis of your data you need to load **protti** and additional packages utilized for the analysis. As described on the [main page](https://jpquast.github.io/protti/index.html) of **protti**, the [tidyverse](https://www.tidyverse.org) package collection is by design working well together with the rest of the package. You can load packages after you installed them with the `library()` function.
+Before starting the analysis of your data you need to load **protti** and additional packages utilised for the analysis. As described on the [main page](https://jpquast.github.io/protti/index.html) of **protti**, the [tidyverse](https://www.tidyverse.org) package collection is by design working well together with the rest of the package. You can load packages after you installed them with the `library()` function.
 
-```{r load_packages}
+```{r load_packages, warning = FALSE, message = FALSE}
 # Load packages
 library(protti)
 library(dplyr)
@@ -45,9 +47,9 @@ library(ggplot2)
 
 ## Loading data
 
-For this vignette we are using a subset of proteins from a rapamycin dose response treatment of HeLa cell lysates followed by LiP-MS. Rapamycin forms a gain-of-function complex with the FK506-binding protein (FKBP12) that binds and allosterically inhibits mTORC1 ([Sabatini 1994](https://www.sciencedirect.com/science/article/pii/0092867494905703?via%3Dihub)). Since Rapamycin is known to be a highly specific drug, we expect FKBP12 to show up as one of the only interacting proteins. 
+For this vignette we are using a subset of proteins from a rapamycin dose response experiment of HeLa cell lysates followed by LiP-MS. Rapamycin forms a gain-of-function complex with the FK506-binding protein (FKBP12) that binds and allosterically inhibits mTORC1 ([Sabatini 1994](https://www.sciencedirect.com/science/article/pii/0092867494905703?via%3Dihub)). Since Rapamycin is known to be a highly specific drug, we expect FKBP12 to show up as one of the only interacting proteins. 
 
-We included 39 random proteins and FKBP12 in this sample dataset. The proteins were sampled using the seed 123. 
+We included 39 random proteins and FKBP12 in this sample data set. The proteins were sampled using the seed 123. 
 
 If you want to read your data into R, we suggest using the `read_protti()` function. This function is a wrapper around the fast `fread()` function from the [`data.table`](https://rdatatable.gitlab.io/data.table/) package and the `clean_names()` function from the [`janitor`](http://sfirke.github.io/janitor/) package. This will allow you to not only load your data into R very fast, but also to clean up the column names into lower snake case. This will make it easier to remember them and to use them in your data analysis.
 
@@ -56,23 +58,23 @@ If you want to read your data into R, we suggest using the `read_protti()` funct
 rapamycin_dose_response <- read_protti("your_data.csv")
 ```
 
-In this example the rapamycin dose-response dataset is included in protti and you can easily use it by calling the `data()` function. This will load the data into your R session.
+In this example the rapamycin dose response data set is included in protti and you can easily use it by calling the `data()` function. This will load the data into your R session.
 
-```{r load_data}
+```{r load_data, warning = FALSE}
 utils::data("rapamycin_dose_response")
 ```
 
 ## Cleaning data
 
-After loading data into R we would like to clean it up in order to remove rows that are problematic for our analysis. The `rapamycin_dose_response` data is based on a report from the [Spectronaut™](https://biognosys.com/shop/spectronaut) software. It includes convenient columns that label peptides as being decoys (`eg_is_decoy`). Other software reports might have similar columns that should be checked. [MaxQuant](https://www.maxquant.org/) for example includes information on contaminating proteins that you should remove prior to data analysis. In this case we would like to remove any peptides left in the report that are decoys (used for false discovery rate estimation). It is a good practice to just run this even though usually decoys are already filtered out. 
+After loading data into R we would like to clean it up in order to remove rows that are problematic for our analysis. The `rapamycin_dose_response` data is based on a report from [Spectronaut™](https://biognosys.com/shop/spectronaut) software. It includes convenient columns that label peptides as being decoys (`eg_is_decoy`). Other software reports might have similar columns that should be checked. [MaxQuant](https://www.maxquant.org/) for example includes information on contaminating proteins that you should remove prior to data analysis. In this case we would like to remove any peptides left in the report that are decoys (used for false discovery rate estimation). It is a good practice to just run this even though usually decoys are already filtered out. 
 
 Due to the fact that with increasing raw intensities (`fg_quantity`) also variances increase, statistical tests would have a bias towards lower intense peptides or proteins. Therefore you should log2 transform your data to correct for this mean-variance relationship. We do this by using `dplyr`’s `mutate()` together with `log2()`.
 
 In addition to filtering and log2 transformation it is also advised to median normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. **protti** provides the `median_normalisation()` function for this purpose. This function generates an additional column called `normalised_intensity_log2` that contains the normalised intensities.
 
-Note: If your search tool already normalised your data you should not normalise it another time.
+_Note: If your search tool already normalised your data you should not normalise it again._
 
-In addition, to the removal of decoys we also remove any non-proteotypic peptides (`pep_is_proteotypic`) from our analysis. This is specific for the analysis of LiP-MS data. If a peptide is non-proteotypic it is part of two proteins. If we detect a change in non-proteotypic peptides it is not possible to clearly assign which of the two proteins it comes from and which is the protein affected by your treatment. 
+In addition to the removal of decoys we also remove any non-proteotypic peptides (`pep_is_proteotypic`) from our analysis. This is specific for the analysis of LiP-MS data. If a peptide is non-proteotypic it is part of two or more proteins. If we detect a change in non-proteotypic peptides it is not possible to clearly assign which of the proteins it is coming from. 
 
 ```{r filter_transform_normalise}
 # Filter, log2 transform and normalise data
@@ -84,11 +86,11 @@ data_normalised <- rapamycin_dose_response %>%
   filter(pep_is_proteotypic == TRUE)
 ```
 
-It is also useful to check the intensity distribution of precursors overall with the **protti** function `qc_intensity_distribution()`. Usually the distribution of intensities is a skewed normal distribution of values missing on the left flank. This is due to the detection limit of the mass spectrometer. The probability of not observing a value gets higher with decreasing intensities. 
+It is also useful to check the intensity distribution of all precursors with the **protti** function `qc_intensity_distribution()`. Usually, the distribution of intensities is a skewed normal distribution of values missing on the left flank. This is due to the detection limit of the mass spectrometer. The probability of not observing a value gets higher with decreasing intensities. 
 
 For experiments measured in data independent acquisition (DIA) mode. It is good to filter out very low intensity values that are not part of the distribution. These values are likely false assignments of peaks. If you look closely you can see a small peak around 0 corresponding to these values. In the case of our distribution we could chose a cutoff at a log2 intensity of 5, which corresponds to a raw intensity of 32. 
 
-```{r intensity_distribution, fig.width = 8, fig.height = 6}
+```{r intensity_distribution, fig.align = "center", fig.width = 7, fig.height = 5}
 qc_intensity_distribution(data = data_normalised,
                           grouping = eg_precursor_id,
                           intensity = normalised_intensity_log2,
@@ -102,11 +104,11 @@ data_normalised <- data_normalised %>%
 
 ## Clustering of samples
 
-Before we fit dose-response models to our data, we can check how samples cluster. Ideally, samples that belong to the same treatment concentration cluster together. A common way that you can analyse this is correlation based hirachical clustering using the `qc_sample_correlation()` function from **protti**. Basically, the correlation of samples is calculated based on the correlation of precursor (or peptide/protein) intensities. By default `qc_sample_correlation()` uses spearman correlation, however you can change that to any correlation supported by the `cor()` function. 
+Before we fit dose response models to our data, we can check how samples cluster. Ideally, samples that belong to the same treatment concentration cluster together. A common way that you can analyse this is correlation based hierachical clustering using the `qc_sample_correlation()` function from **protti**. Basically, the correlation of samples is calculated based on the correlation of precursor (or peptide/protein) intensities. By default `qc_sample_correlation()` uses spearman correlation, however you can change that to any correlation supported by the `cor()` function. 
 
-Note: Many of **protti**s plotting function also have the option to display an interactive version of the plot with an `interactive` argument.
+_Note: Many of **protti**'s plotting function also have the option to display an interactive version of the plot with an `interactive` argument._
 
-```{r sample_correlation, fig.width = 8, fig.height = 6}
+```{r sample_correlation, fig.align = "center", fig.width = 7, fig.height = 5}
 qc_sample_correlation(data = data_normalised,
                       sample = r_file_name,
                       grouping = eg_precursor_id,
@@ -114,11 +116,11 @@ qc_sample_correlation(data = data_normalised,
                       condition = r_condition)
 ```
 
-For our Rapamycin dataset we cannot identify any clear sample clustering based on correlation, because only a small subset of proteins was selected for this example. Furthermore, datasets in which only a few changes are expected commonly do not cluster nicely. This is because precursors are having the same intensity values throughout all conditions and clustering is in this case based on variance. If many changes occur, samples should usually cluster nicely. 
+For our Rapamycin data set we cannot identify any clear sample clustering based on correlation, because only a small subset of proteins was selected for this example. Furthermore, data sets in which only a few changes are expected commonly do not cluster nicely. This is because precursors/peptides/proteins have very similar intensity values throughout all conditions and clustering is in this case based on variance. In case of more global changes samples should usually cluster nicely. 
 
 In addition to correlation based clustering a principal component analysis can be performed using the **protti** function `qc_pca()`. Similar to before, good clustering is usually dependent on the amount of changing precursors (or peptides/proteins). 
 
-```{r sample_pca, fig.width = 8, fig.height = 6}
+```{r sample_pca, fig.align = "center", fig.width = 7, fig.height = 5, warning = FALSE, message = FALSE}
 qc_pca(data = data_normalised,
        sample = r_file_name,
        grouping = eg_precursor_id,
@@ -126,9 +128,9 @@ qc_pca(data = data_normalised,
        condition = r_condition)
 ```
 
-# Fitting dose-response curves
+# Fitting dose response curves
 
-The main part of a dose-response data analysis is the `fit_drc_4p()` function. It fits four-parameter log-logistic dose response curves for every precursor (or peptide/protein) with the following equation:
+The main part of a dose response data analysis is the `fit_drc_4p()` function. It fits four-parameter log-logistic dose response curves for every precursor (or peptide/protein) with the following equation:
 
 $$y = d + \frac{a - d}{1 + (\frac{x}{c})^{-b}}$$
 $x$ is the dependent variable  
@@ -139,8 +141,7 @@ $c$ is the point of inflection
 $b$ is the Hill's coefficient (e.g. the negative slope at the inflection point)  
 
 
-The output of `fit_drc_4p()` provides extensive information on the goodness of fit. Furthermore, the function filters and ranks fits based on several criteria which include completeness of data and a significance cutoff based on an adjusted p-value obtained from ANOVA. For details about the filtering steps you can read the function documentation by calling `?fit_drc_4p`. If you only care about your potential hits, you can chose `filter = "pre"`, which filters the data before model fitting. This speeds up the process because less models need to be fit. If you want to perform enrichment analysis you should keep the default `filter = "post"`. This will fit all possible models and then only annotate models based on if they passed or failed the filtering step (`passed_filter`). 
-
+The output of `fit_drc_4p()` provides extensive information on the goodness of fit. Furthermore, the function filters and ranks fits based on several criteria which include completeness of data and a significance cutoff based on an adjusted p-value obtained from ANOVA. For details about the filtering steps you can read the function documentation by calling `?fit_drc_4p`. If you only care about your potential hits (and exclude precursors/peptides/proteins that do not pass the filtering e.g. due to too little observations), you can choose `filter = "pre"`, which filters the data before model fitting. This speeds up the process because less models need to be fit. If you want to perform enrichment analysis later on you should keep the default `filter = "post"`. This will fit all possible models and then only annotate models based on whether they passed or failed the filtering step (`passed_filter`). 
 
 ```{r model_fit}
 fit <- data_normalised %>% 
@@ -152,9 +153,9 @@ fit <- data_normalised %>%
              retain_columns = c(pg_protein_accessions)) # make sure to retain columns that you need later but that are not part of the function
 ```
 
-If you have to fit many models this function may take about an hour or longer. If you have the computational resources you can speed this up by using `parallel_fit_drc_4p()`, a parallel version of this function. 
+If you have to fit many models this function may take about an hour or longer. If you have the computational resources you can speed this up by using `parallel_fit_drc_4p()`, a parallelised version of this function. 
 
-Note: Keep in mind that by spreading the model fitting over multiple cores, more memory than usual is needed. Furthermore, using the maximal number of available cores may not be the most efficient, because it takes time to copy the data too and from each core, which will not be performed in parallel. Therefore, it is adviced that the run time on each core is at least as long as the time to set up (data transfer, environment preparation etc.) all cores.
+_Note: Keep in mind that by spreading the model fitting over multiple cores, more memory than usual is needed. Furthermore, using the maximal number of available cores may not be the most efficient, because it takes time to copy the data to and from each core - this process will not be performed in parallel. Therefore, it is advised that the run time on each core is at least as long as the time to set up (data transfer, environment preparation etc.) all cores._
 
 ```{r parallel_model_fit, eval = FALSE}
 # setup of cores. Make sure you have the future package installed
@@ -173,7 +174,7 @@ parallel_fit <- data_normalised %>%
 future::plan(future::sequential)
 ```
 
-If we have a look at all precursors based on their rank (calculated from correlation and ANOVA q-value), we can see that as expected most of them are FKBP12 (P62942) peptides. One benefit of analysing LiP-MS data on the precursor level is that multiple lines of evidence for a change in the specific peptide can be used. Therefore, it is always good to check if there are other precursors of a good scoring peptide that do not show any regulation at all. This would mean that the reason for the observed response is not based on a biological effect.
+If we have a look at all precursors based on their rank (calculated from correlation and ANOVA q-value), we can see that as expected most of them are FKBP12 (P62942) peptides. One benefit of analysing LiP-MS data on the precursor level (rather than peptide data) is that multiple lines of evidence for a change in the specific peptide can be used (we have data for each different charge and modification state). Therefore, it is always good to check if there are other precursors of a good scoring peptide that do not show any regulation at all. This would mean that the reason for the observed response is not based on a biological effect.
 
 ```{r result_analysis, echo=FALSE, results='asis'}
 fit %>% 
@@ -188,7 +189,7 @@ fit %>%
 
 Since we know the true positive binding partner of Rapamycin to be FKBP12 we can plot the true positive rate based on the rank each precursor received. 
 
-```{r true_positive_rate, echo=FALSE, fig.width = 8, fig.height = 6}
+```{r true_positive_rate, fig.align = "center", echo=FALSE, fig.width = 7, fig.height = 5}
 fit %>% 
   filter(passed_filter == TRUE) %>% 
   mutate(binds_treatment = pg_protein_accessions == "P62942") %>%  # create new column with prior knowledge about binding partners of treatment
@@ -207,17 +208,20 @@ fit %>%
         axis.title.y = ggplot2::element_text(size = 15),
         plot.margin = margin(c(10, 20, 10, 10)))
 ```
-It may happen that many precursors pass the filtering threshold and are thus potentially affected by the treatment. This is because filtering threshold are not very strict. If you have information about real targets of your treatment, you can set a manual rank cutoff based on the true positive rate evaluation. It is likely that precursors among known targets are also regulated by your treatment. Precursors that have a low rank with not many true positive hits in their vicinity might not be actual hits. You can set a manual rank cutoff at a point where the true positive rate flattens. 
 
-If the true positive rate does not drop and almost all of your hits are true positives, you can try to reduce the correlation cutoff in `fit_drc_4p()` to be even less conservative. This might allow you to find novel interaction partners. If the above true positive rate evaluation would have been observed for the complete Rapamycin dataset, such a step might have been a good practice. However, in the complete dataset a lot more precursors pass the filtering and the true positive rate drops also there after about the first 25 ranks. This would mean, that many of the additionally ranked precursors could be false positive interactions. 
+It may happen that many precursors pass the filtering threshold and are thus potentially affected by the treatment. One possible reason for this can be that filtering thresholds are not very strict. If you have information about real targets of your treatment, you can set a manual rank cutoff based on the true positive rate evaluation. Another likely explanation is that other precursors/peptides/proteins may also be affected by the treatment. This can happen through direct interaction with the treatment or as a secondary effect: the potential hit might be an interaction partner of your target and a change in your target might also lead to a change the potential hit. Precursors that have a low rank with not many true positive hits in their vicinity might not be actual hits. You can set a manual rank cutoff at a point where the true positive rate flattens. 
 
-## Model plotting
+If the true positive rate does not drop and almost all of your hits are true positives, you can try to reduce the correlation cutoff in `fit_drc_4p()` to be even less conservative. This might allow you to find novel interaction partners. If the above true positive rate evaluation would have been observed for the complete Rapamycin data set, such a step might have been a good practice. However, in the complete data set a lot more precursors pass the filtering and the true positive rate drops after about the first 25 ranks. This would mean that many of the additionally ranked precursors could be false positive interactions. 
 
-After model fitting, you can easily visualise model fits by plotting with the `plot_drc_4p()` function. You can provide one or more precursor IDs to the `targets` argument or just return plots for all precursors with `targets = "all"`. Make sure that the amount of plots is reasonable to return within R. You can also directly export your plots by setting `export = TRUE`. 
+_Note: This kind of analysis is only suited for experiments where you know the true interaction partner. In most analyses you will not know the target (or all targets) of your treatment so you might want to use this kind of analysis with caution._
+
+## Model fit plotting
+
+After model fitting, you can easily visualise model fits by plotting them with the `plot_drc_4p()` function. You can provide one or more precursor IDs to the `targets` argument or just return plots for all precursors with `targets = "all"`. Make sure that the amount of plots is reasonable to return within R. You can also directly export your plots by setting `export = TRUE`. 
 
 Note: The output of `fit_drc_4p()` includes two columns with data frames containing the model and original data points required for the plot. These data frames contain the original names for `dose` and `response` that you provided to `fit_drc_4p()`. 
 
-```{r model_plot, fig.width = 8, fig.height = 6}
+```{r model_plot, fig.align = "center", fig.width = 7, fig.height = 5, message = FALSE, warning = FALSE}
 # Model plotting
 plot_drc_4p(fit,
             grouping = eg_precursor_id,
@@ -232,9 +236,9 @@ plot_drc_4p(fit,
 
 After models are fit, you can have a deeper look into the hits you obtained. **protti** provides several functions that help you to identify patterns in your data. 
 
-Datasets are often tested for gene ontology enrichments (`go_enrichment()`). Alternatively, the KEGG database can provide pathway annotations that can be used to test for pathway enrichments (`kegg_enrichment()`). 
+You can test your data set for gene ontology (GO) term enrichment (`go_enrichment()`). Alternatively, pathway annotations provided in the KEGG database can be used to test for pathway enrichments (`kegg_enrichment()`). 
 
-If you know which proteins bind or interact with your specific treatment, you can provide your own list of true positive hits and check if these are enriched in your significant hits by using **protti**s `treatment_enrichment()` function. For our LiP-MS experiment using Rapamycin we are probing direct interaction with proteins in contrast to functional effects. The only protein that Rapamycin is known to bind to is FKBP12 and testing the significance of enrichment for a single or even a few proteins does not make much sense. However, testing for enrichment is especially useful if your treatment interacts with many proteins, since it can help you to reduce the complexity of your result.
+If you know which proteins bind or interact with your specific treatment, you can provide your own list of true positive hits and check if these are enriched in your significant hits by using **protti**'s `treatment_enrichment()` function. For our LiP-MS experiment using Rapamycin we are probing direct interaction with proteins in contrast to functional effects. The only protein that Rapamycin is known to bind to is FKBP12 and testing the significance of enrichment for a single or even a few proteins does not make much sense. However, testing for enrichment is especially useful if your treatment affects many proteins, since it can help you to reduce the complexity of your result.
 
 The [STRING](https://academic.oup.com/nar/article/47/D1/D607/5198476) database provides a good resource for the analysis of protein interaction networks. It is often very useful to check for interactions within your significant hits. For LiP-MS data this sometimes explains why proteins that do not directly interact with your treatment are still significantly affected. With `network_analysis()`, **protti** provides a useful wrapper around some [`STRINGdb`](http://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html) package functions. 
 
@@ -255,7 +259,7 @@ fit_annotated <- fit %>%
 
 ## Enrichment and network analysis
 
-As mentioned earlier, for this specific dataset enrichment and also network analysis does not make a lot of sense. This is mainly because we only use a very small random subset of the complete dataset. Furthermore, Rapamycin is known to only interact with FKBP12 and enrichment analysis will not properly work if your treatment only interacts with a few protein. 
+As mentioned earlier, for this specific data set enrichment and also network analysis does not make a lot of sense. This is mainly because we only use a very small random subset of the complete data set. Furthermore, Rapamycin is known to only interact with FKBP12 and enrichment analysis will not properly work if your treatment only interacts with a few protein. 
 
 Nevertheless, we will demonstrate below how you could use some additional functions on your own data.
 
@@ -270,7 +274,7 @@ go_enrichment(fit_annotated,
 ### KEGG pathway enrichment
 
 # First you need to load KEGG pathway annotations from the KEGG database for your specific organism of interest.
-# In this case HeLa cells were used to the organism of interest is homo sapiens (hsa)
+# In this case HeLa cells were used, therefore the organism of interest is homo sapiens (hsa)
 
 kegg <- fetch_kegg(species = "hsa")
 
@@ -291,7 +295,6 @@ treatment_enrichment(fit_annotated,
                      binds_treatment = binds_treatment,
                      treatment_name = "Rapamycin")
 
-
 ### Network analysis
 
 fit_annotated %>% 
@@ -302,8 +305,3 @@ fit_annotated %>%
                    binds_treatment = binds_treatment,
                    plot = TRUE)
 ```
-
-
-
-
-
