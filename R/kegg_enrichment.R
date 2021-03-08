@@ -52,9 +52,13 @@ kegg_enrichment <- function(data, protein_id, is_significant, pathway_id = pathw
     tidyr::nest(kegg_term = .data$kegg_term) %>%
     dplyr::distinct({{protein_id}}, {{is_significant}}, .data$kegg_term) %>%
     dplyr::group_by({{protein_id}}) %>%
-    dplyr::mutate({{is_significant}} := ifelse(sum({{is_significant}}) > 0, TRUE, FALSE)) %>% # do this to remove accidental double annotations
+    dplyr::mutate({{is_significant}} := ifelse(sum({{is_significant}}, na.rm = TRUE) > 0, TRUE, FALSE)) %>% # do this to remove accidental double annotations
     dplyr::distinct()
 
+  if(sum(dplyr::pull(data, {{ is_significant }})) == 0){
+    stop("None of the significant proteins has any associated pathway in the KEGG database. No pathway enrichment could be computed.")
+  }
+  
   if(length(unique(pull(data, {{protein_id}}))) != nrow(data)) stop("The data frame contains more rows than unique proteins. Make sure that there are no double annotations.\nThere could be for example proteins annotated as significant and not significant.")
    cont_table <- data %>%
      dplyr::group_by({{is_significant}}) %>%

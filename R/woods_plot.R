@@ -36,7 +36,7 @@
 #' facet = pg_protein_accessions
 #')
 #' }
-woods_plot <- function(data, fold_change, start_position, end_position, protein_length, coverage = NULL, protein_id = NULL, facet = NULL, colouring = NULL, fold_change_cutoff = 2){
+woods_plot <- function(data, fold_change, start_position, end_position, protein_length, coverage = NULL, protein_id = NULL, facet = NULL, colouring = NULL, fold_change_cutoff = 1){
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir=environment()) # then overwrite it with real data
   # Check if there are more than one protein even though protein_id was specified.

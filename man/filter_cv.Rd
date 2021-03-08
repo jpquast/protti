@@ -10,7 +10,8 @@ filter_cv(
   condition,
   log2_intensity,
   cv_limit = 0.25,
-  min_conditions
+  min_conditions,
+  silent = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ filter_cv(
 \item{cv_limit}{Optional argument specifying the CV cutoff that will be applied. Default is 0.25.}
 
 \item{min_conditions}{The minimum number of conditions for which grouping CVs should be below the cutoff.}
+
+\item{silent}{Logical argument specifiying if a message with the number of filtered out conditions should be returned.}
 }
 \value{
 The CV filtered data frame.

@@ -37,13 +37,14 @@ treatment_enrichment <- function(data, protein_id, is_significant, binds_treatme
   data <- data %>%
     dplyr::distinct({{protein_id}}, {{is_significant}}, {{binds_treatment}}) %>%
     dplyr::group_by({{protein_id}}) %>%
-    dplyr::mutate({{is_significant}} := ifelse(sum({{is_significant}}) > 0, TRUE, FALSE)) %>%
+    dplyr::mutate({{is_significant}} := ifelse(sum({{is_significant}}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
     dplyr::distinct()
  
   cont_table <- data %>%
     dplyr::group_by({{binds_treatment}}, {{is_significant}}) %>%
-    dplyr::summarize(n = dplyr::n_distinct(!!rlang::ensym(protein_id)), .groups = "drop") 
-  
+    dplyr::summarize(n = dplyr::n_distinct(!!rlang::ensym(protein_id)), .groups = "drop") %>%
+    tidyr::complete({{is_significant}}, {{binds_treatment}}, fill = list(n = 0))
+
   fisher_test <- cont_table %>%
     tidyr::pivot_wider(names_from = {{is_significant}}, values_from = .data$n) %>%
     tibble::column_to_rownames(var = rlang::as_name(rlang::enquo(binds_treatment))) %>%
