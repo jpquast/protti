@@ -54,6 +54,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/data_analysis_dose_response_workflow.html">Dose-Response Data Analysis Workflow</a>
+    </li>
+    <li>
+      <a href="../articles/data_analysis_single_dose_treatment_workflow.html">Single Dose Treatment Data Analysis Workflow</a>
+    </li>
+    <li>
       <a href="../articles/quality_control_workflow.html">Qualtiy control (QC) workflow</a>
     </li>
   </ul>
@@ -82,7 +88,7 @@
       <h1 data-toc-skip>Qualtiy control (QC) workflow</h1>
                         <h4 class="author">Dina Schuster</h4>
             
-            <h4 class="date">2021-03-06</h4>
+            <h4 class="date">2021-03-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/quality_control_workflow.Rmd"><code>vignettes/quality_control_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>quality_control_workflow.Rmd</code></div>
@@ -201,7 +207,7 @@ text-align: justify}
 <p>The CVs (in percent) are calculated with the following formula:</p>
 <div class="blackbox">
 <p>
-<span class="math display"><span class="math display">\[CV = \frac{standard deviation}{mean} * 100\]</span></span>
+<span class="math display"><span class="math display">\[CV = \frac{standard ~ deviation}{mean} * 100\]</span></span>
 </p>
 </div>
 <p>Since the CV function works only with raw values, we will backtransform our log2 transformed data and create a new column called <code>raw_intensity</code> from the <code>peptide_intensity_missing</code> column which contains peptide intensities. To create the new column, we are using the function <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> from the R package <code>dplyr</code>. We also make use of the pipe operator <code><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></code> included in the R package <code>magrittr</code> which takes the output of the preceding function and supplies it as the first argument of the following function. Using <code><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></code> makes code easier to read and follow.</p>

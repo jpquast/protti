@@ -2,6 +2,8 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
+  data_analysis_dose_response_workflow: data_analysis_dose_response_workflow.html
+  data_analysis_single_dose_treatment_workflow: data_analysis_single_dose_treatment_workflow.html
   quality_control_workflow: quality_control_workflow.html
-last_built: 2021-03-06T16:09Z
+last_built: 2021-03-08T18:48Z
 

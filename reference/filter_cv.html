@@ -101,6 +101,12 @@ depend on the number of conditions that have detected values, the function might
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/data_analysis_dose_response_workflow.html">Dose-Response Data Analysis Workflow</a>
+    </li>
+    <li>
+      <a href="../articles/data_analysis_single_dose_treatment_workflow.html">Single Dose Treatment Data Analysis Workflow</a>
+    </li>
+    <li>
       <a href="../articles/quality_control_workflow.html">Qualtiy control (QC) workflow</a>
     </li>
   </ul>
@@ -147,7 +153,8 @@ depend on the number of conditions that have detected values, the function might
   <span class='va'>condition</span>,
   <span class='va'>log2_intensity</span>,
   cv_limit <span class='op'>=</span> <span class='fl'>0.25</span>,
-  <span class='va'>min_conditions</span>
+  <span class='va'>min_conditions</span>,
+  silent <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -176,6 +183,10 @@ depend on the number of conditions that have detected values, the function might
     <tr>
       <th>min_conditions</th>
       <td><p>The minimum number of conditions for which grouping CVs should be below the cutoff.</p></td>
+    </tr>
+    <tr>
+      <th>silent</th>
+      <td><p>Logical argument specifiying if a message with the number of filtered out conditions should be returned.</p></td>
     </tr>
     </table>
 
