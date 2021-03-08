@@ -1,10 +1,10 @@
 ---
-title: "Data analysis for single dose treatment data"
+title: "Single Dose Treatment Data Analysis Workflow"
 author: "Dina Schuster"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Data analysis for single dose treatment data}
+  %\VignetteIndexEntry{Single Dose Treatment Data Analysis Workflow}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -23,6 +23,7 @@ knitr::opts_chunk$set(
 # Introduction
 
 This vignette will give you an overview of how you can analyse single dose treatment LiP-MS or bottom-up proteomics data using **protti**. 
+If you would like to analyse dose-response data with samples of multiple treatment concentrations you might want to look at the [dose-response data analysis vignette] (https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html).
 Before analysing your data please make sure that it is of sufficient quality and that you do not have any outliers in your data.
 To do this you can take a look at the [quality control vignette](https://jpquast.github.io/protti/articles/quality_control_workflow.html).
 
@@ -38,7 +39,7 @@ To do this you can take a look at the [quality control vignette](https://jpquast
   + Calculation of sequence coverage
 * Data analysis
   + Statistical hypothesis tests
-  + Fitting of dose-response curves (relevant for experiments with several treatment concentrations)
+  + Fitting of dose-response curves (relevant for experiments with several treatment concentrations, click [here](https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html) for more information)
 * Data visualisation 
   + Volcano plots
   + Barcode plots (plots that show protein coverage and significant changes projected onto the protein sequence)
@@ -51,7 +52,7 @@ To do this you can take a look at the [quality control vignette](https://jpquast
 
 You can read more about specific functions and how to use them by calling e.g. `?median_normalisation` (for the `median_normalisation()` function). Calling `?` followed by the function name will display the function documentation and give you more detailed information about the function. This can be done for any of the functions included in the package.
 
-This document will give you an overview of data preparation, data analysis, data visualisation and data interpretation functions included in **protti**. It will show you how they can be applied to your data. The examples in this file are run on a [published](https://www.nature.com/articles/s41467-020-18071-x) LiP-MS dataset. In the experiment a lysate was treated with different amounts of the drug Rapamycin and it was be shown that the target of Rapamycin (FKBP12) could be successfully identified. For this vignette we are using a filtered version of the original data set which includes only the 10 uM treatment concentration and the control (untreated). For simplicity only 50 proteins are included in the dataset.
+This document will give you an overview of data preparation, data analysis, data visualisation and data interpretation functions included in **protti**. It will show you how they can be applied to your data. The examples in this file are run on a [published](https://www.nature.com/articles/s41467-020-18071-x) LiP-MS dataset. In the experiment a HeLa cell lysate was treated with different amounts of the drug Rapamycin and it was be shown that the target of Rapamycin (FKBP12) could be successfully identified. For this vignette we are using a filtered version of the original data set which includes only the 10 μM treatment concentration and the control (untreated). For simplicity only 50 proteins are included in the dataset.
 
 The data set is produced from the output of [Spectronaut™](https://biognosys.com/shop/spectronaut). However, if you have any other data such as DDA data that was searched with a different search engine you can still apply **protti**'s functions. Just make sure that your data frame contains [tidy data](https://r4ds.had.co.nz/tidy-data.html). That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the `pivot_longer()` function from the `tidyr` package. If you are unsure about how your input data is supposed to look like, please use the `create_synthetic_data()` function and compare this to your data. 
 
@@ -119,7 +120,7 @@ The CVs are calculated within the function according to the formula:
 $$CV = \frac{standard ~ deviation}{mean} * 100$$
 ```
   
-Note: The use of the `filter_cv()` function is optional. You should be careful with using it since it might remove a lot of your data if your experiment was rather noisy. However, especially in these cases it might be useful to apply the function in order to remove peptides with a poor quality beforehand to improve the overall result. 
+_Note: The use of the `filter_cv()` function is optional. You should be careful with using it since it might remove a lot of your data if your experiment was rather noisy. However, especially in these cases it might be useful to apply the function in order to remove peptides with a poor quality beforehand to improve the overall result._
   
 ```{r median_normalisation_filtering, message = FALSE, warning = FALSE}
 data_normalised <- rapamycin_10uM %>%
@@ -138,7 +139,7 @@ data_filtered <- data_normalised %>%
 
 ### Remove non-proteotypic peptides
 
-For LiP-MS analysis we commonly remove non-proteotypic peptides (i.e. peptides that could come from more than one protein). If you detect a change in non-proteotypic peptides it is not possible to clearly assign which of the two proteins it comes from and which is the protein affected by your treatment. If you are using the output from Spectronaut you will find a column called "pep_is_proteotypic". This column contains logicals indicating whether your peptide is proteotypic or not. 
+For LiP-MS analysis we commonly remove non-proteotypic peptides (i.e. peptides that could come from more than one protein). If you detect a change in non-proteotypic peptides it is not possible to clearly assign which protein it comes from and therefore which protein is affected by your treatment. If you are using the output from Spectronaut you will find a column called "pep_is_proteotypic". This column contains logicals indicating whether your peptide is proteotypic or not. 
 
 To filter out non proteotypic peptides we are using the `dplyr` function `filter()`.
 
@@ -157,7 +158,7 @@ In order to obtain more information about our identified proteins we are going t
 
 To merge the two data frames we are using the `dplyr` function `left_join()`. We are matching the two data frames by the column "pg_protein_accessions". By using `left_join()` we are retaining all rows from our original data frame while adding the columns from the data fame generated with `fetch_uniprot()`.
 
-Note: you can also directly join the UniProt data frame with your data without the need to rename its `id` column. You can specify in the `by` argument in `left_join()` that two columns are differently named.
+_Note: you can also directly join the UniProt data frame with your data without the need to rename its `id` column. You can specify in the `by` argument in `left_join()` that two columns are differently named._
 
 Next, we would like to assign the trypticity of our peptides (i.e. if the peptides are fully-tryptic, semi-tryptic or non-tryptic). In order to do this we will first need to define the peptide positions in the protein and find the preceding and following amino acids. To obtain this information we are using the **protti** function `find_peptide()`. The output of this function can then be used in the function `peptide_type()` which will add an additional column with the peptide trypticity information. By using the function `sequence_coverage()` we are adding an additional column to the data frame containing information on how much of the protein sequence we identified in our experiment. 
 
@@ -218,7 +219,8 @@ Please note that in this example we are not imputing missing values. You can, ho
 
 * `method = ludovic` will sample values that are MNAR from a normal distribution around a value that is 3 (log2) lower than the mean intensity of the non-missing condition. The method is named after and created by our colleague [Ludovic Gillet](https://imsb.ethz.ch/research/picotti/PeoplePicotti/ludovicgillet.html).
 * `method = noise` will sample MNAR values from a normal distribution around the mean noise of the complete condition. This requires you to have an additional column with information on the noise that can be obtained from Spectronaut.
-* Both methods impute MAR data using the mean and variance of the condition with the missing data.
+
+Both methods impute MAR data using the mean and variance of the condition with the missing data.
 
 Since we are dealing with a LiP-MS data set we are performing the statistical analysis on the precursor level. For protein abundance data you can simply use protein abundances as your intensities and select your protein groups column for the grouping argument. Make sure to retain any columns you need for further data analysis with the `retain_columns` argument of both functions.
 
@@ -250,12 +252,12 @@ diff_abundance <- data_filtered_uniprot %>%
 ### Volcano plot
 
 Next we are going to visualise the output of the previously performed hypothesis test to assess the results of our experiment. For this we are going to plot a volcano plot with fold-changes on the x-axis and the adjusted p-value (q-value) on the y-axis. 
-By adjusting our p-values for multiple testing we are ensuring that we keep the false discovery rate low. 
+By adjusting our p-values for multiple testing we are ensuring that we keep the false discovery rate low. P-values are corrected for multiple testing using the Benjamini-Hochberg (FDR) correction.
 The output of the previously used `diff_abundance()` function is ideal to use for the `volcano_protti()` function as it contains all the information we need: precursor IDs, protein IDs, fold changes (`diff`) and adjusted p-values (`adj_pval`).
 We are going to highlight the peptides of the known target of Rapamycin FKBP12 (UniProt ID = P62942) in blue to quickly find the peptides in the plot. You can also make the plot interactive by setting `interactive = TRUE`. This will help you quickly obtain more information on each point in the plot.
 We are going to plot the volcano plot with and without adjusted p-values. 
 
-Note: If very little observations are changing significantly or if the p-values are not very low to begin with it can happen that only a few significant hits remain after adjusting the p-value.
+_Note: If very little observations are changing significantly or if the p-values are not very low to begin with it can happen that only a few significant hits remain after adjusting the p-value._
 
 ```{r volcano_plot, fig.align= "center", fig.width = 6, fig.height = 5, message = FALSE, warning = FALSE}
 volcano_protti(
@@ -289,7 +291,7 @@ volcano_protti(
 
 ### Barcode plot
 
-For LiP-MS experiments a good way to see where on the protein the changes due to binding or conformational changes occur is to plot a barcode plot. A barcode plot can be created with the **protti* function `barcode_plot()`. The detected peptides are coloured in grey and the changing peptides are highlighted in blue.
+For LiP-MS experiments a good way to see where on the protein the changes due to binding or conformational changes occur is to plot a barcode plot. A barcode plot can be created with the **protti** function `barcode_plot()`. The detected peptides are coloured in grey and the changing peptides are highlighted in blue.
 
 In order to produce a barcode plot only for our target FKBP12 we are creating a data frame that contains only information for our target protein. We are doing this by using `dplyr`'s `filter()` function. The filtered data frame is then used as the input for the plot.
 
@@ -330,7 +332,8 @@ woods_plot(
 
 ### Peptide profile plots
 
-To see how the individual precursors in our target protein are changing with the treatment we are plotting profile plots by using the function `plot_peptide_profiles()`.
+To see how the individual precursors in our target protein are changing with the treatment we are plotting profile plots by using the function `plot_peptide_profiles()`. This is particularly useful as you can quickly see if your whole protein changes in abundance or only a fraction of precursors/peptides.
+If you have protein abundance data you can also use the plot to show changes in protein abundance over your treatment condition(s). By selecting multiple targets (as a vector) you can produce the plot for multiple proteins.
 
 ```{r protile_plot, fig.align = "center", fig.width = 20, fig.height = 6, message = FALSE, warning = FALSE}
 FKBP12_intensity <- data_filtered_uniprot %>% 
@@ -350,7 +353,7 @@ plot_peptide_profiles(
 
 ## Additional helpful functions
 
-**protti** includes additional helpful functions that do not make sense to use for this data set but are great to use for data sets of full size that have systematic changes. These functions include the `go_enrichment()`function that helps you check if your hits are enriched for specific gene ontology (GO) terms, the `network_analysis()` function that plots a String network based on information from StringDB for your hits and the `kegg_enrichment()` function which checks for enriched pathways in your hits. Furthermore, you can directly check for enrichment of a self defined treatment with the `treatment_enrichment()` function.
+**protti** includes additional helpful functions that do not make sense to use for this data set but are great to use for data sets of full size that have global changes. These functions include the `go_enrichment()`function that helps you check if your hits are enriched for specific gene ontology (GO) terms, the `network_analysis()` function that plots a String network based on information from StringDB for your hits and the `kegg_enrichment()` function which checks for enriched pathways in your hits. Furthermore, you can directly check for enrichment of a self defined treatment with the `treatment_enrichment()` function.
 
 Here we will quickly show you how you could use these functions in a full size data set with more global changes:
 
@@ -390,7 +393,7 @@ network_analysis(data = network_input,
 ### KEGG pathway enrichment
 
 # First you need to load KEGG pathway annotations from the KEGG database for your specific organism of interest.
-# In this case HeLa cells were used to the organism of interest is homo sapiens (hsa)
+# In this case HeLa cells were used, therefore the organism of interest is homo sapiens (hsa)
 
 kegg <- fetch_kegg(species = "hsa")
 
