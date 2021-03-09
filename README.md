@@ -102,6 +102,10 @@ can have a look at the packages vignettes. These include:
 
 -   [Quality Control
     Workflow](https://jpquast.github.io/protti/articles/quality_control_workflow.html)
+-   [Single Dose Treatment Data Analysis
+    Workflow](https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html)
+-   [Dose-Response Data Analysis
+    Workflow](https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html)
 
 ### Data analysis
 
