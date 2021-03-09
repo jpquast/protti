@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 # Introduction
 
 This vignette will give you an overview of how you can analyse single dose treatment LiP-MS or bottom-up proteomics data using **protti**. 
-If you would like to analyse dose-response data with samples of multiple treatment concentrations you might want to look at the [dose-response data analysis vignette] (https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html).
+If you would like to analyse dose-response data with samples of multiple treatment concentrations you might want to look at the [dose-response data analysis vignette](https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html).
 Before analysing your data please make sure that it is of sufficient quality and that you do not have any outliers in your data.
 To do this you can take a look at the [quality control vignette](https://jpquast.github.io/protti/articles/quality_control_workflow.html).
 
