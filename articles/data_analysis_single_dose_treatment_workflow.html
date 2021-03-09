@@ -104,7 +104,7 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>This vignette will give you an overview of how you can analyse single dose treatment LiP-MS or bottom-up proteomics data using <strong>protti</strong>. If you would like to analyse dose-response data with samples of multiple treatment concentrations you might want to look at the [dose-response data analysis vignette] (<a href="https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html" class="uri">https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html</a>). Before analysing your data please make sure that it is of sufficient quality and that you do not have any outliers in your data. To do this you can take a look at the <a href="https://jpquast.github.io/protti/articles/quality_control_workflow.html">quality control vignette</a>.</p>
+<p>This vignette will give you an overview of how you can analyse single dose treatment LiP-MS or bottom-up proteomics data using <strong>protti</strong>. If you would like to analyse dose-response data with samples of multiple treatment concentrations you might want to look at the <a href="https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html">dose-response data analysis vignette</a>. Before analysing your data please make sure that it is of sufficient quality and that you do not have any outliers in your data. To do this you can take a look at the <a href="https://jpquast.github.io/protti/articles/quality_control_workflow.html">quality control vignette</a>.</p>
 <div id="protti" class="section level2">
 <h2 class="hasAnchor">
 <a href="#protti" class="anchor"></a>protti</h2>
@@ -114,7 +114,9 @@
 <li>Data preparation
 <ul>
 <li>Median normalisation</li>
+<li>Data filtering</li>
 <li>Protein abundance calculation from precursor or peptide intensities</li>
+<li>Imputation of missing values</li>
 <li>Fetching of database information (ChEBI, GO, KEGG, MobiDB, UniProt)</li>
 <li>Calculation of sequence coverage</li>
 </ul>
@@ -135,6 +137,7 @@
 </li>
 <li>Data interpretation
 <ul>
+<li>Treatment enrichment (check if your hits are enriched with known targets)</li>
 <li>GO-term enrichment</li>
 <li>Network analysis (based on STRING database information)</li>
 <li>KEGG pathway enrichment</li>
