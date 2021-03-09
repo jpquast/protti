@@ -49,10 +49,10 @@ user. The main areas of application are:
     -   **Binary treatment**: Experiments with one control condition and
         at least one treatment condition in which the control is
         compared to each of the treatment conditions.
-    -   **Dose response treatment**: Experiments that contain increasing
-        concentrations of the treatment in which a log-logistic dose
-        response curve is fitted to each protein, peptide or precursor
-        in your data.
+    -   **Dose-response treatment**: Experiments that contain increasing
+        concentrations of the treatment in which a log-logistic
+        dose-response curve is fitted to each protein, peptide or
+        precursor in your data.
 -   **Enrichment and interaction analysis**: Check the list of your
     significantly changing proteins for e.g. gene ontology enrichments
     or perform a network analysis using the STRING database directly
