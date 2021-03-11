@@ -20,6 +20,11 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](https://codecov.io/gh/jpquast/protti?branch=master)
 <!-- badges: end -->
 
+<style>
+body {
+text-align: justify}
+</style>
+
 ## Overview
 
 The goal of **protti** is to provide flexible functions and workflows for proteomics quality control and data analysis. It can be used for label-free DDA, DIA and SRM data generated with search tools such as Spectronaut, MaxQuant, Proteome Discover and Skyline. Both limited proteolysis mass spectrometry (LiP-MS) and regular bottom-up proteomics experiments can be analysed.

@@ -10,6 +10,11 @@
 coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](https://codecov.io/gh/jpquast/protti?branch=master)
 <!-- badges: end -->
 
+<style>
+body {
+text-align: justify}
+</style>
+
 ## Overview
 
 The goal of **protti** is to provide flexible functions and workflows
