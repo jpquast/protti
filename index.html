@@ -60,6 +60,9 @@
       <a href="articles/data_analysis_single_dose_treatment_workflow.html">Single Dose Treatment Data Analysis Workflow</a>
     </li>
     <li>
+      <a href="articles/input_preparation_workflow.html">Input Preparation Workflow</a>
+    </li>
+    <li>
       <a href="articles/quality_control_workflow.html">Qualtiy Control (QC) Workflow</a>
     </li>
   </ul>
@@ -90,6 +93,10 @@
 </h1></div>
 <!-- badges: start -->
 
+<style>
+body {
+text-align: justify}
+</style>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
@@ -131,11 +138,12 @@
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
-<p>Since <strong>protti</strong> is designed to be a flexible tool for the analysis of your data, there are many ways in which it can be used. In this section we will give a general overview for a very simple pipeline that would take a search result from the search tool of your choice and in a few steps returns a list of significantly changing proteins or peptides.</p>
+<p>Since <strong>protti</strong> is designed to be a flexible tool for the analysis of your data, there are many ways in which it can be used. In this section we will give a general overview for a very simple pipeline that would take a search result from the search tool of your choice and in a few steps returns a list of significantly changing proteins or peptides. To ensure that you have your data in the right format please check out the <a href="https://jpquast.github.io/protti/articles/input_preparation_workflow.html">input preparation vignette</a>.</p>
 <p>A complete list of functions and their documentation is available <a href="https://jpquast.github.io/protti/reference/">here</a>. Within R you can access the same documentation by calling <code><a href="https://rdrr.io/r/utils/Question.html">?</a></code> followed by the function name without parenthesis.</p>
 <p>In general functions with the prefix <code>qc_*</code> are used for quality control of your data. Functions starting with <code>fetch_*</code> allow you to retreive data from a database directly into your R session. When a function starts with <code>filter_*</code> it is meant to be used to filter your data prior to analysis.</p>
 <p>For more in detail workflow suggestions and function demonstrations you can have a look at the packages vignettes. These include:</p>
 <ul>
+<li><a href="https://jpquast.github.io/protti/articles/input_preparation_workflow.html">Input Preparation Workflow</a></li>
 <li><a href="https://jpquast.github.io/protti/articles/quality_control_workflow.html">Quality Control Workflow</a></li>
 <li><a href="https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html">Single Dose Treatment Data Analysis Workflow</a></li>
 <li><a href="https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html">Dose-Response Data Analysis Workflow</a></li>

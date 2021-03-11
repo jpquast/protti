@@ -60,6 +60,9 @@
       <a href="../articles/data_analysis_single_dose_treatment_workflow.html">Single Dose Treatment Data Analysis Workflow</a>
     </li>
     <li>
+      <a href="../articles/input_preparation_workflow.html">Input Preparation Workflow</a>
+    </li>
+    <li>
       <a href="../articles/quality_control_workflow.html">Qualtiy Control (QC) Workflow</a>
     </li>
   </ul>
@@ -88,7 +91,7 @@
       <h1 data-toc-skip>Qualtiy Control (QC) Workflow</h1>
                         <h4 class="author">Dina Schuster</h4>
             
-            <h4 class="date">2021-03-09</h4>
+            <h4 class="date">2021-03-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/quality_control_workflow.Rmd"><code>vignettes/quality_control_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>quality_control_workflow.Rmd</code></div>
@@ -104,7 +107,7 @@ text-align: justify}
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>This vignette will give you an overview of how you can perform quality control of your bottom-up proteomics or LiP-MS data. For help with data analysis you can check out our <a href="https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html">single dose treatment vignette</a> and our <a href="https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html">data analysis vignette for dose response data</a>.</p>
+<p>This vignette will give you an overview of how you can perform quality control of your bottom-up proteomics or LiP-MS data. For help with data input and to make sure that you are using the right format please check out the <a href="https://jpquast.github.io/protti/articles/input_preparation_workflow.html">input preparation vignette</a>. For help with data analysis you can check out our <a href="https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html">single dose treatment vignette</a> and our <a href="https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html">data analysis vignette for dose-response data</a>.</p>
 <p>When working with proteomics and limited proteolysis-coupled mass spectrometry (<a href="https://doi.org/10.1038/nprot.2017.100">LiP-MS</a>) data, it is important to ensure that the data is of sufficient quality before inferring biological relevance and meaning from it. In general, there are several ways in which this can be done:</p>
 <ul>
 <li>Inspection of .raw files acquired directly on the mass spectrometer (e.g. using vendor specific applications to visualize mass spectrometry data, such as the Thermo Scientific applications XCalibur™ and FreeStyle™)</li>
@@ -120,7 +123,7 @@ text-align: justify}
 <p><strong>protti</strong> includes several functions that make it easy for the user to compare the different samples in one experiment. Some functions in this R package are specific for LiP-MS data analyses, whereas others can also be used for general proteomics analyses.</p>
 <p>You can read more about specific functions and how to use them by calling e.g. <code><a href="../reference/qc_cvs.html">?qc_cvs</a></code> (for the <code><a href="../reference/qc_cvs.html">qc_cvs()</a></code> function). Calling <code><a href="https://rdrr.io/r/utils/Question.html">?</a></code> followed by the function name will display the function documentation and give you more detailed information about the function. This can be done for any of the functions included in the package.</p>
 <p>This document will give you an overview of QC functions included in <strong>protti</strong> and will show you how they can be applied to your data. The examples in this file are run on synthetic data, which is created with the function <code><a href="../reference/create_synthetic_data.html">create_synthetic_data()</a></code>.</p>
-<p>The functions in <strong>protti</strong> are tailored towards the analysis of DIA data, based on the output of the search engine <a href="https://biognosys.com/shop/spectronaut">Spectronaut™</a>. However, if you have any other data, such as DDA data that was searched with a different search engine, you can still apply our functions. Just make sure that your data frame contains <a href="https://r4ds.had.co.nz/tidy-data.html">tidy data</a>. That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the <code>pivot_longer()</code> function from the <code>tidyr</code> package. If you are unsure about how your input data is supposed to look like, please use the <code><a href="../reference/create_synthetic_data.html">create_synthetic_data()</a></code> function and compare this to your data.</p>
+<p>The functions in <strong>protti</strong> are tailored towards the analysis of DIA data, based on the output of the search engine <a href="https://biognosys.com/shop/spectronaut">Spectronaut™</a>. However, if you have any other data, such as DDA data that was searched with a different search engine, you can still apply our functions. Just make sure that your data frame contains <a href="https://r4ds.had.co.nz/tidy-data.html">tidy data</a>. That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> function from the <code>tidyr</code> package. If you are unsure about how your input data is supposed to look like, please use the <code><a href="../reference/create_synthetic_data.html">create_synthetic_data()</a></code> function and compare this to your data. You can read more about all of this <a href="https://jpquast.github.io/protti/articles/input_preparation_workflow.html">here</a>.</p>
 <p>The input data should have a similar structure to this example:</p>
 <table class="table">
 <thead><tr class="header">

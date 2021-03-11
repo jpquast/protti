@@ -60,6 +60,9 @@
       <a href="../articles/data_analysis_single_dose_treatment_workflow.html">Single Dose Treatment Data Analysis Workflow</a>
     </li>
     <li>
+      <a href="../articles/input_preparation_workflow.html">Input Preparation Workflow</a>
+    </li>
+    <li>
       <a href="../articles/quality_control_workflow.html">Qualtiy Control (QC) Workflow</a>
     </li>
   </ul>
@@ -88,7 +91,7 @@
       <h1 data-toc-skip>Single Dose Treatment Data Analysis Workflow</h1>
                         <h4 class="author">Dina Schuster</h4>
             
-            <h4 class="date">2021-03-09</h4>
+            <h4 class="date">2021-03-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/data_analysis_single_dose_treatment_workflow.Rmd"><code>vignettes/data_analysis_single_dose_treatment_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_single_dose_treatment_workflow.Rmd</code></div>
@@ -145,8 +148,8 @@
 </li>
 </ul>
 <p>You can read more about specific functions and how to use them by calling e.g. <code><a href="../reference/median_normalisation.html">?median_normalisation</a></code> (for the <code><a href="../reference/median_normalisation.html">median_normalisation()</a></code> function). Calling <code><a href="https://rdrr.io/r/utils/Question.html">?</a></code> followed by the function name will display the function documentation and give you more detailed information about the function. This can be done for any of the functions included in the package.</p>
-<p>This document will give you an overview of data preparation, data analysis, data visualisation and data interpretation functions included in <strong>protti</strong>. It will show you how they can be applied to your data. The examples in this file are run on a <a href="https://www.nature.com/articles/s41467-020-18071-x">published</a> LiP-MS dataset. In the experiment a HeLa cell lysate was treated with different amounts of the drug Rapamycin and it was be shown that the target of Rapamycin (FKBP12) could be successfully identified. For this vignette we are using a filtered version of the original data set which includes only the 10 μM treatment concentration and the control (untreated). For simplicity only 50 proteins are included in the dataset.</p>
-<p>The data set is produced from the output of <a href="https://biognosys.com/shop/spectronaut">Spectronaut™</a>. However, if you have any other data such as DDA data that was searched with a different search engine you can still apply <strong>protti</strong>’s functions. Just make sure that your data frame contains <a href="https://r4ds.had.co.nz/tidy-data.html">tidy data</a>. That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the <code>pivot_longer()</code> function from the <code>tidyr</code> package. If you are unsure about how your input data is supposed to look like, please use the <code><a href="../reference/create_synthetic_data.html">create_synthetic_data()</a></code> function and compare this to your data.</p>
+<p>This document will give you an overview of data preparation, data analysis, data visualisation and data interpretation functions included in <strong>protti</strong>. It will show you how they can be applied to your data. The examples in this file are run on a <a href="https://www.nature.com/articles/s41467-020-18071-x">published</a> LiP-MS dataset. In the experiment a HeLa cell lysate was treated with different amounts of the drug Rapamycin and it could be shown that the target of Rapamycin (FKBP12) could be successfully identified. For this vignette we are using a filtered version of the original data set which includes only the 10 μM treatment concentration and the control (untreated). For simplicity only 50 proteins are included in the dataset.</p>
+<p>The data set is produced from the output of <a href="https://biognosys.com/shop/spectronaut">Spectronaut™</a>. However, if you have any other data such as DDA data that was searched with a different search engine you can still apply <strong>protti</strong>’s functions. Just make sure that your data frame contains <a href="https://r4ds.had.co.nz/tidy-data.html">tidy data</a>. That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the <code>pivot_longer()</code> function from the <code>tidyr</code> package. If you are unsure about how your input data is supposed to look like, please use the <code><a href="../reference/create_synthetic_data.html">create_synthetic_data()</a></code> function and compare this to your data. You can also take a look at the <a href="https://jpquast.github.io/protti/articles/input_preparation_workflow.html">input preparation vignette</a>, there you will find all the necessary information on how to get your data into the correct format.</p>
 <p>The input data should have a similar structure to this example:</p>
 <table class="table">
 <thead><tr class="header">
