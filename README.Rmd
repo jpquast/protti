@@ -20,6 +20,11 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](https://codecov.io/gh/jpquast/protti?branch=master)
 <!-- badges: end -->
 
+<style>
+body {
+text-align: justify}
+</style>
+
 ## Overview
 
 The goal of **protti** is to provide flexible functions and workflows for proteomics quality control and data analysis. It can be used for label-free DDA, DIA and SRM data generated with search tools such as Spectronaut, MaxQuant, Proteome Discover and Skyline. Both limited proteolysis mass spectrometry (LiP-MS) and regular bottom-up proteomics experiments can be analysed.
@@ -54,6 +59,7 @@ devtools::install_github("jpquast/protti")
 ## Usage
 
 Since **protti** is designed to be a flexible tool for the analysis of your data, there are many ways in which it can be used. In this section we will give a general overview for a very simple pipeline that would take a search result from the search tool of your choice and in a few steps returns a list of significantly changing proteins or peptides. 
+To ensure that you have your data in the right format please check out the [input preparation vignette](https://jpquast.github.io/protti/articles/input_preparation_workflow.html).
 
 A complete list of functions and their documentation is available [here](https://jpquast.github.io/protti/reference/). Within R you can access the same documentation by calling `?` followed by the function name without parenthesis.
 
@@ -61,6 +67,7 @@ In general functions with the prefix `qc_*` are used for quality control of your
 
 For more in detail workflow suggestions and function demonstrations you can have a look at the packages vignettes. These include:
 
+* [Input Preparation Workflow](https://jpquast.github.io/protti/articles/input_preparation_workflow.html)
 * [Quality Control Workflow](https://jpquast.github.io/protti/articles/quality_control_workflow.html)
 * [Single Dose Treatment Data Analysis Workflow](https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html)
 * [Dose-Response Data Analysis Workflow](https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html)

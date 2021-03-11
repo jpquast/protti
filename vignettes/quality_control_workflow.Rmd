@@ -24,7 +24,8 @@ knitr::opts_chunk$set(
 # Introduction
 
 This vignette will give you an overview of how you can perform quality control of your bottom-up proteomics or LiP-MS data.
-For help with data analysis you can check out our [single dose treatment vignette](https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html) and our [data analysis vignette for dose response data](https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html).
+For help with data input and to make sure that you are using the right format please check out the [input preparation vignette](https://jpquast.github.io/protti/articles/input_preparation_workflow.html).
+For help with data analysis you can check out our [single dose treatment vignette](https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html) and our [data analysis vignette for dose-response data](https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html).
 
 When working with proteomics and limited proteolysis-coupled mass spectrometry ([LiP-MS](https://doi.org/10.1038/nprot.2017.100)) data, it is important to ensure that the data is of sufficient quality before inferring biological relevance and meaning from it. In general, there are several ways in which this can be done: 
 
@@ -44,7 +45,8 @@ You can read more about specific functions and how to use them by calling e.g. `
 
 This document will give you an overview of QC functions included in **protti** and will show you how they can be applied to your data. The examples in this file are run on synthetic data, which is created with the function `create_synthetic_data()`.
 
-The functions in **protti** are tailored towards the analysis of DIA data, based on the output of the search engine [Spectronaut™](https://biognosys.com/shop/spectronaut). However, if you have any other data, such as DDA data that was searched with a different search engine, you can still apply our functions. Just make sure that your data frame contains [tidy data](https://r4ds.had.co.nz/tidy-data.html). That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the `pivot_longer()` function from the `tidyr` package. If you are unsure about how your input data is supposed to look like, please use the `create_synthetic_data()` function and compare this to your data. 
+The functions in **protti** are tailored towards the analysis of DIA data, based on the output of the search engine [Spectronaut™](https://biognosys.com/shop/spectronaut). However, if you have any other data, such as DDA data that was searched with a different search engine, you can still apply our functions. Just make sure that your data frame contains [tidy data](https://r4ds.had.co.nz/tidy-data.html). That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the `pivot_longer()` function from the `tidyr` package. If you are unsure about how your input data is supposed to look like, please use the `create_synthetic_data()` function and compare this to your data.
+You can read more about all of this [here](https://jpquast.github.io/protti/articles/input_preparation_workflow.html).
 
 The input data should have a similar structure to this example: 
 
