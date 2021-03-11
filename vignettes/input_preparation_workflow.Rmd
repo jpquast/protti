@@ -334,7 +334,7 @@ The required columns include:
 
 After saving the report as an Excel file please convert it to a .csv file, simply by opening it and saving it as such.
 
-We will read in the file using `read_protti()`and then select the columns we are interested in. Similar to above you can either filter the `contaminant` and `number_peptides` columns now or later.
+We will read in the file using `read_protti()` and then select the columns we are interested in. Similar to above you can either filter the `contaminant` and `number_peptides` columns now or later.
 
 ```{r Proteome_discoverer_prot, eval=FALSE}
 # Load data
