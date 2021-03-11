@@ -84,7 +84,10 @@ Since **protti** is designed to be a flexible tool for the analysis of
 your data, there are many ways in which it can be used. In this section
 we will give a general overview for a very simple pipeline that would
 take a search result from the search tool of your choice and in a few
-steps returns a list of significantly changing proteins or peptides.
+steps returns a list of significantly changing proteins or peptides. To
+ensure that you have your data in the right format please check out the
+[input preparation
+vignette](https://jpquast.github.io/protti/articles/input_preparation_workflow.html).
 
 A complete list of functions and their documentation is available
 [here](https://jpquast.github.io/protti/reference/). Within R you can
@@ -100,6 +103,8 @@ to analysis.
 For more in detail workflow suggestions and function demonstrations you
 can have a look at the packages vignettes. These include:
 
+-   [Input Preparation
+    Workflow](https://jpquast.github.io/protti/articles/input_preparation_workflow.html)
 -   [Quality Control
     Workflow](https://jpquast.github.io/protti/articles/quality_control_workflow.html)
 -   [Single Dose Treatment Data Analysis

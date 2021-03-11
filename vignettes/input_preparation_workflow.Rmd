@@ -1,0 +1,432 @@
+---
+title: "Input Preparation Workflow"
+author: "Dina Schuster"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Input Preparation Workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+  <style>
+  body {
+    text-align: justify}
+</style>
+  
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+This vignette will give you an overview of how you should prepare your output from common search engines such as [Spectronaut](https://biognosys.com/shop/spectronaut), [MaxQuant](https://www.maxquant.org/), [Proteome Discoverer](https://www.thermofisher.com/ch/en/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/multi-omics-data-analysis/proteome-discoverer-software.html) and [Skyline](https://skyline.ms/project/home/software/Skyline/begin.view) for **protti**.
+
+## protti
+
+Due to its modular and flexible structure **protti** can be used on the output of the most common bottom-up proteomics search engines irrespective of the measurement mode (DDA, DIA, targeted-MS).
+
+Generally, **protti** works with long data fromat (samples in rows rather than one column for each sample), so the goal for this vignette is to show you how you can get your search engine output into a long format looking like this:
+  
+  | Sample  |  Replicate |  Peptide  |  Condition | log2(intensity) |
+  |:-------:|:----------:|:---------:|:----------:|:----------------:
+  | sample1 |      1     |  PEPTIDER |   treated  |     14          |
+  | sample1 |      1     |  PEPTI    |   treated  |     16          |
+  | sample1 |      1     |  PEPTIDE  |   treated  |     17          |
+  | sample2 |      1     |  PEPTIDER |  untreated |     15          |
+  | sample2 |      1     |  PEPTI    |  untreated |     18          |
+  | sample2 |      1     |  PEPTIDE  |  untreated |     12          |
+  
+Most of the outputs will be converted with functions from the R packages **protti**, `magrittr` and `dplyr`. We will load these functions now with `library()`.
+
+```{r setup, message = FALSE, warning = FALSE}
+library(protti)
+library(magrittr)
+library(dplyr)
+```
+
+# Spectronaut
+
+For Spectronaut output there is not much you need to consider if you want to use **protti**. The columns we would recommend (not all columns are required) to export from Spectronaut are:
+
+* R.Condition (condition names)
+* R.FileName (file names)
+* PG.ProteinAccessions (protein identifiers)
+* PEP.IsProteotypic (logical indicating if peptide is proteotypic)
+* PEP.StrippedSequence (peptide sequence)
+* PEP.NrOfMissedCleavages (number of missed cleavages, relevant for quality control)
+* EG.IsDecoy (logical indicating if peptide is a decoy match)
+* EG.PrecursorId (peptide precursor ID)
+* FG.Quantity (precursor quantity, required for peptide-centric analyses)
+* FG.Charge (precursor charge state, important for peptide-centric quality control)
+* PG.Quantity (protein group quantity, required for protein-centric analyses)
+
+Spectronaut already exports data in the long format. To use Spectronaut output with **protti**, you simply have to read in your file. You can do this with `read_protti()`. 
+
+```{r Spectronaut, eval=FALSE}
+# To read in your own data you can use read_protti()
+spectronaut_data  <- read_protti(filename = "mydata/spectronaut.csv")
+```
+
+# MaxQuant
+
+Depending on which analysis you are performing you will have to use different outputs. For peptide-centric analyses we would recommend to use the `evidence.txt` file, whereas for protein-centric analyses we would recommend you use the `proteinGroups.txt` file.
+
+## Peptide-centric analysis/LiP-MS analysis
+
+In case you are interested in doing a **peptide-centric** analysis (such as one would for a common LiP-MS experiment), you should use the `evidence.txt` file provided in the search output of MaxQuant. 
+
+The `evidence.txt` file basically contains all the information we need to run **protti**, it is also contained in a long format which makes it easy to read in and use directly. The only thing you have to take into consideration for this kind of output is that there is no column that contains information on whether or not your peptide is proteotypic. 
+
+MaxQuant output also provides information on decoy hits contained in the column `reverse` and also has information on whether your hit is a contaminant. You should filter these out before the analysis.
+
+In this section we will show you how to read in the file with `read_protti()`, select relevant columns with `dplyr`'s `select()`, filter out reverse hits and contaminations with `dplyr`'s `filter()` as well as how we filter out non-proteotypic peptides.
+We will make an additional column called `is_proteotypic` containing logicals that will be `TRUE` if the `proteins` column does not contain a semicolon and `FALSE` if it does (this indicates that the peptide belongs to more than one protein). To do this you will need to install and load the [`stringr`](https://stringr.tidyverse.org/) package. 
+We can then filter the data frame based on the logicals contained in `is_proteotypic`.
+
+Note that we are also using the pipe operator `%>%` included in the R package [`magrittr`](https://magrittr.tidyverse.org/index.html). `%>%` takes the output of the preceding function and supplies it as the first argument of the following function. Using `%>%` makes code easier to read and follow.
+
+```{r MaxQuant_peptide, eval=FALSE}
+# load the stringr package
+library(stringr) 
+
+# To read in your own data you can use read_protti()
+mq_pep_data  <- read_protti(filename = "yourpath/evidence.txt")
+
+# Select the relevant columns
+mq_pep_selected <- mq_pep_data %>%
+  select(
+    raw_file,
+    experiment,
+    sequence,
+    modified_sequence,
+    intensity,
+    length,
+    proteins,
+    charge,
+    missed_cleavages, 
+    reverse, 
+    potential_contaminant
+  )
+
+mq_pep_filtered <- mq_pep_selected %>%
+  filter(reverse != "+", potential_contaminant != "+") %>% # remove reverse hits and potential contaminants
+  mutate(is_proteotypic = str_detect(
+    string = proteins,
+    pattern = ";",
+    negate = TRUE
+  )) %>% # adds new column with logicals that are TRUE if the peptide can be assigned to only one protein and FALSE if it can be assigned to multiple
+  filter(is_proteotypic == TRUE) # retain only proteotypic peptides
+
+# Make an annotation data frame and merge it with your data frame to obtain conditions
+# We are annotating sample 1-3 as controls and samples 4-6 as treated conditions
+# In addition we are annotating the replicates
+
+file_name <- c(
+  "sample1",
+  "sample2",
+  "sample3",
+  "sample4",
+  "sample5",
+  "sample6")
+
+condition <- c("control",
+               "control",
+               "control",
+               "treated",
+               "treated",
+               "treated")
+
+replicate <- c(1, 2, 3, 1, 2, 3)
+
+annotation <- data.frame(cbind(file_name, condition, replicate))
+
+# Combine your long data frame with the annotation
+mq_prot_long_annotated <-
+  left_join(x = mq_pep_filtered, y = annotation, by = "file_name")
+```
+
+## Protein-centric analysis
+
+For **protein-centric** analyses you should use the `proteinGroups.txt` file provided by MaxQuant. This file contains information in a wide format where each sample has its own column containing intensity values. 
+
+We will now select the columns we are interested in, filter them and use `tidyr`'s `pivot_longer()` to change the format to long format. 
+
+You could also produce an annotation file or data frame and annotate your conditions, we will show you how you can do this in R.
+
+```{r MaxQuant_protein, eval=FALSE}
+# load the tidyr package
+library(tidyr) 
+
+# To read in your own data you can use read_protti()
+mq_prot_data  <- read_protti(filename = "yourpath/proteinGroups.txt")
+
+# Select the relevant columns
+mq_prot_selected <- mq_prot_data %>%
+  select(
+    intensity_sample1, # change this to the name of your columns
+    intensity_sample2, # change this to the name of your columns
+    intensity_sample3, # change this to the name of your columns
+    intensity_sample4, # change this to the name of your columns
+    intensity_sample5, # change this to the name of your columns
+    intensity_sample6, # change this to the name of your columns
+    protein_i_ds,
+    peptides,
+    only_identified_by_site,
+    reverse, 
+    potential_contaminant
+  )
+
+mq_prot_filtered <- mq_prot_selected %>%
+  filter(is.na(only_identified_by_site),
+         reverse != "+",
+         potential_contaminant != "+") %>%  # remove proteins only identified by PTM, reverse hits and potential contaminants
+  filter(peptides > 1) # we filter out proteins that have less than 2 identified peptides
+
+# Change wide format to long format and create new columns called `r_file_name`and `intensity`
+mq_prot_long <- mq_prot_filtered %>%
+  pivot_longer(
+    cols = starts_with("intensity"),
+    names_to = "file_name",
+    values_to = "intensity"
+  )
+
+# Make an annotation data frame and merge it with your data frame to obtain conditions
+# We are annotating sample 1-3 as controls and samples 4-6 as treated conditions
+# In addition we are annotating the replicates
+
+file_name <- c(
+  "intensity_sample1",
+  "intensity_sample2",
+  "intensity_sample3",
+  "intensity_sample4",
+  "intensity_sample5",
+  "intensity_sample6")
+
+condition <- c("control",
+               "control",
+               "control",
+               "treated",
+               "treated",
+               "treated")
+
+replicate <- c(1, 2, 3, 1, 2, 3)
+
+annotation <- data.frame(cbind(file_name, condition, replicate))
+
+# Combine your long data frame with the annotation
+mq_prot_long_annotated <-
+  left_join(x = mq_prot_long, y = annotation, by = "file_name")
+```
+
+# Skyline
+
+Skyline output is already in long format, however, to process it you need to sum up your transition intensities to obain the intensity of one peptide. 
+The required Skyline output columns include: 
+
+* Peptide Sequence
+* Protein Name
+* Replicate Name
+* Precursor Charge
+* Precursor Mz (we are exporting these to distinguish transitions)
+* Product Mz (we are exporting these to distinguish transitions)
+* Area (or Intensity, depending on what you prefer to use)
+
+You can add replicate and condition annotations in Skyline directly, we will explain in this section how you can also do it in R.
+If you want to analyse your Skyline data on protein abundance you will have to combine the peptide intensities to obtain one value for protein abundance.
+
+```{r Skyline, eval=FALSE}
+
+# Load data
+
+skyline_data <- read_protti(filename = "yourpath/skyline.csv")
+
+skyline_data_pep_sum <- skyline_data %>%
+  group_by(replicate_name, peptide_sequence) %>%
+  mutate(sum_intensity = sum(area)) %>% # making a new column containing the summed up intensities of all transitions
+  select(-precursor_mz,-product_mz,-area) %>% # removing the columns we don't need
+  distinct() # removing duplicated rows from the data frame
+
+# Add annotation
+replicate_name <- c(
+  "sample_1", # make sure that the files have the same name as in your report
+  "sample_2",
+  "sample_3",
+  "sample_1",
+  "sample_2",
+  "sample_3")
+
+condition <- c("control",
+               "control",
+               "control",
+               "treated",
+               "treated",
+               "treated")
+
+replicate <- c(1, 2, 3, 1, 2, 3)
+
+annotation <- data.frame(cbind(replicate_name, condition, replicate))
+
+# Combine your long data frame with the annotation
+skyline_annotated <-
+  left_join(x = skyline_data_pep_sum, y = annotation, by = "replicate_name")
+
+```
+
+# Proteome Discoverer
+
+Proteome Discoverer output is similar to MaxQuant output in the sense that it also contains data in wide format (one column for each sample).Similar to MaxQuant there is also the option for a peptide or a protein-centric export. We will discuss both cases in this segment.
+
+## Peptide-centric analysis/LiP-MS analysis
+
+For a **peptide-centric** or a LiP-MS analysis please export the "Peptide Groups" report. Before preparing your export you can add the column "sequence" to your table otherwise Proteome Discoverer will only export the "annotated sequence" column which includes the preceding and following amino acids in the protein sequence.
+
+The required columns include: 
+
+* Sequence
+* Modifications
+* Number Proteins
+* Contaminant
+* Master Protein Accessions
+* Abundance or normalized abundance columns
+* Quan Info
+
+After saving the report as an Excel file please convert it to a .csv file, simply by opening it and saving it as such.
+
+We will read in the file using `read_protti()`and then select the columns we are interested in.  
+
+```{r Proteome_discoverer_pep, eval=FALSE}
+
+# Load data
+pd_pep_data <- read_protti("yourpath/PDpeptides.csv")
+
+# Select relevant columns
+pd_pep_selected <- pd_pep_data %>%
+  select(
+    sequence,
+    modifications,
+    number_proteins,
+    contaminant,
+    master_protein_accessions,
+    starts_with("abundances_grouped"), # select all columns that start with "abundances_grouped"
+    quan_info
+  )
+
+# Filter data frame
+pd_pep_filtered <- pd_pep_selected %>%
+  filter(contaminant == FALSE) %>% # remove annotated contaminants
+  filter(number_proteins == 1) %>% # select proteotypic peptides
+  filter(quan_info != "No Quan Values") # remove peptides that have no quantification valies
+
+# Convert into long format
+
+# Load required tidyr package
+library(tidyr)
+
+pd_pep_long <- pd_pep_filtered %>%
+  pivot_longer(
+    cols = starts_with("abundances"),
+    names_to = "file_name",
+    values_to = "intensity"
+  ) %>%
+  mutate(precursor = paste(sequence, modifications)) # combine peptide sequence and modifications to make a precursor column
+
+# Make annotation data frame
+file_name <- c(
+  "abundances_grouped_f1",
+  "abundances_grouped_f2",
+  "abundances_grouped_f3",
+  "abundances_grouped_f4",
+  "abundances_grouped_f5",
+  "abundances_grouped_f6")
+
+condition <- c("control",
+               "control",
+               "control",
+               "treated",
+               "treated",
+               "treated")
+
+replicate <- c(1, 2, 3, 1, 2, 3)
+
+annotation <- data.frame(cbind(file_name, condition, replicate))
+
+# Combine your long data frame with the annotation
+pd_pep_long_annotated <-
+  left_join(x = pd_pep_long, y = annotation, by = "file_name")
+```
+
+## Protein-centric analysis
+
+For a **protein-centric** or a LiP-MS analysis please export the "Proteins" report.
+
+The required columns include: 
+
+* Accession
+* Description
+* Contaminant
+* Number Peptides
+* Abundance or normalized abundance columns
+
+After saving the report as an Excel file please convert it to a .csv file, simply by opening it and saving it as such.
+
+We will read in the file using `read_protti()`and then select the columns we are interested in. 
+
+```{r Proteome_discoverer_prot, eval=FALSE}
+
+# Load data
+pd_prot_data <- read_protti("yourpath/PDproteins.csv")
+
+# Select relevant columns
+pd_prot_selected <- pd_prot_data %>%
+  select(
+    accession,
+    description,
+    contaminant,
+    number_peptides,
+    starts_with("abundances_grouped"), # select all columns that start with "abundances_grouped"
+  )
+
+# Filter data frame
+pd_prot_data_filtered <- pd_prot_selected %>%
+  filter(contaminant == FALSE) %>% # remove annotated contaminants
+  filter(number_peptides > 1) # select proteins with more than one identified peptide
+
+# Convert into long format
+
+# Load required tidyr package
+library(tidyr)
+
+pd_prot_long <- pd_prot_data_filtered %>%
+  pivot_longer(
+    cols = starts_with("abundances"),
+    names_to = "file_name",
+    values_to = "intensity"
+  )
+
+# Make annotation data frame
+file_name <- c(
+  "abundances_grouped_f1",
+  "abundances_grouped_f2",
+  "abundances_grouped_f3",
+  "abundances_grouped_f4",
+  "abundances_grouped_f5",
+  "abundances_grouped_f6")
+
+condition <- c("control",
+               "control",
+               "control",
+               "treated",
+               "treated",
+               "treated")
+
+replicate <- c(1, 2, 3, 1, 2, 3)
+
+annotation <- data.frame(cbind(file_name, condition, replicate))
+
+# Combine your long data frame with the annotation
+pd_prot_long_annotated <-
+  left_join(x = pd_prot_long, y = annotation, by = "file_name")
+```
