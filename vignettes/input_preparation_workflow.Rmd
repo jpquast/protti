@@ -108,7 +108,8 @@ evidence_proteotypic <- evidence %>%
     string = proteins,
     pattern = ";",
     negate = TRUE
-  ))# adds new column with logicals that are TRUE if the peptide can be assigned to only one protein and FALSE if it can be assigned to multiple
+  )) %>%# adds new column with logicals that are TRUE if the peptide can be assigned to only one protein and FALSE if it can be assigned to multiple
+  mutate(is_contaminant = ifelse(potential_contaminant == "+", TRUE, FALSE)) # adds new column with logicals indicating if peptide is coming from a potential contaminant
 
 # Make an annotation data frame and merge it with your data frame to obtain conditions
 # We are annotating sample 1-3 as controls and samples 4-6 as treated conditions
@@ -148,8 +149,13 @@ We will filter the data and use `tidyr`'s `pivot_longer()` to change the format 
 # To read in your own data you can use read_protti()
 protein_groups  <- read_protti(filename = "yourpath/proteinGroups.txt")
 
-protein_groups_filtered <- mq_prot_selected %>%
-  filter(is.na(only_identified_by_site)) %>%  # remove proteins only identified by PTM, reverse hits and potential contaminants
+protein_groups_filtered <- protein_groups %>%
+  mutate(is_only_identified_by_site = ifelse(only_identified_by_site == "+", TRUE, FALSE)) %>%
+  filter(is_only_identified_by_site == FALSE) %>% # remove proteins only identified by PTM
+  mutate(is_potential_contaminant = ifelse(potential_contaminant == "+", TRUE, FALSE)) %>%
+  filter(is_potential_contaminant == FALSE) %>% # remove potential contaminants
+  mutate(is_reverse = ifelse(reverse == "+", TRUE, FALSE)) %>%
+  filter(is_reverse == FALSE) %>% # remove reverse hits
   filter(peptides > 2) # we filter out proteins that have less than 3 identified peptides
 
 # Change wide format to long format and create new columns called `r_file_name`and `intensity`
