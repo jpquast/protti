@@ -305,13 +305,28 @@ Another way of quality control is to check the correlation of your samples. Idea
 ### Principal component analysis (PCA)
 
 Another popular quality control method (which could also be considered part of data analysis) is the principal component analysis (PCA). Generally, PCA is a method that reduces dimensionality of large datasets. In our case this helps us to quickly assess how similar or different our replicates and conditions are. We are going to use `qc_pca()` to compute and plot a PCA for our data.
+Before plotting your PCA you can check how much of your variance can be explained with each of the principle components. To do that you can plot a scree-plot using the function `qc_pca()` and setting `plot_style = "scree"`. In his example we can see that the variance can be best explained with PC1 and PC2 so we can go ahead and plot these.
 
 ```{r qc_pca, fig.width = 6, fig.height = 4, fig.align = "center"}
- qc_pca(data = data,
-        sample = sample, 
-        grouping = peptide, 
-        intensity = peptide_intensity_missing, 
-        condition = condition)
+qc_pca(
+  data = data,
+  sample = sample,
+  grouping = peptide,
+  intensity = peptide_intensity_missing,
+  condition = condition,
+  digestion = NULL,
+  plot_style = "scree"
+)
+
+qc_pca(
+  data = data,
+  sample = sample,
+  grouping = peptide,
+  intensity = peptide_intensity_missing,
+  condition = condition,
+  components = c("PC1", "PC2"), 
+  plot_style = "pca"
+)
 ``` 
 
 ### Additional QC functions
