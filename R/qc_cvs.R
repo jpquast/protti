@@ -2,11 +2,11 @@
 #'
 #' Calculates and plots the coefficients of variation for the selected grouping.
 #'
-#' @param data A dataframe containing at least peptide, precursor or protein identifiers, information on conditions and intensity values for each peptide, precursor or protein.
-#' @param grouping The column in the input dataframe containing the grouping variables (e.g. peptides, precursors or proteins).
-#' @param condition The column in the data dataframe containing condition information (e.g. "treated" and "control").
-#' @param intensity Column containing the corresponding raw intensity values (not log2 transformed) for each peptide or precursor.
-#' @param plot A logical indicating whether the result should be plotted. Default is TRUE.
+#' @param data A data frame containing at least peptide, precursor or protein identifiers, information on conditions and intensity values for each peptide, precursor or protein.
+#' @param grouping the column in the input data frame containing the grouping variables (e.g. peptides, precursors or proteins).
+#' @param condition the column in the data data frame containing condition information (e.g. "treated" and "control").
+#' @param intensity the name of the column containing the corresponding raw or normalised intensity values (not log2) for each peptide or precursor.
+#' @param plot logical indicating whether the result should be plotted. Default is TRUE.
 #' @param plot_style Variable indicating the plotting style. \code{plot_style = "boxplot"} plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution. \code{plot_style = "violin"} returns a violin plot. Default is \code{plot_style = "density"}.
 #'
 #' @return Either the median CVs in % or a plot showing the distribution of the CVs.
@@ -81,6 +81,8 @@ qc_cvs <-
         dplyr::mutate(type = ifelse(.data$type == "cv", {{condition}}, "combined")) %>%
         dplyr::mutate(type = forcats::fct_relevel(as.factor(.data$type), "combined")) %>%
         dplyr::select(-{{condition}}) %>%
+        dplyr::group_by(.data$type) %>% 
+        dplyr::mutate(median = stats::median(.data$values)) %>% 
         dplyr::distinct()
 
       if (max(result$values) > 200) {
@@ -109,9 +111,10 @@ qc_cvs <-
     if(plot_style == "density")
     {
       plot <- ggplot2::ggplot(result) +
-        ggplot2::geom_density(aes(x = .data$values, col = .data$type), size = 1, na.rm = TRUE) +
+        ggplot2::geom_density(ggplot2::aes(x = .data$values, col = .data$type), size = 1, na.rm = TRUE) +
         ggplot2::labs(title = "Coefficients of variation", x = "Coefficient of variation [%]", y = "Density", color = "Condition") +
         ggplot2::scale_x_continuous(limits = c(0, 200)) +
+        geom_vline(data = dplyr::distinct(result, .data$median, .data$type), ggplot2::aes(xintercept = median, col = .data$type), size=1, linetype = "dashed", show.legend = FALSE) +
         ggplot2::scale_color_manual(values = protti_colours)+
         ggplot2::theme_bw() +
         ggplot2::theme(plot.title = ggplot2::element_text(size = 20),

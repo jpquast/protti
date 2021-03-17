@@ -80,7 +80,7 @@
 #' )
 #' }
 parallel_fit_drc_4p <- function(data, sample, grouping, response, dose, filter = "post", replicate_completeness = 0.7, condition_completeness = 0.5, correlation_cutoff = 0.8, log_logarithmic = TRUE, retain_columns = NULL, n_cores = NULL){
-  dependency_test <- c(furrr = !requireNamespace("furrr", quietly = TRUE), future = !requireNamespace("future", quietly = TRUE), parallel = !requireNamespace("parallel", quietly = TRUE))
+  dependency_test <- c(furrr = !requireNamespace("furrr", quietly = TRUE), future = !requireNamespace("future", quietly = TRUE), parallel = !requireNamespace("parallel", quietly = TRUE), drc = !requireNamespace("drc", quietly = TRUE))
   if (any(dependency_test)) {
     dependency_name <- names(dependency_test[dependency_test == TRUE])
     if(length(dependency_name) == 1){

@@ -3,10 +3,10 @@
 #' Returns a plot or table of the number of IDs for each sample. The default settings remove grouping variables without quantitative information (intensity is NA).
 #' These will not be counted as IDs.
 #'
-#' @param data Dataframe containing at least sample names and precursor/peptide/protein IDs.
-#' @param sample Column in the data frame specifying the sample name.
-#' @param grouping Column in the data frame containing either precursor, peptide or protein identifiers.
-#' @param intensity Column in the data frame containing intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.
+#' @param data Data frame containing at least sample names and precursor/peptide/protein IDs.
+#' @param sample the column in the data frame specifying the sample name.
+#' @param grouping the column in the data frame containing either precursor, peptide or protein identifiers.
+#' @param intensity the column in the data frame containing raw or log2 intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.
 #' @param remove_na_intensities Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
 #' Default is TRUE since we are usually interested in the number of quantifiable IDs.
 #' @param condition Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated),
@@ -46,7 +46,8 @@ qc_ids <-
       if(missing(intensity)) stop("Please provide a column containing intensities or set remove_na_intensities to FALSE")
 
       data <- data %>%
-        tidyr::drop_na({{intensity}})
+        tidyr::drop_na({{intensity}}) %>% 
+        dplyr::mutate({{condition}} := as.character({{condition}}))
     }
 
    result <- data %>%

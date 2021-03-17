@@ -6,7 +6,7 @@
 #' @param sample The name of the column containing the sample names.
 #' @param protein The name of the column containing protein IDs or protein names.
 #' @param is_contaminant The name of the column containing a logical indicating if the protein is a contaminant.
-#' @param intensity The name of the column containing raw intensity values.
+#' @param intensity the name of the column containing the corresponding raw or normalised intensity values (not log2).
 #' @param n_contaminants Numeric, indicating how many contaminants should be displayed individually. The rest is combined to a group called "other". The
 #' default is 5.
 #' @param plot Logical, if TRUE a plot is returned. If FALSE a table is returned.

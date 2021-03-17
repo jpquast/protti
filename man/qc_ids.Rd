@@ -17,13 +17,13 @@ qc_ids(
 )
 }
 \arguments{
-\item{data}{Dataframe containing at least sample names and precursor/peptide/protein IDs.}
+\item{data}{Data frame containing at least sample names and precursor/peptide/protein IDs.}
 
-\item{sample}{Column in the data frame specifying the sample name.}
+\item{sample}{the column in the data frame specifying the sample name.}
 
-\item{grouping}{Column in the data frame containing either precursor, peptide or protein identifiers.}
+\item{grouping}{the column in the data frame containing either precursor, peptide or protein identifiers.}
 
-\item{intensity}{Column in the data frame containing intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.}
+\item{intensity}{the column in the data frame containing raw or log2 intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.}
 
 \item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
 Default is TRUE since we are usually interested in the number of quantifiable IDs.}

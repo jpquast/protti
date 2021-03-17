@@ -7,14 +7,20 @@
 #' @param grouping The column in the data dataframe containing either precursor or peptide identifiers.
 #' @param intensity Column containing the corresponding intensity values for each peptide or precursor.
 #' @param condition Column indicating the treatment or condition for each sample.
+#' @param components character vector indicating the two components that should be displayed in the plot. By default theser are PC1 and
+#' PC2. You can provide these using a character vector of the form c("PC1", "PC2").
 #' @param digestion Optional column indicating the mode of digestion (limited proteolysis or tryptic digest).
+#' @param plot_style character vector specifying what plot should be returned. If `plot_style = "coordinate"` is selected the two PCA 
+#' components supplied with the `components` argument are plottet against each other. This is the default. `plot_style = "scree"` returns 
+#' a scree plot that displays the variance explained by each principal component in percent. The scree is useful for checking if more 
+#' than the default first two components should be plotted.
 #'
 #' @return A plotted principal component analysis showing PC1 and PC2
 #' @import dplyr
 #' @import ggplot2
 #' @import tidyr
 #' @importFrom magrittr %>%
-#' @importFrom stringr str_replace
+#' @importFrom stringr str_replace str_extract
 #' @importFrom stats prcomp
 #' @importFrom rlang .data
 #' @importFrom ggrepel geom_text_repel
@@ -28,12 +34,14 @@
 #' sample = r_file_name,
 #' grouping = eg_precursor_id,
 #' intensity = normalised_intensity_log2,
-#' condition = r_condition
+#' condition = r_condition,
+#' components = c("PC2", "PC3"),
+#' plot_style = "scree"
 #' )
 #' }
 #'
 qc_pca <-
-  function(data, sample, grouping, intensity, condition, digestion = NULL){
+  function(data, sample, grouping, intensity, condition, components = c("PC1", "PC2"), digestion = NULL, plot_style = "coordinate"){
     protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
     utils::data("protti_colours", envir=environment()) # then overwrite it with real data
     . = NULL
@@ -61,14 +69,14 @@ qc_pca <-
     pca_sdev_df <- pca_sdev_df %>%
       dplyr::mutate(percent_variance = (pca$sdev ^ 2 / sum(pca$sdev ^ 2) * 100),
                     dimension = row.names(.))
-
+if(plot_style == "coordinate"){
     plot <- pca_df %>%
-      ggplot2::ggplot(aes(x = .data$PC1, y = .data$PC2, col = as.character({{condition}}), shape = {{digestion}})) +
+      ggplot2::ggplot(aes(x = !!rlang::sym(components[1]), y = !!rlang::sym(components[2]), col = as.character({{condition}}), shape = {{digestion}})) +
       ggplot2::geom_point(size = 3) +
       ggplot2::labs(
         title = "Principal component analysis",
-        x = paste("PC1", "(", round(pca_sdev_df$percent_variance[pca_sdev_df$dimension == 1], 1), "%)"),
-        y = paste("PC2", "(", round(pca_sdev_df$percent_variance[pca_sdev_df$dimension == 2], 1), "%)"),
+        x = paste(components[1], "(", round(pca_sdev_df$percent_variance[pca_sdev_df$dimension == stringr::str_extract(components[1], "\\d")], 1), "%)"),
+        y = paste(components[2], "(", round(pca_sdev_df$percent_variance[pca_sdev_df$dimension == stringr::str_extract(components[2], "\\d")], 1), "%)"),
         color = "Condition"
       ) +
       ggrepel::geom_text_repel(aes(label = paste(
@@ -90,6 +98,34 @@ qc_pca <-
         legend.title = ggplot2::element_text(size = 15),
         legend.text = ggplot2::element_text(size = 15)
       ) 
+}
+    if(plot_style == "scree"){
+      plot <- pca_sdev_df %>% 
+        ggplot2::ggplot(aes(x = .data$dimension, y = .data$percent_variance)) +
+        ggplot2::geom_col(col = "black", size = 1, fill = protti_colours[1]) +
+        ggplot2::geom_point(size = 2) +
+        ggplot2::geom_line(size = 1, group = 1)+
+        ggplot2::labs(
+          title = "Principal component scree plot",
+          x = "Dimension",
+          y = "Explained variance [%]"
+        ) +
+        ggplot2::geom_text(aes(label = paste0(
+          as.character(round(.data$percent_variance, digits = 1)
+        ), "%")),
+        size = 4,
+        vjust = -0.6,
+        hjust = -0.1) +
+        ggplot2::scale_y_continuous(limits = NULL, expand = c(0, 4)) +
+        ggplot2::theme_bw() +
+        ggplot2::theme(
+          plot.title = ggplot2::element_text(size = 20),
+          axis.title.x = ggplot2::element_text(size = 15),
+          axis.text.y = ggplot2::element_text(size = 15),
+          axis.text.x = ggplot2::element_text(size = 15),
+          axis.title.y = ggplot2::element_text(size = 15)
+        ) 
+    }
 
 
     return(plot)

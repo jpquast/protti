@@ -8,7 +8,7 @@ qc_sample_correlation(
   data,
   sample,
   grouping,
-  intensity,
+  intensity_log2,
   condition,
   digestion = NULL,
   run_order = NULL,
@@ -23,7 +23,7 @@ qc_sample_correlation(
 
 \item{grouping}{the name of the column containing precursor or peptide identifiers.}
 
-\item{intensity}{the name of the column containing intensity values. Note: The input intensities should be log2 transformed.}
+\item{intensity_log2}{the name of the column containing log2 intensity values.}
 
 \item{condition}{the name of the column containing the conditions.}
 
@@ -47,7 +47,7 @@ qc_sample_correlation(
 data,
 sample = r_file_name,
 grouping = eg_precursor_id,
-intensity = intensity_log2,
+intensity_log2 = intensity_log2,
 condition = r_condition
 )
 }

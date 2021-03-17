@@ -24,7 +24,7 @@ qc_contaminants(
 
 \item{is_contaminant}{The name of the column containing a logical indicating if the protein is a contaminant.}
 
-\item{intensity}{The name of the column containing raw intensity values.}
+\item{intensity}{the name of the column containing the corresponding raw or normalised intensity values (not log2).}
 
 \item{n_contaminants}{Numeric, indicating how many contaminants should be displayed individually. The rest is combined to a group called "other". The
 default is 5.}

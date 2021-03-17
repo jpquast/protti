@@ -34,13 +34,13 @@ qc_peak_width(
 \item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
 Default is TRUE since we are usually interested in the peak width of quantifiable data.}
 
-\item{interactive}{A logical indicating whether the plot should be interactive (default is TRUE).}
+\item{interactive}{A logical indicating whether the plot should be interactive (default is FALSE).}
 }
 \value{
-A line plot displaying median precursor elution peak width over retention time for each sample.
+A line plot displaying one minute binned median precursor elution peak width over retention time for each sample.
 }
 \description{
-Plots median precursor elution peak width over retention time for each sample.
+Plots one minute binned median precursor elution peak width over retention time for each sample.
 }
 \examples{
 \dontrun{

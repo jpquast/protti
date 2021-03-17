@@ -8,11 +8,13 @@ plot_peptide_profiles(
   data,
   sample,
   peptide,
-  intensity,
+  intensity_log2,
   grouping,
   targets,
-  split_all = FALSE,
-  protein_abundance_plot = FALSE
+  protein_abundance_plot = FALSE,
+  interactive = FALSE,
+  export = FALSE,
+  export_name = "peptide_profile_plots"
 )
 }
 \arguments{
@@ -22,17 +24,24 @@ plot_peptide_profiles(
 
 \item{peptide}{Column in the data frame containing peptide or precursor names.}
 
-\item{intensity}{Column in the data frame containing log2 transformed intensities.}
+\item{intensity_log2}{Column in the data frame containing log2 transformed intensities.}
 
 \item{grouping}{Column in the data frame containing groups by which the data should be split. This can be for example protein IDs.}
 
-\item{targets}{Character vector specifying elements of the grouping column for which a plot should be returned.}
-
-\item{split_all}{Logical, specifying if a plot for each element of the grouping column should be returned. The default is FALSE. Be careful
-with this arguments as the number of plots can be quite high.}
+\item{targets}{Character vector specifying elements of the grouping column which should be plotted. This can also be 
+\code{"all"} if plots for all groups should be created. Depending on the number of elements in your grouping column this can be many
+plots.}
 
 \item{protein_abundance_plot}{Logical, if the input for this plot comes directly from \code{calculate_protein_abundance} this argument
 can be set to \code{TRUE}. This displays all peptides in gray, while the protein abundance is displayed in green.}
+
+\item{interactive}{A logical indicating whether the plot should be interactive (default is FALSE). If this is TRUE only one target can
+be supplied to the function. Interactive plots cannot be exported either.}
+
+\item{export}{A logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The 
+name of the file can be chosen using the \code{export_name} argument.}
+
+\item{export_name}{A character vector providing the name of the exported file if \code{export = TRUE}.}
 }
 \value{
 A list of peptide profile plots.
@@ -47,7 +56,7 @@ plot_peptide_abundance(
   data,
   sample = r_file_name,
   peptide = eg_precursor_id,
-  intensity = log2_intensity,
+  intensity_log2 = log2_intensity,
   grouping = pg_protein_accessions,
   targets = c("P03421")
 )

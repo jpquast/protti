@@ -243,7 +243,7 @@ diff_abundance <- data_filtered_uniprot %>%
     sample = r_file_name,
     condition = r_condition,
     grouping = eg_precursor_id,
-    intensity = normalised_intensity_log2,
+    intensity_log2 = normalised_intensity_log2,
     missingness = missingness,
     comparison = comparison,
     ref_condition = "control",
@@ -349,7 +349,6 @@ plot_peptide_profiles(
   intensity = normalised_intensity_log2,
   grouping = pg_protein_accessions,
   targets = "P62942",
-  split_all = FALSE,
   protein_abundance_plot = FALSE
 )
 ```

@@ -135,7 +135,7 @@ test_that("qc_sequence_coverage works", {
   expect_is(p,"ggplot")
   expect_error(print(p), NA)
   
-  p_facet <- qc_sequence_coverage(data = data, protein_identifier = protein, coverage = coverage, facet_by_sample = TRUE, sample = sample, interactive = FALSE)
+  p_facet <- qc_sequence_coverage(data = data, protein_identifier = protein, coverage = coverage, sample = sample, interactive = FALSE)
   expect_is(p_facet,"ggplot")
   expect_error(print(p_facet), NA)
   
@@ -143,7 +143,7 @@ test_that("qc_sequence_coverage works", {
   expect_is(p_interactive, "plotly")
   expect_error(print(p_interactive), NA)
   
-  p_interactive_facet <- qc_sequence_coverage(data = data, protein_identifier = protein, coverage = coverage, facet_by_sample = TRUE, sample = sample, interactive = TRUE)
+  p_interactive_facet <- qc_sequence_coverage(data = data, protein_identifier = protein, coverage = coverage, sample = sample, interactive = TRUE)
   expect_is(p_interactive_facet,"plotly")
   expect_error(print(p_interactive_facet), NA)
 })

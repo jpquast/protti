@@ -33,7 +33,7 @@ sequence_coverage <-
       dplyr::mutate(modified_sequence = replace_identified_by_x({{protein_sequence}}, .data$start, .data$end)) %>%
       dplyr::mutate(covered = stringr::str_count(.data$modified_sequence, "x")) %>%
       dplyr::mutate(coverage = .data$covered / .data$sequence_length * 100) %>%
-      dplyr::select(-c(.data$sequence_length, .data$modified_sequence, .data$covered, .data$start, .data$end, .data$aa_before, .data$last_aa, {{peptides}})) %>%
+      dplyr::select(-c(.data$sequence_length, .data$modified_sequence, .data$covered, .data$start, .data$end, .data$aa_before, .data$last_aa, .data$aa_after, {{peptides}})) %>%
       dplyr::distinct() %>%
       dplyr::ungroup()
     

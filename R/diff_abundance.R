@@ -6,7 +6,7 @@
 #' @param sample The column in the data frame containing the sample name. Is not required if \code{method = "t-test_mean_sd"}.
 #' @param condition The column in the data frame containing the conditions.
 #' @param grouping The column in the data frame containing precursor or peptide identifiers.
-#' @param intensity The column in the data frame containing intensity values. The intensity values need to be log2 transformed. Is not required if \code{method = "t-test_mean_sd"}.
+#' @param intensity_log2 The column in the data frame containing intensity values. The intensity values need to be log2 transformed. Is not required if \code{method = "t-test_mean_sd"}.
 #' @param missingness The column in the data frame containing missingness information. Can be obtained by calling \code{assign_missingness}. 
 #' Is not required if \code{method = "t-test_mean_sd"}.
 #' @param comparison The column in the data frame containing comparison information of treatment/reference condition pairs. Can be obtained by 
@@ -66,7 +66,7 @@
 #' sample = r_file_name,
 #' condition = r_condition,
 #' grouping = eg_precursor_id,
-#' intensity = normalised_intensity_log2,
+#' intensity_log2 = normalised_intensity_log2,
 #' missingness = missingness,
 #' comparison = comparison,
 #' ref_condition = "control",
@@ -79,7 +79,7 @@ diff_abundance <-
            sample,
            condition,
            grouping,
-           intensity,
+           intensity_log2,
            missingness,
            comparison,
            mean = NULL,
@@ -91,11 +91,14 @@ diff_abundance <-
            p_adj_method = "BH",
            retain_columns = NULL) {
   . = NULL  
-    
+  if(!(ref_condition %in% unique(pull(data, {{ condition }})))) {
+    stop("The name provided to ref_condition cannot be found in your conditions! Please provide a valid reference condition.")
+  }  
+  
   method <- match.arg(method)
   
   if(method != "t-test_mean_sd") {
-  if(max(pull(data, {{intensity}}), na.rm = TRUE) > 1000) {stop("Please log2 transform your intensities.")}
+  if(max(pull(data, {{intensity_log2}}), na.rm = TRUE) > 1000) {stop("Please log2 transform your intensities.")}
   }
   if(method == "t-test_mean_sd") {
     if(max(pull(data, {{mean}}), na.rm = TRUE) > 1000) {stop("Please log2 transform your data.")}
@@ -106,16 +109,16 @@ diff_abundance <-
     message("[1/2] Create input for t-tests ... ", appendLF = FALSE)
     
     t_test_missingness_obs <- data %>%
-      tidyr::drop_na({{missingness}}, {{intensity}}) %>%
+      tidyr::drop_na({{missingness}}, {{intensity_log2}}) %>%
       dplyr::group_by({{comparison}}, {{grouping}}) %>%
       dplyr::mutate(n_obs = dplyr::n()) %>%
       dplyr::ungroup() %>%
       dplyr::distinct({{grouping}}, {{comparison}}, {{missingness}}, .data$n_obs)
     
     t_test_input <- data %>%
-      tidyr::drop_na({{intensity}}) %>%
+      tidyr::drop_na({{intensity_log2}}) %>%
       dplyr::group_by({{comparison}}, {{grouping}}, {{condition}}) %>%
-      dplyr::summarize(intensity = list({{intensity}}), .groups = "drop") %>%
+      dplyr::summarize(intensity = list({{intensity_log2}}), .groups = "drop") %>%
       dplyr::mutate(type = ifelse({{condition}} == ref_condition, "control", "treated")) %>%
       dplyr::select(-{{condition}}) %>%
       tidyr::pivot_wider(names_from = .data$type, values_from = .data$intensity, values_fill = list(NA))
@@ -226,10 +229,10 @@ diff_abundance <-
   
   message("[1/7] Creating moderated t-test input data ... ", appendLF = FALSE)
   moderated_t_test_input <- data %>%
-    dplyr::distinct({{grouping}}, {{sample}}, {{intensity}}) %>%
-    tidyr::drop_na({{intensity}}) %>% 
+    dplyr::distinct({{grouping}}, {{sample}}, {{intensity_log2}}) %>%
+    tidyr::drop_na({{intensity_log2}}) %>% 
     dplyr::arrange({{sample}}) %>% 
-    tidyr::pivot_wider(names_from = {{sample}}, values_from = {{intensity}}) %>%
+    tidyr::pivot_wider(names_from = {{sample}}, values_from = {{intensity_log2}}) %>%
     tibble::column_to_rownames(var = rlang::as_name(rlang::enquo(grouping))) %>%
     as.matrix() 
     
@@ -278,7 +281,7 @@ diff_abundance <-
   
   moderated_t_test_missingness <- 
     data %>% 
-    tidyr::drop_na({{missingness}}, {{intensity}}) %>%
+    tidyr::drop_na({{missingness}}, {{intensity_log2}}) %>%
     dplyr::group_by({{comparison}}, {{grouping}}) %>%
     dplyr::mutate(n_obs = dplyr::n()) %>%
     dplyr::ungroup() %>%
@@ -321,9 +324,9 @@ diff_abundance <-
   message("[1/5] Creating proDA input data ... ", appendLF = FALSE)
     
   proDA_input <- data %>%
-    dplyr::distinct({{grouping}}, {{sample}}, {{intensity}}) %>%
+    dplyr::distinct({{grouping}}, {{sample}}, {{intensity_log2}}) %>%
     dplyr::arrange({{sample}}) %>% 
-    tidyr::pivot_wider(names_from = {{sample}}, values_from = {{intensity}}) %>%
+    tidyr::pivot_wider(names_from = {{sample}}, values_from = {{intensity_log2}}) %>%
     tibble::column_to_rownames(var = rlang::as_name(rlang::enquo(grouping))) %>%
     as.matrix()
   
@@ -352,7 +355,7 @@ diff_abundance <-
   
   proDA_missingness <- 
     data %>% 
-    tidyr::drop_na({{missingness}}, {{intensity}}) %>%
+    tidyr::drop_na({{missingness}}, {{intensity_log2}}) %>%
     dplyr::group_by({{comparison}}, {{grouping}}) %>%
     dplyr::mutate(n_obs = dplyr::n()) %>%
     dplyr::ungroup() %>%

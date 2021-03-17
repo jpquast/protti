@@ -21,7 +21,7 @@ qc_data_completeness(
 
 \item{grouping}{The name of the column containing either precursor or peptide identifiers.}
 
-\item{intensity}{The name of the column containing raw intensity values.}
+\item{intensity}{The name of the column containing any intensity intensity values that missingness should be determined for.}
 
 \item{digestion}{Optional column indicating the mode of digestion (limited proteolysis or tryptic digest). Alternatively, any other variable
 by which the data should be split can be provided.}

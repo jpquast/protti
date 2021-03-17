@@ -1,6 +1,6 @@
 #' Peak width over retention time
 #'
-#' Plots median precursor elution peak width over retention time for each sample.
+#' Plots one minute binned median precursor elution peak width over retention time for each sample.
 #'
 #' @param data A data frame containing at least sample names and protein IDs.
 #' @param sample The column in the data frame containing the sample names.
@@ -11,9 +11,9 @@
 #' @param retention_time_end The column in the data frame containing the end time of the precursor elution peak. It is not required if the \code{peak_width} column is provided. 
 #' @param remove_na_intensities Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
 #' Default is TRUE since we are usually interested in the peak width of quantifiable data.
-#' @param interactive A logical indicating whether the plot should be interactive (default is TRUE).
+#' @param interactive A logical indicating whether the plot should be interactive (default is FALSE).
 #'
-#' @return A line plot displaying median precursor elution peak width over retention time for each sample.
+#' @return A line plot displaying one minute binned median precursor elution peak width over retention time for each sample.
 #' @import ggplot2
 #' @importFrom stats median
 #' @importFrom dplyr distinct rename mutate

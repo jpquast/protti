@@ -7,7 +7,7 @@
 #' @param sample The column in the data frame containing the sample name. NOTE: If the overall distribution should be returned please
 #' do not provide the name of the sample column.
 #' @param grouping The column in the data frame containing either precursor, peptide or protein identifiers.
-#' @param intensity The column in the data frame containing the log2 transformed intensities of each grouping identifier sample combination.
+#' @param intensity_log2 The column in the data frame containing the log2 transformed intensities of each grouping identifier sample combination.
 #' @param plot_style A character vector indicating the plot type. This can be either "histogram", "boxplot" or "violin". Plot style "boxplot" and "violin" can
 #' only be used if a sample column is provided.
 #'
@@ -26,15 +26,15 @@
 #'   data,
 #'   sample = r_file_name,
 #'   grouping = eg_precursor_id,
-#'   intensity = normalised_intensity_log2,
+#'   intensity_log2 = normalised_intensity_log2,
 #'   plot_style = "boxplot"
 #' )
 #' }
-qc_intensity_distribution <- function(data, sample = NULL, grouping, intensity, plot_style) {
+qc_intensity_distribution <- function(data, sample = NULL, grouping, intensity_log2, plot_style) {
   if (missing(plot_style)) stop("Please provide a plot type in the plot_style argument!")
   input <- data %>%
-    dplyr::distinct({{ sample }}, {{ grouping }}, {{ intensity }}) %>%
-    tidyr::drop_na({{ intensity }})
+    dplyr::distinct({{ sample }}, {{ grouping }}, {{ intensity_log2 }}) %>%
+    tidyr::drop_na({{ intensity_log2 }})
 
   if (!missing(sample)) {
     input <- input %>%
@@ -43,7 +43,7 @@ qc_intensity_distribution <- function(data, sample = NULL, grouping, intensity, 
 
   if (plot_style == "histogram") {
     plot <- input %>%
-      ggplot2::ggplot(ggplot2::aes(x = {{ intensity }})) +
+      ggplot2::ggplot(ggplot2::aes(x = {{ intensity_log2 }})) +
       ggplot2::geom_histogram(binwidth = 0.5, color = "black", fill = "#5680C1") +
       ggplot2::labs(title = "Overall log2 Intensity Distribution", x = "Log2 Intensity", y = "Frequency") +
       {
@@ -65,7 +65,7 @@ qc_intensity_distribution <- function(data, sample = NULL, grouping, intensity, 
   if (plot_style == "boxplot") {
     if (missing(sample)) stop("Please provide a column with sample information when choosing boxplot as plot style!")
     plot <- input %>%
-      ggplot2::ggplot(aes(x = {{ sample }}, y = {{ intensity }})) +
+      ggplot2::ggplot(aes(x = {{ sample }}, y = {{ intensity_log2 }})) +
       geom_boxplot(fill = "#5680C1", outlier.color = "#B96DAD") +
       labs(title = "Run intensities", x = "", y = "Intensity") +
       theme_bw() +
@@ -82,7 +82,7 @@ qc_intensity_distribution <- function(data, sample = NULL, grouping, intensity, 
   if (plot_style == "violin") {
     if (missing(sample)) stop("Please provide a column with sample information when choosing violin as plot style!")
     plot <- input %>%
-      ggplot2::ggplot(aes(x = {{ sample }}, y = {{ intensity }})) +
+      ggplot2::ggplot(aes(x = {{ sample }}, y = {{ intensity_log2 }})) +
       ggplot2::geom_violin(fill = "#5680C1", na.rm = TRUE) +
       geom_boxplot(width = 0.15, fill = "white", na.rm = TRUE, alpha = 0.6) +
       labs(title = "Run intensities", x = "", y = "Intensity") +

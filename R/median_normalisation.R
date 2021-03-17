@@ -23,6 +23,7 @@ median_normalisation <-
   function(data, sample, intensity_log2)
   {
     data %>%
+      dplyr::distinct() %>% 
       dplyr::mutate(global_median = stats::median({{intensity_log2}}, na.rm = TRUE)) %>%
       dplyr::group_by({{sample}}) %>%
       dplyr::mutate(run_median = stats::median({{intensity_log2}}, na.rm = TRUE)) %>%
