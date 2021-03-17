@@ -192,7 +192,8 @@ data_filtered_uniprot <- data_filtered_proteotypic %>%
   find_peptide(protein_sequence = sequence,
                peptide_sequence = pep_stripped_sequence) %>%
   peptide_type(aa_before = aa_before,
-               last_aa = last_aa) %>%
+               last_aa = last_aa, 
+               aa_after = aa_after) %>%
   sequence_coverage(protein_sequence = sequence,
                     peptides = pep_stripped_sequence)
 ```
@@ -228,7 +229,7 @@ Both methods impute MAR data using the mean and variance of the condition with t
 Since we are dealing with a LiP-MS data set we are performing the statistical analysis on the precursor level. For protein abundance data you can simply use protein abundances as your intensities and select your protein groups column for the grouping argument. Make sure to retain any columns you need for further data analysis with the `retain_columns` argument of both functions.
 
 ```{r t_test, message = FALSE, warning = FALSE}
-diff_abudance_data <- data_filtered_uniprot %>%
+diff_abundance_data <- data_filtered_uniprot %>%
   assign_missingness(
     sample = r_file_name,
     condition = r_condition,
@@ -257,7 +258,7 @@ diff_abudance_data <- data_filtered_uniprot %>%
 The p-value calculated with the t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg (FDR) correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall even distribution with a concentration of values in the significant range. You can check this by using the protti function `plot_pval_distribution()`.
 
 ```{r pval_distribution, message = FALSE, warning = FALSE, fig.align= "center", fig.width = 6, fig.height = 5}
-plot_pval_distribution(data = diff_abudance_data,
+plot_pval_distribution(data = diff_abundance_data,
                        grouping = eg_precursor_id,
                        pval = pval
                        )
@@ -265,7 +266,7 @@ plot_pval_distribution(data = diff_abudance_data,
 
 For this subset of data the distribution of p-values is relatively equal and there is no increase in values in the low p-value range but rather a decrease. This means that the Benjamini-Hochberg algorithm might not be suitable for correcting these p-values. You can pick another algorithm for the correction and supply it to the `p_adj_method` argument and run `diff_abundance()` again. The available methods are any methods that can be supplied to the standard R function `p.adjust()` that is used internally. You can also just use this function or any other correction algorithm on your data and overwrite the values in the `adj_pval` column.
 
-_Note: If the p-values are not fulfilling the assumption of the multiple-testing correction, meaning very little observations are changing significantly, it can happen that only a few significant hits remain after adjusting the p-value. This can be a common occurrence so you should always have a look at the p-value distribution after statistical testing._
+_Note: If the p-values are not fulfilling the assumption of the multiple-testing correction, meaning very little observations are changing significantly, it can happen that only a few significant hits remain after adjusting the p-value. This can be a common occurrence so you should always have a look at the p-value distribution. This will help you decide on whether or not you should use adjusted p-values, not adjusted p-values or if you should adjust them with a specific method._
 
 ### Volcano plot
 
@@ -276,7 +277,7 @@ We are going to plot the volcano plot with and without adjusted p-values.
 
 ```{r volcano_plot, fig.align= "center", fig.width = 6, fig.height = 5, message = FALSE, warning = FALSE}
 volcano_protti(
-  data = diff_abudance_data,
+  data = diff_abundance_data,
   grouping = eg_precursor_id,
   log2FC = diff,
   significance = pval,
@@ -290,7 +291,7 @@ volcano_protti(
 )
 
 volcano_protti(
-  data = diff_abudance_data,
+  data = diff_abundance_data,
   grouping = eg_precursor_id,
   log2FC = diff,
   significance = adj_pval,
@@ -311,7 +312,7 @@ For LiP-MS experiments a good way to see where on the protein the changes due to
 In order to produce a barcode plot only for our target FKBP12 we are creating a data frame that contains only information for our target protein. We are doing this by using `dplyr`'s `filter()` function. The filtered data frame is then used as the input for the plot.
 
 ```{r barcode_plot, fig.align = "center", fig.width = 6, message = FALSE, warning = FALSE}
-FKBP12 <- diff_abudance_data %>%
+FKBP12 <- diff_abundance_data %>%
   filter(pg_protein_accessions == "P62942")
 
 barcode_plot(
@@ -380,7 +381,7 @@ For `kegg_enrichment()` you need to first use the function `fetch_kegg()` to obt
 If you know all known interactors of your specific treatment you can check for an enrichment of these with the `treatment_enrichment()` function. This is particularly useful if your treatment has an effect on many proteins. 
 
 ```{r additional_functions, eval=FALSE}
-diff_abundance_significant <- diff_abudance_data %>%
+diff_abundance_significant <- diff_abundance_data %>%
   mutate(is_significant = ifelse((adj_pval < 0.01 & abs(diff) > 1), TRUE, FALSE)) %>% # mark significant peptides
   mutate(binds_treatment = pg_protein_accessions == "P62942") # mark true positive hits
 
