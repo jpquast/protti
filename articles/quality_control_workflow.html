@@ -416,14 +416,30 @@ text-align: justify}
 <div id="principal-component-analysis-pca" class="section level3">
 <h3 class="hasAnchor">
 <a href="#principal-component-analysis-pca" class="anchor"></a>Principal component analysis (PCA)</h3>
-<p>Another popular quality control method (which could also be considered part of data analysis) is the principal component analysis (PCA). Generally, PCA is a method that reduces dimensionality of large datasets. In our case this helps us to quickly assess how similar or different our replicates and conditions are. We are going to use <code><a href="../reference/qc_pca.html">qc_pca()</a></code> to compute and plot a PCA for our data.</p>
+<p>Another popular quality control method (which could also be considered part of data analysis) is the principal component analysis (PCA). Generally, PCA is a method that reduces dimensionality of large datasets. In our case this helps us to quickly assess how similar or different our replicates and conditions are. We are going to use <code><a href="../reference/qc_pca.html">qc_pca()</a></code> to compute and plot a PCA for our data. Before plotting your PCA you can check how much of your variance can be explained with each of the principle components. To do that you can plot a scree-plot using the function <code><a href="../reference/qc_pca.html">qc_pca()</a></code> and setting <code>plot_style = "scree"</code>. In this example we can see that the variance can be best explained with PC1 and PC2 so we can go ahead and plot these.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"> <span class="fu"><a href="../reference/qc_pca.html">qc_pca</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>,
-        sample <span class="op">=</span> <span class="va">sample</span>, 
-        grouping <span class="op">=</span> <span class="va">peptide</span>, 
-        intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>, 
-        condition <span class="op">=</span> <span class="va">condition</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/qc_pca.html">qc_pca</a></span><span class="op">(</span>
+  data <span class="op">=</span> <span class="va">data</span>,
+  sample <span class="op">=</span> <span class="va">sample</span>,
+  grouping <span class="op">=</span> <span class="va">peptide</span>,
+  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,
+  condition <span class="op">=</span> <span class="va">condition</span>,
+  digestion <span class="op">=</span> <span class="cn">NULL</span>,
+  plot_style <span class="op">=</span> <span class="st">"scree"</span>
+<span class="op">)</span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_pca-1.png" width="576" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="fu"><a href="../reference/qc_pca.html">qc_pca</a></span><span class="op">(</span>
+  data <span class="op">=</span> <span class="va">data</span>,
+  sample <span class="op">=</span> <span class="va">sample</span>,
+  grouping <span class="op">=</span> <span class="va">peptide</span>,
+  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,
+  condition <span class="op">=</span> <span class="va">condition</span>,
+  components <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"PC1"</span>, <span class="st">"PC2"</span><span class="op">)</span>, 
+  plot_style <span class="op">=</span> <span class="st">"pca"</span>
+<span class="op">)</span></code></pre></div>
+<p><img src="quality_control_workflow_files/figure-html/qc_pca-2.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div id="additional-qc-functions" class="section level3">
 <h3 class="hasAnchor">

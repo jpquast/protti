@@ -308,7 +308,8 @@
   <span class="fu"><a href="../reference/find_peptide.html">find_peptide</a></span><span class="op">(</span>protein_sequence <span class="op">=</span> <span class="va">sequence</span>,
                peptide_sequence <span class="op">=</span> <span class="va">pep_stripped_sequence</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/peptide_type.html">peptide_type</a></span><span class="op">(</span>aa_before <span class="op">=</span> <span class="va">aa_before</span>,
-               last_aa <span class="op">=</span> <span class="va">last_aa</span><span class="op">)</span> <span class="op">%&gt;%</span>
+               last_aa <span class="op">=</span> <span class="va">last_aa</span>, 
+               aa_after <span class="op">=</span> <span class="va">aa_after</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/sequence_coverage.html">sequence_coverage</a></span><span class="op">(</span>protein_sequence <span class="op">=</span> <span class="va">sequence</span>,
                     peptides <span class="op">=</span> <span class="va">pep_stripped_sequence</span><span class="op">)</span></code></pre></div>
 <p>With the <code><a href="../reference/qc_sequence_coverage.html">qc_sequence_coverage()</a></code> function, you can use the sequence coverage information to check how coverage is distributed over all proteins in the sample. Usually, the center of the distribution is low due to many proteins with poor coverage. For this subseted data set with only 40 proteins the sequence coverage is distributed relatively evenly.</p>
@@ -340,7 +341,7 @@
 <p>Both methods impute MAR data using the mean and variance of the condition with the missing data.</p>
 <p>Since we are dealing with a LiP-MS data set we are performing the statistical analysis on the precursor level. For protein abundance data you can simply use protein abundances as your intensities and select your protein groups column for the grouping argument. Make sure to retain any columns you need for further data analysis with the <code>retain_columns</code> argument of both functions.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diff_abudance_data</span> <span class="op">&lt;-</span> <span class="va">data_filtered_uniprot</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">diff_abundance_data</span> <span class="op">&lt;-</span> <span class="va">data_filtered_uniprot</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/assign_missingness.html">assign_missingness</a></span><span class="op">(</span>
     sample <span class="op">=</span> <span class="va">r_file_name</span>,
     condition <span class="op">=</span> <span class="va">r_condition</span>,
@@ -368,13 +369,13 @@
 <a href="#p-value-distribution" class="anchor"></a>p-value distribution</h3>
 <p>The p-value calculated with the t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg (FDR) correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall even distribution with a concentration of values in the significant range. You can check this by using the protti function <code><a href="../reference/plot_pval_distribution.html">plot_pval_distribution()</a></code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_pval_distribution.html">plot_pval_distribution</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">diff_abudance_data</span>,
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_pval_distribution.html">plot_pval_distribution</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">diff_abundance_data</span>,
                        grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
                        pval <span class="op">=</span> <span class="va">pval</span>
                        <span class="op">)</span></code></pre></div>
 <p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/pval_distribution-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>For this subset of data the distribution of p-values is relatively equal and there is no increase in values in the low p-value range but rather a decrease. This means that the Benjamini-Hochberg algorithm might not be suitable for correcting these p-values. You can pick another algorithm for the correction and supply it to the <code>p_adj_method</code> argument and run <code><a href="../reference/diff_abundance.html">diff_abundance()</a></code> again. The available methods are any methods that can be supplied to the standard R function <code><a href="https://rdrr.io/r/stats/p.adjust.html">p.adjust()</a></code> that is used internally. You can also just use this function or any other correction algorithm on your data and overwrite the values in the <code>adj_pval</code> column.</p>
-<p><em>Note: If the p-values are not fulfilling the assumption of the multiple-testing correction, meaning very little observations are changing significantly, it can happen that only a few significant hits remain after adjusting the p-value. This can be a common occurrence so you should always have a look at the p-value distribution after statistical testing.</em></p>
+<p><em>Note: If the p-values are not fulfilling the assumption of the multiple-testing correction, meaning very little observations are changing significantly, it can happen that only a few significant hits remain after adjusting the p-value. This can be a common occurrence so you should always have a look at the p-value distribution. This will help you decide on whether or not you should use adjusted p-values, not adjusted p-values or if you should adjust them with a specific method.</em></p>
 </div>
 <div id="volcano-plot" class="section level3">
 <h3 class="hasAnchor">
@@ -382,7 +383,7 @@
 <p>Next we are going to visualise the output of the previously performed hypothesis test to assess the results of our experiment. For this we are going to plot a volcano plot with fold-changes on the x-axis and the adjusted p-value (q-value) or p-value on the y-axis. The output of the previously used <code><a href="../reference/diff_abundance.html">diff_abundance()</a></code> function is ideal to use for the <code><a href="../reference/volcano_protti.html">volcano_protti()</a></code> function as it contains all the information we need: precursor IDs, protein IDs, fold changes (<code>diff</code>) and adjusted p-values (<code>adj_pval</code>). We are going to highlight the peptides of the known target of Rapamycin FKBP12 (UniProt ID = P62942) in blue to quickly find the peptides in the plot. You can also make the plot interactive by setting <code>interactive = TRUE</code>. This will help you quickly obtain more information on each point in the plot. We are going to plot the volcano plot with and without adjusted p-values.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/volcano_protti.html">volcano_protti</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">diff_abudance_data</span>,
+  data <span class="op">=</span> <span class="va">diff_abundance_data</span>,
   grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
   log2FC <span class="op">=</span> <span class="va">diff</span>,
   significance <span class="op">=</span> <span class="va">pval</span>,
@@ -398,7 +399,7 @@
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="../reference/volcano_protti.html">volcano_protti</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">diff_abudance_data</span>,
+  data <span class="op">=</span> <span class="va">diff_abundance_data</span>,
   grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
   log2FC <span class="op">=</span> <span class="va">diff</span>,
   significance <span class="op">=</span> <span class="va">adj_pval</span>,
@@ -418,7 +419,7 @@
 <p>For LiP-MS experiments a good way to see where on the protein the changes due to binding or conformational changes occur is to plot a barcode plot. A barcode plot can be created with the <strong>protti</strong> function <code><a href="../reference/barcode_plot.html">barcode_plot()</a></code>. The detected peptides are coloured in grey and the changing peptides are highlighted in blue.</p>
 <p>In order to produce a barcode plot only for our target FKBP12 we are creating a data frame that contains only information for our target protein. We are doing this by using <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> function. The filtered data frame is then used as the input for the plot.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">FKBP12</span> <span class="op">&lt;-</span> <span class="va">diff_abudance_data</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">FKBP12</span> <span class="op">&lt;-</span> <span class="va">diff_abundance_data</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/barcode_plot.html">barcode_plot</a></span><span class="op">(</span>
@@ -482,7 +483,7 @@
 <p>For <code><a href="../reference/kegg_enrichment.html">kegg_enrichment()</a></code> you need to first use the function <code><a href="../reference/fetch_kegg.html">fetch_kegg()</a></code> to obtain the KEGG pathway identifiers for your data set. You can then use <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join()</a></code>to join the output with the previously produced data frame containing a column indicating whether your hits are significant or not.</p>
 <p>If you know all known interactors of your specific treatment you can check for an enrichment of these with the <code><a href="../reference/treatment_enrichment.html">treatment_enrichment()</a></code> function. This is particularly useful if your treatment has an effect on many proteins.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diff_abundance_significant</span> <span class="op">&lt;-</span> <span class="va">diff_abudance_data</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">diff_abundance_significant</span> <span class="op">&lt;-</span> <span class="va">diff_abundance_data</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>is_significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="op">(</span><span class="va">adj_pval</span> <span class="op">&lt;</span> <span class="fl">0.01</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># mark significant peptides</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>binds_treatment <span class="op">=</span> <span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span> <span class="co"># mark true positive hits</span>
 
