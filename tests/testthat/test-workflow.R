@@ -80,8 +80,8 @@ test_that("impute works", {
   expect_equal(round(arranged_data$imputed_intensity, digits = 1), c(12.5, 12.5, 12.8, 15.9, 15.6, 15.6))
 })
 
-protein_abundance <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide, peptide = peptide, intensity = normalised_intensity_log2, method = "iq", retain_columns = condition)
-protein_abundance_all <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide, peptide = peptide, intensity = normalised_intensity_log2, method = "iq", for_plot = TRUE)
+protein_abundance <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide, peptide = peptide, intensity_log2 = normalised_intensity_log2, method = "iq", retain_columns = condition)
+protein_abundance_all <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide, peptide = peptide, intensity_log2 = normalised_intensity_log2, method = "iq", for_plot = TRUE)
 
 test_that("calculate_protein_abundance works", {
   arranged_data <- protein_abundance %>%
@@ -95,7 +95,7 @@ test_that("calculate_protein_abundance works", {
   expect_equal(nrow(protein_abundance_all), 37022)
   expect_equal(ncol(protein_abundance_all), 4)
 
-  protein_abundance_sum <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide,  peptide = peptide, intensity = normalised_intensity_log2, method = "sum", retain_columns = condition)
+  protein_abundance_sum <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide,  peptide = peptide, intensity_log2 = normalised_intensity_log2, method = "sum", retain_columns = condition)
   arranged_data <- protein_abundance_sum %>%
     dplyr::filter(protein == "protein_1")
   expect_is(protein_abundance_sum, "data.frame")
@@ -107,7 +107,7 @@ test_that("plot_peptide_profiles works", {
   p <- plot_peptide_profiles(data = protein_abundance_all,
                              sample = sample,
                              peptide = peptide,
-                             intensity = normalised_intensity_log2,
+                             intensity_log2 = normalised_intensity_log2,
                              grouping = protein,
                              targets = c("protein_1", "protein_2"),
                              protein_abundance_plot = TRUE)
@@ -118,7 +118,7 @@ test_that("plot_peptide_profiles works", {
   p_peptides <- plot_peptide_profiles(data = missing_data,
                                      sample = sample,
                                      peptide = peptide,
-                                     intensity = normalised_intensity_log2,
+                                     intensity_log2 = normalised_intensity_log2,
                                      grouping = protein,
                                      targets = c("protein_12"),
                                      protein_abundance_plot = FALSE)
@@ -128,7 +128,7 @@ test_that("plot_peptide_profiles works", {
   expect_error(print(p_peptides[[1]]), NA)
 })
 
-diff <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity = normalised_intensity_log2, missingness = missingness, comparison = comparison, ref_condition = "condition_1", method = "t-test", retain_columns = c(protein))
+diff <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, ref_condition = "condition_1", method = "t-test", retain_columns = c(protein))
 
 test_that("diff_abundance works", {
   data_mean_sd <- missing_data %>%
@@ -137,8 +137,8 @@ test_that("diff_abundance works", {
     dplyr::summarise(mean = mean(normalised_intensity_log2, na.rm = TRUE), sd = sd(normalised_intensity_log2, na.rm = TRUE), n = dplyr::n(), .groups = "drop")
 
   diff_mean_sd <- diff_abundance(data = data_mean_sd, condition = condition, grouping = peptide, mean = mean, sd = sd, n_samples = n, ref_condition = "condition_1", method = "t-test_mean_sd", retain_columns = c(protein))
-  diff_moderated <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity = normalised_intensity_log2, missingness = missingness, comparison = comparison, ref_condition = "condition_1", method = "moderated_t-test", retain_columns = c(protein))
-  diff_proDA <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity = normalised_intensity_log2, missingness = missingness, comparison = comparison, ref_condition = "condition_1", method = "proDA", retain_columns = c(protein))
+  diff_moderated <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, ref_condition = "condition_1", method = "moderated_t-test", retain_columns = c(protein))
+  diff_proDA <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, ref_condition = "condition_1", method = "proDA", retain_columns = c(protein))
 
   expect_is(diff, "data.frame")
   expect_is(diff_mean_sd, "data.frame")
@@ -155,7 +155,7 @@ test_that("diff_abundance works", {
   expect_equal(round(min(diff$adj_pval, na.rm = TRUE), digits = 9), 0.007930396)
   expect_equal(round(min(diff_mean_sd$adj_pval, na.rm = TRUE), digits = 9), 0.007930396)
   expect_equal(round(min(diff_moderated$adj_pval, na.rm = TRUE), digits = 9), 1.3834e-05)
-  expect_equal(round(min(diff_proDA$adj_pval, na.rm = TRUE), digits = 9), 0.000897949)
+  expect_equal(round(min(diff_proDA$adj_pval, na.rm = TRUE), digits = 7), 0.0008979)
 })
 
 test_that("plot_pval_distribution works", {

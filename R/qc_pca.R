@@ -2,17 +2,17 @@
 #'
 #' Plots a principal component analysis based on peptide or precursor intensities.
 #'
-#' @param data A dataframe containing  sample names, peptide or precursor identifiers, corresponding intensities and a condition column indicating e.g. the treatment.
-#' @param sample The column in the data dataframe containing the sample name.
-#' @param grouping The column in the data dataframe containing either precursor or peptide identifiers.
-#' @param intensity Column containing the corresponding intensity values for each peptide or precursor.
-#' @param condition Column indicating the treatment or condition for each sample.
-#' @param components character vector indicating the two components that should be displayed in the plot. By default theser are PC1 and
+#' @param data a data frame containing  sample names, peptide or precursor identifiers, corresponding intensities and a condition column indicating e.g. the treatment.
+#' @param sample the column in the data data frame containing the sample name.
+#' @param grouping the column in the data data frame containing either precursor or peptide identifiers.
+#' @param intensity the column in the data data frame containing containing the corresponding intensity values for each peptide or precursor.
+#' @param condition the column in the data data frame indicating the treatment or condition for each sample.
+#' @param components character vector indicating the two components that should be displayed in the plot. By default these are PC1 and
 #' PC2. You can provide these using a character vector of the form c("PC1", "PC2").
-#' @param digestion Optional column indicating the mode of digestion (limited proteolysis or tryptic digest).
-#' @param plot_style character vector specifying what plot should be returned. If `plot_style = "coordinate"` is selected the two PCA 
+#' @param digestion optional column indicating the mode of digestion (limited proteolysis or tryptic digest).
+#' @param plot_style character vector specifying what plot should be returned. If `plot_style = "pca"` is selected the two PCA 
 #' components supplied with the `components` argument are plottet against each other. This is the default. `plot_style = "scree"` returns 
-#' a scree plot that displays the variance explained by each principal component in percent. The scree is useful for checking if more 
+#' a scree plot that displays the variance explained by each principal component in percent. The scree is useful for checking if any other 
 #' than the default first two components should be plotted.
 #'
 #' @return A plotted principal component analysis showing PC1 and PC2
@@ -41,7 +41,7 @@
 #' }
 #'
 qc_pca <-
-  function(data, sample, grouping, intensity, condition, components = c("PC1", "PC2"), digestion = NULL, plot_style = "coordinate"){
+  function(data, sample, grouping, intensity, condition, components = c("PC1", "PC2"), digestion = NULL, plot_style = "pca"){
     protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
     utils::data("protti_colours", envir=environment()) # then overwrite it with real data
     . = NULL
@@ -69,7 +69,7 @@ qc_pca <-
     pca_sdev_df <- pca_sdev_df %>%
       dplyr::mutate(percent_variance = (pca$sdev ^ 2 / sum(pca$sdev ^ 2) * 100),
                     dimension = row.names(.))
-if(plot_style == "coordinate"){
+if(plot_style == "pca"){
     plot <- pca_df %>%
       ggplot2::ggplot(aes(x = !!rlang::sym(components[1]), y = !!rlang::sym(components[2]), col = as.character({{condition}}), shape = {{digestion}})) +
       ggplot2::geom_point(size = 3) +
@@ -93,7 +93,7 @@ if(plot_style == "coordinate"){
         plot.title = ggplot2::element_text(size = 20),
         axis.title.x = ggplot2::element_text(size = 15),
         axis.text.y = ggplot2::element_text(size = 15),
-        axis.text.x = ggplot2::element_text(size = 12),
+        axis.text.x = ggplot2::element_text(size = 15),
         axis.title.y = ggplot2::element_text(size = 15),
         legend.title = ggplot2::element_text(size = 15),
         legend.text = ggplot2::element_text(size = 15)

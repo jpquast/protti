@@ -2,12 +2,12 @@
 #'
 #' Calculates and plots the coefficients of variation for the selected grouping.
 #'
-#' @param data A data frame containing at least peptide, precursor or protein identifiers, information on conditions and intensity values for each peptide, precursor or protein.
+#' @param data a data frame containing at least peptide, precursor or protein identifiers, information on conditions and intensity values for each peptide, precursor or protein.
 #' @param grouping the column in the input data frame containing the grouping variables (e.g. peptides, precursors or proteins).
 #' @param condition the column in the data data frame containing condition information (e.g. "treated" and "control").
-#' @param intensity the name of the column containing the corresponding raw or normalised intensity values (not log2) for each peptide or precursor.
+#' @param intensity the name of the column containing the corresponding raw or untransformed normalised intensity values for each peptide or precursor.
 #' @param plot logical indicating whether the result should be plotted. Default is TRUE.
-#' @param plot_style Variable indicating the plotting style. \code{plot_style = "boxplot"} plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution. \code{plot_style = "violin"} returns a violin plot. Default is \code{plot_style = "density"}.
+#' @param plot_style character vector indicating the plotting style. \code{plot_style = "boxplot"} plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution. \code{plot_style = "violin"} returns a violin plot. Default is \code{plot_style = "density"}.
 #'
 #' @return Either the median CVs in % or a plot showing the distribution of the CVs.
 #' @import dplyr

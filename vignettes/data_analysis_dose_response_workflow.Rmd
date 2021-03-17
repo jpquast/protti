@@ -114,7 +114,7 @@ _Note: Many of **protti**'s plotting function also have the option to display an
 qc_sample_correlation(data = data_normalised,
                       sample = r_file_name,
                       grouping = eg_precursor_id,
-                      intensity = normalised_intensity_log2,
+                      intensity_log2 = normalised_intensity_log2,
                       condition = r_condition)
 ```
 

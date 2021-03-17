@@ -30,19 +30,19 @@ test_that("qc_data_completeness works", {
 })
 
 test_that("qc_intensity_distribution works", {
-  p_facet <- qc_intensity_distribution(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, plot_style = "histogram")
+  p_facet <- qc_intensity_distribution(data = data, sample = sample, grouping = peptide, intensity_log2 = peptide_intensity_missing, plot_style = "histogram")
   expect_is(p_facet,"ggplot")
   expect_error(print(p_facet), NA)
   
-  p <- qc_intensity_distribution(data = data, grouping = peptide, intensity = peptide_intensity_missing, plot_style = "histogram")
+  p <- qc_intensity_distribution(data = data, grouping = peptide, intensity_log2 = peptide_intensity_missing, plot_style = "histogram")
   expect_is(p,"ggplot")
   expect_error(print(p), NA)
   
-  p_boxplot <- qc_intensity_distribution(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, plot_style = "boxplot")
+  p_boxplot <- qc_intensity_distribution(data = data, sample = sample, grouping = peptide, intensity_log2 = peptide_intensity_missing, plot_style = "boxplot")
   expect_is(p_boxplot,"ggplot")
   expect_error(print(p_boxplot), NA)
   
-  p_violin <- qc_intensity_distribution(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, plot_style = "violin")
+  p_violin <- qc_intensity_distribution(data = data, sample = sample, grouping = peptide, intensity_log2 = peptide_intensity_missing, plot_style = "violin")
   expect_is(p_violin,"ggplot")
   expect_error(print(p_violin), NA)
 })
@@ -103,11 +103,11 @@ test_that("qc_pca works", {
 })
 
 test_that("qc_sample_correlation works", {
-  p <- qc_sample_correlation(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, condition = condition, interactive = FALSE)
+  p <- qc_sample_correlation(data = data, sample = sample, grouping = peptide, intensity_log2 = peptide_intensity_missing, condition = condition, interactive = FALSE)
   expect_is(p, "pheatmap")
   expect_error(print(p), NA)
   
-  p_interactive <- qc_sample_correlation(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, condition = condition, interactive = TRUE)
+  p_interactive <- qc_sample_correlation(data = data, sample = sample, grouping = peptide, intensity_log2 = peptide_intensity_missing, condition = condition, interactive = TRUE)
   expect_is(p_interactive, "plotly")
   expect_error(print(p_interactive), NA)
 })

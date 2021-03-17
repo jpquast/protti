@@ -199,7 +199,7 @@ A similar way in which the run intensities can be assessed is to plot the median
 qc_intensity_distribution(data = input,
                           sample = sample,
                           grouping = peptide,
-                          intensity = peptide_intensity_missing,
+                          intensity_log2 = peptide_intensity_missing,
                           plot_style = "boxplot")
 
 qc_median_intensities(data = input,
@@ -285,7 +285,7 @@ For different kinds of analyses (e.g. t-tests) it is important that your data in
 ```{r qc_intensity_distribution_histogram, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_intensity_distribution(data = input,
                           grouping = peptide,
-                          intensity = peptide_intensity_missing,
+                          intensity_log2 = peptide_intensity_missing,
                           plot_style = "histogram")
 ``` 
 
@@ -297,7 +297,7 @@ Another way of quality control is to check the correlation of your samples. Idea
  qc_sample_correlation(data = input,
                        sample = sample, 
                        grouping = peptide, 
-                       intensity = peptide_intensity_missing, 
+                       intensity_log2 = peptide_intensity_missing, 
                        condition = condition, 
                        interactive = FALSE)
 ``` 

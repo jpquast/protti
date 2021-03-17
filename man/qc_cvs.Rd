@@ -14,17 +14,17 @@ qc_cvs(
 )
 }
 \arguments{
-\item{data}{A data frame containing at least peptide, precursor or protein identifiers, information on conditions and intensity values for each peptide, precursor or protein.}
+\item{data}{a data frame containing at least peptide, precursor or protein identifiers, information on conditions and intensity values for each peptide, precursor or protein.}
 
 \item{grouping}{the column in the input data frame containing the grouping variables (e.g. peptides, precursors or proteins).}
 
 \item{condition}{the column in the data data frame containing condition information (e.g. "treated" and "control").}
 
-\item{intensity}{the name of the column containing the corresponding raw or normalised intensity values (not log2) for each peptide or precursor.}
+\item{intensity}{the name of the column containing the corresponding raw or untransformed normalised intensity values for each peptide or precursor.}
 
 \item{plot}{logical indicating whether the result should be plotted. Default is TRUE.}
 
-\item{plot_style}{Variable indicating the plotting style. \code{plot_style = "boxplot"} plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution. \code{plot_style = "violin"} returns a violin plot. Default is \code{plot_style = "density"}.}
+\item{plot_style}{character vector indicating the plotting style. \code{plot_style = "boxplot"} plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution. \code{plot_style = "violin"} returns a violin plot. Default is \code{plot_style = "density"}.}
 }
 \value{
 Either the median CVs in % or a plot showing the distribution of the CVs.
