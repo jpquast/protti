@@ -6,8 +6,8 @@
 #' @param grouping The name of the column containing precursor, peptide or protein identifiers.
 #' @param response The name of the column containing response values, eg. log2 transformed intensities.
 #' @param dose The name of the column containing dose values, eg. the treatment concentrations.
-#' @param targets A character vector that specifies the names of the precursors, peptides or proteins (depending on \code{grouping}) that should be plotted. This can also be \code{"all"} if plots for all curve fits
-#' should be created. If names are provided maximally 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a subsetted data frame should be created.
+#' @param targets A character vector that specifies the names of the precursors, peptides or proteins (depending on \code{grouping}) 
+#' that should be plotted. This can also be \code{"all"} if plots for all curve fits should be created. 
 #' @param unit A character vector specifying the unit of the concentration.
 #' @param y_axis_name A character vector specifying the name of the y-axis of the plot.
 #' @param facet A logical indicating if plots should be summarised into facets of 20 plots. This is recommended for many plots.
@@ -75,7 +75,7 @@ plot_drc_4p <- function(data, grouping, response, dose, targets, unit = "uM", y_
       
       plot <- ggplot2::ggplot(data = input_points_plot, ggplot2::aes(x = {{dose}}, y = {{response}})) +
         ggplot2::geom_point(size = 2, col = "#5680C1") +
-        suppressWarnings(ggplot2::geom_ribbon(data = input_curve_plot, ggplot2::aes(x = .data$dose, y = .data$Prediction, ymin = .data$Lower, ymax = .data$Upper), alpha = 0.2, fill = "#B96DAD")) +
+        ggplot2::geom_ribbon(data = input_curve_plot, ggplot2::aes(x = .data$dose, y = .data$Prediction, ymin = .data$Lower, ymax = .data$Upper), alpha = 0.2, fill = "#B96DAD") +
         ggplot2::geom_line(data = input_curve_plot, ggplot2::aes(x = .data$dose, y = .data$Prediction), size = 1.2) +
         ggplot2::labs(title = unique(input_points_plot$name), x = paste0("Concentration [", unit, "]"), y = y_axis_name) +
         ggplot2::scale_x_log10() +
@@ -149,7 +149,7 @@ plot_drc_4p <- function(data, grouping, response, dose, targets, unit = "uM", y_
       pb$tick()
       ggplot2::ggplot(data = x, ggplot2::aes(x = {{dose}}, y = {{response}})) +
         ggplot2::geom_point(size = 2, col = "#5680C1") +
-        suppressWarnings(ggplot2::geom_ribbon(data = y, ggplot2::aes(x = .data$dose, y = .data$Prediction, ymin = .data$Lower, ymax = .data$Upper), alpha = 0.2, fill = "#B96DAD")) +
+        ggplot2::geom_ribbon(data = y, ggplot2::aes(x = .data$dose, y = .data$Prediction, ymin = .data$Lower, ymax = .data$Upper), alpha = 0.2, fill = "#B96DAD") +
         ggplot2::geom_line(data = y, ggplot2::aes(x=dose, y = .data$Prediction), size = 1.2) +
         {if(facet == FALSE) ggplot2::labs(title = z, x = paste0("Concentration [", unit, "]"), y = y_axis_name)} +
         {if(facet == TRUE) ggplot2::labs(title = "Dose-response curves", x = paste0("Concentration [", unit, "]"), y = y_axis_name)} +

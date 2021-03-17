@@ -3,17 +3,17 @@
 #' Returns a plot or table of the number of IDs for each sample. The default settings remove grouping variables without quantitative information (intensity is NA).
 #' These will not be counted as IDs.
 #'
-#' @param data Dataframe containing at least sample names and precursor/peptide/protein IDs.
-#' @param sample Column in the data frame specifying the sample name.
-#' @param grouping Column in the data frame containing either precursor, peptide or protein identifiers.
-#' @param intensity Column in the data frame containing intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.
-#' @param remove_na_intensities Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
+#' @param data a data frame containing at least sample names and precursor/peptide/protein IDs.
+#' @param sample the column in the data frame specifying the sample name.
+#' @param grouping the column in the data frame containing either precursor, peptide or protein identifiers.
+#' @param intensity the column in the data frame containing raw or log2 transformed intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.
+#' @param remove_na_intensities logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
 #' Default is TRUE since we are usually interested in the number of quantifiable IDs.
-#' @param condition Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated),
+#' @param condition optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated),
 #' if column is provided, the bars in the plot will be coloured according to the condition.
-#' @param title Optional argument specifying the plot title (default is "ID count per sample").
-#' @param plot Argument specifying whether the output of the function should be plotted (default is TRUE).
-#' @param interactive Argument specifying whether the plot should be interactive (default is FALSE).
+#' @param title optional argument specifying the plot title (default is "ID count per sample").
+#' @param plot logical specifying whether the output of the function should be plotted (default is TRUE).
+#' @param interactive logical specifying whether the plot should be interactive (default is FALSE).
 #'
 #' @return A bar plot with the height corresponding to the number of IDs, each bar represents one sample
 #' (if \code{plot = TRUE}). If \code{plot = FALSE} a table with ID counts is returned.
@@ -46,7 +46,8 @@ qc_ids <-
       if(missing(intensity)) stop("Please provide a column containing intensities or set remove_na_intensities to FALSE")
 
       data <- data %>%
-        tidyr::drop_na({{intensity}})
+        tidyr::drop_na({{intensity}}) %>% 
+        dplyr::mutate({{condition}} := as.character({{condition}}))
     }
 
    result <- data %>%

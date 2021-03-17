@@ -4,20 +4,37 @@
 \alias{qc_pca}
 \title{Plot principal component analysis}
 \usage{
-qc_pca(data, sample, grouping, intensity, condition, digestion = NULL)
+qc_pca(
+  data,
+  sample,
+  grouping,
+  intensity,
+  condition,
+  components = c("PC1", "PC2"),
+  digestion = NULL,
+  plot_style = "pca"
+)
 }
 \arguments{
-\item{data}{A dataframe containing  sample names, peptide or precursor identifiers, corresponding intensities and a condition column indicating e.g. the treatment.}
+\item{data}{a data frame containing  sample names, peptide or precursor identifiers, corresponding intensities and a condition column indicating e.g. the treatment.}
 
-\item{sample}{The column in the data dataframe containing the sample name.}
+\item{sample}{the column in the data data frame containing the sample name.}
 
-\item{grouping}{The column in the data dataframe containing either precursor or peptide identifiers.}
+\item{grouping}{the column in the data data frame containing either precursor or peptide identifiers.}
 
-\item{intensity}{Column containing the corresponding intensity values for each peptide or precursor.}
+\item{intensity}{the column in the data data frame containing containing the corresponding intensity values for each peptide or precursor.}
 
-\item{condition}{Column indicating the treatment or condition for each sample.}
+\item{condition}{the column in the data data frame indicating the treatment or condition for each sample.}
 
-\item{digestion}{Optional column indicating the mode of digestion (limited proteolysis or tryptic digest).}
+\item{components}{character vector indicating the two components that should be displayed in the plot. By default these are PC1 and
+PC2. You can provide these using a character vector of the form c("PC1", "PC2").}
+
+\item{digestion}{optional column indicating the mode of digestion (limited proteolysis or tryptic digest).}
+
+\item{plot_style}{character vector specifying what plot should be returned. If `plot_style = "pca"` is selected the two PCA 
+components supplied with the `components` argument are plottet against each other. This is the default. `plot_style = "scree"` returns 
+a scree plot that displays the variance explained by each principal component in percent. The scree is useful for checking if any other 
+than the default first two components should be plotted.}
 }
 \value{
 A plotted principal component analysis showing PC1 and PC2
@@ -32,7 +49,9 @@ data,
 sample = r_file_name,
 grouping = eg_precursor_id,
 intensity = normalised_intensity_log2,
-condition = r_condition
+condition = r_condition,
+components = c("PC2", "PC3"),
+plot_style = "scree"
 )
 }
 

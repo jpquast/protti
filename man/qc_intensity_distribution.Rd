@@ -4,7 +4,13 @@
 \alias{qc_intensity_distribution}
 \title{Check intensity distribution per sample and overall}
 \usage{
-qc_intensity_distribution(data, sample = NULL, grouping, intensity, plot_style)
+qc_intensity_distribution(
+  data,
+  sample = NULL,
+  grouping,
+  intensity_log2,
+  plot_style
+)
 }
 \arguments{
 \item{data}{A data frame containing at least sample names, grouping identifiers (precursor, peptide or protein) and
@@ -15,7 +21,7 @@ do not provide the name of the sample column.}
 
 \item{grouping}{The column in the data frame containing either precursor, peptide or protein identifiers.}
 
-\item{intensity}{The column in the data frame containing the log2 transformed intensities of each grouping identifier sample combination.}
+\item{intensity_log2}{The column in the data frame containing the log2 transformed intensities of each grouping identifier sample combination.}
 
 \item{plot_style}{A character vector indicating the plot type. This can be either "histogram", "boxplot" or "violin". Plot style "boxplot" and "violin" can
 only be used if a sample column is provided.}
@@ -32,7 +38,7 @@ qc_intensity_distribution(
   data,
   sample = r_file_name,
   grouping = eg_precursor_id,
-  intensity = normalised_intensity_log2,
+  intensity_log2 = normalised_intensity_log2,
   plot_style = "boxplot"
 )
 }

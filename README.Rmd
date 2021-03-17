@@ -161,7 +161,7 @@ result <- data_missing %>%
   diff_abundance(sample = sample,
                  condition = condition,
                  grouping = peptide,
-                 intensity = normalised_intensity_log2,
+                 intensity_log2 = normalised_intensity_log2,
                  missingness = missingness,
                  comparison = comparison,
                  ref_condition = "condition_1",
@@ -180,6 +180,7 @@ result %>%
                  method = "target",
                  target_column = change_peptide,
                  target = TRUE,
+                 legend_label = "Ground Truth",
                  significance_cutoff = 0.05,
                  interactive = FALSE)
 ```

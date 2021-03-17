@@ -11,28 +11,31 @@ qc_missed_cleavages(
   missed_cleavages,
   intensity,
   remove_na_intensities = TRUE,
-  method,
-  plot = FALSE
+  method = "count",
+  plot = FALSE,
+  interactive = FALSE
 )
 }
 \arguments{
-\item{data}{A dataframe containing at least sample names, peptide or precursor identifiers and missed cleavage counts for each peptide or precursor.}
+\item{data}{A data frame containing at least sample names, peptide or precursor identifiers and missed cleavage counts for each peptide or precursor.}
 
-\item{sample}{The column in the data dataframe containing the sample name.}
+\item{sample}{the name of the column in the data data frame containing the sample name.}
 
-\item{grouping}{The column in the data dataframe containing either precursor or peptide identifiers.}
+\item{grouping}{the name of the column in the data data frame containing either precursor or peptide identifiers.}
 
-\item{missed_cleavages}{The column in the data dataframe containing the counts of missed cleavages per peptide or precursor.}
+\item{missed_cleavages}{the name of the column in the data data frame containing the counts of missed cleavages per peptide or precursor.}
 
-\item{intensity}{Column containing the corresponding intensity values to each peptide or precursor (not log2 transformed).}
+\item{intensity}{the name of the column containing the corresponding raw or normalised intensity values (not log2) for each peptide or precursor. Required when "intensity" is chosen as the method.}
 
 \item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should
 be dropped from the data frame for analysis of missed cleavages. Default is TRUE since we are usually
-interested in quantifiable peptides.}
+interested in quantifiable peptides. This is only relevant for method = "count".}
 
-\item{method}{Method used for evaluation. "count" calculates the percentage of missed cleavages based on counts of the corresponding peptide or precursor, "intensity" calculates the percentage of missed cleavages by intensity of the corresponding peptide or precursor.}
+\item{method}{character vector indicating the method used for evaluation. "count" calculates the percentage of missed cleavages based on counts of the corresponding peptide or precursor, "intensity" calculates the percentage of missed cleavages by intensity of the corresponding peptide or precursor.}
 
 \item{plot}{A logical indicating whether the result should be plotted.}
+
+\item{interactive}{Argument specifying whether the plot should be interactive (default is FALSE).}
 }
 \value{
 A data frame that contains the calculated percentage made up by the sum of all peptides or precursors containing the corresponding amount of missed cleavages.

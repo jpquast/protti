@@ -9,7 +9,7 @@ diff_abundance(
   sample,
   condition,
   grouping,
-  intensity,
+  intensity_log2,
   missingness,
   comparison,
   mean = NULL,
@@ -31,7 +31,7 @@ diff_abundance(
 
 \item{grouping}{The column in the data frame containing precursor or peptide identifiers.}
 
-\item{intensity}{The column in the data frame containing intensity values. The intensity values need to be log2 transformed. Is not required if \code{method = "t-test_mean_sd"}.}
+\item{intensity_log2}{The column in the data frame containing intensity values. The intensity values need to be log2 transformed. Is not required if \code{method = "t-test_mean_sd"}.}
 
 \item{missingness}{The column in the data frame containing missingness information. Can be obtained by calling \code{assign_missingness}. 
 Is not required if \code{method = "t-test_mean_sd"}.}
@@ -97,7 +97,7 @@ data,
 sample = r_file_name,
 condition = r_condition,
 grouping = eg_precursor_id,
-intensity = normalised_intensity_log2,
+intensity_log2 = normalised_intensity_log2,
 missingness = missingness,
 comparison = comparison,
 ref_condition = "control",

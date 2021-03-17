@@ -24,7 +24,7 @@ assigned_types <- data %>%
 test_that("find_peptide and peptide_type work", {
   expect_is(assigned_types, "data.frame")
   expect_equal(nrow(assigned_types), 3)
-  expect_equal(ncol(assigned_types), 8)
+  expect_equal(ncol(assigned_types), 9)
   expect_equal(assigned_types$pep_type, c("fully-tryptic", "semi-tryptic", "non-tryptic"))
 })
 
@@ -33,7 +33,7 @@ coverage <- sequence_coverage(data = assigned_types, protein_sequence = protein_
 test_that("sequence_coverage works", {
   expect_is(coverage, "data.frame")
   expect_equal(nrow(coverage), 3)
-  expect_equal(ncol(coverage), 9)
+  expect_equal(ncol(coverage), 10)
   expect_equal(unique(round(coverage$coverage, digits = 1)), 7.7)
 })
 

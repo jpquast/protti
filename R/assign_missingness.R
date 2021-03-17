@@ -11,7 +11,7 @@
 #' @param completeness_MAR The minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7. 
 #' It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each 
 #' condition to be considered as MAR. This number is always at least 1. 
-#' @param completeness_MNAR The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.25. 
+#' @param completeness_MNAR The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.20. 
 #' It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one 
 #' condition to be considered as MNAR when the other condition is complete.
 #' @param retain_columns A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
@@ -43,10 +43,12 @@
 #' retain_columns = c(pg_protein_accessions)
 #' )
 #' }
-assign_missingness <- function(data, sample, condition, grouping, intensity, ref_condition = "control", completeness_MAR = 0.7, completeness_MNAR = 0.25, retain_columns = NULL){
+assign_missingness <- function(data, sample, condition, grouping, intensity, ref_condition = "control", completeness_MAR = 0.7, completeness_MNAR = 0.20, retain_columns = NULL){
   . = NULL
   conditions_no_ref <- unique(pull(data, !!ensym(condition)))[!unique(pull(data, !!ensym(condition))) %in% ref_condition]
-  
+  if(!(ref_condition %in% unique(pull(data, {{ condition }})))) {
+    stop("The name provided to ref_condition cannot be found in your conditions! Please provide a valid reference condition.")
+  }
   data_prep <-  data %>%
     dplyr::distinct({{sample}}, {{condition}}, {{grouping}}, {{intensity}}) %>%
     tidyr::complete(nesting(!!ensym(sample), !!ensym(condition)), !!ensym(grouping)) %>%

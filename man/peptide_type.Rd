@@ -4,7 +4,12 @@
 \alias{peptide_type}
 \title{Assign peptide type}
 \usage{
-peptide_type(data, aa_before, last_aa)
+peptide_type(
+  data,
+  aa_before = aa_before,
+  last_aa = last_aa,
+  aa_after = aa_after
+)
 }
 \arguments{
 \item{data}{A data frame containing at least information about the preceding and C-terminal amino acids of peptides.}
@@ -12,15 +17,21 @@ peptide_type(data, aa_before, last_aa)
 \item{aa_before}{The name of the column containing the preceding amino acid as one letter code.}
 
 \item{last_aa}{The name of the column containing the C-terminal amino acid as one letter code.}
+
+\item{aa_after}{The name of the column containing the following amino acid as one letter code.}
 }
 \value{
 A data frame that contains the input data and an additional column with the peptide type information.
 }
 \description{
-Based on preceding and C-terminal amino acid, the peptide type of a given peptide is assigned. Peptides with preceeding and C-terminal lysine or arginine are considered fully-tryptic. If a peptide is located at the N- or C-terminus of a protein and fulfills the criterium to be fully-tryptic otherwise, it is also considered as fully-tryptic. Peptides that only fulfill the criterium on one terminus are semi-tryptic peptides. Lastly, peptides that are not fulfilling the criteria for both termini are non-tryptic peptides.
+Based on preceding and C-terminal amino acid, the peptide type of a given peptide is assigned. Peptides with preceeding and 
+C-terminal lysine or arginine are considered fully-tryptic. If a peptide is located at the N- or C-terminus of a protein and 
+fulfills the criterium to be fully-tryptic otherwise, it is also considered as fully-tryptic. Peptides that only fulfill the 
+criterium on one terminus are semi-tryptic peptides. Lastly, peptides that are not fulfilling the criteria for both termini are 
+non-tryptic peptides.
 }
 \examples{
 \dontrun{
-peptide_type(data, aa_before, last_aa)
+peptide_type(data, aa_before, last_aa, aa_after)
 }
 }

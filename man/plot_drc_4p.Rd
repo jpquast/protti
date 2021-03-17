@@ -28,8 +28,8 @@ plot_drc_4p(
 
 \item{dose}{The name of the column containing dose values, eg. the treatment concentrations.}
 
-\item{targets}{A character vector that specifies the names of the precursors, peptides or proteins (depending on \code{grouping}) that should be plotted. This can also be \code{"all"} if plots for all curve fits
-should be created. If names are provided maximally 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a subsetted data frame should be created.}
+\item{targets}{A character vector that specifies the names of the precursors, peptides or proteins (depending on \code{grouping}) 
+that should be plotted. This can also be \code{"all"} if plots for all curve fits should be created.}
 
 \item{unit}{A character vector specifying the unit of the concentration.}
 

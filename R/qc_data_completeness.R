@@ -5,7 +5,7 @@
 #' @param data A data frame containing at least the input variables.
 #' @param sample The name of the column containing the sample names.
 #' @param grouping The name of the column containing either precursor or peptide identifiers. 
-#' @param intensity The name of the column containing raw intensity values.
+#' @param intensity The name of the column containing any intensity intensity values that missingness should be determined for.
 #' @param digestion Optional column indicating the mode of digestion (limited proteolysis or tryptic digest). Alternatively, any other variable
 #' by which the data should be split can be provided.
 #' @param plot Logical, if TRUE a plot is returned. If FALSE a table is returned.

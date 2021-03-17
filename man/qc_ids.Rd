@@ -17,25 +17,25 @@ qc_ids(
 )
 }
 \arguments{
-\item{data}{Dataframe containing at least sample names and precursor/peptide/protein IDs.}
+\item{data}{a data frame containing at least sample names and precursor/peptide/protein IDs.}
 
-\item{sample}{Column in the data frame specifying the sample name.}
+\item{sample}{the column in the data frame specifying the sample name.}
 
-\item{grouping}{Column in the data frame containing either precursor, peptide or protein identifiers.}
+\item{grouping}{the column in the data frame containing either precursor, peptide or protein identifiers.}
 
-\item{intensity}{Column in the data frame containing intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.}
+\item{intensity}{the column in the data frame containing raw or log2 transformed intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.}
 
-\item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
+\item{remove_na_intensities}{logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
 Default is TRUE since we are usually interested in the number of quantifiable IDs.}
 
-\item{condition}{Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated),
+\item{condition}{optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated),
 if column is provided, the bars in the plot will be coloured according to the condition.}
 
-\item{title}{Optional argument specifying the plot title (default is "ID count per sample").}
+\item{title}{optional argument specifying the plot title (default is "ID count per sample").}
 
-\item{plot}{Argument specifying whether the output of the function should be plotted (default is TRUE).}
+\item{plot}{logical specifying whether the output of the function should be plotted (default is TRUE).}
 
-\item{interactive}{Argument specifying whether the plot should be interactive (default is FALSE).}
+\item{interactive}{logical specifying whether the plot should be interactive (default is FALSE).}
 }
 \value{
 A bar plot with the height corresponding to the number of IDs, each bar represents one sample

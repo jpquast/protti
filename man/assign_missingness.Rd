@@ -12,7 +12,7 @@ assign_missingness(
   intensity,
   ref_condition = "control",
   completeness_MAR = 0.7,
-  completeness_MNAR = 0.25,
+  completeness_MNAR = 0.2,
   retain_columns = NULL
 )
 }
@@ -33,7 +33,7 @@ assign_missingness(
 It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each 
 condition to be considered as MAR. This number is always at least 1.}
 
-\item{completeness_MNAR}{The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.25. 
+\item{completeness_MNAR}{The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.20. 
 It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one 
 condition to be considered as MNAR when the other condition is complete.}
 

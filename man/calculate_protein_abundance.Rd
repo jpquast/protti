@@ -9,7 +9,8 @@ calculate_protein_abundance(
   sample,
   protein_id,
   precursor,
-  intensity,
+  peptide,
+  intensity_log2,
   method = "iq",
   for_plot = FALSE,
   retain_columns = NULL
@@ -24,12 +25,15 @@ calculate_protein_abundance(
 
 \item{precursor}{The name of the column containing precursors.}
 
-\item{intensity}{The name of the column containing log2 transformed precursor intensities.}
+\item{peptide}{The name of the column containing peptide sequences. This column is needed to filter for proteins with at least 3 
+unique peptides. This can equate to more than three precursors. The quantification is done on the precursor level.}
+
+\item{intensity_log2}{The name of the column containing log2 transformed precursor intensities.}
 
 \item{method}{A character vector specifying with which method protein quantities should be calculated. Possible options include \code{"sum"},
 which takes the sum of all precursor intensities as the protein abundance. Another option is \code{"iq"}, which performs protein 
-quantification based on a maximal peptide ratio extraction algorithm that is adapted from the MaxQuant software. Functions from the \code{iq} 
-package (https://academic.oup.com/bioinformatics/article/36/8/2611/5697917) are used. Default is \code{"iq"}.}
+quantification based on a maximal peptide ratio extraction algorithm that is adapted from the MaxLFQ algorithm of the MaxQuant software. 
+Functions from the \href{https://academic.oup.com/bioinformatics/article/36/8/2611/5697917}{\code{iq}} package are used. Default is \code{"iq"}.}
 
 \item{for_plot}{A logical indicating whether the result should be only protein intensities or protein intensities together with precursor 
 intensities that can be used for plotting using \code{qc_protein_abundance}. Default is \code{FALSE}.}
@@ -43,7 +47,7 @@ If \code{for_plot = FALSE}, protein abundances are returned, if \code{for_plot =
 later output is ideal for plotting with \code{qc_protein_abundance} and can be filtered to only include protein abundances.
 }
 \description{
-Determines relative protein abundances from ion quantification. Only proteins with at least 3 precursors are considered for quantification.
+Determines relative protein abundances from ion quantification. Only proteins with at least 3 peptides are considered for quantification.
 }
 \examples{
 \dontrun{
@@ -52,7 +56,8 @@ data,
 sample = r_file_name,
 protein_id = pg_protein_accessions,
 precursor = eg_precursor_id,
-intensity = log2_normalised_intensity,
+peptide = pep_stripped_sequence,
+intensity_log2 = normalised_intensity_log2,
 method = "iq",
 retain_columns = c(pg_protein_accessions)
 )
