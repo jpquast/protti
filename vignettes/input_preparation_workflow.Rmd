@@ -91,11 +91,13 @@ Depending on which analysis you are performing you will have to use different ou
 
 In case you are interested in performing a **peptide-centric** analysis (necessary for LiP-MS), you should use the `evidence.txt` file provided in the search output of MaxQuant. 
 
-The `evidence.txt` file basically contains all the information we need to run **protti**. It is also contained in a long format which makes it easy to read in and use directly. One thing to take into consideration is the lack of a column for information proteotypicity of peptides. However, this information can be inferred from the `Proteins`column if it contains more than one protein ID. You can extract this information and create a new column called `is_proteotypic` containing logicals that will be `TRUE` if the `Proteins` column does not contain a semicolon and `FALSE` if it does (this indicates that the peptide belongs to more than one protein). As mentioned in data analysis vignettes this information is necessary for the analysis of LiP-MS data but it could be also considered for the correct calculation of protein abundances. 
+The `evidence.txt` file basically contains all the information we need to run **protti**. It is also contained in a long format which makes it easy to read in and use directly. One thing to take into consideration is the lack of a column for information proteotypicity of peptides. However, this information can be inferred from the `Proteins`column if it contains more than one protein ID. You can extract this information and create a new column called `is_proteotypic` containing logicals that will be `TRUE` if the `Proteins` column does not contain a semicolon and `FALSE` if it does (this indicates that the peptide belongs to more than one protein). As mentioned in data analysis vignettes this information is necessary for the analysis of LiP-MS data but it could be also considered for the correct calculation of protein abundances.
 
 Another column that is required for the analysis of your data is a column indicating conditions to which certain samples belong. This can be easily added to the evidence file by joining a data frame containing the specific annotations. You can create such a data frame in Excel and import it into R for a large amount of samples or just create it directly in R. 
 
 MaxQuant output provides information on decoy hits contained in the column `reverse` and also has information on whether your hit is a contaminant `potential_contaminant`. You should filter these out before the analysis. However, the contaminant column can be used for quality control.
+
+One important thing for MaxQuant data is to **make sure that you only have one intensity assigned to each peptide or precursor.** You can do this by summing up all intensities that MaxQuant exports (these can be MULTI-MSMS, MSMS, ISO-MSMS, MULTI-MATCH, ISO-SECPEP) or you can filter for example for precursors with MULTI-MSMS quantification and only use these. 
 
 In this section we will show you how to read in the file with `read_protti()` and how to create the `is_proteotypic` column and the `condition` column (minimally required) with the help of the `stringr` and `dplyr` packages. How to filter your data best is described in the data analysis vignettes. 
 
@@ -147,16 +149,8 @@ We will filter the data and use `tidyr`'s `pivot_longer()` to change the format 
 
 ```{r MaxQuant_protein, eval=FALSE}
 # To read in your own data you can use read_protti()
-protein_groups  <- read_protti(filename = "yourpath/proteinGroups.txt")
-
-protein_groups_filtered <- protein_groups %>%
-  mutate(is_only_identified_by_site = ifelse(only_identified_by_site == "+", TRUE, FALSE)) %>%
-  filter(is_only_identified_by_site == FALSE) %>% # remove proteins only identified by PTM
-  mutate(is_potential_contaminant = ifelse(potential_contaminant == "+", TRUE, FALSE)) %>%
-  filter(is_potential_contaminant == FALSE) %>% # remove potential contaminants
-  mutate(is_reverse = ifelse(reverse == "+", TRUE, FALSE)) %>%
-  filter(is_reverse == FALSE) %>% # remove reverse hits
-  filter(peptides > 2) # we filter out proteins that have less than 3 identified peptides
+protein_groups  <- read_protti(filename = "yourpath/proteinGroups.txt") %>%
+  mutate(is_potential_contaminant = ifelse(potential_contaminant == "+", TRUE, FALSE)) # adds new column with logicals indicating if protein is a potential contaminant, you can filter these out later on. You should also consider filtering out proteins that were "only identified by site" and reverse hits, as well as proteins with only one identified peptide
 
 # Change wide format to long format and create new columns called `r_file_name`and `intensity`
 protein_groups_long <- protein_groups_filtered %>%
