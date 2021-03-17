@@ -155,7 +155,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A dataframe containing at least the input columns.</p></td>
+      <td><p>A data frame containing at least the input columns.</p></td>
     </tr>
     <tr>
       <th>sample</th>
@@ -171,17 +171,17 @@
     </tr>
     <tr>
       <th>intensity</th>
-      <td><p>column containing peptide intensity values (not log2 transformed).</p></td>
+      <td><p>the name of the column containing the corresponding raw or normalised intensity values (not log2) for each peptide or precursor. Required when "intensity" is chosen as the method.</p></td>
     </tr>
     <tr>
       <th>remove_na_intensities</th>
       <td><p>Logical specifying if sample/peptide combinations with intensities that are NA (not quantified IDs) should 
 be dropped from the data frame for analysis of peptide type distributions. Default is TRUE since we are usually 
-interested in the peptide type distribution of quantifiable IDs.</p></td>
+interested in the peptide type distribution of quantifiable IDs. This is only relevant for method = "count".</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>method used for calculation. <code>method = "intensity"</code> calculates the peptide type percentage by intensity, whereas <code>method = "count"</code> calculates the percentage by peptide ID count. Default is <code>method = count</code>.</p></td>
+      <td><p>character vector indicating the method used for evaluation. <code>method = "intensity"</code> calculates the peptide type percentage by intensity, whereas <code>method = "count"</code> calculates the percentage by peptide ID count. Default is <code>method = count</code>.</p></td>
     </tr>
     <tr>
       <th>plot</th>

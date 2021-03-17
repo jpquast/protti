@@ -228,7 +228,7 @@
   <span class="fu"><a href="reference/diff_abundance.html">diff_abundance</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">sample</span>,
                  condition <span class="op">=</span> <span class="va">condition</span>,
                  grouping <span class="op">=</span> <span class="va">peptide</span>,
-                 intensity <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
+                 intensity_log2 <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
                  missingness <span class="op">=</span> <span class="va">missingness</span>,
                  comparison <span class="op">=</span> <span class="va">comparison</span>,
                  ref_condition <span class="op">=</span> <span class="st">"condition_1"</span>,
@@ -244,6 +244,7 @@
                  method <span class="op">=</span> <span class="st">"target"</span>,
                  target_column <span class="op">=</span> <span class="va">change_peptide</span>,
                  target <span class="op">=</span> <span class="cn">TRUE</span>,
+                 legend_label <span class="op">=</span> <span class="st">"Ground Truth"</span>,
                  significance_cutoff <span class="op">=</span> <span class="fl">0.05</span>,
                  interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-volcano-1.png" width="100%"></p>

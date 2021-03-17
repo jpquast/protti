@@ -142,7 +142,6 @@
   <span class='va'>data</span>,
   <span class='va'>protein_identifier</span>,
   <span class='va'>coverage</span>,
-  facet_by_sample <span class='op'>=</span> <span class='cn'>FALSE</span>,
   sample <span class='op'>=</span> <span class='cn'>NULL</span>,
   interactive <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
@@ -164,13 +163,9 @@
 the <code><a href='sequence_coverage.html'>sequence_coverage</a></code> function.</p></td>
     </tr>
     <tr>
-      <th>facet_by_sample</th>
-      <td><p>Logical that determines if the plot should be faceted by sample. If <code>TRUE</code>, <code>sample</code> needs to be 
-provided. Default is <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
       <th>sample</th>
-      <td><p>Column in the data frame containing sample names. Only required if <code>facet_by_sample = TRUE</code>.</p></td>
+      <td><p>Column in the data frame containing sample names. Please only provide this argument if you want to 
+facet the distribution plot by sample otherwise do not provide this argument.</p></td>
     </tr>
     <tr>
       <th>interactive</th>

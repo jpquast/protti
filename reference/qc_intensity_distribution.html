@@ -138,7 +138,13 @@
     <p>Plots the overall or sample-wise distribution of all peptide intensities as a boxplot or histogram.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>qc_intensity_distribution</span><span class='op'>(</span><span class='va'>data</span>, sample <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>grouping</span>, <span class='va'>intensity</span>, <span class='va'>plot_style</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>qc_intensity_distribution</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>grouping</span>,
+  <span class='va'>intensity_log2</span>,
+  <span class='va'>plot_style</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -158,7 +164,7 @@ do not provide the name of the sample column.</p></td>
       <td><p>The column in the data frame containing either precursor, peptide or protein identifiers.</p></td>
     </tr>
     <tr>
-      <th>intensity</th>
+      <th>intensity_log2</th>
       <td><p>The column in the data frame containing the log2 transformed intensities of each grouping identifier sample combination.</p></td>
     </tr>
     <tr>
@@ -178,7 +184,7 @@ only be used if a sample column is provided.</p></td>
   <span class='va'>data</span>,
   sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
   grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-  intensity <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
+  intensity_log2 <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
   plot_style <span class='op'>=</span> <span class='st'>"boxplot"</span>
 <span class='op'>)</span>
 <span class='op'>}</span>

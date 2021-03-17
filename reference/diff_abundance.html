@@ -143,7 +143,7 @@
   <span class='va'>sample</span>,
   <span class='va'>condition</span>,
   <span class='va'>grouping</span>,
-  <span class='va'>intensity</span>,
+  <span class='va'>intensity_log2</span>,
   <span class='va'>missingness</span>,
   <span class='va'>comparison</span>,
   mean <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -176,7 +176,7 @@
       <td><p>The column in the data frame containing precursor or peptide identifiers.</p></td>
     </tr>
     <tr>
-      <th>intensity</th>
+      <th>intensity_log2</th>
       <td><p>The column in the data frame containing intensity values. The intensity values need to be log2 transformed. Is not required if <code>method = "t-test_mean_sd"</code>.</p></td>
     </tr>
     <tr>
@@ -263,7 +263,7 @@ observations for the specific protein, peptide or precursor (depending on the <c
 sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
 condition <span class='op'>=</span> <span class='va'>r_condition</span>,
 grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-intensity <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
+intensity_log2 <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
 missingness <span class='op'>=</span> <span class='va'>missingness</span>,
 comparison <span class='op'>=</span> <span class='va'>comparison</span>,
 ref_condition <span class='op'>=</span> <span class='st'>"control"</span>,

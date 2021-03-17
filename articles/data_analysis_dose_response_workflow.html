@@ -91,7 +91,7 @@
       <h1 data-toc-skip>Dose-Response Data Analysis Workflow</h1>
                         <h4 class="author">Jan-Philipp Quast</h4>
             
-            <h4 class="date">2021-03-12</h4>
+            <h4 class="date">2021-03-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/data_analysis_dose_response_workflow.Rmd"><code>vignettes/data_analysis_dose_response_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_dose_response_workflow.Rmd</code></div>
@@ -173,7 +173,7 @@ text-align: justify}
 <code class="sourceCode R"><span class="fu"><a href="../reference/qc_sample_correlation.html">qc_sample_correlation</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data_normalised</span>,
                       sample <span class="op">=</span> <span class="va">r_file_name</span>,
                       grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
-                      intensity <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
+                      intensity_log2 <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
                       condition <span class="op">=</span> <span class="va">r_condition</span><span class="op">)</span></code></pre></div>
 <p><img src="data_analysis_dose_response_workflow_files/figure-html/sample_correlation-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>For our Rapamycin data set we cannot identify any clear sample clustering based on correlation, because only a small subset of proteins was selected for this example. Furthermore, data sets in which only a few changes are expected commonly do not cluster nicely. This is because precursors/peptides/proteins have very similar intensity values throughout all conditions and clustering is in this case based on variance. In case of more global changes samples should usually cluster nicely.</p>

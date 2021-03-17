@@ -138,34 +138,55 @@
     <p>Plots a principal component analysis based on peptide or precursor intensities.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>qc_pca</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>sample</span>, <span class='va'>grouping</span>, <span class='va'>intensity</span>, <span class='va'>condition</span>, digestion <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>qc_pca</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  <span class='va'>sample</span>,
+  <span class='va'>grouping</span>,
+  <span class='va'>intensity</span>,
+  <span class='va'>condition</span>,
+  components <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"PC1"</span>, <span class='st'>"PC2"</span><span class='op'>)</span>,
+  digestion <span class='op'>=</span> <span class='cn'>NULL</span>,
+  plot_style <span class='op'>=</span> <span class='st'>"pca"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A dataframe containing  sample names, peptide or precursor identifiers, corresponding intensities and a condition column indicating e.g. the treatment.</p></td>
+      <td><p>a data frame containing  sample names, peptide or precursor identifiers, corresponding intensities and a condition column indicating e.g. the treatment.</p></td>
     </tr>
     <tr>
       <th>sample</th>
-      <td><p>The column in the data dataframe containing the sample name.</p></td>
+      <td><p>the column in the data data frame containing the sample name.</p></td>
     </tr>
     <tr>
       <th>grouping</th>
-      <td><p>The column in the data dataframe containing either precursor or peptide identifiers.</p></td>
+      <td><p>the column in the data data frame containing either precursor or peptide identifiers.</p></td>
     </tr>
     <tr>
       <th>intensity</th>
-      <td><p>Column containing the corresponding intensity values for each peptide or precursor.</p></td>
+      <td><p>the column in the data data frame containing containing the corresponding intensity values for each peptide or precursor.</p></td>
     </tr>
     <tr>
       <th>condition</th>
-      <td><p>Column indicating the treatment or condition for each sample.</p></td>
+      <td><p>the column in the data data frame indicating the treatment or condition for each sample.</p></td>
+    </tr>
+    <tr>
+      <th>components</th>
+      <td><p>character vector indicating the two components that should be displayed in the plot. By default these are PC1 and
+PC2. You can provide these using a character vector of the form c("PC1", "PC2").</p></td>
     </tr>
     <tr>
       <th>digestion</th>
-      <td><p>Optional column indicating the mode of digestion (limited proteolysis or tryptic digest).</p></td>
+      <td><p>optional column indicating the mode of digestion (limited proteolysis or tryptic digest).</p></td>
+    </tr>
+    <tr>
+      <th>plot_style</th>
+      <td><p>character vector specifying what plot should be returned. If `plot_style = "pca"` is selected the two PCA 
+components supplied with the `components` argument are plottet against each other. This is the default. `plot_style = "scree"` returns 
+a scree plot that displays the variance explained by each principal component in percent. The scree is useful for checking if any other 
+than the default first two components should be plotted.</p></td>
     </tr>
     </table>
 
@@ -180,7 +201,9 @@
 sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
 grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
 intensity <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
-condition <span class='op'>=</span> <span class='va'>r_condition</span>
+condition <span class='op'>=</span> <span class='va'>r_condition</span>,
+components <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"PC2"</span>, <span class='st'>"PC3"</span><span class='op'>)</span>,
+plot_style <span class='op'>=</span> <span class='st'>"scree"</span>
 <span class='op'>)</span>
 <span class='op'>}</span>
 

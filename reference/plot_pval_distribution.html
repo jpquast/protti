@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Assignment of missingness types — assign_missingness • protti</title>
+<title>Plot histogram of p-value distribution — plot_pval_distribution • protti</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Assignment of missingness types — assign_missingness" />
-<meta property="og:description" content="The type of missingness (missing at random, missing not at random) is assigned based on the comparison of a reference condition and every other condition." />
+<meta property="og:title" content="Plot histogram of p-value distribution — plot_pval_distribution" />
+<meta property="og:description" content="Plots the distribution of p-values derived from any statistical test as a histogram." />
 
 
 
@@ -129,93 +129,45 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Assignment of missingness types</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/assign_missingness.R'><code>R/assign_missingness.R</code></a></small>
-    <div class="hidden name"><code>assign_missingness.Rd</code></div>
+    <h1>Plot histogram of p-value distribution</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/plot_pval_distribution.R'><code>R/plot_pval_distribution.R</code></a></small>
+    <div class="hidden name"><code>plot_pval_distribution.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The type of missingness (missing at random, missing not at random) is assigned based on the comparison of a reference condition and every other condition.</p>
+    <p>Plots the distribution of p-values derived from any statistical test as a histogram.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>assign_missingness</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  <span class='va'>sample</span>,
-  <span class='va'>condition</span>,
-  <span class='va'>grouping</span>,
-  <span class='va'>intensity</span>,
-  ref_condition <span class='op'>=</span> <span class='st'>"control"</span>,
-  completeness_MAR <span class='op'>=</span> <span class='fl'>0.7</span>,
-  completeness_MNAR <span class='op'>=</span> <span class='fl'>0.2</span>,
-  retain_columns <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_pval_distribution</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>grouping</span>, <span class='va'>pval</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame containing at least the input variables.</p></td>
-    </tr>
-    <tr>
-      <th>sample</th>
-      <td><p>The column in the data data frame containing the sample name.</p></td>
-    </tr>
-    <tr>
-      <th>condition</th>
-      <td><p>The column in the data data frame containing the conditions.</p></td>
+      <td><p>a data frame containing at least grouping identifiers (precursor, peptide or protein) and p-values derived from any
+statistical test.</p></td>
     </tr>
     <tr>
       <th>grouping</th>
-      <td><p>The column in the data data frame containing precursor or peptide identifiers.</p></td>
+      <td><p>the column in the data frame containing either precursor, peptide or protein identifiers.</p></td>
     </tr>
     <tr>
-      <th>intensity</th>
-      <td><p>The column in the data data frame containing intensity values.</p></td>
-    </tr>
-    <tr>
-      <th>ref_condition</th>
-      <td><p>The condition that is used as a reference for missingness determination. By default <code>ref_condition = "control"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>completeness_MAR</th>
-      <td><p>The minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7. 
-It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each 
-condition to be considered as MAR. This number is always at least 1.</p></td>
-    </tr>
-    <tr>
-      <th>completeness_MNAR</th>
-      <td><p>The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.20. 
-It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one 
-condition to be considered as MNAR when the other condition is complete.</p></td>
-    </tr>
-    <tr>
-      <th>retain_columns</th>
-      <td><p>A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
-additional columns <code>retain_columns = NULL</code>. Specific columns can be retained by providing their names (not in quotations marks, 
-just like other column names, but in a vector).</p></td>
+      <th>pval</th>
+      <td><p>the column in the data frame containing p-values.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains the reference condition paired with each treatment condition. The <code>comparison</code> column contains the comparison 
-name for the specific treatment/reference pair. The <code>missingness</code> column reports the type of missingness.</p><ul>
-<li><p>"complete": No missing values for every replicate of this reference/treatment pair for the specific grouping variable.</p></li>
-<li><p>"MNAR": Missing not at random. All replicates of either the reference or treatment condition have missing values for the specific grouping variable.</p></li>
-<li><p>"MAR": Missing at random. At least n-1 replicates have missing values for the reference/treatment pair for the specific grouping varible.</p></li>
-</ul>
-
+    <p>A histogram or boxplot that shows the intensity distribution over all samples or by sample.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>assign_missingness</span><span class='op'>(</span>
-<span class='va'>data</span>,
-sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-condition <span class='op'>=</span> <span class='va'>r_condition</span>,
-grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-intensity <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
-retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>pg_protein_accessions</span><span class='op'>)</span>
+<span class='fu'>plot_pval_distribution</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
+  pval <span class='op'>=</span> <span class='va'>pval</span>
 <span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>

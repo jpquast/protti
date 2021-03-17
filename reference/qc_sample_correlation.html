@@ -142,7 +142,7 @@
   <span class='va'>data</span>,
   <span class='va'>sample</span>,
   <span class='va'>grouping</span>,
-  <span class='va'>intensity</span>,
+  <span class='va'>intensity_log2</span>,
   <span class='va'>condition</span>,
   digestion <span class='op'>=</span> <span class='cn'>NULL</span>,
   run_order <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -166,8 +166,8 @@
       <td><p>the name of the column containing precursor or peptide identifiers.</p></td>
     </tr>
     <tr>
-      <th>intensity</th>
-      <td><p>the name of the column containing intensity values. Note: The input intensities should be log2 transformed.</p></td>
+      <th>intensity_log2</th>
+      <td><p>the name of the column containing log2 intensity values.</p></td>
     </tr>
     <tr>
       <th>condition</th>
@@ -201,7 +201,7 @@
 <span class='va'>data</span>,
 sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
 grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-intensity <span class='op'>=</span> <span class='va'>intensity_log2</span>,
+intensity_log2 <span class='op'>=</span> <span class='va'>intensity_log2</span>,
 condition <span class='op'>=</span> <span class='va'>r_condition</span>
 <span class='op'>)</span>
 <span class='op'>}</span>

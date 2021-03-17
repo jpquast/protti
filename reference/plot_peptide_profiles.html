@@ -144,11 +144,13 @@ in different samples and conditions.</p>
   <span class='va'>data</span>,
   <span class='va'>sample</span>,
   <span class='va'>peptide</span>,
-  <span class='va'>intensity</span>,
+  <span class='va'>intensity_log2</span>,
   <span class='va'>grouping</span>,
   <span class='va'>targets</span>,
-  split_all <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  protein_abundance_plot <span class='op'>=</span> <span class='cn'>FALSE</span>
+  protein_abundance_plot <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  interactive <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  export <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  export_name <span class='op'>=</span> <span class='st'>"peptide_profile_plots"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -167,7 +169,7 @@ in different samples and conditions.</p>
       <td><p>Column in the data frame containing peptide or precursor names.</p></td>
     </tr>
     <tr>
-      <th>intensity</th>
+      <th>intensity_log2</th>
       <td><p>Column in the data frame containing log2 transformed intensities.</p></td>
     </tr>
     <tr>
@@ -176,17 +178,28 @@ in different samples and conditions.</p>
     </tr>
     <tr>
       <th>targets</th>
-      <td><p>Character vector specifying elements of the grouping column for which a plot should be returned.</p></td>
-    </tr>
-    <tr>
-      <th>split_all</th>
-      <td><p>Logical, specifying if a plot for each element of the grouping column should be returned. The default is FALSE. Be careful
-with this arguments as the number of plots can be quite high.</p></td>
+      <td><p>Character vector specifying elements of the grouping column which should be plotted. This can also be 
+<code>"all"</code> if plots for all groups should be created. Depending on the number of elements in your grouping column this can be many
+plots.</p></td>
     </tr>
     <tr>
       <th>protein_abundance_plot</th>
       <td><p>Logical, if the input for this plot comes directly from <code>calculate_protein_abundance</code> this argument
 can be set to <code>TRUE</code>. This displays all peptides in gray, while the protein abundance is displayed in green.</p></td>
+    </tr>
+    <tr>
+      <th>interactive</th>
+      <td><p>A logical indicating whether the plot should be interactive (default is FALSE). If this is TRUE only one target can
+be supplied to the function. Interactive plots cannot be exported either.</p></td>
+    </tr>
+    <tr>
+      <th>export</th>
+      <td><p>A logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The 
+name of the file can be chosen using the <code>export_name</code> argument.</p></td>
+    </tr>
+    <tr>
+      <th>export_name</th>
+      <td><p>A character vector providing the name of the exported file if <code>export = TRUE</code>.</p></td>
     </tr>
     </table>
 
@@ -200,7 +213,7 @@ can be set to <code>TRUE</code>. This displays all peptides in gray, while the p
   <span class='va'>data</span>,
   sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
   peptide <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-  intensity <span class='op'>=</span> <span class='va'>log2_intensity</span>,
+  intensity_log2 <span class='op'>=</span> <span class='va'>log2_intensity</span>,
   grouping <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>,
   targets <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"P03421"</span><span class='op'>)</span>
 <span class='op'>)</span>

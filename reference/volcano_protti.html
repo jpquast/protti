@@ -150,6 +150,7 @@
   title <span class='op'>=</span> <span class='st'>"Volcano plot"</span>,
   x_axis_label <span class='op'>=</span> <span class='st'>"log2(fold change)"</span>,
   y_axis_label <span class='op'>=</span> <span class='st'>"-log10(q-value)"</span>,
+  legend_label <span class='op'>=</span> <span class='st'>"Target"</span>,
   log2FC_cutoff <span class='op'>=</span> <span class='fl'>1</span>,
   significance_cutoff <span class='op'>=</span> <span class='fl'>0.01</span>,
   interactive <span class='op'>=</span> <span class='cn'>FALSE</span>
@@ -160,68 +161,73 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>Data frame containing at least the input variables.</p></td>
+      <td><p>a data frame containing at least the input variables.</p></td>
     </tr>
     <tr>
       <th>grouping</th>
-      <td><p>Column in the data data frame containing either precursor or peptide identifiers.</p></td>
+      <td><p>the column in the data data frame containing either precursor or peptide identifiers.</p></td>
     </tr>
     <tr>
       <th>log2FC</th>
-      <td><p>Column in the data frame containing the log2 transfromed fold changes between two conditions.</p></td>
+      <td><p>the column in the data frame containing the log2 transfromed fold changes between two conditions.</p></td>
     </tr>
     <tr>
       <th>significance</th>
-      <td><p>Column containing the p-value or adjusted p-value for the corresponding fold changes. P-value is ideally adjusted using e.g. Benjamini-Hochberg correction.</p></td>
+      <td><p>the column containing the p-value or adjusted p-value for the corresponding fold changes. P-value is ideally adjusted using e.g. Benjamini-Hochberg correction.</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>Method used for the plot. <code>method = "target"</code> highlights your protein of interest in the volcano plot, <code>method = "significant"</code> highlights all significantly changing entities.</p></td>
+      <td><p>character verctor with the method used for the plot. <code>method = "target"</code> highlights your protein, proteins or any other entities of 
+interest (specified in the `target` argument) in the volcano plot. <code>method = "significant"</code> highlights all significantly changing entities.</p></td>
     </tr>
     <tr>
       <th>target_column</th>
-      <td><p>Optional column required for <code>method = "target"</code>, can contain for example protein identifiers or a logical that marks 
+      <td><p>optional column required for <code>method = "target"</code>, can contain for example protein identifiers or a logical that marks 
 certain proteins such as proteins that are known to interact with the treatment. Can also be provided if <code>method = "significant"</code> 
 to label data points in an interactive plot.</p></td>
     </tr>
     <tr>
       <th>target</th>
-      <td><p>Optional argument required for <code>method = "target"</code>, a specific component of the column provided in <code>target_column</code>.
-This can be for example a protein ID if <code>target_column</code> contains protein IDs or TRUE or FALSE for a logical column.</p></td>
+      <td><p>optional character vector argument required for <code>method = "target"</code>. It can contain one or more specific entities of the 
+column provided in <code>target_column</code>. This can be for example a protein ID if <code>target_column</code> contains protein IDs or TRUE or FALSE for a logical column.</p></td>
     </tr>
     <tr>
       <th>facet_by</th>
-      <td><p>Optional argument specifying a column that contains information by which the data should be faceted into multiple plots.</p></td>
+      <td><p>optional argument specifying a column that contains information by which the data should be faceted into multiple plots.</p></td>
     </tr>
     <tr>
       <th>title</th>
-      <td><p>Optional argument specifying the title of the volcano plot. Default is "Volcano plot".</p></td>
+      <td><p>optional argument specifying the title of the volcano plot. Default is "Volcano plot".</p></td>
     </tr>
     <tr>
       <th>x_axis_label</th>
-      <td><p>Optional argument specifying the x-axis label. Default is "log2(fold change)".</p></td>
+      <td><p>optional argument specifying the x-axis label. Default is "log2(fold change)".</p></td>
     </tr>
     <tr>
       <th>y_axis_label</th>
-      <td><p>Optional argument specifying the y-axis label. Default is -log10(q-value)".</p></td>
+      <td><p>optional argument specifying the y-axis label. Default is "-log10(q-value)".</p></td>
+    </tr>
+    <tr>
+      <th>legend_label</th>
+      <td><p>optional argument specifying the legend label. Default is "Target".</p></td>
     </tr>
     <tr>
       <th>log2FC_cutoff</th>
-      <td><p>Optional argument specifying the log2 transformed fold change cutoff used for assessing whether changes are significant. Default value is 1.</p></td>
+      <td><p>optional argument specifying the log2 transformed fold change cutoff used for assessing whether changes are significant. Default value is 1.</p></td>
     </tr>
     <tr>
       <th>significance_cutoff</th>
-      <td><p>Optional argument specifying the p-value cutoff used for assessing significance of changes. Default is 0.01.</p></td>
+      <td><p>optional argument specifying the p-value cutoff used for assessing significance of changes. Default is 0.01.</p></td>
     </tr>
     <tr>
       <th>interactive</th>
-      <td><p>Logical, indicating whether the plot should be interactive or not. Default is <code>interactive = FALSE</code>.</p></td>
+      <td><p>logical, indicating whether the plot should be interactive or not. Default is <code>interactive = FALSE</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Depending on the method used a volcano plot with either highlighted target protein (<code>method = "target"</code>) or highlighted significant proteins (<code>method = "significant"</code>) is returned.</p>
+    <p>Depending on the method used a volcano plot with either highlighted targets (<code>method = "target"</code>) or highlighted significant proteins (<code>method = "significant"</code>) is returned.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
@@ -237,6 +243,7 @@ facet_by <span class='op'>=</span> <span class='va'>comparison</span>,
 title <span class='op'>=</span> <span class='st'>"Finding Nemo"</span>,
 x_axis_label <span class='op'>=</span> <span class='st'>"log2(fold change) treated vs untreated"</span>,
 y_axis_label <span class='op'>=</span> <span class='st'>"-log10(p-value)"</span>,
+legend_label <span class='op'>=</span> <span class='st'>"Target Protein"</span>,
 log2FC_cutoff <span class='op'>=</span> <span class='fl'>2</span>,
 significance_cutoff <span class='op'>=</span> <span class='fl'>0.05</span>,
 interactive <span class='op'>=</span> <span class='cn'>TRUE</span>

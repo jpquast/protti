@@ -157,41 +157,41 @@ These will not be counted as IDs.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>Dataframe containing at least sample names and precursor/peptide/protein IDs.</p></td>
+      <td><p>a data frame containing at least sample names and precursor/peptide/protein IDs.</p></td>
     </tr>
     <tr>
       <th>sample</th>
-      <td><p>Column in the data frame specifying the sample name.</p></td>
+      <td><p>the column in the data frame specifying the sample name.</p></td>
     </tr>
     <tr>
       <th>grouping</th>
-      <td><p>Column in the data frame containing either precursor, peptide or protein identifiers.</p></td>
+      <td><p>the column in the data frame containing either precursor, peptide or protein identifiers.</p></td>
     </tr>
     <tr>
       <th>intensity</th>
-      <td><p>Column in the data frame containing intensities. If <code>remove_na_intensities = FALSE</code>, this argument is not required.</p></td>
+      <td><p>the column in the data frame containing raw or log2 transformed intensities. If <code>remove_na_intensities = FALSE</code>, this argument is not required.</p></td>
     </tr>
     <tr>
       <th>remove_na_intensities</th>
-      <td><p>Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
+      <td><p>logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
 Default is TRUE since we are usually interested in the number of quantifiable IDs.</p></td>
     </tr>
     <tr>
       <th>condition</th>
-      <td><p>Optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated),
+      <td><p>optional column in the data frame specifying the condition of the sample (e.g. LiP_treated, LiP_untreated),
 if column is provided, the bars in the plot will be coloured according to the condition.</p></td>
     </tr>
     <tr>
       <th>title</th>
-      <td><p>Optional argument specifying the plot title (default is "ID count per sample").</p></td>
+      <td><p>optional argument specifying the plot title (default is "ID count per sample").</p></td>
     </tr>
     <tr>
       <th>plot</th>
-      <td><p>Argument specifying whether the output of the function should be plotted (default is TRUE).</p></td>
+      <td><p>logical specifying whether the output of the function should be plotted (default is TRUE).</p></td>
     </tr>
     <tr>
       <th>interactive</th>
-      <td><p>Argument specifying whether the plot should be interactive (default is FALSE).</p></td>
+      <td><p>logical specifying whether the plot should be interactive (default is FALSE).</p></td>
     </tr>
     </table>
 

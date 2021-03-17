@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Label-free protein quantification — calculate_protein_abundance" />
-<meta property="og:description" content="Determines relative protein abundances from ion quantification. Only proteins with at least 3 precursors are considered for quantification." />
+<meta property="og:description" content="Determines relative protein abundances from ion quantification. Only proteins with at least 3 peptides are considered for quantification." />
 
 
 
@@ -135,7 +135,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Determines relative protein abundances from ion quantification. Only proteins with at least 3 precursors are considered for quantification.</p>
+    <p>Determines relative protein abundances from ion quantification. Only proteins with at least 3 peptides are considered for quantification.</p>
     </div>
 
     <pre class="usage"><span class='fu'>calculate_protein_abundance</span><span class='op'>(</span>
@@ -143,7 +143,8 @@
   <span class='va'>sample</span>,
   <span class='va'>protein_id</span>,
   <span class='va'>precursor</span>,
-  <span class='va'>intensity</span>,
+  <span class='va'>peptide</span>,
+  <span class='va'>intensity_log2</span>,
   method <span class='op'>=</span> <span class='st'>"iq"</span>,
   for_plot <span class='op'>=</span> <span class='cn'>FALSE</span>,
   retain_columns <span class='op'>=</span> <span class='cn'>NULL</span>
@@ -169,15 +170,20 @@
       <td><p>The name of the column containing precursors.</p></td>
     </tr>
     <tr>
-      <th>intensity</th>
+      <th>peptide</th>
+      <td><p>The name of the column containing peptide sequences. This column is needed to filter for proteins with at least 3 
+unique peptides. This can equate to more than three precursors. The quantification is done on the precursor level.</p></td>
+    </tr>
+    <tr>
+      <th>intensity_log2</th>
       <td><p>The name of the column containing log2 transformed precursor intensities.</p></td>
     </tr>
     <tr>
       <th>method</th>
       <td><p>A character vector specifying with which method protein quantities should be calculated. Possible options include <code>"sum"</code>,
 which takes the sum of all precursor intensities as the protein abundance. Another option is <code>"iq"</code>, which performs protein 
-quantification based on a maximal peptide ratio extraction algorithm that is adapted from the MaxQuant software. Functions from the <code>iq</code> 
-package (https://academic.oup.com/bioinformatics/article/36/8/2611/5697917) are used. Default is <code>"iq"</code>.</p></td>
+quantification based on a maximal peptide ratio extraction algorithm that is adapted from the MaxLFQ algorithm of the MaxQuant software. 
+Functions from the <a href='https://academic.oup.com/bioinformatics/article/36/8/2611/5697917'><code>iq</code></a> package are used. Default is <code>"iq"</code>.</p></td>
     </tr>
     <tr>
       <th>for_plot</th>
@@ -204,7 +210,8 @@ later output is ideal for plotting with <code>qc_protein_abundance</code> and ca
 sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
 protein_id <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>,
 precursor <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-intensity <span class='op'>=</span> <span class='va'>log2_normalised_intensity</span>,
+peptide <span class='op'>=</span> <span class='va'>pep_stripped_sequence</span>,
+intensity_log2 <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
 method <span class='op'>=</span> <span class='st'>"iq"</span>,
 retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>pg_protein_accessions</span><span class='op'>)</span>
 <span class='op'>)</span>
