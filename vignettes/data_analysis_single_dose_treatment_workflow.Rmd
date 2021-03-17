@@ -266,7 +266,7 @@ plot_pval_distribution(data = diff_abundance_data,
 
 For this subset of data the distribution of p-values is relatively equal and there is no increase in values in the low p-value range but rather a decrease. This means that the Benjamini-Hochberg algorithm might not be suitable for correcting these p-values. You can pick another algorithm for the correction and supply it to the `p_adj_method` argument and run `diff_abundance()` again. The available methods are any methods that can be supplied to the standard R function `p.adjust()` that is used internally. You can also just use this function or any other correction algorithm on your data and overwrite the values in the `adj_pval` column.
 
-_Note: If the p-values are not fulfilling the assumption of the multiple-testing correction, meaning very little observations are changing significantly, it can happen that only a few significant hits remain after adjusting the p-value. This can be a common occurrence so you should always have a look at the p-value distribution after statistical testing and before adjusting your p-values. This will help you decide on whether or not you should adjust your p-values._
+_Note: If the p-values are not fulfilling the assumption of the multiple-testing correction, meaning very little observations are changing significantly, it can happen that only a few significant hits remain after adjusting the p-value. This can be a common occurrence so you should always have a look at the p-value distribution. This will help you decide on whether or not you should use adjusted p-values, not adjusted p-values or if you should adjust them with a specific method._
 
 ### Volcano plot
 
