@@ -91,7 +91,7 @@
       <h1 data-toc-skip>Input Preparation Workflow</h1>
                         <h4 class="author">Dina Schuster</h4>
             
-            <h4 class="date">2021-03-17</h4>
+            <h4 class="date">2021-03-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/input_preparation_workflow.Rmd"><code>vignettes/input_preparation_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>input_preparation_workflow.Rmd</code></div>
@@ -216,6 +216,7 @@
 <p>The <code>evidence.txt</code> file basically contains all the information we need to run <strong>protti</strong>. It is also contained in a long format which makes it easy to read in and use directly. One thing to take into consideration is the lack of a column for information proteotypicity of peptides. However, this information can be inferred from the <code>Proteins</code>column if it contains more than one protein ID. You can extract this information and create a new column called <code>is_proteotypic</code> containing logicals that will be <code>TRUE</code> if the <code>Proteins</code> column does not contain a semicolon and <code>FALSE</code> if it does (this indicates that the peptide belongs to more than one protein). As mentioned in data analysis vignettes this information is necessary for the analysis of LiP-MS data but it could be also considered for the correct calculation of protein abundances.</p>
 <p>Another column that is required for the analysis of your data is a column indicating conditions to which certain samples belong. This can be easily added to the evidence file by joining a data frame containing the specific annotations. You can create such a data frame in Excel and import it into R for a large amount of samples or just create it directly in R.</p>
 <p>MaxQuant output provides information on decoy hits contained in the column <code>reverse</code> and also has information on whether your hit is a contaminant <code>potential_contaminant</code>. You should filter these out before the analysis. However, the contaminant column can be used for quality control.</p>
+<p>One important thing for MaxQuant data is to <strong>make sure that you only have one intensity assigned to each peptide or precursor.</strong> You can do this by summing up all intensities that MaxQuant exports (these can be MULTI-MSMS, MSMS, ISO-MSMS, MULTI-MATCH, ISO-SECPEP) or you can filter for example for precursors with MULTI-MSMS quantification and only use these.</p>
 <p>In this section we will show you how to read in the file with <code><a href="../reference/read_protti.html">read_protti()</a></code> and how to create the <code>is_proteotypic</code> column and the <code>condition</code> column (minimally required) with the help of the <code>stringr</code> and <code>dplyr</code> packages. How to filter your data best is described in the data analysis vignettes.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># To read in your own data you can use read_protti()</span>
@@ -226,7 +227,8 @@
     string <span class="op">=</span> <span class="va">proteins</span>,
     pattern <span class="op">=</span> <span class="st">";"</span>,
     negate <span class="op">=</span> <span class="cn">TRUE</span>
-  <span class="op">)</span><span class="op">)</span><span class="co"># adds new column with logicals that are TRUE if the peptide can be assigned to only one protein and FALSE if it can be assigned to multiple</span>
+  <span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span><span class="co"># adds new column with logicals that are TRUE if the peptide can be assigned to only one protein and FALSE if it can be assigned to multiple</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>is_contaminant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">potential_contaminant</span> <span class="op">==</span> <span class="st">"+"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="co"># adds new column with logicals indicating if peptide is coming from a potential contaminant</span>
 
 <span class="co"># Make an annotation data frame and merge it with your data frame to obtain conditions</span>
 <span class="co"># We are annotating sample 1-3 as controls and samples 4-6 as treated conditions</span>
@@ -262,14 +264,11 @@
 <p>We will filter the data and use <code>tidyr</code>’s <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> to change the format to long format. Furthermore, we produce an annotation data frame to create a <code>conditions</code> column. The filtering is only done in order to remove proteins with potentially low quality. Further filtering for decoys and potential contaminants should be performed based on the data analysis vignettes.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># To read in your own data you can use read_protti()</span>
-<span class="va">protein_groups</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"yourpath/proteinGroups.txt"</span><span class="op">)</span>
-
-<span class="va">protein_groups_filtered</span> <span class="op">&lt;-</span> <span class="va">mq_prot_selected</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">only_identified_by_site</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>  <span class="co"># remove proteins only identified by PTM, reverse hits and potential contaminants</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">peptides</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">)</span> <span class="co"># we filter out proteins that have less than 3 identified peptides</span>
+<span class="va">protein_groups</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"yourpath/proteinGroups.txt"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>is_potential_contaminant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">potential_contaminant</span> <span class="op">==</span> <span class="st">"+"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="co"># adds new column with logicals indicating if protein is a potential contaminant, you can filter these out later on. You should also consider filtering out proteins that were "only identified by site" and reverse hits, as well as proteins with only one identified peptide</span>
 
 <span class="co"># Change wide format to long format and create new columns called `r_file_name`and `intensity`</span>
-<span class="va">protein_groups_long</span> <span class="op">&lt;-</span> <span class="va">protein_groups_filtered</span> <span class="op">%&gt;%</span>
+<span class="va">protein_groups_long</span> <span class="op">&lt;-</span> <span class="va">protein_groups</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>
     cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"intensity_"</span><span class="op">)</span>,
     names_to <span class="op">=</span> <span class="st">"file_name"</span>,
