@@ -24,10 +24,10 @@ peptide_type(
 A data frame that contains the input data and an additional column with the peptide type information.
 }
 \description{
-Based on preceding and C-terminal amino acid, the peptide type of a given peptide is assigned. Peptides with preceeding and 
-C-terminal lysine or arginine are considered fully-tryptic. If a peptide is located at the N- or C-terminus of a protein and 
-fulfills the criterium to be fully-tryptic otherwise, it is also considered as fully-tryptic. Peptides that only fulfill the 
-criterium on one terminus are semi-tryptic peptides. Lastly, peptides that are not fulfilling the criteria for both termini are 
+Based on preceding and C-terminal amino acid, the peptide type of a given peptide is assigned. Peptides with preceeding and
+C-terminal lysine or arginine are considered fully-tryptic. If a peptide is located at the N- or C-terminus of a protein and
+fulfills the criterium to be fully-tryptic otherwise, it is also considered as fully-tryptic. Peptides that only fulfill the
+criterium on one terminus are semi-tryptic peptides. Lastly, peptides that are not fulfilling the criteria for both termini are
 non-tryptic peptides.
 }
 \examples{

@@ -17,8 +17,8 @@
 #' subsetted data frame should be created.
 #' @param cutoffs Optional argument specifying the log2 fold change and significance cutoffs used for highlighting peptides.
 #' If this argument is provided colouring information will be overwritten with peptides that fulfill this condition.
-#' The cutoff should be provided in a vector of the form c(diff = 2, pval = 0.05). The name of the cutoff should reflect the 
-#' column name that contains this information (log2 fold changes, p-values or adjusted p-values). 
+#' The cutoff should be provided in a vector of the form c(diff = 2, pval = 0.05). The name of the cutoff should reflect the
+#' column name that contains this information (log2 fold changes, p-values or adjusted p-values).
 #'
 #' @return A barcode plot is returned.
 #' @import dplyr
@@ -31,56 +31,57 @@
 #' @examples
 #' \dontrun{
 #' barcode_plot(
-#' data,
-#' start_position = start,
-#' end_position = end,
-#' protein_length = length,
-#' facet = pg_protein_accessions,
-#' cutoffs = c(diff = 2, pval = 0.05)
+#'   data,
+#'   start_position = start,
+#'   end_position = end,
+#'   protein_length = length,
+#'   facet = pg_protein_accessions,
+#'   cutoffs = c(diff = 2, pval = 0.05)
 #' )
 #' }
-barcode_plot <- function(data, start_position, end_position, protein_length, coverage = NULL, colouring = NULL, protein_id = NULL, facet = NULL, cutoffs = NULL)
-{
+barcode_plot <- function(data, start_position, end_position, protein_length, coverage = NULL, colouring = NULL, protein_id = NULL, facet = NULL, cutoffs = NULL) {
   # Check if there is more than one protein even though protein_id was specified.
-  if(!missing(protein_id)){
-    if(length(unique(dplyr::pull(data, {{protein_id}}))) > 1){
+  if (!missing(protein_id)) {
+    if (length(unique(dplyr::pull(data, {{ protein_id }}))) > 1) {
       stop("If data contains information of multiple proteins use the facet argument, not the protein_id argument")
     }
   }
   # Check if there are more than 20 proteins for faceting.
-  if(!missing(facet)){
-    if(length(unique(dplyr::pull(data, {{facet}}))) > 20){
-      n_proteins <- length(unique(dplyr::pull(data, {{facet}})))
-      twenty_proteins <- unique(dplyr::pull(data, {{facet}}))[1:20]
+  if (!missing(facet)) {
+    if (length(unique(dplyr::pull(data, {{ facet }}))) > 20) {
+      n_proteins <- length(unique(dplyr::pull(data, {{ facet }})))
+      twenty_proteins <- unique(dplyr::pull(data, {{ facet }}))[1:20]
       data <- data %>%
-        dplyr::filter({{facet}} %in% twenty_proteins)
-      warning(paste("Only the first 20 proteins from", rlang::as_name(enquo(facet)),
-                    "have been used for plotting since there are", n_proteins,
-                    "proteins. Consider mapping over subsetted datasets." ))
+        dplyr::filter({{ facet }} %in% twenty_proteins)
+      warning(paste(
+        "Only the first 20 proteins from", rlang::as_name(enquo(facet)),
+        "have been used for plotting since there are", n_proteins,
+        "proteins. Consider mapping over subsetted datasets."
+      ))
     }
   }
   # Apply fold change  and significance cutoff if fold change is provided
-  if(!missing(cutoffs)){
+  if (!missing(cutoffs)) {
     fc_name <- names(cutoffs)[1]
     sig_name <- names(cutoffs)[2]
     fc <- cutoffs[1]
     sig <- cutoffs[2]
-    
-    colouring = sym("change")
-    
+
+    colouring <- sym("change")
+
     data <- data %>%
-      dplyr::mutate({{colouring}} := ifelse(((!!ensym(fc_name) >= fc | !!ensym(fc_name) <= -fc) & !!ensym(sig_name) <= sig), "Structural change", "Unchanged")) %>%
-      dplyr::mutate({{colouring}} := forcats::fct_rev(ifelse(is.na({{colouring}}), "Unchanged", {{colouring}}))) %>%
-      dplyr::arrange({{colouring}})
+      dplyr::mutate({{ colouring }} := ifelse(((!!ensym(fc_name) >= fc | !!ensym(fc_name) <= -fc) & !!ensym(sig_name) <= sig), "Structural change", "Unchanged")) %>%
+      dplyr::mutate({{ colouring }} := forcats::fct_rev(ifelse(is.na({{ colouring }}), "Unchanged", {{ colouring }}))) %>%
+      dplyr::arrange({{ colouring }})
   }
   # Add coverage to protein ID name if present.
-  if(!missing(coverage) & !missing(facet)){
+  if (!missing(coverage) & !missing(facet)) {
     data <- data %>%
-      mutate({{facet}} := paste0({{facet}}, " (", round({{coverage}}, digits = 1), "%)"))
+      mutate({{ facet }} := paste0({{ facet }}, " (", round({{ coverage }}, digits = 1), "%)"))
   }
-  if(!missing(coverage) & !missing(protein_id)){
+  if (!missing(coverage) & !missing(protein_id)) {
     data <- data %>%
-      mutate({{protein_id}} := paste0({{protein_id}}, " (", round({{coverage}}, digits = 1), "%)"))
+      mutate({{ protein_id }} := paste0({{ protein_id }}, " (", round({{ coverage }}, digits = 1), "%)"))
   }
   # Create plot
   data %>%
@@ -88,29 +89,37 @@ barcode_plot <- function(data, start_position, end_position, protein_length, cov
     ggplot2::geom_rect(ggplot2::aes(
       ymin = -2.5,
       ymax = 2.5,
-      xmax = {{end_position}} / {{protein_length}} * 100,
-      xmin = ({{start_position}} - 1) / {{protein_length}} * 100,
-      fill = {{colouring}}),
-      size = 0.7
+      xmax = {{ end_position }} / {{ protein_length }} * 100,
+      xmin = ({{ start_position }} - 1) / {{ protein_length }} * 100,
+      fill = {{ colouring }}
+    ),
+    size = 0.7
     ) +
-    ggplot2::scale_fill_manual(values = c("#999999", "#5680C1", "#B96DAD", "#64CACA", "#81ABE9", "#F6B8D1", "#99F1E4", "#9AD1FF", "#548BDF", "#A55098", "#3EB6B6",
-                                          "#87AEE8", "#CA91C1", "#A4E0E0", "#1D4F9A", "#D7ACD2","#49C1C1")) +
+    ggplot2::scale_fill_manual(values = c(
+      "#999999", "#5680C1", "#B96DAD", "#64CACA", "#81ABE9", "#F6B8D1", "#99F1E4", "#9AD1FF", "#548BDF", "#A55098", "#3EB6B6",
+      "#87AEE8", "#CA91C1", "#A4E0E0", "#1D4F9A", "#D7ACD2", "#49C1C1"
+    )) +
     ggplot2::scale_x_continuous(limits = c(0, 100), expand = c(0, 0)) +
     ggplot2::scale_y_continuous(limits = NULL, expand = c(0, 0)) +
-    ggplot2::labs(x = "Protein Sequence", title = {if(!missing(protein_id)) unique(dplyr::pull(data, {{protein_id}}))}) +
-    {if(!missing(facet)) ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet)))} +
-    ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
-                   axis.title.y = element_blank(),
-                   axis.text.y = element_blank(),
-                   axis.ticks.y = element_blank(),
-                   axis.text.x = element_blank(),
-                   axis.title.x = ggplot2::element_text(size = 15),
-                   axis.ticks.x = element_blank(),
-                   legend.title = ggplot2::element_text(size = 15),
-                   legend.text = ggplot2::element_text(size = 15),
-                   strip.text = ggplot2::element_text(size = 15),
-                   strip.background = element_blank(),
-                   panel.background = element_blank(),
-                   panel.border = element_rect(fill = NA)
+    ggplot2::labs(x = "Protein Sequence", title = {
+      if (!missing(protein_id)) unique(dplyr::pull(data, {{ protein_id }}))
+    }) +
+    {
+      if (!missing(facet)) ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet)))
+    } +
+    ggplot2::theme(
+      plot.title = ggplot2::element_text(size = 20),
+      axis.title.y = element_blank(),
+      axis.text.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.text.x = element_blank(),
+      axis.title.x = ggplot2::element_text(size = 15),
+      axis.ticks.x = element_blank(),
+      legend.title = ggplot2::element_text(size = 15),
+      legend.text = ggplot2::element_text(size = 15),
+      strip.text = ggplot2::element_text(size = 15),
+      strip.background = element_blank(),
+      panel.background = element_blank(),
+      panel.border = element_rect(fill = NA)
     )
 }

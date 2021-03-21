@@ -17,11 +17,11 @@
 #' \dontrun{
 #' find_peptide(data, protein_sequence, pep_stripped_sequence)
 #' }
-find_peptide <- 
-  function(data, protein_sequence, peptide_sequence){
-  data%>%
-    dplyr::mutate(start = stringr::str_locate({{protein_sequence}}, {{peptide_sequence}})[,1], end = stringr::str_locate({{protein_sequence}}, {{peptide_sequence}})[,2])%>%
-    dplyr::mutate(aa_before = stringr::str_sub({{protein_sequence}}, start = .data$start-1, end = .data$start-1))%>%
-    dplyr::mutate(last_aa = stringr::str_sub({{protein_sequence}}, start = .data$end, end = .data$end)) %>% 
-    dplyr::mutate(aa_after = stringr::str_sub({{protein_sequence}}, start = .data$end+1, end = .data$end+1))
+find_peptide <-
+  function(data, protein_sequence, peptide_sequence) {
+    data %>%
+      dplyr::mutate(start = stringr::str_locate({{ protein_sequence }}, {{ peptide_sequence }})[, 1], end = stringr::str_locate({{ protein_sequence }}, {{ peptide_sequence }})[, 2]) %>%
+      dplyr::mutate(aa_before = stringr::str_sub({{ protein_sequence }}, start = .data$start - 1, end = .data$start - 1)) %>%
+      dplyr::mutate(last_aa = stringr::str_sub({{ protein_sequence }}, start = .data$end, end = .data$end)) %>%
+      dplyr::mutate(aa_after = stringr::str_sub({{ protein_sequence }}, start = .data$end + 1, end = .data$end + 1))
   }

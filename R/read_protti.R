@@ -14,11 +14,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' read_protti("folder\filename")
+#' read_protti("folder\\filename")
 #' }
 read_protti <-
-function(filename, ...){
-  data.table::fread(filename, ...)%>%
-  janitor::clean_names()%>%
-  tibble::as_tibble()
-}
+  function(filename, ...) {
+    data.table::fread(filename, ...) %>%
+      janitor::clean_names() %>%
+      tibble::as_tibble()
+  }

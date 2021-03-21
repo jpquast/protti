@@ -16,18 +16,18 @@
 #' @examples
 #' \dontrun{
 #' median_normalisation(data,
-#' sample = r_file_name,
-#' intensity_log2 = intensity_log2)
+#'   sample = r_file_name,
+#'   intensity_log2 = intensity_log2
+#' )
 #' }
 median_normalisation <-
-  function(data, sample, intensity_log2)
-  {
+  function(data, sample, intensity_log2) {
     data %>%
-      dplyr::distinct() %>% 
-      dplyr::mutate(global_median = stats::median({{intensity_log2}}, na.rm = TRUE)) %>%
-      dplyr::group_by({{sample}}) %>%
-      dplyr::mutate(run_median = stats::median({{intensity_log2}}, na.rm = TRUE)) %>%
+      dplyr::distinct() %>%
+      dplyr::mutate(global_median = stats::median({{ intensity_log2 }}, na.rm = TRUE)) %>%
+      dplyr::group_by({{ sample }}) %>%
+      dplyr::mutate(run_median = stats::median({{ intensity_log2 }}, na.rm = TRUE)) %>%
       dplyr::ungroup() %>%
-      dplyr::mutate(normalised_intensity_log2 = {{intensity_log2}} - .data$run_median + .data$global_median) %>%
+      dplyr::mutate(normalised_intensity_log2 = {{ intensity_log2 }} - .data$run_median + .data$global_median) %>%
       dplyr::select(-.data$run_median, -.data$global_median)
   }

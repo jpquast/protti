@@ -35,12 +35,12 @@ Calculates and plots the coefficients of variation for the selected grouping.
 \examples{
 \dontrun{
 qc_cvs(
-data,
-grouping = pep_stripped_sequence,
-condition = condition,
-intensity = fg_quantity,
-plot = TRUE,
-plot_style = "density"
+  data,
+  grouping = pep_stripped_sequence,
+  condition = condition,
+  intensity = fg_quantity,
+  plot = TRUE,
+  plot_style = "density"
 )
 }
 }

@@ -1,11 +1,11 @@
 #' Randomise samples in MS queue
 #'
 #' This function randomises the order of samples in an MS queue. QC and Blank samples are left in place. It is also possible to randomise only parts of the queue. The randomisation is every time the same for the same input due to \code{set.seed(123)}.
-#' 
+#'
 #' @param data optional, a data frame containing a queue. If not provided a queue file can be chosen interactively.
 #' @param rows optional, a range of rows in for which samples should be randomized.
 #' @param export logical, if TRUE a \code{"randomised_queue.csv"} file will be saved in the working directory. If FALSE a data frame will be returned.
-#' 
+#'
 #' @return If \code{export = TRUE} a \code{"randomised_queue.csv"} file will be saved in the working directory. If \code{export = FALSE} a data frame that contains the randomised queue is returned.
 #' @import dplyr
 #' @importFrom data.table fread
@@ -22,49 +22,49 @@ randomise_queue <-
   function(data = NULL,
            rows = NULL,
            export = FALSE) {
-    
+
     # set seed to make sampling reproducible
     set.seed(123)
-    
+
     # load data interactively if no data is provided in the data argument
     if (is.null(data)) {
       path <- file.choose(".")
       data <- data.table::fread(path, skip = 1)
     }
-    
+
     unused_data <- NULL
-    
+
     # if rows argument is provided subset dataset
     if (!is.null(rows)) {
       unused_data <- data %>%
-        dplyr::slice(-({{rows}}))
-      
+        dplyr::slice(-({{ rows }}))
+
       data <- data %>%
-        dplyr::slice({{rows}}) %>%
+        dplyr::slice({{ rows }}) %>%
         dplyr::mutate(n = row_number())
     } else {
       data <- data %>%
         dplyr::mutate(n = row_number())
     }
-    
+
     # separate qc and blank samples
     qc_samples <- data %>%
       dplyr::filter(.data$`Sample Type` == "QC" | .data$`Sample Type` == "Blank")
-    
+
     # randomise sample order
     samples <- data %>%
       dplyr::filter(.data$`Sample Type` == "Unknown") %>%
       dplyr::mutate(n = sample(n))
-    
+
     # add back qc and blank samples and also parts of the queue that were not randomised
     result <- qc_samples %>%
       dplyr::bind_rows(samples) %>%
       dplyr::arrange(n) %>%
       dplyr::select(-n)
-    
+
     result <- unused_data %>%
       dplyr::bind_rows(result)
-    
+
     # export queue and add bracket type = 4 line in front of data for proper queue import in xcalibur
     if (export == TRUE) {
       write("Bracket Type=4", file = "randomised_queue.csv")

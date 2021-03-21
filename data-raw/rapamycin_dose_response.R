@@ -1,10 +1,10 @@
 # library(tidyverse)
 # library(protti)
-# 
+#
 # set.seed(123)
-# 
+#
 # # Source: Piazza, I., Beaton, N., Bruderer, R. et al. A machine learning-based chemoproteomic approach to identify drug targets and binding sites in complex proteomes. Nat Commun 11, 4200 (2020). https://doi.org/10.1038/s41467-020-18071-x
-# 
+#
 rapa <- read_protti("rapamycin_dose_response.csv")
 
 # Filter to only contain necessary columns. Simplify file names. Annotate conditions with concentrations in pM.

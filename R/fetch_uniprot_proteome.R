@@ -15,10 +15,9 @@
 #' fetch_uniprot_proteome(9606)
 #' }
 fetch_uniprot_proteome <-
-  function (organism_id,
-            columns = c("id"),
-            reviewed = TRUE)
-  {
+  function(organism_id,
+           columns = c("id"),
+           reviewed = TRUE) {
     if (length(organism_id) == 0) {
       stop("No valid organism ID found.")
     }

@@ -15,7 +15,7 @@ rapamycin_10uM
 }
 \description{
 Rapamycin example data used for the vignette about binary control/treated data. The data is obtained from \href{https://www.nature.com/articles/s41467-020-18071-x}{Piazza 2020}
-and corresponds to experiment 18. FKBP1A the rapamycin binding protein and 49 other randomly sampled proteins were used 
+and corresponds to experiment 18. FKBP1A the rapamycin binding protein and 49 other randomly sampled proteins were used
 for this example dataset. Furthermore, only the DMSO control and the 10 uM condition were used.
 }
 \keyword{datasets}

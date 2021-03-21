@@ -28,7 +28,7 @@ plot_drc_4p(
 
 \item{dose}{The name of the column containing dose values, eg. the treatment concentrations.}
 
-\item{targets}{A character vector that specifies the names of the precursors, peptides or proteins (depending on \code{grouping}) 
+\item{targets}{A character vector that specifies the names of the precursors, peptides or proteins (depending on \code{grouping})
 that should be plotted. This can also be \code{"all"} if plots for all curve fits should be created.}
 
 \item{unit}{A character vector specifying the unit of the concentration.}
@@ -41,8 +41,8 @@ that should be plotted. This can also be \code{"all"} if plots for all curve fit
 
 \item{x_axis_scale_log10}{A logical indicating if the x-axis scale should be log10 transformed.}
 
-\item{export}{A logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The 
-name of the file can be chosen using the \code{export_name} argument. If only one target is selected and \code{export = TRUE}, 
+\item{export}{A logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The
+name of the file can be chosen using the \code{export_name} argument. If only one target is selected and \code{export = TRUE},
 the plot is exported and in addition returned in R.}
 
 \item{export_name}{A character vector providing the name of the exported file if \code{export = TRUE}.}
@@ -56,11 +56,11 @@ Function for plotting four-parameter dose response curves for each group (precur
 \examples{
 \dontrun{
 plot_drc_4p(
-data,
-grouping = eg_precursor_id,
-response = intensity,
-dose = concentration,
-targets = c("ABCDEFK")
+  data,
+  grouping = eg_precursor_id,
+  response = intensity,
+  dose = concentration,
+  targets = c("ABCDEFK")
 )
 }
 }

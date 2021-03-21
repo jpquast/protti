@@ -28,7 +28,7 @@ plot_peptide_profiles(
 
 \item{grouping}{Column in the data frame containing groups by which the data should be split. This can be for example protein IDs.}
 
-\item{targets}{Character vector specifying elements of the grouping column which should be plotted. This can also be 
+\item{targets}{Character vector specifying elements of the grouping column which should be plotted. This can also be
 \code{"all"} if plots for all groups should be created. Depending on the number of elements in your grouping column this can be many
 plots.}
 
@@ -38,7 +38,7 @@ can be set to \code{TRUE}. This displays all peptides in gray, while the protein
 \item{interactive}{A logical indicating whether the plot should be interactive (default is FALSE). If this is TRUE only one target can
 be supplied to the function. Interactive plots cannot be exported either.}
 
-\item{export}{A logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The 
+\item{export}{A logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The
 name of the file can be chosen using the \code{export_name} argument.}
 
 \item{export_name}{A character vector providing the name of the exported file if \code{export = TRUE}.}

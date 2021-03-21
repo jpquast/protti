@@ -22,9 +22,9 @@ Helper function for the calculation of sequence coverage, replaces identified po
 \examples{
 \dontrun{
 replace_identified_by_x(
-sequence = c("AEFGPEEAAVS"),
-positions_start = c(1, 5, 8),
-positions_end = c(3, 6, 11)
+  sequence = c("AEFGPEEAAVS"),
+  positions_start = c(1, 5, 8),
+  positions_end = c(3, 6, 11)
 )
 }
 

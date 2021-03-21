@@ -46,11 +46,12 @@ Calculates the charge state distribution for each sample (by count or intensity)
 \examples{
 \dontrun{
 qc_charge_states(
-data,
-sample = r_file_name,
-grouping = pep_stripped_sequence,
-charge_states = fg_charge,
-method = "count",
-plot = TRUE)
+  data,
+  sample = r_file_name,
+  grouping = pep_stripped_sequence,
+  charge_states = fg_charge,
+  method = "count",
+  plot = TRUE
+)
 }
 }

@@ -7,11 +7,11 @@
 fetch_go(organism_id)
 }
 \arguments{
-\item{organism_id}{An NCBI taxonomy identifier of an organism (TaxId). Possible inputs inlude only: "9606" (Human), "559292" (Yeast) and 
+\item{organism_id}{An NCBI taxonomy identifier of an organism (TaxId). Possible inputs inlude only: "9606" (Human), "559292" (Yeast) and
 "83333" (E. coli).}
 }
 \value{
-A data frame that contains gene ontology mappings to UniProt or SGD IDs. The original file is a .GAF file. A detailed description of 
+A data frame that contains gene ontology mappings to UniProt or SGD IDs. The original file is a .GAF file. A detailed description of
 all columns can be found here: http://geneontology.org/docs/go-annotation-file-gaf-format-2.1/
 }
 \description{

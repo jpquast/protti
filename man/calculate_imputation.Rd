@@ -41,11 +41,11 @@ A vector of values for the imputation of missing data. The length of the vector 
 \examples{
 \dontrun{
 calculate_imputation(
-n_replicates = 3,
-min = 25.4,
-sd = 0.25,
-missingness = "MNAR",
-method = "ludovic"
+  n_replicates = 3,
+  min = 25.4,
+  sd = 0.25,
+  missingness = "MNAR",
+  method = "ludovic"
 )
 }
 }

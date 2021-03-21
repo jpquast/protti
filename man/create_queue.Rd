@@ -66,7 +66,7 @@ create_queue(
 
 \item{organism}{Optional, name of the organism used.}
 
-\item{exclude_combinations}{Optional, list of lists that contains vectors treatment types and treatment doses whos combinations should be 
+\item{exclude_combinations}{Optional, list of lists that contains vectors treatment types and treatment doses whos combinations should be
 excluded from the final queue.}
 
 \item{inj_vol}{The volume used for injection in microliter. Will be \code{NA} if not specified. Then it needs to be manually specified before the queue can be used.}
@@ -75,62 +75,66 @@ excluded from the final queue.}
 
 \item{method_path}{The file path of the MS acquisition method. Backslashes should be escaped by another backslash. Will be \code{NA} if not specified, but needs to be specified later on then.}
 
-\item{position_row}{The row positions that can be used for the samples (e.g c("A", "B")). If the number of specified rows and columns does not equal the total number 
+\item{position_row}{The row positions that can be used for the samples (e.g c("A", "B")). If the number of specified rows and columns does not equal the total number
 of samples, positions will be repeated.}
 
-\item{position_column}{The column positions that can be used for the samples (e.g 8). If the number of specified rows and columns does not equal the total number 
+\item{position_column}{The column positions that can be used for the samples (e.g 8). If the number of specified rows and columns does not equal the total number
 of samples, positions will be repeated.}
 
 \item{blank_every_n}{Optional, specifies in which intervals a blank sample should be inserted.}
 
 \item{blank_position}{The plate position of the blank. Will be \code{NA} if not specified, but needs to be specified later on then.}
 
-\item{blank_method_path}{The file path of the MS acquisition method of the blank. Backslashes should be escaped by another backslash. 
+\item{blank_method_path}{The file path of the MS acquisition method of the blank. Backslashes should be escaped by another backslash.
 Will be \code{NA} if not specified, but needs to be specified later on then.}
 
 \item{blank_inj_vol}{Injection volume of the blank sample. Will be \code{NA} if not specified, but needs to be specified later on then.}
 
-\item{export}{Logical, specifying if queue should be exported from R and saved as a .csv file. Default is TRUE. Further options for 
+\item{export}{Logical, specifying if queue should be exported from R and saved as a .csv file. Default is TRUE. Further options for
 export can be adjusted with the \code{export_to_queue} and \code{queue_path} arguments.}
 
 \item{export_to_queue}{Logical, specifying if the resulting queue should be appended to an already existing queue. If false result will be saved as \code{queue.csv}.}
 
-\item{queue_path}{Optional, file path to a queue file to which the generated queue should be appended if \code{export_to_queue = TRUE}. 
+\item{queue_path}{Optional, file path to a queue file to which the generated queue should be appended if \code{export_to_queue = TRUE}.
 If not specified queue file can be chosen interactively.}
 }
 \value{
-If \code{export_to_queue = FALSE} a file named \code{queue.csv} will be returned that contains the generated queue. If \code{export_to_queue = TRUE}, the resulting 
+If \code{export_to_queue = FALSE} a file named \code{queue.csv} will be returned that contains the generated queue. If \code{export_to_queue = TRUE}, the resulting
 generated queue will be appended to an already existing queue that needs to be specified either interactively or through the argument \code{queue_path}.
 }
 \description{
-This function creates a measurement queue for sample acquisition for the software Xcalibur. All possible combinations of the 
+This function creates a measurement queue for sample acquisition for the software Xcalibur. All possible combinations of the
 provided information will be created to make file and sample names.
 }
 \examples{
 \dontrun{
-create_queue(date = c("200722"),
-instrument = c("EX1"),
-user = c("jquast"),
-measurement_type = c("DIA"),
-experiment_name = c("JPQ031"),
-digestion = c("LiP", "tryptic control"),
-treatment_type_1 = c("EDTA", "H2O"),
-treatment_type_2 = c("Zeba", "unfiltered"),
-treatment_dose_1 = c(10, 30, 60),
-treatment_unit_1 = c("min"),
-n_replicates = 4,
-number_runs = FALSE,
-organism = c("E. coli"),
-exclude_combinations = list(list(treatment_type_1 = c("H2O"),
-                                 treatment_type_2 = c("Zeba", "unfiltered"),
-                                 treatment_dose_1 = c(10, 30))),
-inj_vol = c(2),
-data_path = "D:\\\\2007_Data",
-method_path = "C:\\\\Xcalibur\\\\methods\\\\jquast\\\\DIA_120min_41var_AGC200",
-position_row = c("A", "B", "C", "D", "E", "F"),
-position_column = 8,
-blank_every_n = 4,
-blank_position = "1-V1",
-blank_method_path = "C:\\\\Xcalibur\\\\methods\\\\blank")
+create_queue(
+  date = c("200722"),
+  instrument = c("EX1"),
+  user = c("jquast"),
+  measurement_type = c("DIA"),
+  experiment_name = c("JPQ031"),
+  digestion = c("LiP", "tryptic control"),
+  treatment_type_1 = c("EDTA", "H2O"),
+  treatment_type_2 = c("Zeba", "unfiltered"),
+  treatment_dose_1 = c(10, 30, 60),
+  treatment_unit_1 = c("min"),
+  n_replicates = 4,
+  number_runs = FALSE,
+  organism = c("E. coli"),
+  exclude_combinations = list(list(
+    treatment_type_1 = c("H2O"),
+    treatment_type_2 = c("Zeba", "unfiltered"),
+    treatment_dose_1 = c(10, 30)
+  )),
+  inj_vol = c(2),
+  data_path = "D:\\\\2007_Data",
+  method_path = "C:\\\\Xcalibur\\\\methods\\\\jquast\\\\DIA_120min_41var_AGC200",
+  position_row = c("A", "B", "C", "D", "E", "F"),
+  position_column = 8,
+  blank_every_n = 4,
+  blank_position = "1-V1",
+  blank_method_path = "C:\\\\Xcalibur\\\\methods\\\\blank"
+)
 }
 }

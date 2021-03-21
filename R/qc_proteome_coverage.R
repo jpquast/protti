@@ -22,63 +22,74 @@
 #' @examples
 #' \dontrun{
 #' qc_proteome_coverage(
-#' data,
-#' sample = r_file_name,
-#' protein_id = pg_protein_accession,
-#' organism_id = 9606
+#'   data,
+#'   sample = r_file_name,
+#'   protein_id = pg_protein_accession,
+#'   organism_id = 9606
 #' )
 #' }
 qc_proteome_coverage <- function(data, sample, protein_id, organism_id, plot = TRUE, interactive = FALSE) {
   proteins_total <- data %>%
     dplyr::summarize(proteins_detected = dplyr::n_distinct(!!ensym(protein_id)), .groups = "drop") %>%
-    dplyr::mutate({{sample}} := "Total")
+    dplyr::mutate({{ sample }} := "Total")
 
-  proteome <- fetch_uniprot_proteome({{organism_id}}) %>%
+  proteome <- fetch_uniprot_proteome({{ organism_id }}) %>%
     dplyr::summarize(proteins_proteome = dplyr::n_distinct(.data$id), .groups = "drop")
 
   proteome_coverage <- data %>%
-    dplyr::group_by({{sample}}) %>%
+    dplyr::group_by({{ sample }}) %>%
     dplyr::summarize(proteins_detected = dplyr::n_distinct(!!ensym(protein_id)), .groups = "drop") %>%
     dplyr::bind_rows(proteins_total) %>%
     dplyr::mutate(proteins_undetected = proteome$proteins_proteome - .data$proteins_detected) %>%
-    dplyr::mutate(proteins_undetected = .data$proteins_undetected/proteome$proteins_proteome*100,
-                  proteins_detected = .data$proteins_detected/proteome$proteins_proteome*100) %>%
+    dplyr::mutate(
+      proteins_undetected = .data$proteins_undetected / proteome$proteins_proteome * 100,
+      proteins_detected = .data$proteins_detected / proteome$proteins_proteome * 100
+    ) %>%
     tidyr::pivot_longer(cols = c(.data$proteins_detected, .data$proteins_undetected), names_to = "type", values_to = "percentage") %>%
-    dplyr::mutate({{sample}} := stats::relevel(factor({{sample}}), ref = "Total"),
-           type = forcats::fct_rev(factor(.data$type)))
+    dplyr::mutate({{ sample }} := stats::relevel(factor({{ sample }}), ref = "Total"),
+      type = forcats::fct_rev(factor(.data$type))
+    )
 
   proteome_coverage_plot <- proteome_coverage %>%
-    ggplot2::ggplot(ggplot2::aes({{sample}}, .data$percentage, fill = .data$type)) +
+    ggplot2::ggplot(ggplot2::aes({{ sample }}, .data$percentage, fill = .data$type)) +
     ggplot2::geom_col(col = "black", size = 1) +
-    ggplot2::labs(title = "Proteome coverage per .raw file", x = "", y = "Proteome [%]")+
-    ggplot2::scale_fill_manual(values = c("proteins_detected" = "#5680C1", "proteins_undetected" = "#B96DAD"), name = "Proteins", labels = c("Not detected", "Detected"))+
-    ggplot2::geom_text(data = proteome_coverage %>% dplyr::filter(.data$percentage > 5), ggplot2::aes(label = round(.data$percentage, digits = 1)), position = ggplot2::position_stack(vjust = 0.5), size = 4)+
-    ggplot2::theme_bw()+
-    ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
-                   axis.title.x = ggplot2::element_text(size = 15),
-                   axis.text.y = ggplot2::element_text(size = 15),
-                   axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
-                   axis.title.y = ggplot2::element_text(size = 15),
-                   legend.title = ggplot2::element_text(size = 15),
-                   legend.text = ggplot2::element_text(size = 15))
+    ggplot2::labs(title = "Proteome coverage per .raw file", x = "", y = "Proteome [%]") +
+    ggplot2::scale_fill_manual(values = c("proteins_detected" = "#5680C1", "proteins_undetected" = "#B96DAD"), name = "Proteins", labels = c("Not detected", "Detected")) +
+    ggplot2::geom_text(data = proteome_coverage %>% dplyr::filter(.data$percentage > 5), ggplot2::aes(label = round(.data$percentage, digits = 1)), position = ggplot2::position_stack(vjust = 0.5), size = 4) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(
+      plot.title = ggplot2::element_text(size = 20),
+      axis.title.x = ggplot2::element_text(size = 15),
+      axis.text.y = ggplot2::element_text(size = 15),
+      axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
+      axis.title.y = ggplot2::element_text(size = 15),
+      legend.title = ggplot2::element_text(size = 15),
+      legend.text = ggplot2::element_text(size = 15)
+    )
 
-  if(plot == FALSE) return(proteome_coverage)
-  if(plot == TRUE){
-    if(interactive == FALSE) return(proteome_coverage_plot)
-    if(interactive == TRUE) {
+  if (plot == FALSE) {
+    return(proteome_coverage)
+  }
+  if (plot == TRUE) {
+    if (interactive == FALSE) {
+      return(proteome_coverage_plot)
+    }
+    if (interactive == TRUE) {
       proteome_coverage_plot <- proteome_coverage %>%
-        ggplot2::ggplot(ggplot2::aes({{sample}}, .data$percentage, fill = .data$type)) +
+        ggplot2::ggplot(ggplot2::aes({{ sample }}, .data$percentage, fill = .data$type)) +
         ggplot2::geom_col(col = "black", size = 1) +
-        ggplot2::labs(title = "Proteome coverage per .raw file", x = "", y = "Proteome [%]")+
-        ggplot2::scale_fill_manual(values = c("proteins_detected" = "#5680C1", "proteins_undetected" = "#B96DAD"), name = "Proteins")+
-        ggplot2::theme_bw()+
-        ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
-                       axis.title.x = ggplot2::element_text(size = 15),
-                       axis.text.y = ggplot2::element_text(size = 15),
-                       axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
-                       axis.title.y = ggplot2::element_text(size = 15),
-                       legend.title = ggplot2::element_text(size = 15),
-                       legend.text = ggplot2::element_text(size = 15))
+        ggplot2::labs(title = "Proteome coverage per .raw file", x = "", y = "Proteome [%]") +
+        ggplot2::scale_fill_manual(values = c("proteins_detected" = "#5680C1", "proteins_undetected" = "#B96DAD"), name = "Proteins") +
+        ggplot2::theme_bw() +
+        ggplot2::theme(
+          plot.title = ggplot2::element_text(size = 20),
+          axis.title.x = ggplot2::element_text(size = 15),
+          axis.text.y = ggplot2::element_text(size = 15),
+          axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
+          axis.title.y = ggplot2::element_text(size = 15),
+          legend.title = ggplot2::element_text(size = 15),
+          legend.text = ggplot2::element_text(size = 15)
+        )
       plotly::ggplotly(proteome_coverage_plot)
     }
   }

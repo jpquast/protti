@@ -27,8 +27,8 @@ qc_peptide_type(
 
 \item{intensity}{the name of the column containing the corresponding raw or normalised intensity values (not log2) for each peptide or precursor. Required when "intensity" is chosen as the method.}
 
-\item{remove_na_intensities}{Logical specifying if sample/peptide combinations with intensities that are NA (not quantified IDs) should 
-be dropped from the data frame for analysis of peptide type distributions. Default is TRUE since we are usually 
+\item{remove_na_intensities}{Logical specifying if sample/peptide combinations with intensities that are NA (not quantified IDs) should
+be dropped from the data frame for analysis of peptide type distributions. Default is TRUE since we are usually
 interested in the peptide type distribution of quantifiable IDs. This is only relevant for method = "count".}
 
 \item{method}{character vector indicating the method used for evaluation. \code{method = "intensity"} calculates the peptide type percentage by intensity, whereas \code{method = "count"} calculates the percentage by peptide ID count. Default is \code{method = count}.}
@@ -46,12 +46,13 @@ Calculates the percentage share of each peptide types (fully-tryptic, semi-trypt
 \examples{
 \dontrun{
 qc_peptide_type(
-data,
-sample = r_file_name,
-peptide = pep_stripped_sequence,
-pep_type = pep_type,
-intensity = fg_quantity,
-method = "intensity",
-plot = TRUE)
+  data,
+  sample = r_file_name,
+  peptide = pep_stripped_sequence,
+  pep_type = pep_type,
+  intensity = fg_quantity,
+  method = "intensity",
+  plot = TRUE
+)
 }
 }

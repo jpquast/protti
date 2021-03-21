@@ -28,11 +28,12 @@ Performs an ANOVA statistical test
 \examples{
 \dontrun{
 anova_protti(
-data,
-grouping = eg_precursor_id,
-condition = r_condition,
-mean = mean,
-sd = sd,
-n = n)
+  data,
+  grouping = eg_precursor_id,
+  condition = r_condition,
+  mean = mean,
+  sd = sd,
+  n = n
+)
 }
 }

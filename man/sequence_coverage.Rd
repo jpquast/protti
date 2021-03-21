@@ -22,9 +22,9 @@ Calculate sequence coverage for each identified protein.
 \examples{
 \dontrun{
 sequence_coverage(
-data,
-protein_sequence = protein_sequence,
-peptides = pep_stripped_sequence
+  data,
+  protein_sequence = protein_sequence,
+  peptides = pep_stripped_sequence
 )
 }
 

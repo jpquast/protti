@@ -37,7 +37,7 @@ filter_cv <- function(data, grouping, condition, log2_intensity, cv_limit = 0.25
     stop("Please transform your data. The function requires your data to be log2 transformed.")
   }
   n_groups_start <- length(unique(dplyr::pull(data, {{ grouping }})))
-  
+
   peptide_list <- data %>%
     dplyr::group_by({{ grouping }}, {{ condition }}) %>%
     dplyr::mutate(cv_small = (sd(2^{{ log2_intensity }}, na.rm = TRUE) / mean(2^{{ log2_intensity }}, na.rm = TRUE) < {{ cv_limit }}) / dplyr::n()) %>%
@@ -46,12 +46,12 @@ filter_cv <- function(data, grouping, condition, log2_intensity, cv_limit = 0.25
     dplyr::filter(.data$cv_count >= {{ min_conditions }}) %>%
     dplyr::select(-c(.data$cv_small, .data$cv_count)) %>%
     dplyr::ungroup()
-  
+
   n_groups_end <- length(unique(dplyr::pull(peptide_list, {{ grouping }})))
-  
-  if(silent == FALSE){
+
+  if (silent == FALSE) {
     message(n_groups_start - n_groups_end, " groups of ", n_groups_start, " were filtered out. ", round(n_groups_end / n_groups_start, digits = 2) * 100, "% of data remains.")
   }
-  
+
   peptide_list
 }

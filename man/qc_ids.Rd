@@ -48,12 +48,12 @@ These will not be counted as IDs.
 \examples{
 \dontrun{
 qc_ids(
-data,
-sample = r_file_name,
-grouping = eg_precursor_id,
-intensity = fg_quantity,
-condition = r_condition,
-title = "Number of peptide IDs per sample"
+  data,
+  sample = r_file_name,
+  grouping = eg_precursor_id,
+  intensity = fg_quantity,
+  condition = r_condition,
+  title = "Number of peptide IDs per sample"
 )
 }
 }

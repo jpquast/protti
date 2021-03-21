@@ -29,61 +29,64 @@
 #' @examples
 #' \dontrun{
 #' qc_ids(
-#' data,
-#' sample = r_file_name,
-#' grouping = eg_precursor_id,
-#' intensity = fg_quantity,
-#' condition = r_condition,
-#' title = "Number of peptide IDs per sample"
+#'   data,
+#'   sample = r_file_name,
+#'   grouping = eg_precursor_id,
+#'   intensity = fg_quantity,
+#'   condition = r_condition,
+#'   title = "Number of peptide IDs per sample"
 #' )
 #' }
 qc_ids <-
   function(data, sample, grouping, intensity, remove_na_intensities = TRUE, condition = NULL, title = "ID count per sample", plot = TRUE, interactive = FALSE) {
     protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
-    utils::data("protti_colours", envir=environment()) # then overwrite it with real data
-    if(remove_na_intensities == TRUE){
-
-      if(missing(intensity)) stop("Please provide a column containing intensities or set remove_na_intensities to FALSE")
+    utils::data("protti_colours", envir = environment()) # then overwrite it with real data
+    if (remove_na_intensities == TRUE) {
+      if (missing(intensity)) stop("Please provide a column containing intensities or set remove_na_intensities to FALSE")
 
       data <- data %>%
-        tidyr::drop_na({{intensity}}) %>% 
-        dplyr::mutate({{condition}} := as.character({{condition}}))
+        tidyr::drop_na({{ intensity }}) %>%
+        dplyr::mutate({{ condition }} := as.character({{ condition }}))
     }
 
-   result <- data %>%
-      dplyr::distinct({{sample}}, {{grouping}}, {{condition}}) %>%
-      dplyr::group_by({{sample}}) %>%
+    result <- data %>%
+      dplyr::distinct({{ sample }}, {{ grouping }}, {{ condition }}) %>%
+      dplyr::group_by({{ sample }}) %>%
       dplyr::mutate(count = dplyr::n()) %>%
-      dplyr::select(-c({{grouping}})) %>%
+      dplyr::select(-c({{ grouping }})) %>%
       dplyr::distinct() %>%
       dplyr::ungroup()
 
- if (plot == TRUE)
-    {
-    plot <- result %>%
-      dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>%
-      ggplot2::ggplot(aes(x = {{sample}}, y = .data$count, fill = {{condition}})) +
-      ggplot2::geom_col(col = "black", size = 1) +
-      {if(missing(condition)) ggplot2::geom_col(fill = "#5680C1", col = "black")}  +
-      ggplot2::labs(title = title,
-           x = "",
-           y = "Count",
-           fill = "Condition") +
-      ggplot2::theme_bw() +
-      ggplot2::scale_fill_manual(values = protti_colours) +
-      ggplot2::theme(plot.title = ggplot2::element_text(size = 20),
-                     axis.title.x = ggplot2::element_text(size = 15),
-                     axis.text.y = ggplot2::element_text(size = 15),
-                     axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
-                     axis.title.y = ggplot2::element_text(size = 15),
-                     legend.title = ggplot2::element_text(size = 15),
-                     legend.text = ggplot2::element_text(size = 15))
-    if (interactive == TRUE)
-    {
-      return(plotly::ggplotly(plot))
-    } else {
-      return(plot)
-    }
+    if (plot == TRUE) {
+      plot <- result %>%
+        dplyr::mutate({{ sample }} := factor({{ sample }}, levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE)))) %>%
+        ggplot2::ggplot(aes(x = {{ sample }}, y = .data$count, fill = {{ condition }})) +
+        ggplot2::geom_col(col = "black", size = 1) +
+        {
+          if (missing(condition)) ggplot2::geom_col(fill = "#5680C1", col = "black")
+        } +
+        ggplot2::labs(
+          title = title,
+          x = "",
+          y = "Count",
+          fill = "Condition"
+        ) +
+        ggplot2::theme_bw() +
+        ggplot2::scale_fill_manual(values = protti_colours) +
+        ggplot2::theme(
+          plot.title = ggplot2::element_text(size = 20),
+          axis.title.x = ggplot2::element_text(size = 15),
+          axis.text.y = ggplot2::element_text(size = 15),
+          axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
+          axis.title.y = ggplot2::element_text(size = 15),
+          legend.title = ggplot2::element_text(size = 15),
+          legend.text = ggplot2::element_text(size = 15)
+        )
+      if (interactive == TRUE) {
+        return(plotly::ggplotly(plot))
+      } else {
+        return(plot)
+      }
     } else {
       return(result)
     }
