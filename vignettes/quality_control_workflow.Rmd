@@ -50,7 +50,7 @@ You can read more about all of this [here](https://jpquast.github.io/protti/arti
 
 The input data should have a similar structure to this example: 
 
-| Sample  |  Replicate |  Peptide  |  Condition | log2(intensity) |
+| Sample  |  Replicate |  Peptide  |  Condition | log2(Intensity) |
 |:-------:|:----------:|:---------:|:----------:|:----------------:
 | sample1 |      1     |  PEPTIDER |   treated  |     14          |
 | sample1 |      1     |  PEPTI    |   treated  |     16          |
