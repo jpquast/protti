@@ -5,9 +5,9 @@
 #' @param data A dataframe contains at least the input variables.
 #' @param protein_id The name of the column containing the protein accession numbers.
 #' @param is_significant The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide. The input data frame
-#' may contain peptide level information with significance information. The function is able to extract protein level information from this. 
+#' may contain peptide level information with significance information. The function is able to extract protein level information from this.
 #' @param binds_treatment The name of the column containing a logical indicating if the corresponding protein binds to the treatment. This information can be obtained
-#' from different databases, e.g Uniprot. 
+#' from different databases, e.g Uniprot.
 #' @param treatment_name A character vector of the treatment name. It will be included in the plot title.
 #' @param plot A logical indicating whether the result should be plotted or returned as a table.
 #'
@@ -26,61 +26,66 @@
 #' @examples
 #' \dontrun{
 #' treatment_enrichment(
-#' data,
-#' protein_id = pg_protein_accessions,
-#' is_significant = significant,
-#' binds_treatment = binds_metals,
-#' treatment = "Metals"
+#'   data,
+#'   protein_id = pg_protein_accessions,
+#'   is_significant = significant,
+#'   binds_treatment = binds_metals,
+#'   treatment = "Metals"
 #' )
 #' }
-treatment_enrichment <- function(data, protein_id, is_significant, binds_treatment, treatment_name, plot = TRUE){
+treatment_enrichment <- function(data, protein_id, is_significant, binds_treatment, treatment_name, plot = TRUE) {
   data <- data %>%
-    dplyr::distinct({{protein_id}}, {{is_significant}}, {{binds_treatment}}) %>%
-    dplyr::group_by({{protein_id}}) %>%
-    dplyr::mutate({{is_significant}} := ifelse(sum({{is_significant}}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
+    dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ binds_treatment }}) %>%
+    dplyr::group_by({{ protein_id }}) %>%
+    dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
     dplyr::distinct()
- 
+
   cont_table <- data %>%
-    dplyr::group_by({{binds_treatment}}, {{is_significant}}) %>%
-    dplyr::summarize(n = dplyr::n_distinct(!!rlang::ensym(protein_id)), .groups = "drop") %>% 
-    tidyr::complete({{binds_treatment}}, {{is_significant}}, fill = list(n = 0))
+    dplyr::group_by({{ binds_treatment }}, {{ is_significant }}) %>%
+    dplyr::summarize(n = dplyr::n_distinct(!!rlang::ensym(protein_id)), .groups = "drop") %>%
+    tidyr::complete({{ binds_treatment }}, {{ is_significant }}, fill = list(n = 0))
 
 
   fisher_test <- cont_table %>%
-    tidyr::pivot_wider(names_from = {{is_significant}}, values_from = .data$n) %>%
+    tidyr::pivot_wider(names_from = {{ is_significant }}, values_from = .data$n) %>%
     tibble::column_to_rownames(var = rlang::as_name(rlang::enquo(binds_treatment))) %>%
     as.matrix() %>%
     stats::fisher.test()
-  
+
   cont_table <- cont_table %>%
     dplyr::mutate(pval = fisher_test$p.value)
-  
-  if(plot == FALSE) return(cont_table)
-  
+
+  if (plot == FALSE) {
+    return(cont_table)
+  }
+
   enrichment_plot <- cont_table %>%
     dplyr::mutate(total = sum(.data$n)) %>%
     dplyr::mutate(
       name = dplyr::case_when(
-        {{binds_treatment}} == FALSE &
-          {{is_significant}} == FALSE ~ "non_sig_non_interactor",
-        {{binds_treatment}} == FALSE &
-          {{is_significant}} == TRUE ~ "sig_non_interactor",
-        {{binds_treatment}} == TRUE &
-          {{is_significant}} == FALSE ~ "non_sig_interactor",
-        {{binds_treatment}} == TRUE &
-          {{is_significant}} == TRUE ~ "sig_interactor"
-      )) %>%
-     dplyr::select(-c({{binds_treatment}}, {{is_significant}})) %>%
-     tidyr::pivot_wider(names_from = .data$name, values_from = .data$n) %>%
-     dplyr::mutate(total_interactor = .data$non_sig_interactor + .data$sig_interactor) %>%
-     dplyr::mutate(total_sig = .data$sig_non_interactor + .data$sig_interactor) %>%
-     dplyr::mutate(`All detected proteins` = .data$total_interactor / .data$total * 100,
-                   `Significant proteins` = .data$sig_interactor / .data$total_sig * 100) %>%
-     tidyr::pivot_longer(
-       cols = c(.data$`All detected proteins`, .data$`Significant proteins`),
-       names_to = "name",
-       values_to = "value"
-     )%>%
+        {{ binds_treatment }} == FALSE &
+          {{ is_significant }} == FALSE ~ "non_sig_non_interactor",
+        {{ binds_treatment }} == FALSE &
+          {{ is_significant }} == TRUE ~ "sig_non_interactor",
+        {{ binds_treatment }} == TRUE &
+          {{ is_significant }} == FALSE ~ "non_sig_interactor",
+        {{ binds_treatment }} == TRUE &
+          {{ is_significant }} == TRUE ~ "sig_interactor"
+      )
+    ) %>%
+    dplyr::select(-c({{ binds_treatment }}, {{ is_significant }})) %>%
+    tidyr::pivot_wider(names_from = .data$name, values_from = .data$n) %>%
+    dplyr::mutate(total_interactor = .data$non_sig_interactor + .data$sig_interactor) %>%
+    dplyr::mutate(total_sig = .data$sig_non_interactor + .data$sig_interactor) %>%
+    dplyr::mutate(
+      `All detected proteins` = .data$total_interactor / .data$total * 100,
+      `Significant proteins` = .data$sig_interactor / .data$total_sig * 100
+    ) %>%
+    tidyr::pivot_longer(
+      cols = c(.data$`All detected proteins`, .data$`Significant proteins`),
+      names_to = "name",
+      values_to = "value"
+    ) %>%
     dplyr::mutate(count = ifelse(.data$name == "All detected proteins", .data$total_interactor, .data$sig_interactor)) %>%
     ggplot2::ggplot(ggplot2::aes(.data$name, .data$value)) +
     ggplot2::geom_col(fill = "cornflowerblue", col = "black", size = 1.2) +
@@ -101,5 +106,7 @@ treatment_enrichment <- function(data, protein_id, is_significant, binds_treatme
         size = 15
       )
     )
-  if(plot == TRUE) return(enrichment_plot)
+  if (plot == TRUE) {
+    return(enrichment_plot)
+  }
 }

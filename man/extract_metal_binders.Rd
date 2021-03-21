@@ -25,14 +25,14 @@ extract_metal_binders(
 
 \item{chebi_catalytic_activity}{The name of the column containing ChEBI catalytic activity information from UniProt.}
 
-\item{chebi_data}{Optional, a data frame that can be manually obtained with \code{fetch_chebi()}. If not provided it will be fetched within the function. 
+\item{chebi_data}{Optional, a data frame that can be manually obtained with \code{fetch_chebi()}. If not provided it will be fetched within the function.
 If the function is run many times it is recommended to provide the data frame to save time.}
 
-\item{chebi_relation_data}{Optional, a data frame that can be manually obtained with \code{fetch_chebi(relation = TRUE)}. If not provided it will be fetched within the function. 
+\item{chebi_relation_data}{Optional, a data frame that can be manually obtained with \code{fetch_chebi(relation = TRUE)}. If not provided it will be fetched within the function.
 If the function is run many times it is recommended to provide the data frame to save time.}
 }
 \value{
-A data frame containing information on protein metal binding state. It contains the following types of columns (the naming might vary based on the input): 
+A data frame containing information on protein metal binding state. It contains the following types of columns (the naming might vary based on the input):
 \itemize{
 \item{\code{protein_id}: }{UniProt protein identifier.}
 \item{\code{source}: }{The source of the information, can be either \code{feature_metal_binding}, \code{chebi_cofactor} or \code{chebi_catalytic_activity}.}
@@ -52,7 +52,7 @@ sub-IDs for metal cations, binding site locations in the protein and sub-ID evid
 \examples{
 \dontrun{
 extract_metal_binders(
-data
+  data
 )
 }
 }

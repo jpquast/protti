@@ -18,14 +18,15 @@ Converts a vector of metal names extracted from the \code{feature_metal_binding}
 \examples{
 \dontrun{
 split_metal_name(
-metal_names = c(
-"Magnesium",
-NA,
-NA,
-"Magnesium or Manganese",
-"Divalent metal cation",
-"Cobalt (cobalamin axial ligand)",
-"Iron-sulfur (2Fe-2S)")
+  metal_names = c(
+    "Magnesium",
+    NA,
+    NA,
+    "Magnesium or Manganese",
+    "Divalent metal cation",
+    "Cobalt (cobalamin axial ligand)",
+    "Iron-sulfur (2Fe-2S)"
+  )
 )
 }
 }

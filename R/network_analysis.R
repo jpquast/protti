@@ -42,13 +42,12 @@
 #' )
 #' }
 network_analysis <- function(data, protein_id, string_id, organism_id, score_threshold = 900, binds_treatment = NULL, halo_color = NULL, plot = TRUE) {
-  
   if (!requireNamespace("STRINGdb", quietly = TRUE)) {
     stop("Package \"STRINGdb\" is needed for this function to work. Please install it.", call. = FALSE)
   }
-  
+
   STRINGdb <- get("STRINGdb", envir = loadNamespace("STRINGdb"))
-  
+
   data <- data %>%
     dplyr::distinct({{ protein_id }}, {{ string_id }}, {{ binds_treatment }})
 

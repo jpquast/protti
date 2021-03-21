@@ -16,28 +16,28 @@
 #' @examples
 #' \dontrun{
 #' anova_protti(
-#' data,
-#' grouping = eg_precursor_id,
-#' condition = r_condition,
-#' mean = mean,
-#' sd = sd,
-#' n = n)
+#'   data,
+#'   grouping = eg_precursor_id,
+#'   condition = r_condition,
+#'   mean = mean,
+#'   sd = sd,
+#'   n = n
+#' )
 #' }
-anova_protti <- function(data, grouping, condition, mean_ratio, sd, n){
-  
-  result <- data %>% 
-    dplyr::distinct({{grouping}}, {{condition}}, {{mean_ratio}}, {{sd}}, {{n}}) %>% 
-    dplyr::group_by({{grouping}}) %>% 
-    dplyr::filter({{n}} != 0) %>% 
-    dplyr::mutate(n_groups = dplyr::n_distinct(!!ensym(condition))) %>% 
-    dplyr::mutate(grand_mean = mean({{mean_ratio}})) %>% 
-    dplyr::mutate(total_n = sum({{n}})) %>% 
-    dplyr::mutate(ms_group = sum(({{mean_ratio}} - .data$grand_mean)^2 * {{n}}) / (.data$n_groups - 1)) %>%
-    dplyr::mutate(ms_error = sum({{sd}}^2 * ({{n}} - 1))/(.data$total_n - .data$n_groups)) %>%
-    dplyr::mutate(f = .data$ms_group/.data$ms_error) %>%
-    dplyr::mutate(pval = stats::pf(.data$f, .data$n_groups - 1, .data$total_n - .data$n_groups, lower.tail = FALSE))%>%
-    dplyr::distinct({{grouping}}, .data$ms_group, .data$ms_error, .data$f, .data$pval) %>%
+anova_protti <- function(data, grouping, condition, mean_ratio, sd, n) {
+  result <- data %>%
+    dplyr::distinct({{ grouping }}, {{ condition }}, {{ mean_ratio }}, {{ sd }}, {{ n }}) %>%
+    dplyr::group_by({{ grouping }}) %>%
+    dplyr::filter({{ n }} != 0) %>%
+    dplyr::mutate(n_groups = dplyr::n_distinct(!!ensym(condition))) %>%
+    dplyr::mutate(grand_mean = mean({{ mean_ratio }})) %>%
+    dplyr::mutate(total_n = sum({{ n }})) %>%
+    dplyr::mutate(ms_group = sum(({{ mean_ratio }} - .data$grand_mean)^2 * {{ n }}) / (.data$n_groups - 1)) %>%
+    dplyr::mutate(ms_error = sum({{ sd }}^2 * ({{ n }} - 1)) / (.data$total_n - .data$n_groups)) %>%
+    dplyr::mutate(f = .data$ms_group / .data$ms_error) %>%
+    dplyr::mutate(pval = stats::pf(.data$f, .data$n_groups - 1, .data$total_n - .data$n_groups, lower.tail = FALSE)) %>%
+    dplyr::distinct({{ grouping }}, .data$ms_group, .data$ms_error, .data$f, .data$pval) %>%
     dplyr::ungroup()
-  
+
   result
 }

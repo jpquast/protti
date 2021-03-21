@@ -5,10 +5,10 @@
 #' @param data a data frame that contains at least the dose and response column the model should be fitted to.
 #' @param response the name of the column that contains the response values.
 #' @param dose the name of the column that contains the dose values.
-#' @param log_logarithmic logical indicating if a logarithmic or log-logarithmic model is fitted. 
+#' @param log_logarithmic logical indicating if a logarithmic or log-logarithmic model is fitted.
 #' If response values form a symmetric curve for non-log transformed dose values, a logarithmic model instead
-#' of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the 
-#' reason this is the default. Log-logarithmic models are symmetric if dose values are log transformed. 
+#' of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the
+#' reason this is the default. Log-logarithmic models are symmetric if dose values are log transformed.
 #' @param pb progress bar object. This is only necessary if the function is used in an iteration.
 #'
 #' @return An object of class \code{drc}. If no fit was performed a character vector with content "no_fit".

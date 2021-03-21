@@ -42,11 +42,11 @@ Calculates the percentage of contaminating proteins as the share of total intens
 \examples{
 \dontrun{
 qc_contaminants(
-data,
-sample = sample,
-protein = leading_razor_protein,
-is_contaminant = potential_contaminant,
-intensity = intensity
+  data,
+  sample = sample,
+  protein = leading_razor_protein,
+  is_contaminant = potential_contaminant,
+  intensity = intensity
 )
 }
 }

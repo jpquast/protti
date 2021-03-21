@@ -29,21 +29,21 @@ assign_missingness(
 
 \item{ref_condition}{The condition that is used as a reference for missingness determination. By default \code{ref_condition = "control"}.}
 
-\item{completeness_MAR}{The minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7. 
-It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each 
+\item{completeness_MAR}{The minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7.
+It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each
 condition to be considered as MAR. This number is always at least 1.}
 
-\item{completeness_MNAR}{The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.20. 
-It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one 
+\item{completeness_MNAR}{The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.20.
+It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one
 condition to be considered as MNAR when the other condition is complete.}
 
-\item{retain_columns}{A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
-additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks, 
+\item{retain_columns}{A vector indicating if certain columns should be retained from the input data frame. Default is not retaining
+additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks,
 just like other column names, but in a vector).}
 }
 \value{
-A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison 
-name for the specific treatment/reference pair. The \code{missingness} column reports the type of missingness. 
+A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison
+name for the specific treatment/reference pair. The \code{missingness} column reports the type of missingness.
 \itemize{
 \item{"complete": }{No missing values for every replicate of this reference/treatment pair for the specific grouping variable.}
 \item{"MNAR": }{Missing not at random. All replicates of either the reference or treatment condition have missing values for the specific grouping variable.}
@@ -56,12 +56,12 @@ The type of missingness (missing at random, missing not at random) is assigned b
 \examples{
 \dontrun{
 assign_missingness(
-data,
-sample = r_file_name,
-condition = r_condition,
-grouping = eg_precursor_id,
-intensity = normalised_intensity_log2,
-retain_columns = c(pg_protein_accessions)
+  data,
+  sample = r_file_name,
+  condition = r_condition,
+  grouping = eg_precursor_id,
+  intensity = normalised_intensity_log2,
+  retain_columns = c(pg_protein_accessions)
 )
 }
 }

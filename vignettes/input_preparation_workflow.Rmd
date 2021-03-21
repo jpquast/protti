@@ -26,7 +26,7 @@ This vignette will give you an overview of how you can prepare the output from c
 
 Furthermore, you are not only restricted to reports from the above mentioned search engines. As long as your data has a tabular format (data frame) and a specific minimal amount of data columns you can analyse it with **protti**. The columns minimally required contain information on sample, condition, intensity, protein ID and the level the intensity is based on (fragment, precursor, peptide) if different from protein intensity. Depending on the analysis many more columns can be useful, but they are not required. Ultimately, your data should have a structure similar to this: 
 
-  | Sample  |  Protein ID |  Peptide  |  Condition | intensity |
+  | Sample  |  Protein ID |  Peptide  |  Condition | Intensity |
   |:-------:|:-----------:|:---------:|:----------:|:---------:|
   | sample1 |   P62942    |  PEPTIDER |   treated  |  14000    |
   | sample2 |   P62942    |  PEPTI    |   treated  |  15000    |

@@ -95,7 +95,7 @@ test_that("calculate_protein_abundance works", {
   expect_equal(nrow(protein_abundance_all), 37022)
   expect_equal(ncol(protein_abundance_all), 4)
 
-  protein_abundance_sum <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide,  peptide = peptide, intensity_log2 = normalised_intensity_log2, method = "sum", retain_columns = condition)
+  protein_abundance_sum <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide, peptide = peptide, intensity_log2 = normalised_intensity_log2, method = "sum", retain_columns = condition)
   arranged_data <- protein_abundance_sum %>%
     dplyr::filter(protein == "protein_1")
   expect_is(protein_abundance_sum, "data.frame")
@@ -104,26 +104,30 @@ test_that("calculate_protein_abundance works", {
 
 test_that("plot_peptide_profiles works", {
   # not testing split_all = TRUE. Also not testing protein_abundance_plot = FALSE.
-  p <- plot_peptide_profiles(data = protein_abundance_all,
-                             sample = sample,
-                             peptide = peptide,
-                             intensity_log2 = normalised_intensity_log2,
-                             grouping = protein,
-                             targets = c("protein_1", "protein_2"),
-                             protein_abundance_plot = TRUE)
-  expect_is(p,"list")
+  p <- plot_peptide_profiles(
+    data = protein_abundance_all,
+    sample = sample,
+    peptide = peptide,
+    intensity_log2 = normalised_intensity_log2,
+    grouping = protein,
+    targets = c("protein_1", "protein_2"),
+    protein_abundance_plot = TRUE
+  )
+  expect_is(p, "list")
   expect_is(p[[1]], "ggplot")
   expect_error(print(p[[1]]), NA)
-  
-  p_peptides <- plot_peptide_profiles(data = missing_data,
-                                     sample = sample,
-                                     peptide = peptide,
-                                     intensity_log2 = normalised_intensity_log2,
-                                     grouping = protein,
-                                     targets = c("protein_12"),
-                                     protein_abundance_plot = FALSE)
-  
-  expect_is(p_peptides,"list")
+
+  p_peptides <- plot_peptide_profiles(
+    data = missing_data,
+    sample = sample,
+    peptide = peptide,
+    intensity_log2 = normalised_intensity_log2,
+    grouping = protein,
+    targets = c("protein_12"),
+    protein_abundance_plot = FALSE
+  )
+
+  expect_is(p_peptides, "list")
   expect_is(p_peptides[[1]], "ggplot")
   expect_error(print(p_peptides[[1]]), NA)
 })
@@ -159,59 +163,67 @@ test_that("diff_abundance works", {
 })
 
 test_that("plot_pval_distribution works", {
-  p <- plot_pval_distribution(diff, 
-                              peptide, 
-                              pval)
-  expect_is(p,"ggplot")
+  p <- plot_pval_distribution(
+    diff,
+    peptide,
+    pval
+  )
+  expect_is(p, "ggplot")
   expect_error(print(p), NA)
 })
 
 test_that("volcano_protti works", {
   sig_prots <- paste0("protein_", 1:25)
-  p <- volcano_protti(data = diff,
-                      grouping = peptide,
-                      log2FC = diff,
-                      significance = adj_pval,
-                      method = "significant",
-                      target_column = protein,
-                      title = "Test tile",
-                      x_axis_label = "test x-Axis",
-                      y_axis_label = "test y-Axis",
-                      log2FC_cutoff = 1,
-                      significance_cutoff = 0.05,
-                      interactive = FALSE)
-  expect_is(p,"ggplot")
+  p <- volcano_protti(
+    data = diff,
+    grouping = peptide,
+    log2FC = diff,
+    significance = adj_pval,
+    method = "significant",
+    target_column = protein,
+    title = "Test tile",
+    x_axis_label = "test x-Axis",
+    y_axis_label = "test y-Axis",
+    log2FC_cutoff = 1,
+    significance_cutoff = 0.05,
+    interactive = FALSE
+  )
+  expect_is(p, "ggplot")
   expect_error(print(p), NA)
 
-  p_interactive <- volcano_protti(data = diff,
-                      grouping = peptide,
-                      log2FC = diff,
-                      significance = adj_pval,
-                      method = "significant",
-                      target_column = protein,
-                      title = "Test tile",
-                      x_axis_label = "test x-Axis",
-                      y_axis_label = "test y-Axis",
-                      log2FC_cutoff = 1,
-                      significance_cutoff = 0.05,
-                      interactive = TRUE)
-  expect_is(p_interactive,"plotly")
+  p_interactive <- volcano_protti(
+    data = diff,
+    grouping = peptide,
+    log2FC = diff,
+    significance = adj_pval,
+    method = "significant",
+    target_column = protein,
+    title = "Test tile",
+    x_axis_label = "test x-Axis",
+    y_axis_label = "test y-Axis",
+    log2FC_cutoff = 1,
+    significance_cutoff = 0.05,
+    interactive = TRUE
+  )
+  expect_is(p_interactive, "plotly")
   expect_error(print(p_interactive), NA)
 
-  p_target <- volcano_protti(data = diff,
-                      grouping = peptide,
-                      log2FC = diff,
-                      significance = adj_pval,
-                      method = "target",
-                      target = "protein_3",
-                      target_column = protein,
-                      title = "Test tile",
-                      x_axis_label = "test x-Axis",
-                      y_axis_label = "test y-Axis",
-                      log2FC_cutoff = 1,
-                      significance_cutoff = 0.05,
-                      interactive = FALSE)
-  expect_is(p_target,"ggplot")
+  p_target <- volcano_protti(
+    data = diff,
+    grouping = peptide,
+    log2FC = diff,
+    significance = adj_pval,
+    method = "target",
+    target = "protein_3",
+    target_column = protein,
+    title = "Test tile",
+    x_axis_label = "test x-Axis",
+    y_axis_label = "test y-Axis",
+    log2FC_cutoff = 1,
+    significance_cutoff = 0.05,
+    interactive = FALSE
+  )
+  expect_is(p_target, "ggplot")
   expect_error(print(p_target), NA)
 })
 
@@ -227,25 +239,29 @@ test_that("fit_drc_4p works", {
 })
 
 test_that("plot_drc_4p works", {
-  p <- plot_drc_4p(data = drc_fit,
-                   grouping = peptide,
-                   response = normalised_intensity_log2,
-                   dose = concentration,
-                   targets = c("peptide_2_1"),
-                   unit = "uM",
-                   y_axis_name = "test y-Axis")
+  p <- plot_drc_4p(
+    data = drc_fit,
+    grouping = peptide,
+    response = normalised_intensity_log2,
+    dose = concentration,
+    targets = c("peptide_2_1"),
+    unit = "uM",
+    y_axis_name = "test y-Axis"
+  )
 
-  expect_is(p,"ggplot")
+  expect_is(p, "ggplot")
   expect_warning(expect_error(print(p), NA))
 
-  p_facet <- plot_drc_4p(data = drc_fit,
-                   grouping = peptide,
-                   response = normalised_intensity_log2,
-                   dose = concentration,
-                   targets = c("peptide_2_1", "peptide_2_4"),
-                   unit = "uM")
+  p_facet <- plot_drc_4p(
+    data = drc_fit,
+    grouping = peptide,
+    response = normalised_intensity_log2,
+    dose = concentration,
+    targets = c("peptide_2_1", "peptide_2_4"),
+    unit = "uM"
+  )
 
-  expect_is(p_facet,"list")
+  expect_is(p_facet, "list")
   expect_warning(expect_error(print(p_facet), NA))
 })
 
@@ -255,7 +271,7 @@ test_that("filter_cv works", {
 
   normalised_data_filtered_cv_count <- normalised_data_filtered %>%
     dplyr::group_by(peptide, condition) %>%
-    dplyr::summarise(cv_count = sum( (sd(2^peptide_intensity_missing, na.rm = TRUE) / mean(2^peptide_intensity_missing, na.rm = TRUE)) > 0.25 ), .groups = 'drop') %>%
+    dplyr::summarise(cv_count = sum((sd(2^peptide_intensity_missing, na.rm = TRUE) / mean(2^peptide_intensity_missing, na.rm = TRUE)) > 0.25), .groups = "drop") %>%
     dplyr::filter(cv_count > 0)
 
   expect_is(normalised_data_filtered, "data.frame")
@@ -267,7 +283,7 @@ test_that("filter_cv works", {
 
   normalised_data_filtered_drc_cv_count <- normalised_data_drc_filtered %>%
     dplyr::group_by(peptide, condition) %>%
-    dplyr::summarise(cv_count = sum( (sd(2^peptide_intensity_missing, na.rm = TRUE) / mean(2^peptide_intensity_missing, na.rm = TRUE)) > 0.25 ), .groups = 'drop') %>%
+    dplyr::summarise(cv_count = sum((sd(2^peptide_intensity_missing, na.rm = TRUE) / mean(2^peptide_intensity_missing, na.rm = TRUE)) > 0.25), .groups = "drop") %>%
     dplyr::filter(cv_count > 0)
 
   expect_is(normalised_data_drc_filtered, "data.frame")

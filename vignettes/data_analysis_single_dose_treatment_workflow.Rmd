@@ -61,7 +61,7 @@ The data set is produced from the output of [Spectronaut™](https://biognosys.c
 
 The input data should have a similar structure to this example: 
   
-  | Sample  |  Replicate |  Peptide  |  Condition | log2(intensity) |
+  | Sample  |  Replicate |  Peptide  |  Condition | log2(Intensity) |
   |:-------:|:----------:|:---------:|:----------:|:----------------:
   | sample1 |      1     |  PEPTIDER |   treated  |     14          |
   | sample1 |      1     |  PEPTI    |   treated  |     16          |

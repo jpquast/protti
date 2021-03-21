@@ -35,10 +35,10 @@ Calculates the proteome coverage for each samples and for all samples combined. 
 \examples{
 \dontrun{
 qc_proteome_coverage(
-data,
-sample = r_file_name,
-protein_id = pg_protein_accession,
-organism_id = 9606
+  data,
+  sample = r_file_name,
+  protein_id = pg_protein_accession,
+  organism_id = 9606
 )
 }
 }

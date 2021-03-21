@@ -13,9 +13,9 @@ drc_4p(data, response, dose, log_logarithmic = TRUE, pb = NULL)
 
 \item{dose}{the name of the column that contains the dose values.}
 
-\item{log_logarithmic}{logical indicating if a logarithmic or log-logarithmic model is fitted. 
+\item{log_logarithmic}{logical indicating if a logarithmic or log-logarithmic model is fitted.
 If response values form a symmetric curve for non-log transformed dose values, a logarithmic model instead
-of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the 
+of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the
 reason this is the default. Log-logarithmic models are symmetric if dose values are log transformed.}
 
 \item{pb}{progress bar object. This is only necessary if the function is used in an iteration.}

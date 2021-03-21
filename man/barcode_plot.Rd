@@ -39,7 +39,7 @@ subsetted data frame should be created.}
 
 \item{cutoffs}{Optional argument specifying the log2 fold change and significance cutoffs used for highlighting peptides.
 If this argument is provided colouring information will be overwritten with peptides that fulfill this condition.
-The cutoff should be provided in a vector of the form c(diff = 2, pval = 0.05). The name of the cutoff should reflect the 
+The cutoff should be provided in a vector of the form c(diff = 2, pval = 0.05). The name of the cutoff should reflect the
 column name that contains this information (log2 fold changes, p-values or adjusted p-values).}
 }
 \value{
@@ -52,12 +52,12 @@ abundance can be displayed.
 \examples{
 \dontrun{
 barcode_plot(
-data,
-start_position = start,
-end_position = end,
-protein_length = length,
-facet = pg_protein_accessions,
-cutoffs = c(diff = 2, pval = 0.05)
+  data,
+  start_position = start,
+  end_position = end,
+  protein_length = length,
+  facet = pg_protein_accessions,
+  cutoffs = c(diff = 2, pval = 0.05)
 )
 }
 }

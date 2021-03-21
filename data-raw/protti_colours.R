@@ -98,6 +98,7 @@ protti_colours <- c(
   "#7492C0",
   "#A97AA1",
   "#87BBBB",
-  "#1E4381")
+  "#1E4381"
+)
 
 usethis::use_data(protti_colours, overwrite = TRUE)

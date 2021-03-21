@@ -29,110 +29,122 @@
 #' @examples
 #' \dontrun{
 #' qc_charge_states(
-#' data,
-#' sample = r_file_name,
-#' grouping = pep_stripped_sequence,
-#' charge_states = fg_charge,
-#' method = "count",
-#' plot = TRUE)
+#'   data,
+#'   sample = r_file_name,
+#'   grouping = pep_stripped_sequence,
+#'   charge_states = fg_charge,
+#'   method = "count",
+#'   plot = TRUE
+#' )
 #' }
 qc_charge_states <-
-  function(data, sample, grouping, charge_states, intensity = NULL, remove_na_intensities = TRUE, method = "count", plot = FALSE, interactive = FALSE)
-  {
+  function(data, sample, grouping, charge_states, intensity = NULL, remove_na_intensities = TRUE, method = "count", plot = FALSE, interactive = FALSE) {
     protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
-    utils::data("protti_colours", envir=environment()) # then overwrite it with real data
-    if(remove_na_intensities == TRUE){
-      
-      if(missing(intensity)) stop("Please provide a column containing intensities or set remove_na_intensities to FALSE")
-      
-      data <- data %>%
-        tidyr::drop_na({{intensity}})
-    }
-    if (method == "count")
-    {
-      result <- data %>%
-          dplyr::distinct({{sample}}, {{grouping}}, {{charge_states}}) %>%
-          dplyr::count({{sample}}, {{charge_states}}) %>%
-          dplyr::group_by({{sample}}) %>%
-          dplyr::mutate(total_peptides = sum(n)) %>%
-          dplyr::group_by({{sample}}, {{charge_states}}) %>%
-          dplyr::summarise(charge_per = n / .data$total_peptides * 100) %>%
-          dplyr::ungroup() %>%
-          dplyr::mutate({{charge_states}} := forcats::fct_inorder(factor({{charge_states}}))) %>% 
-          dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE))))
+    utils::data("protti_colours", envir = environment()) # then overwrite it with real data
+    if (remove_na_intensities == TRUE) {
+      if (missing(intensity)) stop("Please provide a column containing intensities or set remove_na_intensities to FALSE")
 
-      if(plot == FALSE) {
+      data <- data %>%
+        tidyr::drop_na({{ intensity }})
+    }
+    if (method == "count") {
+      result <- data %>%
+        dplyr::distinct({{ sample }}, {{ grouping }}, {{ charge_states }}) %>%
+        dplyr::count({{ sample }}, {{ charge_states }}) %>%
+        dplyr::group_by({{ sample }}) %>%
+        dplyr::mutate(total_peptides = sum(n)) %>%
+        dplyr::group_by({{ sample }}, {{ charge_states }}) %>%
+        dplyr::summarise(charge_per = n / .data$total_peptides * 100) %>%
+        dplyr::ungroup() %>%
+        dplyr::mutate({{ charge_states }} := forcats::fct_inorder(factor({{ charge_states }}))) %>%
+        dplyr::mutate({{ sample }} := factor({{ sample }}, levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))))
+
+      if (plot == FALSE) {
         return(result)
       } else {
         plot <- result %>%
-          ggplot2::ggplot(aes(x = {{sample}}, y = .data$charge_per, fill = {{charge_states}})) +
+          ggplot2::ggplot(aes(x = {{ sample }}, y = .data$charge_per, fill = {{ charge_states }})) +
           geom_col(col = "black", size = 1) +
-          {if(interactive == FALSE) geom_text(
-            data = result %>% dplyr::filter(.data$charge_per > 5),
-            aes(label = round(.data$charge_per, digits = 1)),
-            position = position_stack(vjust = 0.9)
-          )}+
-          labs(title = "Charge distribution per .raw file",
-               subtitle = "By percent of total peptide count",
-               x = "",
-               y = "% of total peptide count",
-               fill = "Charge") +
+          {
+            if (interactive == FALSE) {
+              geom_text(
+                data = result %>% dplyr::filter(.data$charge_per > 5),
+                aes(label = round(.data$charge_per, digits = 1)),
+                position = position_stack(vjust = 0.9)
+              )
+            }
+          } +
+          labs(
+            title = "Charge distribution per .raw file",
+            subtitle = "By percent of total peptide count",
+            x = "",
+            y = "% of total peptide count",
+            fill = "Charge"
+          ) +
           theme_bw() +
-          theme(plot.title = ggplot2::element_text(size = 20),
-                axis.title.x = ggplot2::element_text(size = 15),
-                axis.text.y = ggplot2::element_text(size = 15),
-                axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
-                axis.title.y = ggplot2::element_text(size = 15),
-                legend.title = ggplot2::element_text(size = 15),
-                legend.text = ggplot2::element_text(size = 15)) +
+          theme(
+            plot.title = ggplot2::element_text(size = 20),
+            axis.title.x = ggplot2::element_text(size = 15),
+            axis.text.y = ggplot2::element_text(size = 15),
+            axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
+            axis.title.y = ggplot2::element_text(size = 15),
+            legend.title = ggplot2::element_text(size = 15),
+            legend.text = ggplot2::element_text(size = 15)
+          ) +
           scale_fill_manual(values = protti_colours)
       }
     }
 
-    if (method == "intensity")
-    {
+    if (method == "intensity") {
       result <- data %>%
-        tidyr::drop_na({{intensity}}) %>% 
-        dplyr::distinct({{sample}}, {{grouping}}, {{charge_states}}, {{intensity}}) %>%
-        dplyr::group_by({{sample}}) %>%
-        dplyr::mutate(total_intensity = sum({{intensity}})) %>%
-        dplyr::group_by({{sample}}, {{charge_states}}) %>%
-        dplyr::mutate(sum_intensity_cs = sum({{intensity}})) %>%
+        tidyr::drop_na({{ intensity }}) %>%
+        dplyr::distinct({{ sample }}, {{ grouping }}, {{ charge_states }}, {{ intensity }}) %>%
+        dplyr::group_by({{ sample }}) %>%
+        dplyr::mutate(total_intensity = sum({{ intensity }})) %>%
+        dplyr::group_by({{ sample }}, {{ charge_states }}) %>%
+        dplyr::mutate(sum_intensity_cs = sum({{ intensity }})) %>%
         dplyr::summarise(charge_per = .data$sum_intensity_cs / .data$total_intensity * 100) %>%
         dplyr::ungroup() %>%
-        dplyr::mutate({{charge_states}} := forcats::fct_inorder(factor({{charge_states}}))) %>%
-        dplyr::mutate({{sample}} := factor({{sample}}, levels = unique(stringr::str_sort({{sample}}, numeric = TRUE)))) %>% 
+        dplyr::mutate({{ charge_states }} := forcats::fct_inorder(factor({{ charge_states }}))) %>%
+        dplyr::mutate({{ sample }} := factor({{ sample }}, levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE)))) %>%
         dplyr::distinct()
 
-      if(plot == FALSE)
-      {return(result)
+      if (plot == FALSE) {
+        return(result)
       } else {
         plot <- result %>%
-          ggplot2::ggplot(aes(x = {{sample}}, y = .data$charge_per, fill = {{charge_states}})) +
+          ggplot2::ggplot(aes(x = {{ sample }}, y = .data$charge_per, fill = {{ charge_states }})) +
           geom_col(col = "black", size = 1) +
-          {if(interactive == FALSE) geom_text(
-            data = result %>% dplyr::filter(.data$charge_per > 5),
-            aes(label = round(.data$charge_per, digits = 1)),
-            position = position_stack(vjust = 0.9)
-          )} +
-          labs(title = "Charge distribution per .raw file",
-               subtitle = "By percent of total intensity",
-               x = "Sample",
-               y = "% of total intensity",
-               fill = "Charge") +
+          {
+            if (interactive == FALSE) {
+              geom_text(
+                data = result %>% dplyr::filter(.data$charge_per > 5),
+                aes(label = round(.data$charge_per, digits = 1)),
+                position = position_stack(vjust = 0.9)
+              )
+            }
+          } +
+          labs(
+            title = "Charge distribution per .raw file",
+            subtitle = "By percent of total intensity",
+            x = "Sample",
+            y = "% of total intensity",
+            fill = "Charge"
+          ) +
           theme_bw() +
-          theme(plot.title = ggplot2::element_text(size = 20),
-                axis.title.x = ggplot2::element_text(size = 15),
-                axis.text.y = ggplot2::element_text(size = 15),
-                axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust =1),
-                axis.title.y = ggplot2::element_text(size = 15),
-                legend.title = ggplot2::element_text(size = 15),
-                legend.text = ggplot2::element_text(size = 15)) +
+          theme(
+            plot.title = ggplot2::element_text(size = 20),
+            axis.title.x = ggplot2::element_text(size = 15),
+            axis.text.y = ggplot2::element_text(size = 15),
+            axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
+            axis.title.y = ggplot2::element_text(size = 15),
+            legend.title = ggplot2::element_text(size = 15),
+            legend.text = ggplot2::element_text(size = 15)
+          ) +
           scale_fill_manual(values = protti_colours)
       }
     }
-    if (interactive == TRUE)
-    {
+    if (interactive == TRUE) {
       return(plotly::ggplotly(plot))
     } else {
       return(plot)

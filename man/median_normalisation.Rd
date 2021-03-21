@@ -22,7 +22,8 @@ Performs median normalisation on intensities. The normalised intensity is the or
 \examples{
 \dontrun{
 median_normalisation(data,
-sample = r_file_name,
-intensity_log2 = intensity_log2)
+  sample = r_file_name,
+  intensity_log2 = intensity_log2
+)
 }
 }

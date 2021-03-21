@@ -45,12 +45,12 @@ Plots one minute binned median precursor elution peak width over retention time 
 \examples{
 \dontrun{
 qc_peak_width(
-data,
-sample = r_file_name,
-intensity = fg_quantity,
-retention_time = eg_mean_apex_rt,
-retention_time_start = eg_start_rt,
-retention_time_end = eg_end_rt
+  data,
+  sample = r_file_name,
+  intensity = fg_quantity,
+  retention_time = eg_mean_apex_rt,
+  retention_time_start = eg_start_rt,
+  retention_time_end = eg_end_rt
 )
 }
 }

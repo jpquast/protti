@@ -18,7 +18,7 @@ woods_plot(
 )
 }
 \arguments{
-\item{data}{Data frame containing differential abundance, start and end peptide or precursor positions, protein 
+\item{data}{Data frame containing differential abundance, start and end peptide or precursor positions, protein
 length and optionally a variable based on which peptides or precursors should be coloured.}
 
 \item{fold_change}{Column in the data frame containing log2 fold changes.}
@@ -31,10 +31,10 @@ length and optionally a variable based on which peptides or precursors should be
 
 \item{coverage}{Optional, column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.}
 
-\item{protein_id}{Optional argument, column in the data frame containing protein identifiers. Required if only one protein 
+\item{protein_id}{Optional argument, column in the data frame containing protein identifiers. Required if only one protein
 should be plotted and the data frame contains only information for this protein.}
 
-\item{facet}{Optional argument, column in the data frame containing information by which data should be faceted. This can be 
+\item{facet}{Optional argument, column in the data frame containing information by which data should be faceted. This can be
 protein identifiers.}
 
 \item{colouring}{Optional argument, column in the data frame containing information by which peptide or precursors should
@@ -51,12 +51,12 @@ Creates a Wood's plot that plots log2 fold change of peptides or precursors alon
 \examples{
 \dontrun{
 woods_plot(test,
-fold_change = diff,
-start_position = start,
-end_position = end,
-protein_length = length,
-colouring = pep_type,
-facet = pg_protein_accessions
+  fold_change = diff,
+  start_position = start,
+  end_position = end,
+  protein_length = length,
+  colouring = pep_type,
+  facet = pg_protein_accessions
 )
 }
 }

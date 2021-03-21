@@ -19,6 +19,6 @@ The function uses the very fast \code{fread} function form the \code{data.table}
 }
 \examples{
 \dontrun{
-read_protti("folder\filename")
+read_protti("folder\\\\filename")
 }
 }

@@ -35,10 +35,10 @@ Median intensities per run are returned either as a plot or a table.
 \examples{
 \dontrun{
 qc_median_intensities(
-data, 
-sample = r_file_name, 
-grouping = eg_precursor_id,
-intensity = log2_intensity
+  data,
+  sample = r_file_name,
+  grouping = eg_precursor_id,
+  intensity = log2_intensity
 )
 }
 }

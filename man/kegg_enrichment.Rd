@@ -19,7 +19,7 @@ kegg_enrichment(
 
 \item{protein_id}{The name of the column containing the protein accession numbers.}
 
-\item{is_significant}{The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide. 
+\item{is_significant}{The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide.
 The input data frame may contain peptide level information with significance information. The function is able to extract protein level information from this.}
 
 \item{pathway_id}{The name of the column containing KEGG pathway identifiers. These can be obtained from KEGG using \code{fetch_kegg}.}
@@ -28,27 +28,27 @@ The input data frame may contain peptide level information with significance inf
 
 \item{plot}{A logical indicating whether the result should be plotted or returned as a table.}
 
-\item{plot_cutoff}{A character vector indicating if the plot should contain the top 10 most significant proteins (p-value or adjusted p-value), 
-or if a significance cutoff should be used to determine the number of GO terms in the plot. This information should be provided with the 
-type first followed by the threshold separated by a space. Example are \code{plot_cutoff = "adj_pval top10"}, \code{plot_cutoff = "pval 0.05"} 
+\item{plot_cutoff}{A character vector indicating if the plot should contain the top 10 most significant proteins (p-value or adjusted p-value),
+or if a significance cutoff should be used to determine the number of GO terms in the plot. This information should be provided with the
+type first followed by the threshold separated by a space. Example are \code{plot_cutoff = "adj_pval top10"}, \code{plot_cutoff = "pval 0.05"}
 or \code{plot_cutoff = "adj_pval 0.01"}. The threshold can be chosen freely.}
 }
 \value{
-A bar plot displaying negative log10 adjusted p-values for the top 10 enriched pathways. Bars are coloured according to the direction of the 
+A bar plot displaying negative log10 adjusted p-values for the top 10 enriched pathways. Bars are coloured according to the direction of the
 enrichment. If \code{plot = FALSE}, a data frame is returned.
 }
 \description{
-Analyses enrichment of KEGG pathways associated with proteins in the fraction of significant proteins compared to all detected proteins. A Fisher's 
+Analyses enrichment of KEGG pathways associated with proteins in the fraction of significant proteins compared to all detected proteins. A Fisher's
 exact test is performed to test significance of enrichment.
 }
 \examples{
 \dontrun{
 kegg_enrichment(
-data,
-protein_id = pg_protein_accessions,
-is_significant = significant,
-pathway_id = pathway_id,
-pathway_name = pathway_name
+  data,
+  protein_id = pg_protein_accessions,
+  is_significant = significant,
+  pathway_id = pathway_id,
+  pathway_name = pathway_name
 )
 }
 }

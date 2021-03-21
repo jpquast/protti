@@ -78,7 +78,7 @@ qc_intensity_distribution <- function(data, sample = NULL, grouping, intensity_l
       )
     return(plot)
   }
-  
+
   if (plot_style == "violin") {
     if (missing(sample)) stop("Please provide a column with sample information when choosing violin as plot style!")
     plot <- input %>%

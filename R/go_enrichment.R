@@ -1,33 +1,33 @@
 #' Perform gene ontology enrichment analysis
 #'
-#' Analyses enrichment of gene ontology terms associated with proteins in the fraction of significant proteins compared to all detected proteins. 
-#' A two-sided Fisher's exact test is performed to test significance of enrichment or depletion. GO annotations can be provided to this 
+#' Analyses enrichment of gene ontology terms associated with proteins in the fraction of significant proteins compared to all detected proteins.
+#' A two-sided Fisher's exact test is performed to test significance of enrichment or depletion. GO annotations can be provided to this
 #' function either through UniProt \code{go_annotations_uniprot}, through a table obtained with \code{fetch_go} in the \code{go_data} argument
 #' or GO annotations are fetched automatically by the function by providing \code{ontology_type} and \code{organism_id}.
 #'
 #' @param data A data frame that contains at least the input variables.
 #' @param protein_id The name of the column containing the protein accession numbers.
-#' @param is_significant The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide. 
-#' The input data frame may contain peptide level information with significance information. The function is able to extract protein level information from this. 
-#' @param go_annotations_uniprot (Recommended) The name of the column containing gene ontology annotations obtained from UniProt using \code{fetch_uniprot}. 
-#' These annotations are already separated into the desired ontology type so the argument \code{ontology_type} is not required. 
-#' @param ontology_type Optional, A character vector specifying the type of ontology that should be used. Possible values 
+#' @param is_significant The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide.
+#' The input data frame may contain peptide level information with significance information. The function is able to extract protein level information from this.
+#' @param go_annotations_uniprot (Recommended) The name of the column containing gene ontology annotations obtained from UniProt using \code{fetch_uniprot}.
+#' These annotations are already separated into the desired ontology type so the argument \code{ontology_type} is not required.
+#' @param ontology_type Optional, A character vector specifying the type of ontology that should be used. Possible values
 #' are molecular function (MF), biological process (BP), cellular component (CC). This argument is not required if GO annotations
 #' are provided from UniProt in \code{go_annotations_uniprot}. It is required if annotations are provided through \code{go_data} or
-#' automatically fetched. 
-#' @param organism_id Optional, An NCBI taxonomy identifier of an organism (TaxId). Possible inputs include only: "9606" (Human), "559292" (Yeast) and 
+#' automatically fetched.
+#' @param organism_id Optional, An NCBI taxonomy identifier of an organism (TaxId). Possible inputs include only: "9606" (Human), "559292" (Yeast) and
 #' "83333" (E. coli). Is only necessary if GO data is not provided either by \code{go_annotations_uniprot} or in \code{go_data}.
 #' @param go_data Optional, a data frame that can be obtained with \code{fetch_go}. If you provide data yourself make sure column
 #' names for protein ID (db_id) and GO ID (go_id) are the same as for data obtained with \code{fetch_go}.
 #' @param plot A logical indicating whether the result should be plotted or returned as a table.
-#' @param plot_cutoff A character vector indicating if the plot should contain the top 10 most significant proteins (p-value or adjusted p-value), 
-#' or if a significance cutoff should be used to determine the number of GO terms in the plot. This information should be provided with the 
-#' type first followed by the threshold separated by a space. Example are \code{plot_cutoff = "adj_pval top10"}, \code{plot_cutoff = "pval 0.05"} 
+#' @param plot_cutoff A character vector indicating if the plot should contain the top 10 most significant proteins (p-value or adjusted p-value),
+#' or if a significance cutoff should be used to determine the number of GO terms in the plot. This information should be provided with the
+#' type first followed by the threshold separated by a space. Example are \code{plot_cutoff = "adj_pval top10"}, \code{plot_cutoff = "pval 0.05"}
 #' or \code{plot_cutoff = "adj_pval 0.01"}. The threshold can be chosen freely.
-#' 
-#' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or depleted gene ontology terms. Alternatively, 
-#' plot cutoffs can be chosen individually with the \code{plot_cutoff} argument. 
-#' Bars are colored according to the direction of the enrichment. If \code{plot = FALSE}, a data frame is returned. P-values 
+#'
+#' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or depleted gene ontology terms. Alternatively,
+#' plot cutoffs can be chosen individually with the \code{plot_cutoff} argument.
+#' Bars are colored according to the direction of the enrichment. If \code{plot = FALSE}, a data frame is returned. P-values
 #' are adjusted with Benjamini-Hochberg.
 #'
 #' @import dplyr
@@ -42,10 +42,10 @@
 #' @examples
 #' \dontrun{
 #' go_enrichment(
-#' data,
-#' protein_id = pg_protein_accessions,
-#' is_significant = significant,
-#' go_annotations_uniprot = go_molecular_function
+#'   data,
+#'   protein_id = pg_protein_accessions,
+#'   is_significant = significant,
+#'   go_annotations_uniprot = go_molecular_function
 #' )
 #' }
 go_enrichment <- function(data, protein_id, is_significant, go_annotations_uniprot = NULL, ontology_type, organism_id = NULL, go_data = NULL, plot = TRUE, plot_cutoff = "adj_pval top10") {

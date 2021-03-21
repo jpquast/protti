@@ -26,7 +26,7 @@ fetch_uniprot(
 }
 \value{
 A data frame that contains all protein metadata specified in \code{columns} for the proteins provided. If an invalid ID
-was provided that contains a valid UniProt ID, the valid portion of the ID is fetched and the invalid input ID is saved in a 
+was provided that contains a valid UniProt ID, the valid portion of the ID is fetched and the invalid input ID is saved in a
 column called \code{input_id}.
 }
 \description{

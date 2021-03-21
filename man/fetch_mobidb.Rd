@@ -7,7 +7,7 @@
 fetch_mobidb(organism_id, protein_ids)
 }
 \arguments{
-\item{organism_id}{An NCBI taxonomy identifier of an organism (TaxId). Possible inputs inlude only: "9606" (Human), "559292" (Yeast), 
+\item{organism_id}{An NCBI taxonomy identifier of an organism (TaxId). Possible inputs inlude only: "9606" (Human), "559292" (Yeast),
 "83333" (E. coli), "10090" (Mouse), "9913" (Bovine), "7227" (Fruit fly).}
 
 \item{protein_ids}{A character vector of UniProt identifiers. These need to be proteins from the organism provided in \code{organism_id}.}
@@ -22,8 +22,8 @@ Fetches information about disordered protein regions from MobiDB.
 \examples{
 \dontrun{
 fetch_mobidb(
-organism_id = "9606", 
-protein_ids = c("P36578", "O43324", "Q00796")
+  organism_id = "9606",
+  protein_ids = c("P36578", "O43324", "Q00796")
 )
 }
 }

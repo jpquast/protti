@@ -39,11 +39,11 @@ Check for an enrichment of proteins interacting with the treatment in significan
 \examples{
 \dontrun{
 treatment_enrichment(
-data,
-protein_id = pg_protein_accessions,
-is_significant = significant,
-binds_treatment = binds_metals,
-treatment = "Metals"
+  data,
+  protein_id = pg_protein_accessions,
+  is_significant = significant,
+  binds_treatment = binds_metals,
+  treatment = "Metals"
 )
 }
 }

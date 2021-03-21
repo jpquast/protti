@@ -17,10 +17,10 @@ qc_sequence_coverage(
 
 \item{protein_identifier}{Column in the data frame containing protein identifiers.}
 
-\item{coverage}{Column in the data frame containing protein coverage in percent. This information can be obtained using 
+\item{coverage}{Column in the data frame containing protein coverage in percent. This information can be obtained using
 the \code{\link{sequence_coverage}} function.}
 
-\item{sample}{Column in the data frame containing sample names. Please only provide this argument if you want to 
+\item{sample}{Column in the data frame containing sample names. Please only provide this argument if you want to
 facet the distribution plot by sample otherwise do not provide this argument.}
 
 \item{interactive}{A logical, if TRUE the plot is interactive (default is TRUE).}
@@ -34,9 +34,9 @@ Plots the distribution of protein coverages in a histogram.
 \examples{
 \dontrun{
 qc_sequence_coverage(
-data,
-protein_identifier = pg_protein_accessions,
-coverage = coverage
+  data,
+  protein_identifier = pg_protein_accessions,
+  coverage = coverage
 )
 }
 

@@ -11,14 +11,15 @@
 #' @examples
 #' \dontrun{
 #' split_metal_name(
-#' metal_names = c(
-#' "Magnesium",
-#' NA,
-#' NA,
-#' "Magnesium or Manganese",
-#' "Divalent metal cation",
-#' "Cobalt (cobalamin axial ligand)",
-#' "Iron-sulfur (2Fe-2S)")
+#'   metal_names = c(
+#'     "Magnesium",
+#'     NA,
+#'     NA,
+#'     "Magnesium or Manganese",
+#'     "Divalent metal cation",
+#'     "Cobalt (cobalamin axial ligand)",
+#'     "Iron-sulfur (2Fe-2S)"
+#'   )
 #' )
 #' }
 split_metal_name <- function(metal_names) {

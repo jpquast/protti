@@ -19,7 +19,7 @@ ttest_protti(mean1, mean2, sd1, sd2, n1, n2, log_values = TRUE)
 
 \item{n2}{Vector containing the number of replicates used for the calculation of each mean and standard deviation of group2.}
 
-\item{log_values}{Logical indicating if values are log transformed. This determines how fold changes are calculated. 
+\item{log_values}{Logical indicating if values are log transformed. This determines how fold changes are calculated.
 Default is \code{log_values = TRUE}.}
 }
 \value{
@@ -31,11 +31,12 @@ Performs a Welch's t-test and calculates p-values between two groups.
 \examples{
 \dontrun{
 ttest_protti(
-mean1 = 10,
-mean2 = 15.5,
-sd1 = 1,
-sd2 = 0.5,
-n1 = 3,
-n2 = 3)
+  mean1 = 10,
+  mean2 = 15.5,
+  sd1 = 1,
+  sd2 = 0.5,
+  n1 = 3,
+  n2 = 3
+)
 }
 }

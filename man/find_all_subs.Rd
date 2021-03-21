@@ -22,9 +22,9 @@ For a given ChEBI ID, find all ChEBI sub IDs (incoming IDs) and their sub IDs. T
 \examples{
 \dontrun{
 find_all_subs(
-data,
-id = c("25213", "30408"),
-type = "is_a"
+  data,
+  id = c("25213", "30408"),
+  type = "is_a"
 )
 }
 }

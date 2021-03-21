@@ -7,8 +7,8 @@
 find_chebis(chebi_data, pattern)
 }
 \arguments{
-\item{chebi_data}{A data frame that contains at least information on ChEBI IDs (id) and their names (name). 
-This data frame can be obtained by calling \code{fetch_chebi()}. Ideally this should be subsetted to only contain molecules of a specific type e.g. metals. 
+\item{chebi_data}{A data frame that contains at least information on ChEBI IDs (id) and their names (name).
+This data frame can be obtained by calling \code{fetch_chebi()}. Ideally this should be subsetted to only contain molecules of a specific type e.g. metals.
 This can be achieved by calling \code{find_all_subs} with a general ID such as "25213" (Metal cation) and then subset the complete ChEBI database to only include the returned sub-IDs.
 Using a subsetted database ensures better search results. This is a helper function for other functions.}
 
@@ -23,10 +23,12 @@ A list of ChEBI IDs that contain a specific name pattern is returned.
 \examples{
 \dontrun{
 find_chebis(
-chebi_data = chebi_metal,
-pattern = c("magnesium", 
-"Magnesium or Manganese|Magnesium|Manganese", 
-"Iron-sulfur (2Fe-2S)|2Fe-2S|Iron")
+  chebi_data = chebi_metal,
+  pattern = c(
+    "magnesium",
+    "Magnesium or Manganese|Magnesium|Manganese",
+    "Iron-sulfur (2Fe-2S)|2Fe-2S|Iron"
+  )
 )
 }
 }

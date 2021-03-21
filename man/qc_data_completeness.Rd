@@ -31,7 +31,7 @@ by which the data should be split can be provided.}
 \item{interactive}{Logical, if TRUE the plot is interactive using plotly.}
 }
 \value{
-A bar plot that displays the percentage of data completeness over all samples. If \code{plot = FALSE} a data frame is returned. 
+A bar plot that displays the percentage of data completeness over all samples. If \code{plot = FALSE} a data frame is returned.
 If \code{interactive = TRUE}, the plot is interactive.
 }
 \description{
@@ -40,11 +40,11 @@ Calculates the percentage of data completeness. That means, what percentage of a
 \examples{
 \dontrun{
 qc_data_completeness(
-data, 
-sample = r_file_name, 
-grouping = eg_precursor_id,
-intensity = fg_quantity,
-digestion = digestion
+  data,
+  sample = r_file_name,
+  grouping = eg_precursor_id,
+  intensity = fg_quantity,
+  digestion = digestion
 )
 }
 }

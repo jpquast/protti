@@ -45,7 +45,7 @@ the concentrations argument needs to be specified.}
 This allows equal sampling of peptide intensities. It ensures that the same positions of dose response curves are sampled for each peptide
 based on the provided concentrations.}
 
-\item{median_offset_sd}{Numeric, standard deviation of normal distribution that is used for sampling of inter-sample-differences. 
+\item{median_offset_sd}{Numeric, standard deviation of normal distribution that is used for sampling of inter-sample-differences.
 Default is 0.05.}
 
 \item{mean_protein_intensity}{Numeric, mean of the protein intensity distribution. Default: 16.8.}
@@ -76,7 +76,7 @@ dependent missing values. This argument determines how many missing values there
 \item{dropout_curve_sd}{Numeric, standard deviation of the probabilistic dropout curve. Needs to be negative to sample a droupout towards
 low intensities. Default: -1.2.}
 
-\item{additional_metadata}{Logical, determines if metadata such as protein coverage, missed cleavages and charge state should be 
+\item{additional_metadata}{Logical, determines if metadata such as protein coverage, missed cleavages and charge state should be
 sampled and added to the list.}
 }
 \value{
