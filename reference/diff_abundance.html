@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -107,6 +107,9 @@
       <a href="../articles/quality_control_workflow.html">Qualtiy Control (QC) Workflow</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -181,12 +184,12 @@
     </tr>
     <tr>
       <th>missingness</th>
-      <td><p>The column in the data frame containing missingness information. Can be obtained by calling <code>assign_missingness</code>. 
+      <td><p>The column in the data frame containing missingness information. Can be obtained by calling <code>assign_missingness</code>.
 Is not required if <code>method = "t-test_mean_sd"</code>.</p></td>
     </tr>
     <tr>
       <th>comparison</th>
-      <td><p>The column in the data frame containing comparison information of treatment/reference condition pairs. Can be obtained by 
+      <td><p>The column in the data frame containing comparison information of treatment/reference condition pairs. Can be obtained by
 calling <code>assign_missingness</code>. Is not required if <code>method = "t-test_mean_sd"</code>.</p></td>
     </tr>
     <tr>
@@ -207,51 +210,51 @@ calling <code>assign_missingness</code>. Is not required if <code>method = "t-te
     </tr>
     <tr>
       <th>filter_NA_missingness</th>
-      <td><p>A logical, default is <code>TRUE</code>. For all methods except <code>"t-test_mean_sd"</code> missingness information has to be provided. 
-If a reference/treatment pair has too few samples to be considered robust, it is annotated with <code>NA</code> as missingness. If this argument 
+      <td><p>A logical, default is <code>TRUE</code>. For all methods except <code>"t-test_mean_sd"</code> missingness information has to be provided.
+If a reference/treatment pair has too few samples to be considered robust, it is annotated with <code>NA</code> as missingness. If this argument
 is <code>TRUE</code>, these reference/treatment pairs are filtered out.</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>A character vector, specifies the method used for statistical testing. Methods include Welch test ("<code>t-test</code>"), a Welch test on means, 
-standard deviations and number of replicates ("<code>t-test_mean_sd</code>") and a moderated t-test based on the <code>limma</code> package ("<code>moderated_t-test</code>"). 
-More information on the moderated t-test can be found in the <code>limma</code> documentation. Furthermore, the <code>proDA</code> package specific method ("<code>proDA</code>") can 
-be used to infer means across samples based on a probabilistic dropout model. This eliminates the need for data imputation since missing values are infered from the 
+      <td><p>A character vector, specifies the method used for statistical testing. Methods include Welch test ("<code>t-test</code>"), a Welch test on means,
+standard deviations and number of replicates ("<code>t-test_mean_sd</code>") and a moderated t-test based on the <code>limma</code> package ("<code>moderated_t-test</code>").
+More information on the moderated t-test can be found in the <code>limma</code> documentation. Furthermore, the <code>proDA</code> package specific method ("<code>proDA</code>") can
+be used to infer means across samples based on a probabilistic dropout model. This eliminates the need for data imputation since missing values are infered from the
 model. More information can be found in the <code>proDA</code> documentation.</p></td>
     </tr>
     <tr>
       <th>p_adj_method</th>
-      <td><p>A character vector, specifies the p-value correction method. Possible methods are c("holm", "hochberg", "hommel", "bonferroni", "BH", 
+      <td><p>A character vector, specifies the p-value correction method. Possible methods are c("holm", "hochberg", "hommel", "bonferroni", "BH",
 "BY", "fdr", "none"). Default method is <code>"BH"</code>.</p></td>
     </tr>
     <tr>
       <th>retain_columns</th>
-      <td><p>A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
-additional columns <code>retain_columns = NULL</code>. Specific columns can be retained by providing their names (not in quotations marks, 
+      <td><p>A vector indicating if certain columns should be retained from the input data frame. Default is not retaining
+additional columns <code>retain_columns = NULL</code>. Specific columns can be retained by providing their names (not in quotations marks,
 just like other column names, but in a vector).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains differential abundances (<code>diff</code>), p-values (<code>pval</code>) and adjusted p-values (<code>adj_pval</code>) for each protein, 
+    <p>A data frame that contains differential abundances (<code>diff</code>), p-values (<code>pval</code>) and adjusted p-values (<code>adj_pval</code>) for each protein,
 peptide or precursor (depending on the <code>grouping</code> variable) and the associated treatment/reference pair.
 Depending on the method the data frame contains additional columns:</p><ul>
-<li><p>"t-test": The <code>std_error</code> column contains the standard error of the differential abundances. <code>n_obs</code> contains the number of 
+<li><p>"t-test": The <code>std_error</code> column contains the standard error of the differential abundances. <code>n_obs</code> contains the number of
 observations for the specific protein, peptide or precursor (depending on the <code>grouping</code> variable) and the associated treatment/reference pair.</p></li>
-<li><p>"t-test_mean_sd": <code>mean_control</code> and <code>mean_treated</code> columns contain the means for the reference and treatment condition, respectively. 
-<code>sd_control</code> and <code>sd_treated</code> columns contain the standard deviations for the reference and treatment condition, respectively. 
-<code>n_control</code> and <code>n_treated</code> columns contain the numbers of samples for the reference and treatment condition, respectively. The <code>std_error</code> 
+<li><p>"t-test_mean_sd": <code>mean_control</code> and <code>mean_treated</code> columns contain the means for the reference and treatment condition, respectively.
+<code>sd_control</code> and <code>sd_treated</code> columns contain the standard deviations for the reference and treatment condition, respectively.
+<code>n_control</code> and <code>n_treated</code> columns contain the numbers of samples for the reference and treatment condition, respectively. The <code>std_error</code>
 column contains the standard error of the differential abundances. <code>t_statistic</code> contains the t_statistic for the t-test.</p></li>
-<li><p>"moderated_t-test": <code>CI_2.5</code> and <code>CI_97.5</code> give the 2.5<!-- % and 97.5% confidence interval borders for the differential abundance. \code{avg_abundance}  -->
-contains average abundances for treatment/reference pairs (mean of the two group means). <code>t_statistic</code> contains the t_statistic for the t-test. <code>B</code> The 
-B-statistic is the log-odds that the protein, peptide or precursor (depending on <code>grouping</code>) has a differential abundance between the two groups. Suppose B=1.5. 
-The odds of differential abundance is exp(1.5)=4.48, i.e, about four and a half to one. The probability that there is a differential abundance is 4.48/(1+4.48)=0.82, 
-i.e., the probability is about 82<!-- % that this group is differentially abundant. A B-statistic of zero corresponds to a 50-50 chance that the group is differentially  -->
-abundant.<code>n_obs</code> contains the number of observations for the specific protein, peptide or precursor (depending on the <code>grouping</code> variable) and the 
+<li><p>"moderated_t-test": <code>CI_2.5</code> and <code>CI_97.5</code> give the 2.5<!-- % and 97.5% confidence interval borders for the differential abundance. \code{avg_abundance} -->
+contains average abundances for treatment/reference pairs (mean of the two group means). <code>t_statistic</code> contains the t_statistic for the t-test. <code>B</code> The
+B-statistic is the log-odds that the protein, peptide or precursor (depending on <code>grouping</code>) has a differential abundance between the two groups. Suppose B=1.5.
+The odds of differential abundance is exp(1.5)=4.48, i.e, about four and a half to one. The probability that there is a differential abundance is 4.48/(1+4.48)=0.82,
+i.e., the probability is about 82<!-- % that this group is differentially abundant. A B-statistic of zero corresponds to a 50-50 chance that the group is differentially -->
+abundant.<code>n_obs</code> contains the number of observations for the specific protein, peptide or precursor (depending on the <code>grouping</code> variable) and the
 associated treatment/reference pair.</p></li>
-<li><p>"proDA": The <code>std_error</code> column contains the standard error of the differential abundances. <code>avg_abundance</code> contains average abundances for 
-treatment/reference pairs (mean of the two group means). <code>t_statistic</code> contains the t_statistic for the t-test. <code>n_obs</code> contains the number of 
+<li><p>"proDA": The <code>std_error</code> column contains the standard error of the differential abundances. <code>avg_abundance</code> contains average abundances for
+treatment/reference pairs (mean of the two group means). <code>t_statistic</code> contains the t_statistic for the t-test. <code>n_obs</code> contains the number of
 observations for the specific protein, peptide or precursor (depending on the <code>grouping</code> variable) and the associated treatment/reference pair.</p></li>
 </ul>
 
@@ -259,16 +262,16 @@ observations for the specific protein, peptide or precursor (depending on the <c
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='fu'>diff_abundance</span><span class='op'>(</span>
-<span class='va'>data</span>,
-sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-condition <span class='op'>=</span> <span class='va'>r_condition</span>,
-grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-intensity_log2 <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
-missingness <span class='op'>=</span> <span class='va'>missingness</span>,
-comparison <span class='op'>=</span> <span class='va'>comparison</span>,
-ref_condition <span class='op'>=</span> <span class='st'>"control"</span>,
-method <span class='op'>=</span> <span class='st'>"t-test"</span>,
-retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>pg_protein_accessions</span><span class='op'>)</span>
+  <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
+  condition <span class='op'>=</span> <span class='va'>r_condition</span>,
+  grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
+  intensity_log2 <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
+  missingness <span class='op'>=</span> <span class='va'>missingness</span>,
+  comparison <span class='op'>=</span> <span class='va'>comparison</span>,
+  ref_condition <span class='op'>=</span> <span class='st'>"control"</span>,
+  method <span class='op'>=</span> <span class='st'>"t-test"</span>,
+  retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>pg_protein_accessions</span><span class='op'>)</span>
 <span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
@@ -283,7 +286,7 @@ retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jan-Philipp Quast, Dina Schuster.</p>
+  <p>Developed by Jan-Philipp Quast, Dina Schuster, ETH Zurich.</p>
 </div>
 
 <div class="pkgdown">

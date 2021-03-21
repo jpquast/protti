@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -107,6 +107,9 @@
       <a href="../articles/quality_control_workflow.html">Qualtiy Control (QC) Workflow</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -156,7 +159,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>Data frame containing differential abundance, start and end peptide or precursor positions, protein 
+      <td><p>Data frame containing differential abundance, start and end peptide or precursor positions, protein
 length and optionally a variable based on which peptides or precursors should be coloured.</p></td>
     </tr>
     <tr>
@@ -181,12 +184,12 @@ length and optionally a variable based on which peptides or precursors should be
     </tr>
     <tr>
       <th>protein_id</th>
-      <td><p>Optional argument, column in the data frame containing protein identifiers. Required if only one protein 
+      <td><p>Optional argument, column in the data frame containing protein identifiers. Required if only one protein
 should be plotted and the data frame contains only information for this protein.</p></td>
     </tr>
     <tr>
       <th>facet</th>
-      <td><p>Optional argument, column in the data frame containing information by which data should be faceted. This can be 
+      <td><p>Optional argument, column in the data frame containing information by which data should be faceted. This can be
 protein identifiers.</p></td>
     </tr>
     <tr>
@@ -207,12 +210,12 @@ be coloured.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='fu'>woods_plot</span><span class='op'>(</span><span class='va'>test</span>,
-fold_change <span class='op'>=</span> <span class='va'>diff</span>,
-start_position <span class='op'>=</span> <span class='va'>start</span>,
-end_position <span class='op'>=</span> <span class='va'>end</span>,
-protein_length <span class='op'>=</span> <span class='va'>length</span>,
-colouring <span class='op'>=</span> <span class='va'>pep_type</span>,
-facet <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>
+  fold_change <span class='op'>=</span> <span class='va'>diff</span>,
+  start_position <span class='op'>=</span> <span class='va'>start</span>,
+  end_position <span class='op'>=</span> <span class='va'>end</span>,
+  protein_length <span class='op'>=</span> <span class='va'>length</span>,
+  colouring <span class='op'>=</span> <span class='va'>pep_type</span>,
+  facet <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>
 <span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
@@ -227,7 +230,7 @@ facet <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jan-Philipp Quast, Dina Schuster.</p>
+  <p>Developed by Jan-Philipp Quast, Dina Schuster, ETH Zurich.</p>
 </div>
 
 <div class="pkgdown">

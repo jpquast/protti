@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Perform KEGG pathway enrichment analysis — kegg_enrichment" />
-<meta property="og:description" content="Analyses enrichment of KEGG pathways associated with proteins in the fraction of significant proteins compared to all detected proteins. A Fisher's 
+<meta property="og:description" content="Analyses enrichment of KEGG pathways associated with proteins in the fraction of significant proteins compared to all detected proteins. A Fisher's
 exact test is performed to test significance of enrichment." />
 
 
@@ -73,7 +73,7 @@ exact test is performed to test significance of enrichment." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -109,6 +109,9 @@ exact test is performed to test significance of enrichment." />
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -136,7 +139,7 @@ exact test is performed to test significance of enrichment." />
     </div>
 
     <div class="ref-description">
-    <p>Analyses enrichment of KEGG pathways associated with proteins in the fraction of significant proteins compared to all detected proteins. A Fisher's 
+    <p>Analyses enrichment of KEGG pathways associated with proteins in the fraction of significant proteins compared to all detected proteins. A Fisher's
 exact test is performed to test significance of enrichment.</p>
     </div>
 
@@ -163,7 +166,7 @@ exact test is performed to test significance of enrichment.</p>
     </tr>
     <tr>
       <th>is_significant</th>
-      <td><p>The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide. 
+      <td><p>The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide.
 The input data frame may contain peptide level information with significance information. The function is able to extract protein level information from this.</p></td>
     </tr>
     <tr>
@@ -180,26 +183,26 @@ The input data frame may contain peptide level information with significance inf
     </tr>
     <tr>
       <th>plot_cutoff</th>
-      <td><p>A character vector indicating if the plot should contain the top 10 most significant proteins (p-value or adjusted p-value), 
-or if a significance cutoff should be used to determine the number of GO terms in the plot. This information should be provided with the 
-type first followed by the threshold separated by a space. Example are <code>plot_cutoff = "adj_pval top10"</code>, <code>plot_cutoff = "pval 0.05"</code> 
+      <td><p>A character vector indicating if the plot should contain the top 10 most significant proteins (p-value or adjusted p-value),
+or if a significance cutoff should be used to determine the number of GO terms in the plot. This information should be provided with the
+type first followed by the threshold separated by a space. Example are <code>plot_cutoff = "adj_pval top10"</code>, <code>plot_cutoff = "pval 0.05"</code>
 or <code>plot_cutoff = "adj_pval 0.01"</code>. The threshold can be chosen freely.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A bar plot displaying negative log10 adjusted p-values for the top 10 enriched pathways. Bars are coloured according to the direction of the 
+    <p>A bar plot displaying negative log10 adjusted p-values for the top 10 enriched pathways. Bars are coloured according to the direction of the
 enrichment. If <code>plot = FALSE</code>, a data frame is returned.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='fu'>kegg_enrichment</span><span class='op'>(</span>
-<span class='va'>data</span>,
-protein_id <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>,
-is_significant <span class='op'>=</span> <span class='va'>significant</span>,
-pathway_id <span class='op'>=</span> <span class='va'>pathway_id</span>,
-pathway_name <span class='op'>=</span> <span class='va'>pathway_name</span>
+  <span class='va'>data</span>,
+  protein_id <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>,
+  is_significant <span class='op'>=</span> <span class='va'>significant</span>,
+  pathway_id <span class='op'>=</span> <span class='va'>pathway_id</span>,
+  pathway_name <span class='op'>=</span> <span class='va'>pathway_name</span>
 <span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
@@ -214,7 +217,7 @@ pathway_name <span class='op'>=</span> <span class='va'>pathway_name</span>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jan-Philipp Quast, Dina Schuster.</p>
+  <p>Developed by Jan-Philipp Quast, Dina Schuster, ETH Zurich.</p>
 </div>
 
 <div class="pkgdown">

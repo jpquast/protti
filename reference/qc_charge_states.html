@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -107,6 +107,9 @@
       <a href="../articles/quality_control_workflow.html">Qualtiy Control (QC) Workflow</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -200,12 +203,13 @@ interested in quantifiable peptides. This is only relevant for method = "count".
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='fu'>qc_charge_states</span><span class='op'>(</span>
-<span class='va'>data</span>,
-sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-grouping <span class='op'>=</span> <span class='va'>pep_stripped_sequence</span>,
-charge_states <span class='op'>=</span> <span class='va'>fg_charge</span>,
-method <span class='op'>=</span> <span class='st'>"count"</span>,
-plot <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+  <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
+  grouping <span class='op'>=</span> <span class='va'>pep_stripped_sequence</span>,
+  charge_states <span class='op'>=</span> <span class='va'>fg_charge</span>,
+  method <span class='op'>=</span> <span class='st'>"count"</span>,
+  plot <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>
@@ -219,7 +223,7 @@ plot <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</s
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jan-Philipp Quast, Dina Schuster.</p>
+  <p>Developed by Jan-Philipp Quast, Dina Schuster, ETH Zurich.</p>
 </div>
 
 <div class="pkgdown">

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -107,6 +107,9 @@
       <a href="../articles/quality_control_workflow.html">Qualtiy Control (QC) Workflow</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -179,27 +182,27 @@
     </tr>
     <tr>
       <th>completeness_MAR</th>
-      <td><p>The minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7. 
-It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each 
+      <td><p>The minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7.
+It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each
 condition to be considered as MAR. This number is always at least 1.</p></td>
     </tr>
     <tr>
       <th>completeness_MNAR</th>
-      <td><p>The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.20. 
-It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one 
+      <td><p>The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.20.
+It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one
 condition to be considered as MNAR when the other condition is complete.</p></td>
     </tr>
     <tr>
       <th>retain_columns</th>
-      <td><p>A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
-additional columns <code>retain_columns = NULL</code>. Specific columns can be retained by providing their names (not in quotations marks, 
+      <td><p>A vector indicating if certain columns should be retained from the input data frame. Default is not retaining
+additional columns <code>retain_columns = NULL</code>. Specific columns can be retained by providing their names (not in quotations marks,
 just like other column names, but in a vector).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains the reference condition paired with each treatment condition. The <code>comparison</code> column contains the comparison 
+    <p>A data frame that contains the reference condition paired with each treatment condition. The <code>comparison</code> column contains the comparison
 name for the specific treatment/reference pair. The <code>missingness</code> column reports the type of missingness.</p><ul>
 <li><p>"complete": No missing values for every replicate of this reference/treatment pair for the specific grouping variable.</p></li>
 <li><p>"MNAR": Missing not at random. All replicates of either the reference or treatment condition have missing values for the specific grouping variable.</p></li>
@@ -210,12 +213,12 @@ name for the specific treatment/reference pair. The <code>missingness</code> col
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='fu'>assign_missingness</span><span class='op'>(</span>
-<span class='va'>data</span>,
-sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-condition <span class='op'>=</span> <span class='va'>r_condition</span>,
-grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-intensity <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
-retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>pg_protein_accessions</span><span class='op'>)</span>
+  <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
+  condition <span class='op'>=</span> <span class='va'>r_condition</span>,
+  grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
+  intensity <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
+  retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>pg_protein_accessions</span><span class='op'>)</span>
 <span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
@@ -230,7 +233,7 @@ retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jan-Philipp Quast, Dina Schuster.</p>
+  <p>Developed by Jan-Philipp Quast, Dina Schuster, ETH Zurich.</p>
 </div>
 
 <div class="pkgdown">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Perform ANOVA — anova_protti • protti</title>
+<title>Changelog • protti</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,7 @@
 
 
 
-<meta property="og:title" content="Perform ANOVA — anova_protti" />
-<meta property="og:description" content="Performs an ANOVA statistical test" />
+<meta property="og:title" content="Changelog" />
 
 
 
@@ -59,7 +58,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-topic">
+    <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -132,68 +131,25 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Perform ANOVA</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/anova_protti.R'><code>R/anova_protti.R</code></a></small>
-    <div class="hidden name"><code>anova_protti.Rd</code></div>
+      <h1 data-toc-skip>Changelog <small></small></h1>
+      <small>Source: <a href='https://github.com/jpquast/protti/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="ref-description">
-    <p>Performs an ANOVA statistical test</p>
-    </div>
-
-    <pre class="usage"><span class='fu'>anova_protti</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>grouping</span>, <span class='va'>condition</span>, <span class='va'>mean_ratio</span>, <span class='va'>sd</span>, <span class='va'>n</span><span class='op'>)</span></pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>data</th>
-      <td><p>A data frame containing at least the input variables.</p></td>
-    </tr>
-    <tr>
-      <th>grouping</th>
-      <td><p>The column in the data frame containing precursor or peptide identifiers.</p></td>
-    </tr>
-    <tr>
-      <th>condition</th>
-      <td><p>The column in the data frame containing the conditions.</p></td>
-    </tr>
-    <tr>
-      <th>mean_ratio</th>
-      <td><p>The column in the data frame containing mean intensities or mean intensity ratios.</p></td>
-    </tr>
-    <tr>
-      <th>sd</th>
-      <td><p>The column in the data frame containing the standard deviation corresponding to the mean.</p></td>
-    </tr>
-    <tr>
-      <th>n</th>
-      <td><p>The column in the data frame containing the number of replicates for which the corresponding mean was calculated.</p></td>
-    </tr>
-    </table>
-
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A data frame that contains the within group error (<code>ms_group</code>) and the between group error (<code>ms_error</code>), f statistic and p-values.</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>anova_protti</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-  condition <span class='op'>=</span> <span class='va'>r_condition</span>,
-  mean <span class='op'>=</span> <span class='va'>mean</span>,
-  sd <span class='op'>=</span> <span class='va'>sd</span>,
-  n <span class='op'>=</span> <span class='va'>n</span>
-<span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+    <div id="protti-010" class="section level1">
+<h1 class="page-header" data-toc-text="0.1.0">
+<a href="#protti-010" class="anchor"></a>protti 0.1.0</h1>
+<ul>
+<li>First release version.</li>
+</ul>
+</div>
   </div>
+
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
+
 </div>
 
 

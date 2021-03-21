@@ -73,7 +73,7 @@ filter data based on completeness, the completeness distribution and statistical
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -108,6 +108,9 @@ filter data based on completeness, the completeness distribution and statistical
       <a href="../articles/quality_control_workflow.html">Qualtiy Control (QC) Workflow</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -181,27 +184,27 @@ filter data based on completeness, the completeness distribution and statistical
     <tr>
       <th>filter</th>
       <td><p>A character vector indicating if models should be filtered and if they should be filtered before or after the curve
-fits. Filtering of models can be skipped with <code>filter = "none"</code>. Data can be filtered prior to model fitting with 
+fits. Filtering of models can be skipped with <code>filter = "none"</code>. Data can be filtered prior to model fitting with
 <code>filter = "pre"</code>. In that case models will only be fitted for data that passed the filtering step. This will allow for faster
-model fitting since only fewer models will be fit. If you plan on performing an enrichment analysis you have to choose 
-<code>filter = "post"</code>. All models will be fit (even the ones that do not pass the filtering criteria). For enrichment analysis 
-you should use both good (i.e. models that pass the filtering) and bad (i.e. models that do not pass the filtering) models. 
-Therefore, for post-filtering the full list is returned and it will only contain annotations that 
+model fitting since only fewer models will be fit. If you plan on performing an enrichment analysis you have to choose
+<code>filter = "post"</code>. All models will be fit (even the ones that do not pass the filtering criteria). For enrichment analysis
+you should use both good (i.e. models that pass the filtering) and bad (i.e. models that do not pass the filtering) models.
+Therefore, for post-filtering the full list is returned and it will only contain annotations that
 indicate (<code>passed_filter</code>) if the filtering was passed or not. Default is "post". For ANOVA an adjusted p-value of 0.05 is used as a cutoff.</p></td>
     </tr>
     <tr>
       <th>replicate_completeness</th>
-      <td><p>Similar to <code>completenss_MAR</code> of the <code>assign_missingness</code> function this argument sets a 
-threshold for the completeness of data. In contrast to <code>assign_missingness</code> it only determines the completeness for one 
-condition and not the comparison of two conditions. The threshold is used to calculate a minimal degree of data completeness. 
-The value provided to this argument has to be between 0 and 1, default is 0.7. It is multiplied with the number of replicates 
+      <td><p>Similar to <code>completenss_MAR</code> of the <code>assign_missingness</code> function this argument sets a
+threshold for the completeness of data. In contrast to <code>assign_missingness</code> it only determines the completeness for one
+condition and not the comparison of two conditions. The threshold is used to calculate a minimal degree of data completeness.
+The value provided to this argument has to be between 0 and 1, default is 0.7. It is multiplied with the number of replicates
 and then adjusted downward. The resulting number is the minimal number of observations that a condition needs to have to be considered
 "complete enough" for the <code>condition_completeness</code> argument.</p></td>
     </tr>
     <tr>
       <th>condition_completeness</th>
-      <td><p>This argument determines how many conditions need to at least fulfill the "complete enough" criteria 
-set with <code>replicate_completeness</code>. The value provided to this argument has to be between 0 and 1, default is 0.5. It is 
+      <td><p>This argument determines how many conditions need to at least fulfill the "complete enough" criteria
+set with <code>replicate_completeness</code>. The value provided to this argument has to be between 0 and 1, default is 0.5. It is
 multiplied with the number of conditions and then adjusted downward. The resulting number is the minimal number of conditions that
 need to fulfill the <code>replicate_completeness</code> argument for a peptide to pass the filtering.</p></td>
     </tr>
@@ -211,9 +214,9 @@ need to fulfill the <code>replicate_completeness</code> argument for a peptide t
     </tr>
     <tr>
       <th>log_logarithmic</th>
-      <td><p>logical indicating if a logarithmic or log-logarithmic model is fitted. 
+      <td><p>logical indicating if a logarithmic or log-logarithmic model is fitted.
 If response values form a symmetric curve for non-log transformed dose values, a logarithmic model instead
-of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the 
+of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the
 reason this is the default. Log-logarithmic models are symmetric if dose values are log transformed.</p></td>
     </tr>
     <tr>
@@ -222,8 +225,8 @@ reason this is the default. Log-logarithmic models are symmetric if dose values 
     </tr>
     <tr>
       <th>retain_columns</th>
-      <td><p>A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
-additional columns <code>retain_columns = NULL</code>. Specific columns can be retained by providing their names (not in quotations marks, 
+      <td><p>A vector indicating if certain columns should be retained from the input data frame. Default is not retaining
+additional columns <code>retain_columns = NULL</code>. Specific columns can be retained by providing their names (not in quotations marks,
 just like other column names, but in a vector).</p></td>
     </tr>
     </table>
@@ -239,38 +242,38 @@ If \ codeinclude_models = TURE, a list is returned that contains:</p><ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>If data filtering options are selected, data is filtered based on multiple criteria. In general, curves are only fitted 
-if there are at least 5 conditions with data points present to ensure that there is potential for a good curve fit. Therefore, 
-this is also the case if no filtering option is selected. Furthermore, a completeness cutoff is defined for filtering. By default 
-each entity (e.g. precursor) is filtered to contain at least 70<!-- % of total replicates (adjusted downward) for at least 50% of  -->
-all conditions (adjusted downward). This can be adjusted with the according arguments. In addition to the completeness cutoff, 
-also a significance cutoff is applied. ANOVA is used to compute the statistical significance of the change for each entity. 
-The resulting p-value is adjusted using the Benjamini-Hochberg method and a cutoff of q &lt;= 0.05 is applied. Curve fits that have 
-a minimal value that is higher than the maximal value are excluded as they were likely wrongly fitted. Curves with a correlation 
-below 0.8 are not passing the filtering. If a fit does not fulfill the significance or completeness cutoff, it has a chance to 
-still be considered if half of its values (+/-1 value) pass the replicate completeness criteria and half do not pass it. In order 
-to fall into this category, the values that fulfill the completeness cutoff and the ones that do not fulfill it need to be 
-consecutive, meaning located next to each other based on their concentration values. Furthermore, the values that do not pass 
-the completeness cutoff need to be lower in intensity. Lastly, the difference between the two groups is tested for statistical 
-significance using a Welch's t-test and a cutoff of p &lt;= 0.1 (we want to mainly discard curves that falsly fit the other criteria 
-but that have clearly non-significant differences in mean). This allows curves to be considered that have missing values in 
-half of their observations due to a decrease in intensity. It can be thought of as conditions that are missing not 
-at random (MNAR). It is often the case that those entities do not have a significant p-value since half of their conditions 
+    <p>If data filtering options are selected, data is filtered based on multiple criteria. In general, curves are only fitted
+if there are at least 5 conditions with data points present to ensure that there is potential for a good curve fit. Therefore,
+this is also the case if no filtering option is selected. Furthermore, a completeness cutoff is defined for filtering. By default
+each entity (e.g. precursor) is filtered to contain at least 70<!-- % of total replicates (adjusted downward) for at least 50% of -->
+all conditions (adjusted downward). This can be adjusted with the according arguments. In addition to the completeness cutoff,
+also a significance cutoff is applied. ANOVA is used to compute the statistical significance of the change for each entity.
+The resulting p-value is adjusted using the Benjamini-Hochberg method and a cutoff of q &lt;= 0.05 is applied. Curve fits that have
+a minimal value that is higher than the maximal value are excluded as they were likely wrongly fitted. Curves with a correlation
+below 0.8 are not passing the filtering. If a fit does not fulfill the significance or completeness cutoff, it has a chance to
+still be considered if half of its values (+/-1 value) pass the replicate completeness criteria and half do not pass it. In order
+to fall into this category, the values that fulfill the completeness cutoff and the ones that do not fulfill it need to be
+consecutive, meaning located next to each other based on their concentration values. Furthermore, the values that do not pass
+the completeness cutoff need to be lower in intensity. Lastly, the difference between the two groups is tested for statistical
+significance using a Welch's t-test and a cutoff of p &lt;= 0.1 (we want to mainly discard curves that falsly fit the other criteria
+but that have clearly non-significant differences in mean). This allows curves to be considered that have missing values in
+half of their observations due to a decrease in intensity. It can be thought of as conditions that are missing not
+at random (MNAR). It is often the case that those entities do not have a significant p-value since half of their conditions
 are not considered due to data missingness.</p>
-<p>The final filtered list is ranked based on a score calculated on entities that pass the filter. The score is the negative log10 
+<p>The final filtered list is ranked based on a score calculated on entities that pass the filter. The score is the negative log10
 of the adjusted ANOVA p-value scaled between 0 and 1 and the correlation scaled between 0 and 1 summed up and divided by 2. Thus,
-the highest score an entity can have is 1 with both the highest correlation and adjusted p-value. The rank is corresponding to 
-this score. Please note, that entities with MNAR conditions might have a lower score due to the missing or non-significant ANOVA 
+the highest score an entity can have is 1 with both the highest correlation and adjusted p-value. The rank is corresponding to
+this score. Please note, that entities with MNAR conditions might have a lower score due to the missing or non-significant ANOVA
 p-value. You should have a look at curves that are TRUE for <code>dose_MNAR</code> in more detail.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='fu'>fit_drc_4p</span><span class='op'>(</span>
-<span class='va'>data</span>,
-sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-response <span class='op'>=</span> <span class='va'>intensity</span>,
-dose <span class='op'>=</span> <span class='va'>concentration</span>
+  <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
+  grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
+  response <span class='op'>=</span> <span class='va'>intensity</span>,
+  dose <span class='op'>=</span> <span class='va'>concentration</span>
 <span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
@@ -285,7 +288,7 @@ dose <span class='op'>=</span> <span class='va'>concentration</span>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jan-Philipp Quast, Dina Schuster.</p>
+  <p>Developed by Jan-Philipp Quast, Dina Schuster, ETH Zurich.</p>
 </div>
 
 <div class="pkgdown">

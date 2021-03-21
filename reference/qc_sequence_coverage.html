@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -107,6 +107,9 @@
       <a href="../articles/quality_control_workflow.html">Qualtiy Control (QC) Workflow</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -159,12 +162,12 @@
     </tr>
     <tr>
       <th>coverage</th>
-      <td><p>Column in the data frame containing protein coverage in percent. This information can be obtained using 
+      <td><p>Column in the data frame containing protein coverage in percent. This information can be obtained using
 the <code><a href='sequence_coverage.html'>sequence_coverage</a></code> function.</p></td>
     </tr>
     <tr>
       <th>sample</th>
-      <td><p>Column in the data frame containing sample names. Please only provide this argument if you want to 
+      <td><p>Column in the data frame containing sample names. Please only provide this argument if you want to
 facet the distribution plot by sample otherwise do not provide this argument.</p></td>
     </tr>
     <tr>
@@ -183,9 +186,9 @@ facet the distribution plot by sample otherwise do not provide this argument.</p
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='fu'>qc_sequence_coverage</span><span class='op'>(</span>
-<span class='va'>data</span>,
-protein_identifier <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>,
-coverage <span class='op'>=</span> <span class='va'>coverage</span>
+  <span class='va'>data</span>,
+  protein_identifier <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>,
+  coverage <span class='op'>=</span> <span class='va'>coverage</span>
 <span class='op'>)</span>
 <span class='op'>}</span>
 
@@ -201,7 +204,7 @@ coverage <span class='op'>=</span> <span class='va'>coverage</span>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jan-Philipp Quast, Dina Schuster.</p>
+  <p>Developed by Jan-Philipp Quast, Dina Schuster, ETH Zurich.</p>
 </div>
 
 <div class="pkgdown">

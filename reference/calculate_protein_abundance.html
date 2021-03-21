@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -107,6 +107,9 @@
       <a href="../articles/quality_control_workflow.html">Qualtiy Control (QC) Workflow</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -171,7 +174,7 @@
     </tr>
     <tr>
       <th>peptide</th>
-      <td><p>The name of the column containing peptide sequences. This column is needed to filter for proteins with at least 3 
+      <td><p>The name of the column containing peptide sequences. This column is needed to filter for proteins with at least 3
 unique peptides. This can equate to more than three precursors. The quantification is done on the precursor level.</p></td>
     </tr>
     <tr>
@@ -181,39 +184,39 @@ unique peptides. This can equate to more than three precursors. The quantificati
     <tr>
       <th>method</th>
       <td><p>A character vector specifying with which method protein quantities should be calculated. Possible options include <code>"sum"</code>,
-which takes the sum of all precursor intensities as the protein abundance. Another option is <code>"iq"</code>, which performs protein 
-quantification based on a maximal peptide ratio extraction algorithm that is adapted from the MaxLFQ algorithm of the MaxQuant software. 
+which takes the sum of all precursor intensities as the protein abundance. Another option is <code>"iq"</code>, which performs protein
+quantification based on a maximal peptide ratio extraction algorithm that is adapted from the MaxLFQ algorithm of the MaxQuant software.
 Functions from the <a href='https://academic.oup.com/bioinformatics/article/36/8/2611/5697917'><code>iq</code></a> package are used. Default is <code>"iq"</code>.</p></td>
     </tr>
     <tr>
       <th>for_plot</th>
-      <td><p>A logical indicating whether the result should be only protein intensities or protein intensities together with precursor 
+      <td><p>A logical indicating whether the result should be only protein intensities or protein intensities together with precursor
 intensities that can be used for plotting using <code>qc_protein_abundance</code>. Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>retain_columns</th>
-      <td><p>A vector indicating if certain columns should be retained from the input data frame. Default is not retaining 
-additional columns <code>retain_columns = NULL</code>. Specific columns can be retained by providing their names (not in quotations marks, 
+      <td><p>A vector indicating if certain columns should be retained from the input data frame. Default is not retaining
+additional columns <code>retain_columns = NULL</code>. Specific columns can be retained by providing their names (not in quotations marks,
 just like other column names, but in a vector).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If <code>for_plot = FALSE</code>, protein abundances are returned, if <code>for_plot = TRUE</code> also precursor intensities are returned. The 
+    <p>If <code>for_plot = FALSE</code>, protein abundances are returned, if <code>for_plot = TRUE</code> also precursor intensities are returned. The
 later output is ideal for plotting with <code>qc_protein_abundance</code> and can be filtered to only include protein abundances.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='fu'>calculate_protein_abundance</span><span class='op'>(</span>
-<span class='va'>data</span>,
-sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-protein_id <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>,
-precursor <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-peptide <span class='op'>=</span> <span class='va'>pep_stripped_sequence</span>,
-intensity_log2 <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
-method <span class='op'>=</span> <span class='st'>"iq"</span>,
-retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>pg_protein_accessions</span><span class='op'>)</span>
+  <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
+  protein_id <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>,
+  precursor <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
+  peptide <span class='op'>=</span> <span class='va'>pep_stripped_sequence</span>,
+  intensity_log2 <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
+  method <span class='op'>=</span> <span class='st'>"iq"</span>,
+  retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>pg_protein_accessions</span><span class='op'>)</span>
 <span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
@@ -228,7 +231,7 @@ retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jan-Philipp Quast, Dina Schuster.</p>
+  <p>Developed by Jan-Philipp Quast, Dina Schuster, ETH Zurich.</p>
 </div>
 
 <div class="pkgdown">
