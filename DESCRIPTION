@@ -60,6 +60,6 @@ Suggests:
     STRINGdb
 Depends: 
     R (>= 4.0)
-URL: https://github.com/jpquast/protti, https://jpquast.github.io/protti
+URL: https://github.com/jpquast/protti, https://jpquast.github.io/protti/
 BugReports: https://github.com/jpquast/protti/issues
 VignetteBuilder: knitr
