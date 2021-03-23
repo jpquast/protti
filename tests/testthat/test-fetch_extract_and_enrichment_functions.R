@@ -1,7 +1,7 @@
 context("test-fetch_extract_and_enrichment_functions")
 
 # make tests conditional. They onlyr run if environmental variable "TEST_PROTTI" is set to TRUE
-if (Sys.getenv("TEST_PROTTI") == TRUE) {
+if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("fetch_uniprot works", {
     unis <- c("iRT", "P36578", "O43324", "Q00796", "P0CX31;P0CX32", "P00163;P03873;P03879", "P06873_1-100")
     expect_warning(uniprot <- fetch_uniprot(unis))

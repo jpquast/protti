@@ -40,7 +40,7 @@ test_that("median_normalization works", {
   all_equal_normalised <- range(normalised$median) / mean(normalised$median)
   expect_equal(all_equal_normalised[1], all_equal_normalised[2]) # test that medians are equal after normalizing
 
-  if (Sys.getenv("TEST_PROTTI") == TRUE) {
+  if (Sys.getenv("TEST_PROTTI") == "true") {
     ## test drc data
     non_normalised_drc <- normalised_data_drc %>%
       dplyr::group_by(sample) %>%
@@ -71,7 +71,7 @@ test_that("assign_missingness works", {
   expect_equal(sort(missingness_count$n), c(12, 516, 618, 3078))
 })
 
-if (Sys.getenv("TEST_PROTTI") == TRUE) {
+if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("impute works", {
     # only test method = "ludovic" and not method = "noise". Does not test switching off log2 transformation error.
     imputed_data <- impute(missing_data, sample = sample, grouping = peptide, intensity = normalised_intensity_log2, condition = condition, comparison = comparison, missingness = missingness, method = "ludovic", retain_columns = protein)
@@ -118,7 +118,7 @@ test_that("plot_peptide_profiles works", {
   expect_is(p[[1]], "ggplot")
   expect_error(print(p[[1]]), NA)
 
-  if (Sys.getenv("TEST_PROTTI") == TRUE) {
+  if (Sys.getenv("TEST_PROTTI") == "true") {
     p_peptides <- plot_peptide_profiles(
       data = missing_data,
       sample = sample,
@@ -143,7 +143,7 @@ test_that("diff_abundance works", {
   expect_equal(ncol(diff), 9)
   expect_equal(round(min(diff$adj_pval, na.rm = TRUE), digits = 9), 0.00758761)
 
-  if (Sys.getenv("TEST_PROTTI") == TRUE) {
+  if (Sys.getenv("TEST_PROTTI") == "true") {
     data_mean_sd <- missing_data %>%
       tidyr::drop_na() %>%
       dplyr::group_by(condition, peptide, protein) %>%
@@ -168,7 +168,7 @@ test_that("diff_abundance works", {
   }
 })
 
-if (Sys.getenv("TEST_PROTTI") == TRUE) {
+if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("plot_pval_distribution works", {
     p <- plot_pval_distribution(
       diff,
@@ -199,7 +199,7 @@ test_that("volcano_protti works", {
   expect_is(p, "ggplot")
   expect_error(print(p), NA)
 
-  if (Sys.getenv("TEST_PROTTI") == TRUE) {
+  if (Sys.getenv("TEST_PROTTI") == "true") {
     p_interactive <- volcano_protti(
       data = diff,
       grouping = peptide,
@@ -245,7 +245,7 @@ test_that("fit_drc_4p works", {
   expect_equal(nrow(drc_fit), 282)
   expect_equal(ncol(drc_fit), 18)
   expect_equal(round(max(drc_fit$correlation, na.rm = TRUE), digits = 3), 0.876)
-  expect_equal(round(min(drc_fit$pval, na.rm = TRUE), digits = 40), 2.692288e-05)
+  expect_equal(round(min(drc_fit$anova_pval, na.rm = TRUE), digits = 6), 0.007297)
 })
 
 test_that("plot_drc_4p works", {

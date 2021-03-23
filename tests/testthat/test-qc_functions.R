@@ -26,7 +26,7 @@ test_that("qc_data_completeness works", {
   expect_is(p, "ggplot")
   expect_error(print(p), NA)
 
-  if (Sys.getenv("TEST_PROTTI") == TRUE) {
+  if (Sys.getenv("TEST_PROTTI") == "true") {
     p_interactive <- qc_data_completeness(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, plot = TRUE, interactive = TRUE)
     expect_is(p_interactive, "plotly")
     expect_error(print(p_interactive), NA)
@@ -56,7 +56,7 @@ test_that("qc_median_intensities works", {
   expect_is(medians, "data.frame")
   expect_equal(round(medians$median_intensity, digits = 2), c(17.34, 17.33, 17.41, 17.36, 17.40, 17.39))
 
-  if (Sys.getenv("TEST_PROTTI") == TRUE) {
+  if (Sys.getenv("TEST_PROTTI") == "true") {
     p_interactive <- qc_median_intensities(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, plot = TRUE, interactive = TRUE)
     expect_is(p_interactive, "plotly")
     expect_error(print(p_interactive), NA)
@@ -68,7 +68,7 @@ test_that("qc_median_intensities works", {
 })
 
 test_that("qc_ids works", {
-  if (Sys.getenv("TEST_PROTTI") == TRUE) {
+  if (Sys.getenv("TEST_PROTTI") == "true") {
     p_interactive <- qc_ids(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, condition = condition, plot = TRUE, interactive = TRUE, title = "Test Title")
     expect_is(p_interactive, "plotly")
     expect_error(print(p_interactive), NA)
@@ -115,7 +115,7 @@ test_that("qc_sample_correlation works", {
   expect_is(p, "pheatmap")
   expect_error(print(p), NA)
 
-  if (Sys.getenv("TEST_PROTTI") == TRUE) {
+  if (Sys.getenv("TEST_PROTTI") == "true") {
     p_interactive <- qc_sample_correlation(data = data, sample = sample, grouping = peptide, intensity_log2 = peptide_intensity_missing, condition = condition, interactive = TRUE)
     expect_is(p_interactive, "plotly")
     expect_error(print(p_interactive), NA)
@@ -137,7 +137,7 @@ test_that("qc_proteome_coverage works", {
   expect_is(p, "ggplot")
   expect_error(print(p), NA)
 
-  if (Sys.getenv("TEST_PROTTI") == TRUE) {
+  if (Sys.getenv("TEST_PROTTI") == "true") {
     p_interactive <- qc_proteome_coverage(data = data_proteins, sample = sample, protein_id = protein_id, organism_id = "83333", plot = TRUE, interactive = TRUE)
     expect_is(p_interactive, "plotly")
     expect_error(print(p_interactive), NA)
@@ -153,7 +153,7 @@ test_that("qc_sequence_coverage works", {
   expect_is(p_facet, "ggplot")
   expect_error(print(p_facet), NA)
 
-  if (Sys.getenv("TEST_PROTTI") == TRUE) {
+  if (Sys.getenv("TEST_PROTTI") == "true") {
     p_interactive <- qc_sequence_coverage(data = data, protein_identifier = protein, coverage = coverage, interactive = TRUE)
     expect_is(p_interactive, "plotly")
     expect_error(print(p_interactive), NA)
@@ -217,7 +217,7 @@ test_that("qc_contaminants works", {
   expect_is(p, "ggplot")
   expect_error(print(p), NA)
 
-  if (Sys.getenv("TEST_PROTTI") == TRUE) {
+  if (Sys.getenv("TEST_PROTTI") == "true") {
     p_interactive <- qc_contaminants(data = contaminant_data, sample = sample, protein = protein, is_contaminant = contaminant, intensity = peptide_intensity_missing, plot = TRUE, interactive = TRUE)
     expect_is(p_interactive, "plotly")
     expect_error(print(p_interactive), NA)
@@ -243,7 +243,7 @@ test_that("qc_peptide_type works", {
   expect_is(p_intensity, "ggplot")
   expect_error(print(p_intensity), NA)
 
-  if (Sys.getenv("TEST_PROTTI") == TRUE) {
+  if (Sys.getenv("TEST_PROTTI") == "true") {
     p_count_interactive <- qc_peptide_type(data = data_no_na, sample = sample, peptide = peptide, pep_type = pep_type, intensity = peptide_intensity_missing, method = "count", plot = TRUE, interactive = TRUE)
     expect_is(p_count_interactive, "plotly")
     expect_error(print(p_count_interactive), NA)
@@ -262,7 +262,7 @@ test_that("qc_peak_width works", {
   expect_is(p, "ggplot")
   expect_error(print(p), NA)
 
-  if (Sys.getenv("TEST_PROTTI") == TRUE) {
+  if (Sys.getenv("TEST_PROTTI") == "true") {
     p_interactive <- qc_peak_width(data_no_na, sample = sample, intensity = peptide_intensity_missing, retention_time = retention_time, peak_width = peak_width, interactive = TRUE)
     expect_is(p_interactive, "plotly")
     expect_error(print(p_interactive), NA)
