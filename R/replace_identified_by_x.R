@@ -33,7 +33,7 @@ replace_identified_by_x <-
       function(x, y) {
         times <- y - x + 1
         stringr::str_sub(sequence, start = x, end = y) <- paste(rep("x", times = times), collapse = "")
-        sequence <<- sequence
+        sequence <<- sequence # this does not modify the global environment by only the environment of the parent function (replace_identified_by_x).
       }
     )
     result[[length(result)]]

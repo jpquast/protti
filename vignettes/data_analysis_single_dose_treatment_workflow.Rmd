@@ -14,6 +14,7 @@ vignette: >
 </style>
   
 ```{r, include = FALSE}
+test_protti <- identical(Sys.getenv("TEST_PROTTI"), "true")
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -76,7 +77,7 @@ The input data should have a similar structure to this example:
   
   Before we can start analysing our data, we need to load the **protti** package. This is done by using the base R function `library()`. In addition, we are also loading the packages `magrittr` and `dplyr`. Both `magrittr` and `dplyr` are part of the [tidyverse](https://www.tidyverse.org), a collection of packages that provide useful functionalities for data processing and visualisation. If you use many tidyverse packages in your workflow you can easily load all at once by calling `library(tidyverse)`.
 
-```{r setup, message = FALSE, warning = FALSE}
+```{r setup, eval = test_protti, message = FALSE, warning = FALSE}
 library(protti)
 library(magrittr)
 library(dplyr)
@@ -92,7 +93,7 @@ your_data <- read_protti(filename = "mydata/data.csv")
 
 For this example we are going to use the `rapamycin_10uM` test data set included in **protti**. To read in the file we are simply going to use the `utils` function `data()`.
 
-```{r load_data}
+```{r load_data, eval = test_protti}
 data("rapamycin_10uM")
 ```
 
@@ -125,7 +126,7 @@ $$CV = \frac{standard ~ deviation}{mean} * 100$$
   
 _Note: The use of the `filter_cv()` function is optional. You should be careful with using it since it might remove a lot of your data if your experiment was rather noisy. However, especially in these cases it might be useful to apply the function in order to remove peptides with a poor quality beforehand to improve the overall result._
   
-```{r median_normalisation_filtering, message = FALSE, warning = FALSE}
+```{r median_normalisation_filtering, eval = test_protti, message = FALSE, warning = FALSE}
 data_normalised <- rapamycin_10uM %>%
   filter(eg_is_decoy == FALSE) %>%
   mutate(intensity_log2 = log2(fg_quantity)) %>%
@@ -146,7 +147,7 @@ For LiP-MS analysis we commonly remove non-proteotypic peptides (i.e. peptides t
 
 To filter out non proteotypic peptides we are using the `dplyr` function `filter()`.
 
-```{r data_preparation_prot_pep, message = FALSE, warning = FALSE}
+```{r data_preparation_prot_pep, eval = test_protti, message = FALSE, warning = FALSE}
 data_filtered_proteotypic <- data_filtered %>%
   filter(pep_is_proteotypic == TRUE)
 ```
@@ -165,7 +166,7 @@ _Note: you can also directly join the UniProt data frame with your data without 
 
 Next, we would like to assign the trypticity of our peptides (i.e. if the peptides are fully-tryptic, semi-tryptic or non-tryptic). In order to do this we will first need to define the peptide positions in the protein and find the preceding and following amino acids. To obtain this information we are using the **protti** function `find_peptide()`. The output of this function can then be used in the function `peptide_type()` which will add an additional column with the peptide trypticity information. By using the function `sequence_coverage()` we are adding an additional column to the data frame containing information on how much of the protein sequence we identified in our experiment. 
 
-```{r fetching_database_information, message = FALSE, warning = FALSE}
+```{r fetching_database_information, eval = test_protti, message = FALSE, warning = FALSE}
 uniprot_ids <- unique(data_filtered_proteotypic$pg_protein_accessions)
 
 uniprot <-
@@ -200,7 +201,7 @@ data_filtered_uniprot <- data_filtered_proteotypic %>%
 
 With the `qc_sequence_coverage()` function, you can use the sequence coverage information to check how coverage is distributed over all proteins in the sample. Usually, the center of the distribution is low due to many proteins with poor coverage. For this subseted data set with only 40 proteins the sequence coverage is distributed relatively evenly. 
 
-```{r coverage_plot, fig.align= "center", fig.width = 6, fig.height = 5}
+```{r coverage_plot, eval = test_protti, fig.align= "center", fig.width = 6, fig.height = 5}
 qc_sequence_coverage(
   data = data_filtered_uniprot,
   protein_identifier = pg_protein_accessions,
@@ -228,7 +229,7 @@ Both methods impute MAR data using the mean and variance of the condition with t
 
 Since we are dealing with a LiP-MS data set we are performing the statistical analysis on the precursor level. For protein abundance data you can simply use protein abundances as your intensities and select your protein groups column for the grouping argument. Make sure to retain any columns you need for further data analysis with the `retain_columns` argument of both functions.
 
-```{r t_test, message = FALSE, warning = FALSE}
+```{r t_test, eval = test_protti, message = FALSE, warning = FALSE}
 diff_abundance_data <- data_filtered_uniprot %>%
   assign_missingness(
     sample = r_file_name,
@@ -257,7 +258,7 @@ diff_abundance_data <- data_filtered_uniprot %>%
 
 The p-value calculated with the t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg (FDR) correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall even distribution with a concentration of values in the significant range. You can check this by using the protti function `plot_pval_distribution()`.
 
-```{r pval_distribution, message = FALSE, warning = FALSE, fig.align= "center", fig.width = 6, fig.height = 5}
+```{r pval_distribution, eval = test_protti, message = FALSE, warning = FALSE, fig.align= "center", fig.width = 6, fig.height = 5}
 plot_pval_distribution(data = diff_abundance_data,
                        grouping = eg_precursor_id,
                        pval = pval
@@ -275,7 +276,7 @@ The output of the previously used `diff_abundance()` function is ideal to use fo
 We are going to highlight the peptides of the known target of Rapamycin FKBP12 (UniProt ID = P62942) in blue to quickly find the peptides in the plot. You can also make the plot interactive by setting `interactive = TRUE`. This will help you quickly obtain more information on each point in the plot.
 We are going to plot the volcano plot with and without adjusted p-values. 
 
-```{r volcano_plot, fig.align= "center", fig.width = 6, fig.height = 5, message = FALSE, warning = FALSE}
+```{r volcano_plot, eval = test_protti, fig.align= "center", fig.width = 6, fig.height = 5, message = FALSE, warning = FALSE}
 volcano_protti(
   data = diff_abundance_data,
   grouping = eg_precursor_id,
@@ -311,7 +312,7 @@ For LiP-MS experiments a good way to see where on the protein the changes due to
 
 In order to produce a barcode plot only for our target FKBP12 we are creating a data frame that contains only information for our target protein. We are doing this by using `dplyr`'s `filter()` function. The filtered data frame is then used as the input for the plot.
 
-```{r barcode_plot, fig.align = "center", fig.width = 6, message = FALSE, warning = FALSE}
+```{r barcode_plot, eval = test_protti, fig.align = "center", fig.width = 6, message = FALSE, warning = FALSE}
 FKBP12 <- diff_abundance_data %>%
   filter(pg_protein_accessions == "P62942")
 
@@ -332,7 +333,7 @@ barcode_plot(
 An additional way to plot LiP-MS changes are Wood's plots. These plots will show the extent of the change along the protein sequence.
 To produce a Wood's plot we are using the function `woods_plot()` and colour the peptides according to their adjusted p-values. 
 
-```{r woods_plot, fig.align = "center", fig.width = 6, message = FALSE, warning = FALSE}
+```{r woods_plot, eval = test_protti, fig.align = "center", fig.width = 6, message = FALSE, warning = FALSE}
 woods_plot(
   data = FKBP12,
   fold_change = diff,
@@ -351,7 +352,7 @@ woods_plot(
 To see how the individual precursors in our target protein are changing with the treatment we are plotting profile plots by using the function `plot_peptide_profiles()`. This is particularly useful as you can quickly see if your whole protein changes in abundance or only a fraction of precursors/peptides.
 If you have protein abundance data you can also use the plot to show changes in protein abundance over your treatment condition(s). By selecting multiple targets (as a vector) you can produce the plot for multiple proteins.
 
-```{r protile_plot, fig.align = "center", fig.width = 20, fig.height = 6, message = FALSE, warning = FALSE}
+```{r protile_plot, eval = test_protti, fig.align = "center", fig.width = 20, fig.height = 6, message = FALSE, warning = FALSE}
 FKBP12_intensity <- data_filtered_uniprot %>% 
   filter(pg_protein_accessions == "P62942")
 
