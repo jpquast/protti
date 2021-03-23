@@ -108,6 +108,11 @@ test_that("qc_pca works", {
   p <- qc_pca(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, condition = condition)
   expect_is(p, "ggplot")
   expect_error(print(p), NA)
+  if (Sys.getenv("TEST_PROTTI") == "true") {
+    p_scree <- qc_pca(data = data, sample = sample, grouping = peptide, intensity = peptide_intensity_missing, condition = condition, plot_style = "scree")
+    expect_is(p_scree, "ggplot")
+    expect_error(print(p_scree), NA)
+  }
 })
 
 test_that("qc_sample_correlation works", {
