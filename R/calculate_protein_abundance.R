@@ -54,6 +54,7 @@ calculate_protein_abundance <- function(data, sample, protein_id, precursor, pep
     dplyr::group_by({{ protein_id }}) %>%
     dplyr::mutate(n_peptides = dplyr::n_distinct(!!rlang::ensym(peptide))) %>%
     dplyr::filter(.data$n_peptides > 2) %>%
+    dplyr::select(-.data$n_peptides) %>% 
     dplyr::ungroup()
 
   if (method == "sum") {
@@ -68,6 +69,10 @@ calculate_protein_abundance <- function(data, sample, protein_id, precursor, pep
     combined <- result %>%
       dplyr::mutate({{ precursor }} := "protein_intensity") %>%
       dplyr::bind_rows(input)
+    
+    if (missing(retain_columns) & for_plot == TRUE) {
+      return(combined)
+    }
   }
   if (method == "iq") {
     if (!requireNamespace("iq", quietly = TRUE)) {
