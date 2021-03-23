@@ -20,7 +20,7 @@
 #' @import ggplot2
 #' @import tidyr
 #' @importFrom magrittr %>%
-#' @importFrom stringr str_replace str_extract
+#' @importFrom stringr str_replace str_extract str_sort
 #' @importFrom stats prcomp
 #' @importFrom rlang .data
 #' @importFrom ggrepel geom_text_repel
@@ -70,7 +70,8 @@ qc_pca <-
       dplyr::mutate(
         percent_variance = (pca$sdev^2 / sum(pca$sdev^2) * 100),
         dimension = row.names(.)
-      )
+      ) %>% 
+      dplyr::mutate(dimension = factor(.data$dimension, levels = unique(stringr::str_sort(.data$dimension, numeric = TRUE))))
     if (plot_style == "pca") {
       plot <- pca_df %>%
         ggplot2::ggplot(aes(x = !!rlang::sym(components[1]), y = !!rlang::sym(components[2]), col = as.character({{ condition }}), shape = {{ digestion }})) +
@@ -120,7 +121,7 @@ qc_pca <-
         vjust = -0.6,
         hjust = -0.1
         ) +
-        ggplot2::scale_y_continuous(limits = NULL, expand = c(0, 4)) +
+        ggplot2::scale_y_continuous(limits = NULL, expand = ggplot2::expansion(mult = c(0.05, 0.08))) +
         ggplot2::theme_bw() +
         ggplot2::theme(
           plot.title = ggplot2::element_text(size = 20),

@@ -14,7 +14,7 @@ text-align: justify}
 </style>
 
 ```{r, include = FALSE}
-
+test_protti <- identical(Sys.getenv("TEST_PROTTI"), "true")
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -63,7 +63,7 @@ The input data should have a similar structure to this example:
 
 Before we can start analysing our data, we need to load the **protti** package. This is done by using the base R function `library()`. In addition, we are also loading the packages `magrittr` and `dplyr`. Both `magrittr` and `dplyr` are part of the [tidyverse](https://www.tidyverse.org), a collection of packages that provide useful functionalities for data processing and visualisation. If you use many tidyverse packages in your workflow you can easily load all at once by calling `library(tidyverse)`.
 
-```{r setup, message = FALSE, warning = FALSE}
+```{r setup, eval = test_protti, message = FALSE, warning = FALSE}
 library(protti)
 library(magrittr)
 library(dplyr)
@@ -79,7 +79,7 @@ The output of the `create_synthetic_data()` function is modeled after real LiP-M
 
 Please note that generally, quality control should be conducted on raw unfiltered data (the direct output of your search engine of choice).
 
-```{r create_synthetic_data}
+```{r create_synthetic_data, eval = test_protti}
 set.seed(123) # by setting the seed we are making sure that the random object generation can be reproduced
 
 data <- create_synthetic_data(n_proteins = 100,
@@ -112,7 +112,7 @@ We also make use of the pipe operator `%>%` included in the R package `magrittr`
 
 The "combined" group of CVs contains CVs across all samples and not only across the replicates of a certain condition. Ideally the combined CVs should always be the group with the highest CV.  
 
-```{r qc_cvs, fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r qc_cvs, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 input <- data %>%
   mutate(raw_intensity = 2^peptide_intensity_missing) # as the data is log2 transformed, we need to backtransform it before calculating the CVs
 
@@ -136,7 +136,7 @@ The number of protein or peptide identifications should be similar for different
 
 For the analysis of the number of identifications of precursors, peptides or proteins we are using the function `qc_ids()`. This function can return either a table or a plot. The output of this function - and also of a lot of other **protti** functions - can be plotted in an interactive plot that makes use of the R package `plotly`. You can plot an interactive version of the plot by setting `interactive = TRUE` within the function call. 
 
-```{r qc_ids, fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r qc_ids, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_ids(data = input,
        sample = sample,
        grouping = protein,
@@ -169,7 +169,7 @@ We are going to use the function `qc_peptide_type()` to evaluate the distributio
 
 In a typical LiP-MS experiment, there should be little non-tryptic peptides. The peptide type distribution depends on your digestion conditions (i.e. temperature, duration, concentration).
 
-```{r qc_peptide_type, fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r qc_peptide_type, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_peptide_type(data = input,
                 sample = sample, 
                 peptide = peptide, 
@@ -194,7 +194,7 @@ The function `qc_intensity_distribution()` plots all precursor, peptide or prote
 
 A similar way in which the run intensities can be assessed is to plot the median run intensities as a line plot. This helps you quickly assess if there are any trends in your data. The function to use for this analysis is `qc_median_intensities()`. 
 
-```{r qc_intensity_distribution_boxplot, fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r qc_intensity_distribution_boxplot, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 
 qc_intensity_distribution(data = input,
                           sample = sample,
@@ -213,7 +213,7 @@ qc_median_intensities(data = input,
 The charge state distibution of the detected peptides can be assessed with `qc_charge_states()`. Similar to the peptide types, this should of course also be homogenous for the different samples. The function can return either a plot or a table based on counts of peptides with a specific charge state or the intensities of these peptides. 
 For `method = "intensity"` the function requires the raw intensity values created previously as its input.
 
-```{r qc_charge_states, fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r qc_charge_states, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_charge_states(data = input, 
                  sample = sample, 
                  grouping = peptide, 
@@ -231,7 +231,7 @@ The number of missed cleavages should generally be low in a proteomics or LiP-MS
 
 We are going to check the numbers of missed cleavages in our dataset by using the function `qc_missed_cleavages()`. It can assess missed cleavages based on the count of peptides with missed cleavages or the intensities of the corresponding peptides. For `method = "intensity"` the function uses the raw (not log2 transformed) intensity values. You can have the function either return a plot or a table.  
 
-```{r qc_missed_cleavages, fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r qc_missed_cleavages, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_missed_cleavages(data = input, 
                     sample = sample, 
                     grouping = peptide, 
@@ -247,7 +247,7 @@ The following function gives you insight into the protein coverage percentages i
 
 To assess the protein coverage distribution, we are going to use the function `qc_protein_coverage()`. If you do not have a column containing the protein coverages in your data, you can use the function `sequence_coverage()` to obtain this information. 
 
-```{r qc_sequence_coverage, fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r qc_sequence_coverage, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_sequence_coverage(data = input, 
                      protein_identifier = protein, 
                      coverage = coverage)
@@ -258,7 +258,7 @@ qc_sequence_coverage(data = input,
 In order to identify potential chromatographic issues that might have occurred during the measurement we can have a look at the chromatographic median peak widths over the complete chromatogram. To do this we are going to use the function `qc_peak_width()`. This function requires either the peak start and end times or the retention time and peak width. This information can be obtained from Spectronaut (or any other search engine of your choice). 
 The peak widths should be similar for all the measured samples of the experiment. 
 
-```{r qc_peak_width, fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r qc_peak_width, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_peak_width(data = input,
               sample = sample, 
               intensity = peptide_intensity_missing,
@@ -270,7 +270,7 @@ qc_peak_width(data = input,
 
 he following function `qc_data_completeness()` checks how many of all detected precursors, peptides or proteins were identified in each sample. The function can return either a plot or a table. 
 
-```{r qc_data_completeness, fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r qc_data_completeness, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_data_completeness(data = input, 
                      sample = sample, 
                      grouping = peptide, 
@@ -282,7 +282,7 @@ qc_data_completeness(data = input,
 
 For different kinds of analyses (e.g. t-tests) it is important that your data intensity follows a normal distribution. To ensure that this is the case, we are going to use the function `qc_intensity_distriubution()`. The function returns a histogram plot when `plot_style = "histogram"` showing how the intensities are distributed.
 
-```{r qc_intensity_distribution_histogram, fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r qc_intensity_distribution_histogram, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_intensity_distribution(data = input,
                           grouping = peptide,
                           intensity_log2 = peptide_intensity_missing,
@@ -293,7 +293,7 @@ qc_intensity_distribution(data = input,
 
 Another way of quality control is to check the correlation of your samples. Ideally, replicates should cluster together and different treatment conditions should be separated. We are now going to check if this is the case for our data by using the function `qc_sample_correlation()`. The function will return a correlation heatmap with a comparison of all samples.
 
-```{r qc_sample_correlation, fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r qc_sample_correlation, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
  qc_sample_correlation(data = input,
                        sample = sample, 
                        grouping = peptide, 
@@ -307,7 +307,7 @@ Another way of quality control is to check the correlation of your samples. Idea
 Another popular quality control method (which could also be considered part of data analysis) is the principal component analysis (PCA). Generally, PCA is a method that reduces dimensionality of large datasets. In our case this helps us to quickly assess how similar or different our replicates and conditions are. We are going to use `qc_pca()` to compute and plot a PCA for our data.
 Before plotting your PCA you can check how much of your variance can be explained with each of the principle components. To do that you can plot a scree-plot using the function `qc_pca()` and setting `plot_style = "scree"`. In this example we can see that the variance can be best explained with PC1 and PC2 so we can go ahead and plot these.
 
-```{r qc_pca, fig.width = 6, fig.height = 4, fig.align = "center"}
+```{r qc_pca, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_pca(
   data = data,
   sample = sample,

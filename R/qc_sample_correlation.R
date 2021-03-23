@@ -132,7 +132,7 @@ qc_sample_correlation <- function(data, sample, grouping, intensity_log2, condit
         cluster_cols = stats::as.hclust(dendrogram_column),
         annotation = annotation,
         annotation_colors = annotation_colours,
-        main = "Correlation based hirachical clustering of samples",
+        main = "Correlation based hierachical clustering of samples",
         color = viridis::viridis(100)
       )
     return(heatmap_static)

@@ -14,7 +14,7 @@ text-align: justify}
 </style>
 
 ```{r, include = FALSE}
-
+test_protti <- identical(Sys.getenv("TEST_PROTTI"), "true")
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -38,7 +38,7 @@ For limited proteolysis-coupled to mass spectrometry ([LiP-MS](https://www.natur
 
 Before starting the analysis of your data you need to load **protti** and additional packages utilised for the analysis. As described on the [main page](https://jpquast.github.io/protti/index.html) of **protti**, the [tidyverse](https://www.tidyverse.org) package collection is by design working well together with the rest of the package. You can load packages after you installed them with the `library()` function.
 
-```{r load_packages, warning = FALSE, message = FALSE}
+```{r load_packages, eval = test_protti, warning = FALSE, message = FALSE}
 # Load packages
 library(protti)
 library(dplyr)
@@ -62,7 +62,7 @@ rapamycin_dose_response <- read_protti("your_data.csv")
 
 In this example the rapamycin dose-response data set is included in protti and you can easily use it by calling the `data()` function. This will load the data into your R session.
 
-```{r load_data, warning = FALSE}
+```{r load_data, eval = test_protti, warning = FALSE}
 utils::data("rapamycin_dose_response")
 ```
 
@@ -78,7 +78,7 @@ _Note: If your search tool already normalised your data you should not normalise
 
 In addition to the removal of decoys we also remove any non-proteotypic peptides (`pep_is_proteotypic`) from our analysis. This is specific for the analysis of LiP-MS data. If a peptide is non-proteotypic it is part of two or more proteins. If we detect a change in non-proteotypic peptides it is not possible to clearly assign which of the proteins it is coming from. 
 
-```{r filter_transform_normalise}
+```{r filter_transform_normalise, eval = test_protti}
 # Filter, log2 transform and normalise data
 data_normalised <- rapamycin_dose_response %>% 
   filter(eg_is_decoy == FALSE) %>% 
@@ -92,14 +92,14 @@ It is also useful to check the intensity distribution of all precursors with the
 
 For experiments measured in data independent acquisition (DIA) mode. It is good to filter out very low intensity values that are not part of the distribution. These values are likely false assignments of peaks. If you look closely you can see a small peak around 0 corresponding to these values. In the case of our distribution we could chose a cutoff at a log2 intensity of 5, which corresponds to a raw intensity of 32. 
 
-```{r intensity_distribution, fig.align = "center", fig.width = 7, fig.height = 5}
+```{r intensity_distribution, eval = test_protti, fig.align = "center", fig.width = 7, fig.height = 5}
 qc_intensity_distribution(data = data_normalised,
                           grouping = eg_precursor_id,
                           intensity = normalised_intensity_log2,
                           plot_style = "histogram")
 ```
 
-```{r intensity_filtering}
+```{r intensity_filtering, eval = test_protti}
 data_normalised <- data_normalised %>% 
   filter(normalised_intensity_log2 > 5)
 ```
@@ -110,7 +110,7 @@ Before we fit dose-response models to our data, we can check how samples cluster
 
 _Note: Many of **protti**'s plotting function also have the option to display an interactive version of the plot with an `interactive` argument._
 
-```{r sample_correlation, fig.align = "center", fig.width = 7, fig.height = 5}
+```{r sample_correlation, eval = test_protti, fig.align = "center", fig.width = 7, fig.height = 5}
 qc_sample_correlation(data = data_normalised,
                       sample = r_file_name,
                       grouping = eg_precursor_id,
@@ -122,7 +122,7 @@ For our Rapamycin data set we cannot identify any clear sample clustering based 
 
 In addition to correlation based clustering a principal component analysis can be performed using the **protti** function `qc_pca()`. Similar to before, good clustering is usually dependent on the amount of changing precursors (or peptides/proteins). 
 
-```{r sample_pca, fig.align = "center", fig.width = 7, fig.height = 5, warning = FALSE, message = FALSE}
+```{r sample_pca, eval = test_protti, fig.align = "center", fig.width = 7, fig.height = 5, warning = FALSE, message = FALSE}
 qc_pca(data = data_normalised,
        sample = r_file_name,
        grouping = eg_precursor_id,
@@ -145,7 +145,7 @@ $b$ is the Hill's coefficient (e.g. the negative slope at the inflection point)
 
 The output of `fit_drc_4p()` provides extensive information on the goodness of fit. Furthermore, the function filters and ranks fits based on several criteria which include completeness of data and a significance cutoff based on an adjusted p-value obtained from ANOVA. For details about the filtering steps you can read the function documentation by calling `?fit_drc_4p`. If you only care about your potential hits (and exclude precursors/peptides/proteins that do not pass the filtering e.g. due to too little observations), you can choose `filter = "pre"`, which filters the data before model fitting. This speeds up the process because less models need to be fit. If you want to perform enrichment analysis later on you should keep the default `filter = "post"`. This will fit all possible models and then only annotate models based on whether they passed or failed the filtering step (`passed_filter`). 
 
-```{r model_fit}
+```{r model_fit, eval = test_protti}
 fit <- data_normalised %>% 
   fit_drc_4p(sample = r_file_name, 
              grouping = eg_precursor_id,
@@ -178,7 +178,7 @@ future::plan(future::sequential)
 
 If we have a look at all precursors based on their rank (calculated from correlation and ANOVA q-value), we can see that as expected most of them are FKBP12 (P62942) peptides. One benefit of analysing LiP-MS data on the precursor level (rather than peptide level) is that multiple lines of evidence for a change in the specific peptide can be used (we have data for each different charge and modification state). Therefore, it is always good to check if there are other precursors of a good scoring peptide that do not show any regulation at all. This would mean that the reason for the observed response is not based on a biological effect.
 
-```{r result_analysis, echo=FALSE, results='asis'}
+```{r result_analysis, eval = test_protti, echo=FALSE, results='asis'}
 fit %>% 
   filter(rank <= 20) %>% 
   select(rank, score, eg_precursor_id, pg_protein_accessions, anova_adj_pval, correlation, ec_50) %>% 
@@ -191,7 +191,7 @@ fit %>%
 
 Since we know the true positive binding partner of Rapamycin to be FKBP12 we can plot the true positive rate based on the rank each precursor received. 
 
-```{r true_positive_rate, fig.align = "center", echo=FALSE, fig.width = 7, fig.height = 5}
+```{r true_positive_rate, eval = test_protti, fig.align = "center", echo=FALSE, fig.width = 7, fig.height = 5}
 fit %>% 
   filter(passed_filter == TRUE) %>% 
   mutate(binds_treatment = pg_protein_accessions == "P62942") %>%  # create new column with prior knowledge about binding partners of treatment
@@ -223,7 +223,7 @@ After model fitting, you can easily visualise model fits by plotting them with t
 
 Note: The output of `fit_drc_4p()` includes two columns with data frames containing the model and original data points required for the plot. These data frames contain the original names for `dose` and `response` that you provided to `fit_drc_4p()`. 
 
-```{r model_plot, fig.align = "center", fig.width = 7, fig.height = 5, message = FALSE, warning = FALSE}
+```{r model_plot, eval = test_protti, fig.align = "center", fig.width = 7, fig.height = 5, message = FALSE, warning = FALSE}
 # Model plotting
 plot_drc_4p(fit,
             grouping = eg_precursor_id,
@@ -248,7 +248,7 @@ The [STRING](https://academic.oup.com/nar/article/47/D1/D607/5198476) database p
 
 **protti** has several functions for fetching database information. One commonly used database in the proteomics community is UniProt. By providing the `fetch_uniprot()` function with a character vector of your protein IDs, you can fetch additional information about the proteins. These include names, IDs from other databases, gene ontology annotations, information about the active metabolite and metal binding sites, protein length and sequence. You can freely select which information you are most interested in by providing it to the `columns` arguments of the `fetch_uniprot()` function based on the information they [provide](https://www.uniprot.org/help/uniprotkb_column_names) for download. 
 
-```{r uniprot_annotation}
+```{r uniprot_annotation, eval = test_protti}
 # fetching of UniProt information
 unis <- unique(fit$pg_protein_accessions)
 uniprot <- fetch_uniprot(unis)
