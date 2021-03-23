@@ -94,7 +94,7 @@
       <h1 data-toc-skip>Single Dose Treatment Data Analysis Workflow</h1>
                         <h4 class="author">Dina Schuster</h4>
             
-            <h4 class="date">2021-03-22</h4>
+            <h4 class="date">2021-03-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/data_analysis_single_dose_treatment_workflow.Rmd"><code>vignettes/data_analysis_single_dose_treatment_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_single_dose_treatment_workflow.Rmd</code></div>
@@ -322,7 +322,6 @@
   protein_identifier <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
   coverage <span class="op">=</span> <span class="va">coverage</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/coverage_plot-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div id="data-analysis" class="section level2">
@@ -376,7 +375,6 @@
                        grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
                        pval <span class="op">=</span> <span class="va">pval</span>
                        <span class="op">)</span></code></pre></div>
-<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/pval_distribution-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>For this subset of data the distribution of p-values is relatively equal and there is no increase in values in the low p-value range but rather a decrease. This means that the Benjamini-Hochberg algorithm might not be suitable for correcting these p-values. You can pick another algorithm for the correction and supply it to the <code>p_adj_method</code> argument and run <code><a href="../reference/diff_abundance.html">diff_abundance()</a></code> again. The available methods are any methods that can be supplied to the standard R function <code><a href="https://rdrr.io/r/stats/p.adjust.html">p.adjust()</a></code> that is used internally. You can also just use this function or any other correction algorithm on your data and overwrite the values in the <code>adj_pval</code> column.</p>
 <p><em>Note: If the p-values are not fulfilling the assumption of the multiple-testing correction, meaning very little observations are changing significantly, it can happen that only a few significant hits remain after adjusting the p-value. This can be a common occurrence so you should always have a look at the p-value distribution. This will help you decide on whether or not you should use adjusted p-values, not adjusted p-values or if you should adjust them with a specific method.</em></p>
 </div>
@@ -397,10 +395,8 @@
   y_axis_label <span class="op">=</span> <span class="st">"-log10(p-value)"</span>,
   title <span class="op">=</span> <span class="st">"Volcano plot (p-value not adjusted)"</span>,
   significance_cutoff <span class="op">=</span> <span class="fl">0.05</span>
-<span class="op">)</span></code></pre></div>
-<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/volcano_plot-1.png" width="576" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
+<span class="op">)</span>
+
 <span class="fu"><a href="../reference/volcano_protti.html">volcano_protti</a></span><span class="op">(</span>
   data <span class="op">=</span> <span class="va">diff_abundance_data</span>,
   grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
@@ -414,14 +410,13 @@
   title <span class="op">=</span> <span class="st">"Volcano plot"</span>,
   significance_cutoff <span class="op">=</span> <span class="fl">0.05</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/volcano_plot-2.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div id="barcode-plot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#barcode-plot" class="anchor"></a>Barcode plot</h3>
 <p>For LiP-MS experiments a good way to see where on the protein the changes due to binding or conformational changes occur is to plot a barcode plot. A barcode plot can be created with the <strong>protti</strong> function <code><a href="../reference/barcode_plot.html">barcode_plot()</a></code>. The detected peptides are coloured in grey and the changing peptides are highlighted in blue.</p>
 <p>In order to produce a barcode plot only for our target FKBP12 we are creating a data frame that contains only information for our target protein. We are doing this by using <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> function. The filtered data frame is then used as the input for the plot.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">FKBP12</span> <span class="op">&lt;-</span> <span class="va">diff_abundance_data</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span>
 
@@ -435,13 +430,12 @@
   cutoffs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>diff <span class="op">=</span> <span class="fl">1</span>, adj_pval <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>,
   protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>
   <span class="op">)</span></code></pre></div>
-<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/barcode_plot-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div id="woods-plot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#woods-plot" class="anchor"></a>Wood’s plot</h3>
 <p>An additional way to plot LiP-MS changes are Wood’s plots. These plots will show the extent of the change along the protein sequence. To produce a Wood’s plot we are using the function <code><a href="../reference/woods_plot.html">woods_plot()</a></code> and colour the peptides according to their adjusted p-values.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/woods_plot.html">woods_plot</a></span><span class="op">(</span>
   data <span class="op">=</span> <span class="va">FKBP12</span>,
   fold_change <span class="op">=</span> <span class="va">diff</span>,
@@ -453,13 +447,12 @@
   protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
   fold_change_cutoff <span class="op">=</span> <span class="fl">1</span>,
   <span class="op">)</span></code></pre></div>
-<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/woods_plot-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div id="peptide-profile-plots" class="section level3">
 <h3 class="hasAnchor">
 <a href="#peptide-profile-plots" class="anchor"></a>Peptide profile plots</h3>
 <p>To see how the individual precursors in our target protein are changing with the treatment we are plotting profile plots by using the function <code><a href="../reference/plot_peptide_profiles.html">plot_peptide_profiles()</a></code>. This is particularly useful as you can quickly see if your whole protein changes in abundance or only a fraction of precursors/peptides. If you have protein abundance data you can also use the plot to show changes in protein abundance over your treatment condition(s). By selecting multiple targets (as a vector) you can produce the plot for multiple proteins.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">FKBP12_intensity</span> <span class="op">&lt;-</span> <span class="va">data_filtered_uniprot</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span>
 
@@ -471,9 +464,7 @@
   grouping <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
   targets <span class="op">=</span> <span class="st">"P62942"</span>,
   protein_abundance_plot <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-<span class="co">#&gt; $P62942</span></code></pre></div>
-<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/protile_plot-1.png" width="1920" style="display: block; margin: auto;"></p>
+<span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="additional-helpful-functions" class="section level2">
@@ -485,7 +476,7 @@
 <p>For the network analysis we are filtering the previously produced data frame containing the <code>is_significant</code> column for significant hits. This data frame can then be used as an input for <code><a href="../reference/network_analysis.html">network_analysis()</a></code> to check if the proteins can be found in an interaction network based on StringDB information.</p>
 <p>For <code><a href="../reference/kegg_enrichment.html">kegg_enrichment()</a></code> you need to first use the function <code><a href="../reference/fetch_kegg.html">fetch_kegg()</a></code> to obtain the KEGG pathway identifiers for your data set. You can then use <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join()</a></code>to join the output with the previously produced data frame containing a column indicating whether your hits are significant or not.</p>
 <p>If you know all known interactors of your specific treatment you can check for an enrichment of these with the <code><a href="../reference/treatment_enrichment.html">treatment_enrichment()</a></code> function. This is particularly useful if your treatment has an effect on many proteins.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diff_abundance_significant</span> <span class="op">&lt;-</span> <span class="va">diff_abundance_data</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>is_significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="op">(</span><span class="va">adj_pval</span> <span class="op">&lt;</span> <span class="fl">0.01</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># mark significant peptides</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>binds_treatment <span class="op">=</span> <span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span> <span class="co"># mark true positive hits</span>
