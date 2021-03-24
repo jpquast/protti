@@ -162,6 +162,7 @@ text-align: justify}
                           grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
                           intensity <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
                           plot_style <span class="op">=</span> <span class="st">"histogram"</span><span class="op">)</span></code></pre></div>
+<p><img src="data_analysis_dose_response_workflow_files/figure-html/intensity_distribution-1.png" width="672" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_normalised</span> <span class="op">&lt;-</span> <span class="va">data_normalised</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">normalised_intensity_log2</span> <span class="op">&gt;</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
@@ -177,6 +178,7 @@ text-align: justify}
                       grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
                       intensity_log2 <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
                       condition <span class="op">=</span> <span class="va">r_condition</span><span class="op">)</span></code></pre></div>
+<p><img src="data_analysis_dose_response_workflow_files/figure-html/sample_correlation-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>For our Rapamycin data set we cannot identify any clear sample clustering based on correlation, because only a small subset of proteins was selected for this example. Furthermore, data sets in which only a few changes are expected commonly do not cluster nicely. This is because precursors/peptides/proteins have very similar intensity values throughout all conditions and clustering is in this case based on variance. In case of more global changes samples should usually cluster nicely.</p>
 <p>In addition to correlation based clustering a principal component analysis can be performed using the <strong>protti</strong> function <code><a href="../reference/qc_pca.html">qc_pca()</a></code>. Similar to before, good clustering is usually dependent on the amount of changing precursors (or peptides/proteins).</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -185,6 +187,7 @@ text-align: justify}
        grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
        intensity <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
        condition <span class="op">=</span> <span class="va">r_condition</span><span class="op">)</span></code></pre></div>
+<p><img src="data_analysis_dose_response_workflow_files/figure-html/sample_pca-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div id="fitting-dose-response-curves" class="section level1">
@@ -219,7 +222,221 @@ text-align: justify}
 <span class="co"># remove workers again after you are done</span>
 <span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/future/man/sequential.html">sequential</a></span><span class="op">)</span></code></pre></div>
 <p>If we have a look at all precursors based on their rank (calculated from correlation and ANOVA q-value), we can see that as expected most of them are FKBP12 (P62942) peptides. One benefit of analysing LiP-MS data on the precursor level (rather than peptide level) is that multiple lines of evidence for a change in the specific peptide can be used (we have data for each different charge and modification state). Therefore, it is always good to check if there are other precursors of a good scoring peptide that do not show any regulation at all. This would mean that the reason for the observed response is not based on a biological effect.</p>
+<table class="table">
+<caption>All hits</caption>
+<colgroup>
+<col width="3%">
+<col width="4%">
+<col width="46%">
+<col width="17%">
+<col width="11%">
+<col width="9%">
+<col width="6%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">rank</th>
+<th align="left">score</th>
+<th align="left">eg_precursor_id</th>
+<th align="left">pg_protein_accessions</th>
+<th align="left">anova_adj_pval</th>
+<th align="left">correlation</th>
+<th align="left">ec_50</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">0.919</td>
+<td align="left">
+<em>VFDVELLKLE</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">3.98e-13</td>
+<td align="left">0.967</td>
+<td align="left">3.6e+06</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">0.914</td>
+<td align="left">
+<em>RGQTC[Carbamidomethyl (C)]VVHYTGMLEDGK</em>.3</td>
+<td align="left">P62942</td>
+<td align="left">4.73e-14</td>
+<td align="left">0.947</td>
+<td align="left">3.0e+05</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">0.888</td>
+<td align="left">
+<em>GWEEGVAQMSVGQR</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">1.08e-13</td>
+<td align="left">0.947</td>
+<td align="left">4.7e+05</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">0.823</td>
+<td align="left">
+<em>GWEEGVAQ</em>.1</td>
+<td align="left">P62942</td>
+<td align="left">2.47e-10</td>
+<td align="left">0.976</td>
+<td align="left">7.8e+06</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">0.798</td>
+<td align="left">
+<em>LVFDVELLK</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">6.00e-11</td>
+<td align="left">0.959</td>
+<td align="left">4.4e+06</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">0.778</td>
+<td align="left">
+<em>GWEEGVAQMSVGQR</em>.3</td>
+<td align="left">P62942</td>
+<td align="left">1.71e-11</td>
+<td align="left">0.944</td>
+<td align="left">7.7e+05</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">0.775</td>
+<td align="left">
+<em>RGQTC[Carbamidomethyl (C)]VVHYTGMLEDGK</em>.4</td>
+<td align="left">P62942</td>
+<td align="left">1.05e-12</td>
+<td align="left">0.926</td>
+<td align="left">5.7e+05</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">0.719</td>
+<td align="left">
+<em>YTGMLEDGK</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">4.19e-10</td>
+<td align="left">0.945</td>
+<td align="left">3.5e+06</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">0.703</td>
+<td align="left">
+<em>LTISPDYAYGAT</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">1.02e-09</td>
+<td align="left">0.946</td>
+<td align="left">3.0e+06</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">0.693</td>
+<td align="left">
+<em>RGQTC[Carbamidomethyl (C)]VVH</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">1.02e-09</td>
+<td align="left">0.943</td>
+<td align="left">7.6e+06</td>
+</tr>
+<tr class="odd">
+<td align="right">11</td>
+<td align="left">0.623</td>
+<td align="left">
+<em>LVFDVELLKLE</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">1.19e-08</td>
+<td align="left">0.934</td>
+<td align="left">5.2e+06</td>
+</tr>
+<tr class="even">
+<td align="right">12</td>
+<td align="left">0.550</td>
+<td align="left">
+<em>VFDVELLK</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">8.99e-09</td>
+<td align="left">0.908</td>
+<td align="left">3.0e+06</td>
+</tr>
+<tr class="odd">
+<td align="right">13</td>
+<td align="left">0.500</td>
+<td align="left">
+<em>VVHYTGMLEDGK</em>.3</td>
+<td align="left">P62942</td>
+<td align="left">3.26e-08</td>
+<td align="left">0.900</td>
+<td align="left">6.7e+06</td>
+</tr>
+<tr class="even">
+<td align="right">14</td>
+<td align="left">0.405</td>
+<td align="left">
+<em>RGQTC[Carbamidomethyl (C)]VVHYTGM[Oxidation (M)]LEDGK</em>.3</td>
+<td align="left">P62942</td>
+<td align="left">1.37e-04</td>
+<td align="left">0.916</td>
+<td align="left">4.3e+05</td>
+</tr>
+<tr class="odd">
+<td align="right">15</td>
+<td align="left">0.381</td>
+<td align="left">
+<em>VVHYTGMLEDGK</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">9.64e-07</td>
+<td align="left">0.880</td>
+<td align="left">7.4e+06</td>
+</tr>
+<tr class="even">
+<td align="right">16</td>
+<td align="left">0.230</td>
+<td align="left">
+<em>GWEEGVAQM</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">8.26e-06</td>
+<td align="left">0.843</td>
+<td align="left">1.6e+06</td>
+</tr>
+<tr class="odd">
+<td align="right">17</td>
+<td align="left">0.143</td>
+<td align="left">
+<em>DTVATQLSEAVDATR</em>.2</td>
+<td align="left">O60664</td>
+<td align="left">4.89e-04</td>
+<td align="left">0.838</td>
+<td align="left">4.8e+07</td>
+</tr>
+<tr class="even">
+<td align="right">18</td>
+<td align="left">0.100</td>
+<td align="left">
+<em>DYFEEYGKIDTIEIITDR</em>.3</td>
+<td align="left">P22626</td>
+<td align="left">1.39e-04</td>
+<td align="left">0.816</td>
+<td align="left">3.2e+07</td>
+</tr>
+<tr class="odd">
+<td align="right">19</td>
+<td align="left">0.000</td>
+<td align="left">
+<em>RGQTC[Carbamidomethyl (C)]VVHYTGMLEDGK</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">1.24e-02</td>
+<td align="left">0.811</td>
+<td align="left">1.3e+05</td>
+</tr>
+</tbody>
+</table>
 <p>Since we know the true positive binding partner of Rapamycin to be FKBP12 we can plot the true positive rate based on the rank each precursor received.</p>
+<p><img src="data_analysis_dose_response_workflow_files/figure-html/true_positive_rate-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>It may happen that many precursors pass the filtering threshold and are thus potentially affected by the treatment. One possible reason for this can be that filtering thresholds are not very strict. If you have information about real targets of your treatment, you can set a manual rank cutoff based on the true positive rate evaluation. Another likely explanation is that other precursors/peptides/proteins may also be affected by the treatment. This can happen through direct interaction with the treatment or as a secondary effect: the potential hit might be an interaction partner of your target and a change in your target might also lead to a change the potential hit. Precursors that have a low rank with not many true positive hits in their vicinity might not be actual hits. You can set a manual rank cutoff at a point where the true positive rate flattens.</p>
 <p>If the true positive rate does not drop and almost all of your hits are true positives, you can try to reduce the correlation cutoff in <code><a href="../reference/fit_drc_4p.html">fit_drc_4p()</a></code> to be even less conservative. This might allow you to find novel interaction partners. If the above true positive rate evaluation would have been observed for the complete Rapamycin data set, such a step might have been a good practice. However, in the complete data set a lot more precursors pass the filtering and the true positive rate drops after about the first 25 ranks. This would mean that many of the additionally ranked precursors could be false positive interactions.</p>
 <p><em>Note: This kind of analysis is only suited for experiments where you know the true interaction partner. In most analyses you will not know the target (or all targets) of your treatment so you might want to use this kind of analysis with caution.</em></p>
@@ -237,6 +454,7 @@ text-align: justify}
             targets <span class="op">=</span> <span class="st">"_VFDVELLKLE_.2"</span>,
             unit <span class="op">=</span> <span class="st">"pM"</span>,
             export <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<p><img src="data_analysis_dose_response_workflow_files/figure-html/model_plot-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div id="further-analysis" class="section level1">
