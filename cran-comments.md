@@ -1,3 +1,20 @@
+## Resubmission 3
+This is the third resubmission responding to the feedback of Uwe Ligges on second resubmission below:
+
+* Found the following (possibly) invalid URLs:
+   URL: https://www.thermofisher.com/de/de/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/multi-omics-data-analysis/proteome-discoverer-software.html (moved to https://www.thermofisher.com/at/en/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/multi-omics-data-analysis/proteome-discoverer-software.html)
+     From: inst/doc/input_preparation_workflow.html
+     Status: 200
+     Message: OK
+
+Please change http --> https, add trailing slashes, or follow moved content as appropriate.
+
+	* The URL changes depending on the country it is accessed from. We changed it to "de/de" since this prevented the CRAN note at first due to the test servers being in Germany. However, it seems that there are also severs in Austria as it says that the URL has moved to "at/en". So if this is tested on servers in two different countries one of them will always give this note. I would suggest leaving this URL as it is. If you have any other suggestions of how to deal with this differently I am happy to implement them. 
+
+* Is there some reference about the method you can add in the Description field in the form Authors (year) <doi:.....>?
+
+	* Done
+
 ## Resubmission 2
 This is the second resubmission responding to the feedback of Uwe Ligges on first resubmission below:
 
