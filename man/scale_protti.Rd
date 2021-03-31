@@ -18,7 +18,5 @@ A scaled numeric vector.
 \code{scale_protti} is used to scale a numeric vector either between 0 and 1 or around a centered value using the standard deviation.
 }
 \examples{
-\dontrun{
 scale_protti(c(1, 2, 1, 4, 6, 8), method = "01")
-}
 }

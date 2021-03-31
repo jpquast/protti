@@ -20,7 +20,7 @@ A data frame that contains all protein metadata specified in \code{columns} for 
 Fetches proteome data from UniProt for the provided organism ID.
 }
 \examples{
-\dontrun{
+\donttest{
 fetch_uniprot_proteome(9606)
 }
 }

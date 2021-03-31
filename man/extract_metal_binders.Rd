@@ -52,7 +52,11 @@ sub-IDs for metal cations, binding site locations in the protein and sub-ID evid
 \examples{
 \dontrun{
 extract_metal_binders(
-  data
+  data,
+  protein_id = id,
+  feature_metal_binding = feature_metal_binding,
+  chebi_cofactor = chebi_cofactor,
+  chebi_catalytic_activity = chebi_catalytic_activity
 )
 }
 }

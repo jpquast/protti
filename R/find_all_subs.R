@@ -10,15 +10,6 @@
 #' @importFrom dplyr select filter
 #' @importFrom magrittr %>%
 #' @importFrom purrr map
-#'
-#' @examples
-#' \dontrun{
-#' find_all_subs(
-#'   data,
-#'   id = c("25213", "30408"),
-#'   type = "is_a"
-#' )
-#' }
 find_all_subs <- function(data, id, type = "is_a") {
   if (!requireNamespace("igraph", quietly = TRUE)) {
     stop("Package \"igraph\" is needed for this function to work. Please install it.", call. = FALSE)

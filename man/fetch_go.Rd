@@ -18,7 +18,7 @@ all columns can be found here: http://geneontology.org/docs/go-annotation-file-g
 Fetches gene ontology data from geneontology.org for the provided organism ID.
 }
 \examples{
-\dontrun{
+\donttest{
 fetch_go("9606")
 }
 }

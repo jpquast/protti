@@ -20,7 +20,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' fetch_uniprot(c("P36578", "O43324", "Q00796"))
 #' }
 fetch_uniprot <-

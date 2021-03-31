@@ -7,21 +7,6 @@
 #' @return A character vector with metal name search patterns.
 #' @importFrom purrr map
 #' @importFrom stringr str_detect str_split str_replace_all str_extract_all str_squish
-#'
-#' @examples
-#' \dontrun{
-#' split_metal_name(
-#'   metal_names = c(
-#'     "Magnesium",
-#'     NA,
-#'     NA,
-#'     "Magnesium or Manganese",
-#'     "Divalent metal cation",
-#'     "Cobalt (cobalamin axial ligand)",
-#'     "Iron-sulfur (2Fe-2S)"
-#'   )
-#' )
-#' }
 split_metal_name <- function(metal_names) {
   purrr::map_chr(metal_names, function(x) {
     if (is.na(x)) {

@@ -14,12 +14,15 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' data <- data.frame(
+#'   r_file_name = c("s1", "s2", "s3", "s1", "s2", "s3"),
+#'   intensity_log2 = c(18, 19, 17, 20, 21, 19)
+#' )
+#'
 #' median_normalisation(data,
 #'   sample = r_file_name,
 #'   intensity_log2 = intensity_log2
 #' )
-#' }
 median_normalisation <-
   function(data, sample, intensity_log2) {
     data %>%

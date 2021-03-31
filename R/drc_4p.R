@@ -12,15 +12,6 @@
 #' @param pb progress bar object. This is only necessary if the function is used in an iteration.
 #'
 #' @return An object of class \code{drc}. If no fit was performed a character vector with content "no_fit".
-#'
-#' @examples
-#' \dontrun{
-#' drc_4p(
-#'   data,
-#'   response = intensity,
-#'   dose = concentration
-#' )
-#' }
 drc_4p <- function(data, response, dose, log_logarithmic = TRUE, pb = NULL) {
   if (!requireNamespace("drc", quietly = TRUE)) {
     stop("Package \"drc\" is needed for this function to work. Please install it.", call. = FALSE)

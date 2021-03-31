@@ -20,10 +20,13 @@ A dataframe with a column called \code{normalised_intensity_log2} containing the
 Performs median normalisation on intensities. The normalised intensity is the original intensity minus the run median plus the global median. This is also the way it is implemented in Spectronaut.
 }
 \examples{
-\dontrun{
+data <- data.frame(
+  r_file_name = c("s1", "s2", "s3", "s1", "s2", "s3"),
+  intensity_log2 = c(18, 19, 17, 20, 21, 19)
+)
+
 median_normalisation(data,
   sample = r_file_name,
   intensity_log2 = intensity_log2
 )
-}
 }

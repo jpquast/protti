@@ -49,16 +49,16 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' create_synthetic_data(
-#'   n_proteins = 3000,
-#'   frac_change = 0.01,
+#'   n_proteins = 10,
+#'   frac_change = 0.1,
 #'   n_replicates = 3,
 #'   n_conditions = 2
 #' )
 #'
 #' # determination of mean_n_peptides and size_n_peptides parameters based on real data (count)
-#'
+#' # example peptide count per protein
+#' count <- c(6, 3, 2, 0, 1, 0, 1, 2, 2, 0)
 #' theta <- c(mu = 1, k = 1)
 #' negbinom <- function(theta) {
 #'   -sum(stats::dnbinom(count, mu = theta[1], size = theta[2], log = TRUE))
@@ -69,13 +69,14 @@
 #' # determination of mean_log_replicates and sd_log_replicates parameters
 #' # based on real data (standard_deviations)
 #'
+#' # example standard deviations of replicates
+#' standard_deviations <- c(0.61, 0.54, 0.2, 1.2, 0.8, 0.3, 0.2, 0.6)
 #' theta2 <- c(meanlog = 1, sdlog = 1)
 #' lognorm <- function(theta2) {
 #'   -sum(stats::dlnorm(standard_deviations, meanlog = theta2[1], sdlog = theta2[2], log = TRUE))
 #' }
 #' fit2 <- stats::optim(theta2, lognorm)
 #' fit2
-#' }
 create_synthetic_data <- function(
                                   n_proteins,
                                   frac_change,

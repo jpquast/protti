@@ -19,12 +19,3 @@ A list of character vector containing the provided ID and all of its sub IDs. It
 \description{
 For a given ChEBI ID, find all ChEBI sub IDs (incoming IDs) and their sub IDs. The type of relationship can be selected too. This is a helper function for other functions.
 }
-\examples{
-\dontrun{
-find_all_subs(
-  data,
-  id = c("25213", "30408"),
-  type = "is_a"
-)
-}
-}

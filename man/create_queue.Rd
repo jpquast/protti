@@ -30,7 +30,7 @@ create_queue(
   blank_position = NA,
   blank_method_path = NA,
   blank_inj_vol = 1,
-  export = TRUE,
+  export = FALSE,
   export_to_queue = FALSE,
   queue_path = NULL
 )
@@ -107,7 +107,6 @@ This function creates a measurement queue for sample acquisition for the softwar
 provided information will be created to make file and sample names.
 }
 \examples{
-\dontrun{
 create_queue(
   date = c("200722"),
   instrument = c("EX1"),
@@ -129,12 +128,11 @@ create_queue(
   )),
   inj_vol = c(2),
   data_path = "D:\\\\2007_Data",
-  method_path = "C:\\\\Xcalibur\\\\methods\\\\jquast\\\\DIA_120min_41var_AGC200",
+  method_path = "C:\\\\Xcalibur\\\\methods\\\\user\\\\DIA_120min_41var_AGC200",
   position_row = c("A", "B", "C", "D", "E", "F"),
   position_column = 8,
   blank_every_n = 4,
   blank_position = "1-V1",
   blank_method_path = "C:\\\\Xcalibur\\\\methods\\\\blank"
 )
-}
 }

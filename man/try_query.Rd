@@ -32,8 +32,3 @@ A data frame that contains the table from the url.
 \description{
 Downloads data from url. If an error occures during the query (for example due to no connection) the function waits 3 seconds and tries again.
 }
-\examples{
-\dontrun{
-try_query("http://www.uniprot.org/uniprot/?query=id:P36578&format=tab")
-}
-}

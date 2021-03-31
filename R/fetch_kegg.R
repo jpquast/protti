@@ -13,7 +13,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' fetch_kegg(species = "hsa")
 #' }
 fetch_kegg <- function(species) {

@@ -20,15 +20,3 @@ A list of character vectors containing ChEBI IDs that have a name matching the s
 \description{
 A list of ChEBI IDs that contain a specific name pattern is returned.
 }
-\examples{
-\dontrun{
-find_chebis(
-  chebi_data = chebi_metal,
-  pattern = c(
-    "magnesium",
-    "Magnesium or Manganese|Magnesium|Manganese",
-    "Iron-sulfur (2Fe-2S)|2Fe-2S|Iron"
-  )
-)
-}
-}
