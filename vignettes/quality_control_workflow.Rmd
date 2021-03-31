@@ -30,7 +30,7 @@ For help with data analysis you can check out our [single dose treatment vignett
 When working with proteomics and limited proteolysis-coupled mass spectrometry ([LiP-MS](https://doi.org/10.1038/nprot.2017.100)) data, it is important to ensure that the data is of sufficient quality before inferring biological relevance and meaning from it. In general, there are several ways in which this can be done: 
 
   * Inspection of .raw files acquired directly on the mass spectrometer (e.g. using vendor specific applications to visualize mass spectrometry data, such as the Thermo Scientific applications XCalibur™ and FreeStyle™)
-  * Different search engines offer quality control functionalities (e.g. [Spectronaut™](https://biognosys.com/shop/spectronaut) offers a lot of QC options)
+  * Different search engines and software offer quality control functionalities (e.g. [Spectronaut™](https://biognosys.com/shop/spectronaut) offers a lot of QC options)
   * R packages (e.g. [PTXQC](https://doi.org/10.1021/acs.jproteome.5b00780) which runs on [MaxQuant](https://www.maxquant.org/) output or [rawDiag](https://doi.org/10.1021/acs.jproteome.8b00173) which can be used directly on raw files) 
 
 _Please note that this is not a complete list, it is just intended to give you an idea of the different possibilities. There are many more software options and R packages published to date._

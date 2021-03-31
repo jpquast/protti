@@ -14,10 +14,10 @@ coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](h
 
 The goal of **protti** is to provide flexible functions and workflows
 for proteomics quality control and data analysis. It can be used for
-label-free DDA, DIA and SRM data generated with search tools such as
-Spectronaut, MaxQuant, Proteome Discover and Skyline. Both limited
-proteolysis mass spectrometry (LiP-MS) and regular bottom-up proteomics
-experiments can be analysed.
+label-free DDA, DIA and SRM data generated with search tools and
+software such as Spectronaut, MaxQuant, Proteome Discoverer and Skyline.
+Both limited proteolysis mass spectrometry (LiP-MS) and regular
+bottom-up proteomics experiments can be analysed.
 
 **protti** is developed and maintained by members of the lab of Paola
 Picotti at ETH Zurich. Our lab is focused on protein structural changes
