@@ -26,12 +26,3 @@ An object of class \code{drc}. If no fit was performed a character vector with c
 \description{
 This function peforms the four-parameter dose response curve fit. It is the helper function for the fit in the \code{fit_drc_4p} function.
 }
-\examples{
-\dontrun{
-drc_4p(
-  data,
-  response = intensity,
-  dose = concentration
-)
-}
-}

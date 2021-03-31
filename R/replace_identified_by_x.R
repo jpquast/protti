@@ -9,16 +9,6 @@
 #' @return A character vector that contains the modified protein sequence with each identified position replaced by "x".
 #' @importFrom purrr map2
 #' @importFrom stringr str_sub
-#'
-#' @examples
-#' \dontrun{
-#' replace_identified_by_x(
-#'   sequence = c("AEFGPEEAAVS"),
-#'   positions_start = c(1, 5, 8),
-#'   positions_end = c(3, 6, 11)
-#' )
-#' }
-#'
 replace_identified_by_x <-
   function(sequence, positions_start, positions_end) {
     sequence <- unique(sequence)

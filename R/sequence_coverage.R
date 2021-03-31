@@ -14,14 +14,16 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' data <- data.frame(
+#'   protein_sequence = c("abcdefghijklmnop", "abcdefghijklmnop"),
+#'   pep_stripped_sequence = c("abc", "jklmn")
+#' )
+#'
 #' sequence_coverage(
 #'   data,
 #'   protein_sequence = protein_sequence,
 #'   peptides = pep_stripped_sequence
 #' )
-#' }
-#'
 sequence_coverage <-
   function(data, protein_sequence, peptides) {
     result <- data %>%

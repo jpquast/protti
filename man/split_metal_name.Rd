@@ -15,18 +15,3 @@ A character vector with metal name search patterns.
 \description{
 Converts a vector of metal names extracted from the \code{feature_metal_binding} column obtained with \code{fetch_uniprot} to a pattern that can be used to search for corresponding ChEBI IDs. This is used as a helper function for other functions.
 }
-\examples{
-\dontrun{
-split_metal_name(
-  metal_names = c(
-    "Magnesium",
-    NA,
-    NA,
-    "Magnesium or Manganese",
-    "Divalent metal cation",
-    "Cobalt (cobalamin axial ligand)",
-    "Iron-sulfur (2Fe-2S)"
-  )
-)
-}
-}

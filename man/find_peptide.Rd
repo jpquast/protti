@@ -20,7 +20,6 @@ A data frame that contains the input data and four additional columns with start
 The position of the given peptide sequence is searched within the given protein sequence. In addition the last amino acid of the peptide and the amino acid right before are reported.
 }
 \examples{
-\dontrun{
-find_peptide(data, protein_sequence, pep_stripped_sequence)
-}
+data <- data.frame(protein_sequence = c("abcdefg"), peptide_sequence = c("cde"))
+find_peptide(data, protein_sequence, peptide_sequence)
 }

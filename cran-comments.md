@@ -1,3 +1,43 @@
+## Resubmission 4
+This is the fourth resubmission responding to the feedback of Gregor Seyer on third resubmission below:
+
+* You have examples for unexported functions.
+  calculate_imputation() in:
+     calculate_imputation.Rd
+  drc_4p() in:
+     drc_4p.Rd
+  find_all_subs() in:
+     find_all_subs.Rd
+  find_chebis() in:
+     find_chebis.Rd
+  replace_identified_by_x() in:
+     replace_identified_by_x.Rd
+  split_metal_name() in:
+     split_metal_name.Rd
+  try_query() in:
+     try_query.Rd
+Please either omit these examples or export the functions.
+
+	* Done. Removed examples.
+
+* \dontrun{} should only be used if the example really cannot be executed (e.g. because of missing additional software, missing API keys, ...) by the user. That's why wrapping examples in \dontrun{} adds the comment ("# Not run:") as a warning for the user.
+Does not seem necessary.
+
+Please unwrap the examples if they are executable in < 5 sec, or replace \dontrun{} with \donttest{}.
+
+	* Unwrapped functions with examples executable by the user. Many functions require an extensive data frame that cannot be easily provided so the example is not executable. These examples should mainly exemplify how to provide function arguments. The following functions now run their example code: create_queue, create_synthetic_data, find_peptide, median_normalisation, peptide_type, scale_protti, sequence_coverage, ttest_protti. The following functions were moved from \dontrun{} to \donttest{}: fetch_chebi, fetch_go, fetch_kegg, fetch_mobidb, fetch_uniprot_proteome, fetch_uniprot.
+
+* Please ensure that your functions do not write by default or in your examples/vignettes/tests in the user's home filespace (including the package directory and getwd()). This is not allowed by CRAN policies.
+In your examples/vignettes/tests you can write to tempdir().
+
+	* Functions that were writing by default to the working directory (create_queue) do now not export anything by default anymore. The user needs to specify that they want to export data by setting export to TRUE. Vignettes, examples and tests should not export anything. 
+
+* Please ensure that you do not use more than 2 cores in your examples, vignettes, etc.
+
+	* Done. Should not use multiple cores anymore. Removed read_protti function from CRAN tests.
+
+I hope these changes fix the issues. If there is anything else related to your suggestions that I missed please let me know, I am happy to implement any further suggestions. Thanks a lot for your time and reviews!
+
 ## Resubmission 3
 This is the third resubmission responding to the feedback of Uwe Ligges on second resubmission below:
 

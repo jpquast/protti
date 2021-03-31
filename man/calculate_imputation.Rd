@@ -38,14 +38,3 @@ A vector of values for the imputation of missing data. The length of the vector 
 \description{
 \code{calculate_imputation} is a helper function that is used in the \code{impute} function. Depending on the type of missingness and method, it samples values from a normal distribution that can be used for the imputation. Note: The input intensities should be log2 transformed.
 }
-\examples{
-\dontrun{
-calculate_imputation(
-  n_replicates = 3,
-  min = 25.4,
-  sd = 0.25,
-  missingness = "MNAR",
-  method = "ludovic"
-)
-}
-}

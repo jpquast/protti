@@ -1,13 +1,15 @@
 context("test-auxiliary_functions")
 
-test_that("read_protti works", {
-  test_data <- read_protti(test_path("test_import.csv"))
-  expect_is(test_data, "data.frame")
-  expect_equal(ncol(test_data), 3)
-  expect_equal(nrow(test_data), 3)
-  expect_equal(names(test_data), c("test_column", "test_column_2", "test_column_3"))
-  expect_equal(unname(unlist(lapply(test_data, class))), c("numeric", "character", "integer"))
-})
+if (Sys.getenv("TEST_PROTTI") == "true") {
+  test_that("read_protti works", {
+    test_data <- read_protti(test_path("test_import.csv"))
+    expect_is(test_data, "data.frame")
+    expect_equal(ncol(test_data), 3)
+    expect_equal(nrow(test_data), 3)
+    expect_equal(names(test_data), c("test_column", "test_column_2", "test_column_3"))
+    expect_equal(unname(unlist(lapply(test_data, class))), c("numeric", "character", "integer"))
+  })
+}
 
 protein <- fetch_uniprot(uniprot_ids = "P36578")
 data <- tibble::tibble(

@@ -9,9 +9,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' scale_protti(c(1, 2, 1, 4, 6, 8), method = "01")
-#' }
 scale_protti <- function(x, method) {
   if (is.numeric(x) == FALSE) {
     stop("x is a ", typeof(x), " vector but needs to be a numeric vector!")

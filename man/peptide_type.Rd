@@ -31,7 +31,11 @@ criterium on one terminus are semi-tryptic peptides. Lastly, peptides that are n
 non-tryptic peptides.
 }
 \examples{
-\dontrun{
+data <- data.frame(
+  aa_before = c("K", "S", "T"),
+  last_aa = c("R", "K", "Y"),
+  aa_after = c("T", "R", "T")
+)
+
 peptide_type(data, aa_before, last_aa, aa_after)
-}
 }

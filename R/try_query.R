@@ -10,11 +10,6 @@
 #' @param quote Logical, determines if quoting in character vectors should be considered or not. If TRUE, " and ' are escaped with \.
 #'
 #' @return A data frame that contains the table from the url.
-#'
-#' @examples
-#' \dontrun{
-#' try_query("http://www.uniprot.org/uniprot/?query=id:P36578&format=tab")
-#' }
 try_query <-
   function(url, max_tries = 5, silent = TRUE, header = TRUE, sep = "\t", quote = FALSE) {
     for (i in 1:max_tries) {

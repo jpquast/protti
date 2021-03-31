@@ -33,7 +33,7 @@ column called \code{input_id}.
 Fetches protein metadata from UniProt.
 }
 \examples{
-\dontrun{
+\donttest{
 fetch_uniprot(c("P36578", "O43324", "Q00796"))
 }
 }

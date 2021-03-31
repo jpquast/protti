@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' fetch_go("9606")
 #' }
 fetch_go <- function(organism_id) {

@@ -18,9 +18,13 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' data <- data.frame(
+#'   aa_before = c("K", "S", "T"),
+#'   last_aa = c("R", "K", "Y"),
+#'   aa_after = c("T", "R", "T")
+#' )
+#'
 #' peptide_type(data, aa_before, last_aa, aa_after)
-#' }
 peptide_type <- function(data, aa_before = aa_before, last_aa = last_aa, aa_after = aa_after) {
   data %>%
     dplyr::mutate(N_term_tryp = dplyr::if_else({{ aa_before }} == "" | {{ aa_before }} == "K" | {{ aa_before }} == "R", TRUE, FALSE)) %>%

@@ -14,18 +14,6 @@
 #' @importFrom purrr map
 #' @importFrom stringr str_detect regex
 #' @importFrom rlang .data
-#'
-#' @examples
-#' \dontrun{
-#' find_chebis(
-#'   chebi_data = chebi_metal,
-#'   pattern = c(
-#'     "magnesium",
-#'     "Magnesium or Manganese|Magnesium|Manganese",
-#'     "Iron-sulfur (2Fe-2S)|2Fe-2S|Iron"
-#'   )
-#' )
-#' }
 find_chebis <- function(chebi_data, pattern) {
   if (!requireNamespace("stringi", quietly = TRUE)) {
     stop("Package \"stringi\" is needed for this function to work. Please install it.", call. = FALSE)

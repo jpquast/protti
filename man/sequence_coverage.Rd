@@ -20,12 +20,14 @@ A new column containing the calculated sequence coverages for each identified pr
 Calculate sequence coverage for each identified protein.
 }
 \examples{
-\dontrun{
+data <- data.frame(
+  protein_sequence = c("abcdefghijklmnop", "abcdefghijklmnop"),
+  pep_stripped_sequence = c("abc", "jklmn")
+)
+
 sequence_coverage(
   data,
   protein_sequence = protein_sequence,
   peptides = pep_stripped_sequence
 )
-}
-
 }

@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' fetch_uniprot_proteome(9606)
 #' }
 fetch_uniprot_proteome <-

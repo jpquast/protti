@@ -70,7 +70,7 @@ qc_pca <-
       dplyr::mutate(
         percent_variance = (pca$sdev^2 / sum(pca$sdev^2) * 100),
         dimension = row.names(.)
-      ) %>% 
+      ) %>%
       dplyr::mutate(dimension = factor(.data$dimension, levels = unique(stringr::str_sort(.data$dimension, numeric = TRUE))))
     if (plot_style == "pca") {
       plot <- pca_df %>%

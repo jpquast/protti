@@ -18,7 +18,7 @@ A data frame that contains gene IDs with corresponding pathway IDs and names for
 Fetches gene IDs and corresponding pathway IDs and names for the provided organism.
 }
 \examples{
-\dontrun{
+\donttest{
 fetch_kegg(species = "hsa")
 }
 }

@@ -20,7 +20,7 @@ contains information on the source of this annotation. More information on the s
 Fetches information about disordered protein regions from MobiDB.
 }
 \examples{
-\dontrun{
+\donttest{
 fetch_mobidb(
   organism_id = "9606",
   protein_ids = c("P36578", "O43324", "Q00796")

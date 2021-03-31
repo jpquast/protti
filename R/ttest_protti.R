@@ -16,7 +16,6 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' ttest_protti(
 #'   mean1 = 10,
 #'   mean2 = 15.5,
@@ -25,7 +24,6 @@
 #'   n1 = 3,
 #'   n2 = 3
 #' )
-#' }
 ttest_protti <- function(mean1, mean2, sd1, sd2, n1, n2, log_values = TRUE) {
   std_error <- sqrt((sd1^2 / n1) + (sd2^2 / n2))
   # Welch-Satterwhite equation to estimate the degrees of freedom

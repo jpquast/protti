@@ -29,7 +29,6 @@ A data frame that contains the calculated differences of means, standard error, 
 Performs a Welch's t-test and calculates p-values between two groups.
 }
 \examples{
-\dontrun{
 ttest_protti(
   mean1 = 10,
   mean2 = 15.5,
@@ -38,5 +37,4 @@ ttest_protti(
   n1 = 3,
   n2 = 3
 )
-}
 }

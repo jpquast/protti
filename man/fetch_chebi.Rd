@@ -16,7 +16,7 @@ A data frame that contains all information about each molecule in the ChEBI data
 Fetches all information from the ChEBI database.
 }
 \examples{
-\dontrun{
+\donttest{
 fetch_chebi()
 }
 }

@@ -21,6 +21,6 @@ This function randomises the order of samples in an MS queue. QC and Blank sampl
 }
 \examples{
 \dontrun{
-randomise_queue(rows = 195:235, export = TRUE)
+randomise_queue(data = data, rows = 195:235, export = TRUE)
 }
 }

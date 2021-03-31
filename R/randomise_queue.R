@@ -16,7 +16,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' randomise_queue(rows = 195:235, export = TRUE)
+#' randomise_queue(data = data, rows = 195:235, export = TRUE)
 #' }
 randomise_queue <-
   function(data = NULL,

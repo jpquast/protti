@@ -14,9 +14,8 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' find_peptide(data, protein_sequence, pep_stripped_sequence)
-#' }
+#' data <- data.frame(protein_sequence = c("abcdefg"), peptide_sequence = c("cde"))
+#' find_peptide(data, protein_sequence, peptide_sequence)
 find_peptide <-
   function(data, protein_sequence, peptide_sequence) {
     data %>%

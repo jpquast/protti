@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' fetch_chebi()
 #' }
 fetch_chebi <- function(relation = FALSE) {

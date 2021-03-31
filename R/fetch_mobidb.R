@@ -15,7 +15,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' fetch_mobidb(
 #'   organism_id = "9606",
 #'   protein_ids = c("P36578", "O43324", "Q00796")

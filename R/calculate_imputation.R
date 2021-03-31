@@ -12,17 +12,6 @@
 #' @param skip_log2_transform_error logical, if FALSE a check is performed to validate that input values are log2 transformed. If input values are > 40 the test is failed and an error is thrown.
 #'
 #' @return A vector of values for the imputation of missing data. The length of the vector depends on the number of replicates.
-#'
-#' @examples
-#' \dontrun{
-#' calculate_imputation(
-#'   n_replicates = 3,
-#'   min = 25.4,
-#'   sd = 0.25,
-#'   missingness = "MNAR",
-#'   method = "ludovic"
-#' )
-#' }
 calculate_imputation <-
   function(n_replicates,
            min = NULL,
