@@ -22,7 +22,7 @@ Fetches information about disordered protein regions from MobiDB.
 \examples{
 \donttest{
 fetch_mobidb(
-  organism_id = "9606",
+  organism_id = "83333",
   protein_ids = c("P36578", "O43324", "Q00796")
 )
 }

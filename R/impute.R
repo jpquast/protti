@@ -53,43 +53,30 @@ impute <- function(data, sample, grouping, intensity, condition, comparison, mis
     dplyr::distinct({{ sample }}, {{ grouping }}, {{ intensity }}, {{ condition }}, {{ comparison }}, {{ missingness }}, {{ noise }}) %>%
     dplyr::group_by({{ grouping }}, {{ condition }}, {{ comparison }}) %>%
     dplyr::mutate(mean = mean({{ intensity }}, na.rm = TRUE)) %>%
-    dplyr::mutate(n_replicates = dplyr::n()) %>%
     dplyr::mutate(sd = stats::sd({{ intensity }}, na.rm = TRUE)) %>%
     dplyr::group_by({{ grouping }}) %>%
     dplyr::mutate(min = min({{ intensity }}, na.rm = TRUE)) %>%
     dplyr::mutate(noise_mean = ifelse(noise_missing, NA, mean({{ noise }}, na.rm = TRUE))) %>%
     dplyr::mutate(sd = mean(unique(.data$sd), na.rm = TRUE)) %>%
-    dplyr::group_by({{ grouping }}, {{ comparison }}) %>%
+    dplyr::group_by({{ grouping }}, {{ sample }}, {{ comparison }}) %>%
     dplyr::mutate(
-      impute = dplyr::case_when(
-        missingness == "MNAR" ~
+      impute =
         calculate_imputation(
-          n_replicates,
-          min = min,
-          noise = noise_mean,
+          min = .data$min,
+          noise = .data$noise_mean,
           mean = mean,
-          sd = sd,
-          missingness = "MNAR",
-          method = method,
-          skip_log2_transform_error = skip_log2_transform_error
-        ),
-        missingness == "MAR" ~
-        calculate_imputation(
-          n_replicates,
-          min = min,
-          noise = noise_mean,
-          mean = mean,
-          sd = sd,
-          missingness = "MAR",
+          sd = .data$sd,
+          missingness = {{ missingness }},
           method = method,
           skip_log2_transform_error = skip_log2_transform_error
         )
-      )
     ) %>%
+    dplyr::group_by({{ grouping }}, {{ sample }}, {{ missingness }}) %>%
+    dplyr::mutate(impute = .data$impute[1]) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(imputed_intensity = ifelse(is.na({{ intensity }}) == TRUE, .data$impute, {{ intensity }})) %>%
     dplyr::mutate(imputed = is.na({{ intensity }}) & !is.na(.data$imputed_intensity)) %>%
-    dplyr::select(-.data$impute, -.data$mean, -.data$sd, -.data$min, -.data$n_replicates, -.data$noise_mean) %>%
+    dplyr::select(-.data$impute, -.data$mean, -.data$sd, -.data$min, -.data$noise_mean) %>%
     dplyr::arrange({{ grouping }})
 
   if (missing(retain_columns)) {

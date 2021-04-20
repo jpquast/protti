@@ -5,7 +5,6 @@
 \title{Sampling of values for imputation}
 \usage{
 calculate_imputation(
-  n_replicates,
   min = NULL,
   noise = NULL,
   mean = NULL,
@@ -16,8 +15,6 @@ calculate_imputation(
 )
 }
 \arguments{
-\item{n_replicates}{number of replicates for each condition}
-
 \item{min}{minimal intensity value of the precursor/peptide. Is only required if \code{method = "ludovic"} and \code{missingness = "MNAR"}.}
 
 \item{noise}{noise value for the precursor/peptide. Is only required if \code{method = "noise"} and \code{missingness = "MNAR"}.}
