@@ -30,7 +30,7 @@ For help with data analysis you can check out our [single dose treatment vignett
 When working with proteomics and limited proteolysis-coupled mass spectrometry ([LiP-MS](https://doi.org/10.1038/nprot.2017.100)) data, it is important to ensure that the data is of sufficient quality before inferring biological relevance and meaning from it. In general, there are several ways in which this can be done: 
 
   * Inspection of .raw files acquired directly on the mass spectrometer (e.g. using vendor specific applications to visualize mass spectrometry data, such as the Thermo Scientific applications XCalibur™ and FreeStyle™)
-  * Different search engines and software offer quality control functionalities (e.g. [Spectronaut™](https://biognosys.com/shop/spectronaut) offers a lot of QC options)
+  * Different search engines and software offer quality control functionalities (e.g. [Spectronaut™](https://biognosys.com/software/spectronaut/) offers a lot of QC options)
   * R packages (e.g. [PTXQC](https://doi.org/10.1021/acs.jproteome.5b00780) which runs on [MaxQuant](https://www.maxquant.org/) output or [rawDiag](https://doi.org/10.1021/acs.jproteome.8b00173) which can be used directly on raw files) 
 
 _Please note that this is not a complete list, it is just intended to give you an idea of the different possibilities. There are many more software options and R packages published to date._
@@ -45,7 +45,7 @@ You can read more about specific functions and how to use them by calling e.g. `
 
 This document will give you an overview of QC functions included in **protti** and will show you how they can be applied to your data. The examples in this file are run on synthetic data, which is created with the function `create_synthetic_data()`.
 
-The functions in **protti** are tailored towards the analysis of DIA data, based on the output of the search engine [Spectronaut™](https://biognosys.com/shop/spectronaut). However, if you have any other data, such as DDA data that was searched with a different search engine, you can still apply our functions. Just make sure that your data frame contains [tidy data](https://r4ds.had.co.nz/tidy-data.html). That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the `pivot_longer()` function from the `tidyr` package. If you are unsure about how your input data is supposed to look like, please use the `create_synthetic_data()` function and compare this to your data.
+The functions in **protti** are tailored towards the analysis of DIA data, based on the output of the search engine [Spectronaut™](https://biognosys.com/software/spectronaut/). However, if you have any other data, such as DDA data that was searched with a different search engine, you can still apply our functions. Just make sure that your data frame contains [tidy data](https://r4ds.had.co.nz/tidy-data.html). That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the `pivot_longer()` function from the `tidyr` package. If you are unsure about how your input data is supposed to look like, please use the `create_synthetic_data()` function and compare this to your data.
 You can read more about all of this [here](https://jpquast.github.io/protti/articles/input_preparation_workflow.html).
 
 The input data should have a similar structure to this example: 

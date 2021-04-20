@@ -154,7 +154,7 @@ Note: Instead of "peptide" in the `grouping` argument you can provide protein ID
 
 #### Calculate Differential Abundance and Significance
 
-For the calculation of abundance changes and the associated significance **protti** provides the function `diff_abundance()`. You can choose between different statistical methods. For this example we will chose a Welch's t-test. Obtained p-values are adjusted for multiple testing using the Benjamini-Hochberg method ([Benjamini & Hochberg 1995](https://www.jstor.org/stable/2346101?seq=1#metadata_info_tab_contents)).
+For the calculation of abundance changes and the associated significance **protti** provides the function `diff_abundance()`. You can choose between different statistical methods. For this example we will chose a Welch's t-test. Obtained p-values are adjusted for multiple testing using the Benjamini-Hochberg method ([Benjamini & Hochberg 1995](http://www.math.tau.ac.il/~ybenja/MyPapers/benjamini_hochberg1995.pdf)).
 
 ```{r diff_abundance, message=FALSE, warning=FALSE}
 result <- data_missing %>% 
