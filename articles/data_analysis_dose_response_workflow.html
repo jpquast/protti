@@ -94,7 +94,7 @@
       <h1 data-toc-skip>Dose-Response Data Analysis Workflow</h1>
                         <h4 class="author">Jan-Philipp Quast</h4>
             
-            <h4 class="date">2021-03-31</h4>
+            <h4 class="date">2021-04-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/data_analysis_dose_response_workflow.Rmd"><code>vignettes/data_analysis_dose_response_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_dose_response_workflow.Rmd</code></div>
@@ -142,7 +142,7 @@ text-align: justify}
 <div id="cleaning-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#cleaning-data" class="anchor"></a>Cleaning data</h2>
-<p>After loading data into R we would like to clean it up in order to remove rows that are problematic for our analysis. The <code>rapamycin_dose_response</code> data is based on a report from <a href="https://biognosys.com/shop/spectronaut">Spectronaut™</a>. It includes convenient columns that label peptides as being decoys (<code>eg_is_decoy</code>). Other software reports might have similar columns that should be checked. <a href="https://www.maxquant.org/">MaxQuant</a> for example includes information on contaminating proteins that you should remove prior to data analysis. In this case we would like to remove any peptides left in the report that are decoys (used for false discovery rate estimation). It is a good practice to just run this even though usually decoys are already filtered out.</p>
+<p>After loading data into R we would like to clean it up in order to remove rows that are problematic for our analysis. The <code>rapamycin_dose_response</code> data is based on a report from <a href="https://biognosys.com/software/spectronaut/">Spectronaut™</a>. It includes convenient columns that label peptides as being decoys (<code>eg_is_decoy</code>). Other software reports might have similar columns that should be checked. <a href="https://www.maxquant.org/">MaxQuant</a> for example includes information on contaminating proteins that you should remove prior to data analysis. In this case we would like to remove any peptides left in the report that are decoys (used for false discovery rate estimation). It is a good practice to just run this even though usually decoys are already filtered out.</p>
 <p>Due to the fact that with increasing raw intensities (<code>fg_quantity</code>) also variances increase, statistical tests would have a bias towards lower intense peptides or proteins. Therefore you should log2 transform your data to correct for this mean-variance relationship. We do this by using <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> together with <code><a href="https://rdrr.io/r/base/Log.html">log2()</a></code>.</p>
 <p>In addition to filtering and log2 transformation it is also advised to median normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. <strong>protti</strong> provides the <code><a href="../reference/median_normalisation.html">median_normalisation()</a></code> function for this purpose. This function generates an additional column called <code>normalised_intensity_log2</code> that contains the normalised intensities.</p>
 <p><em>Note: If your search tool already normalised your data you should not normalise it again.</em></p>
