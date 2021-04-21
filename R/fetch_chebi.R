@@ -22,7 +22,7 @@ fetch_chebi <- function(relation = FALSE) {
   }
   # Retrieve relational information
   if (relation == TRUE) {
-    chebi_relation_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv")
+    chebi_relation_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv", config = httr::config(connecttimeout = 60))
     chebi_relation <- suppressMessages(httr::content(chebi_relation_result, type = "text/tab-separated-values"))
     
     chebi_relation_clean <- chebi_relation %>%
@@ -36,7 +36,7 @@ fetch_chebi <- function(relation = FALSE) {
   }
 
   # Download compound data
-  chebi_chemical_data_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv") 
+  chebi_chemical_data_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv", config = httr::config(connecttimeout = 60)) 
   chebi_chemical_data <- suppressMessages(httr::content(chebi_chemical_data_result, type = "text/tab-separated-values"))
 
   chebi_compounds_download <- readLines(gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/compounds.tsv.gz")))
@@ -45,7 +45,7 @@ fetch_chebi <- function(relation = FALSE) {
   chebi_names_download <- readLines(gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/names.tsv.gz")))
   chebi_names <- utils::read.delim(textConnection(chebi_names_download), quote = "", stringsAsFactors = FALSE)
 
-  chebi_accession_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv")
+  chebi_accession_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv", config = httr::config(connecttimeout = 60))
   chebi_accession <- suppressMessages(httr::content(chebi_accession_result, type = "text/tab-separated-values"))
 
   # Create one file with all information after cleaning individual source files
