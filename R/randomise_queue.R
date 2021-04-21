@@ -1,6 +1,8 @@
 #' Randomise samples in MS queue
 #'
-#' This function randomises the order of samples in an MS queue. QC and Blank samples are left in place. It is also possible to randomise only parts of the queue. The randomisation is every time the same for the same input due to \code{set.seed(123)}.
+#' This function randomises the order of samples in an MS queue. QC and Blank samples are left in place. It is also possible 
+#' to randomise only parts of the queue. Before running this make sure to set a specific seed with the \code{set.seed()} function. 
+#' This ensures that the randomisation of the result is consistent if the function is run again.
 #'
 #' @param data optional, a data frame containing a queue. If not provided a queue file can be chosen interactively.
 #' @param rows optional, a range of rows in for which samples should be randomized.
@@ -22,9 +24,6 @@ randomise_queue <-
   function(data = NULL,
            rows = NULL,
            export = FALSE) {
-
-    # set seed to make sampling reproducible
-    set.seed(123)
 
     # load data interactively if no data is provided in the data argument
     if (is.null(data)) {

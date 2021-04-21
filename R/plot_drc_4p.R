@@ -53,7 +53,7 @@ plot_drc_4p <- function(data, grouping, response, dose, targets, unit = "uM", y_
   data <- data %>%
     dplyr::ungroup() %>%
     dplyr::mutate(name = paste0({{ grouping }}, " (correlation = ", round(.data$correlation, digits = 2), ", EC50 = ", round(.data$ec_50), ")")) %>%
-    dplyr::mutate(name = forcats::fct_reorder(.data$name, desc(.data$correlation))) %>%
+    dplyr::mutate(name = forcats::fct_reorder(.data$name, dplyr::desc(.data$correlation))) %>%
     dplyr::mutate(
       group_number = 1,
       group_number = ceiling(cumsum(.data$group_number) / 20)

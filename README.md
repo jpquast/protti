@@ -267,7 +267,7 @@ For the calculation of abundance changes and the associated significance
 between different statistical methods. For this example we will chose a
 Welch’s t-test. Obtained p-values are adjusted for multiple testing
 using the Benjamini-Hochberg method ([Benjamini & Hochberg
-1995](https://www.jstor.org/stable/2346101?seq=1#metadata_info_tab_contents)).
+1995](http://www.math.tau.ac.il/~ybenja/MyPapers/benjamini_hochberg1995.pdf)).
 
 ``` r
 result <- data_missing %>% 

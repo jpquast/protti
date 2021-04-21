@@ -2,7 +2,6 @@
 #'
 #' \code{calculate_imputation} is a helper function that is used in the \code{impute} function. Depending on the type of missingness and method, it samples values from a normal distribution that can be used for the imputation. Note: The input intensities should be log2 transformed.
 #'
-#' @param n_replicates number of replicates for each condition
 #' @param min minimal intensity value of the precursor/peptide. Is only required if \code{method = "ludovic"} and \code{missingness = "MNAR"}.
 #' @param noise noise value for the precursor/peptide. Is only required if \code{method = "noise"} and \code{missingness = "MNAR"}.
 #' @param mean mean intensity value of the condition with missing values for a given precursor/peptide. Is only required if \code{missingness = "MAR"}.
@@ -13,32 +12,33 @@
 #'
 #' @return A vector of values for the imputation of missing data. The length of the vector depends on the number of replicates.
 calculate_imputation <-
-  function(n_replicates,
-           min = NULL,
+  function(min = NULL,
            noise = NULL,
            mean = NULL,
            sd,
            missingness = c("MNAR", "MAR"),
            method = c("ludovic", "noise"),
            skip_log2_transform_error = FALSE) {
-    set.seed(123)
     if ((ifelse(is.na(ifelse(is.null(min), 0, min) > 40), FALSE, ifelse(is.null(min), 0, min) > 40) | ifelse(is.na(ifelse(is.null(mean), 0, mean) > 40), FALSE, ifelse(is.null(mean), 0, mean) > 40) | ifelse(is.na(ifelse(is.null(noise), 0, noise) > 40), FALSE, ifelse(is.null(noise), 0, noise) > 40)) & skip_log2_transform_error == FALSE) {
       stop("Input intensities seem not to be log2 transformed. If they are and you want to proceed set the skip_log2_transform_error argument to TRUE. Notice that this function does not give correct results for non-log2 transformed data.")
     }
+    if (!(missingness %in% c("MNAR", "MAR"))) {
+      return(NA)
+    }
     if (method == "ludovic") {
       if (missingness == "MNAR") {
-        result <- suppressWarnings(stats::rnorm(n_replicates, mean = min - 3, sd = sd))
+        result <- suppressWarnings(stats::rnorm(1, mean = min - 3, sd = sd))
       }
       if (missingness == "MAR") {
-        result <- suppressWarnings(stats::rnorm(n_replicates, mean = mean, sd = sd))
+        result <- suppressWarnings(stats::rnorm(1, mean = mean, sd = sd))
       }
     }
     if (method == "noise") {
       if (missingness == "MNAR") {
-        result <- suppressWarnings(stats::rnorm(n_replicates, mean = noise, sd = sd))
+        result <- suppressWarnings(stats::rnorm(1, mean = noise, sd = sd))
       }
       if (missingness == "MAR") {
-        result <- suppressWarnings(stats::rnorm(n_replicates, mean = mean, sd = sd))
+        result <- suppressWarnings(stats::rnorm(1, mean = mean, sd = sd))
       }
     }
     result

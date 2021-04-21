@@ -1,3 +1,11 @@
+## Resubmission 5
+
+This is the fourth resubmission responding to the feedback of Julia on fourth resubmission below:
+
+* Please do not set a seed to a specific number within a function.
+e.g. R/calculate_imputation.R , R/randomise_queue.R
+	* Done
+
 ## Resubmission 4
 This is the fourth resubmission responding to the feedback of Gregor Seyer on third resubmission below:
 
