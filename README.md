@@ -8,6 +8,8 @@
 [![R-CMD-check](https://github.com/jpquast/protti/workflows/R-CMD-check/badge.svg)](https://github.com/jpquast/protti/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](https://codecov.io/gh/jpquast/protti?branch=master)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/protti)](https://CRAN.R-project.org/package=protti)
 <!-- badges: end -->
 
 ## Overview
@@ -64,6 +66,14 @@ user. The main areas of application are:
 ## Installation
 
 **protti** is implemented as an R package.
+
+You can install the release version from
+[CRAN](https://cran.r-project.org/web/packages/protti/index.html) using
+the `install.packages()` function.
+
+``` r
+install.packages("protti")
+```
 
 You can install the development version from
 [GitHub](https://github.com/jpquast/protti) using the
