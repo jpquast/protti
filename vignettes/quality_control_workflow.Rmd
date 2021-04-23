@@ -27,15 +27,15 @@ This vignette will give you an overview of how you can perform quality control o
 For help with data input and to make sure that you are using the right format please check out the [input preparation vignette](https://jpquast.github.io/protti/articles/input_preparation_workflow.html).
 For help with data analysis you can check out our [single dose treatment vignette](https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html) and our [data analysis vignette for dose-response data](https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html).
 
-When working with proteomics and limited proteolysis-coupled mass spectrometry ([LiP-MS](https://doi.org/10.1038/nprot.2017.100)) data, it is important to ensure that the data is of sufficient quality before inferring biological relevance and meaning from it. In general, there are several ways in which this can be done: 
+When working with proteomics and limited proteolysis-coupled mass spectrometry ([LiP-MS](https://doi.org/10.1038/nprot.2017.100)) data, it is important to ensure that the data is of sufficient quality before inferring biological meaning from it. The goal is to assess if the data quality is homogenous among the different measurements (i.e. samples) of an experiment and if there are outliers that should be excluded. 
+
+In general, there are several ways in which this can be done: 
 
   * Inspection of .raw files acquired directly on the mass spectrometer (e.g. using vendor specific applications to visualize mass spectrometry data, such as the Thermo Scientific applications XCalibur™ and FreeStyle™)
   * Different search engines and software offer quality control functionalities (e.g. [Spectronaut™](https://biognosys.com/software/spectronaut/) offers a lot of QC options)
   * R packages (e.g. [PTXQC](https://doi.org/10.1021/acs.jproteome.5b00780) which runs on [MaxQuant](https://www.maxquant.org/) output or [rawDiag](https://doi.org/10.1021/acs.jproteome.8b00173) which can be used directly on raw files) 
 
-_Please note that this is not a complete list, it is just intended to give you an idea of the different possibilities. There are many more software options and R packages published to date._
-
-The idea behind all of the options listed above is to assess if the data quality is homogenous among the different measurements ( = samples) of an experiment and if there are any outliers that should be excluded. 
+_Please note that this is not a complete list, it is just intended to give you an idea of the different possibilities. There are many more software options and R packages for quality control published to date._
 
 # protti
 
@@ -45,19 +45,19 @@ You can read more about specific functions and how to use them by calling e.g. `
 
 This document will give you an overview of QC functions included in **protti** and will show you how they can be applied to your data. The examples in this file are run on synthetic data, which is created with the function `create_synthetic_data()`.
 
-The functions in **protti** are tailored towards the analysis of DIA data, based on the output of the search engine [Spectronaut™](https://biognosys.com/software/spectronaut/). However, if you have any other data, such as DDA data that was searched with a different search engine, you can still apply our functions. Just make sure that your data frame contains [tidy data](https://r4ds.had.co.nz/tidy-data.html). That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the `pivot_longer()` function from the `tidyr` package. If you are unsure about how your input data is supposed to look like, please use the `create_synthetic_data()` function and compare this to your data.
+The functions in **protti** are tailored towards the analysis of DIA data, based on the output of the search engine [Spectronaut™](https://biognosys.com/software/spectronaut/). However, if you have any other data, such as DDA data that was searched with a different search engine, you can still apply **protti**'s functions. Just make sure that your data frame contains [tidy data](https://r4ds.had.co.nz/tidy-data.html). That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the `pivot_longer()` function from the `tidyr` package. If you are unsure about what your input data should look like, please use the `create_synthetic_data()` function and compare this to your data.
 You can read more about all of this [here](https://jpquast.github.io/protti/articles/input_preparation_workflow.html).
 
 The input data should have a similar structure to this example: 
 
-| Sample  |  Replicate |  Peptide  |  Condition | log2(Intensity) |
-|:-------:|:----------:|:---------:|:----------:|:----------------:
-| sample1 |      1     |  PEPTIDER |   treated  |     14          |
-| sample1 |      1     |  PEPTI    |   treated  |     16          |
-| sample1 |      1     |  PEPTIDE  |   treated  |     17          |
-| sample2 |      1     |  PEPTIDER |  untreated |     15          |
-| sample2 |      1     |  PEPTI    |  untreated |     18          |
-| sample2 |      1     |  PEPTIDE  |  untreated |     12          |
+| Sample  |  Replicate |  Peptide Sequence  |  Condition | log2(Intensity) |
+|:-------:|:----------:|:------------------:|:----------:|:----------------:
+| sample1 |      1     |      PEPTIDER      |   treated  |     14          |
+| sample1 |      1     |      PEPTI         |   treated  |     16          |
+| sample1 |      1     |      PEPTIDE       |   treated  |     17          |
+| sample2 |      1     |      PEPTIDER      |  untreated |     15          |
+| sample2 |      1     |      PEPTI         |  untreated |     18          |
+| sample2 |      1     |      PEPTIDE       |  untreated |     12          |
 
 ## Getting started
 
@@ -97,7 +97,7 @@ data <- create_synthetic_data(n_proteins = 100,
 
 A good first step of quality control is to check if coefficients of variation between replicates are in a reasonable range. Ideally, these should be below 15-20 %. If you see groups with higher CVs, there might have been a sample preparation error or the instrument performance was not ideal at the time of measurement. You can check if after `median_normalisation()` (depending on whether your search engine has performed median normalisation already) your CVs improve.
 
-To conduct the CV based quality control, we are making use of the function `qc_cvs()`. This function calculates the coefficients of variation. The output can either be a table or a plot of coefficients of variations for each condition. Below we are returning a CV table and a violin plot, showing the CVs for different conditions.
+To conduct the CV-based quality control, we make use of the function `qc_cvs()`. This function calculates the coefficients of variation. The output can either be a table or a plot of coefficients of variations for each condition. Below we are returning a CV table and a violin plot, showing the CVs for different conditions.
 
 The CVs (in percent) are calculated with the following formula: 
 
@@ -134,7 +134,7 @@ qc_cvs(data = input,
 
 The number of protein or peptide identifications should be similar for different samples. If there are significanlty less observations in one sample, this might indicate a sample preparation or measurement error.
 
-For the analysis of the number of identifications of precursors, peptides or proteins we are using the function `qc_ids()`. This function can return either a table or a plot. The output of this function - and also of a lot of other **protti** functions - can be plotted in an interactive plot that makes use of the R package `plotly`. You can plot an interactive version of the plot by setting `interactive = TRUE` within the function call. 
+For the analysis of the number of identifications of precursors, peptides or proteins we use the function `qc_ids()`. This function can return either a table or a plot. The output of this function - and also of a lot of other **protti** functions - can be plotted in an interactive plot that makes use of the R package `plotly`. You can plot an interactive version of the plot by setting `interactive = TRUE` within the function call. 
 
 ```{r qc_ids, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_ids(data = input,
@@ -167,7 +167,7 @@ Peptide types can be assessed in Spectronaut directly or by using the **protti**
 
 We are going to use the function `qc_peptide_type()` to evaluate the distribution of peptide types between our samples. The function can return a plot or a table, based on either peptide type counts or intensities. Both are equally important when assessing how homogenous the samples are. For `method = intensity` the function uses raw intensity values, so we are going to use the column `raw_intensity` which we added previously. 
 
-In a typical LiP-MS experiment, there should be little non-tryptic peptides. The peptide type distribution depends on your digestion conditions (i.e. temperature, duration, concentration).
+In a typical LiP-MS experiment, there should be few non-tryptic peptides. The peptide type distribution for fully- and semi-, and non-tryptic peptides depends on your digestion conditions (i.e. temperature, duration, concentration).
 
 ```{r qc_peptide_type, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_peptide_type(data = input,
@@ -192,7 +192,7 @@ qc_peptide_type(data = input,
 
 The function `qc_intensity_distribution()` plots all precursor, peptide or protein intensities for each sample as a boxplot if method "boxplot" is selected. This is helpful for quick assessment of any major sample losses or measurement issues. 
 
-A similar way in which the run intensities can be assessed is to plot the median run intensities as a line plot. This helps you quickly assess if there are any trends in your data. The function to use for this analysis is `qc_median_intensities()`. 
+Rrun intensities can also be assessed by plotting the median run intensities as a line plot. This helps you quickly assess if there are any trends in your data. The function to use for this analysis is `qc_median_intensities()`. 
 
 ```{r qc_intensity_distribution_boxplot, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 
@@ -210,7 +210,7 @@ qc_median_intensities(data = input,
 
 ### Charge states
 
-The charge state distibution of the detected peptides can be assessed with `qc_charge_states()`. Similar to the peptide types, this should of course also be homogenous for the different samples. The function can return either a plot or a table based on counts of peptides with a specific charge state or the intensities of these peptides. 
+The charge state distibution of the detected peptides can be assessed with `qc_charge_states()`. Similar to the peptide types, this should also be homogenous for the different samples. The function can return either a plot or a table based on counts of peptides with a specific charge state or the intensities of these peptides. 
 For `method = "intensity"` the function requires the raw intensity values created previously as its input.
 
 ```{r qc_charge_states, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
@@ -225,7 +225,7 @@ qc_charge_states(data = input,
 
 ### Missed cleavages
 
-An important measure of efficient digests with e.g. trypsin are the number of missed cleavages. The proteases trypsin and Lys-C both cleave after positively charged amino acids lysine (K) and arginine (R). If a measured peptide includes either K or R in its sequence, not at the last position, it contains a missed cleavage site. 
+An important measure of efficient digests with e.g. trypsin are the number of missed cleavages. The proteases trypsin and Lys-C both cleave after positively charged amino acids lysine (K) and arginine (R). If a measured peptide includes either K or R within its sequence, i.e. not at the last position, it contains a missed cleavage site. 
 These peptides are important to take into account because they can tell you if your tryptic digest was inefficient. 
 The number of missed cleavages should generally be low in a proteomics or LiP-MS dataset. 
 
@@ -243,7 +243,7 @@ qc_missed_cleavages(data = input,
 
 ### Sequence coverage
 
-The following function gives you insight into the protein coverage percentages in the dataset. For a LiP-MS experiment high sequence coverages are desirable. 
+The following function gives you insight into the protein coverage (i.e. what percentage of the protein sequence is covered by the identified peptides) in the dataset. For a LiP-MS experiment, or any other peptide-centric proteomics experiment, high sequence coverages are desirable. 
 
 To assess the protein coverage distribution, we are going to use the function `qc_protein_coverage()`. If you do not have a column containing the protein coverages in your data, you can use the function `sequence_coverage()` to obtain this information. 
 
@@ -268,7 +268,7 @@ qc_peak_width(data = input,
 
 ### Data completeness
 
-he following function `qc_data_completeness()` checks how many of all detected precursors, peptides or proteins were identified in each sample. The function can return either a plot or a table. 
+The function `qc_data_completeness()` checks how many of all detected precursors, peptides or proteins were identified in each sample. The function can return either a plot or a table. 
 
 ```{r qc_data_completeness, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_data_completeness(data = input, 
@@ -291,7 +291,7 @@ qc_intensity_distribution(data = input,
 
 ### Sample correlation
 
-Another way of quality control is to check the correlation of your samples. Ideally, replicates should cluster together and different treatment conditions should be separated. We are now going to check if this is the case for our data by using the function `qc_sample_correlation()`. The function will return a correlation heatmap with a comparison of all samples.
+Another approach to quality control is to check the correlation of your samples. Ideally, replicates should cluster together and different treatment conditions should be separated. We are now going to check if this is the case for our data by using the function `qc_sample_correlation()`. The function will return a correlation heatmap with a comparison of all samples.
 
 ```{r qc_sample_correlation, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
  qc_sample_correlation(data = input,
@@ -333,5 +333,5 @@ qc_pca(
 
 There are two additional QC functions that are not included in this vignette: 
 
-* `qc_contaminants()` is a function that can be used if proteins are assigned as contaminants. This information can e.g. be exported from MaxQuant. The function calculates the percentage of proteins annotated to be contaminants and returns either a table or a plot.
+* `qc_contaminants()` is a function that can be used if proteins are assigned as contaminants. This information can for example be exported from MaxQuant. The function calculates the percentage of proteins annotated to be contaminants and returns either a table or a plot.
 * `qc_proteome_coverage()` calculates the proteome coverage for each sample and the whole experiment and returns either a plot or a table.

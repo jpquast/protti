@@ -22,28 +22,28 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-This vignette will give you an overview of how you can prepare the output from common search engines and software such as [Spectronaut](https://biognosys.com/software/spectronaut/), [MaxQuant](https://www.maxquant.org/), [Proteome Discoverer](https://www.thermofisher.com/de/de/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/multi-omics-data-analysis/proteome-discoverer-software.html) and [Skyline](https://skyline.ms/project/home/software/Skyline/begin.view) for the analysis with **protti**. Due to its modular and flexible structure **protti** can be used on the output of common bottom-up proteomics search engines irrespective of the measurement mode (DDA, DIA, targeted-MS).
+This vignette will give you an overview of how you can prepare the quantitative protein/peptide matrix output from common search engines and software such as [Spectronaut](https://biognosys.com/software/spectronaut/), [MaxQuant](https://www.maxquant.org/), [Proteome Discoverer](https://www.thermofisher.com/de/de/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/multi-omics-data-analysis/proteome-discoverer-software.html) and [Skyline](https://skyline.ms/project/home/software/Skyline/begin.view) for the analysis with **protti**. Due to its modular and flexible structure **protti** can be used on the output of common bottom-up proteomics search engines irrespective of the measurement mode (DDA, DIA, targeted-MS).
 
-Furthermore, you are not only restricted to reports from the above mentioned search engines. As long as your data has a tabular format (data frame) and a specific minimal amount of data columns you can analyse it with **protti**. The columns minimally required contain information on sample, condition, intensity, protein ID and the level the intensity is based on (fragment, precursor, peptide) if different from protein intensity. Depending on the analysis many more columns can be useful, but they are not required. Ultimately, your data should have a structure similar to this: 
+Furthermore, you are not only restricted to reports from the above mentioned search engines. As long as your data has a tabular format (data frame) and a specific minimal number of data columns you can analyse it with **protti**. The columns minimally required contain information on sample, condition, intensity, protein ID and the level the intensity is based on (fragment, precursor, peptide) if different from protein intensity. Depending on the analysis many more columns can be useful, but they are not required. Ultimately, your data should have a structure similar to this: 
 
-  | Sample  |  Protein ID |  Peptide  |  Condition | Intensity |
-  |:-------:|:-----------:|:---------:|:----------:|:---------:|
-  | sample1 |   P62942    |  PEPTIDER |   treated  |  14000    |
-  | sample2 |   P62942    |  PEPTI    |   treated  |  15000    |
-  | sample3 |   P62942    |  PEPTIDE  |   treated  |  14500    |
-  | sample4 |   P62942    |  PEPTIDER |   control  |  18000    |
-  | sample5 |   P62942    |  PEPTI    |   control  |  21000    |
-  | sample6 |   P62942    |  PEPTIDE  |   control  |  19000    |
+  | Sample  |  Protein ID |  Peptide Sequence |  Condition | Intensity |
+  |:-------:|:-----------:|:-----------------:|:----------:|:---------:|
+  | sample1 |   P62942    |      PEPTIDER     |   treated  |  14000    |
+  | sample2 |   P62942    |      PEPTI        |   treated  |  15000    |
+  | sample3 |   P62942    |      PEPTIDE      |   treated  |  14500    |
+  | sample4 |   P62942    |      PEPTIDER     |   control  |  18000    |
+  | sample5 |   P62942    |      PEPTI        |   control  |  21000    |
+  | sample6 |   P62942    |      PEPTIDE      |   control  |  19000    |
   
-It is very important, that each unit of the level you perform your analysis on (e.g. peptide) has a single unique intensity associated with it. If e.g. a peptide would have two different intensities, **protti** would not know how to deal with this and many functions will likely fail. 
+It is very important, that each unit of the level you perform your analysis on (e.g. peptide) has a single unique intensity associated with it. If, for example, a peptide has two different intensities, **protti** would not know how to deal with this and many functions will likely fail. 
 
 Data should always be organised in a format called [tidy data](https://r4ds.had.co.nz/tidy-data.html). That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column with intensity as the content of the columns). You can easily achieve this by using the `pivot_longer()` function from the [`tidyr`](https://tidyr.tidyverse.org/index.html) package. The output of many search engines already contains tidy data and working with it is very easy because you can refer to information with only one variable. **protti** is designed to work together well with the [`tidyverse`](https://www.tidyverse.org) package family that is build around the concept of tidy data.
 
 ## Protein-centric analysis
 
-Many search engines provide the user with protein intensities. However, it is also possible to calculate protein intensities directly from precursor intensities with the **protti** function `calculate_protein_abundance()`. We recommend using the `"iq"` method that calculates protein intensities based on the R package [`iq`](https://academic.oup.com/bioinformatics/article/36/8/2611/5697917) which performs protein quantification based on the maximal peptide ratio extraction algorithm adapted from the MaxLFQ algorithm ([Cox, J. 2013](https://www.sciencedirect.com/science/article/pii/S1535947620333107?via%3Dihub)).
+Many search engines provide the user with protein intensities. However, it is also possible to calculate protein intensities directly from precursor intensities with the **protti** function `calculate_protein_abundance()`. **Protti** implements the `"iq"` method, previously implemented in the R package [`iq`](https://academic.oup.com/bioinformatics/article/36/8/2611/5697917) which performs protein quantification based on the maximal peptide ratio extraction algorithm adapted from the MaxLFQ algorithm ([Cox, J. 2013](https://www.sciencedirect.com/science/article/pii/S1535947620333107?via%3Dihub)).
 
-One advantage of calculating the protein abundance with **protti** is the possibility to median normalise run intensities on the precursor level. This is closer to the actually acquired intensities and thus sample concentrations than if normalisation is performed on the protein level. Some search engines provide the option for automatic median normalisation but not all. Furthermore, some search engines calculate protein intensities by summation of precursor intensities irrespective of missingness of peptides in certain samples. In these cases the maximal peptide ratio extraction algorithm provides a more robust calculation of protein intensities.
+One advantage of calculating the protein abundance with **protti** is the possibility to median normalise run intensities on the precursor level. This is closer to the actually acquired intensities and thus sample concentrations than if normalisation is performed on the protein level. Some search engines provide the option for automatic median normalisation but not all. Furthermore, some search engines calculate protein intensities by summation of precursor intensities irrespective of missingness of peptides in certain samples. In these cases the maximal peptide ratio implemented in extraction algorithm provides a more robust calculation of protein intensities.
 
 If you prefer to use protein intensities provided by the seach engine of your choice this is not a problem and we will show how some of this information can be converted into the right format.
 
@@ -76,7 +76,7 @@ Spectronaut reports already contain data in the tidy data format. Therefore noth
 * FG.Charge (precursor charge state, relevant for quality control)
 * PG.Quantity (protein group quantity, required for protein-centric analyses if you prefer not to calculate them with `calculate_protein_abundance()`)
 
-Please make sure that the report is a .csv file. You can use the `read_protti()` function in order to load the spectronaut report into R. This function is a wrapper around the fast `fread()` function from the [`data.table`](https://rdatatable.gitlab.io/data.table/) package and the `clean_names()` function from the [`janitor`](http://sfirke.github.io/janitor/) package. This will allow you to not only load your data into R very fast, but also to clean up the column names into lower snake case. This will make it easier to remember them and to use them in your data analysis. For the spectronaut columns will change for example into `r_file_name`. 
+Please make sure that the report is a .csv file. You can use the `read_protti()` function in order to load the spectronaut report into R. This function is a wrapper around the fast `fread()` function from the [`data.table`](https://rdatatable.gitlab.io/data.table/) package and the `clean_names()` function from the [`janitor`](http://sfirke.github.io/janitor/) package. This will allow you to not only load your data into R very fast, but also to clean up the column names into lower snake case. This will make it easier to remember them and to use them in your data analysis. For the Spectronaut columns `R.FileName` will change for example into `r_file_name`. 
 
 ```{r Spectronaut, eval=FALSE}
 # To read in your own data you can use read_protti()
@@ -91,9 +91,9 @@ Depending on which analysis you are performing you will have to use different ou
 
 In case you are interested in performing a **peptide-centric** analysis (necessary for LiP-MS), you should use the `evidence.txt` file provided in the search output of MaxQuant. 
 
-The `evidence.txt` file basically contains all the information we need to run **protti**. It is also contained in a long format which makes it easy to read in and use directly. One thing to take into consideration is the lack of a column for information proteotypicity of peptides. However, this information can be inferred from the `Proteins`column if it contains more than one protein ID. You can extract this information and create a new column called `is_proteotypic` containing logicals that will be `TRUE` if the `Proteins` column does not contain a semicolon and `FALSE` if it does (this indicates that the peptide belongs to more than one protein). As mentioned in data analysis vignettes this information is necessary for the analysis of LiP-MS data but it could be also considered for the correct calculation of protein abundances.
+The `evidence.txt` file basically contains all the information we need to run **protti**. It is also contained in a long format which makes it easy to read in and use directly. One thing to take into consideration is the lack of a column for information on proteotypicity of peptides. However, this information can be inferred from the `Proteins` column if it contains more than one protein ID. You can extract this information and create a new column called `is_proteotypic` containing logicals that will be `TRUE` if the `Proteins` column does not contain a semicolon and `FALSE` if it does (this indicates that the peptide belongs to more than one protein). As mentioned in the data analysis vignettes this information is necessary for the analysis of LiP-MS data but it could be also considered for the correct calculation of protein abundances.
 
-Another column that is required for the analysis of your data is a column indicating conditions to which certain samples belong. This can be easily added to the evidence file by joining a data frame containing the specific annotations. You can create such a data frame in Excel and import it into R for a large amount of samples or just create it directly in R. 
+Another column that is required for the analysis of your data is a column indicating conditions to which certain samples belong. This can be easily added to the evidence file by joining a data frame containing the specific annotations. You can create such a data frame in Excel and import it into R for a large number of samples or just create it directly in R. 
 
 MaxQuant output provides information on decoy hits contained in the column `reverse` and also has information on whether your hit is a contaminant `potential_contaminant`. You should filter these out before the analysis. However, the contaminant column can be used for quality control.
 
@@ -190,7 +190,7 @@ protein_groups_annotated <- protein_groups_long %>%
 
 # Skyline
 
-The Skyline output is already in long format, however, to process it you need to sum up your transition intensities to obtain the intensity of one precursor. If you prefere to analyse your data on the fragment level, you should create a column that uniquely identifies each fragment of each precursor. You could do that by pasting together the peptide sequence with the charge and the product m/z. 
+The Skyline output is already in long format, however, to process it you need to sum up the transition intensities to obtain the intensity of one precursor. If you prefer to analyse your data on the fragment level, you should create a column that uniquely identifies each fragment of each precursor. You could do that by pasting together the peptide sequence with the charge and the product m/z. 
 
 The required Skyline output columns include: 
 
@@ -389,10 +389,6 @@ pd_prot_long_annotated <- pd_prot_long %>%
   left_join(y = annotation, by = "file_name")
 ```
 
-# Other search engines
+# Other search engines and software
 
-As mentioned in the beginning of this vignette you can use the output of any search engine as long as it contains the minimally required columns. If it is not in the right format you can see if some of the above transformations can be applied to your data. It is also always useful to check if you can find additional columns that help you in your analysis and that you can export from your search engine. Always make sure that you know that all of your observations are observations you are interested in. Check if there are decoys, contaminants or non-proteotypic peptides in your data. For protein-centric analysis, potentially remove quantifications that rely on only a few peptides. 
-
-
-
-
+As mentioned in the beginning of this vignette you can use the output of any search engine as long as it contains the minimally required columns. If it is not in the right format you can see if some of the above transformations can be applied to your data. It is also always useful to check if you can find additional columns that help you in your analysis and that you can export from your search engine. Always make sure that all of your observations are ones you are interested in. Check if there are decoys, contaminants or non-proteotypic peptides in your data. For protein-centric analysis, potentially remove quantifications that rely on only a few peptides. 
