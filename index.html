@@ -128,9 +128,12 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p><strong>protti</strong> is implemented as an R package.</p>
+<p>You can install the release version from <a href="https://cran.r-project.org/web/packages/protti/index.html">CRAN</a> using the <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> function.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"protti"</span><span class="op">)</span></code></pre></div>
 <p>You can install the development version from <a href="https://github.com/jpquast/protti">GitHub</a> using the <a href="https://github.com/r-lib/devtools"><code>devtools</code></a> package by copying the following commands into R:</p>
 <p>Note: If you do not have <code>devtools</code> installed make sure to do so by removing the comment sign (#).</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jpquast/protti"</span><span class="op">)</span></code></pre></div>
 </div>
@@ -151,7 +154,7 @@
 <h3 class="hasAnchor">
 <a href="#data-analysis" class="anchor"></a>Data analysis</h3>
 <p>In this example we are going to analyse synthetic data of which we know the ground truth. The same principles would apply to any real data. Before you start analysing your data you should load all required packages. <strong>protti</strong> is designed to work together well with the <a href="https://www.tidyverse.org"><code>tidyverse</code></a> package family and we will use them for this example. Therefore, you should also load them before you get started. Note: If you do not have the <code>tidyverse</code> installed you can do so by removing the comment sign (#) in front of the <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> function. This will install them directly from CRAN.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Load protti</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jpquast/protti">protti</a></span><span class="op">)</span>
 
@@ -165,12 +168,12 @@
 <h4 class="hasAnchor">
 <a href="#load-data" class="anchor"></a>Load Data</h4>
 <p>Usually the search tool of your choice generates a report for you that has either a <code>.txt</code> or <code>.csv</code> format. You can easily load reports into R by using the <code><a href="reference/read_protti.html">read_protti()</a></code> function. This function is a wrapper around the fast <code>fread()</code> function from the <code>data.table</code> package and the <code>clean_names()</code> function from the <code>janitor</code> package. This will allow you to not only load your data into R very fast, but also to clean up the column names into lower snake case. This will make it easier to remember them and to use them in your data analysis.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Load data</span>
 <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_protti.html">read_protti</a></span><span class="op">(</span><span class="st">"filename.csv"</span><span class="op">)</span></code></pre></div>
 <p>Since we will actually use synthetic data for this example we are going to call the <code><a href="reference/create_synthetic_data.html">create_synthetic_data()</a></code> function from <strong>protti</strong>. Of course you do not need to do this step in your analysis pipeline.</p>
 <p>The data this function creates is similar to data obtained from a LiP-MS experiment. Please note that any of the steps in this workflow can also be applied to protein abundance data that contains protein IDs and protein intensities.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span> <span class="co"># Makes example reproducible</span>
 
 <span class="co"># Create synthetic data</span>
@@ -200,7 +203,7 @@
 <p>Due to the fact that with increasing raw intensities also variances increase, statistical tests would have a bias towards lower intense peptides or proteins. Therefore you should log2 transform your data to correct for this mean-variance relationship. We do not need to do this for the synthetic data as it is already log2 transformed. For your own data just use <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> together with <code><a href="https://rdrr.io/r/base/Log.html">log2()</a></code>.</p>
 <p>In addition to filtering and log2 transformation it is also advised to median normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. <strong>protti</strong> provides the <code><a href="reference/median_normalisation.html">median_normalisation()</a></code> function for this purpose. This function generates an additional column called <code>normalised_intensity_log2</code> that contains the normalised intensities.</p>
 <p>Note: If your search tool already normalised your data you should not normalise it another time.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">normalised_data</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="reference/median_normalisation.html">median_normalisation</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">sample</span>,
                        intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span><span class="op">)</span></code></pre></div>
@@ -209,7 +212,7 @@
 <h4 class="hasAnchor">
 <a href="#assign-missingness" class="anchor"></a>Assign Missingness</h4>
 <p>The next step is to deal with missing data points. You could choose to impute missing data in a later step, but this is only recommended if not a large proportion of your data is missing and if you know what you are doing. In order to calculate statistical significance of differentially abundant peptides or proteins we would like to have at least a minimum number of observations per condition. The <strong>protti</strong> function <code><a href="reference/assign_missingness.html">assign_missingness()</a></code> checks for each pair of treatment to reference condition if this number is satisfied and assigns a missingness type to each comparison. If a certain condition has all replicates while the other one has less than 25% (adjusted downward) of total possible replicates, the case is considered to be “missing not at random” (<code>MNAR</code>). In order to be labeled “missing at random” (<code>MAR</code>) 70% (adjusted downward) of total replicates need to be present in both conditions. Comparisons that have too few observations are labeled <code>NA</code>. If you performed an experiment with 4 replicates that means that both conditions need to contain at least 2 observations. You can read the exact details in the documentation of this function and also adjust the thresholds if you want to be more or less conservative with how many data points to retain.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_missing</span> <span class="op">&lt;-</span> <span class="va">normalised_data</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="reference/assign_missingness.html">assign_missingness</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">sample</span>,
                      condition <span class="op">=</span> <span class="va">condition</span>,
@@ -226,7 +229,7 @@
 <h4 class="hasAnchor">
 <a href="#calculate-differential-abundance-and-significance" class="anchor"></a>Calculate Differential Abundance and Significance</h4>
 <p>For the calculation of abundance changes and the associated significance <strong>protti</strong> provides the function <code><a href="reference/diff_abundance.html">diff_abundance()</a></code>. You can choose between different statistical methods. For this example we will chose a Welch’s t-test. Obtained p-values are adjusted for multiple testing using the Benjamini-Hochberg method (<a href="http://www.math.tau.ac.il/~ybenja/MyPapers/benjamini_hochberg1995.pdf">Benjamini &amp; Hochberg 1995</a>).</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">data_missing</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="reference/diff_abundance.html">diff_abundance</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">sample</span>,
                  condition <span class="op">=</span> <span class="va">condition</span>,
@@ -239,7 +242,7 @@
                  method <span class="op">=</span> <span class="st">"t-test"</span>,
                  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Next we can use a Volcano plot to visualize significantly changing peptides with the function <code><a href="reference/volcano_protti.html">volcano_protti()</a></code>. You can choose if you want to create an interactive plot with the <code>interactive</code> argument. Please note that this is not recommended for large datasets.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="reference/volcano_protti.html">volcano_protti</a></span><span class="op">(</span>grouping <span class="op">=</span> <span class="va">peptide</span>,
                  log2FC <span class="op">=</span> <span class="va">diff</span>,
@@ -261,6 +264,8 @@
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=protti">https://​cloud.r-project.org/​package=protti</a>
+</li>
 <li>Browse source code at <br><a href="https://github.com/jpquast/protti/">https://​github.com/​jpquast/​protti/​</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/jpquast/protti/issues">https://​github.com/​jpquast/​protti/​issues</a>
@@ -288,6 +293,7 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/jpquast/protti/actions"><img src="https://github.com/jpquast/protti/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://codecov.io/gh/jpquast/protti?branch=master"><img src="https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://CRAN.R-project.org/package=protti"><img src="https://www.r-pkg.org/badges/version/protti" alt="CRAN status"></a></li>
 </ul>
 </div>
 </div>
