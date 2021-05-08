@@ -7,7 +7,7 @@
 fetch_kegg(species)
 }
 \arguments{
-\item{species}{A character vector providing an abreviated species name. "hsa" for human, "eco" for E. coli and "sce" for S. cerevisiae.
+\item{species}{a character vector providing an abreviated species name. "hsa" for human, "eco" for E. coli and "sce" for S. cerevisiae.
 Additional possible names can be found for \href{https://www.genome.jp/kegg-bin/show_organism?category=Eukaryotes}{eukaryotes} and for
 \href{https://www.genome.jp/kegg-bin/show_organism?category=Prokaryotes}{prokaryotes}.}
 }
@@ -19,6 +19,6 @@ Fetches gene IDs and corresponding pathway IDs and names for the provided organi
 }
 \examples{
 \donttest{
-fetch_kegg(species = "hsa")
+head(fetch_kegg(species = "hsa"))
 }
 }

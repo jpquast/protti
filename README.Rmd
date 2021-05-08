@@ -43,7 +43,7 @@ There is a wide range of functions **protti** provides to the user. The main are
 ## Installation
 **protti** is implemented as an R package. 
 
-You can install the release version from [CRAN](https://cran.r-project.org/web/packages/protti/index.html) using the `install.packages()` function.
+You can install the release version from [CRAN](https://CRAN.R-project.org/package=protti) using the `install.packages()` function.
 
 ``` r
 install.packages("protti")

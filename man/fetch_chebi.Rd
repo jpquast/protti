@@ -17,6 +17,6 @@ Fetches all information from the ChEBI database.
 }
 \examples{
 \donttest{
-fetch_chebi()
+head(fetch_chebi())
 }
 }

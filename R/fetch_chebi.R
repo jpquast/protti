@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' \donttest{
-#' fetch_chebi()
+#' head(fetch_chebi())
 #' }
 fetch_chebi <- function(relation = FALSE) {
   if (!requireNamespace("httr", quietly = TRUE)) {
