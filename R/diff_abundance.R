@@ -194,7 +194,11 @@ diff_abundance <-
 
       if (filter_NA_missingness == TRUE) {
         t_test_result <- t_test_result %>%
-          tidyr::drop_na({{ missingness }})
+          tidyr::drop_na({{ missingness }}) %>% 
+          dplyr::group_by({{ comparison }}) %>%
+          dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
+          dplyr::ungroup() %>%
+          dplyr::arrange(.data$adj_pval)
         return(t_test_result)
       }
       if (filter_NA_missingness == FALSE) {
@@ -203,9 +207,11 @@ diff_abundance <-
     }
 
     if (method == "t-test_mean_sd") {
-      conditions_no_ref <- unique(dplyr::pull(data, {{ condition }}))[!unique(dplyr::pull(data, {{ condition }})) %in% ref_condition]
+      conditions_no_ref <- unique(dplyr::pull(data %>% tidyr::drop_na(), {{ condition }}))[!unique(dplyr::pull(data %>% tidyr::drop_na(), {{ condition }})) %in% ref_condition]
       t_test_mean_sd_result <- data %>%
+        dplyr::ungroup() %>% 
         dplyr::distinct({{ condition }}, {{ grouping }}, {{ mean }}, {{ sd }}, {{ n_samples }}) %>%
+        tidyr::drop_na() %>% 
         dplyr::mutate(comparison = ifelse(
           {{ condition }} %in% conditions_no_ref,
           paste0({{ condition }}, "_vs_", ref_condition),
@@ -213,12 +219,11 @@ diff_abundance <-
         )) %>%
         tidyr::unnest(.data$comparison) %>%
         dplyr::rename(mean = {{ mean }}, sd = {{ sd }}, n = {{ n_samples }}) %>%
-        tidyr::drop_na() %>%
         split(.$comparison) %>%
         purrr::map_dfr(~ .x %>%
            dplyr::mutate({{ condition }} := ifelse({{ condition }} == ref_condition, "control", "treated")) %>%
            tidyr::pivot_wider(names_from = {{ condition }}, values_from = c(.data$mean, .data$sd, .data$n)) %>%
-          dplyr::mutate(ttest_protti(.data$mean_control, .data$mean_treated, .data$sd_control, .data$sd_treated, .data$n_control, .data$n_treated))) %>%
+          dplyr::mutate(ttest_protti(mean1 = .data$mean_control, mean2 = .data$mean_treated, sd1 = .data$sd_control, sd2 = .data$sd_treated, n1 = .data$n_control, n2 = .data$n_treated))) %>%
         tidyr::drop_na(.data$pval) %>%
         dplyr::group_by(.data$comparison) %>%
         dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
@@ -327,7 +332,11 @@ diff_abundance <-
 
       if (filter_NA_missingness == TRUE) {
         moderated_t_test_result <- moderated_t_test_result %>%
-          tidyr::drop_na({{ missingness }})
+          tidyr::drop_na({{ missingness }}) %>% 
+          dplyr::group_by(.data$comparison) %>%
+          dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>% 
+          dplyr::ungroup() %>% 
+          dplyr::arrange(.data$adj_pval)
         return(moderated_t_test_result)
       }
       if (filter_NA_missingness == FALSE) {
@@ -419,9 +428,7 @@ diff_abundance <-
             .y = names(.),
             .f = ~ dplyr::mutate(.x, comparison = str_replace_all(.y, pattern = "`", replacement = ""))
           ) %>%
-          dplyr::group_by(.data$comparison) %>%
           purrr::map_dfr(~ dplyr::mutate(.x, adj_pval = p.adjust(.data$pval, method = p_adj_method))) %>%
-          dplyr::ungroup() %>%
           dplyr::select(-.data$n_obs) %>%
           dplyr::select(-.data$n_obs, -.data$n_approx) %>%
           dplyr::rename({{ grouping }} := .data$name, std_error = .data$se) %>%

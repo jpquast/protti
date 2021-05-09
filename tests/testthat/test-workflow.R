@@ -163,7 +163,7 @@ test_that("diff_abundance works", {
     expect_equal(ncol(diff_moderated), 13)
     expect_equal(ncol(diff_proDA), 12)
     expect_equal(round(min(diff_mean_sd$adj_pval, na.rm = TRUE), digits = 9), 0.00758761)
-    expect_equal(round(min(diff_moderated$adj_pval, na.rm = TRUE), digits = 9), 5.7616e-05)
+    expect_equal(round(min(diff_moderated$adj_pval, na.rm = TRUE), digits = 9), 5.1129e-05)
     expect_equal(round(min(diff_proDA$adj_pval, na.rm = TRUE), digits = 5), 0.00124)
   }
 })

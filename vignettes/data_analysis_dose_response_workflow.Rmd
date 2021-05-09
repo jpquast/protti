@@ -235,7 +235,7 @@ fit_annotated <- fit %>%
 
 ## Enrichment and network analysis
 
-As mentioned earlier, for our test data set enrichment or network analysis are not useful, since we use only use a very small random subset of the complete data set and since rapamycin interacts only with FKBP12.
+As mentioned earlier, for our test data set, enrichment or network analysis are not useful, since we only use a very small random subset of the complete data set and rapamycin only interacts with FKBP12.
 
 Nevertheless, we will demonstrate below how you could use some additional functions on your own data.
 
