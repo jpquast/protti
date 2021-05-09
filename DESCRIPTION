@@ -1,6 +1,6 @@
 Package: protti
 Title: Bottom-Up Proteomics and LiP-MS Quality Control and Data Analysis Tools
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     c(person(given = "Jan-Philipp",
            family = "Quast",
@@ -32,7 +32,6 @@ Imports:
     tibble, 
     plotly,   
     ggrepel, 
-    methods, 
     utils,
     grDevices,
     curl
