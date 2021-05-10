@@ -2,33 +2,32 @@
 % Please edit documentation in R/try_query.R
 \name{try_query}
 \alias{try_query}
-\title{Query from url}
+\title{Query from URL}
 \usage{
 try_query(
   url,
   max_tries = 5,
   silent = TRUE,
   header = TRUE,
-  sep = "\\t",
-  quote = FALSE
+  sep = "tab-separated-values"
 )
 }
 \arguments{
-\item{url}{The url of the website that contains the table that should be downloaded.}
+\item{url}{a character vector of an URL to the website that contains the table that should be downloaded.}
 
-\item{max_tries}{Number of times the function tries to download the data in case an error occures.}
+\item{max_tries}{a numeric vector specifying the number of times the function tries to download the data in case an error occurs.}
 
-\item{silent}{Logical, if TRUE no individual messages are printed after each try that failed.}
+\item{silent}{a logical, if TRUE no individual messages are printed after each try that failed.}
 
-\item{header}{Logical, indicates if the first row of the data frame contains variable names.}
+\item{header}{a logical, indicates if the first row of the data frame contains variable names.}
 
-\item{sep}{The separator of the table at the target url. Default is tab.}
-
-\item{quote}{Logical, determines if quoting in character vectors should be considered or not. If TRUE, " and ' are escaped with \.}
+\item{sep}{a character vector, specifying the separator of the table at the target URL. Options are "tab-separated-values" or "csv". 
+Default is "tab-separated-values".}
 }
 \value{
 A data frame that contains the table from the url.
 }
 \description{
-Downloads data from url. If an error occures during the query (for example due to no connection) the function waits 3 seconds and tries again.
+Downloads data table from URL. If an error occurs during the query (for example due to no connection) the function waits 3 seconds 
+and tries again. If no result could be obtained after the given number of tries a message indicating the problem is returned.
 }

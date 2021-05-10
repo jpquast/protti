@@ -1,6 +1,6 @@
 Package: protti
 Title: Bottom-Up Proteomics and LiP-MS Quality Control and Data Analysis Tools
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     c(person(given = "Jan-Philipp",
            family = "Quast",
@@ -12,7 +12,7 @@ Authors@R:
            email = "dschuster@ethz.ch"),
 	person(given = "ETH Zurich",
            role = c("cph", "fnd")))
-Description: Useful functions and workflows for proteomics quality control and data analysis of both limited proteolysis-coupled mass spectrometry (LiP-MS) (Schopper et al. (2017) <doi:10.1038/nprot.2017.100>) and regular bottom-up proteomics experiments. Data generated with search tools such as 'Spectronaut', 'MaxQuant' and 'Proteome Discover' can be easily used due to flexibility of functions.
+Description: Useful functions and workflows for proteomics quality control and data analysis of both limited proteolysis-coupled mass spectrometry (LiP-MS) (Feng et. al. (2014) <doi:10.1038/nbt.2999>) and regular bottom-up proteomics experiments. Data generated with search tools such as 'Spectronaut', 'MaxQuant' and 'Proteome Discover' can be easily used due to flexibility of functions.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -32,9 +32,9 @@ Imports:
     tibble, 
     plotly,   
     ggrepel, 
-    methods, 
     utils,
-    grDevices
+    grDevices,
+    curl
 RoxygenNote: 7.1.1
 Suggests: 
     testthat,

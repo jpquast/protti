@@ -69,8 +69,8 @@ main areas of application are:
 **protti** is implemented as an R package.
 
 You can install the release version from
-[CRAN](https://cran.r-project.org/web/packages/protti/index.html) using
-the `install.packages()` function.
+[CRAN](https://CRAN.R-project.org/package=protti) using the
+`install.packages()` function.
 
 ``` r
 install.packages("protti")

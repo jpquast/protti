@@ -1,6 +1,6 @@
 #' Calculate differential abundance between conditions
 #'
-#' Performs differential abundance calculations and statistical testing on data frames with protein, peptide or precursor data. Different methods for statistical testing are available.
+#' Performs differential abundance calculations and statistical hypothesis tests on data frames with protein, peptide or precursor data. Different methods for statistical testing are available.
 #'
 #' @param data A data frame containing at least the input variables that are required for the selected method. Ideally the output of \code{assign_missingness} or \code{impute} is used.
 #' @param sample The column in the data frame containing the sample name. Is not required if \code{method = "t-test_mean_sd"}.
@@ -18,7 +18,7 @@
 #' @param filter_NA_missingness A logical, default is \code{TRUE}. For all methods except \code{"t-test_mean_sd"} missingness information has to be provided.
 #' If a reference/treatment pair has too few samples to be considered robust, it is annotated with \code{NA} as missingness. If this argument
 #' is \code{TRUE}, these reference/treatment pairs are filtered out.
-#' @param method A character vector, specifies the method used for statistical testing. Methods include Welch test ("\code{t-test}"), a Welch test on means,
+#' @param method A character vector, specifies the method used for statistical hypothesis testing. Methods include Welch test ("\code{t-test}"), a Welch test on means,
 #' standard deviations and number of replicates ("\code{t-test_mean_sd}") and a moderated t-test based on the \code{limma} package ("\code{moderated_t-test}").
 #' More information on the moderated t-test can be found in the \code{limma} documentation. Furthermore, the \code{proDA} package specific method ("\code{proDA}") can
 #' be used to infer means across samples based on a probabilistic dropout model. This eliminates the need for data imputation since missing values are infered from the
@@ -174,7 +174,9 @@ diff_abundance <-
           }
         )) %>%
         dplyr::mutate(diff = ifelse(diff == "NaN", NA, diff)) %>%
+        dplyr::group_by({{ comparison }}) %>%
         dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
+        dplyr::ungroup() %>%
         dplyr::select(-c(.data$control, .data$treated)) %>%
         dplyr::left_join(t_test_missingness_obs, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison")) %>%
         dplyr::arrange(.data$adj_pval)
@@ -192,7 +194,11 @@ diff_abundance <-
 
       if (filter_NA_missingness == TRUE) {
         t_test_result <- t_test_result %>%
-          tidyr::drop_na({{ missingness }})
+          tidyr::drop_na({{ missingness }}) %>% 
+          dplyr::group_by({{ comparison }}) %>%
+          dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
+          dplyr::ungroup() %>%
+          dplyr::arrange(.data$adj_pval)
         return(t_test_result)
       }
       if (filter_NA_missingness == FALSE) {
@@ -201,8 +207,11 @@ diff_abundance <-
     }
 
     if (method == "t-test_mean_sd") {
-      conditions_no_ref <- unique(dplyr::pull(data, {{ condition }}))[!unique(dplyr::pull(data, {{ condition }})) %in% ref_condition]
+      conditions_no_ref <- unique(dplyr::pull(data %>% tidyr::drop_na(), {{ condition }}))[!unique(dplyr::pull(data %>% tidyr::drop_na(), {{ condition }})) %in% ref_condition]
       t_test_mean_sd_result <- data %>%
+        dplyr::ungroup() %>% 
+        dplyr::distinct({{ condition }}, {{ grouping }}, {{ mean }}, {{ sd }}, {{ n_samples }}) %>%
+        tidyr::drop_na() %>% 
         dplyr::mutate(comparison = ifelse(
           {{ condition }} %in% conditions_no_ref,
           paste0({{ condition }}, "_vs_", ref_condition),
@@ -212,10 +221,11 @@ diff_abundance <-
         dplyr::rename(mean = {{ mean }}, sd = {{ sd }}, n = {{ n_samples }}) %>%
         split(.$comparison) %>%
         purrr::map_dfr(~ .x %>%
-          dplyr::mutate({{ condition }} := ifelse({{ condition }} == ref_condition, "control", "treated")) %>%
-          tidyr::pivot_wider(names_from = {{ condition }}, values_from = c(.data$mean, .data$sd, .data$n)) %>%
-          dplyr::mutate(ttest_protti(.data$mean_treated, .data$mean_control, .data$sd_control, .data$sd_treated, .data$n_control, .data$n_treated))) %>%
+           dplyr::mutate({{ condition }} := ifelse({{ condition }} == ref_condition, "control", "treated")) %>%
+           tidyr::pivot_wider(names_from = {{ condition }}, values_from = c(.data$mean, .data$sd, .data$n)) %>%
+          dplyr::mutate(ttest_protti(mean1 = .data$mean_control, mean2 = .data$mean_treated, sd1 = .data$sd_control, sd2 = .data$sd_treated, n1 = .data$n_control, n2 = .data$n_treated))) %>%
         tidyr::drop_na(.data$pval) %>%
+        dplyr::group_by(.data$comparison) %>%
         dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
         dplyr::arrange(.data$adj_pval)
 
@@ -264,7 +274,7 @@ diff_abundance <-
       moderated_t_test_fit <- suppressWarnings(limma::lmFit(moderated_t_test_input, moderated_t_test_design))
 
       message("DONE", appendLF = TRUE)
-      message("[4/7] Construc matrix of custom contrasts ... ", appendLF = FALSE)
+      message("[4/7] Construct matrix of custom contrasts ... ", appendLF = FALSE)
 
       names <- purrr::map_chr(conditions_no_ref, ~ paste0("x", .x, "_vs_x", ref_condition))
       comparisons <- purrr::map_chr(conditions_no_ref, ~ paste0("x", .x, "-x", ref_condition))
@@ -322,7 +332,11 @@ diff_abundance <-
 
       if (filter_NA_missingness == TRUE) {
         moderated_t_test_result <- moderated_t_test_result %>%
-          tidyr::drop_na({{ missingness }})
+          tidyr::drop_na({{ missingness }}) %>% 
+          dplyr::group_by(.data$comparison) %>%
+          dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>% 
+          dplyr::ungroup() %>% 
+          dplyr::arrange(.data$adj_pval)
         return(moderated_t_test_result)
       }
       if (filter_NA_missingness == FALSE) {

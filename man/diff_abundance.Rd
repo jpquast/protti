@@ -51,7 +51,7 @@ calling \code{assign_missingness}. Is not required if \code{method = "t-test_mea
 If a reference/treatment pair has too few samples to be considered robust, it is annotated with \code{NA} as missingness. If this argument
 is \code{TRUE}, these reference/treatment pairs are filtered out.}
 
-\item{method}{A character vector, specifies the method used for statistical testing. Methods include Welch test ("\code{t-test}"), a Welch test on means,
+\item{method}{A character vector, specifies the method used for statistical hypothesis testing. Methods include Welch test ("\code{t-test}"), a Welch test on means,
 standard deviations and number of replicates ("\code{t-test_mean_sd}") and a moderated t-test based on the \code{limma} package ("\code{moderated_t-test}").
 More information on the moderated t-test can be found in the \code{limma} documentation. Furthermore, the \code{proDA} package specific method ("\code{proDA}") can
 be used to infer means across samples based on a probabilistic dropout model. This eliminates the need for data imputation since missing values are infered from the
@@ -88,7 +88,7 @@ observations for the specific protein, peptide or precursor (depending on the \c
 }
 }
 \description{
-Performs differential abundance calculations and statistical testing on data frames with protein, peptide or precursor data. Different methods for statistical testing are available.
+Performs differential abundance calculations and statistical hypothesis tests on data frames with protein, peptide or precursor data. Different methods for statistical testing are available.
 }
 \examples{
 \dontrun{

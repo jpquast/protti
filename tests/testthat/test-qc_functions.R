@@ -127,27 +127,27 @@ test_that("qc_sample_correlation works", {
   }
 })
 
-test_that("qc_proteome_coverage works", {
-  proteome <- tibble::tibble(id = 1:4518)
-  data_proteins <- tibble::tibble(
-    sample = c(rep("A", 101), rep("B", 1000), rep("C", 1000)),
-    protein_id = c(proteome$id[1:100], proteome$id[1:1000], proteome$id[1000:2000])
-  )
+if (Sys.getenv("TEST_PROTTI") == "true") {
+  test_that("qc_proteome_coverage works", {
+    proteome <- tibble::tibble(id = 1:4518)
+    data_proteins <- tibble::tibble(
+      sample = c(rep("A", 101), rep("B", 1000), rep("C", 1000)),
+      protein_id = c(proteome$id[1:100], proteome$id[1:1000], proteome$id[1000:2000])
+    )
 
-  coverage <- qc_proteome_coverage(data = data_proteins, sample = sample, protein_id = protein_id, organism_id = "83333", plot = FALSE)
-  expect_is(coverage, "data.frame")
-  expect_equal(round(coverage$percentage, digits = 0), c(2, 98, 22, 78, 22, 78, 44, 56))
+    coverage <- qc_proteome_coverage(data = data_proteins, sample = sample, protein_id = protein_id, organism_id = "83333", plot = FALSE)
+    expect_is(coverage, "data.frame")
+    expect_equal(round(coverage$percentage, digits = 0), c(2, 98, 22, 78, 22, 78, 44, 56))
 
-  p <- qc_proteome_coverage(data = data_proteins, sample = sample, protein_id = protein_id, organism_id = "83333", plot = TRUE, interactive = FALSE)
-  expect_is(p, "ggplot")
-  expect_error(print(p), NA)
+    p <- qc_proteome_coverage(data = data_proteins, sample = sample, protein_id = protein_id, organism_id = "83333", plot = TRUE, interactive = FALSE)
+    expect_is(p, "ggplot")
+    expect_error(print(p), NA)
 
-  if (Sys.getenv("TEST_PROTTI") == "true") {
     p_interactive <- qc_proteome_coverage(data = data_proteins, sample = sample, protein_id = protein_id, organism_id = "83333", plot = TRUE, interactive = TRUE)
     expect_is(p_interactive, "plotly")
     expect_error(print(p_interactive), NA)
-  }
-})
+  })
+}
 
 test_that("qc_sequence_coverage works", {
   p <- qc_sequence_coverage(data = data, protein_identifier = protein, coverage = coverage, interactive = FALSE)

@@ -11,12 +11,13 @@
 #' was provided that contains a valid UniProt ID, the valid portion of the ID is fetched and the invalid input ID is saved in a
 #' column called \code{input_id}.
 #' @import dplyr
-#' @import janitor
+#' @importFrom janitor make_clean_names
 #' @import progress
 #' @import purrr
 #' @importFrom tidyr drop_na
 #' @importFrom stringr str_detect str_extract_all
 #' @importFrom tibble tibble
+#' @importFrom curl has_internet
 #' @export
 #'
 #' @examples
@@ -45,6 +46,14 @@ fetch_uniprot <-
            ),
            batchsize = 200,
            show_progress = TRUE) {
+    if (!requireNamespace("httr", quietly = TRUE)) {
+      stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
+    }
+
+    if (!curl::has_internet()) {
+      message("No internet connection.")
+      return(invisible(NULL))
+    }
     . <- NULL
     columns <- c("id", columns)
     column_names <- janitor::make_clean_names(columns)
@@ -70,25 +79,38 @@ fetch_uniprot <-
     if (length(uniprot_ids_filtered) == 0) {
       stop("No valid UniProt accession numbers found.")
     }
+
     url <- "http://www.uniprot.org/uniprot/?query="
     batches <- split(uniprot_ids_filtered, ceiling(seq_along(uniprot_ids_filtered) / batchsize))
-    pb <- progress::progress_bar$new(total = length(batches), show_after = 0)
-    pb$tick(0)
+    if (show_progress == TRUE) {
+      pb <- progress::progress_bar$new(total = length(batches))
+    }
+    # fetch all batches
     result <- purrr::map_df(batches, function(x) {
       id_query <- paste(paste0("id:", x), collapse = "+or+")
       query_url <- utils::URLencode(paste0(
         url, id_query, "&format=tab&columns=",
         collapsed_columns
       ))
-      query <- try_query(query_url)
-      if (show_progress == TRUE) {
+      # only try to fetch more batches if previous cycle did not encounter a connection problem.
+      if (!is.null(batches)) {
+        query <- try_query(query_url)
+      }
+      if (show_progress == TRUE & "tbl" %in% class(query)) {
         pb$tick()
       }
-      return(query)
+      # if previous batch had a connection problem change batches to NULL, which breaks the mapping.
+      if (!"tbl" %in% class(query)) {
+        batches <<- NULL
+      }
+      query
     })
+    if (length(result) == 0) {
+      return(invisible(NULL))
+    }
     colnames(result) <- column_names
 
-    # rescue cases in which the used ID is an old ID. The information is retreived for the new ID and then parsed to the old ID.
+    # rescue cases in which the used ID is an old ID. The information is retrieved for the new ID and then parsed to the old ID.
 
     new <- result %>%
       dplyr::mutate(new = ifelse(stringr::str_detect(.[[2]], pattern = "Merged"), stringr::str_extract_all(.[[2]], pattern = "(?<=into )[A-Z0-9]+", simplify = TRUE), NA)) %>%
@@ -112,6 +134,10 @@ fetch_uniprot <-
     ))
 
     new_result <- try_query(new_query_url)
+    # Ff a problem occurs at this step NULL is returned.
+    if (is.null(new_result)) {
+      return(new_result)
+    }
     colnames(new_result) <- column_names
 
     new_result <- new %>%
