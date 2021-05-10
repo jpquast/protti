@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Bottom-Up Proteomics and LiP-MS Quality Control and Data Analysis Tools">
-<meta property="og:description" content="Useful functions and workflows for proteomics quality control and data analysis of both limited proteolysis-coupled mass spectrometry (LiP-MS) (Schopper et al. (2017) &lt;doi:10.1038/nprot.2017.100&gt;) and regular bottom-up proteomics experiments. Data generated with search tools such as Spectronaut, MaxQuant and Proteome Discover can be easily used due to flexibility of functions.">
+<meta property="og:description" content="Useful functions and workflows for proteomics quality control and data analysis of both limited proteolysis-coupled mass spectrometry (LiP-MS) (Feng et. al. (2014) &lt;doi:10.1038/nbt.2999&gt;) and regular bottom-up proteomics experiments. Data generated with search tools such as Spectronaut, MaxQuant and Proteome Discover can be easily used due to flexibility of functions.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -99,14 +99,14 @@
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p>The goal of <strong>protti</strong> is to provide flexible functions and workflows for proteomics quality control and data analysis. It can be used for label-free DDA, DIA and SRM data generated with search tools and software such as Spectronaut, MaxQuant, Proteome Discoverer and Skyline. Both limited proteolysis mass spectrometry (LiP-MS) and regular bottom-up proteomics experiments can be analysed.</p>
-<p><strong>protti</strong> is developed and maintained by members of the lab of Paola Picotti at ETH Zurich. Our lab is focused on protein structural changes that occur in response to perturbations such as metabolite, drug and protein binding-events, as well as protein aggregation and enzyme activation (<a href="https://www.sciencedirect.com/science/article/pii/S0092867417314484">Piazza 2018</a>, <a href="https://www.nature.com/articles/s41467-020-18071-x#additional-information">Piazza 2020</a>, <a href="https://www.sciencedirect.com/science/article/pii/S0092867420316913">Cappelletti, Hauser &amp; Piazza 2021</a>). We have devoloped mass spectrometry-based structural and chemical proteomic methods aimed at monitoring protein conformational changes in the complex cellular milieu (<a href="https://www.nature.com/articles/nprot.2017.100">Schopper 2017</a>).</p>
-<p>There is a wide range of functionalities <strong>protti</strong> provides to the user. The main areas of application are:</p>
+<p>The goal of <strong>protti</strong> is to provide flexible functions and workflows for proteomics quality control and data analysis, within a single, user-friendly package. It can be used for label-free DDA, DIA and SRM data generated with search tools and software such as Spectronaut, MaxQuant, Proteome Discoverer and Skyline. Both limited proteolysis mass spectrometry (LiP-MS) and regular bottom-up proteomics experiments can be analysed.</p>
+<p><strong>protti</strong> is developed and maintained by members of the lab of Paola Picotti at ETH Zurich. Our lab is focused on protein structural changes that occur in response to perturbations such as metabolite, drug and protein binding-events, as well as protein aggregation and enzyme activation (<a href="https://www.sciencedirect.com/science/article/pii/S0092867417314484">Piazza 2018</a>, <a href="https://www.nature.com/articles/s41467-020-18071-x#additional-information">Piazza 2020</a>, <a href="https://www.sciencedirect.com/science/article/pii/S0092867420316913">Cappelletti, Hauser &amp; Piazza 2021</a>). We have devoloped mass spectrometry-based structural and chemical proteomic methods aimed at monitoring protein conformational changes in the complex cellular milieu (<a href="https://www.nature.com/articles/nbt.2999">Feng 2014</a>).</p>
+<p>There is a wide range of functions <strong>protti</strong> provides to the user. The main areas of application are:</p>
 <ul>
 <li>
 <strong>Quality control</strong>: Check a multitude of quality control parameters in your data.</li>
 <li>
-<strong>Filter for quality</strong>: Prior to data analysis you can filter your data to exclude any low quality and potentially not trustworthy observations.</li>
+<strong>Filter for quality</strong>: Prior to data analysis you can filter your data to exclude any observations that are of low quality and potentially not trustworthy.</li>
 <li>
 <strong>Imputation</strong>: You can choose to impute your data using several different methods.</li>
 <li>
@@ -128,7 +128,7 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p><strong>protti</strong> is implemented as an R package.</p>
-<p>You can install the release version from <a href="https://cran.r-project.org/web/packages/protti/index.html">CRAN</a> using the <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> function.</p>
+<p>You can install the release version from <a href="https://CRAN.R-project.org/package=protti">CRAN</a> using the <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> function.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"protti"</span><span class="op">)</span></code></pre></div>
 <p>You can install the development version from <a href="https://github.com/jpquast/protti">GitHub</a> using the <a href="https://github.com/r-lib/devtools"><code>devtools</code></a> package by copying the following commands into R:</p>
@@ -140,10 +140,10 @@
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
-<p>Since <strong>protti</strong> is designed to be a flexible tool for the analysis of your data, there are many ways in which it can be used. In this section we will give a general overview for a very simple pipeline that would take a search result from the search tool of your choice and in a few steps returns a list of significantly changing proteins or peptides. To ensure that you have your data in the right format please check out the <a href="https://jpquast.github.io/protti/articles/input_preparation_workflow.html">input preparation vignette</a>.</p>
+<p>Since <strong>protti</strong> is designed to be a flexible tool for the analysis of your data, there are many ways in which it can be used. In this section we will give a general overview for a very simple pipeline that takes a result from the search tool of your choice and in a few steps returns a list of significantly changing proteins or peptides. To ensure that you have your data in the right format please check out the <a href="https://jpquast.github.io/protti/articles/input_preparation_workflow.html">input preparation vignette</a>.</p>
 <p>A complete list of functions and their documentation is available <a href="https://jpquast.github.io/protti/reference/">here</a>. Within R you can access the same documentation by calling <code><a href="https://rdrr.io/r/utils/Question.html">?</a></code> followed by the function name without parenthesis.</p>
-<p>In general functions with the prefix <code>qc_*</code> are used for quality control of your data. Functions starting with <code>fetch_*</code> allow you to retreive data from a database directly into your R session. When a function starts with <code>filter_*</code> it is meant to be used to filter your data prior to analysis.</p>
-<p>For more in detail workflow suggestions and function demonstrations you can have a look at the packages vignettes. These include:</p>
+<p>In general functions with the prefix <code>qc_*</code> are used for quality control of your data. Functions starting with <code>fetch_*</code> allow you to retrieve data from a database directly into your R session. When a function starts with <code>filter_*</code> it is meant to be used to filter your data prior to analysis.</p>
+<p>For more in detail workflow suggestions and demonstrations of various functions, you can have a look at the package vignettes. These include:</p>
 <ul>
 <li><a href="https://jpquast.github.io/protti/articles/input_preparation_workflow.html">Input Preparation Workflow</a></li>
 <li><a href="https://jpquast.github.io/protti/articles/quality_control_workflow.html">Quality Control Workflow</a></li>
@@ -153,7 +153,7 @@
 <div id="data-analysis" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-analysis" class="anchor"></a>Data analysis</h3>
-<p>In this example we are going to analyse synthetic data of which we know the ground truth. The same principles would apply to any real data. Before you start analysing your data you should load all required packages. <strong>protti</strong> is designed to work together well with the <a href="https://www.tidyverse.org"><code>tidyverse</code></a> package family and we will use them for this example. Therefore, you should also load them before you get started. Note: If you do not have the <code>tidyverse</code> installed you can do so by removing the comment sign (#) in front of the <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> function. This will install them directly from CRAN.</p>
+<p>In this example we are going to analyse synthetic data of which we know the ground truth. The same principles would apply to any real data. Before you start analysing your data you should load all required packages. <strong>protti</strong> is designed to work well with the <a href="https://www.tidyverse.org"><code>tidyverse</code></a> package family and we will use them for this example. Therefore, you should also load them before you get started. Note: If you do not have the <code>tidyverse</code> installed you can do so by removing the comment sign (#) in front of the <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> function. This will install them directly from CRAN.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Load protti</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jpquast/protti">protti</a></span><span class="op">)</span>
@@ -171,7 +171,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Load data</span>
 <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_protti.html">read_protti</a></span><span class="op">(</span><span class="st">"filename.csv"</span><span class="op">)</span></code></pre></div>
-<p>Since we will actually use synthetic data for this example we are going to call the <code><a href="reference/create_synthetic_data.html">create_synthetic_data()</a></code> function from <strong>protti</strong>. Of course you do not need to do this step in your analysis pipeline.</p>
+<p>Since we will use synthetic data for this example we are going to call the <code><a href="reference/create_synthetic_data.html">create_synthetic_data()</a></code> function from <strong>protti</strong>. Of course you do not need to do this step in your analysis pipeline.</p>
 <p>The data this function creates is similar to data obtained from a LiP-MS experiment. Please note that any of the steps in this workflow can also be applied to protein abundance data that contains protein IDs and protein intensities.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span> <span class="co"># Makes example reproducible</span>
@@ -200,7 +200,7 @@
 <strong>Non-Proteotypic Peptides</strong>: For the analysis of LiP-MS data you should not include non-proteotypic peptides in your analysis since it is not possible to make sense of them in case they change significantly.</li>
 </ul>
 <p>On your own data you can easily achieve this with <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> function. Our synthetic data does not require any filtering at this step.</p>
-<p>Due to the fact that with increasing raw intensities also variances increase, statistical tests would have a bias towards lower intense peptides or proteins. Therefore you should log2 transform your data to correct for this mean-variance relationship. We do not need to do this for the synthetic data as it is already log2 transformed. For your own data just use <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> together with <code><a href="https://rdrr.io/r/base/Log.html">log2()</a></code>.</p>
+<p>Due to the fact that variances increase with increasing raw intensities, statistical tests would have a bias towards lower-intensity peptides or proteins. Therefore you should log2 transform your data to correct for this mean-variance relationship. We do not need to do this for the synthetic data as it is already log2 transformed. For your own data just use <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> together with <code><a href="https://rdrr.io/r/base/Log.html">log2()</a></code>.</p>
 <p>In addition to filtering and log2 transformation it is also advised to median normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. <strong>protti</strong> provides the <code><a href="reference/median_normalisation.html">median_normalisation()</a></code> function for this purpose. This function generates an additional column called <code>normalised_intensity_log2</code> that contains the normalised intensities.</p>
 <p>Note: If your search tool already normalised your data you should not normalise it another time.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -211,7 +211,7 @@
 <div id="assign-missingness" class="section level4">
 <h4 class="hasAnchor">
 <a href="#assign-missingness" class="anchor"></a>Assign Missingness</h4>
-<p>The next step is to deal with missing data points. You could choose to impute missing data in a later step, but this is only recommended if not a large proportion of your data is missing and if you know what you are doing. In order to calculate statistical significance of differentially abundant peptides or proteins we would like to have at least a minimum number of observations per condition. The <strong>protti</strong> function <code><a href="reference/assign_missingness.html">assign_missingness()</a></code> checks for each pair of treatment to reference condition if this number is satisfied and assigns a missingness type to each comparison. If a certain condition has all replicates while the other one has less than 25% (adjusted downward) of total possible replicates, the case is considered to be “missing not at random” (<code>MNAR</code>). In order to be labeled “missing at random” (<code>MAR</code>) 70% (adjusted downward) of total replicates need to be present in both conditions. Comparisons that have too few observations are labeled <code>NA</code>. If you performed an experiment with 4 replicates that means that both conditions need to contain at least 2 observations. You can read the exact details in the documentation of this function and also adjust the thresholds if you want to be more or less conservative with how many data points to retain.</p>
+<p>The next step is to deal with missing data points. You could choose to impute missing data in a later step, but this is only recommended if only a small proportion of your data is missing. In order to calculate statistical significance of differentially abundant peptides or proteins we would like to have a minimum number of observations per condition. The <strong>protti</strong> function <code><a href="reference/assign_missingness.html">assign_missingness()</a></code> checks for each treatment-to-reference condition if this number is satisfied and assigns a missingness type to each comparison as follows. If a certain condition has all replicates while the other one has less than 20% (adjusted downward) of total possible replicates, the case is considered to be “missing not at random” (<code>MNAR</code>). In order to be labeled “missing at random” (<code>MAR</code>) 70% (adjusted downward) of total replicates need to be present in both conditions. Comparisons that have too few observations are labeled <code>NA</code>. If you performed an experiment with 4 replicates that means that both conditions need to contain at least 2 observations. You can read the exact details in the documentation of this function and also adjust the thresholds if you want to be more or less conservative with how many data points to retain.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_missing</span> <span class="op">&lt;-</span> <span class="va">normalised_data</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="reference/assign_missingness.html">assign_missingness</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">sample</span>,
@@ -223,12 +223,12 @@
 
 <span class="co"># Next to the columns it generates, assign_missingness only contains the columns you provide as input in its output. </span>
 <span class="co"># If you want to retain additional columns you can provide them in the retain_columns argument.</span></code></pre></div>
-<p>Note: Instead of “peptide” in the <code>grouping</code> argument you can provide protein IDs in case you are working with protein abundance data. However, then intensities should also contain protein intensities and not peptide intensities.</p>
+<p>Note: Instead of “peptide” in the <code>grouping</code> argument you can provide protein IDs in case you are working with protein abundance data. However, then intensities should be protein intensities and not peptide intensities.</p>
 </div>
 <div id="calculate-differential-abundance-and-significance" class="section level4">
 <h4 class="hasAnchor">
 <a href="#calculate-differential-abundance-and-significance" class="anchor"></a>Calculate Differential Abundance and Significance</h4>
-<p>For the calculation of abundance changes and the associated significance <strong>protti</strong> provides the function <code><a href="reference/diff_abundance.html">diff_abundance()</a></code>. You can choose between different statistical methods. For this example we will chose a Welch’s t-test. Obtained p-values are adjusted for multiple testing using the Benjamini-Hochberg method (<a href="http://www.math.tau.ac.il/~ybenja/MyPapers/benjamini_hochberg1995.pdf">Benjamini &amp; Hochberg 1995</a>).</p>
+<p>For the calculation of abundance changes and the associated significances <strong>protti</strong> provides the function <code><a href="reference/diff_abundance.html">diff_abundance()</a></code>. You can choose between different statistical methods. For this example we will chose a Welch’s t-test. Obtained p-values are adjusted for multiple testing using the Benjamini-Hochberg method (<a href="http://www.math.tau.ac.il/~ybenja/MyPapers/benjamini_hochberg1995.pdf">Benjamini &amp; Hochberg 1995</a>).</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">data_missing</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="reference/diff_abundance.html">diff_abundance</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">sample</span>,
@@ -241,7 +241,7 @@
                  filter_NA_missingness <span class="op">=</span> <span class="cn">TRUE</span>,
                  method <span class="op">=</span> <span class="st">"t-test"</span>,
                  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>Next we can use a Volcano plot to visualize significantly changing peptides with the function <code><a href="reference/volcano_protti.html">volcano_protti()</a></code>. You can choose if you want to create an interactive plot with the <code>interactive</code> argument. Please note that this is not recommended for large datasets.</p>
+<p>Next we can use a Volcano plot to visualize significantly changing peptides with the function <code><a href="reference/volcano_protti.html">volcano_protti()</a></code>. You can choose to create an interactive plot with the <code>interactive</code> argument. Please note that this is not recommended for large datasets.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="reference/volcano_protti.html">volcano_protti</a></span><span class="op">(</span>grouping <span class="op">=</span> <span class="va">peptide</span>,

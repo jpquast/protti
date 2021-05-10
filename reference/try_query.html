@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Query from url — try_query • protti</title>
+<title>Query from URL — try_query • protti</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Query from url — try_query" />
-<meta property="og:description" content="Downloads data from url. If an error occures during the query (for example due to no connection) the function waits 3 seconds and tries again." />
+<meta property="og:title" content="Query from URL — try_query" />
+<meta property="og:description" content="Downloads data table from URL. If an error occurs during the query (for example due to no connection) the function waits 3 seconds 
+and tries again. If no result could be obtained after the given number of tries a message indicating the problem is returned." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -132,13 +133,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Query from url</h1>
+    <h1>Query from URL</h1>
     <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/try_query.R'><code>R/try_query.R</code></a></small>
     <div class="hidden name"><code>try_query.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Downloads data from url. If an error occures during the query (for example due to no connection) the function waits 3 seconds and tries again.</p>
+    <p>Downloads data table from URL. If an error occurs during the query (for example due to no connection) the function waits 3 seconds 
+and tries again. If no result could be obtained after the given number of tries a message indicating the problem is returned.</p>
     </div>
 
     <pre class="usage"><span class='fu'>try_query</span><span class='op'>(</span>
@@ -146,8 +148,7 @@
   max_tries <span class='op'>=</span> <span class='fl'>5</span>,
   silent <span class='op'>=</span> <span class='cn'>TRUE</span>,
   header <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  sep <span class='op'>=</span> <span class='st'>"\t"</span>,
-  quote <span class='op'>=</span> <span class='cn'>FALSE</span>
+  sep <span class='op'>=</span> <span class='st'>"tab-separated-values"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -155,27 +156,24 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>url</th>
-      <td><p>The url of the website that contains the table that should be downloaded.</p></td>
+      <td><p>a character vector of an URL to the website that contains the table that should be downloaded.</p></td>
     </tr>
     <tr>
       <th>max_tries</th>
-      <td><p>Number of times the function tries to download the data in case an error occures.</p></td>
+      <td><p>a numeric vector specifying the number of times the function tries to download the data in case an error occurs.</p></td>
     </tr>
     <tr>
       <th>silent</th>
-      <td><p>Logical, if TRUE no individual messages are printed after each try that failed.</p></td>
+      <td><p>a logical, if TRUE no individual messages are printed after each try that failed.</p></td>
     </tr>
     <tr>
       <th>header</th>
-      <td><p>Logical, indicates if the first row of the data frame contains variable names.</p></td>
+      <td><p>a logical, indicates if the first row of the data frame contains variable names.</p></td>
     </tr>
     <tr>
       <th>sep</th>
-      <td><p>The separator of the table at the target url. Default is tab.</p></td>
-    </tr>
-    <tr>
-      <th>quote</th>
-      <td><p>Logical, determines if quoting in character vectors should be considered or not. If TRUE, " and ' are escaped with \.</p></td>
+      <td><p>a character vector, specifying the separator of the table at the target URL. Options are "tab-separated-values" or "csv". 
+Default is "tab-separated-values".</p></td>
     </tr>
     </table>
 

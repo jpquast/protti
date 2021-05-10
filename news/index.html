@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -135,6 +135,17 @@
       <small>Source: <a href='https://github.com/jpquast/protti/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="protti-011" class="section level1">
+<h1 class="page-header" data-toc-text="0.1.1">
+<a href="#protti-011" class="anchor"></a>protti 0.1.1<small> Unreleased </small>
+</h1>
+<ul>
+<li>Fixed adjustment for multiple testing in the <code><a href="../reference/diff_abundance.html">diff_abundance()</a></code> function. Previously, the p-values in the whole result table were adjusted together. Now adjustments are made by comparisons. This change only affects analyses that have more than one comparison (two conditions).</li>
+<li>Fixed <code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code>, <code><a href="../reference/fetch_uniprot_proteome.html">fetch_uniprot_proteome()</a></code> and <code><a href="../reference/fetch_kegg.html">fetch_kegg()</a></code>. They now fail gracefully with informative messages if there is no internet connection, the database times out or the data resource has changed. Specifically the underlying <code><a href="../reference/try_query.html">try_query()</a></code> function was changed.</li>
+<li>Small fixes in some examples.</li>
+<li>Small changes in Vignettes.</li>
+</ul>
+</div>
     <div id="protti-010" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.0">
 <a href="#protti-010" class="anchor"></a>protti 0.1.0<small> 2021-04-23 </small>

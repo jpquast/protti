@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
       <h1 data-toc-skip>Input Preparation Workflow</h1>
                         <h4 class="author">Dina Schuster</h4>
             
-            <h4 class="date">2021-04-23</h4>
+            <h4 class="date">2021-05-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/input_preparation_workflow.Rmd"><code>vignettes/input_preparation_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>input_preparation_workflow.Rmd</code></div>
@@ -110,13 +110,13 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>This vignette will give you an overview of how you can prepare the output from common search engines and software such as <a href="https://biognosys.com/software/spectronaut/">Spectronaut</a>, <a href="https://www.maxquant.org/">MaxQuant</a>, <a href="https://www.thermofisher.com/de/de/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/multi-omics-data-analysis/proteome-discoverer-software.html">Proteome Discoverer</a> and <a href="https://skyline.ms/project/home/software/Skyline/begin.view">Skyline</a> for the analysis with <strong>protti</strong>. Due to its modular and flexible structure <strong>protti</strong> can be used on the output of common bottom-up proteomics search engines irrespective of the measurement mode (DDA, DIA, targeted-MS).</p>
-<p>Furthermore, you are not only restricted to reports from the above mentioned search engines. As long as your data has a tabular format (data frame) and a specific minimal amount of data columns you can analyse it with <strong>protti</strong>. The columns minimally required contain information on sample, condition, intensity, protein ID and the level the intensity is based on (fragment, precursor, peptide) if different from protein intensity. Depending on the analysis many more columns can be useful, but they are not required. Ultimately, your data should have a structure similar to this:</p>
+<p>This vignette will give you an overview of how you can prepare the quantitative protein/peptide matrix output from common search engines and software such as <a href="https://biognosys.com/software/spectronaut/">Spectronaut</a>, <a href="https://www.maxquant.org/">MaxQuant</a>, <a href="https://www.thermofisher.com/de/de/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/multi-omics-data-analysis/proteome-discoverer-software.html">Proteome Discoverer</a> and <a href="https://skyline.ms/project/home/software/Skyline/begin.view">Skyline</a> for the analysis with <strong>protti</strong>. Due to its modular and flexible structure <strong>protti</strong> can be used on the output of common bottom-up proteomics search engines irrespective of the measurement mode (DDA, DIA, targeted-MS).</p>
+<p>Furthermore, you are not only restricted to reports from the above mentioned search engines. As long as your data has a tabular format (data frame) and a specific minimal number of data columns you can analyse it with <strong>protti</strong>. The columns minimally required contain information on sample, condition, intensity, protein ID and the level the intensity is based on (fragment, precursor, peptide) if different from protein intensity. Depending on the analysis many more columns can be useful, but they are not required. Ultimately, your data should have a structure similar to this:</p>
 <table class="table">
 <thead><tr class="header">
 <th align="center">Sample</th>
 <th align="center">Protein ID</th>
-<th align="center">Peptide</th>
+<th align="center">Peptide Sequence</th>
 <th align="center">Condition</th>
 <th align="center">Intensity</th>
 </tr></thead>
@@ -165,13 +165,13 @@
 </tr>
 </tbody>
 </table>
-<p>It is very important, that each unit of the level you perform your analysis on (e.g. peptide) has a single unique intensity associated with it. If e.g. a peptide would have two different intensities, <strong>protti</strong> would not know how to deal with this and many functions will likely fail.</p>
+<p>It is very important, that each unit of the level you perform your analysis on (e.g. peptide) has a single unique intensity associated with it. If, for example, a peptide has two different intensities, <strong>protti</strong> would not know how to deal with this and many functions will likely fail.</p>
 <p>Data should always be organised in a format called <a href="https://r4ds.had.co.nz/tidy-data.html">tidy data</a>. That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column with intensity as the content of the columns). You can easily achieve this by using the <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> function from the <a href="https://tidyr.tidyverse.org/index.html"><code>tidyr</code></a> package. The output of many search engines already contains tidy data and working with it is very easy because you can refer to information with only one variable. <strong>protti</strong> is designed to work together well with the <a href="https://www.tidyverse.org"><code>tidyverse</code></a> package family that is build around the concept of tidy data.</p>
 <div id="protein-centric-analysis" class="section level2">
 <h2 class="hasAnchor">
 <a href="#protein-centric-analysis" class="anchor"></a>Protein-centric analysis</h2>
-<p>Many search engines provide the user with protein intensities. However, it is also possible to calculate protein intensities directly from precursor intensities with the <strong>protti</strong> function <code><a href="../reference/calculate_protein_abundance.html">calculate_protein_abundance()</a></code>. We recommend using the <code>"iq"</code> method that calculates protein intensities based on the R package <a href="https://academic.oup.com/bioinformatics/article/36/8/2611/5697917"><code>iq</code></a> which performs protein quantification based on the maximal peptide ratio extraction algorithm adapted from the MaxLFQ algorithm (<a href="https://www.sciencedirect.com/science/article/pii/S1535947620333107?via%3Dihub">Cox, J. 2013</a>).</p>
-<p>One advantage of calculating the protein abundance with <strong>protti</strong> is the possibility to median normalise run intensities on the precursor level. This is closer to the actually acquired intensities and thus sample concentrations than if normalisation is performed on the protein level. Some search engines provide the option for automatic median normalisation but not all. Furthermore, some search engines calculate protein intensities by summation of precursor intensities irrespective of missingness of peptides in certain samples. In these cases the maximal peptide ratio extraction algorithm provides a more robust calculation of protein intensities.</p>
+<p>Many search engines provide the user with protein intensities. However, it is also possible to calculate protein intensities directly from precursor intensities with the <strong>protti</strong> function <code><a href="../reference/calculate_protein_abundance.html">calculate_protein_abundance()</a></code>. <strong>Protti</strong> implements the <code>"iq"</code> method, previously implemented in the R package <a href="https://academic.oup.com/bioinformatics/article/36/8/2611/5697917"><code>iq</code></a> which performs protein quantification based on the maximal peptide ratio extraction algorithm adapted from the MaxLFQ algorithm (<a href="https://www.sciencedirect.com/science/article/pii/S1535947620333107?via%3Dihub">Cox, J. 2013</a>).</p>
+<p>One advantage of calculating the protein abundance with <strong>protti</strong> is the possibility to median normalise run intensities on the precursor level. This is closer to the actually acquired intensities and thus sample concentrations than if normalisation is performed on the protein level. Some search engines provide the option for automatic median normalisation but not all. Furthermore, some search engines calculate protein intensities by summation of precursor intensities irrespective of missingness of peptides in certain samples. In these cases the maximal peptide ratio implemented in extraction algorithm provides a more robust calculation of protein intensities.</p>
 <p>If you prefer to use protein intensities provided by the seach engine of your choice this is not a problem and we will show how some of this information can be converted into the right format.</p>
 </div>
 <div id="loading-packages" class="section level2">
@@ -203,7 +203,7 @@
 <li>FG.Charge (precursor charge state, relevant for quality control)</li>
 <li>PG.Quantity (protein group quantity, required for protein-centric analyses if you prefer not to calculate them with <code><a href="../reference/calculate_protein_abundance.html">calculate_protein_abundance()</a></code>)</li>
 </ul>
-<p>Please make sure that the report is a .csv file. You can use the <code><a href="../reference/read_protti.html">read_protti()</a></code> function in order to load the spectronaut report into R. This function is a wrapper around the fast <code>fread()</code> function from the <a href="https://rdatatable.gitlab.io/data.table/"><code>data.table</code></a> package and the <code>clean_names()</code> function from the <a href="http://sfirke.github.io/janitor/"><code>janitor</code></a> package. This will allow you to not only load your data into R very fast, but also to clean up the column names into lower snake case. This will make it easier to remember them and to use them in your data analysis. For the spectronaut columns will change for example into <code>r_file_name</code>.</p>
+<p>Please make sure that the report is a .csv file. You can use the <code><a href="../reference/read_protti.html">read_protti()</a></code> function in order to load the spectronaut report into R. This function is a wrapper around the fast <code>fread()</code> function from the <a href="https://rdatatable.gitlab.io/data.table/"><code>data.table</code></a> package and the <code>clean_names()</code> function from the <a href="http://sfirke.github.io/janitor/"><code>janitor</code></a> package. This will allow you to not only load your data into R very fast, but also to clean up the column names into lower snake case. This will make it easier to remember them and to use them in your data analysis. For the Spectronaut columns <code>R.FileName</code> will change for example into <code>r_file_name</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># To read in your own data you can use read_protti()</span>
 <span class="va">spectronaut_data</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"mydata/spectronaut.csv"</span><span class="op">)</span></code></pre></div>
@@ -216,8 +216,8 @@
 <h2 class="hasAnchor">
 <a href="#peptide-centric-analysislip-ms-analysis" class="anchor"></a>Peptide-centric analysis/LiP-MS analysis</h2>
 <p>In case you are interested in performing a <strong>peptide-centric</strong> analysis (necessary for LiP-MS), you should use the <code>evidence.txt</code> file provided in the search output of MaxQuant.</p>
-<p>The <code>evidence.txt</code> file basically contains all the information we need to run <strong>protti</strong>. It is also contained in a long format which makes it easy to read in and use directly. One thing to take into consideration is the lack of a column for information proteotypicity of peptides. However, this information can be inferred from the <code>Proteins</code>column if it contains more than one protein ID. You can extract this information and create a new column called <code>is_proteotypic</code> containing logicals that will be <code>TRUE</code> if the <code>Proteins</code> column does not contain a semicolon and <code>FALSE</code> if it does (this indicates that the peptide belongs to more than one protein). As mentioned in data analysis vignettes this information is necessary for the analysis of LiP-MS data but it could be also considered for the correct calculation of protein abundances.</p>
-<p>Another column that is required for the analysis of your data is a column indicating conditions to which certain samples belong. This can be easily added to the evidence file by joining a data frame containing the specific annotations. You can create such a data frame in Excel and import it into R for a large amount of samples or just create it directly in R.</p>
+<p>The <code>evidence.txt</code> file basically contains all the information we need to run <strong>protti</strong>. It is also contained in a long format which makes it easy to read in and use directly. One thing to take into consideration is the lack of a column for information on proteotypicity of peptides. However, this information can be inferred from the <code>Proteins</code> column if it contains more than one protein ID. You can extract this information and create a new column called <code>is_proteotypic</code> containing logicals that will be <code>TRUE</code> if the <code>Proteins</code> column does not contain a semicolon and <code>FALSE</code> if it does (this indicates that the peptide belongs to more than one protein). As mentioned in the data analysis vignettes this information is necessary for the analysis of LiP-MS data but it could be also considered for the correct calculation of protein abundances.</p>
+<p>Another column that is required for the analysis of your data is a column indicating conditions to which certain samples belong. This can be easily added to the evidence file by joining a data frame containing the specific annotations. You can create such a data frame in Excel and import it into R for a large number of samples or just create it directly in R.</p>
 <p>MaxQuant output provides information on decoy hits contained in the column <code>reverse</code> and also has information on whether your hit is a contaminant <code>potential_contaminant</code>. You should filter these out before the analysis. However, the contaminant column can be used for quality control.</p>
 <p>One important thing for MaxQuant data is to <strong>make sure that you only have one intensity assigned to each peptide or precursor.</strong> You can do this by summing up all intensities that MaxQuant exports (these can be MULTI-MSMS, MSMS, ISO-MSMS, MULTI-MATCH, ISO-SECPEP) or you can filter for example for precursors with MULTI-MSMS quantification and only use these.</p>
 <p>In this section we will show you how to read in the file with <code><a href="../reference/read_protti.html">read_protti()</a></code> and how to create the <code>is_proteotypic</code> column and the <code>condition</code> column (minimally required) with the help of the <code>stringr</code> and <code>dplyr</code> packages. How to filter your data best is described in the data analysis vignettes.</p>
@@ -309,7 +309,7 @@
 <div id="skyline" class="section level1">
 <h1 class="hasAnchor">
 <a href="#skyline" class="anchor"></a>Skyline</h1>
-<p>The Skyline output is already in long format, however, to process it you need to sum up your transition intensities to obtain the intensity of one precursor. If you prefere to analyse your data on the fragment level, you should create a column that uniquely identifies each fragment of each precursor. You could do that by pasting together the peptide sequence with the charge and the product m/z.</p>
+<p>The Skyline output is already in long format, however, to process it you need to sum up the transition intensities to obtain the intensity of one precursor. If you prefer to analyse your data on the fragment level, you should create a column that uniquely identifies each fragment of each precursor. You could do that by pasting together the peptide sequence with the charge and the product m/z.</p>
 <p>The required Skyline output columns include:</p>
 <ul>
 <li>Peptide Sequence</li>
@@ -499,10 +499,10 @@
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">annotation</span>, by <span class="op">=</span> <span class="st">"file_name"</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
-<div id="other-search-engines" class="section level1">
+<div id="other-search-engines-and-software" class="section level1">
 <h1 class="hasAnchor">
-<a href="#other-search-engines" class="anchor"></a>Other search engines</h1>
-<p>As mentioned in the beginning of this vignette you can use the output of any search engine as long as it contains the minimally required columns. If it is not in the right format you can see if some of the above transformations can be applied to your data. It is also always useful to check if you can find additional columns that help you in your analysis and that you can export from your search engine. Always make sure that you know that all of your observations are observations you are interested in. Check if there are decoys, contaminants or non-proteotypic peptides in your data. For protein-centric analysis, potentially remove quantifications that rely on only a few peptides.</p>
+<a href="#other-search-engines-and-software" class="anchor"></a>Other search engines and software</h1>
+<p>As mentioned in the beginning of this vignette you can use the output of any search engine as long as it contains the minimally required columns. If it is not in the right format you can see if some of the above transformations can be applied to your data. It is also always useful to check if you can find additional columns that help you in your analysis and that you can export from your search engine. Always make sure that all of your observations are ones you are interested in. Check if there are decoys, contaminants or non-proteotypic peptides in your data. For protein-centric analysis, potentially remove quantifications that rely on only a few peptides.</p>
 </div>
   </div>
 
