@@ -135,7 +135,7 @@ test_that("plot_peptide_profiles works", {
   }
 })
 
-diff <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, ref_condition = "condition_1", method = "t-test", retain_columns = c(protein))
+diff <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, method = "t-test", retain_columns = c(protein))
 
 test_that("diff_abundance works", {
   expect_is(diff, "data.frame")
@@ -150,8 +150,8 @@ test_that("diff_abundance works", {
       dplyr::summarise(mean = mean(normalised_intensity_log2, na.rm = TRUE), sd = sd(normalised_intensity_log2, na.rm = TRUE), n = dplyr::n(), .groups = "drop")
 
     diff_mean_sd <- diff_abundance(data = data_mean_sd, condition = condition, grouping = peptide, mean = mean, sd = sd, n_samples = n, ref_condition = "condition_1", method = "t-test_mean_sd", retain_columns = c(protein))
-    diff_moderated <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, ref_condition = "condition_1", method = "moderated_t-test", retain_columns = c(protein))
-    diff_proDA <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, ref_condition = "condition_1", method = "proDA", retain_columns = c(protein))
+    diff_moderated <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, method = "moderated_t-test", retain_columns = c(protein))
+    diff_proDA <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, method = "proDA", retain_columns = c(protein))
 
     expect_is(diff_mean_sd, "data.frame")
     expect_is(diff_moderated, "data.frame")
@@ -164,7 +164,7 @@ test_that("diff_abundance works", {
     expect_equal(ncol(diff_proDA), 12)
     expect_equal(round(min(diff_mean_sd$adj_pval, na.rm = TRUE), digits = 9), 0.00758761)
     expect_equal(round(min(diff_moderated$adj_pval, na.rm = TRUE), digits = 9), 5.1129e-05)
-    expect_equal(round(min(diff_proDA$adj_pval, na.rm = TRUE), digits = 5), 0.00124)
+    expect_equal(round(min(diff_proDA$adj_pval, na.rm = TRUE), digits = 5), 0.00125)
   }
 })
 
