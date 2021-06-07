@@ -21,13 +21,13 @@ try_query(
 
 \item{header}{a logical, indicates if the first row of the data frame contains variable names.}
 
-\item{sep}{a character vector, specifying the separator of the table at the target URL. Options are "tab-separated-values" or "csv". 
+\item{sep}{a character vector, specifying the separator of the table at the target URL. Options are "tab-separated-values" or "csv".
 Default is "tab-separated-values".}
 }
 \value{
 A data frame that contains the table from the url.
 }
 \description{
-Downloads data table from URL. If an error occurs during the query (for example due to no connection) the function waits 3 seconds 
+Downloads data table from URL. If an error occurs during the query (for example due to no connection) the function waits 3 seconds
 and tries again. If no result could be obtained after the given number of tries a message indicating the problem is returned.
 }

@@ -24,7 +24,7 @@ fetch_chebi <- function(relation = FALSE) {
   if (relation == TRUE) {
     chebi_relation_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv", config = httr::config(connecttimeout = 60))
     chebi_relation <- suppressMessages(httr::content(chebi_relation_result, type = "text/tab-separated-values"))
-    
+
     chebi_relation_clean <- chebi_relation %>%
       dplyr::filter(.data$STATUS == "C") %>%
       dplyr::select(-c(.data$ID, .data$STATUS)) %>%
@@ -36,7 +36,7 @@ fetch_chebi <- function(relation = FALSE) {
   }
 
   # Download compound data
-  chebi_chemical_data_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv", config = httr::config(connecttimeout = 60)) 
+  chebi_chemical_data_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv", config = httr::config(connecttimeout = 60))
   chebi_chemical_data <- suppressMessages(httr::content(chebi_chemical_data_result, type = "text/tab-separated-values"))
 
   chebi_compounds_download <- readLines(gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/compounds.tsv.gz")))

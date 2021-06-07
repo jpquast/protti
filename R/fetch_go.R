@@ -11,7 +11,7 @@
 #'
 #' @examples
 #' \donttest{
-#' fetch_go("9606")
+#' head(fetch_go("9606"))
 #' }
 fetch_go <- function(organism_id) {
   organism_id <- match.arg(organism_id, c("9606", "559292", "83333"))

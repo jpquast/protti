@@ -38,7 +38,7 @@
 #' \itemize{
 #' \item{"t-test": }{The \code{std_error} column contains the standard error of the differential abundances. \code{n_obs} contains the number of
 #' observations for the specific protein, peptide or precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
-#' \item{"t-test_mean_sd": }{Columns labeled as control refer to the second condition of the comparison pairs. Treated refers to the first 
+#' \item{"t-test_mean_sd": }{Columns labeled as control refer to the second condition of the comparison pairs. Treated refers to the first
 #' condition. \code{mean_control} and \code{mean_treated} columns contain the means for the reference and treatment condition, respectively.
 #' \code{sd_control} and \code{sd_treated} columns contain the standard deviations for the reference and treatment condition, respectively.
 #' \code{n_control} and \code{n_treated} columns contain the numbers of samples for the reference and treatment condition, respectively. The \code{std_error}
@@ -197,7 +197,7 @@ diff_abundance <-
 
       if (filter_NA_missingness == TRUE) {
         t_test_result <- t_test_result %>%
-          tidyr::drop_na({{ missingness }}) %>% 
+          tidyr::drop_na({{ missingness }}) %>%
           dplyr::group_by({{ comparison }}) %>%
           dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
           dplyr::ungroup() %>%
@@ -210,39 +210,39 @@ diff_abundance <-
     }
 
     if (method == "t-test_mean_sd") {
-      if(ref_condition == "all"){
+      if (ref_condition == "all") {
         # creating all pairwise comparisons
         all_conditions <- unique(dplyr::pull(data, {{ condition }}))
-        
-        all_combinations <- tibble::as_tibble(t(combn(all_conditions, m = 2))) %>% 
-          dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2)) 
-        
-        message('"all" was provided as reference condition. All pairwise comparisons are created from the conditions and assigned their missingness.\n The created comparisons are: \n', paste(all_combinations$combinations, collapse =  "\n"))
+
+        all_combinations <- tibble::as_tibble(t(combn(all_conditions, m = 2)), .name_repair = "universal") %>%
+          dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2))
+
+        message('All pairwise comparisons are created from all conditions and their missingness type is assigned.\n The created comparisons are: \n', paste(all_combinations$combinations, collapse = "\n"))
       }
-      
-      if(ref_condition != "all"){
+
+      if (ref_condition != "all") {
         conditions_no_ref <- unique(dplyr::pull(data, !!ensym(condition)))[!unique(pull(data, !!ensym(condition))) %in% ref_condition]
-        
-        all_combinations <- tibble::tibble(V1 = conditions_no_ref, V2 = ref_condition) %>% 
-          dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2)) 
+
+        all_combinations <- tibble::tibble(V1 = conditions_no_ref, V2 = ref_condition) %>%
+          dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2))
       }
-      
-      all_combinations <- all_combinations %>% 
-        tidyr::pivot_longer(cols = c(.data$V1, .data$V2), names_to = "name", values_to = rlang::as_name(rlang::enquo(condition))) %>% 
-        dplyr::select(-.data$name) %>% 
-        dplyr::group_by({{ condition }}) %>% 
-        dplyr::mutate(comparison = list(.data$combinations)) %>% 
-        dplyr::distinct(.data$comparison, {{ condition }}) 
-      
+
+      all_combinations <- all_combinations %>%
+        tidyr::pivot_longer(cols = c(.data$V1, .data$V2), names_to = "name", values_to = rlang::as_name(rlang::enquo(condition))) %>%
+        dplyr::select(-.data$name) %>%
+        dplyr::group_by({{ condition }}) %>%
+        dplyr::mutate(comparison = list(.data$combinations)) %>%
+        dplyr::distinct(.data$comparison, {{ condition }})
+
       t_test_mean_sd_result <- data %>%
-        dplyr::ungroup() %>% 
+        dplyr::ungroup() %>%
         dplyr::distinct({{ condition }}, {{ grouping }}, {{ mean }}, {{ sd }}, {{ n_samples }}) %>%
-        tidyr::drop_na() %>% 
-        dplyr::left_join(all_combinations, by = rlang::as_name(rlang::enquo(condition))) %>% 
+        tidyr::drop_na() %>%
+        dplyr::left_join(all_combinations, by = rlang::as_name(rlang::enquo(condition))) %>%
         tidyr::unnest(.data$comparison) %>%
         dplyr::rename(mean = {{ mean }}, sd = {{ sd }}, n = {{ n_samples }}) %>%
         dplyr::mutate({{ condition }} := ifelse({{ condition }} == stringr::str_extract(.data$comparison, pattern = "(?<=_vs_).+"), "control", "treated")) %>%
-        tidyr::pivot_wider(names_from = {{ condition }}, values_from = c(.data$mean, .data$sd, .data$n)) %>% 
+        tidyr::pivot_wider(names_from = {{ condition }}, values_from = c(.data$mean, .data$sd, .data$n)) %>%
         dplyr::mutate(ttest_protti(mean1 = .data$mean_control, mean2 = .data$mean_treated, sd1 = .data$sd_control, sd2 = .data$sd_treated, n1 = .data$n_control, n2 = .data$n_treated)) %>%
         tidyr::drop_na(.data$pval) %>%
         dplyr::group_by(.data$comparison) %>%
@@ -296,10 +296,14 @@ diff_abundance <-
       message("DONE", appendLF = TRUE)
       message("[4/7] Construct matrix of custom contrasts ... ", appendLF = FALSE)
 
-      names <- paste0("x", stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = ".+(?=_vs_)"), "_vs_x", 
-                      stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = "(?<=_vs_).+")) 
-      comparisons <- paste0("x", stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = ".+(?=_vs_)"), "-x", 
-                            stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = "(?<=_vs_).+")) 
+      names <- paste0(
+        "x", stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = ".+(?=_vs_)"), "_vs_x",
+        stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = "(?<=_vs_).+")
+      )
+      comparisons <- paste0(
+        "x", stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = ".+(?=_vs_)"), "-x",
+        stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = "(?<=_vs_).+")
+      )
       combinations <- purrr::map2(
         .x = names,
         .y = comparisons,
@@ -354,10 +358,10 @@ diff_abundance <-
 
       if (filter_NA_missingness == TRUE) {
         moderated_t_test_result <- moderated_t_test_result %>%
-          tidyr::drop_na({{ missingness }}) %>% 
+          tidyr::drop_na({{ missingness }}) %>%
           dplyr::group_by(.data$comparison) %>%
-          dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>% 
-          dplyr::ungroup() %>% 
+          dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
+          dplyr::ungroup() %>%
           dplyr::arrange(.data$adj_pval)
         return(moderated_t_test_result)
       }
@@ -416,9 +420,11 @@ diff_abundance <-
       message("[5/5] Extracting differential abundance from model and apply filter ... ", appendLF = FALSE)
 
       names <- unique(dplyr::pull(data, {{ comparison }}))
-      comparisons <- paste0(stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = ".+(?=_vs_)"), " - ", 
-                                           stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = "(?<=_vs_).+")) 
-      
+      comparisons <- paste0(
+        stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = ".+(?=_vs_)"), " - ",
+        stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = "(?<=_vs_).+")
+      )
+
       proDA_result <- names %>%
         purrr::map(~proDA_fit) %>%
         purrr::set_names(nm = names) %>%

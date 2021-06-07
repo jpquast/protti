@@ -74,7 +74,7 @@ Depending on the method the data frame contains additional columns:
 \itemize{
 \item{"t-test": }{The \code{std_error} column contains the standard error of the differential abundances. \code{n_obs} contains the number of
 observations for the specific protein, peptide or precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
-\item{"t-test_mean_sd": }{Columns labeled as control refer to the second condition of the comparison pairs. Treated refers to the first 
+\item{"t-test_mean_sd": }{Columns labeled as control refer to the second condition of the comparison pairs. Treated refers to the first
 condition. \code{mean_control} and \code{mean_treated} columns contain the means for the reference and treatment condition, respectively.
 \code{sd_control} and \code{sd_treated} columns contain the standard deviations for the reference and treatment condition, respectively.
 \code{n_control} and \code{n_treated} columns contain the numbers of samples for the reference and treatment condition, respectively. The \code{std_error}

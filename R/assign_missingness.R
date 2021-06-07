@@ -52,41 +52,41 @@ assign_missingness <- function(data, sample, condition, grouping, intensity, ref
   if (!(ref_condition %in% unique(dplyr::pull(data, {{ condition }}))) & ref_condition != "all") {
     stop("The name provided to ref_condition cannot be found in your conditions! Please provide a valid reference condition.")
   }
-  
-  if(ref_condition == "all"){
+
+  if (ref_condition == "all") {
     # creating all pairwise comparisons
     all_conditions <- unique(dplyr::pull(data, {{ condition }}))
-    
-    all_combinations <- tibble::as_tibble(t(utils::combn(all_conditions, m = 2))) %>% 
-      dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2)) 
-    
-    message('"all" was provided as reference condition. All pairwise comparisons are created from the conditions and assigned their missingness.\n The created comparisons are: \n', paste(all_combinations$combinations, collapse =  "\n"))
+
+    all_combinations <- tibble::as_tibble(t(utils::combn(all_conditions, m = 2)), .name_repair = "universal") %>%
+      dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2))
+
+    message('"all" was provided as reference condition. All pairwise comparisons are created from the conditions and assigned their missingness.\n The created comparisons are: \n', paste(all_combinations$combinations, collapse = "\n"))
   }
 
-  if(ref_condition != "all"){
-  conditions_no_ref <- unique(pull(data, !!ensym(condition)))[!unique(pull(data, !!ensym(condition))) %in% ref_condition]
-  
-  all_combinations <- tibble::tibble(V1 = conditions_no_ref, V2 = ref_condition) %>% 
-    dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2)) 
+  if (ref_condition != "all") {
+    conditions_no_ref <- unique(pull(data, !!ensym(condition)))[!unique(pull(data, !!ensym(condition))) %in% ref_condition]
+
+    all_combinations <- tibble::tibble(V1 = conditions_no_ref, V2 = ref_condition) %>%
+      dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2))
   }
-  
+
   # create dataframe that contains all combinations to be tested
-  all_combinations <- all_combinations %>% 
-    tidyr::pivot_longer(cols = c(.data$V1, .data$V2), names_to = "name", values_to = rlang::as_name(rlang::enquo(condition))) %>% 
-    dplyr::select(-.data$name) %>% 
-    dplyr::group_by({{ condition }}) %>% 
-    dplyr::mutate(comparison = list(.data$combinations)) %>% 
-    dplyr::distinct(.data$comparison, {{ condition }}) 
+  all_combinations <- all_combinations %>%
+    tidyr::pivot_longer(cols = c(.data$V1, .data$V2), names_to = "name", values_to = rlang::as_name(rlang::enquo(condition))) %>%
+    dplyr::select(-.data$name) %>%
+    dplyr::group_by({{ condition }}) %>%
+    dplyr::mutate(comparison = list(.data$combinations)) %>%
+    dplyr::distinct(.data$comparison, {{ condition }})
 
   data_prep <- data %>%
-    dplyr::ungroup() %>% 
+    dplyr::ungroup() %>%
     dplyr::distinct({{ sample }}, {{ condition }}, {{ grouping }}, {{ intensity }}) %>%
     tidyr::complete(nesting(!!ensym(sample), !!ensym(condition)), !!ensym(grouping)) %>%
     dplyr::group_by({{ grouping }}, {{ condition }}) %>%
     dplyr::mutate(n_detect = sum(!is.na({{ intensity }}))) %>%
     dplyr::mutate(n_replicates = dplyr::n()) %>%
-    dplyr::ungroup() %>% 
-    dplyr::left_join(all_combinations, by = rlang::as_name(rlang::enquo(condition))) %>% 
+    dplyr::ungroup() %>%
+    dplyr::left_join(all_combinations, by = rlang::as_name(rlang::enquo(condition))) %>%
     tidyr::unnest(.data$comparison)
 
   result <- data_prep %>%
