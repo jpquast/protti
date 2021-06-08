@@ -171,7 +171,6 @@ result <- data_missing %>%
                  intensity_log2 = normalised_intensity_log2,
                  missingness = missingness,
                  comparison = comparison,
-                 ref_condition = "condition_1",
                  filter_NA_missingness = TRUE,
                  method = "t-test",
                  retain_columns = c(protein, change_peptide))

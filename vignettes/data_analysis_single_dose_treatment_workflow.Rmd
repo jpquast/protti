@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-This vignette will give you an overview of how you can analyse bottom-up proteomics data or LiP-MS data using **protti**. 
+This vignette will give you an overview of how you can analyse  bottom-up proteomics data or LiP-MS data using **protti**. 
 If you would like to analyse dose-response data please refer to the [dose-response data analysis vignette](https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html).
 Before analysing your data make sure that it is of sufficient quality and that you do not have any outliers.
 To do this you can take a look at the [quality control vignette](https://jpquast.github.io/protti/articles/quality_control_workflow.html).
@@ -250,7 +250,6 @@ diff_abundance_data <- data_filtered_uniprot %>%
     intensity_log2 = normalised_intensity_log2,
     missingness = missingness,
     comparison = comparison,
-    ref_condition = "control",
     method = "t-test",
     retain_columns = c(pg_protein_accessions, go_molecular_function, database_string, start, end, length, coverage)
   ) 

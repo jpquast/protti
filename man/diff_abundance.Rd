@@ -15,7 +15,7 @@ diff_abundance(
   mean = NULL,
   sd = NULL,
   n_samples = NULL,
-  ref_condition,
+  ref_condition = "all",
   filter_NA_missingness = TRUE,
   method = c("t-test", "t-test_mean_sd", "moderated_t-test", "proDA"),
   p_adj_method = "BH",
@@ -37,7 +37,9 @@ diff_abundance(
 Is not required if \code{method = "t-test_mean_sd"}.}
 
 \item{comparison}{The column in the data frame containing comparison information of treatment/reference condition pairs. Can be obtained by
-calling \code{assign_missingness}. Is not required if \code{method = "t-test_mean_sd"}.}
+calling \code{assign_missingness}. Comparisons need to be in the form condition1_vs_condition2, meaning two compared conditions are
+separated by "_vs_". This column determines for which condition pairs differential abundances are calculated.
+Is not required if \code{method = "t-test_mean_sd"}, in that case please provide a reference condition with the ref_condition argument.}
 
 \item{mean}{The column in the data frame containing mean values for two conditions. Is only required if \code{method = "t-test_mean_sd"}.}
 
@@ -45,9 +47,10 @@ calling \code{assign_missingness}. Is not required if \code{method = "t-test_mea
 
 \item{n_samples}{The column in the data frame containing the number of samples per condition for two conditions. Is only required if \code{method = "t-test_mean_sd"}.}
 
-\item{ref_condition}{The condition that is used as a reference for differential abundance calculation.}
+\item{ref_condition}{optional, a character vector providing the condition that is used as a reference for differential abundance calculation for \code{method = "t-test_mean_sd"} .
+Instead of providing one reference condition, "all" can be supplied, which will create all pairwise condition pairs. By default \code{ref_condition = "all"}.}
 
-\item{filter_NA_missingness}{A logical, default is \code{TRUE}. For all methods except \code{"t-test_mean_sd"} missingness information has to be provided.
+\item{filter_NA_missingness}{a logical, default is \code{TRUE}. For all methods except \code{"t-test_mean_sd"} missingness information has to be provided.
 If a reference/treatment pair has too few samples to be considered robust, it is annotated with \code{NA} as missingness. If this argument
 is \code{TRUE}, these reference/treatment pairs are filtered out.}
 
@@ -71,7 +74,8 @@ Depending on the method the data frame contains additional columns:
 \itemize{
 \item{"t-test": }{The \code{std_error} column contains the standard error of the differential abundances. \code{n_obs} contains the number of
 observations for the specific protein, peptide or precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
-\item{"t-test_mean_sd": }{\code{mean_control} and \code{mean_treated} columns contain the means for the reference and treatment condition, respectively.
+\item{"t-test_mean_sd": }{Columns labeled as control refer to the second condition of the comparison pairs. Treated refers to the first
+condition. \code{mean_control} and \code{mean_treated} columns contain the means for the reference and treatment condition, respectively.
 \code{sd_control} and \code{sd_treated} columns contain the standard deviations for the reference and treatment condition, respectively.
 \code{n_control} and \code{n_treated} columns contain the numbers of samples for the reference and treatment condition, respectively. The \code{std_error}
 column contains the standard error of the differential abundances. \code{t_statistic} contains the t_statistic for the t-test.}
@@ -100,7 +104,6 @@ diff_abundance(
   intensity_log2 = normalised_intensity_log2,
   missingness = missingness,
   comparison = comparison,
-  ref_condition = "control",
   method = "t-test",
   retain_columns = c(pg_protein_accessions)
 )

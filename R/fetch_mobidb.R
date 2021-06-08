@@ -18,7 +18,7 @@
 #' \donttest{
 #' fetch_mobidb(
 #'   organism_id = "83333",
-#'   protein_ids = c("P36578", "O43324", "Q00796")
+#'   protein_ids = c("P0A799", "P62707")
 #' )
 #' }
 fetch_mobidb <- function(organism_id, protein_ids) {
@@ -31,15 +31,15 @@ fetch_mobidb <- function(organism_id, protein_ids) {
 
   query <- paste0("https://mobidb.bio.unipd.it/api/download?ncbi_taxon_id=", organism_id, "&projection=prediction-disorder-mobidb_lite,curated-disorder-merge,derived-missing_residues-th_90,derived-mobile_residues-th_90,acc,name&format=tsv")
 
-  query_result <- httr::GET(query, config = httr::config(connecttimeout = 60)) 
-  
+  query_result <- httr::GET(query, config = httr::config(connecttimeout = 60))
+
   mobidb <- suppressMessages(httr::content(query_result, type = "text/tab-separated-values", encoding = "UTF-8"))
 
   i <- 0
   while (("ERROR: operation exceeded time limit" %in% mobidb$acc) & i < 4) {
     message("Attempt to download data timed out. Trying again")
-    query_result <- httr::GET(query, config = httr::config(connecttimeout = 60)) 
-    
+    query_result <- httr::GET(query, config = httr::config(connecttimeout = 60))
+
     mobidb <- suppressMessages(httr::content(query_result, type = "text/tab-separated-values", encoding = "UTF-8"))
 
     i <- i + 1
@@ -55,7 +55,7 @@ fetch_mobidb <- function(organism_id, protein_ids) {
     dplyr::filter(.data$acc %in% protein_ids) %>%
     dplyr::mutate(start..end = stringr::str_split(.data$start..end, pattern = ",")) %>%
     tidyr::unnest(.data$start..end) %>%
-    tidyr::separate(.data$start..end, into = c("start", "end"), sep = "\\.\\.") %>% 
+    tidyr::separate(.data$start..end, into = c("start", "end"), sep = "\\.\\.") %>%
     dplyr::select(-.data$length)
 
   if (length(unique(result$acc)) != length(protein_ids)) {

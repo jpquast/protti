@@ -10,12 +10,15 @@
 #' @param missingness The column in the data frame containing missingness information. Can be obtained by calling \code{assign_missingness}.
 #' Is not required if \code{method = "t-test_mean_sd"}.
 #' @param comparison The column in the data frame containing comparison information of treatment/reference condition pairs. Can be obtained by
-#' calling \code{assign_missingness}. Is not required if \code{method = "t-test_mean_sd"}.
+#' calling \code{assign_missingness}. Comparisons need to be in the form condition1_vs_condition2, meaning two compared conditions are
+#' separated by "_vs_". This column determines for which condition pairs differential abundances are calculated.
+#' Is not required if \code{method = "t-test_mean_sd"}, in that case please provide a reference condition with the ref_condition argument.
 #' @param mean The column in the data frame containing mean values for two conditions. Is only required if \code{method = "t-test_mean_sd"}.
 #' @param sd The column in the data frame containing standard deviations for two conditions. Is only required if \code{method = "t-test_mean_sd"}.
 #' @param n_samples The column in the data frame containing the number of samples per condition for two conditions. Is only required if \code{method = "t-test_mean_sd"}.
-#' @param ref_condition The condition that is used as a reference for differential abundance calculation.
-#' @param filter_NA_missingness A logical, default is \code{TRUE}. For all methods except \code{"t-test_mean_sd"} missingness information has to be provided.
+#' @param ref_condition optional, a character vector providing the condition that is used as a reference for differential abundance calculation for \code{method = "t-test_mean_sd"} .
+#' Instead of providing one reference condition, "all" can be supplied, which will create all pairwise condition pairs. By default \code{ref_condition = "all"}.
+#' @param filter_NA_missingness a logical, default is \code{TRUE}. For all methods except \code{"t-test_mean_sd"} missingness information has to be provided.
 #' If a reference/treatment pair has too few samples to be considered robust, it is annotated with \code{NA} as missingness. If this argument
 #' is \code{TRUE}, these reference/treatment pairs are filtered out.
 #' @param method A character vector, specifies the method used for statistical hypothesis testing. Methods include Welch test ("\code{t-test}"), a Welch test on means,
@@ -35,7 +38,8 @@
 #' \itemize{
 #' \item{"t-test": }{The \code{std_error} column contains the standard error of the differential abundances. \code{n_obs} contains the number of
 #' observations for the specific protein, peptide or precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
-#' \item{"t-test_mean_sd": }{\code{mean_control} and \code{mean_treated} columns contain the means for the reference and treatment condition, respectively.
+#' \item{"t-test_mean_sd": }{Columns labeled as control refer to the second condition of the comparison pairs. Treated refers to the first
+#' condition. \code{mean_control} and \code{mean_treated} columns contain the means for the reference and treatment condition, respectively.
 #' \code{sd_control} and \code{sd_treated} columns contain the standard deviations for the reference and treatment condition, respectively.
 #' \code{n_control} and \code{n_treated} columns contain the numbers of samples for the reference and treatment condition, respectively. The \code{std_error}
 #' column contains the standard error of the differential abundances. \code{t_statistic} contains the t_statistic for the t-test.}
@@ -53,10 +57,10 @@
 #' @import dplyr
 #' @import tidyr
 #' @importFrom rlang .data enquo ensym as_name as_label expr := !!
-#' @importFrom purrr map map2 map_df map_dbl map_chr map2_dbl reduce set_names
+#' @importFrom purrr map map2 map_df map_dbl map2_dbl reduce set_names
 #' @importFrom magrittr %>%
-#' @importFrom tibble column_to_rownames rownames_to_column
-#' @importFrom stringr str_replace_all
+#' @importFrom tibble column_to_rownames rownames_to_column tibble as_tibble
+#' @importFrom stringr str_replace_all str_extract
 #' @export
 #'
 #' @examples
@@ -69,7 +73,6 @@
 #'   intensity_log2 = normalised_intensity_log2,
 #'   missingness = missingness,
 #'   comparison = comparison,
-#'   ref_condition = "control",
 #'   method = "t-test",
 #'   retain_columns = c(pg_protein_accessions)
 #' )
@@ -85,13 +88,13 @@ diff_abundance <-
            mean = NULL,
            sd = NULL,
            n_samples = NULL,
-           ref_condition,
+           ref_condition = "all",
            filter_NA_missingness = TRUE,
            method = c("t-test", "t-test_mean_sd", "moderated_t-test", "proDA"),
            p_adj_method = "BH",
            retain_columns = NULL) {
     . <- NULL
-    if (!(ref_condition %in% unique(pull(data, {{ condition }})))) {
+    if (!(ref_condition %in% unique(pull(data, {{ condition }}))) & ref_condition != "all") {
       stop("The name provided to ref_condition cannot be found in your conditions! Please provide a valid reference condition.")
     }
 
@@ -122,7 +125,7 @@ diff_abundance <-
         tidyr::drop_na({{ intensity_log2 }}) %>%
         dplyr::group_by({{ comparison }}, {{ grouping }}, {{ condition }}) %>%
         dplyr::summarize(intensity = list({{ intensity_log2 }}), .groups = "drop") %>%
-        dplyr::mutate(type = ifelse({{ condition }} == ref_condition, "control", "treated")) %>%
+        dplyr::mutate(type = ifelse({{ condition }} == stringr::str_extract({{ comparison }}, pattern = "(?<=_vs_).+"), "control", "treated")) %>%
         dplyr::select(-{{ condition }}) %>%
         tidyr::pivot_wider(names_from = .data$type, values_from = .data$intensity, values_fill = list(NA))
 
@@ -194,7 +197,7 @@ diff_abundance <-
 
       if (filter_NA_missingness == TRUE) {
         t_test_result <- t_test_result %>%
-          tidyr::drop_na({{ missingness }}) %>% 
+          tidyr::drop_na({{ missingness }}) %>%
           dplyr::group_by({{ comparison }}) %>%
           dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
           dplyr::ungroup() %>%
@@ -207,23 +210,40 @@ diff_abundance <-
     }
 
     if (method == "t-test_mean_sd") {
-      conditions_no_ref <- unique(dplyr::pull(data %>% tidyr::drop_na(), {{ condition }}))[!unique(dplyr::pull(data %>% tidyr::drop_na(), {{ condition }})) %in% ref_condition]
+      if (ref_condition == "all") {
+        # creating all pairwise comparisons
+        all_conditions <- unique(dplyr::pull(data, {{ condition }}))
+
+        all_combinations <- tibble::as_tibble(t(combn(all_conditions, m = 2)), .name_repair = "universal") %>%
+          dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2))
+
+        message('All pairwise comparisons are created from all conditions and their missingness type is assigned.\n The created comparisons are: \n', paste(all_combinations$combinations, collapse = "\n"))
+      }
+
+      if (ref_condition != "all") {
+        conditions_no_ref <- unique(dplyr::pull(data, !!ensym(condition)))[!unique(pull(data, !!ensym(condition))) %in% ref_condition]
+
+        all_combinations <- tibble::tibble(V1 = conditions_no_ref, V2 = ref_condition) %>%
+          dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2))
+      }
+
+      all_combinations <- all_combinations %>%
+        tidyr::pivot_longer(cols = c(.data$V1, .data$V2), names_to = "name", values_to = rlang::as_name(rlang::enquo(condition))) %>%
+        dplyr::select(-.data$name) %>%
+        dplyr::group_by({{ condition }}) %>%
+        dplyr::mutate(comparison = list(.data$combinations)) %>%
+        dplyr::distinct(.data$comparison, {{ condition }})
+
       t_test_mean_sd_result <- data %>%
-        dplyr::ungroup() %>% 
+        dplyr::ungroup() %>%
         dplyr::distinct({{ condition }}, {{ grouping }}, {{ mean }}, {{ sd }}, {{ n_samples }}) %>%
-        tidyr::drop_na() %>% 
-        dplyr::mutate(comparison = ifelse(
-          {{ condition }} %in% conditions_no_ref,
-          paste0({{ condition }}, "_vs_", ref_condition),
-          list(paste0(conditions_no_ref, "_vs_", ref_condition))
-        )) %>%
+        tidyr::drop_na() %>%
+        dplyr::left_join(all_combinations, by = rlang::as_name(rlang::enquo(condition))) %>%
         tidyr::unnest(.data$comparison) %>%
         dplyr::rename(mean = {{ mean }}, sd = {{ sd }}, n = {{ n_samples }}) %>%
-        split(.$comparison) %>%
-        purrr::map_dfr(~ .x %>%
-           dplyr::mutate({{ condition }} := ifelse({{ condition }} == ref_condition, "control", "treated")) %>%
-           tidyr::pivot_wider(names_from = {{ condition }}, values_from = c(.data$mean, .data$sd, .data$n)) %>%
-          dplyr::mutate(ttest_protti(mean1 = .data$mean_control, mean2 = .data$mean_treated, sd1 = .data$sd_control, sd2 = .data$sd_treated, n1 = .data$n_control, n2 = .data$n_treated))) %>%
+        dplyr::mutate({{ condition }} := ifelse({{ condition }} == stringr::str_extract(.data$comparison, pattern = "(?<=_vs_).+"), "control", "treated")) %>%
+        tidyr::pivot_wider(names_from = {{ condition }}, values_from = c(.data$mean, .data$sd, .data$n)) %>%
+        dplyr::mutate(ttest_protti(mean1 = .data$mean_control, mean2 = .data$mean_treated, sd1 = .data$sd_control, sd2 = .data$sd_treated, n1 = .data$n_control, n2 = .data$n_treated)) %>%
         tidyr::drop_na(.data$pval) %>%
         dplyr::group_by(.data$comparison) %>%
         dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
@@ -276,8 +296,14 @@ diff_abundance <-
       message("DONE", appendLF = TRUE)
       message("[4/7] Construct matrix of custom contrasts ... ", appendLF = FALSE)
 
-      names <- purrr::map_chr(conditions_no_ref, ~ paste0("x", .x, "_vs_x", ref_condition))
-      comparisons <- purrr::map_chr(conditions_no_ref, ~ paste0("x", .x, "-x", ref_condition))
+      names <- paste0(
+        "x", stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = ".+(?=_vs_)"), "_vs_x",
+        stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = "(?<=_vs_).+")
+      )
+      comparisons <- paste0(
+        "x", stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = ".+(?=_vs_)"), "-x",
+        stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = "(?<=_vs_).+")
+      )
       combinations <- purrr::map2(
         .x = names,
         .y = comparisons,
@@ -332,10 +358,10 @@ diff_abundance <-
 
       if (filter_NA_missingness == TRUE) {
         moderated_t_test_result <- moderated_t_test_result %>%
-          tidyr::drop_na({{ missingness }}) %>% 
+          tidyr::drop_na({{ missingness }}) %>%
           dplyr::group_by(.data$comparison) %>%
-          dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>% 
-          dplyr::ungroup() %>% 
+          dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
+          dplyr::ungroup() %>%
           dplyr::arrange(.data$adj_pval)
         return(moderated_t_test_result)
       }
@@ -371,12 +397,8 @@ diff_abundance <-
 
       proDA_fit <-
         proDA::proDA(proDA_input,
-          design = proDA_design,
-          reference_level = ref_condition
+          design = proDA_design
         )
-
-      proDA_result_names <-
-        proDA::result_names(proDA_fit)[!proDA::result_names(proDA_fit) %in% c("Intercept")]
 
       message("DONE", appendLF = TRUE)
       message("[4/5] Define missingness levels for filtering ... ", appendLF = FALSE)
@@ -397,11 +419,17 @@ diff_abundance <-
       message("DONE", appendLF = TRUE)
       message("[5/5] Extracting differential abundance from model and apply filter ... ", appendLF = FALSE)
 
-      proDA_result <- proDA_result_names %>%
+      names <- unique(dplyr::pull(data, {{ comparison }}))
+      comparisons <- paste0(
+        stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = ".+(?=_vs_)"), " - ",
+        stringr::str_extract(unique(dplyr::pull(data, {{ comparison }})), pattern = "(?<=_vs_).+")
+      )
+
+      proDA_result <- names %>%
         purrr::map(~proDA_fit) %>%
-        purrr::set_names(nm = proDA_result_names) %>%
+        purrr::set_names(nm = names) %>%
         purrr::map2(
-          .y = names(.),
+          .y = comparisons,
           .f = ~ proDA::test_diff(.x, contrast = .y, sort_by = "adj_pval")
         )
 

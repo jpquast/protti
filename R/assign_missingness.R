@@ -2,12 +2,13 @@
 #'
 #' The type of missingness (missing at random, missing not at random) is assigned based on the comparison of a reference condition and every other condition.
 #'
-#' @param data A data frame containing at least the input variables.
-#' @param sample The column in the data data frame containing the sample name.
-#' @param condition The column in the data data frame containing the conditions.
-#' @param grouping The column in the data data frame containing precursor or peptide identifiers.
-#' @param intensity The column in the data data frame containing intensity values.
-#' @param ref_condition The condition that is used as a reference for missingness determination. By default \code{ref_condition = "control"}.
+#' @param data a data frame containing at least the input variables.
+#' @param sample The column in the data frame containing the sample name.
+#' @param condition The column in the data frame containing the conditions.
+#' @param grouping The column in the data frame containing precursor or peptide identifiers.
+#' @param intensity The column in the data frame containing intensity values.
+#' @param ref_condition a character vector providing the condition that is used as a reference for missingness determination.
+#' Instead of providing one reference condition, "all" can be supplied, which will create all pairwise condition pairs. By default \code{ref_condition = "all"}.
 #' @param completeness_MAR The minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7.
 #' It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each
 #' condition to be considered as MAR. This number is always at least 1.
@@ -27,9 +28,12 @@
 #' }
 #' @import dplyr
 #' @import tidyr
+#' @importFrom tibble tibble as_tibble
+#' @importFrom stringr str_extract
 #' @importFrom rlang .data enquo !! as_name
 #' @importFrom purrr map_df
 #' @importFrom magrittr %>%
+#' @importFrom utils combn
 #' @export
 #'
 #' @examples
@@ -43,28 +47,50 @@
 #'   retain_columns = c(pg_protein_accessions)
 #' )
 #' }
-assign_missingness <- function(data, sample, condition, grouping, intensity, ref_condition = "control", completeness_MAR = 0.7, completeness_MNAR = 0.20, retain_columns = NULL) {
+assign_missingness <- function(data, sample, condition, grouping, intensity, ref_condition = "all", completeness_MAR = 0.7, completeness_MNAR = 0.20, retain_columns = NULL) {
   . <- NULL
-  conditions_no_ref <- unique(pull(data, !!ensym(condition)))[!unique(pull(data, !!ensym(condition))) %in% ref_condition]
-  if (!(ref_condition %in% unique(pull(data, {{ condition }})))) {
+  if (!(ref_condition %in% unique(dplyr::pull(data, {{ condition }}))) & ref_condition != "all") {
     stop("The name provided to ref_condition cannot be found in your conditions! Please provide a valid reference condition.")
   }
+
+  if (ref_condition == "all") {
+    # creating all pairwise comparisons
+    all_conditions <- unique(dplyr::pull(data, {{ condition }}))
+
+    all_combinations <- tibble::as_tibble(t(utils::combn(all_conditions, m = 2)), .name_repair = "universal") %>%
+      dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2))
+
+    message('"all" was provided as reference condition. All pairwise comparisons are created from the conditions and assigned their missingness.\n The created comparisons are: \n', paste(all_combinations$combinations, collapse = "\n"))
+  }
+
+  if (ref_condition != "all") {
+    conditions_no_ref <- unique(pull(data, !!ensym(condition)))[!unique(pull(data, !!ensym(condition))) %in% ref_condition]
+
+    all_combinations <- tibble::tibble(V1 = conditions_no_ref, V2 = ref_condition) %>%
+      dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2))
+  }
+
+  # create dataframe that contains all combinations to be tested
+  all_combinations <- all_combinations %>%
+    tidyr::pivot_longer(cols = c(.data$V1, .data$V2), names_to = "name", values_to = rlang::as_name(rlang::enquo(condition))) %>%
+    dplyr::select(-.data$name) %>%
+    dplyr::group_by({{ condition }}) %>%
+    dplyr::mutate(comparison = list(.data$combinations)) %>%
+    dplyr::distinct(.data$comparison, {{ condition }})
+
   data_prep <- data %>%
+    dplyr::ungroup() %>%
     dplyr::distinct({{ sample }}, {{ condition }}, {{ grouping }}, {{ intensity }}) %>%
     tidyr::complete(nesting(!!ensym(sample), !!ensym(condition)), !!ensym(grouping)) %>%
     dplyr::group_by({{ grouping }}, {{ condition }}) %>%
     dplyr::mutate(n_detect = sum(!is.na({{ intensity }}))) %>%
     dplyr::mutate(n_replicates = dplyr::n()) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(comparison = ifelse(
-      {{ condition }} %in% conditions_no_ref,
-      paste0({{ condition }}, "_vs_", ref_condition),
-      list(paste0(conditions_no_ref, "_vs_", ref_condition))
-    )) %>%
+    dplyr::left_join(all_combinations, by = rlang::as_name(rlang::enquo(condition))) %>%
     tidyr::unnest(.data$comparison)
 
   result <- data_prep %>%
-    dplyr::mutate(type = ifelse({{ condition }} == ref_condition, "control", "treated")) %>%
+    dplyr::mutate(type = ifelse({{ condition }} == stringr::str_extract(.data$comparison, pattern = "(?<=_vs_).+"), "control", "treated")) %>%
     split(.$comparison) %>%
     purrr::map_df(~ .x %>%
       tidyr::pivot_wider(names_from = .data$type, values_from = .data$n_detect) %>%

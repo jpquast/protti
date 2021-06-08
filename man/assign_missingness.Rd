@@ -10,24 +10,25 @@ assign_missingness(
   condition,
   grouping,
   intensity,
-  ref_condition = "control",
+  ref_condition = "all",
   completeness_MAR = 0.7,
   completeness_MNAR = 0.2,
   retain_columns = NULL
 )
 }
 \arguments{
-\item{data}{A data frame containing at least the input variables.}
+\item{data}{a data frame containing at least the input variables.}
 
-\item{sample}{The column in the data data frame containing the sample name.}
+\item{sample}{The column in the data frame containing the sample name.}
 
-\item{condition}{The column in the data data frame containing the conditions.}
+\item{condition}{The column in the data frame containing the conditions.}
 
-\item{grouping}{The column in the data data frame containing precursor or peptide identifiers.}
+\item{grouping}{The column in the data frame containing precursor or peptide identifiers.}
 
-\item{intensity}{The column in the data data frame containing intensity values.}
+\item{intensity}{The column in the data frame containing intensity values.}
 
-\item{ref_condition}{The condition that is used as a reference for missingness determination. By default \code{ref_condition = "control"}.}
+\item{ref_condition}{a character vector providing the condition that is used as a reference for missingness determination.
+Instead of providing one reference condition, "all" can be supplied, which will create all pairwise condition pairs. By default \code{ref_condition = "all"}.}
 
 \item{completeness_MAR}{The minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7.
 It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each
