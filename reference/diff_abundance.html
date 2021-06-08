@@ -152,7 +152,7 @@
   mean <span class='op'>=</span> <span class='cn'>NULL</span>,
   sd <span class='op'>=</span> <span class='cn'>NULL</span>,
   n_samples <span class='op'>=</span> <span class='cn'>NULL</span>,
-  <span class='va'>ref_condition</span>,
+  ref_condition <span class='op'>=</span> <span class='st'>"all"</span>,
   filter_NA_missingness <span class='op'>=</span> <span class='cn'>TRUE</span>,
   method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"t-test"</span>, <span class='st'>"t-test_mean_sd"</span>, <span class='st'>"moderated_t-test"</span>, <span class='st'>"proDA"</span><span class='op'>)</span>,
   p_adj_method <span class='op'>=</span> <span class='st'>"BH"</span>,
@@ -190,7 +190,9 @@ Is not required if <code>method = "t-test_mean_sd"</code>.</p></td>
     <tr>
       <th>comparison</th>
       <td><p>The column in the data frame containing comparison information of treatment/reference condition pairs. Can be obtained by
-calling <code>assign_missingness</code>. Is not required if <code>method = "t-test_mean_sd"</code>.</p></td>
+calling <code>assign_missingness</code>. Comparisons need to be in the form condition1_vs_condition2, meaning two compared conditions are
+separated by "_vs_". This column determines for which condition pairs differential abundances are calculated.
+Is not required if <code>method = "t-test_mean_sd"</code>, in that case please provide a reference condition with the ref_condition argument.</p></td>
     </tr>
     <tr>
       <th>mean</th>
@@ -206,11 +208,12 @@ calling <code>assign_missingness</code>. Is not required if <code>method = "t-te
     </tr>
     <tr>
       <th>ref_condition</th>
-      <td><p>The condition that is used as a reference for differential abundance calculation.</p></td>
+      <td><p>optional, a character vector providing the condition that is used as a reference for differential abundance calculation for <code>method = "t-test_mean_sd"</code> .
+Instead of providing one reference condition, "all" can be supplied, which will create all pairwise condition pairs. By default <code>ref_condition = "all"</code>.</p></td>
     </tr>
     <tr>
       <th>filter_NA_missingness</th>
-      <td><p>A logical, default is <code>TRUE</code>. For all methods except <code>"t-test_mean_sd"</code> missingness information has to be provided.
+      <td><p>a logical, default is <code>TRUE</code>. For all methods except <code>"t-test_mean_sd"</code> missingness information has to be provided.
 If a reference/treatment pair has too few samples to be considered robust, it is annotated with <code>NA</code> as missingness. If this argument
 is <code>TRUE</code>, these reference/treatment pairs are filtered out.</p></td>
     </tr>
@@ -242,7 +245,8 @@ peptide or precursor (depending on the <code>grouping</code> variable) and the a
 Depending on the method the data frame contains additional columns:</p><ul>
 <li><p>"t-test": The <code>std_error</code> column contains the standard error of the differential abundances. <code>n_obs</code> contains the number of
 observations for the specific protein, peptide or precursor (depending on the <code>grouping</code> variable) and the associated treatment/reference pair.</p></li>
-<li><p>"t-test_mean_sd": <code>mean_control</code> and <code>mean_treated</code> columns contain the means for the reference and treatment condition, respectively.
+<li><p>"t-test_mean_sd": Columns labeled as control refer to the second condition of the comparison pairs. Treated refers to the first
+condition. <code>mean_control</code> and <code>mean_treated</code> columns contain the means for the reference and treatment condition, respectively.
 <code>sd_control</code> and <code>sd_treated</code> columns contain the standard deviations for the reference and treatment condition, respectively.
 <code>n_control</code> and <code>n_treated</code> columns contain the numbers of samples for the reference and treatment condition, respectively. The <code>std_error</code>
 column contains the standard error of the differential abundances. <code>t_statistic</code> contains the t_statistic for the t-test.</p></li>
@@ -269,7 +273,6 @@ observations for the specific protein, peptide or precursor (depending on the <c
   intensity_log2 <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
   missingness <span class='op'>=</span> <span class='va'>missingness</span>,
   comparison <span class='op'>=</span> <span class='va'>comparison</span>,
-  ref_condition <span class='op'>=</span> <span class='st'>"control"</span>,
   method <span class='op'>=</span> <span class='st'>"t-test"</span>,
   retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>pg_protein_accessions</span><span class='op'>)</span>
 <span class='op'>)</span>
