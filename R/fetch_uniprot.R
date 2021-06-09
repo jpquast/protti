@@ -2,10 +2,10 @@
 #'
 #' Fetches protein metadata from UniProt.
 #'
-#' @param uniprot_ids A character vector of UniProt accession numbers
-#' @param columns Metadata columns that should be imported from UniProt (all possible columns can be found \href{https://www.uniprot.org/help/uniprotkb_column_names}{here}.)
-#' @param batchsize Size of batch of proteins for a single query
-#' @param show_progress Logical, if true, a progress bar will be shown
+#' @param uniprot_ids a character vector of UniProt accession numbers.
+#' @param columns a character vector of metadata columns that should be imported from UniProt (all possible columns can be found \href{https://www.uniprot.org/help/uniprotkb_column_names}{here}.)
+#' @param batchsize numeric, specifying the number of proteins processed in a single single query. Default is 200.
+#' @param show_progress logical, if true, a progress bar will be shown.
 #'
 #' @return A data frame that contains all protein metadata specified in \code{columns} for the proteins provided. If an invalid ID
 #' was provided that contains a valid UniProt ID, the valid portion of the ID is fetched and the invalid input ID is saved in a

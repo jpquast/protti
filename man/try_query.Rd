@@ -8,8 +8,8 @@ try_query(
   url,
   max_tries = 5,
   silent = TRUE,
-  header = TRUE,
-  sep = "tab-separated-values"
+  type = "text/tab-separated-values",
+  ...
 )
 }
 \arguments{
@@ -19,10 +19,11 @@ try_query(
 
 \item{silent}{a logical, if TRUE no individual messages are printed after each try that failed.}
 
-\item{header}{a logical, indicates if the first row of the data frame contains variable names.}
-
-\item{sep}{a character vector, specifying the separator of the table at the target URL. Options are "tab-separated-values" or "csv".
+\item{type}{a character vector, specifying the type of data at the target URL. Options are all options that can be supplied to httr::content,
+these include e.g. "text/tab-separated-values", "application/json" and "txt/csv". Default is "text/tab-separated-values". 
 Default is "tab-separated-values".}
+
+\item{...}{other parameters supplied to the parsing function used by httr::content.}
 }
 \value{
 A data frame that contains the table from the url.

@@ -59,6 +59,14 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_gt(nrow(go_hs), 10)
   })
 
+  test_that("fetch_pdb works", {
+    pdb_ids <- c("6HG1", "1E9I", "6D3Q", "4JHW")
+    pdb <- fetch_pdb(pdb_ids)
+    expect_is(pdb, "data.frame")
+    expect_equal(nrow(pdb), 34)
+    expect_equal(ncol(pdb), 30)
+  })
+
   test_that("extract_metal_binders works", {
     data_uniprot <- fetch_uniprot(c("Q03640", "Q03778", "P22276"))
     metal_info <- extract_metal_binders(data = data_uniprot, chebi_data = database, chebi_relation_data = relations)

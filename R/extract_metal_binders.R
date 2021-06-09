@@ -71,6 +71,10 @@ extract_metal_binders <-
     # Subset chebi data to sub IDs of "metal cation" and "iron sulfur cluster"
     metal_cation <-
       find_all_subs(chebi_relation, id = "25213", type = "is_a")[[1]]
+    inorganic_monovalent_cation <- find_all_subs(chebi_relation, id = "60242", type = "is_a")[[1]]
+    inorganic_metal_cation <- inorganic_monovalent_cation[!inorganic_monovalent_cation %in% c("29234", "29233", "29120", "28938", "24636", "15378")]
+    # first is metal ions, second is monovalent inorganic cations. non-metals are excluded
+    metal_cation <- c(metal_cation, inorganic_metal_cation)
     iron_sulfur_cluster <-
       find_all_subs(chebi_relation, id = "30408", type = "is_a")[[1]]
 
