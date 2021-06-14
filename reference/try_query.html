@@ -147,8 +147,8 @@ and tries again. If no result could be obtained after the given number of tries 
   <span class='va'>url</span>,
   max_tries <span class='op'>=</span> <span class='fl'>5</span>,
   silent <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  header <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  sep <span class='op'>=</span> <span class='st'>"tab-separated-values"</span>
+  type <span class='op'>=</span> <span class='st'>"text/tab-separated-values"</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -167,13 +167,14 @@ and tries again. If no result could be obtained after the given number of tries 
       <td><p>a logical, if TRUE no individual messages are printed after each try that failed.</p></td>
     </tr>
     <tr>
-      <th>header</th>
-      <td><p>a logical, indicates if the first row of the data frame contains variable names.</p></td>
+      <th>type</th>
+      <td><p>a character vector, specifying the type of data at the target URL. Options are all options that can be supplied to httr::content,
+these include e.g. "text/tab-separated-values", "application/json" and "txt/csv". Default is "text/tab-separated-values". 
+Default is "tab-separated-values".</p></td>
     </tr>
     <tr>
-      <th>sep</th>
-      <td><p>a character vector, specifying the separator of the table at the target URL. Options are "tab-separated-values" or "csv".
-Default is "tab-separated-values".</p></td>
+      <th>...</th>
+      <td><p>other parameters supplied to the parsing function used by httr::content.</p></td>
     </tr>
     </table>
 

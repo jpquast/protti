@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fetch gene ontology information from geneontology.org — fetch_go • protti</title>
+<title>Fetch structure information from RCSB — fetch_pdb • protti</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Fetch gene ontology information from geneontology.org — fetch_go" />
-<meta property="og:description" content="Fetches gene ontology data from geneontology.org for the provided organism ID." />
+<meta property="og:title" content="Fetch structure information from RCSB — fetch_pdb" />
+<meta property="og:description" content="Fetches structure metadata from RCSB." />
 
 
 
@@ -132,63 +132,60 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fetch gene ontology information from geneontology.org</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/fetch_go.R'><code>R/fetch_go.R</code></a></small>
-    <div class="hidden name"><code>fetch_go.Rd</code></div>
+    <h1>Fetch structure information from RCSB</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/fetch_pdb.R'><code>R/fetch_pdb.R</code></a></small>
+    <div class="hidden name"><code>fetch_pdb.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Fetches gene ontology data from geneontology.org for the provided organism ID.</p>
+    <p>Fetches structure metadata from RCSB.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>fetch_go</span><span class='op'>(</span><span class='va'>organism_id</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>fetch_pdb</span><span class='op'>(</span><span class='va'>pdb_ids</span>, batchsize <span class='op'>=</span> <span class='fl'>200</span>, show_progress <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>organism_id</th>
-      <td><p>An NCBI taxonomy identifier of an organism (TaxId). Possible inputs inlude only: "9606" (Human), "559292" (Yeast) and
-"83333" (E. coli).</p></td>
+      <th>pdb_ids</th>
+      <td><p>a character vector of PDB identifiers.</p></td>
+    </tr>
+    <tr>
+      <th>batchsize</th>
+      <td><p>numeric, specifying the number of structures to be processed in a single query. Default is 2000.</p></td>
+    </tr>
+    <tr>
+      <th>show_progress</th>
+      <td><p>logical, if true, a progress bar will be shown. Default is TRUE.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains gene ontology mappings to UniProt or SGD IDs. The original file is a .GAF file. A detailed description of
-all columns can be found here: http://geneontology.org/docs/go-annotation-file-gaf-format-2.1/</p>
+    <p>A data frame that contains all structure metadata for the PDB IDs provided.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'>fetch_go</span><span class='op'>(</span><span class='st'>"9606"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;          db      db_id  symbol   qualifier      go_id   db_reference evidence
-#&gt; 1 UniProtKB A0A024RBG1  NUDT4B     enables GO:0003723 GO_REF:0000043      IEA
-#&gt; 2 UniProtKB A0A024RBG1  NUDT4B     enables GO:0046872 GO_REF:0000043      IEA
-#&gt; 3 UniProtKB A0A024RBG1  NUDT4B     enables GO:0052840 GO_REF:0000003      IEA
-#&gt; 4 UniProtKB A0A024RBG1  NUDT4B     enables GO:0052842 GO_REF:0000003      IEA
-#&gt; 5 UniProtKB A0A024RBG1  NUDT4B  located_in GO:0005829 GO_REF:0000052      IDA
-#&gt; 6 UniProtKB A0A075B6H7 IGKV3-7 involved_in GO:0002250 GO_REF:0000043      IEA
-#&gt;              with_from ontology
-#&gt; 1 UniProtKB-KW:KW-0694        F
-#&gt; 2 UniProtKB-KW:KW-0479        F
-#&gt; 3          EC:3.6.1.52        F
-#&gt; 4          EC:3.6.1.52        F
-#&gt; 5                             C
-#&gt; 6 UniProtKB-KW:KW-1064        P
-#&gt;                                                        name synonyme    type
-#&gt; 1   Diphosphoinositol polyphosphate phosphohydrolase NUDT4B   NUDT4B protein
-#&gt; 2   Diphosphoinositol polyphosphate phosphohydrolase NUDT4B   NUDT4B protein
-#&gt; 3   Diphosphoinositol polyphosphate phosphohydrolase NUDT4B   NUDT4B protein
-#&gt; 4   Diphosphoinositol polyphosphate phosphohydrolase NUDT4B   NUDT4B protein
-#&gt; 5   Diphosphoinositol polyphosphate phosphohydrolase NUDT4B   NUDT4B protein
-#&gt; 6 Probable non-functional immunoglobulin kappa variable 3-7  IGKV3-7 protein
-#&gt;        taxon     date assigned_by annotation_extension gene_product_form_id
-#&gt; 1 taxon:9606 20210417     UniProt                                        NA
-#&gt; 2 taxon:9606 20210417     UniProt                                        NA
-#&gt; 3 taxon:9606 20210417     UniProt                                        NA
-#&gt; 4 taxon:9606 20210417     UniProt                                        NA
-#&gt; 5 taxon:9606 20161204         HPA                                        NA
-#&gt; 6 taxon:9606 20210417     UniProt                                        NA</div><div class='input'><span class='co'># }</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'>fetch_pdb</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"6HG1"</span>, <span class='st'>"1E9I"</span>, <span class='st'>"6D3Q"</span>, <span class='st'>"4JHW"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 6 x 30</span>
+#&gt;   pdb_ids chain reference_databa… protein_name reference_datab… entity_beg_seq_…
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                       <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> 6HG1    A     P27708            CAD protein  UniProt                       115
+#&gt; <span style='color: #BCBCBC;'>2</span> 6HG1    A     P27708            CAD protein  UniProt                       115
+#&gt; <span style='color: #BCBCBC;'>3</span> 6HG1    A     P27708            CAD protein  UniProt                         2
+#&gt; <span style='color: #BCBCBC;'>4</span> 6HG1    A     P27708            CAD protein  UniProt                         2
+#&gt; <span style='color: #BCBCBC;'>5</span> 6HG1    A     P05020            Dihydroorot… UniProt                       102
+#&gt; <span style='color: #BCBCBC;'>6</span> 6HG1    A     P05020            Dihydroorot… UniProt                       102
+#&gt; <span style='color: #949494;'># … with 24 more variables: ref_beg_seq_id &lt;int&gt;, length &lt;int&gt;,</span>
+#&gt; <span style='color: #949494;'>#   pdb_sequence &lt;chr&gt;, id_nonpolymer &lt;chr&gt;, type_nonpolymer &lt;chr&gt;,</span>
+#&gt; <span style='color: #949494;'>#   formula_weight_nonpolymer &lt;dbl&gt;, name_nonpolymer &lt;chr&gt;,</span>
+#&gt; <span style='color: #949494;'>#   formula_nonpolymer &lt;chr&gt;, experimental_method &lt;chr&gt;,</span>
+#&gt; <span style='color: #949494;'>#   structure_method &lt;chr&gt;, affinity_comp_id &lt;chr&gt;, affinity_value &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   pdbx_keywords &lt;chr&gt;, assembly_count &lt;int&gt;,</span>
+#&gt; <span style='color: #949494;'>#   inter_mol_metalic_bond_count &lt;int&gt;, pH_crystallisation &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   temp_crystallisation &lt;dbl&gt;, method_crystallisation &lt;chr&gt;, type_nmr &lt;lgl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   ionic_strength_nmr &lt;lgl&gt;, pH_nmr &lt;lgl&gt;, temp_nmr &lt;lgl&gt;, method_nmr &lt;lgl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   resolution_combined &lt;dbl&gt;</span></div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
