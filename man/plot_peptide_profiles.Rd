@@ -52,7 +52,7 @@ in different samples and conditions.
 }
 \examples{
 \dontrun{
-plot_peptide_abundance(
+plot_peptide_profiles(
   data,
   sample = r_file_name,
   peptide = eg_precursor_id,

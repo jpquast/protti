@@ -16,13 +16,13 @@ fetch_uniprot(
 )
 }
 \arguments{
-\item{uniprot_ids}{A character vector of UniProt accession numbers}
+\item{uniprot_ids}{a character vector of UniProt accession numbers.}
 
-\item{columns}{Metadata columns that should be imported from UniProt (all possible columns can be found \href{https://www.uniprot.org/help/uniprotkb_column_names}{here}.)}
+\item{columns}{a character vector of metadata columns that should be imported from UniProt (all possible columns can be found \href{https://www.uniprot.org/help/uniprotkb_column_names}{here}.)}
 
-\item{batchsize}{Size of batch of proteins for a single query}
+\item{batchsize}{numeric, specifying the number of proteins processed in a single single query. Default is 200.}
 
-\item{show_progress}{Logical, if true, a progress bar will be shown}
+\item{show_progress}{logical, if true, a progress bar will be shown.}
 }
 \value{
 A data frame that contains all protein metadata specified in \code{columns} for the proteins provided. If an invalid ID

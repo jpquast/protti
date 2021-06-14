@@ -19,6 +19,6 @@ Fetches gene ontology data from geneontology.org for the provided organism ID.
 }
 \examples{
 \donttest{
-fetch_go("9606")
+head(fetch_go("9606"))
 }
 }

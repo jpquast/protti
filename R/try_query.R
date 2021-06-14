@@ -6,15 +6,16 @@
 #' @param url a character vector of an URL to the website that contains the table that should be downloaded.
 #' @param max_tries a numeric vector specifying the number of times the function tries to download the data in case an error occurs.
 #' @param silent a logical, if TRUE no individual messages are printed after each try that failed.
-#' @param header a logical, indicates if the first row of the data frame contains variable names.
-#' @param sep a character vector, specifying the separator of the table at the target URL. Options are "tab-separated-values" or "csv".
+#' @param type a character vector, specifying the type of data at the target URL. Options are all options that can be supplied to httr::content,
+#' these include e.g. "text/tab-separated-values", "application/json" and "txt/csv". Default is "text/tab-separated-values".
 #' Default is "tab-separated-values".
+#' @param ... other parameters supplied to the parsing function used by httr::content.
 #'
 #' @importFrom curl has_internet
 #'
 #' @return A data frame that contains the table from the url.
 try_query <-
-  function(url, max_tries = 5, silent = TRUE, header = TRUE, sep = "tab-separated-values") {
+  function(url, max_tries = 5, silent = TRUE, type = "text/tab-separated-values", ...) {
     if (!requireNamespace("httr", quietly = TRUE)) {
       stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
     }
@@ -50,7 +51,7 @@ try_query <-
       return(invisible(NULL))
     }
 
-    result <- suppressMessages(httr::content(query_result, type = paste0("text/", sep), encoding = "UTF-8", col_names = header))
+    result <- suppressMessages(httr::content(query_result, type = type, encoding = "UTF-8", ...))
 
     return(result)
   }
