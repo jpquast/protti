@@ -1,6 +1,6 @@
 #' Fetch structure information from RCSB
 #'
-#' Fetches structure metadata from RCSB.
+#' Fetches structure metadata from RCSB. If you want to retrieve atom data such as positions, use the function \code{fetch_pdb_structure()}.
 #'
 #' @param pdb_ids a character vector of PDB identifiers.
 #' @param batchsize numeric, specifying the number of structures to be processed in a single query. Default is 2000.
@@ -143,9 +143,12 @@ formula
     if (!"list" %in% class(query)) {
       batches <<- NULL
     }
+    # only proceed with data if it was correctly retrieved
+    if ("list" %in% class(query)) {
     query %>%
       purrr::flatten() %>%
       as.data.frame(stringsAsFactors = FALSE)
+    }
   })
 
   # process information from database

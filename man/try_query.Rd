@@ -20,7 +20,7 @@ try_query(
 \item{silent}{a logical, if TRUE no individual messages are printed after each try that failed.}
 
 \item{type}{a character vector, specifying the type of data at the target URL. Options are all options that can be supplied to httr::content,
-these include e.g. "text/tab-separated-values", "application/json" and "txt/csv". Default is "text/tab-separated-values". 
+these include e.g. "text/tab-separated-values", "application/json" and "txt/csv". Default is "text/tab-separated-values".
 Default is "tab-separated-values".}
 
 \item{...}{other parameters supplied to the parsing function used by httr::content.}
