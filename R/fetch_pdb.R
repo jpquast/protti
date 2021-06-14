@@ -176,9 +176,9 @@ formula
     dplyr::select(-should_not_be_here) %>%
     dplyr::bind_cols(stats::setNames(data.frame(matrix(ncol = length(should_be_here), nrow = nrow(crystal_growth_info))), should_be_here)) %>%
     dplyr::rename(
-      pH_crystalisation = .data$pH,
-      method_crystalisation = .data$method,
-      temp_crystalisation = .data$temp
+      pH_crystallisation = .data$pH,
+      method_crystallisation = .data$method,
+      temp_crystallisation = .data$temp
     )
 
   resolution_info <- query_result_clean %>%
@@ -210,7 +210,7 @@ formula
     dplyr::select(.data$pdb_ids, .data$entries.rcsb_binding_affinity) %>%
     tidyr::unnest(.data$entries.rcsb_binding_affinity)
 
-  # make sure that the data is complete even if there is no affinity structure
+  # make sure that the data is complete even if there is no affinity information
   should_not_be_here <- colnames(rcsb_binding_affinity)[!colnames(rcsb_binding_affinity) %in% c("pdb_ids", "comp_id", "value")]
   should_be_here <- c("pdb_ids", "comp_id", "value")[!c("pdb_ids", "comp_id", "value") %in% colnames(rcsb_binding_affinity)]
 
@@ -329,9 +329,9 @@ formula
       .data$pdbx_keywords,
       .data$assembly_count,
       .data$inter_mol_metalic_bond_count,
-      .data$pH_crystalisation,
-      .data$temp_crystalisation,
-      .data$method_crystalisation,
+      .data$pH_crystallisation,
+      .data$temp_crystallisation,
+      .data$method_crystallisation,
       .data$type_nmr,
       .data$ionic_strength_nmr,
       .data$pH_nmr,
