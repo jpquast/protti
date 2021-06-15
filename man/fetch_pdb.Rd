@@ -17,7 +17,7 @@ fetch_pdb(pdb_ids, batchsize = 200, show_progress = TRUE)
 A data frame that contains all structure metadata for the PDB IDs provided.
 }
 \description{
-Fetches structure metadata from RCSB.
+Fetches structure metadata from RCSB. If you want to retrieve atom data such as positions, use the function \code{fetch_pdb_structure()}.
 }
 \examples{
 \donttest{
