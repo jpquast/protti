@@ -14,7 +14,10 @@ woods_plot(
   protein_id = NULL,
   facet = NULL,
   colouring = NULL,
-  fold_change_cutoff = 1
+  fold_change_cutoff = 1,
+  highlight_significant = FALSE,
+  significance = NULL,
+  significance_cutoff = NULL
 )
 }
 \arguments{
@@ -40,7 +43,13 @@ protein identifiers.}
 \item{colouring}{Optional argument, column in the data frame containing information by which peptide or precursors should
 be coloured.}
 
-\item{fold_change_cutoff}{Optional argument specifying the log2 fold change cutoff used for assessing whether changes are significant. The default value is 2.}
+\item{fold_change_cutoff}{Optional argument specifying the log2 fold change cutoff used in the plot. The default value is 2.}
+
+\item{highlight_significant}{Logical, specifying whether significantly changing peptides should be highlighted with an asterisk. Default is \code{highlight_significant = FALSE}.}
+
+\item{significance}{Required if \code{highlight_significant = TRUE}. Argument specifies the column in the input data frame containing significance values (p-values, q-values).}
+
+\item{significance_cutoff}{Required if \code{highlight_significant = TRUE}. Argument specifies the significance cutoff below which peptides are considered significant.}
 }
 \value{
 A Wood's plot is returned. Plotting peptide or precursor fold changes accross protein sequence.
@@ -56,7 +65,10 @@ woods_plot(test,
   end_position = end,
   protein_length = length,
   colouring = pep_type,
-  facet = pg_protein_accessions
+  facet = pg_protein_accessions, 
+  highlight_significant = TRUE, 
+  significance = adj_pval, 
+  significance_cutoff = 0.01
 )
 }
 }
