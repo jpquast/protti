@@ -184,8 +184,8 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
       ggplot2::geom_rect(ggplot2::aes(
         xmin = {{ start_position }},
         xmax = {{ end_position }},
-        ymin = {{ fold_change }} - 0.5,
-        ymax = {{ fold_change }} + 0.5,
+        ymin = {{ fold_change }} - 0.2,
+        ymax = {{ fold_change }} + 0.2,
         fill = {{ colouring }}
       ),
       col = "black",
