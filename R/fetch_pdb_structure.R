@@ -1,6 +1,7 @@
 #' Fetch PDB structure atom data from RCSB
 #'
 #' Fetches atom data for a PDB structure from RCSB. If you want to retrieve metadata about PDB structures, use the function \code{fetch_pdb()}.
+#' The information retrieved is based on the .cif file of the structure, which may vary from the .pdb file. 
 #'
 #' @param pdb_ids a character vector of PDB identifiers.
 #' @param return_data_frame logical, if true, a data frame instead of a list is returned. It is recommended to only use this if not many 
@@ -68,7 +69,9 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
                         into = c("x1", "atom_number", "atom_type_simple", "atom_type", "x2", "residue_name", "chain", "entity_id", "residue_number", "x3", "x", "y", "z", "site_occupancy", "b_iso_or_equivalent", "formal_charge", "x4", "x5", "x6", "x7", "pdb_model_number")
         ) %>%
         dplyr::select(-c(.data$X1, .data$x1, .data$x2, .data$x3, .data$x4, .data$x5, .data$x6, .data$x7)) %>%
-        dplyr::mutate(residue_number = ifelse(.data$residue_number == ".", "0", .data$residue_number)) %>% 
+        dplyr::group_by(.data$chain, .data$atom_type, .data$residue_name) %>%
+        dplyr::mutate(residue_number = ifelse(.data$residue_number == ".", 1:n(), as.numeric(.data$residue_number))) %>%
+        dplyr::ungroup() %>%
         dplyr::mutate(
           atom_number = as.numeric(.data$atom_number),
           entity_id = as.numeric(.data$entity_id),

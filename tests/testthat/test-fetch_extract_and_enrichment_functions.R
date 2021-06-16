@@ -73,6 +73,13 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(nrow(pdb_structure), 45731)
     expect_equal(ncol(pdb_structure), 15)
   })
+  
+  test_that("fetch_metal_pdb works", {
+    metal_pdb <- fetch_metal_pdb(id_type = "pdb", id_value = c("1g54"), metal = "Zn")
+    expect_is(metal_pdb, "data.frame")
+    expect_equal(nrow(metal_pdb), 5)
+    expect_equal(ncol(metal_pdb), 25)
+  })
 
   test_that("extract_metal_binders works", {
     data_uniprot <- fetch_uniprot(c("Q03640", "Q03778", "P22276"))

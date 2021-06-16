@@ -20,6 +20,7 @@ information is returned instead.
 }
 \description{
 Fetches atom data for a PDB structure from RCSB. If you want to retrieve metadata about PDB structures, use the function \code{fetch_pdb()}.
+The information retrieved is based on the .cif file of the structure, which may vary from the .pdb file.
 }
 \examples{
 \donttest{
