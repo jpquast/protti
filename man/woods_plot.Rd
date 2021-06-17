@@ -2,7 +2,7 @@
 % Please edit documentation in R/woods_plot.R
 \name{woods_plot}
 \alias{woods_plot}
-\title{Wood's plot}
+\title{Woods' plot}
 \usage{
 woods_plot(
   data,
@@ -15,9 +15,7 @@ woods_plot(
   facet = NULL,
   colouring = NULL,
   fold_change_cutoff = 1,
-  highlight_significant = FALSE,
-  significance = NULL,
-  significance_cutoff = NULL
+  highlight = NULL
 )
 }
 \arguments{
@@ -45,17 +43,13 @@ be coloured.}
 
 \item{fold_change_cutoff}{Optional argument specifying the log2 fold change cutoff used in the plot. The default value is 2.}
 
-\item{highlight_significant}{Logical, specifying whether significantly changing peptides should be highlighted with an asterisk. Default is \code{highlight_significant = FALSE}.}
-
-\item{significance}{Required if \code{highlight_significant = TRUE}. Argument specifies the column in the input data frame containing significance values (p-values, q-values).}
-
-\item{significance_cutoff}{Required if \code{highlight_significant = TRUE}. Argument specifies the significance cutoff below which peptides are considered significant.}
+\item{highlight}{Optional column containing logicals, specifying whether specific peptides or precursors should be highlighted with an asterisk. Default is \code{highlight = NULL}.}
 }
 \value{
-A Wood's plot is returned. Plotting peptide or precursor fold changes accross protein sequence.
+A Woods' plot is returned. Plotting peptide or precursor fold changes across protein sequence.
 }
 \description{
-Creates a Wood's plot that plots log2 fold change of peptides or precursors along the protein sequence.
+Creates a Woods' plot that plots log2 fold change of peptides or precursors along the protein sequence.
 }
 \examples{
 \dontrun{
@@ -66,9 +60,7 @@ woods_plot(test,
   protein_length = length,
   colouring = pep_type,
   facet = pg_protein_accessions, 
-  highlight_significant = TRUE, 
-  significance = adj_pval, 
-  significance_cutoff = 0.01
+  highlight = is_significant
 )
 }
 }

@@ -1,6 +1,6 @@
-#' Wood's plot
+#' Woods' plot
 #'
-#' Creates a Wood's plot that plots log2 fold change of peptides or precursors along the protein sequence.
+#' Creates a Woods' plot that plots log2 fold change of peptides or precursors along the protein sequence.
 #'
 #' @param data Data frame containing differential abundance, start and end peptide or precursor positions, protein
 #' length and optionally a variable based on which peptides or precursors should be coloured.
@@ -16,11 +16,9 @@
 #' @param colouring Optional argument, column in the data frame containing information by which peptide or precursors should
 #' be coloured.
 #' @param fold_change_cutoff Optional argument specifying the log2 fold change cutoff used in the plot. The default value is 2.
-#' @param highlight_significant Logical, specifying whether significantly changing peptides should be highlighted with an asterisk. Default is \code{highlight_significant = FALSE}.
-#' @param significance Required if \code{highlight_significant = TRUE}. Argument specifies the column in the input data frame containing significance values (p-values, q-values).
-#' @param significance_cutoff Required if \code{highlight_significant = TRUE}. Argument specifies the significance cutoff below which peptides are considered significant.
+#' @param highlight Optional column containing logicals, specifying whether specific peptides or precursors should be highlighted with an asterisk. Default is \code{highlight = NULL}.
 #'
-#' @return A Wood's plot is returned. Plotting peptide or precursor fold changes accross protein sequence.
+#' @return A Woods' plot is returned. Plotting peptide or precursor fold changes across protein sequence.
 #' @import ggplot2
 #' @importFrom magrittr %>%
 #' @importFrom dplyr pull mutate filter
@@ -37,12 +35,10 @@
 #'   protein_length = length,
 #'   colouring = pep_type,
 #'   facet = pg_protein_accessions, 
-#'   highlight_significant = TRUE, 
-#'   significance = adj_pval, 
-#'   significance_cutoff = 0.01
+#'   highlight = is_significant
 #' )
 #' }
-woods_plot <- function(data, fold_change, start_position, end_position, protein_length, coverage = NULL, protein_id = NULL, facet = NULL, colouring = NULL, fold_change_cutoff = 1, highlight_significant = FALSE, significance = NULL, significance_cutoff = NULL) {
+woods_plot <- function(data, fold_change, start_position, end_position, protein_length, coverage = NULL, protein_id = NULL, facet = NULL, colouring = NULL, fold_change_cutoff = 1, highlight = NULL) {
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
   # Check if there are more than one protein even though protein_id was specified.
@@ -75,10 +71,10 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
       dplyr::mutate({{ protein_id }} := paste0({{ protein_id }}, " (", round({{ coverage }}, digits = 1), "%)"))
   }
   # Create plot
-  if((highlight_significant == TRUE & missing(significance)) | (highlight_significant == TRUE & missing(significance_cutoff))){
-    warning(paste("Please provide the required columns (significance and significance_cutoff) to highlight significant peptides."))
+  if(!missing(highlight) & !all(is.logical(dplyr::pull(data, {{ highlight }} )))){
+    warning(paste("Please only provide logicals (i.e. TRUE or FALSE) in the 'highlight' column."))
   }
-  if(highlight_significant == TRUE & !missing(significance) & !missing(significance_cutoff)) {
+  if(!missing(highlight)) {
     data %>%
       ggplot2::ggplot() +
       ggplot2::geom_rect(ggplot2::aes(
@@ -100,7 +96,7 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
       size = 0.7,
       alpha = 0.8
       ) +
-      ggplot2::geom_point(data = dplyr::filter(data, {{ significance }} < significance_cutoff),
+      ggplot2::geom_point(data = dplyr::filter(data, {{ highlight }} == TRUE),
                           ggplot2::aes(
                             x = (( {{ start_position }} + {{ end_position }} ) /2),
                             y = ( {{ fold_change }} - 0.3)), 
