@@ -2,7 +2,7 @@
 % Please edit documentation in R/fetch_metal_pdb.R
 \name{fetch_metal_pdb}
 \alias{fetch_metal_pdb}
-\title{Fetch information about structure protein-metal binding from MetalPDB}
+\title{Fetch structural information about protein-metal binding from MetalPDB}
 \usage{
 fetch_metal_pdb(
   id_type = "uniprot",
@@ -25,30 +25,31 @@ fetch_metal_pdb(
 \item{id_type}{character, specifying the type of the IDs provided to \code{id_value}. Default is "uniprot". Possible options include:
 "uniprot", "pdb", "ec_number", "molecule" and "organism"}
 
-\item{id_value}{a character vector supplying IDs that have the ID type that was specified in \code{id_type}. E.g. UniProt IDs. 
+\item{id_value}{a character vector supplying IDs that have the ID type that was specified in \code{id_type}. E.g. UniProt IDs.
 Information for these IDs will be retreived.}
 
-\item{site_type}{optional character, if only information about structures with a certain nuclearity should be retrieved, the 
+\item{site_type}{optional character, if only information about structures with a certain nuclearity should be retrieved, the
 specific nuclearity can be supplied here. E.g. "tetranuclear".}
 
 \item{pfam}{optional character, if only information about structures with a certain Pfam domain should be retrieved, the domain
 can be specified here. E.g. "Carb_anhydrase".}
 
-\item{cath}{optional character, if only information about structures with a certain cath ID should be retreived, the ID can be 
+\item{cath}{optional character, if only information about structures with a certain CATH ID should be retreived, the ID can be
 specified here. E.g. "3.10.200.10".}
 
-\item{scop}{optional character, if only information about structures with a certain SCOP ID should be retreived, the ID can be 
+\item{scop}{optional character, if only information about structures with a certain SCOP ID should be retreived, the ID can be
 specified here. E.g. "b.74.1.1".}
 
-\item{representative}{optional character, if only information of representative sites of a family should be retrieved it can 
-be specified here. This can only be "true" if specified. A representative site is a site selected to represent a cluster of equivalent sites. The 
-selection is done by choosing the PDB structure with the best X-ray resolution among those containing the sites in the cluster. 
-NMR structures are generally discarded in favor of X-ray structures, unless all the sites in the cluster are found in NMR structures.}
+\item{representative}{optional logical, if only information of representative sites of a family should be retrieved it can
+be specified here. A representative site is a site selected to represent a cluster of equivalent sites. The
+selection is done by choosing the PDB structure with the best X-ray resolution among those containing the sites in the cluster.
+NMR structures are generally discarded in favor of X-ray structures, unless all the sites in the cluster are found in NMR structures.
+If it is \code{TRUE}, only representative sites are retrieved, if it is \code{FALSE}, all sites are retrieved.}
 
-\item{metal}{optional character, if only information about structures with a certain metal should be retrieved, the metal can be 
+\item{metal}{optional character, if only information about structures with a certain metal should be retrieved, the metal can be
 specified here. E.g. "Zn".}
 
-\item{ligands}{optional character, if only information about structures with a certain metal ligand residue should be retrieved, 
+\item{ligands}{optional character, if only information about structures with a certain metal ligand residue should be retrieved,
 the ligand can be specified here. E.g. "His".}
 
 \item{geometry}{optional character, if only information about structures with a certain metal site geometry should be retrieved,
@@ -57,10 +58,10 @@ the geometry can be specified here based on the three letter code for geometries
 \item{coordination}{optional character, if only information about structures with a certain coordination number should be retrieved,
 the number can be specified here. E.g. "3".}
 
-\item{donors}{optional character, if only information about structures with a certain metal ligand atom should be retrieved, 
+\item{donors}{optional character, if only information about structures with a certain metal ligand atom should be retrieved,
 the atom can be specified here. E.g. "S" for sulfur.}
 
-\item{columns}{optional character vector, if only specific columns should be retrieved these can be specified here based on the MetalPDB 
+\item{columns}{optional character vector, if only specific columns should be retrieved these can be specified here based on the MetalPDB
 \href{https://metalpdb.cerm.unifi.it/api_help}{website}. If nothing is supplied here, all possible columns will be retrieved.}
 
 \item{show_progress}{logical, if true, a progress bar will be shown. Default is TRUE.}
@@ -69,7 +70,7 @@ the atom can be specified here. E.g. "S" for sulfur.}
 A data frame that contains information about protein-metal binding sites.
 }
 \description{
-Fetches information about protein-metal binding sites from the \href{https://metalpdb.cerm.unifi.it}{MetalPDB} database. 
+Fetches information about protein-metal binding sites from the \href{https://metalpdb.cerm.unifi.it}{MetalPDB} database.
 A complete list of different search queries possible can be found \href{https://metalpdb.cerm.unifi.it/api_help}{here}.
 }
 \examples{
@@ -78,4 +79,5 @@ head(fetch_metal_pdb(id_value = c("P42345", "P00918")))
 
 fetch_metal_pdb(id_type = "pdb", id_value = c("1g54"), metal = "Zn")
 }
+
 }

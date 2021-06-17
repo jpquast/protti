@@ -9,7 +9,7 @@ fetch_pdb_structure(pdb_ids, return_data_frame = FALSE, show_progress = TRUE)
 \arguments{
 \item{pdb_ids}{a character vector of PDB identifiers.}
 
-\item{return_data_frame}{logical, if true, a data frame instead of a list is returned. It is recommended to only use this if not many 
+\item{return_data_frame}{logical, if true, a data frame instead of a list is returned. It is recommended to only use this if not many
 pdb structures are retrieved. Default is FALSE.}
 
 \item{show_progress}{logical, if true, a progress bar will be shown. Default is TRUE.}

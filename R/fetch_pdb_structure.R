@@ -1,10 +1,10 @@
 #' Fetch PDB structure atom data from RCSB
 #'
 #' Fetches atom data for a PDB structure from RCSB. If you want to retrieve metadata about PDB structures, use the function \code{fetch_pdb()}.
-#' The information retrieved is based on the .cif file of the structure, which may vary from the .pdb file. 
+#' The information retrieved is based on the .cif file of the structure, which may vary from the .pdb file.
 #'
 #' @param pdb_ids a character vector of PDB identifiers.
-#' @param return_data_frame logical, if true, a data frame instead of a list is returned. It is recommended to only use this if not many 
+#' @param return_data_frame logical, if true, a data frame instead of a list is returned. It is recommended to only use this if not many
 #' pdb structures are retrieved. Default is FALSE.
 #' @param show_progress logical, if true, a progress bar will be shown. Default is TRUE.
 #'
@@ -50,7 +50,7 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
     .f = ~ {
       # query information from database
       if (!is.null(batches)) {
-        query <- try_query(.x, type = "text/tab-separated-values", col_names = FALSE, quote = "") 
+        query <- try_query(.x, type = "text/tab-separated-values", col_names = FALSE, quote = "")
       }
       if (show_progress == TRUE & "tbl" %in% class(query)) {
         pb$tick()
@@ -61,38 +61,40 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
       }
       # only proceed with data if it was correctly retrieved
       if ("tbl" %in% class(query)) {
-      query %>%
-        dplyr::filter(stringr::str_detect(X1, pattern = "^ATOM|^HETATM")) %>%
-        dplyr::mutate(X2 = stringr::str_replace_all(X1, pattern = "\\s+", replacement = " ")) %>%
-        tidyr::separate(X2,
-                        sep = " ",
-                        into = c("x1", "atom_number", "atom_type_simple", "atom_type", "x2", "residue_name", "chain", "entity_id", "residue_number", "x3", "x", "y", "z", "site_occupancy", "b_iso_or_equivalent", "formal_charge", "x4", "x5", "x6", "x7", "pdb_model_number")
-        ) %>%
-        dplyr::select(-c(.data$X1, .data$x1, .data$x2, .data$x3, .data$x4, .data$x5, .data$x6, .data$x7)) %>%
-        dplyr::group_by(.data$chain, .data$atom_type, .data$residue_name) %>%
-        dplyr::mutate(residue_number = ifelse(.data$residue_number == ".", 1:n(), as.numeric(.data$residue_number))) %>%
-        dplyr::ungroup() %>%
-        dplyr::mutate(
-          atom_number = as.numeric(.data$atom_number),
-          entity_id = as.numeric(.data$entity_id),
-          residue_number = as.numeric(.data$residue_number),
-          x = as.numeric(.data$x),
-          y = as.numeric(.data$y),
-          z = as.numeric(.data$z),
-          site_occupancy = as.numeric(.data$site_occupancy),
-          b_iso_or_equivalent = as.numeric(.data$b_iso_or_equivalent),
-          pdb_model_number = as.numeric(.data$pdb_model_number),
-          pdb_id = .y
-        )
+        query %>%
+          dplyr::filter(stringr::str_detect(X1, pattern = "^ATOM|^HETATM")) %>%
+          dplyr::mutate(X2 = stringr::str_replace_all(X1, pattern = "\\s+", replacement = " ")) %>%
+          tidyr::separate(X2,
+            sep = " ",
+            into = c("x1", "atom_number", "atom_type_simple", "atom_type", "x2", "residue_name", "chain", "entity_id", "residue_number", "x3", "x", "y", "z", "site_occupancy", "b_iso_or_equivalent", "formal_charge", "x4", "x5", "x6", "x7", "pdb_model_number")
+          ) %>%
+          dplyr::select(-c(.data$X1, .data$x1, .data$x2, .data$x3, .data$x4, .data$x5, .data$x6, .data$x7)) %>%
+          dplyr::group_by(.data$chain, .data$atom_type, .data$residue_name) %>%
+          dplyr::mutate(residue_number = ifelse(.data$residue_number == ".", 1:n(), as.numeric(.data$residue_number))) %>%
+          dplyr::ungroup() %>%
+          dplyr::mutate(
+            atom_number = as.numeric(.data$atom_number),
+            entity_id = as.numeric(.data$entity_id),
+            residue_number = as.numeric(.data$residue_number),
+            x = as.numeric(.data$x),
+            y = as.numeric(.data$y),
+            z = as.numeric(.data$z),
+            site_occupancy = as.numeric(.data$site_occupancy),
+            b_iso_or_equivalent = as.numeric(.data$b_iso_or_equivalent),
+            pdb_model_number = as.numeric(.data$pdb_model_number),
+            pdb_id = .y
+          )
       }
     }
   )
 
-  if(return_data_frame == FALSE) {
+  if (return_data_frame == FALSE) {
     return(query_result)
   } else {
-    query_result_df <- purrr::map_dfr(.x = query_result,
-                               .f = ~ .x)
+    query_result_df <- purrr::map_dfr(
+      .x = query_result,
+      .f = ~.x
+    )
     return(query_result_df)
   }
 }
