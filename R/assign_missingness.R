@@ -57,7 +57,7 @@ assign_missingness <- function(data, sample, condition, grouping, intensity, ref
     # creating all pairwise comparisons
     all_conditions <- unique(dplyr::pull(data, {{ condition }}))
 
-    all_combinations <- tibble::as_tibble(t(utils::combn(all_conditions, m = 2)), .name_repair = "universal") %>%
+    all_combinations <- tibble::as_tibble(t(utils::combn(all_conditions, m = 2))) %>%
       dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2))
 
     message('"all" was provided as reference condition. All pairwise comparisons are created from the conditions and assigned their missingness.\n The created comparisons are: \n', paste(all_combinations$combinations, collapse = "\n"))

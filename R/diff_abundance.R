@@ -214,7 +214,7 @@ diff_abundance <-
         # creating all pairwise comparisons
         all_conditions <- unique(dplyr::pull(data, {{ condition }}))
 
-        all_combinations <- tibble::as_tibble(t(combn(all_conditions, m = 2)), .name_repair = "universal") %>%
+        all_combinations <- tibble::as_tibble(t(combn(all_conditions, m = 2))) %>%
           dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2))
 
         message("All pairwise comparisons are created from all conditions and their missingness type is assigned.\n The created comparisons are: \n", paste(all_combinations$combinations, collapse = "\n"))
