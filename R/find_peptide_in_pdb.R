@@ -3,21 +3,21 @@
 #' Finds peptide positions in a PDB structure. Often positions of peptides in UniProt and a PDB structure are different due to different
 #' lengths of structures. This function maps a peptide based on its UniProt positions onto a PDB structure. This method is superior to
 #' sequence alignment of the peptide to the PDB structure sequence, since it can also match the peptide if there are truncations or
-#' mismatches.This function also provides an easy way to check if a peptide is present in a pdb structure.
+#' mismatches. This function also provides an easy way to check if a peptide is present in a PDB structure.
 #'
 #' @param peptide_data a data frame containing at least the input columns to this function.
-#' @param peptide_sequence a character column in the \code{peptide_data} data frame that contains the sequence or ID of the peptide that
-#' should be found.
+#' @param peptide_sequence a character column in the \code{peptide_data} data frame that contains the sequence or any other unique identifier
+#' for the peptide that should be found.
 #' @param start a numeric column in the \code{peptide_data} data frame that contains start positions of peptides.
 #' @param end a numeric column in the \code{peptide_data} data frame that contains end positions of peptides.
 #' @param uniprot_id a character column in the \code{peptide_data} data frame that contains UniProt identifiers that correspond to the
 #' peptides.
-#' @param pdb_data optional data frame containing data obtained with \code{fetch_pdb()}. If not provided information is fetched automatically.
+#' @param pdb_data optional data frame containing data obtained with \code{fetch_pdb()}. If not provided, information is fetched automatically.
 #' If this function should be run multiple times it is faster to fetch the information once and provide it to the function. If provided,
 #' make sure that the column names are identical to the ones that would be obtained by calling \code{fetch_pdb()}.
 #'
 #' @return A data frame that contains peptide positions in the corresponding PDB structures. If a peptide is not found in any structure,
-#' it is not included in the output.
+#' it contains NAs values for the corresponding positional columns.
 #' @import dplyr
 #' @import tidyr
 #' @importFrom stringr str_sub
@@ -82,5 +82,9 @@ find_peptide_in_pdb <- function(peptide_data, peptide_sequence, start, end, unip
     dplyr::mutate(peptide_sequence_in_pdb = stringr::str_sub(.data$pdb_sequence, start = .data$peptide_start_pdb, end = .data$peptide_end_pdb)) %>%
     dplyr::select(.data$reference_database_accession, .data$pdb_ids, .data$chain, {{ peptide_sequence }}, .data$peptide_sequence_in_pdb, .data$fit_type, {{ start }}, {{ end }}, .data$peptide_start_pdb, .data$peptide_end_pdb, .data$n_peptides, .data$n_peptides_in_pdb)
 
-  result
+  result %>% 
+    dplyr::right_join(peptide_data %>% dplyr::distinct({{ peptide_sequence }}, {{ start }}, {{ end }}, {{ uniprot_id }}), by = c(rlang::as_name(rlang::enquo(peptide_sequence)), 
+                                                                                                                                 rlang::as_name(rlang::enquo(start)), 
+                                                                                                                                 rlang::as_name(rlang::enquo(end)),
+                                                                                                                                 "reference_database_accession" = rlang::as_name(rlang::enquo(uniprot_id))))
 }
