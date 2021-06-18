@@ -71,10 +71,10 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
       dplyr::mutate({{ protein_id }} := paste0({{ protein_id }}, " (", round({{ coverage }}, digits = 1), "%)"))
   }
   # Create plot
-  if(!missing(highlight) & !all(is.logical(dplyr::pull(data, {{ highlight }} )))){
-    warning(paste("Please only provide logicals (i.e. TRUE or FALSE) in the 'highlight' column."))
-  }
   if(!missing(highlight)) {
+    if(!all(is.logical(dplyr::pull(data, {{ highlight }} )))){
+      warning(paste("Please only provide logicals (i.e. TRUE or FALSE) in the 'highlight' column."))
+    }else{
     data %>%
       ggplot2::ggplot() +
       ggplot2::geom_rect(ggplot2::aes(
@@ -165,6 +165,7 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
         ),
         strip.background = element_blank()
       )
+    }
   }else{
     
     data %>%
