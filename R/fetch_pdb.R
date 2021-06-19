@@ -145,9 +145,9 @@ formula
     }
     # only proceed with data if it was correctly retrieved
     if ("list" %in% class(query)) {
-    query %>%
-      purrr::flatten() %>%
-      as.data.frame(stringsAsFactors = FALSE)
+      query %>%
+        purrr::flatten() %>%
+        as.data.frame(stringsAsFactors = FALSE)
     }
   })
 
