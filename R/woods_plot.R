@@ -16,7 +16,7 @@
 #' @param colouring Optional argument, column in the data frame containing information by which peptide or precursors should
 #' be coloured.
 #' @param fold_change_cutoff Optional argument specifying the log2 fold change cutoff used in the plot. The default value is 2.
-#' @param highlight Optional column containing logicals, specifying whether specific peptides or precursors should be highlighted with an asterisk. Default is \code{highlight = NULL}.
+#' @param highlight Optional column containing logicals, specifying whether specific peptides or precursors should be highlighted with an asterisk.
 #'
 #' @return A Woods' plot is returned. Plotting peptide or precursor fold changes across protein sequence.
 #' @import ggplot2
