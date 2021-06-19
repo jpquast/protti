@@ -73,7 +73,7 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
   # Create plot
   if(!missing(highlight)) {
     if(!all(is.logical(dplyr::pull(data, {{ highlight }} )))){
-      warning(paste("Please only provide logicals (i.e. TRUE or FALSE) in the 'highlight' column."))
+      stop("Please only provide logicals (i.e. TRUE or FALSE) in the 'highlight' column.")
     }else{
     data %>%
       ggplot2::ggplot() +
