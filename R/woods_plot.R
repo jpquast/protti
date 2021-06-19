@@ -71,11 +71,10 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
       dplyr::mutate({{ protein_id }} := paste0({{ protein_id }}, " (", round({{ coverage }}, digits = 1), "%)"))
   }
   # Create plot
-  if(!missing(highlight)) {
-    if(!all(is.logical(dplyr::pull(data, {{ highlight }} )))){
+  if(!missing(highlight) && !all(is.logical(dplyr::pull(data, {{ highlight }} )))) {
       stop("Please only provide logicals (i.e. TRUE or FALSE) in the 'highlight' column.")
     }else{
-    data %>%
+  data %>%
       ggplot2::ggplot() +
       ggplot2::geom_rect(ggplot2::aes(
         xmin = 0,
@@ -96,13 +95,15 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
       size = 0.7,
       alpha = 0.8
       ) +
-      {if (!missing(highlight){ ggplot2::geom_point(data = dplyr::filter(data, {{ highlight }} == TRUE),
-                          ggplot2::aes(
-                            x = (( {{ start_position }} + {{ end_position }} ) /2),
-                            y = ( {{ fold_change }} - 0.3)), 
-                          shape = 8, 
-                          col = "black", 
-                          size = 3) }} +
+        {
+          if (!missing(highlight)) ggplot2::geom_point(data = dplyr::filter(data, {{ highlight }} == TRUE),
+                                                      ggplot2::aes(
+                                                        x = (( {{ start_position }} + {{ end_position }} ) /2),
+                                                        y = ( {{ fold_change }} - 0.3)),
+                                                      shape = 8,
+                                                      col = "black",
+                                                      size = 3)
+          } +
       ggplot2::geom_hline(
         yintercept = -{{ fold_change_cutoff }},
         col = "blue",
@@ -166,90 +167,4 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
         strip.background = element_blank()
       )
     }
-  }else{
-    
-    data %>%
-      ggplot2::ggplot() +
-      ggplot2::geom_rect(ggplot2::aes(
-        xmin = 0,
-        xmax = {{ protein_length }},
-        ymin = -0.01,
-        ymax = 0.01
-      ),
-      fill = "black"
-      ) +
-      ggplot2::geom_rect(ggplot2::aes(
-        xmin = {{ start_position }},
-        xmax = {{ end_position }},
-        ymin = {{ fold_change }} - 0.2,
-        ymax = {{ fold_change }} + 0.2,
-        fill = {{ colouring }}
-      ),
-      col = "black",
-      size = 0.7,
-      alpha = 0.8
-      ) +
-      ggplot2::geom_hline(
-        yintercept = -{{ fold_change_cutoff }},
-        col = "blue",
-        alpha = .8,
-        size = 0.7
-      ) +
-      ggplot2::geom_hline(
-        yintercept = {{ fold_change_cutoff }},
-        col = "blue",
-        alpha = .8,
-        size = 0.7
-      ) +
-      ggplot2::ylim(min(-2.5, dplyr::pull(data, {{ fold_change }})) - 0.5, max(2.5, dplyr::pull(data, {{ fold_change }})) + 0.5) +
-      ggplot2::scale_x_continuous(limits = NULL, expand = c(0, 0)) +
-      ggplot2::labs(
-        x = "Protein Sequence",
-        y = "log2(fold change)",
-        title = {
-          if (!missing(protein_id)) unique(dplyr::pull(data, {{ protein_id }}))
-        }
-      ) +
-      {
-        if (!missing(facet)) ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet)), scales = "free", ncol = 4)
-      } +
-      ggplot2::guides(size = FALSE) +
-      {
-        if (!missing(colouring) && !is.numeric(dplyr::pull(data, {{ colouring }}))) ggplot2::scale_fill_manual(values = protti_colours)
-      } +
-      {
-        if (!missing(colouring) && is.numeric(dplyr::pull(data, {{ colouring }}))) ggplot2::scale_fill_gradient(low = protti_colours[1], high = protti_colours[2])
-      } +
-      ggplot2::theme_bw() +
-      ggplot2::theme(
-        plot.title = ggplot2::element_text(
-          size = 20
-        ),
-        axis.text.x = ggplot2::element_text(
-          size = 15
-        ),
-        axis.text.y = ggplot2::element_text(
-          size = 15
-        ),
-        axis.title.y = ggplot2::element_text(
-          size = 15
-        ),
-        axis.title.x = ggplot2::element_text(
-          size = 15
-        ),
-        legend.title = ggplot2::element_text(
-          size = 15
-        ),
-        legend.text = ggplot2::element_text(
-          size = 15
-        ),
-        strip.text.x = ggplot2::element_text(
-          size = 15
-        ),
-        strip.text = ggplot2::element_text(
-          size = 15
-        ),
-        strip.background = element_blank()
-      )
   }
-}
