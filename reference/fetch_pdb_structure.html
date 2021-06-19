@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Fetch PDB structure atom data from RCSB — fetch_pdb_structure" />
-<meta property="og:description" content="Fetches atom data for a PDB structure from RCSB. If you want to retrieve metadata about PDB structures, use the function fetch_pdb()." />
+<meta property="og:description" content="Fetches atom data for a PDB structure from RCSB. If you want to retrieve metadata about PDB structures, use the function fetch_pdb().
+The information retrieved is based on the .cif file of the structure, which may vary from the .pdb file." />
 
 
 
@@ -138,7 +139,8 @@
     </div>
 
     <div class="ref-description">
-    <p>Fetches atom data for a PDB structure from RCSB. If you want to retrieve metadata about PDB structures, use the function <code><a href='fetch_pdb.html'>fetch_pdb()</a></code>.</p>
+    <p>Fetches atom data for a PDB structure from RCSB. If you want to retrieve metadata about PDB structures, use the function <code><a href='fetch_pdb.html'>fetch_pdb()</a></code>.
+The information retrieved is based on the .cif file of the structure, which may vary from the .pdb file.</p>
     </div>
 
     <pre class="usage"><span class='fu'>fetch_pdb_structure</span><span class='op'>(</span><span class='va'>pdb_ids</span>, return_data_frame <span class='op'>=</span> <span class='cn'>FALSE</span>, show_progress <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
@@ -152,7 +154,7 @@
     </tr>
     <tr>
       <th>return_data_frame</th>
-      <td><p>logical, if true, a data frame instead of a list is returned. It is recommended to only use this if not many 
+      <td><p>logical, if true, a data frame instead of a list is returned. It is recommended to only use this if not many
 pdb structures are retrieved. Default is FALSE.</p></td>
     </tr>
     <tr>

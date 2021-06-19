@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fetch proteome data from UniProt — fetch_uniprot_proteome • protti</title>
+<title>Finds peptide positions in a PDB structure based on positional matching — find_peptide_in_pdb • protti</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,11 @@
 
 
 
-<meta property="og:title" content="Fetch proteome data from UniProt — fetch_uniprot_proteome" />
-<meta property="og:description" content="Fetches proteome data from UniProt for the provided organism ID." />
+<meta property="og:title" content="Finds peptide positions in a PDB structure based on positional matching — find_peptide_in_pdb" />
+<meta property="og:description" content="Finds peptide positions in a PDB structure. Often positions of peptides in UniProt and a PDB structure are different due to different
+lengths of structures. This function maps a peptide based on its UniProt positions onto a PDB structure. This method is superior to
+sequence alignment of the peptide to the PDB structure sequence, since it can also match the peptide if there are truncations or
+mismatches. This function also provides an easy way to check if a peptide is present in a PDB structure." />
 
 
 
@@ -132,50 +135,76 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fetch proteome data from UniProt</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/fetch_uniprot_proteome.R'><code>R/fetch_uniprot_proteome.R</code></a></small>
-    <div class="hidden name"><code>fetch_uniprot_proteome.Rd</code></div>
+    <h1>Finds peptide positions in a PDB structure based on positional matching</h1>
+    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/find_peptide_in_pdb.R'><code>R/find_peptide_in_pdb.R</code></a></small>
+    <div class="hidden name"><code>find_peptide_in_pdb.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Fetches proteome data from UniProt for the provided organism ID.</p>
+    <p>Finds peptide positions in a PDB structure. Often positions of peptides in UniProt and a PDB structure are different due to different
+lengths of structures. This function maps a peptide based on its UniProt positions onto a PDB structure. This method is superior to
+sequence alignment of the peptide to the PDB structure sequence, since it can also match the peptide if there are truncations or
+mismatches. This function also provides an easy way to check if a peptide is present in a PDB structure.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>fetch_uniprot_proteome</span><span class='op'>(</span><span class='va'>organism_id</span>, columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"id"</span><span class='op'>)</span>, reviewed <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>find_peptide_in_pdb</span><span class='op'>(</span>
+  <span class='va'>peptide_data</span>,
+  <span class='va'>peptide_sequence</span>,
+  <span class='va'>start</span>,
+  <span class='va'>end</span>,
+  <span class='va'>uniprot_id</span>,
+  pdb_data <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>organism_id</th>
-      <td><p>a numeric vector of one NCBI taxonomy identifier (TaxId) for and organism of choice.</p></td>
+      <th>peptide_data</th>
+      <td><p>a data frame containing at least the input columns to this function.</p></td>
     </tr>
     <tr>
-      <th>columns</th>
-      <td><p>a character vector of metadata columns that should be imported from UniProt (all possible columns can be found here: https://www.uniprot.org/help/uniprotkb_column_names). Note: Not more than one or two columns should be selected otherwise the function will not be able to efficiently retrieve the information. If more information is needed, <code><a href='fetch_uniprot.html'>fetch_uniprot()</a></code> can be used with the IDs retrieved by this function.</p></td>
+      <th>peptide_sequence</th>
+      <td><p>a character column in the <code>peptide_data</code> data frame that contains the sequence or any other unique identifier
+for the peptide that should be found.</p></td>
     </tr>
     <tr>
-      <th>reviewed</th>
-      <td><p>a logical. If true, only reviewed protein entries will be retrieved.</p></td>
+      <th>start</th>
+      <td><p>a numeric column in the <code>peptide_data</code> data frame that contains start positions of peptides.</p></td>
+    </tr>
+    <tr>
+      <th>end</th>
+      <td><p>a numeric column in the <code>peptide_data</code> data frame that contains end positions of peptides.</p></td>
+    </tr>
+    <tr>
+      <th>uniprot_id</th>
+      <td><p>a character column in the <code>peptide_data</code> data frame that contains UniProt identifiers that correspond to the
+peptides.</p></td>
+    </tr>
+    <tr>
+      <th>pdb_data</th>
+      <td><p>optional data frame containing data obtained with <code><a href='fetch_pdb.html'>fetch_pdb()</a></code>. If not provided, information is fetched automatically.
+If this function should be run multiple times it is faster to fetch the information once and provide it to the function. If provided,
+make sure that the column names are identical to the ones that would be obtained by calling <code><a href='fetch_pdb.html'>fetch_pdb()</a></code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains all protein metadata specified in <code>columns</code> for the organism of choice.</p>
+    <p>A data frame that contains peptide positions in the corresponding PDB structures. If a peptide is not found in any structure,
+it contains NAs values for the corresponding positional columns.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'>fetch_uniprot_proteome</span><span class='op'>(</span><span class='fl'>9606</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 6 x 1</span>
-#&gt;   id    
-#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> 
-#&gt; <span style='color: #BCBCBC;'>1</span> Q00266
-#&gt; <span style='color: #BCBCBC;'>2</span> Q8NB16
-#&gt; <span style='color: #BCBCBC;'>3</span> O94851
-#&gt; <span style='color: #BCBCBC;'>4</span> Q8TDZ2
-#&gt; <span style='color: #BCBCBC;'>5</span> Q9NPJ6
-#&gt; <span style='color: #BCBCBC;'>6</span> Q8N635</div><div class='input'><span class='co'># }</span>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'>find_peptide_in_pdb</span><span class='op'>(</span>
+  peptide_data <span class='op'>=</span> <span class='va'>peptide_data</span>,
+  peptide_sequence <span class='op'>=</span> <span class='va'>peptide</span>,
+  start <span class='op'>=</span> <span class='va'>start</span>,
+  end <span class='op'>=</span> <span class='va'>end</span>,
+  uniprot_id <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>,
+  pdb_data <span class='op'>=</span> <span class='va'>pdb_data</span>
+<span class='op'>)</span>
+<span class='op'>}</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
