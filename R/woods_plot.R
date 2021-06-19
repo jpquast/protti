@@ -96,13 +96,13 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
       size = 0.7,
       alpha = 0.8
       ) +
-      ggplot2::geom_point(data = dplyr::filter(data, {{ highlight }} == TRUE),
+      {if (!missing(highlight){ ggplot2::geom_point(data = dplyr::filter(data, {{ highlight }} == TRUE),
                           ggplot2::aes(
                             x = (( {{ start_position }} + {{ end_position }} ) /2),
                             y = ( {{ fold_change }} - 0.3)), 
                           shape = 8, 
                           col = "black", 
-                          size = 3) +
+                          size = 3) }} +
       ggplot2::geom_hline(
         yintercept = -{{ fold_change_cutoff }},
         col = "blue",
