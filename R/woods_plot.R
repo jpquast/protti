@@ -2,27 +2,33 @@
 #'
 #' Creates a Woods' plot that plots log2 fold change of peptides or precursors along the protein sequence.
 #'
-#' @param data Data frame containing differential abundance, start and end peptide or precursor positions, protein
+#' @param data a data frame containing differential abundance, start and end peptide or precursor positions, protein
 #' length and optionally a variable based on which peptides or precursors should be coloured.
-#' @param fold_change Column in the data frame containing log2 fold changes.
-#' @param start_position Column in the data frame containing the start positions for each peptide or precursor.
-#' @param end_position Column in the data frame containing the end positions for each peptide or precursor.
-#' @param protein_length Column in the data frame containing the length of the protein.
-#' @param coverage Optional, column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.
-#' @param protein_id Optional argument, column in the data frame containing protein identifiers. Required if only one protein
-#' should be plotted and the data frame contains only information for this protein.
-#' @param facet Optional argument, column in the data frame containing information by which data should be faceted. This can be
-#' protein identifiers.
-#' @param colouring Optional argument, column in the data frame containing information by which peptide or precursors should
+#' @param fold_change a column in the data frame containing log2 fold changes.
+#' @param start_position a column in the data frame containing the start positions for each peptide or precursor.
+#' @param end_position a column in the data frame containing the end positions for each peptide or precursor.
+#' @param protein_length a column in the data frame containing the length of the protein.
+#' @param coverage optional, column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.
+#' @param protein_id a column in the data frame containing protein identifiers.
+#' @param targets a character vector that specifies the identifiers of the proteins (depending on \code{protein_id})
+#' that should be plotted. This can also be \code{"all"} if plots for all curve fits should be created. Default is \code{"all"}.
+#' @param facet a logical indicating if plots should be summarised into facets of 20 plots. This is recommended for many plots.
+#' Default is \code{facet = TRUE}.
+#' @param colouring optional, column in the data frame containing information by which peptide or precursors should
 #' be coloured.
-#' @param fold_change_cutoff Optional argument specifying the log2 fold change cutoff used in the plot. The default value is 2.
-#' @param highlight Optional column containing logicals, specifying whether specific peptides or precursors should be highlighted with an asterisk.
+#' @param fold_change_cutoff optional, numeric argument specifying the log2 fold change cutoff used in the plot. The default value is 2.
+#' @param highlight optional logical column containing logicals, specifying whether specific peptides or precursors should be highlighted with an asterisk.
+#' @param export a logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The
+#' name of the file can be chosen using the \code{export_name} argument. Default is \code{export = TRUE}.
+#' @param export_name a character vector providing the name of the exported file if \code{export = TRUE}. Default is \code{export_name = "woods_plots"}
 #'
-#' @return A Woods' plot is returned. Plotting peptide or precursor fold changes across protein sequence.
+#' @return A Wood's plot is returned. Plotting peptide or precursor fold changes across protein sequence.
 #' @import ggplot2
+#' @import tidyr
+#' @import progress
+#' @import dplyr
 #' @importFrom magrittr %>%
-#' @importFrom dplyr pull mutate filter
-#' @importFrom rlang new_formula enquo as_name :=
+#' @importFrom rlang .data :=
 #' @importFrom utils data
 #' @export
 #'
@@ -34,48 +40,62 @@
 #'   end_position = end,
 #'   protein_length = length,
 #'   colouring = pep_type,
-#'   facet = pg_protein_accessions, 
+#'   protein_id, pg_protein_accessions,
+#'   facet = TRUE,
 #'   highlight = is_significant
 #' )
 #' }
-woods_plot <- function(data, fold_change, start_position, end_position, protein_length, coverage = NULL, protein_id = NULL, facet = NULL, colouring = NULL, fold_change_cutoff = 1, highlight = NULL) {
+woods_plot <- function(data, fold_change, start_position, end_position, protein_length, coverage = NULL, protein_id, targets = "all", facet = TRUE, colouring = NULL, fold_change_cutoff = 1, highlight = NULL, export = FALSE, export_name = "woods_plots") {
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
-  # Check if there are more than one protein even though protein_id was specified.
-  if (!missing(protein_id)) {
-    if (length(unique(dplyr::pull(data, {{ protein_id }}))) > 1) {
-      stop("If data contains information of multiple proteins use the facet argument, not the protein_id argument")
-    }
+  . <- NULL
+  # create variable that contains information about the missingness of certain variables so it can be used in the mapping through which the plot is created.
+  colouring_missing <- missing(colouring)
+  highlight_missing <- missing(highlight)
+
+  if (!missing(highlight) && !all(is.logical(dplyr::pull(data, {{ highlight }})))) {
+    stop("Please only provide logicals (i.e. TRUE or FALSE) in the 'highlight' column.")
   }
-  # Check if there are more than 20 proteins for faceting.
-  if (!missing(facet)) {
-    if (length(unique(dplyr::pull(data, {{ facet }}))) > 20) {
-      n_proteins <- length(unique(dplyr::pull(data, {{ facet }})))
-      twenty_proteins <- unique(dplyr::pull(data, {{ facet }}))[1:20]
-      data <- data %>%
-        dplyr::filter({{ facet }} %in% twenty_proteins)
-      warning(paste(
-        "Only the first 20 proteins from", rlang::as_name(enquo(facet)),
-        "have been used for plotting since there are", n_proteins,
-        "proteins. Consider mapping over subsetted datasets."
-      ))
-    }
+
+  # early filter to speed up function
+  if (!"all" %in% targets) {
+    data <- data %>%
+      dplyr::ungroup() %>%
+      dplyr::filter({{ protein_id }} %in% targets)
+    if (nrow(data) == 0) stop("Target not found in data!")
   }
+
+  data <- data %>%
+    dplyr::ungroup() %>%
+    tidyr::drop_na({{ protein_id }}) %>%
+    dplyr::mutate({{ protein_id }} := factor({{ protein_id }}, levels = unique(dplyr::pull(data, {{ protein_id }})))) %>%
+    dplyr::group_by({{ protein_id }}) %>%
+    dplyr::mutate(
+      group_number = dplyr::cur_group_id(),
+      name = {{ protein_id }}
+    ) %>% # we do this in preparation for faceting later.
+    dplyr::ungroup() %>%
+    dplyr::mutate(group_number = ceiling(.data$group_number / 20))
+
   # Add coverage to protein ID name if present.
-  if (!missing(coverage) & !missing(facet)) {
+  if (!missing(coverage)) {
     data <- data %>%
-      dplyr::mutate({{ facet }} := paste0({{ facet }}, " (", round({{ coverage }}, digits = 1), "%)"))
+      dplyr::mutate(name = paste0({{ protein_id }}, " (", round({{ coverage }}, digits = 1), "%)"))
   }
-  if (!missing(coverage) & !missing(protein_id)) {
-    data <- data %>%
-      dplyr::mutate({{ protein_id }} := paste0({{ protein_id }}, " (", round({{ coverage }}, digits = 1), "%)"))
+
+  if (facet == TRUE) {
+    data_facet <- data %>%
+      split(.$group_number)
+  } else {
+    data_facet <- data %>%
+      split(.$name)
   }
-  # Create plot
-  if(!missing(highlight) && !all(is.logical(dplyr::pull(data, {{ highlight }} )))) {
-      stop("Please only provide logicals (i.e. TRUE or FALSE) in the 'highlight' column.")
-    }else{
-  data %>%
-      ggplot2::ggplot() +
+
+  pb <- progress::progress_bar$new(total = length(data_facet), format = " Creating Wood's plots [:bar] :current/:total (:percent) :eta")
+
+  plots <- purrr::map2(.x = data_facet, .y = names(data_facet), function(x, y) {
+    pb$tick()
+    ggplot2::ggplot(data = x) +
       ggplot2::geom_rect(ggplot2::aes(
         xmin = 0,
         xmax = {{ protein_length }},
@@ -95,15 +115,20 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
       size = 0.7,
       alpha = 0.8
       ) +
-        {
-          if (!missing(highlight)) ggplot2::geom_point(data = dplyr::filter(data, {{ highlight }} == TRUE),
-                                                      ggplot2::aes(
-                                                        x = (( {{ start_position }} + {{ end_position }} ) /2),
-                                                        y = ( {{ fold_change }} - 0.3)),
-                                                      shape = 8,
-                                                      col = "black",
-                                                      size = 3)
-          } +
+      {
+        if (!highlight_missing) {
+          ggplot2::geom_point(
+            data = dplyr::filter(data, {{ highlight }} == TRUE),
+            ggplot2::aes(
+              x = (({{ start_position }} + {{ end_position }}) / 2),
+              y = ({{ fold_change }} - 0.3)
+            ),
+            shape = 8,
+            col = "black",
+            size = 3
+          )
+        }
+      } +
       ggplot2::geom_hline(
         yintercept = -{{ fold_change_cutoff }},
         col = "blue",
@@ -118,22 +143,33 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
       ) +
       ggplot2::ylim(min(-2.5, dplyr::pull(data, {{ fold_change }})) - 0.5, max(2.5, dplyr::pull(data, {{ fold_change }})) + 0.5) +
       ggplot2::scale_x_continuous(limits = NULL, expand = c(0, 0)) +
-      ggplot2::labs(
-        x = "Protein Sequence",
-        y = "log2(fold change)",
-        title = {
-          if (!missing(protein_id)) unique(dplyr::pull(data, {{ protein_id }}))
-        }
-      ) +
       {
-        if (!missing(facet)) ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet)), scales = "free", ncol = 4)
+        if (facet == FALSE) {
+          ggplot2::labs(
+            title = y,
+            x = "Protein Sequence",
+            y = "log2(fold change)"
+          )
+        }
+      } +
+      {
+        if (facet == TRUE) {
+          ggplot2::labs(
+            title = "Wood's plots",
+            x = "Protein Sequence",
+            y = "log2(fold change)"
+          )
+        }
+      } +
+      {
+        if (facet == TRUE) ggplot2::facet_wrap(~ .data$name, scales = "free", ncol = 4)
       } +
       ggplot2::guides(size = FALSE) +
       {
-        if (!missing(colouring) && !is.numeric(dplyr::pull(data, {{ colouring }}))) ggplot2::scale_fill_manual(values = protti_colours)
+        if (!colouring_missing && !is.numeric(dplyr::pull(data, {{ colouring }}))) ggplot2::scale_fill_manual(values = protti_colours)
       } +
       {
-        if (!missing(colouring) && is.numeric(dplyr::pull(data, {{ colouring }}))) ggplot2::scale_fill_gradient(low = protti_colours[1], high = protti_colours[2])
+        if (!colouring_missing && is.numeric(dplyr::pull(data, {{ colouring }}))) ggplot2::scale_fill_gradient(low = protti_colours[1], high = protti_colours[2])
       } +
       ggplot2::theme_bw() +
       ggplot2::theme(
@@ -166,5 +202,27 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
         ),
         strip.background = element_blank()
       )
+  })
+
+  if (export == FALSE) {
+    plots
+  } else {
+    if (facet == TRUE) {
+      grDevices::pdf(
+        file = paste0(export_name, ".pdf"),
+        width = 45,
+        height = 37.5
+      )
+      suppressWarnings(print(plots))
+      grDevices::dev.off()
+    } else {
+      grDevices::pdf(
+        file = paste0(export_name, ".pdf"),
+        width = 8,
+        height = 6
+      )
+      suppressWarnings(print(plots))
+      grDevices::dev.off()
     }
   }
+}

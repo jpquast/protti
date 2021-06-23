@@ -348,6 +348,7 @@ woods_plot(
   coverage = coverage,
   colouring = adj_pval,
   protein_id = pg_protein_accessions, 
+  facet = FALSE,
   fold_change_cutoff = 1,
   highlight = significant
   )

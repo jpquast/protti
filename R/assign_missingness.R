@@ -111,6 +111,7 @@ assign_missingness <- function(data, sample, condition, grouping, intensity, ref
     return(result)
   } else {
     join_result <- data %>%
+      dplyr::ungroup() %>%
       dplyr::select(!!enquo(retain_columns), colnames(result)[!colnames(result) %in% c("comparison", "missingness")]) %>%
       dplyr::distinct() %>%
       dplyr::right_join(result, by = colnames(result)[!colnames(result) %in% c("comparison", "missingness")]) %>%
