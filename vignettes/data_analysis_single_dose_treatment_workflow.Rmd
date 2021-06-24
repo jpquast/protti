@@ -331,7 +331,7 @@ barcode_plot(
 
 ### Wood's plot
 
-An additional way to plot LiP-MS changes are Wood's plots. These plots will show the extent of the change along the protein sequence.
+An additional way to plot LiP-MS changes are Woods' plots. These plots will show the extent of the change along the protein sequence.
 To produce a Wood's plot we use the function `woods_plot()` and colour the peptides according to their adjusted p-values. We are highlighting significant q-values (< 0.01) with an asterisk.
 
 ```{r woods_plot, eval = test_protti, fig.align = "center", fig.width = 6, message = FALSE, warning = FALSE}

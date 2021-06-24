@@ -33,12 +33,13 @@ length and optionally a variable based on which peptides or precursors should be
 
 \item{protein_length}{a column in the data frame containing the length of the protein.}
 
-\item{coverage}{optional, column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.}
+\item{coverage}{optional, column in the data frame containing coverage in percent. Will appear in the title of the Woods' plot 
+if provided.}
 
 \item{protein_id}{a column in the data frame containing protein identifiers.}
 
 \item{targets}{a character vector that specifies the identifiers of the proteins (depending on \code{protein_id})
-that should be plotted. This can also be \code{"all"} if plots for all curve fits should be created. Default is \code{"all"}.}
+that should be plotted. This can also be \code{"all"} if plots for all proteins should be created. Default is \code{"all"}.}
 
 \item{facet}{a logical indicating if plots should be summarised into facets of 20 plots. This is recommended for many plots.
 Default is \code{facet = TRUE}.}
@@ -51,12 +52,12 @@ be coloured.}
 \item{highlight}{optional logical column containing logicals, specifying whether specific peptides or precursors should be highlighted with an asterisk.}
 
 \item{export}{a logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The
-name of the file can be chosen using the \code{export_name} argument. Default is \code{export = TRUE}.}
+name of the file can be chosen using the \code{export_name} argument. Default is \code{export = FALSE}.}
 
 \item{export_name}{a character vector providing the name of the exported file if \code{export = TRUE}. Default is \code{export_name = "woods_plots"}}
 }
 \value{
-A Wood's plot is returned. Plotting peptide or precursor fold changes across protein sequence.
+A Woods' plot is returned. Plotting peptide or precursor fold changes across protein sequence.
 }
 \description{
 Creates a Woods' plot that plots log2 fold change of peptides or precursors along the protein sequence.

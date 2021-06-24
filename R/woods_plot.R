@@ -8,10 +8,11 @@
 #' @param start_position a column in the data frame containing the start positions for each peptide or precursor.
 #' @param end_position a column in the data frame containing the end positions for each peptide or precursor.
 #' @param protein_length a column in the data frame containing the length of the protein.
-#' @param coverage optional, column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.
+#' @param coverage optional, column in the data frame containing coverage in percent. Will appear in the title of the Woods' plot 
+#' if provided.
 #' @param protein_id a column in the data frame containing protein identifiers.
 #' @param targets a character vector that specifies the identifiers of the proteins (depending on \code{protein_id})
-#' that should be plotted. This can also be \code{"all"} if plots for all curve fits should be created. Default is \code{"all"}.
+#' that should be plotted. This can also be \code{"all"} if plots for all proteins should be created. Default is \code{"all"}.
 #' @param facet a logical indicating if plots should be summarised into facets of 20 plots. This is recommended for many plots.
 #' Default is \code{facet = TRUE}.
 #' @param colouring optional, column in the data frame containing information by which peptide or precursors should
@@ -19,10 +20,10 @@
 #' @param fold_change_cutoff optional, numeric argument specifying the log2 fold change cutoff used in the plot. The default value is 2.
 #' @param highlight optional logical column containing logicals, specifying whether specific peptides or precursors should be highlighted with an asterisk.
 #' @param export a logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The
-#' name of the file can be chosen using the \code{export_name} argument. Default is \code{export = TRUE}.
+#' name of the file can be chosen using the \code{export_name} argument. Default is \code{export = FALSE}.
 #' @param export_name a character vector providing the name of the exported file if \code{export = TRUE}. Default is \code{export_name = "woods_plots"}
 #'
-#' @return A Wood's plot is returned. Plotting peptide or precursor fold changes across protein sequence.
+#' @return A Woods' plot is returned. Plotting peptide or precursor fold changes across protein sequence.
 #' @import ggplot2
 #' @import tidyr
 #' @import progress
@@ -91,7 +92,7 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
       split(.$name)
   }
 
-  pb <- progress::progress_bar$new(total = length(data_facet), format = " Creating Wood's plots [:bar] :current/:total (:percent) :eta")
+  pb <- progress::progress_bar$new(total = length(data_facet), format = " Creating Woods' plots [:bar] :current/:total (:percent) :eta")
 
   plots <- purrr::map2(.x = data_facet, .y = names(data_facet), function(x, y) {
     pb$tick()
