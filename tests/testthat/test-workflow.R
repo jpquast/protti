@@ -243,7 +243,7 @@ test_that("fit_drc_4p works", {
   # did not test the argument include_models = TRUE
   expect_is(drc_fit, "data.frame")
   expect_equal(nrow(drc_fit), 282)
-  expect_equal(ncol(drc_fit), 18)
+  expect_equal(ncol(drc_fit), 20)
   expect_equal(round(max(drc_fit$correlation, na.rm = TRUE), digits = 3), 0.876)
   expect_equal(round(min(drc_fit$anova_pval, na.rm = TRUE), digits = 6), 0.007297)
 })

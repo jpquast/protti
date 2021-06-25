@@ -91,7 +91,7 @@ still be considered if half of its values (+/-1 value) pass the replicate comple
 to fall into this category, the values that fulfill the completeness cutoff and the ones that do not fulfill it need to be
 consecutive, meaning located next to each other based on their concentration values. Furthermore, the values that do not pass
 the completeness cutoff need to be lower in intensity. Lastly, the difference between the two groups is tested for statistical
-significance using a Welch's t-test and a cutoff of p <= 0.1 (we want to mainly discard curves that falsly fit the other criteria
+significance using a Welch's t-test and a cutoff of p <= 0.1 (we want to mainly discard curves that falsely fit the other criteria
 but that have clearly non-significant differences in mean). This allows curves to be considered that have missing values in
 half of their observations due to a decrease in intensity. It can be thought of as conditions that are missing not
 at random (MNAR). It is often the case that those entities do not have a significant p-value since half of their conditions
@@ -101,7 +101,12 @@ The final filtered list is ranked based on a score calculated on entities that p
 of the adjusted ANOVA p-value scaled between 0 and 1 and the correlation scaled between 0 and 1 summed up and divided by 2. Thus,
 the highest score an entity can have is 1 with both the highest correlation and adjusted p-value. The rank is corresponding to
 this score. Please note, that entities with MNAR conditions might have a lower score due to the missing or non-significant ANOVA
-p-value. You should have a look at curves that are TRUE for \code{dose_MNAR} in more detail.
+p-value. You should have a look at curves that are TRUE for \code{dose_MNAR} in more detail. In addition, a Shapiro-Wilk test is 
+performed on the input data to check if the data is normally distributed. The Shapiro-Wilk test p-value is reported in the column
+\code{shapiro_pval}, grouping variables with a p-value above 0.05 are considered to follow normal distribution. This is reported
+in \code{normal_distr}. A calculation of Pearson correlation requires data to be normally distributed. In cases where this criterion
+is not fulfilled \code{normal_distr} will be \code{FALSE}. In such cases you might consider to do alternative statistical tests or
+check the distribution of your data in a QQ-plot.
 }
 \examples{
 \dontrun{
