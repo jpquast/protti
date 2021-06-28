@@ -167,17 +167,18 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'>fetch_pdb</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"6HG1"</span>, <span class='st'>"1E9I"</span>, <span class='st'>"6D3Q"</span>, <span class='st'>"4JHW"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 6 x 30</span>
-#&gt;   pdb_ids chain reference_databa… protein_name reference_datab… entity_beg_seq_…
-#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                       <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>1</span> 6HG1    A     P27708            CAD protein  UniProt                       115
-#&gt; <span style='color: #BCBCBC;'>2</span> 6HG1    A     P27708            CAD protein  UniProt                       115
-#&gt; <span style='color: #BCBCBC;'>3</span> 6HG1    A     P27708            CAD protein  UniProt                         2
-#&gt; <span style='color: #BCBCBC;'>4</span> 6HG1    A     P27708            CAD protein  UniProt                         2
-#&gt; <span style='color: #BCBCBC;'>5</span> 6HG1    A     P05020            Dihydroorot… UniProt                       102
-#&gt; <span style='color: #BCBCBC;'>6</span> 6HG1    A     P05020            Dihydroorot… UniProt                       102
-#&gt; <span style='color: #949494;'># … with 24 more variables: ref_beg_seq_id &lt;int&gt;, length &lt;int&gt;,</span>
-#&gt; <span style='color: #949494;'>#   pdb_sequence &lt;chr&gt;, id_nonpolymer &lt;chr&gt;, type_nonpolymer &lt;chr&gt;,</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 6 x 32</span>
+#&gt;   pdb_ids chain chain_alternative reference_datab… protein_name reference_datab…
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>           
+#&gt; <span style='color: #BCBCBC;'>1</span> 6HG1    A     A                 P27708           CAD protein  UniProt         
+#&gt; <span style='color: #BCBCBC;'>2</span> 6HG1    A     A                 P27708           CAD protein  UniProt         
+#&gt; <span style='color: #BCBCBC;'>3</span> 6HG1    A     A                 P27708           CAD protein  UniProt         
+#&gt; <span style='color: #BCBCBC;'>4</span> 6HG1    A     A                 P27708           CAD protein  UniProt         
+#&gt; <span style='color: #BCBCBC;'>5</span> 6HG1    A     A                 P05020           Dihydroorot… UniProt         
+#&gt; <span style='color: #BCBCBC;'>6</span> 6HG1    A     A                 P05020           Dihydroorot… UniProt         
+#&gt; <span style='color: #949494;'># … with 26 more variables: entity_beg_seq_id &lt;int&gt;, ref_beg_seq_id &lt;int&gt;,</span>
+#&gt; <span style='color: #949494;'>#   length &lt;int&gt;, pdb_sequence &lt;chr&gt;, auth_to_entity_poly_seq_mapping &lt;list&gt;,</span>
+#&gt; <span style='color: #949494;'>#   id_nonpolymer &lt;chr&gt;, type_nonpolymer &lt;chr&gt;,</span>
 #&gt; <span style='color: #949494;'>#   formula_weight_nonpolymer &lt;dbl&gt;, name_nonpolymer &lt;chr&gt;,</span>
 #&gt; <span style='color: #949494;'>#   formula_nonpolymer &lt;chr&gt;, experimental_method &lt;chr&gt;,</span>
 #&gt; <span style='color: #949494;'>#   structure_method &lt;chr&gt;, affinity_comp_id &lt;chr&gt;, affinity_value &lt;dbl&gt;,</span>

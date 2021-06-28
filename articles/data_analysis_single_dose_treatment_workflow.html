@@ -94,7 +94,7 @@
       <h1 data-toc-skip>Single Dose Treatment Data Analysis Workflow</h1>
                         <h4 class="author">Dina Schuster</h4>
             
-            <h4 class="date">2021-06-19</h4>
+            <h4 class="date">2021-06-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/data_analysis_single_dose_treatment_workflow.Rmd"><code>vignettes/data_analysis_single_dose_treatment_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_single_dose_treatment_workflow.Rmd</code></div>
@@ -437,9 +437,13 @@
 <div id="woods-plot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#woods-plot" class="anchor"></a>Wood’s plot</h3>
-<p>An additional way to plot LiP-MS changes are Wood’s plots. These plots will show the extent of the change along the protein sequence. To produce a Wood’s plot we use the function <code><a href="../reference/woods_plot.html">woods_plot()</a></code> and colour the peptides according to their adjusted p-values.</p>
+<p>An additional way to plot LiP-MS changes are Woods’ plots. These plots will show the extent of the change along the protein sequence. To produce a Wood’s plot we use the function <code><a href="../reference/woods_plot.html">woods_plot()</a></code> and colour the peptides according to their adjusted p-values. We are highlighting significant q-values (&lt; 0.01) with an asterisk.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/woods_plot.html">woods_plot</a></span><span class="op">(</span>
+<code class="sourceCode R">
+<span class="va">FKBP12</span> <span class="op">&lt;-</span> <span class="va">FKBP12</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">adj_pval</span> <span class="op">&lt;</span> <span class="fl">0.01</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
+
+<span class="fu"><a href="../reference/woods_plot.html">woods_plot</a></span><span class="op">(</span>
   data <span class="op">=</span> <span class="va">FKBP12</span>,
   fold_change <span class="op">=</span> <span class="va">diff</span>,
   start_position <span class="op">=</span> <span class="va">start</span>,
@@ -447,9 +451,12 @@
   protein_length <span class="op">=</span> <span class="va">length</span>,
   coverage <span class="op">=</span> <span class="va">coverage</span>,
   colouring <span class="op">=</span> <span class="va">adj_pval</span>,
-  protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
+  protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>, 
+  facet <span class="op">=</span> <span class="cn">FALSE</span>,
   fold_change_cutoff <span class="op">=</span> <span class="fl">1</span>,
-  <span class="op">)</span></code></pre></div>
+  highlight <span class="op">=</span> <span class="va">significant</span>
+  <span class="op">)</span>
+<span class="co">#&gt; $`P62942 (81.5%)`</span></code></pre></div>
 <p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/woods_plot-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div id="peptide-profile-plots" class="section level3">

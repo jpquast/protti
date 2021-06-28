@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Wood's plot — woods_plot • protti</title>
+<title>Woods' plot — woods_plot • protti</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Wood's plot — woods_plot" />
-<meta property="og:description" content="Creates a Wood's plot that plots log2 fold change of peptides or precursors along the protein sequence." />
+<meta property="og:title" content="Woods' plot — woods_plot" />
+<meta property="og:description" content="Creates a Woods' plot that plots log2 fold change of peptides or precursors along the protein sequence." />
 
 
 
@@ -132,13 +132,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Wood's plot</h1>
+    <h1>Woods' plot</h1>
     <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/woods_plot.R'><code>R/woods_plot.R</code></a></small>
     <div class="hidden name"><code>woods_plot.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Creates a Wood's plot that plots log2 fold change of peptides or precursors along the protein sequence.</p>
+    <p>Creates a Woods' plot that plots log2 fold change of peptides or precursors along the protein sequence.</p>
     </div>
 
     <pre class="usage"><span class='fu'>woods_plot</span><span class='op'>(</span>
@@ -148,10 +148,14 @@
   <span class='va'>end_position</span>,
   <span class='va'>protein_length</span>,
   coverage <span class='op'>=</span> <span class='cn'>NULL</span>,
-  protein_id <span class='op'>=</span> <span class='cn'>NULL</span>,
-  facet <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>protein_id</span>,
+  targets <span class='op'>=</span> <span class='st'>"all"</span>,
+  facet <span class='op'>=</span> <span class='cn'>TRUE</span>,
   colouring <span class='op'>=</span> <span class='cn'>NULL</span>,
-  fold_change_cutoff <span class='op'>=</span> <span class='fl'>1</span>
+  fold_change_cutoff <span class='op'>=</span> <span class='fl'>1</span>,
+  highlight <span class='op'>=</span> <span class='cn'>NULL</span>,
+  export <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  export_name <span class='op'>=</span> <span class='st'>"woods_plots"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -159,53 +163,71 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>Data frame containing differential abundance, start and end peptide or precursor positions, protein
+      <td><p>a data frame containing differential abundance, start and end peptide or precursor positions, protein
 length and optionally a variable based on which peptides or precursors should be coloured.</p></td>
     </tr>
     <tr>
       <th>fold_change</th>
-      <td><p>Column in the data frame containing log2 fold changes.</p></td>
+      <td><p>a column in the data frame containing log2 fold changes.</p></td>
     </tr>
     <tr>
       <th>start_position</th>
-      <td><p>Column in the data frame containing the start positions for each peptide or precursor.</p></td>
+      <td><p>a column in the data frame containing the start positions for each peptide or precursor.</p></td>
     </tr>
     <tr>
       <th>end_position</th>
-      <td><p>Column in the data frame containing the end positions for each peptide or precursor.</p></td>
+      <td><p>a column in the data frame containing the end positions for each peptide or precursor.</p></td>
     </tr>
     <tr>
       <th>protein_length</th>
-      <td><p>Column in the data frame containing the length of the protein.</p></td>
+      <td><p>a column in the data frame containing the length of the protein.</p></td>
     </tr>
     <tr>
       <th>coverage</th>
-      <td><p>Optional, column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.</p></td>
+      <td><p>optional, column in the data frame containing coverage in percent. Will appear in the title of the Woods' plot 
+if provided.</p></td>
     </tr>
     <tr>
       <th>protein_id</th>
-      <td><p>Optional argument, column in the data frame containing protein identifiers. Required if only one protein
-should be plotted and the data frame contains only information for this protein.</p></td>
+      <td><p>a column in the data frame containing protein identifiers.</p></td>
+    </tr>
+    <tr>
+      <th>targets</th>
+      <td><p>a character vector that specifies the identifiers of the proteins (depending on <code>protein_id</code>)
+that should be plotted. This can also be <code>"all"</code> if plots for all proteins should be created. Default is <code>"all"</code>.</p></td>
     </tr>
     <tr>
       <th>facet</th>
-      <td><p>Optional argument, column in the data frame containing information by which data should be faceted. This can be
-protein identifiers.</p></td>
+      <td><p>a logical indicating if plots should be summarised into facets of 20 plots. This is recommended for many plots.
+Default is <code>facet = TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>colouring</th>
-      <td><p>Optional argument, column in the data frame containing information by which peptide or precursors should
+      <td><p>optional, column in the data frame containing information by which peptide or precursors should
 be coloured.</p></td>
     </tr>
     <tr>
       <th>fold_change_cutoff</th>
-      <td><p>Optional argument specifying the log2 fold change cutoff used for assessing whether changes are significant. The default value is 2.</p></td>
+      <td><p>optional, numeric argument specifying the log2 fold change cutoff used in the plot. The default value is 2.</p></td>
+    </tr>
+    <tr>
+      <th>highlight</th>
+      <td><p>optional logical column containing logicals, specifying whether specific peptides or precursors should be highlighted with an asterisk.</p></td>
+    </tr>
+    <tr>
+      <th>export</th>
+      <td><p>a logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The
+name of the file can be chosen using the <code>export_name</code> argument. Default is <code>export = FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>export_name</th>
+      <td><p>a character vector providing the name of the exported file if <code>export = TRUE</code>. Default is <code>export_name = "woods_plots"</code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A Wood's plot is returned. Plotting peptide or precursor fold changes accross protein sequence.</p>
+    <p>A Woods' plot is returned. Plotting peptide or precursor fold changes across protein sequence.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
@@ -215,7 +237,9 @@ be coloured.</p></td>
   end_position <span class='op'>=</span> <span class='va'>end</span>,
   protein_length <span class='op'>=</span> <span class='va'>length</span>,
   colouring <span class='op'>=</span> <span class='va'>pep_type</span>,
-  facet <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>
+  <span class='va'>protein_id</span>, <span class='va'>pg_protein_accessions</span>,
+  facet <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  highlight <span class='op'>=</span> <span class='va'>is_significant</span>
 <span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
