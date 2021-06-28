@@ -53,14 +53,14 @@ find_peptide_in_pdb <- function(peptide_data, peptide_sequence, start, end, unip
   }
 
   result <- pdb_data %>%
-    dplyr::distinct(.data$reference_database_accession, .data$pdb_ids, .data$chain, .data$entity_beg_seq_id, .data$ref_beg_seq_id, .data$length, .data$pdb_sequence) %>%
+    dplyr::distinct(.data$reference_database_accession, .data$pdb_ids, .data$chain, .data$entity_beg_seq_id, .data$ref_beg_seq_id, .data$length, .data$pdb_sequence, .data$auth_to_entity_poly_seq_mapping, .data$chain_alternative) %>%
     dplyr::rename(length_pdb = .data$length) %>%
     dplyr::mutate(length_pdb_sequence = nchar(.data$pdb_sequence)) %>%
     dplyr::mutate(
       ref_end_seq_id = as.numeric(.data$ref_beg_seq_id) + as.numeric(.data$length_pdb) - 1,
       entity_end_seq_id = as.numeric(.data$entity_beg_seq_id) + as.numeric(.data$length_pdb) - 1
     ) %>%
-    dplyr::select(.data$pdb_ids, .data$chain, .data$reference_database_accession, .data$entity_beg_seq_id, .data$entity_end_seq_id, .data$ref_beg_seq_id, .data$ref_end_seq_id, .data$pdb_sequence, .data$length_pdb_sequence) %>%
+    dplyr::select(.data$pdb_ids, .data$chain, .data$reference_database_accession, .data$entity_beg_seq_id, .data$entity_end_seq_id, .data$ref_beg_seq_id, .data$ref_end_seq_id, .data$pdb_sequence, .data$length_pdb_sequence, .data$auth_to_entity_poly_seq_mapping, .data$chain_alternative) %>%
     dplyr::right_join(peptide_data_prep, by = c("reference_database_accession" = rlang::as_name(rlang::enquo(uniprot_id)))) %>%
     dplyr::mutate(peptide_in_pdb = ({{ start }} >= .data$ref_beg_seq_id & {{ start }} <= .data$ref_end_seq_id) | ({{ end }} >= .data$ref_beg_seq_id & {{ end }} <= .data$ref_end_seq_id) | ({{ start }} < .data$ref_beg_seq_id & {{ end }} > .data$ref_end_seq_id)) %>%
     dplyr::group_by(.data$pdb_ids, .data$reference_database_accession, .data$chain) %>%
@@ -80,7 +80,11 @@ find_peptide_in_pdb <- function(peptide_data, peptide_sequence, start, end, unip
       peptide_start_pdb = ifelse(.data$peptide_start_pdb < .data$entity_beg_seq_id, .data$entity_beg_seq_id, .data$peptide_start_pdb)
     ) %>%
     dplyr::mutate(peptide_sequence_in_pdb = stringr::str_sub(.data$pdb_sequence, start = .data$peptide_start_pdb, end = .data$peptide_end_pdb)) %>%
-    dplyr::select(.data$reference_database_accession, .data$pdb_ids, .data$chain, {{ peptide_sequence }}, .data$peptide_sequence_in_pdb, .data$fit_type, {{ start }}, {{ end }}, .data$peptide_start_pdb, .data$peptide_end_pdb, .data$n_peptides, .data$n_peptides_in_pdb)
+    dplyr::rowwise() %>% 
+    dplyr::mutate(peptide_start_pdb_file = as.numeric(.data$auth_to_entity_poly_seq_mapping[[.data$peptide_start_pdb]]),
+           peptide_end_pdb_file = as.numeric(.data$auth_to_entity_poly_seq_mapping[[.data$peptide_end_pdb]])) %>% 
+    dplyr::ungroup() %>% 
+    dplyr::select(.data$reference_database_accession, .data$pdb_ids, .data$chain, .data$chain_alternative, {{ peptide_sequence }}, .data$peptide_sequence_in_pdb, .data$fit_type, {{ start }}, {{ end }}, .data$peptide_start_pdb, .data$peptide_end_pdb, .data$peptide_start_pdb_file, .data$peptide_end_pdb_file, .data$n_peptides, .data$n_peptides_in_pdb)
 
   result %>% 
     dplyr::right_join(peptide_data %>% dplyr::distinct({{ peptide_sequence }}, {{ start }}, {{ end }}, {{ uniprot_id }}), by = c(rlang::as_name(rlang::enquo(peptide_sequence)), 

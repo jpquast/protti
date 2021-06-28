@@ -331,10 +331,14 @@ barcode_plot(
 
 ### Wood's plot
 
-An additional way to plot LiP-MS changes are Wood's plots. These plots will show the extent of the change along the protein sequence.
-To produce a Wood's plot we use the function `woods_plot()` and colour the peptides according to their adjusted p-values. 
+An additional way to plot LiP-MS changes are Woods' plots. These plots will show the extent of the change along the protein sequence.
+To produce a Wood's plot we use the function `woods_plot()` and colour the peptides according to their adjusted p-values. We are highlighting significant q-values (< 0.01) with an asterisk.
 
 ```{r woods_plot, eval = test_protti, fig.align = "center", fig.width = 6, message = FALSE, warning = FALSE}
+
+FKBP12 <- FKBP12 %>%
+  mutate(significant = ifelse(adj_pval < 0.01, TRUE, FALSE))
+
 woods_plot(
   data = FKBP12,
   fold_change = diff,
@@ -343,8 +347,10 @@ woods_plot(
   protein_length = length,
   coverage = coverage,
   colouring = adj_pval,
-  protein_id = pg_protein_accessions,
+  protein_id = pg_protein_accessions, 
+  facet = FALSE,
   fold_change_cutoff = 1,
+  highlight = significant
   )
 ```
 

@@ -34,88 +34,102 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
   . <- NULL
   # query that is used for fetching information
   query <- 'query={
-entries(entry_ids: ["pdb_ids"]) {
-rcsb_id
-exptl {
-method
-}
-struct_keywords {
-pdbx_keywords
-}
-exptl_crystal_grow {
-pH
-temp
-method
-}
-rcsb_binding_affinity {
-comp_id
-value
-}
-rcsb_entry_info {
-experimental_method
-assembly_count
-resolution_combined
-inter_mol_metalic_bond_count
-}
-pdbx_nmr_exptl_sample_conditions {
-ionic_strength
-pH
-temperature
-}
-pdbx_nmr_refine {
-method
-}
-pdbx_nmr_exptl {
-type
-}
-polymer_entities {
-entity_poly {
-pdbx_seq_one_letter_code_can
-}
-rcsb_entity_source_organism{
-ncbi_scientific_name
-ncbi_taxonomy_id
-}
-rcsb_polymer_entity_container_identifiers {
-entry_id
-auth_asym_ids
-}
-rcsb_polymer_entity_align {
-aligned_regions {
-entity_beg_seq_id
-ref_beg_seq_id
-length
-}
-reference_database_accession
-reference_database_name
-}
-uniprots {
-rcsb_uniprot_container_identifiers {
-uniprot_id
-}
-rcsb_uniprot_protein {
-name {
-value
-}
-}
-}
-}
-nonpolymer_entities {
-rcsb_nonpolymer_entity_container_identifiers {
-auth_asym_ids
-entry_id
-}
-nonpolymer_comp {
-chem_comp {
-id
-type
-formula_weight
-name
-formula
-}
-}
-}
-}
+  entries(entry_ids: ["pdb_ids"]) {
+    rcsb_id
+    struct_keywords {
+      pdbx_keywords
+    }
+    exptl {
+      method
+    }
+    exptl_crystal_grow {
+      pH
+      temp
+      method
+    }
+    rcsb_binding_affinity {
+      comp_id
+      value
+    }
+    rcsb_entry_info {
+      experimental_method
+      assembly_count
+      resolution_combined
+      inter_mol_metalic_bond_count
+    }
+    pdbx_nmr_exptl_sample_conditions {
+      ionic_strength
+      pH
+      temperature
+    }
+    pdbx_nmr_refine {
+      method
+    }
+    pdbx_nmr_exptl {
+      type
+    }
+    polymer_entities {
+      polymer_entity_instances{
+      	rcsb_polymer_entity_instance_container_identifiers {
+          asym_id
+          auth_asym_id
+          entry_id
+      		auth_to_entity_poly_seq_mapping
+    		}
+      }
+      entity_poly {
+        pdbx_seq_one_letter_code_can
+        rcsb_artifact_monomer_count
+        rcsb_conflict_count
+        rcsb_deletion_count
+        rcsb_insertion_count
+        rcsb_mutation_count
+      }
+      rcsb_entity_source_organism{
+        ncbi_scientific_name
+        ncbi_taxonomy_id
+      }
+      rcsb_polymer_entity_container_identifiers {
+        entry_id
+        auth_asym_ids
+      }
+      rcsb_polymer_entity_align {
+      aligned_regions {
+        entity_beg_seq_id
+        ref_beg_seq_id
+        length
+      }
+      reference_database_accession
+      reference_database_isoform
+      reference_database_name
+    }
+      uniprots {
+      rcsb_uniprot_container_identifiers {
+        uniprot_id
+      }
+      rcsb_uniprot_protein {
+        name {
+          value
+        }
+      }
+    }
+    }
+    nonpolymer_entities {
+      rcsb_nonpolymer_entity_container_identifiers{
+        auth_asym_ids
+        entry_id
+      }
+      nonpolymer_comp {
+        chem_comp {
+          id
+          type
+          formula_weight
+          name
+          formula
+        }
+      }
+    }
+  }
 }'
 
   # split pdb_ids into batches
@@ -243,7 +257,18 @@ formula
     dplyr::bind_cols(.$name) %>%
     dplyr::select(-c(.data$name, .data$entry_id)) %>%
     dplyr::rename(name_protein = .data$value) %>%
-    tidyr::unnest(.data$auth_asym_ids)
+    tidyr::unnest(c(.data$auth_asym_ids, .data$polymer_entity_instances)) %>% 
+    dplyr::bind_cols(
+      rcsb_polymer_entity_instance_container_identifiers = .$rcsb_polymer_entity_instance_container_identifiers
+    ) %>% 
+    dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers))
+  
+  entity_instance_info <- polymer_entities %>% 
+    dplyr::distinct(.data$asym_id, .data$auth_asym_id, .data$entry_id, .data$auth_to_entity_poly_seq_mapping) %>%
+    dplyr::rename(
+      auth_asym_ids = .data$auth_asym_id,
+      pdb_ids = .data$entry_id
+    )
 
   uniprot_info <- polymer_entities %>%
     dplyr::distinct(.data$uniprot_id, .data$name_protein) %>%
@@ -253,7 +278,7 @@ formula
     )
 
   polymer_entities <- polymer_entities %>%
-    select(-c(.data$uniprot_id, .data$name_protein)) %>%
+    select(-c(.data$uniprot_id, .data$name_protein, .data$asym_id, .data$auth_asym_id, .data$entry_id, .data$auth_to_entity_poly_seq_mapping)) %>%
     distinct()
 
   if (!all(is.na(query_result_clean$entries.nonpolymer_entities))) {
@@ -306,13 +331,16 @@ formula
     dplyr::left_join(nmr_info, by = "pdb_ids") %>%
     dplyr::left_join(resolution_info, by = "pdb_ids") %>%
     dplyr::left_join(uniprot_info, by = "reference_database_accession") %>%
+    dplyr::left_join(entity_instance_info, by = c("pdb_ids", "auth_asym_ids")) %>% 
     dplyr::rename(
       chain = .data$auth_asym_ids,
+      chain_alternative = .data$asym_id,
       pdb_sequence = .data$pdbx_seq_one_letter_code_can
     ) %>%
     dplyr::select(
       .data$pdb_ids,
       .data$chain,
+      .data$chain_alternative,
       .data$reference_database_accession,
       .data$protein_name,
       .data$reference_database_name,
@@ -320,6 +348,7 @@ formula
       .data$ref_beg_seq_id,
       .data$length,
       .data$pdb_sequence,
+      .data$auth_to_entity_poly_seq_mapping,
       .data$id_nonpolymer,
       .data$type_nonpolymer,
       .data$formula_weight_nonpolymer,
