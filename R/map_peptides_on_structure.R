@@ -1,7 +1,63 @@
-
-
-
-map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, start_in_pdb, end_in_pdb, map_value, file_format = ".cif", export_location, structure_file = NULL, show_progress = TRUE) {
+#' Maps peptides onto a PDB structure
+#'
+#' Peptides are mapped onto PDB structures based on their positions. This is accomplished by replacing the B-factor information in the structure file with values that allow 
+#' highlighting peptides when the structure is coloured by B-factor. In addition to only highlighting peptides, a continuous variable such as fold changes associated with peptides 
+#' can be mapped onto the structure as a colour gradient. 
+#'
+#' @param peptide_data a data frame containing at least the input columns to this function. If a structure file is provided in the \code{structure_file} argument,
+#' this data frame should only contain peptide and structure information for the provided structure since otherwise the information cannot be mapped correctly to the file due 
+#' to the missing PDB identifier.
+#' @param uniprot_id a character column in the \code{peptide_data} data frame that contains UniProt identifiers for a corresponding peptide.
+#' @param pdb_id a character column in the \code{peptide_data} data frame that contains PDB identifiers for structures in which a corresponding peptide is found. This 
+#' column is not required if a structure file is provided in the \code{structure_file} argument.
+#' @param chain a character column in the \code{peptide_data} data frame that contains the name of the chain from the PDB structure in which the peptide is found. **Important:** 
+#' depending on the file format, naming conventions for structures are different. ".cif" files use the naming convention defined by the RCSB database. When the output of the 
+#' \code{find_peptide_in_pdb} function is used as the input for this function, this corresponds to the \code{chain_alternative} column. ".pdb" files use the naming of chains
+#' defined by the author, which corresponds to the \code{chain} column in the output from the \code{find_peptide_in_pdb} function. If this is not provided correctly, peptides
+#' might be mapped onto the wrong protein.
+#' @param start_in_pdb a numeric column in the \code{peptide_data} data frame that contains start positions for peptides in the corresponding PDB structure. This information
+#' can be obtained from the \code{find_peptide_in_pdb} function. The corresponding column in the output is called \code{peptide_start_pdb}. 
+#' @param end_in_pdb a numeric column in the \code{peptide_data} data frame that contains end positions for peptides in the corresponding PDB structure. This information
+#' can be obtained from the \code{find_peptide_in_pdb} function. The corresponding column in the output is called \code{peptide_end_pdb}. 
+#' @param map_value a numeric column in the \code{peptide_data} data frame that contains a value associated with each peptide. This value will be displayed as 
+#' a colour gradient when mapped onto the structure. The value can for example be the fold change, p-value or score associated with each peptide. If peptides should 
+#' be displayed with just one colour, the value in this column should be the same for every peptide. For the mapping, values are scaled between 50 and 100. Regions in the structure
+#' that do not map any peptide receive a value of 0. 
+#' @param file_format a character vector containing the file format of the structure that will be fetched from the database for the PDB identifiers provided 
+#' in the \code{pdb_id} column. This can be either ".cif" or ".pdb". The default is \code{".cif"}. We recommend using ".cif" files since every structure contains a ".cif" file 
+#' but not every structure contains a ".pdb" file. Fetching and mapping onto ".cif" files takes longer than for ".pdb" files. If a structure file is provided in the 
+#' \code{structure_file} argument, the file format is detected automatically and does not need to be provided.
+#' @param export_location optional, a character vector specifying the location in which the fetched and altered structure files should be saved. If left empty, they will be saved in the current
+#' working directory. The location should be provided in the following format "folderA/folderB/".
+#' @param structure_file optional, a character vector specifying the location and name of a structure file in ".cif" or ".pdb" format. If a structure is provided the \code{peptide_data} 
+#' data frame should only contain mapping information for this structure.
+#' @param show_progress a logical, if \code{show_progress = TRUE}, a progress bar will be shown (default is TRUE).
+#'
+#' @return The function exports a modified ".pdb" or ".cif" structure file. B-factors have been replaced with scaled (50-100) values provided in the \code{map_value} column. 
+#' @import dplyr
+#' @import tidyr
+#' @importFrom purrr map2 map keep discard
+#' @importFrom readr read_tsv write_tsv
+#' @importFrom stringr str_sub str_detect str_extract str_extract_all str_replace
+#' @importFrom magrittr %>%
+#' @importFrom rlang as_name enquo .data
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' map_peptides_on_structure(
+#'   peptide_data = peptide_data,
+#'   uniprot_id = reference_database_accession,
+#'   pdb_id = pdb_ids,
+#'   chain = chain_alternative,
+#'   start_in_pdb = peptide_start_pdb,
+#'   end_in_pdb = peptide_end_pdb,
+#'   map_value = diff,
+#'   file_format = ".cif",
+#'   export_location = "~Desktop/Test/"
+#' )
+#' }
+map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, start_in_pdb, end_in_pdb, map_value, file_format = ".cif", export_location = NULL, structure_file = NULL, show_progress = TRUE) {
   if (!file_format %in% c(".cif", ".pdb")){
     stop('Please provide either ".cif" or ".pdb" to the file_format argument.')
   }
@@ -77,6 +133,7 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
           if ("character" %in% class(query)) {
             query %>%
               readr::read_tsv(col_names = FALSE, show_col_types = FALSE)
+            # TODO this could be done within the try_query
           }
         }
       )
@@ -263,7 +320,5 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
         
       return(NULL)
     }
-
   }
-
 }
