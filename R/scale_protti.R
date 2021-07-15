@@ -1,7 +1,7 @@
 #' Scaling a vector
 #'
 #' \code{scale_protti} is used to scale a numeric vector either between 0 and 1 or around a centered value using the standard deviation.
-#' If a vector containing only one value or repeatedly the same value is provided, 1 is returned as the scaled value for 
+#' If a vector containing only one value or repeatedly the same value is provided, 1 is returned as the scaled value for
 #' \code{method = "01"} and 0 is returned for \code{metod = "center"}.
 #'
 #' @param x a numeric vector
@@ -18,15 +18,15 @@ scale_protti <- function(x, method) {
   }
   if (method == "01") {
     result <- (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
-    
-    if ((max(x, na.rm = TRUE) - min(x, na.rm = TRUE)) == 0){
+
+    if ((max(x, na.rm = TRUE) - min(x, na.rm = TRUE)) == 0) {
       result <- rep(1, length(x))
     }
   }
   if (method == "center") {
     result <- (x - mean(x, na.rm = TRUE)) / stats::sd(x, na.rm = TRUE)
-    
-    if (stats::sd(x, na.rm = TRUE) == 0){
+
+    if (stats::sd(x, na.rm = TRUE) == 0) {
       result <- rep(0, length(x))
     }
   }

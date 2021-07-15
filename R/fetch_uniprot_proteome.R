@@ -48,4 +48,3 @@ fetch_uniprot_proteome <-
     colnames(result) <- column_names
     result
   }
-

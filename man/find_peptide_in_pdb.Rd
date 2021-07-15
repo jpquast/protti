@@ -10,7 +10,8 @@ find_peptide_in_pdb(
   start,
   end,
   uniprot_id,
-  pdb_data = NULL
+  pdb_data = NULL,
+  retain_columns = NULL
 )
 }
 \arguments{
@@ -29,6 +30,10 @@ peptides.}
 \item{pdb_data}{optional data frame containing data obtained with \code{fetch_pdb()}. If not provided, information is fetched automatically.
 If this function should be run multiple times it is faster to fetch the information once and provide it to the function. If provided,
 make sure that the column names are identical to the ones that would be obtained by calling \code{fetch_pdb()}.}
+
+\item{retain_columns}{a vector indicating if certain columns should be retained from the input data frame. Default is not retaining
+additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks,
+just like other column names, but in a vector).}
 }
 \value{
 A data frame that contains peptide positions in the corresponding PDB structures. If a peptide is not found in any structure,

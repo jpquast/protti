@@ -108,7 +108,7 @@ fetch_metal_pdb <- function(id_type = "uniprot",
       stop('Please only provide TRUE or FALSE for the "representative" argument')
     }
     if (representative == TRUE) {
-    representative <- paste0(",representative:", representative)
+      representative <- paste0(",representative:", representative)
     }
   }
 

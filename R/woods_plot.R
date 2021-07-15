@@ -8,7 +8,7 @@
 #' @param start_position a column in the data frame containing the start positions for each peptide or precursor.
 #' @param end_position a column in the data frame containing the end positions for each peptide or precursor.
 #' @param protein_length a column in the data frame containing the length of the protein.
-#' @param coverage optional, column in the data frame containing coverage in percent. Will appear in the title of the Woods' plot 
+#' @param coverage optional, column in the data frame containing coverage in percent. Will appear in the title of the Woods' plot
 #' if provided.
 #' @param protein_id a column in the data frame containing protein identifiers.
 #' @param targets a character vector that specifies the identifiers of the proteins (depending on \code{protein_id})
