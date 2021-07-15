@@ -36,7 +36,8 @@
 #'   start = start,
 #'   end = end,
 #'   uniprot_id = pg_protein_accessions,
-#'   pdb_data = pdb_data
+#'   pdb_data = pdb_data,
+#'   retain_columns = c(map_value)
 #' )
 #' }
 find_peptide_in_pdb <- function(peptide_data, peptide_sequence, start, end, uniprot_id, pdb_data = NULL, retain_columns = NULL) {

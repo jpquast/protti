@@ -72,6 +72,7 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
     }
 
     peptide_data_filter <- peptide_data %>%
+      dplyr::ungroup() %>% 
       tidyr::drop_na({{ pdb_id }}) %>%
       dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01") * 50 + 50, digits = 2)) %>% # Scale values between 0 and 100
       group_by({{ pdb_id }}, {{ chain }}, {{ start_in_pdb }}, {{ end_in_pdb }}) %>%
@@ -268,11 +269,12 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
       stop('Please either provide a ".cif" or ".pdb" structure file.')
     }
 
-    file_name <- stringr::str_extract(structure_file, pattern = "\\w+[:punct:]\\w+$")
+    file_name <- stringr::str_extract(structure_file, pattern = "[^/]+[:punct:]\\w+$")
 
     pdb_file <- readr::read_tsv(structure_file, col_names = FALSE, show_col_types = FALSE, progress = FALSE)
 
     peptide_data_filter <- peptide_data %>%
+      dplyr::ungroup() %>% 
       dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01") * 50 + 50, digits = 2)) %>% # Scale values between 0 and 100
       group_by({{ chain }}, {{ start_in_pdb }}, {{ end_in_pdb }}) %>%
       dplyr::mutate(residue = list(seq({{ start_in_pdb }}, {{ end_in_pdb }}))) %>%
