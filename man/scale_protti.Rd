@@ -16,6 +16,8 @@ A scaled numeric vector.
 }
 \description{
 \code{scale_protti} is used to scale a numeric vector either between 0 and 1 or around a centered value using the standard deviation.
+If a vector containing only one value or repeatedly the same value is provided, 1 is returned as the scaled value for
+\code{method = "01"} and 0 is returned for \code{metod = "center"}.
 }
 \examples{
 scale_protti(c(1, 2, 1, 4, 6, 8), method = "01")

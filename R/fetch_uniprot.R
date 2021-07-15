@@ -94,7 +94,7 @@ fetch_uniprot <-
       ))
       # only try to fetch more batches if previous cycle did not encounter a connection problem.
       if (!is.null(batches)) {
-        query <- try_query(query_url)
+        query <- try_query(query_url, progress = FALSE)
       }
       if (show_progress == TRUE & "tbl" %in% class(query)) {
         pb$tick()

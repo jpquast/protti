@@ -257,13 +257,13 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
     dplyr::bind_cols(.$name) %>%
     dplyr::select(-c(.data$name, .data$entry_id)) %>%
     dplyr::rename(name_protein = .data$value) %>%
-    tidyr::unnest(c(.data$auth_asym_ids, .data$polymer_entity_instances)) %>% 
+    tidyr::unnest(c(.data$auth_asym_ids, .data$polymer_entity_instances)) %>%
     dplyr::bind_cols(
       rcsb_polymer_entity_instance_container_identifiers = .$rcsb_polymer_entity_instance_container_identifiers
-    ) %>% 
+    ) %>%
     dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers))
-  
-  entity_instance_info <- polymer_entities %>% 
+
+  entity_instance_info <- polymer_entities %>%
     dplyr::distinct(.data$asym_id, .data$auth_asym_id, .data$entry_id, .data$auth_to_entity_poly_seq_mapping) %>%
     dplyr::rename(
       auth_asym_ids = .data$auth_asym_id,
@@ -331,16 +331,16 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
     dplyr::left_join(nmr_info, by = "pdb_ids") %>%
     dplyr::left_join(resolution_info, by = "pdb_ids") %>%
     dplyr::left_join(uniprot_info, by = "reference_database_accession") %>%
-    dplyr::left_join(entity_instance_info, by = c("pdb_ids", "auth_asym_ids")) %>% 
+    dplyr::left_join(entity_instance_info, by = c("pdb_ids", "auth_asym_ids")) %>%
     dplyr::rename(
-      chain = .data$auth_asym_ids,
-      chain_alternative = .data$asym_id,
+      auth_chain = .data$auth_asym_ids,
+      database_chain = .data$asym_id,
       pdb_sequence = .data$pdbx_seq_one_letter_code_can
     ) %>%
     dplyr::select(
       .data$pdb_ids,
-      .data$chain,
-      .data$chain_alternative,
+      .data$auth_chain,
+      .data$database_chain,
       .data$reference_database_accession,
       .data$protein_name,
       .data$reference_database_name,

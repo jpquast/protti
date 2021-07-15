@@ -33,7 +33,7 @@ length and optionally a variable based on which peptides or precursors should be
 
 \item{protein_length}{a column in the data frame containing the length of the protein.}
 
-\item{coverage}{optional, column in the data frame containing coverage in percent. Will appear in the title of the Woods' plot 
+\item{coverage}{optional, column in the data frame containing coverage in percent. Will appear in the title of the Woods' plot
 if provided.}
 
 \item{protein_id}{a column in the data frame containing protein identifiers.}

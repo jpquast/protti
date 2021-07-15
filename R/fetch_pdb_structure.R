@@ -50,7 +50,7 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
     .f = ~ {
       # query information from database
       if (!is.null(batches)) {
-        query <- try_query(.x, type = "text/tab-separated-values", col_names = FALSE, quote = "")
+        query <- try_query(.x, type = "text/tab-separated-values", col_names = FALSE, quote = "", show_col_types = FALSE, progress = FALSE)
       }
       if (show_progress == TRUE & "tbl" %in% class(query)) {
         pb$tick()
@@ -66,16 +66,16 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
           dplyr::mutate(X2 = stringr::str_replace_all(X1, pattern = "\\s+", replacement = " ")) %>%
           tidyr::separate(X2,
             sep = " ",
-            into = c("x1", "atom_number", "atom_type_simple", "atom_type", "x2", "residue_name", "chain", "entity_id", "residue_number", "x3", "x", "y", "z", "site_occupancy", "b_iso_or_equivalent", "formal_charge", "x4", "x5", "x6", "x7", "pdb_model_number")
+            into = c("x1", "atom_number", "atom_type_simple", "atom_type", "x2", "residue_name", "database_chain", "entity_id", "residue_number_cif", "x3", "x", "y", "z", "site_occupancy", "b_iso_or_equivalent", "formal_charge", "residue_number_pdb", "x4", "auth_chain", "x5", "pdb_model_number")
           ) %>%
-          dplyr::select(-c(.data$X1, .data$x1, .data$x2, .data$x3, .data$x4, .data$x5, .data$x6, .data$x7)) %>%
-          dplyr::group_by(.data$chain, .data$atom_type, .data$residue_name) %>%
-          dplyr::mutate(residue_number = ifelse(.data$residue_number == ".", 1:n(), as.numeric(.data$residue_number))) %>%
+          dplyr::select(-c(.data$X1, .data$x1, .data$x2, .data$x3, .data$x4, .data$x5)) %>%
+          dplyr::group_by(.data$database_chain, .data$atom_type, .data$residue_name) %>%
+          dplyr::mutate(residue_number_cif = ifelse(.data$residue_number_cif == ".", 1:n(), as.numeric(.data$residue_number_cif))) %>%
           dplyr::ungroup() %>%
           dplyr::mutate(
             atom_number = as.numeric(.data$atom_number),
             entity_id = as.numeric(.data$entity_id),
-            residue_number = as.numeric(.data$residue_number),
+            residue_number_cif = as.numeric(.data$residue_number_cif),
             x = as.numeric(.data$x),
             y = as.numeric(.data$y),
             z = as.numeric(.data$z),
