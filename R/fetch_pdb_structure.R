@@ -33,6 +33,8 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
     return(invisible(NULL))
   }
 
+  pdb_ids <- pdb_ids[!is.na(pdb_ids)]
+  
   batches <- purrr::map(
     .x = pdb_ids,
     .f = ~ paste0("https://files.rcsb.org/download/", .x, ".cif")
@@ -41,7 +43,7 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
   names(batches) <- pdb_ids
 
   if (show_progress == TRUE) {
-    pb <- progress::progress_bar$new(total = length(batches))
+    pb <- progress::progress_bar$new(total = length(batches), format = "  Fetching structures [:bar] :current/:total (:percent) :eta")
   }
 
   query_result <- purrr::map2(

@@ -1,12 +1,14 @@
 #' Maps peptides onto a PDB structure
 #'
 #' Peptides are mapped onto PDB structures based on their positions. This is accomplished by replacing the B-factor information in the structure file with values that allow
-#' highlighting peptides when the structure is coloured by B-factor. In addition to only highlighting peptides, a continuous variable such as fold changes associated with peptides
-#' can be mapped onto the structure as a colour gradient.
+#' highlighting of peptides, protein regions and amino acids when the structure is coloured by B-factor. In addition to only highlighting peptides,
+#' a continuous variable such as fold changes associated with peptides can be mapped onto the structure as a colour gradient.
 #'
-#' @param peptide_data a data frame containing at least the input columns to this function. If a structure file is provided in the \code{structure_file} argument,
-#' this data frame should only contain peptide and structure information for the provided structure since otherwise the information cannot be mapped correctly to the file due
-#' to the missing PDB identifier.
+#' @param peptide_data a data frame containing input columns to this function. If structure files should be fetched automatically, please provide
+#' column names to the following arguments: **uniprot_id**, **pdb_id**, **chain**, **start_in_pdb**, **end_in_pdb**, **map_value**. If a structure file is
+#' provided in the \code{structure_file} argument, this data frame should only contain information associated with the provided structure. In case of
+#' a user provided structure, column names should be provided to the following arguments: **uniprot_id**, **chain**, **start_in_pdb**, **end_in_pdb**,
+#' **map_value**.
 #' @param uniprot_id a character column in the \code{peptide_data} data frame that contains UniProt identifiers for a corresponding peptide.
 #' @param pdb_id a character column in the \code{peptide_data} data frame that contains PDB identifiers for structures in which a corresponding peptide is found. This
 #' column is not required if a structure file is provided in the \code{structure_file} argument.
@@ -14,21 +16,23 @@
 #' please provide the author defined chain definitions for both ".cif" and ".pdb" files. When the output of the \code{find_peptide_in_pdb} function
 #' is used as the input for this function, this corresponds to the \code{auth_chain} column.
 #' @param start_in_pdb a numeric column in the \code{peptide_data} data frame that contains start positions for peptides in the corresponding PDB structure. This information
-#' can be obtained from the \code{find_peptide_in_pdb} function. The corresponding column in the output is called \code{peptide_start_pdb}.
+#' can be obtained from the \code{find_peptide_in_pdb} function. The corresponding column in the output is called \code{peptide_start_pdb}. If amino acid positions should be
+#' used, start and end positions are the same and the same column can be provedid to both \code{start_in_pdb} and \code{end_in_pdb}.
 #' @param end_in_pdb a numeric column in the \code{peptide_data} data frame that contains end positions for peptides in the corresponding PDB structure. This information
-#' can be obtained from the \code{find_peptide_in_pdb} function. The corresponding column in the output is called \code{peptide_end_pdb}.
-#' @param map_value a numeric column in the \code{peptide_data} data frame that contains a value associated with each peptide. This value will be displayed as
+#' can be obtained from the \code{find_peptide_in_pdb} function. The corresponding column in the output is called \code{peptide_end_pdb}. If amino acid positions should be
+#' used, start and end positions are the same and the same column can be provedid to both \code{start_in_pdb} and \code{end_in_pdb}.
+#' @param map_value a numeric column in the \code{peptide_data} data frame that contains a value associated with each peptide, protein region or amino acid. This value will be displayed as
 #' a colour gradient when mapped onto the structure. The value can for example be the fold change, p-value or score associated with each peptide. If peptides should
 #' be displayed with just one colour, the value in this column should be the same for every peptide. For the mapping, values are scaled between 50 and 100. Regions in the structure
-#' that do not map any peptide receive a value of 0. If an amino acid position is associated with multiple scores, e.g. from different peptides, the
-#' maximum score will be displayed.
+#' that do not map any peptide receive a value of 0. If an amino acid position is associated with multiple mapped values, e.g. from different peptides, the
+#' maximum mapped value will be displayed.
 #' @param file_format a character vector containing the file format of the structure that will be fetched from the database for the PDB identifiers provided
 #' in the \code{pdb_id} column. This can be either ".cif" or ".pdb". The default is \code{".cif"}. We recommend using ".cif" files since every structure contains a ".cif" file
 #' but not every structure contains a ".pdb" file. Fetching and mapping onto ".cif" files takes longer than for ".pdb" files. If a structure file is provided in the
 #' \code{structure_file} argument, the file format is detected automatically and does not need to be provided.
-#' @param export_location optional, a character vector specifying the location in which the fetched and altered structure files should be saved. If left empty, they will be saved in the current
-#' working directory. The location should be provided in the following format "folderA/folderB/".
-#' @param structure_file optional, a character vector specifying the location and name of a structure file in ".cif" or ".pdb" format. If a structure is provided the \code{peptide_data}
+#' @param export_location optional, a character argument specifying the path to the location in which the fetched and altered structure files should be saved. If left empty, they will be saved in the current
+#' working directory. The location should be provided in the following format "folderA/folderB".
+#' @param structure_file optional, a character argument specifying the path to the location and name of a structure file in ".cif" or ".pdb" format. If a structure is provided the \code{peptide_data}
 #' data frame should only contain mapping information for this structure.
 #' @param show_progress a logical, if \code{show_progress = TRUE}, a progress bar will be shown (default is TRUE).
 #'
@@ -46,14 +50,14 @@
 #' \dontrun{
 #' map_peptides_on_structure(
 #'   peptide_data = peptide_data,
-#'   uniprot_id = reference_database_accession,
+#'   uniprot_id = pg_protein_accessions,
 #'   pdb_id = pdb_ids,
-#'   chain = chain_alternative,
+#'   chain = auth_chain,
 #'   start_in_pdb = peptide_start_pdb,
 #'   end_in_pdb = peptide_end_pdb,
 #'   map_value = diff,
 #'   file_format = ".cif",
-#'   export_location = "~Desktop/Test/"
+#'   export_location = "~Desktop/Test"
 #' )
 #' }
 map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, start_in_pdb, end_in_pdb, map_value, file_format = ".cif", export_location = NULL, structure_file = NULL, show_progress = TRUE) {
@@ -72,11 +76,16 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
     }
 
     peptide_data_filter <- peptide_data %>%
-      dplyr::ungroup() %>% 
+      dplyr::ungroup() %>%
+      dplyr::mutate(
+        start = {{ start_in_pdb }},
+        end = {{ end_in_pdb }}
+      ) %>% # do this so start and end position can be the same column.
+      dplyr::distinct({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, .data$start, .data$end, {{ map_value }}) %>%
       tidyr::drop_na({{ pdb_id }}) %>%
-      dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01") * 50 + 50, digits = 2)) %>% # Scale values between 0 and 100
-      group_by({{ pdb_id }}, {{ chain }}, {{ start_in_pdb }}, {{ end_in_pdb }}) %>%
-      dplyr::mutate(residue = list(seq({{ start_in_pdb }}, {{ end_in_pdb }}))) %>%
+      dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01") * 50 + 50, digits = 2)) %>% # Scale values between 50 and 100
+      group_by({{ pdb_id }}, {{ chain }}, .data$start, .data$end) %>%
+      dplyr::mutate(residue = list(seq(.data$start, .data$end))) %>%
       dplyr::ungroup() %>%
       tidyr::unnest(.data$residue) %>%
       dplyr::group_by({{ pdb_id }}, {{ chain }}, .data$residue) %>%
@@ -168,7 +177,7 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
             dplyr::mutate(atoms_mod = stringr::str_replace(.data$atoms, pattern = paste0("(?<= )", .data$b_factor), replacement = {{ map_value }})) %>%
             dplyr::mutate(X1 = ifelse(!is.na(.data$atoms_mod), .data$atoms_mod, .data$X1)) %>%
             dplyr::select(.data$X1) %>%
-            readr::write_tsv(file = paste0(export_location, .y, file_format), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
+            readr::write_tsv(file = paste0(export_location, "/", .y, file_format), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
 
           if (show_progress == TRUE) {
             pb$tick()
@@ -178,7 +187,7 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
         }
       )
 
-      return(NULL)
+      return(invisible(NULL))
     }
     if (file_format == ".pdb") {
       # same as above but for .pdb files. Indexing is different.
@@ -248,7 +257,7 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
             dplyr::mutate(atoms_mod = `str_sub<-`(.data$atoms, 61, 66, value = {{ map_value }})) %>%
             dplyr::mutate(X1 = ifelse(!is.na(.data$atoms_mod), .data$atoms_mod, .data$X1)) %>%
             dplyr::select(.data$X1) %>%
-            readr::write_tsv(file = paste0(export_location, .y, file_format), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
+            readr::write_tsv(file = paste0(export_location, "/", .y, file_format), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
 
           if (show_progress == TRUE) {
             pb$tick()
@@ -258,7 +267,7 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
         }
       )
 
-      return(NULL)
+      return(invisible(NULL))
     }
   }
 
@@ -274,10 +283,15 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
     pdb_file <- readr::read_tsv(structure_file, col_names = FALSE, show_col_types = FALSE, progress = FALSE)
 
     peptide_data_filter <- peptide_data %>%
-      dplyr::ungroup() %>% 
-      dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01") * 50 + 50, digits = 2)) %>% # Scale values between 0 and 100
-      group_by({{ chain }}, {{ start_in_pdb }}, {{ end_in_pdb }}) %>%
-      dplyr::mutate(residue = list(seq({{ start_in_pdb }}, {{ end_in_pdb }}))) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(
+        start = {{ start_in_pdb }},
+        end = {{ end_in_pdb }}
+      ) %>%
+      dplyr::distinct({{ uniprot_id }}, {{ chain }}, .data$start, .data$end, {{ map_value }}) %>%
+      dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01") * 50 + 50, digits = 2)) %>% # Scale values between 50 and 100
+      group_by({{ chain }}, .data$start, .data$end) %>%
+      dplyr::mutate(residue = list(seq(.data$start, .data$end))) %>%
       dplyr::ungroup() %>%
       tidyr::unnest(.data$residue) %>%
       dplyr::group_by({{ chain }}, .data$residue) %>%
@@ -312,9 +326,9 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
         dplyr::mutate(atoms_mod = stringr::str_replace(.data$atoms, pattern = paste0("(?<= )", .data$b_factor), replacement = {{ map_value }})) %>%
         dplyr::mutate(X1 = ifelse(!is.na(.data$atoms_mod), .data$atoms_mod, .data$X1)) %>%
         dplyr::select(.data$X1) %>%
-        readr::write_tsv(file = paste0(export_location, "modified_", file_name), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
+        readr::write_tsv(file = paste0(export_location, "/", "modified_", file_name), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
 
-      return(NULL)
+      return(invisible(NULL))
     }
 
     if (file_format == ".pdb") {
@@ -334,9 +348,9 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
         dplyr::mutate(atoms_mod = `str_sub<-`(.data$atoms, 61, 66, value = {{ map_value }})) %>%
         dplyr::mutate(X1 = ifelse(!is.na(.data$atoms_mod), .data$atoms_mod, .data$X1)) %>%
         dplyr::select(.data$X1) %>%
-        readr::write_tsv(file = paste0(export_location, "modified_", file_name), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
+        readr::write_tsv(file = paste0(export_location, "/", "modified_", file_name), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
 
-      return(NULL)
+      return(invisible(NULL))
     }
   }
 }
