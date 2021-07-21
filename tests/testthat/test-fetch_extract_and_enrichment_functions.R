@@ -71,7 +71,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     pdb_structure <- fetch_pdb_structure(pdb_ids, return_data_frame = TRUE)
     expect_is(pdb_structure, "data.frame")
     expect_equal(nrow(pdb_structure), 45731)
-    expect_equal(ncol(pdb_structure), 15)
+    expect_equal(ncol(pdb_structure), 18)
   })
 
   test_that("fetch_metal_pdb works", {

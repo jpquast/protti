@@ -34,7 +34,7 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
   }
 
   pdb_ids <- pdb_ids[!is.na(pdb_ids)]
-  
+
   batches <- purrr::map(
     .x = pdb_ids,
     .f = ~ paste0("https://files.rcsb.org/download/", .x, ".cif")
@@ -68,10 +68,10 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
           dplyr::mutate(X2 = stringr::str_replace_all(X1, pattern = "\\s+", replacement = " ")) %>%
           tidyr::separate(X2,
             sep = " ",
-            into = c("x1", "atom_number", "atom_type_simple", "atom_type", "x2", "residue_name", "database_chain", "entity_id", "residue_number_cif", "x3", "x", "y", "z", "site_occupancy", "b_iso_or_equivalent", "formal_charge", "residue_number_pdb", "x4", "auth_chain", "x5", "pdb_model_number")
+            into = c("x1", "atom_number", "atom_type_simple", "atom_type", "x2", "residue_name_cif", "database_chain", "entity_id", "residue_number_cif", "x3", "x", "y", "z", "site_occupancy", "b_iso_or_equivalent", "formal_charge", "residue_number_pdb", "residue_name_pdb", "auth_chain", "x4", "pdb_model_number")
           ) %>%
-          dplyr::select(-c(.data$X1, .data$x1, .data$x2, .data$x3, .data$x4, .data$x5)) %>%
-          dplyr::group_by(.data$database_chain, .data$atom_type, .data$residue_name) %>%
+          dplyr::select(-c(.data$X1, .data$x1, .data$x2, .data$x3, .data$x4)) %>%
+          dplyr::group_by(.data$database_chain, .data$atom_type, .data$residue_name_cif) %>%
           dplyr::mutate(residue_number_cif = ifelse(.data$residue_number_cif == ".", 1:n(), as.numeric(.data$residue_number_cif))) %>%
           dplyr::ungroup() %>%
           dplyr::mutate(
@@ -83,6 +83,7 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
             z = as.numeric(.data$z),
             site_occupancy = as.numeric(.data$site_occupancy),
             b_iso_or_equivalent = as.numeric(.data$b_iso_or_equivalent),
+            residue_number_pdb = as.numeric(.data$residue_number_pdb),
             pdb_model_number = as.numeric(.data$pdb_model_number),
             pdb_id = .y
           )

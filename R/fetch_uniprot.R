@@ -94,7 +94,7 @@ fetch_uniprot <-
       ))
       # only try to fetch more batches if previous cycle did not encounter a connection problem.
       if (!is.null(batches)) {
-        query <- try_query(query_url, progress = FALSE)
+        query <- try_query(query_url, progress = FALSE, show_col_types = FALSE)
       }
       if (show_progress == TRUE & "tbl" %in% class(query)) {
         pb$tick()
@@ -133,7 +133,7 @@ fetch_uniprot <-
       collapsed_columns
     ))
 
-    new_result <- try_query(new_query_url)
+    new_result <- try_query(new_query_url, progress = FALSE, show_col_types = FALSE)
     # Ff a problem occurs at this step NULL is returned.
     if (is.null(new_result)) {
       return(new_result)

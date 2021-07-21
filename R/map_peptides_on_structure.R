@@ -1,30 +1,30 @@
 #' Maps peptides onto a PDB structure
 #'
 #' Peptides are mapped onto PDB structures based on their positions. This is accomplished by replacing the B-factor information in the structure file with values that allow
-#' highlighting of peptides, protein regions and amino acids when the structure is coloured by B-factor. In addition to only highlighting peptides,
-#' a continuous variable such as fold changes associated with peptides can be mapped onto the structure as a colour gradient.
+#' highlighting of peptides, protein regions and amino acids when the structure is coloured by B-factor. In addition to simply highlighting peptides, protein regions or amino acids,
+#' a continuous variable such as fold changes associated with them can be mapped onto the structure as a colour gradient.
 #'
 #' @param peptide_data a data frame containing input columns to this function. If structure files should be fetched automatically, please provide
 #' column names to the following arguments: **uniprot_id**, **pdb_id**, **chain**, **start_in_pdb**, **end_in_pdb**, **map_value**. If a structure file is
 #' provided in the \code{structure_file} argument, this data frame should only contain information associated with the provided structure. In case of
 #' a user provided structure, column names should be provided to the following arguments: **uniprot_id**, **chain**, **start_in_pdb**, **end_in_pdb**,
 #' **map_value**.
-#' @param uniprot_id a character column in the \code{peptide_data} data frame that contains UniProt identifiers for a corresponding peptide.
-#' @param pdb_id a character column in the \code{peptide_data} data frame that contains PDB identifiers for structures in which a corresponding peptide is found. This
+#' @param uniprot_id a character column in the \code{peptide_data} data frame that contains UniProt identifiers for a corresponding peptide, protein region or amino acid.
+#' @param pdb_id a character column in the \code{peptide_data} data frame that contains PDB identifiers for structures in which a corresponding peptide, protein region or amino acid is found. This
 #' column is not required if a structure file is provided in the \code{structure_file} argument.
-#' @param chain a character column in the \code{peptide_data} data frame that contains the name of the chain from the PDB structure in which the peptide is found. **Important:**
+#' @param chain a character column in the \code{peptide_data} data frame that contains the name of the chain from the PDB structure in which the peptide, protein region or amino acid is found. **Important:**
 #' please provide the author defined chain definitions for both ".cif" and ".pdb" files. When the output of the \code{find_peptide_in_pdb} function
 #' is used as the input for this function, this corresponds to the \code{auth_chain} column.
-#' @param start_in_pdb a numeric column in the \code{peptide_data} data frame that contains start positions for peptides in the corresponding PDB structure. This information
+#' @param start_in_pdb a numeric column in the \code{peptide_data} data frame that contains start positions for peptides, protein regions or amino acids in the corresponding PDB structure. This information
 #' can be obtained from the \code{find_peptide_in_pdb} function. The corresponding column in the output is called \code{peptide_start_pdb}. If amino acid positions should be
-#' used, start and end positions are the same and the same column can be provedid to both \code{start_in_pdb} and \code{end_in_pdb}.
-#' @param end_in_pdb a numeric column in the \code{peptide_data} data frame that contains end positions for peptides in the corresponding PDB structure. This information
+#' used, start and end positions are the same and the same column can be provided to both \code{start_in_pdb} and \code{end_in_pdb}.
+#' @param end_in_pdb a numeric column in the \code{peptide_data} data frame that contains end positions for peptides, protein regions or amino acids in the corresponding PDB structure. This information
 #' can be obtained from the \code{find_peptide_in_pdb} function. The corresponding column in the output is called \code{peptide_end_pdb}. If amino acid positions should be
-#' used, start and end positions are the same and the same column can be provedid to both \code{start_in_pdb} and \code{end_in_pdb}.
+#' used, start and end positions are the same and the same column can be provided to both \code{start_in_pdb} and \code{end_in_pdb}.
 #' @param map_value a numeric column in the \code{peptide_data} data frame that contains a value associated with each peptide, protein region or amino acid. This value will be displayed as
-#' a colour gradient when mapped onto the structure. The value can for example be the fold change, p-value or score associated with each peptide. If peptides should
-#' be displayed with just one colour, the value in this column should be the same for every peptide. For the mapping, values are scaled between 50 and 100. Regions in the structure
-#' that do not map any peptide receive a value of 0. If an amino acid position is associated with multiple mapped values, e.g. from different peptides, the
+#' a colour gradient when mapped onto the structure. The value can for example be the fold change, p-value or score associated with each peptide, protein region or amino acid (selection). If the selections should
+#' be displayed with just one colour, the value in this column should be the same for every selection. For the mapping, values are scaled between 50 and 100. Regions in the structure
+#' that do not map any selection receive a value of 0. If an amino acid position is associated with multiple mapped values, e.g. from different peptides, the
 #' maximum mapped value will be displayed.
 #' @param file_format a character vector containing the file format of the structure that will be fetched from the database for the PDB identifiers provided
 #' in the \code{pdb_id} column. This can be either ".cif" or ".pdb". The default is \code{".cif"}. We recommend using ".cif" files since every structure contains a ".cif" file
@@ -39,6 +39,7 @@
 #' @return The function exports a modified ".pdb" or ".cif" structure file. B-factors have been replaced with scaled (50-100) values provided in the \code{map_value} column.
 #' @import dplyr
 #' @import tidyr
+#' @import progress
 #' @importFrom purrr map2 map keep discard
 #' @importFrom readr read_tsv write_tsv
 #' @importFrom stringr str_sub str_detect str_extract str_extract_all str_replace
@@ -57,7 +58,7 @@
 #'   end_in_pdb = peptide_end_pdb,
 #'   map_value = diff,
 #'   file_format = ".cif",
-#'   export_location = "~Desktop/Test"
+#'   export_location = "~/Desktop/Test"
 #' )
 #' }
 map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, start_in_pdb, end_in_pdb, map_value, file_format = ".cif", export_location = NULL, structure_file = NULL, show_progress = TRUE) {
@@ -73,6 +74,13 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
     if (!curl::has_internet()) {
       message("No internet connection.")
       return(invisible(NULL))
+    }
+
+    # make sure export location is correct if or if not provided.
+    if (missing(export_location)) {
+      export_location <- ""
+    } else {
+      export_location <- paste0(export_location, "/")
     }
 
     peptide_data_filter <- peptide_data %>%
@@ -177,7 +185,7 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
             dplyr::mutate(atoms_mod = stringr::str_replace(.data$atoms, pattern = paste0("(?<= )", .data$b_factor), replacement = {{ map_value }})) %>%
             dplyr::mutate(X1 = ifelse(!is.na(.data$atoms_mod), .data$atoms_mod, .data$X1)) %>%
             dplyr::select(.data$X1) %>%
-            readr::write_tsv(file = paste0(export_location, "/", .y, file_format), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
+            readr::write_tsv(file = paste0(export_location, .y, file_format), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
 
           if (show_progress == TRUE) {
             pb$tick()
@@ -257,7 +265,7 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
             dplyr::mutate(atoms_mod = `str_sub<-`(.data$atoms, 61, 66, value = {{ map_value }})) %>%
             dplyr::mutate(X1 = ifelse(!is.na(.data$atoms_mod), .data$atoms_mod, .data$X1)) %>%
             dplyr::select(.data$X1) %>%
-            readr::write_tsv(file = paste0(export_location, "/", .y, file_format), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
+            readr::write_tsv(file = paste0(export_location, .y, file_format), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
 
           if (show_progress == TRUE) {
             pb$tick()
@@ -326,7 +334,7 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
         dplyr::mutate(atoms_mod = stringr::str_replace(.data$atoms, pattern = paste0("(?<= )", .data$b_factor), replacement = {{ map_value }})) %>%
         dplyr::mutate(X1 = ifelse(!is.na(.data$atoms_mod), .data$atoms_mod, .data$X1)) %>%
         dplyr::select(.data$X1) %>%
-        readr::write_tsv(file = paste0(export_location, "/", "modified_", file_name), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
+        readr::write_tsv(file = paste0(export_location, "modified_", file_name), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
 
       return(invisible(NULL))
     }
@@ -348,7 +356,7 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
         dplyr::mutate(atoms_mod = `str_sub<-`(.data$atoms, 61, 66, value = {{ map_value }})) %>%
         dplyr::mutate(X1 = ifelse(!is.na(.data$atoms_mod), .data$atoms_mod, .data$X1)) %>%
         dplyr::select(.data$X1) %>%
-        readr::write_tsv(file = paste0(export_location, "/", "modified_", file_name), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
+        readr::write_tsv(file = paste0(export_location, "modified_", file_name), quote = "none", escape = "none", col_names = FALSE, progress = FALSE)
 
       return(invisible(NULL))
     }

@@ -25,27 +25,27 @@ provided in the \code{structure_file} argument, this data frame should only cont
 a user provided structure, column names should be provided to the following arguments: **uniprot_id**, **chain**, **start_in_pdb**, **end_in_pdb**,
 **map_value**.}
 
-\item{uniprot_id}{a character column in the \code{peptide_data} data frame that contains UniProt identifiers for a corresponding peptide.}
+\item{uniprot_id}{a character column in the \code{peptide_data} data frame that contains UniProt identifiers for a corresponding peptide, protein region or amino acid.}
 
-\item{pdb_id}{a character column in the \code{peptide_data} data frame that contains PDB identifiers for structures in which a corresponding peptide is found. This
+\item{pdb_id}{a character column in the \code{peptide_data} data frame that contains PDB identifiers for structures in which a corresponding peptide, protein region or amino acid is found. This
 column is not required if a structure file is provided in the \code{structure_file} argument.}
 
-\item{chain}{a character column in the \code{peptide_data} data frame that contains the name of the chain from the PDB structure in which the peptide is found. **Important:**
+\item{chain}{a character column in the \code{peptide_data} data frame that contains the name of the chain from the PDB structure in which the peptide, protein region or amino acid is found. **Important:**
 please provide the author defined chain definitions for both ".cif" and ".pdb" files. When the output of the \code{find_peptide_in_pdb} function
 is used as the input for this function, this corresponds to the \code{auth_chain} column.}
 
-\item{start_in_pdb}{a numeric column in the \code{peptide_data} data frame that contains start positions for peptides in the corresponding PDB structure. This information
+\item{start_in_pdb}{a numeric column in the \code{peptide_data} data frame that contains start positions for peptides, protein regions or amino acids in the corresponding PDB structure. This information
 can be obtained from the \code{find_peptide_in_pdb} function. The corresponding column in the output is called \code{peptide_start_pdb}. If amino acid positions should be
-used, start and end positions are the same and the same column can be provedid to both \code{start_in_pdb} and \code{end_in_pdb}.}
+used, start and end positions are the same and the same column can be provided to both \code{start_in_pdb} and \code{end_in_pdb}.}
 
-\item{end_in_pdb}{a numeric column in the \code{peptide_data} data frame that contains end positions for peptides in the corresponding PDB structure. This information
+\item{end_in_pdb}{a numeric column in the \code{peptide_data} data frame that contains end positions for peptides, protein regions or amino acids in the corresponding PDB structure. This information
 can be obtained from the \code{find_peptide_in_pdb} function. The corresponding column in the output is called \code{peptide_end_pdb}. If amino acid positions should be
-used, start and end positions are the same and the same column can be provedid to both \code{start_in_pdb} and \code{end_in_pdb}.}
+used, start and end positions are the same and the same column can be provided to both \code{start_in_pdb} and \code{end_in_pdb}.}
 
 \item{map_value}{a numeric column in the \code{peptide_data} data frame that contains a value associated with each peptide, protein region or amino acid. This value will be displayed as
-a colour gradient when mapped onto the structure. The value can for example be the fold change, p-value or score associated with each peptide. If peptides should
-be displayed with just one colour, the value in this column should be the same for every peptide. For the mapping, values are scaled between 50 and 100. Regions in the structure
-that do not map any peptide receive a value of 0. If an amino acid position is associated with multiple mapped values, e.g. from different peptides, the
+a colour gradient when mapped onto the structure. The value can for example be the fold change, p-value or score associated with each peptide, protein region or amino acid (selection). If the selections should
+be displayed with just one colour, the value in this column should be the same for every selection. For the mapping, values are scaled between 50 and 100. Regions in the structure
+that do not map any selection receive a value of 0. If an amino acid position is associated with multiple mapped values, e.g. from different peptides, the
 maximum mapped value will be displayed.}
 
 \item{file_format}{a character vector containing the file format of the structure that will be fetched from the database for the PDB identifiers provided
@@ -66,8 +66,8 @@ The function exports a modified ".pdb" or ".cif" structure file. B-factors have 
 }
 \description{
 Peptides are mapped onto PDB structures based on their positions. This is accomplished by replacing the B-factor information in the structure file with values that allow
-highlighting of peptides, protein regions and amino acids when the structure is coloured by B-factor. In addition to only highlighting peptides,
-a continuous variable such as fold changes associated with peptides can be mapped onto the structure as a colour gradient.
+highlighting of peptides, protein regions and amino acids when the structure is coloured by B-factor. In addition to simply highlighting peptides, protein regions or amino acids,
+a continuous variable such as fold changes associated with them can be mapped onto the structure as a colour gradient.
 }
 \examples{
 \dontrun{
@@ -80,7 +80,7 @@ map_peptides_on_structure(
   end_in_pdb = peptide_end_pdb,
   map_value = diff,
   file_format = ".cif",
-  export_location = "~Desktop/Test"
+  export_location = "~/Desktop/Test"
 )
 }
 }
