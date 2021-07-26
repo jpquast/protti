@@ -2,7 +2,7 @@
 % Please edit documentation in R/calculate_aa_scores.R
 \name{calculate_aa_scores}
 \alias{calculate_aa_scores}
-\title{Calculate amino acid scores}
+\title{Calculate scores for each amino acid position in a protein sequence}
 \usage{
 calculate_aa_scores(data, protein, grouping, diff, adj_pval, start, end)
 }
@@ -22,13 +22,13 @@ calculate_aa_scores(data, protein, grouping, diff, adj_pval, start, end)
 \item{end}{a numeric column in the data frame containing the end position of a peptide or precursor.}
 }
 \value{
-a data frame that contains the aggregated scores per amino acid, enabling to draw amino acid fingerprints 
+a data frame that contains the aggregated scores per amino acid position, enabling to draw fingerprints 
 for each individual protein.
 }
 \description{
-Calculate a score for each amino acid of a protein based on the product of the
+Calculate a score for each amino acid position in a protein sequence based on the product of the
 -log10(adjusted p-value) and the absolute log2 fold change per peptide. In detail, all the peptides are 
-aligned along the sequence of the corresponding protein, and the average score per amino acid is computed. 
+aligned along the sequence of the corresponding protein, and the average score per amino acid position is computed. 
 In a limited proteolysis coupled to mass spectrometry (LiP-MS) experiment, the score allows to prioritize and 
 narrow down structurally affected regions.
 }
