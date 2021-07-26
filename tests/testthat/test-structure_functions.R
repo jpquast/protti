@@ -91,4 +91,29 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
     expect_equal(file_pdb_6UU2_P0A8T7$b_factor, c("     0", "   100"))
   })
+
+  test_that("create_structure_contact_map works", {
+    data_input <- tibble::tibble(
+      pdb_id = c("6NPF", "1DF1", "1C14", "1OLT"),
+      chain = c("A", NA, "A", "A"),
+      start = c(1, NA, NA, NA),
+      end = c(10, NA, NA, NA)
+    )
+    contact_maps <- create_structure_contact_map(
+      data = data_input,
+      pdb_id = pdb_id,
+      chain = chain,
+      start_in_pdb = start,
+      end_in_pdb = end,
+      return_min_residue_distance = TRUE
+    )
+
+    expect_is(contact_maps, "list")
+    expect_equal(length(contact_maps), 4)
+    expect_equal(ncol(contact_maps[["6NPF"]]), 14)
+    expect_equal(nrow(contact_maps[["6NPF"]]), 504)
+    expect_equal(nrow(contact_maps[["1DF1"]]), 46856)
+    expect_equal(nrow(contact_maps[["1C14"]]), 18553)
+    expect_equal(nrow(contact_maps[["1OLT"]]), 40737)
+  })
 }

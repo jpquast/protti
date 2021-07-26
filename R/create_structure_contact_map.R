@@ -8,7 +8,9 @@
 #' If only this column is provided, all atom or residue distances are calculated. Additionally, a chain column can be present in the data frame of which
 #' the name can be provided to the \code{chain} argument. If chains are provided, only distances of this chain relative to the rest of the structure
 #' are calculated. Multiple chains can be provided in multiple rows. If chains are provided for one structure but not for another, the rows should contain
-#' NAs. Furthermore, specific residue positions can be provided in start and end columns if the selection should be further reduced.
+#' NAs. Furthermore, specific residue positions can be provided in start and end columns if the selection should be further reduced. It is not
+#' recommended to create full contact maps for more than a few structures due to time and memory reasons. If contact maps are created only for
+#' small regions it is possible to create multiple maps at once.
 #' @param pdb_id a column in the \code{data} data frame that contains PDB IDs for structures of which contact maps should be created. If an own structure
 #' is provided to the \code{structure_file} argument, this column should contain "my_structure" as content.
 #' @param chain an optional column in the \code{data} data frame that contains chain identifiers for the structure file. The author defined identifiers
@@ -92,7 +94,6 @@ create_structure_contact_map <- function(data, pdb_id, chain = NULL, start_in_pd
         unique()
     }
   }
-
   if (!missing(structure_file)) {
     file_format <- stringr::str_sub(structure_file, start = -4, end = -1)
 
@@ -185,8 +186,15 @@ create_structure_contact_map <- function(data, pdb_id, chain = NULL, start_in_pd
       return(invisible(NULL))
     }
 
+    if (show_progress == TRUE) {
+      pb <- progress::progress_bar$new(total = length(pdb_ids), format = "Preparing structures [:bar] :current/:total (:percent) :eta")
+    }
+
     structures <- fetch_pdb_structure(pdb_ids = pdb_ids, return_data_frame = FALSE, show_progress = show_progress) %>%
       purrr::map(.f = ~ {
+        if (show_progress == TRUE) {
+          pb$tick()
+        }
         .x %>%
           dplyr::filter(.data$pdb_model_number %in% pdb_model_number_selection) %>%
           dplyr::select(
@@ -207,8 +215,14 @@ create_structure_contact_map <- function(data, pdb_id, chain = NULL, start_in_pd
       })
   }
   # this data frame contains the subsetted structures. Specifically, the subsetted atom numbers.
+  if (show_progress == TRUE) {
+    pb <- progress::progress_bar$new(total = length(structures), format = "Subsetting Structures [:bar] :current/:total (:percent) :eta")
+  }
   subset_structures <- structures %>%
     purrr::map(.f = ~ {
+      if (show_progress == TRUE) {
+        pb$tick()
+      }
       .x %>%
         dplyr::filter(should_be_retained) %>%
         dplyr::distinct(.data$atom_number)
@@ -217,11 +231,11 @@ create_structure_contact_map <- function(data, pdb_id, chain = NULL, start_in_pd
   # Segments are made for each structure to prevent too long data frames when all combinations are created.
   segments <- subset_structures %>%
     purrr::map(.f = ~ {
-      split(min(.x$atom_number):max(.x$atom_number), ceiling(seq_along(min(.x$atom_number):max(.x$atom_number)) / 1000))
+      split(dplyr::pull(.x, .data$atom_number), ceiling(seq_along(nrow(.x)) / 1000))
     })
 
   if (show_progress == TRUE) {
-    pb <- progress::progress_bar$new(total = length(structures), format = "Calculating distances :current/:total (:percent)")
+    pb <- progress::progress_bar$new(total = length(structures), format = "Calculating atom distances :current/:total (:percent)")
   }
 
   result_distances <- purrr::map2(
@@ -259,16 +273,22 @@ create_structure_contact_map <- function(data, pdb_id, chain = NULL, start_in_pd
             dplyr::mutate(distance = sqrt((.data$x.x - .data$x.y)^2 + (.data$y.x - .data$y.y)^2 + (.data$z.x - .data$z.y)^2)) %>%
             dplyr::select(.data$var1, .data$var2, .data$distance) %>%
             dplyr::filter(.data$distance <= distance_cutoff) %>%
-            dplyr::left_join(current_structure, by = c("var1" = "atom_number")) %>%
+            dplyr::left_join(current_structure %>% dplyr::select(-.data$pdb_id), by = c("var1" = "atom_number")) %>%
             dplyr::left_join(current_structure, by = c("var2" = "atom_number"), suffix = c("_var1", "_var2"))
         }
       )
     }
   )
 
+  if (show_progress == TRUE) {
+    pb <- progress::progress_bar$new(total = length(result_distances), format = "Calculating minimal residue distances [:bar] :current/:total (:percent) :eta")
+  }
   # calculate residue distances only after the table is complete, otherwise wrong distances might be calculated.
   result <- result_distances %>%
     purrr::map(.f = ~ {
+      if (show_progress == TRUE) {
+        pb$tick()
+      }
       residue_distance <- .x %>%
         dplyr::group_by(.data$residue_number_pdb_var1, .data$auth_chain_var1, .data$residue_number_pdb_var2, .data$auth_chain_var2) %>%
         dplyr::mutate(min_distance_residue = min(.data$distance)) %>%
@@ -296,11 +316,16 @@ create_structure_contact_map <- function(data, pdb_id, chain = NULL, start_in_pd
     } else {
       export_location <- paste0(export_location, "/")
     }
-
+    if (show_progress == TRUE) {
+      pb <- progress::progress_bar$new(total = length(result), format = "Exporting contact maps [:bar] :current/:total (:percent) :eta")
+    }
     purrr::map2(
       .x = result,
       .y = names(result),
       .f = ~ {
+        if (show_progress == TRUE) {
+          pb$tick()
+        }
         readr::write_csv(x = .x, file = paste0(export_location, .y, "_contact_map.csv"), progress = FALSE)
       }
     )
