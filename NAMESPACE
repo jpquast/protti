@@ -3,6 +3,7 @@
 export(anova_protti)
 export(assign_missingness)
 export(barcode_plot)
+export(calculate_aa_scores)
 export(calculate_protein_abundance)
 export(create_queue)
 export(create_structure_contact_map)
