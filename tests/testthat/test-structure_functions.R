@@ -9,9 +9,9 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     map_value = c(70, 100, 100)
   )
 
-  test_that("find_peptide_in_pdb works", {
-    positions_structure <- find_peptide_in_pdb(peptide_data,
-      peptide_sequence = peptide_sequence,
+  test_that("find_peptide_in_structure works", {
+    positions_structure <- find_peptide_in_structure(peptide_data,
+      peptide = peptide_sequence,
       start = start,
       end = end,
       uniprot_id = uniprot_id,
@@ -19,12 +19,12 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     )
 
     expect_is(positions_structure, "data.frame")
-    expect_equal(nrow(positions_structure), 290)
+    expect_equal(nrow(positions_structure), 312)
     expect_equal(ncol(positions_structure), 16)
   })
 
-  positions_structure <- find_peptide_in_pdb(peptide_data,
-    peptide_sequence = peptide_sequence,
+  positions_structure <- find_peptide_in_structure(peptide_data,
+    peptide = peptide_sequence,
     start = start,
     end = end,
     uniprot_id = uniprot_id,
@@ -39,9 +39,9 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       peptide_data = positions_structure_filter,
       uniprot_id = uniprot_id,
       pdb_id = pdb_ids,
-      chain = auth_chain,
-      start_in_pdb = peptide_start_pdb,
-      end_in_pdb = peptide_end_pdb,
+      chain = auth_asym_id,
+      start_in_pdb = auth_seq_id_start,
+      end_in_pdb = auth_seq_id_end,
       map_value = map_value,
       file_format = ".cif",
       export_location = paste0(tempdir(), "/")
@@ -68,9 +68,9 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       peptide_data = positions_structure_filter,
       uniprot_id = uniprot_id,
       pdb_id = pdb_ids,
-      chain = auth_chain,
-      start_in_pdb = peptide_start_pdb,
-      end_in_pdb = peptide_end_pdb,
+      chain = auth_asym_id,
+      start_in_pdb = auth_seq_id_start,
+      end_in_pdb = auth_seq_id_end,
       map_value = map_value,
       file_format = ".pdb",
       export_location = paste0(tempdir(), "/")
@@ -101,7 +101,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     )
     contact_maps <- create_structure_contact_map(
       data = data_input,
-      pdb_id = pdb_id,
+      id = pdb_id,
       chain = chain,
       start_in_pdb = start,
       end_in_pdb = end,

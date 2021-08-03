@@ -2,7 +2,7 @@
 % Please edit documentation in R/map_peptides_on_structure.R
 \name{map_peptides_on_structure}
 \alias{map_peptides_on_structure}
-\title{Maps peptides onto a PDB structure}
+\title{Maps peptides onto a PDB structure or AlphaFold prediction}
 \usage{
 map_peptides_on_structure(
   peptide_data,
@@ -19,28 +19,30 @@ map_peptides_on_structure(
 )
 }
 \arguments{
-\item{peptide_data}{a data frame containing input columns to this function. If structure files should be fetched automatically, please provide
-column names to the following arguments: **uniprot_id**, **pdb_id**, **chain**, **start_in_pdb**, **end_in_pdb**, **map_value**. If a structure file is
-provided in the \code{structure_file} argument, this data frame should only contain information associated with the provided structure. In case of
+\item{peptide_data}{a data frame containing input columns to this function. If structure or prediction files should be fetched automatically, please provide
+column names to the following arguments: **uniprot_id**, **pdb_id**, **chain**, **start_in_pdb**, **end_in_pdb**, **map_value**. If no PDB structure
+for a protein is available the \code{pdb_id} and \code{chain} column should contain NA at these positions.
+If a structure or prediction file is provided in the \code{structure_file} argument, this data frame should only contain information associated with the provided structure. In case of
 a user provided structure, column names should be provided to the following arguments: **uniprot_id**, **chain**, **start_in_pdb**, **end_in_pdb**,
 **map_value**.}
 
 \item{uniprot_id}{a character column in the \code{peptide_data} data frame that contains UniProt identifiers for a corresponding peptide, protein region or amino acid.}
 
-\item{pdb_id}{a character column in the \code{peptide_data} data frame that contains PDB identifiers for structures in which a corresponding peptide, protein region or amino acid is found. This
-column is not required if a structure file is provided in the \code{structure_file} argument.}
+\item{pdb_id}{a character column in the \code{peptide_data} data frame that contains PDB identifiers for structures in which a corresponding peptide, protein region or amino acid is found.
+If a protein prediction should be fetched from AlphaFold, this column should contain NA. This column is not required if a structure or pediction file is provided in the \code{structure_file} argument.}
 
-\item{chain}{a character column in the \code{peptide_data} data frame that contains the name of the chain from the PDB structure in which the peptide, protein region or amino acid is found. **Important:**
-please provide the author defined chain definitions for both ".cif" and ".pdb" files. When the output of the \code{find_peptide_in_pdb} function
-is used as the input for this function, this corresponds to the \code{auth_chain} column.}
+\item{chain}{a character column in the \code{peptide_data} data frame that contains the name of the chain from the PDB structure in which the peptide, protein region or amino acid is found.
+If a protein prediction should be fetched from AlphaFold, this column should contain NA. If an AlphaFold prediction is provided to the \code{structure_file}
+argument the chain should be provided as usual (All AlphaFold predictions only have chain A). **Important:** please provide the author defined chain
+definitions for both ".cif" and ".pdb" files. When the output of the \code{find_peptide_in_structure} function is used as the input for this function, this corresponds to the \code{auth_asym_id} column.}
 
-\item{start_in_pdb}{a numeric column in the \code{peptide_data} data frame that contains start positions for peptides, protein regions or amino acids in the corresponding PDB structure. This information
-can be obtained from the \code{find_peptide_in_pdb} function. The corresponding column in the output is called \code{peptide_start_pdb}. If amino acid positions should be
-used, start and end positions are the same and the same column can be provided to both \code{start_in_pdb} and \code{end_in_pdb}.}
+\item{start_in_pdb}{a numeric column in the \code{peptide_data} data frame that contains start positions for peptides, protein regions or amino acids in the corresponding PDB structure or AlphaFold prediction.
+This information can be obtained from the \code{find_peptide_in_structure} function. The corresponding column in the output is called \code{auth_seq_id_start}. If amino acid positions should be
+used, start and end positions are the same and the same column can be provided to both \code{start_in_pdb} and \code{end_in_pdb}. In case of AlphaFold predictions, UniProt positions should be used.}
 
-\item{end_in_pdb}{a numeric column in the \code{peptide_data} data frame that contains end positions for peptides, protein regions or amino acids in the corresponding PDB structure. This information
-can be obtained from the \code{find_peptide_in_pdb} function. The corresponding column in the output is called \code{peptide_end_pdb}. If amino acid positions should be
-used, start and end positions are the same and the same column can be provided to both \code{start_in_pdb} and \code{end_in_pdb}.}
+\item{end_in_pdb}{a numeric column in the \code{peptide_data} data frame that contains end positions for peptides, protein regions or amino acids in the corresponding PDB structure or AlphaFold prediction. This information
+can be obtained from the \code{find_peptide_in_structure} function. The corresponding column in the output is called \code{auth_seq_id_end}. If amino acid positions should be
+used, start and end positions are the same and the same column can be provided to both \code{start_in_pdb} and \code{end_in_pdb}. In case of AlphaFold predictions, UniProt positions should be used.}
 
 \item{map_value}{a numeric column in the \code{peptide_data} data frame that contains a value associated with each peptide, protein region or amino acid. This value will be displayed as
 a colour gradient when mapped onto the structure. The value can for example be the fold change, p-value or score associated with each peptide, protein region or amino acid (selection). If the selections should
@@ -65,8 +67,8 @@ data frame should only contain mapping information for this structure.}
 The function exports a modified ".pdb" or ".cif" structure file. B-factors have been replaced with scaled (50-100) values provided in the \code{map_value} column.
 }
 \description{
-Peptides are mapped onto PDB structures based on their positions. This is accomplished by replacing the B-factor information in the structure file with values that allow
-highlighting of peptides, protein regions and amino acids when the structure is coloured by B-factor. In addition to simply highlighting peptides, protein regions or amino acids,
+Peptides are mapped onto PDB structures or AlphaFold prediction based on their positions. This is accomplished by replacing the B-factor information in the structure file with values that allow
+highlighting of peptides, protein regions or amino acids when the structure is coloured by B-factor. In addition to simply highlighting peptides, protein regions or amino acids,
 a continuous variable such as fold changes associated with them can be mapped onto the structure as a colour gradient.
 }
 \examples{
@@ -75,9 +77,9 @@ map_peptides_on_structure(
   peptide_data = peptide_data,
   uniprot_id = pg_protein_accessions,
   pdb_id = pdb_ids,
-  chain = auth_chain,
-  start_in_pdb = peptide_start_pdb,
-  end_in_pdb = peptide_end_pdb,
+  chain = auth_asym_id,
+  start_in_pdb = auth_seq_id_start,
+  end_in_pdb = auth_seq_id_end,
   map_value = diff,
   file_format = ".cif",
   export_location = "~/Desktop/Test"

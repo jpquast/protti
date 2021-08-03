@@ -74,6 +74,13 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(pdb_structure), 18)
   })
 
+  test_that("fetch_alphafold_prediction works", {
+    af_prediction <- fetch_alphafold_prediction(uniprot_ids = c("F4HVG8", "O15552"), return_data_frame = TRUE)
+    expect_is(af_prediction, "data.frame")
+    expect_equal(nrow(af_prediction), 7310)
+    expect_equal(ncol(af_prediction), 15)
+  })
+
   test_that("fetch_metal_pdb works", {
     metal_pdb <- fetch_metal_pdb(id_type = "pdb", id_value = c("1g54"), metal = "Zn")
     expect_is(metal_pdb, "data.frame")

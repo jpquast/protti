@@ -6,7 +6,20 @@
 #' @param batchsize numeric, specifying the number of structures to be processed in a single query. Default is 2000.
 #' @param show_progress logical, if true, a progress bar will be shown. Default is TRUE.
 #'
-#' @return A data frame that contains all structure metadata for the PDB IDs provided.
+#' @return A data frame that contains structure metadata for the PDB IDs provided. The data frame contains some columns
+#' that might not be self explanatory.
+#' \itemize{
+#' \item{auth_asym_id: }{Chain identifier provided by the author of the structure in order to match the identification used in the publication that
+#' describes the structure.}
+#' \item{label_asym_id: }{Chain identifier following the standardised convention for mmCIF files.}
+#' \item{entity_beg_seq_id, ref_beg_seq_id, length, pdb_sequence: }{\code{entity_beg_seq_id} is a position in the structure sequence
+#' (\code{pdb_sequence}) that matches the position given in \code{ref_beg_seq_id}, which is a position within the protein sequence
+#' (not included in the data frame). \code{length} identifies the stretch of sequence for which positions match accordingly between structure and
+#' protein sequence. \code{entity_beg_seq_id} is a residue ID based on the standardised convention for mmCIF files.}
+#' \item{auth_seq_id: }{Residue identifier provided by the author of the structure in order to match the identification used in the publication that
+#' describes the structure. This character vector has the same length as the \code{pdb_sequence} and each position is the identifier for the matching amino
+#' acid position in \code{pdb_sequence}. The contained values are not necessarily a numbers and the values do not have to be positive.}
+#' }
 #' @import dplyr
 #' @import progress
 #' @import purrr
@@ -132,6 +145,11 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
   }
 }'
 
+  # remove NA values
+  pdb_ids <- pdb_ids[!is.na(pdb_ids)]
+  if (length(pdb_ids) == 0) {
+    stop("No PDB IDs were provided.")
+  }
   # split pdb_ids into batches
   batches <- split(pdb_ids, ceiling(seq_along(pdb_ids) / batchsize))
   if (show_progress == TRUE) {
@@ -333,14 +351,15 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
     dplyr::left_join(uniprot_info, by = "reference_database_accession") %>%
     dplyr::left_join(entity_instance_info, by = c("pdb_ids", "auth_asym_ids")) %>%
     dplyr::rename(
-      auth_chain = .data$auth_asym_ids,
-      database_chain = .data$asym_id,
-      pdb_sequence = .data$pdbx_seq_one_letter_code_can
+      auth_asym_id = .data$auth_asym_ids,
+      label_asym_id = .data$asym_id,
+      pdb_sequence = .data$pdbx_seq_one_letter_code_can,
+      auth_seq_id = .data$auth_to_entity_poly_seq_mapping
     ) %>%
     dplyr::select(
       .data$pdb_ids,
-      .data$auth_chain,
-      .data$database_chain,
+      .data$auth_asym_id,
+      .data$label_asym_id,
       .data$reference_database_accession,
       .data$protein_name,
       .data$reference_database_name,
@@ -348,7 +367,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       .data$ref_beg_seq_id,
       .data$length,
       .data$pdb_sequence,
-      .data$auth_to_entity_poly_seq_mapping,
+      .data$auth_seq_id,
       .data$id_nonpolymer,
       .data$type_nonpolymer,
       .data$formula_weight_nonpolymer,

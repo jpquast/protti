@@ -6,12 +6,12 @@
 \usage{
 create_structure_contact_map(
   data,
-  pdb_id,
+  id,
   chain = NULL,
   start_in_pdb = NULL,
   end_in_pdb = NULL,
   distance_cutoff = 10,
-  pdb_model_number_selection = 1,
+  pdb_model_number_selection = c(0, 1),
   return_min_residue_distance = TRUE,
   show_progress = TRUE,
   export = FALSE,
@@ -20,13 +20,15 @@ create_structure_contact_map(
 )
 }
 \arguments{
-\item{data}{a data frame containing at least a column with PDB ID information of which the name can be provided to the \code{pdb_id} argument.
+\item{data}{a data frame containing at least a column with PDB ID information of which the name can be provided to the \code{id} argument.
 If only this column is provided, all atom or residue distances are calculated. Additionally, a chain column can be present in the data frame of which
 the name can be provided to the \code{chain} argument. If chains are provided, only distances of this chain relative to the rest of the structure
 are calculated. Multiple chains can be provided in multiple rows. If chains are provided for one structure but not for another, the rows should contain
-NAs. Furthermore, specific residue positions can be provided in start and end columns if the selection should be further reduced.}
+NAs. Furthermore, specific residue positions can be provided in start and end columns if the selection should be further reduced. It is not
+recommended to create full contact maps for more than a few structures due to time and memory reasons. If contact maps are created only for
+small regions it is possible to create multiple maps at once.}
 
-\item{pdb_id}{a column in the \code{data} data frame that contains PDB IDs for structures of which contact maps should be created. If an own structure
+\item{id}{a column in the \code{data} data frame that contains PDB or UniProt IDs for structures or AlphaFold predictions of which contact maps should be created. If an own structure
 is provided to the \code{structure_file} argument, this column should contain "my_structure" as content.}
 
 \item{chain}{an optional column in the \code{data} data frame that contains chain identifiers for the structure file. The author defined identifiers
@@ -34,20 +36,20 @@ should be used. Distances will be only calculated between the provided chains an
 
 \item{start_in_pdb}{an optional column in the \code{data} data frame that contains start positions of regions which for distances should be calculated.
 This needs to be always provided in combination with a corresponding end position in \code{end_in_pdb} and chain in \code{chain}. The position should
-match the positioning based on author defined positioning. This information can be obtained from the \code{find_peptide_in_pdb} function. The
-corresponding column in the output is called \code{peptide_start_pdb}.}
+match the positioning based on author defined positioning. For PDB structures this information can be obtained from the \code{find_peptide_in_structure} function. The
+corresponding column in the output is called \code{auth_seq_id_start}. If an AlphaFold prediction is provided, UniProt positions should be used.}
 
 \item{end_in_pdb}{an optional column in the \code{data} data frame that contains end positions of regions which for distances should be calculated.
 This needs to be always provided in combination with a corresponding start position in \code{start_in_pdb} and chain in \code{chain}. The position should
-match the positioning based on author defined positioning. This information can be obtained from the \code{find_peptide_in_pdb} function. The
-corresponding column in the output is called \code{peptide_start_pdb}.}
+match the positioning based on author defined positioning. For PDB structures this information can be obtained from the \code{find_peptide_in_structure} function. The
+corresponding column in the output is called \code{auth_seq_id_end}. If an AlphaFold prediction is provided, UniProt positions should be used.}
 
 \item{distance_cutoff}{a numeric value specifying the distance cutoff in Angstrom. All values greater than the cutoff will be discarded. This can reduce
 the size of the contact map drastically and is therefore recommended. The default value is 10.}
 
 \item{pdb_model_number_selection}{a numeric vector specifying which models from the structure files should be considered for contact maps. E.g. NMR
-models often have many models in one file. The default for this argument is 1. This means only the first model of each structure file is selected for contact map
-calculations.}
+models often have many models in one file. The default for this argument is c(0, 1). This means the first model of each structure file is selected for contact map
+calculations. For AlphaFold predictions the model number is 0 (only .pdb files), therefore this case is also included here.}
 
 \item{return_min_residue_distance}{a logical, specifying if the contact map should be returned for all atom distances or the minimum residue distances.
 Minimum residue distances are smaller in size. If atom distances are not strictly needed it is recommended to set this argument to TRUE. The default is TRUE.}
@@ -60,15 +62,15 @@ Minimum residue distances are smaller in size. If atom distances are not strictl
 working directory. The location should be provided in the following format "folderA/folderB".}
 
 \item{structure_file}{optional, a character argument specifying the path to the location and name of a structure file in ".cif" or ".pdb" format
-for which a contact map should be created. All other arguments can be provided as usual with the exception of the \code{pdb_id} column in the
-\code{data} data frame, which should not contain a PDB ID but a character vector containing only "my_structure".}
+for which a contact map should be created. All other arguments can be provided as usual with the exception of the \code{id} column in the
+\code{data} data frame, which should not contain a PDB or UniProt ID but a character vector containing only "my_structure".}
 }
 \value{
-A list of contact maps for each structure ID provided in the input is returned. If the \code{export} argument is TRUE, each contact map will
+A list of contact maps for each PDB or UniProt ID provided in the input is returned. If the \code{export} argument is TRUE, each contact map will
 be saved as a ".csv" file in the current working directory or the location provided to the \code{export_location} argument.
 }
 \description{
-Creates a contact map of a subset or of all atom or residue distances in a structure file. Contact maps are a useful tool for the identification of protein
+Creates a contact map of a subset or of all atom or residue distances in a structure or AlphaFold prediction file. Contact maps are a useful tool for the identification of protein
 regions that are in close proximity in the folded protein. Additionally, regions that are interacting closely with a small molecule or metal ion
 can be easily identified without the need to open the structure in programs such as PyMOL or ChimeraX.
 }
@@ -76,10 +78,10 @@ can be easily identified without the need to open the structure in programs such
 \dontrun{
 create_structure_contact_map(
   data = data,
-  pdb_id = pdb_id,
-  chain = auth_chain,
-  start_in_pdb = peptide_start_pdb,
-  end_in_pdb = peptide_end_pdb
+  id = pdb_id,
+  chain = auth_asym_id,
+  start_in_pdb = auth_seq_id_start,
+  end_in_pdb = auth_seq_id_end
 )
 }
 }

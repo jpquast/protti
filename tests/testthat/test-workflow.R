@@ -302,49 +302,50 @@ test_that("filter_cv works", {
 })
 
 test_that("calculate_aa_scores works", {
-  
   peptide_data <- tibble::tibble(
     adj_pval = c(0.001, 0.0001, 0.4, 0.2, 0.001, 0.0001, 0.001, 0.0001, 0.4, 0.2, 0.001, 0.0001),
     diff = c(4.3, -5.8, 0.23, -0.5, 6.5, -7.3, 4.3, -5.8, 0.23, -0.5, 6.5, -7.3),
-    pep_stripped_sequence = c("MDVFMKGLS", 
-                              "MDVFMK", 
-                              "SKAKEGVV",
-                              "EGVVAAAE", 
-                              "EGVVAAA", 
-                              "EKTKQG", 
-                              "MSLSNKL", 
-                              "LSNKLTLD", 
-                              "TLDKLDV", 
-                              "DKLDV", 
-                              "KGKRVV", 
-                              "GKRVV"),
+    pep_stripped_sequence = c(
+      "MDVFMKGLS",
+      "MDVFMK",
+      "SKAKEGVV",
+      "EGVVAAAE",
+      "EGVVAAA",
+      "EKTKQG",
+      "MSLSNKL",
+      "LSNKLTLD",
+      "TLDKLDV",
+      "DKLDV",
+      "KGKRVV",
+      "GKRVV"
+    ),
     start = c(1, 1, 8, 12, 12, 18, 1, 3, 8, 10, 14, 15),
     end = c(10, 6, 16, 20, 19, 25, 7, 10, 15, 15, 20, 20),
-    uniprot_id = c("P37840", 
-                   "P37840", 
-                   "P37840", 
-                   "P37840", 
-                   "P37840", 
-                   "P37840", 
-                   "P00558", 
-                   "P00558", 
-                   "P00558", 
-                   "P00558", 
-                   "P00558", 
-                   "P00558")
-    
+    uniprot_id = c(
+      "P37840",
+      "P37840",
+      "P37840",
+      "P37840",
+      "P37840",
+      "P37840",
+      "P00558",
+      "P00558",
+      "P00558",
+      "P00558",
+      "P00558",
+      "P00558"
+    )
   )
-  
+
   aa_fingerprint <- calculate_aa_scores(peptide_data,
-                                        protein = uniprot_id,
-                                        grouping = pep_stripped_sequence,
-                                        diff = diff,
-                                        adj_pval = adj_pval,
-                                        start = start,
-                                        end = end    
-                                        
+    protein = uniprot_id,
+    grouping = pep_stripped_sequence,
+    diff = diff,
+    adj_pval = adj_pval,
+    start = start,
+    end = end
   )
-  
+
   expect_is(aa_fingerprint, "data.frame")
   expect_equal(nrow(aa_fingerprint), 45)
   expect_equal(ncol(aa_fingerprint), 3)

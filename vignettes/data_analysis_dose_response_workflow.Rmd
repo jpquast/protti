@@ -222,6 +222,8 @@ The [STRING](https://academic.oup.com/nar/article/47/D1/D607/5198476) database p
 
 **protti** has several functions for fetching database information. One commonly used database in the proteomics community is UniProt. By providing the `fetch_uniprot()` function with a character vector of your protein IDs, you can fetch additional information about the proteins. These include names, IDs from other databases, gene ontology annotations, information about the active metabolite and metal binding sites, protein length and sequence. You can freely select which information you are most interested in by providing it to the `columns` arguments of the `fetch_uniprot()` function based on the information they [provide](https://www.uniprot.org/help/uniprotkb_column_names) for download. 
 
+Furthermore, we will add a `passed_filter` column to the data that contains TRUE or FALSE information based on if a precursor passed the filtering criterion defined in the `fit_drc_4p()` function. This is the case if the peptide was assigned a rank. 
+
 ```{r uniprot_annotation, eval = test_protti}
 # fetching of UniProt information
 unis <- unique(fit$pg_protein_accessions)
@@ -230,6 +232,7 @@ uniprot <- fetch_uniprot(unis)
 # annotation of fit data based on information from UniProt
 fit_annotated <- fit %>% 
   left_join(uniprot, by = c("pg_protein_accessions" = "id")) %>% # columns containing proteins IDs are named differently
+  mutate(passed_filter = !is.na(rank)) %>% # mark peptides that pass the filtering
   mutate(binds_treatment = pg_protein_accessions == "P62942") # create new column with prior knowledge about binding partners of treatment
 ```
 
