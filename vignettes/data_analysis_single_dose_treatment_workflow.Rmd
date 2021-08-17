@@ -243,7 +243,7 @@ diff_abundance_data <- data_filtered_uniprot %>%
     completeness_MNAR = 0.25,
     retain_columns = c(pg_protein_accessions, go_molecular_function, database_string, start, end, length, coverage)
   ) %>%
-  diff_abundance(
+  calculate_diff_abundance(
     sample = r_file_name,
     condition = r_condition,
     grouping = eg_precursor_id,
@@ -266,14 +266,14 @@ plot_pval_distribution(data = diff_abundance_data,
                        )
 ```
 
-For this subset of data the distribution of p-values is relatively flat and there is no increase in values in the low p-value range but rather a decrease. This means that the Benjamini-Hochberg algorithm might not be suitable for correcting these p-values. You can pick another algorithm for the correction and supply it to the `p_adj_method` argument and run `diff_abundance()` again. The available methods are any methods that can be supplied to the standard R function `p.adjust()` that is used internally within `diff_abundance()`. You can also just use this function or any other correction algorithm on your data and overwrite the values in the `adj_pval` column.
+For this subset of data the distribution of p-values is relatively flat and there is no increase in values in the low p-value range but rather a decrease. This means that the Benjamini-Hochberg algorithm might not be suitable for correcting these p-values. You can pick another algorithm for the correction and supply it to the `p_adj_method` argument and run `calculate_diff_abundance()` again. The available methods are any methods that can be supplied to the standard R function `p.adjust()` that is used internally within `calculate_diff_abundance()`. You can also just use this function or any other correction algorithm on your data and overwrite the values in the `adj_pval` column.
 
 _Note: If the p-values do not fulfill the assumption for multiple-testing correction, meaning very few observations are changing significantly, it can happen that only a few significant hits remain after adjusting the p-value. This can be a common occurrence so you should always look at the p-value distribution. This will help you decide whether or not you should use adjusted p-values, not adjusted p-values or if you should adjust them with a specific method._
 
 ### Volcano plot
 
 Next we are going to visualise the output of the previously performed hypothesis test to assess the results of our experiment. For this we are going to plot a volcano plot with fold-changes on the x-axis and the adjusted p-value (q-value) or p-value on the y-axis. 
-The output of the previously used `diff_abundance()` function is ideal to use for the `volcano_protti()` function as it contains all the information we need: precursor IDs, protein IDs, fold changes (`diff`) and adjusted p-values (`adj_pval`).
+The output of the previously used `calculate_diff_abundance()` function is ideal to use for the `volcano_protti()` function as it contains all the information we need: precursor IDs, protein IDs, fold changes (`diff`) and adjusted p-values (`adj_pval`).
 We are going to highlight the peptides of the known target of rapamycin FKBP12 (UniProt ID = P62942) in blue to quickly find the peptides in the plot. You can also make the plot interactive by setting `interactive = TRUE`. This will help you quickly obtain more information on each point in the plot.
 We are going to plot the volcano plot with and without adjusted p-values. 
 

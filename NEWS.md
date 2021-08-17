@@ -11,7 +11,11 @@
 * `calculate_aa_scores()` was added. It calculates a score for each amino acid of a protein based on the product of the
 #' -log10(adjusted p-value) and the absolute log2 fold change per peptide.
 * `woods_plot()` recieved the `highlight` argument, which allows to highlight peptides in the plot with an asterisk based on a logical column. It also got `export` and `export_name` arguments which now makes it possible to directly export plots from the function. The new `target` argument allows the user to specify one or multiple proteins from their data frame for which a plot should be returned, however the default option is to return plots for all proteins in the provided data frame. Now it is also possible to provide more than 20 proteins at a time while the `facet` argument is `TRUE`. For every 20 proteins a new plot is created and all of them are returned together in a list. 
-* `assign_missingness()` and `diff_abundance()` now also take `"all"` as input to their `ref_condition` argument. This will create all pairwise condition pairs. Previously only one reference condition could be provided.
+* `assign_missingness()` and `calculate_diff_abundance()` now also take `"all"` as input to their `ref_condition` argument. This will create all pairwise condition pairs. Previously only one reference condition could be provided.
+
+## Renamed functions
+ 
+* `diff_abundance()` has been renamed to `calculate_diff_abundance()`. `diff_abundance()` still works but it is recommended to use `calculate_diff_abundance()` instead.
 
 ## Bug fixes and documentation updates
 

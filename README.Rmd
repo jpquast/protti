@@ -161,19 +161,19 @@ Note: Instead of "peptide" in the `grouping` argument you can provide protein ID
 
 #### Calculate Differential Abundance and Significance
 
-For the calculation of abundance changes and the associated significances **protti** provides the function `diff_abundance()`. You can choose between different statistical methods. For this example we will chose a Welch's t-test. Obtained p-values are adjusted for multiple testing using the Benjamini-Hochberg method ([Benjamini & Hochberg 1995](http://www.math.tau.ac.il/~ybenja/MyPapers/benjamini_hochberg1995.pdf)).
+For the calculation of abundance changes and the associated significances **protti** provides the function `calculate_diff_abundance()`. You can choose between different statistical methods. For this example we will chose a moderated t-test.
 
-```{r diff_abundance, message=FALSE, warning=FALSE}
+```{r calculate_diff_abundance, message=FALSE, warning=FALSE}
 result <- data_missing %>% 
-  diff_abundance(sample = sample,
-                 condition = condition,
-                 grouping = peptide,
-                 intensity_log2 = normalised_intensity_log2,
-                 missingness = missingness,
-                 comparison = comparison,
-                 filter_NA_missingness = TRUE,
-                 method = "t-test",
-                 retain_columns = c(protein, change_peptide))
+  calculate_diff_abundance(sample = sample,
+                           condition = condition,
+                           grouping = peptide,
+                           intensity_log2 = normalised_intensity_log2,
+                           missingness = missingness,
+                           comparison = comparison,
+                           filter_NA_missingness = TRUE,
+                           method = "moderated_t-test",
+                           retain_columns = c(protein, change_peptide))
 ```
 
 Next we can use a Volcano plot to visualize significantly changing peptides with the function `volcano_protti()`. You can choose to create an interactive plot with the `interactive` argument. Please note that this is not recommended for large datasets.

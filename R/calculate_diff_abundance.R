@@ -65,7 +65,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' diff_abundance(
+#' calculate_diff_abundance(
 #'   data,
 #'   sample = r_file_name,
 #'   condition = r_condition,
@@ -77,7 +77,7 @@
 #'   retain_columns = c(pg_protein_accessions)
 #' )
 #' }
-diff_abundance <-
+calculate_diff_abundance <-
   function(data,
            sample,
            condition,
