@@ -31,8 +31,8 @@ PC2. You can provide these using a character vector of the form c("PC1", "PC2").
 
 \item{digestion}{optional column indicating the mode of digestion (limited proteolysis or tryptic digest).}
 
-\item{plot_style}{character vector specifying what plot should be returned. If `plot_style = "pca"` is selected the two PCA
-components supplied with the `components` argument are plottet against each other. This is the default. `plot_style = "scree"` returns
+\item{plot_style}{character vector specifying what plot should be returned. If \code{plot_style = "pca"} is selected the two PCA
+components supplied with the \code{components} argument are plottet against each other. This is the default. \code{plot_style = "scree"} returns
 a scree plot that displays the variance explained by each principal component in percent. The scree is useful for checking if any other
 than the default first two components should be plotted.}
 }

@@ -81,7 +81,7 @@ filter data based on completeness, the completeness distribution and statistical
 If data filtering options are selected, data is filtered based on multiple criteria. In general, curves are only fitted
 if there are at least 5 conditions with data points present to ensure that there is potential for a good curve fit. Therefore,
 this is also the case if no filtering option is selected. Furthermore, a completeness cutoff is defined for filtering. By default
-each entity (e.g. precursor) is filtered to contain at least 70% of total replicates (adjusted downward) for at least 50% of
+each entity (e.g. precursor) is filtered to contain at least 70\% of total replicates (adjusted downward) for at least 50\% of
 all conditions (adjusted downward). This can be adjusted with the according arguments. In addition to the completeness cutoff,
 also a significance cutoff is applied. ANOVA is used to compute the statistical significance of the change for each entity.
 The resulting p-value is adjusted using the Benjamini-Hochberg method and a cutoff of q <= 0.05 is applied. Curve fits that have

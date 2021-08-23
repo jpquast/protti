@@ -199,11 +199,11 @@ fetch_metal_pdb <- function(id_type = "uniprot",
         query <- try_query(query_url, type = "application/json", simplifyDataFrame = TRUE)
       }
 
-      if (show_progress == TRUE & "data.frame" %in% class(query)) {
+      if (show_progress == TRUE & class(query) %in% c("data.frame", "list")) {
         pb$tick()
       }
       # if previous ID had a connection problem change IDs to NULL, which breaks the mapping.
-      if (!"data.frame" %in% class(query)) {
+      if (!class(query) %in% c("data.frame", "list")) {
         id_value <<- NULL
       }
       query
@@ -262,7 +262,8 @@ fetch_metal_pdb <- function(id_type = "uniprot",
       auth_seq_id_ligand = .data$residue_pdb_number,
       auth_id_ligand = .data$atom_pdb_number,
       auth_atom_id_ligand = .data$atom
-    )
+    ) %>%
+    dplyr::ungroup()
 
   return(result)
 }

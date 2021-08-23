@@ -89,7 +89,8 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL, organism_name = NULL,
       "Zea mays"
     ))
 
-    organism_file <- switch(organism_name, "Arabidopsis thaliana" = "UP000006548_3702_ARATH.tar",
+    organism_file <- switch(organism_name,
+      "Arabidopsis thaliana" = "UP000006548_3702_ARATH.tar",
       "Caenorhabditis elegans" = "UP000001940_6239_CAEEL.tar",
       "Candida albicans" = "UP000000559_237561_CANAL.tar",
       "Danio rerio" = "UP000000437_7955_DANRE.tar",

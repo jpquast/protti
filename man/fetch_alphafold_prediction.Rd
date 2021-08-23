@@ -17,7 +17,7 @@ fetch_alphafold_prediction(
 to the \code{organism_name} argument.}
 
 \item{organism_name}{an optional character variable providing the name of an organism for which all available AlphaFold predictions should be
-retreived. The name should be the capitalize scientific species name (e.g. "Homo sapiens"). **Note:** Some organisms contain a lot of predictions
+retreived. The name should be the capitalize scientific species name (e.g. "Homo sapiens"). \strong{Note:} Some organisms contain a lot of predictions
 which might take a considerable amount of time and memory to fetch. Therefore you should be sure that your system can handle fetching predictions for
 these organisms. This argument is mutually exclusive to the \code{uniprot_ids} argument.}
 

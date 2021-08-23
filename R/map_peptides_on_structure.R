@@ -88,13 +88,16 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
 
     peptide_data_filter <- peptide_data %>%
       dplyr::ungroup() %>%
-      tidyr::drop_na({{ start_in_pdb }}) %>% # remove observations that do not have any position information because they did not fit a protein.
+      tidyr::drop_na({{ start_in_pdb }}) %>%
+      # remove observations that do not have any position information because they did not fit a protein.
       dplyr::mutate(
         start = {{ start_in_pdb }},
         end = {{ end_in_pdb }}
-      ) %>% # do this so start and end position can be the same column.
+      ) %>%
+      # do this so start and end position can be the same column.
       dplyr::distinct({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, .data$start, .data$end, {{ map_value }}) %>%
-      dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01") * 50 + 50, digits = 2)) %>% # Scale values between 50 and 100
+      dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01") * 50 + 50, digits = 2)) %>%
+      # Scale values between 50 and 100
       group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, .data$start, .data$end) %>%
       dplyr::mutate(residue = list(seq(.data$start, .data$end))) %>%
       dplyr::ungroup() %>%
@@ -413,7 +416,8 @@ map_peptides_on_structure <- function(peptide_data, uniprot_id, pdb_id, chain, s
         end = {{ end_in_pdb }}
       ) %>%
       dplyr::distinct({{ uniprot_id }}, {{ chain }}, .data$start, .data$end, {{ map_value }}) %>%
-      dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01") * 50 + 50, digits = 2)) %>% # Scale values between 50 and 100
+      dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01") * 50 + 50, digits = 2)) %>%
+      # Scale values between 50 and 100
       group_by({{ chain }}, .data$start, .data$end) %>%
       dplyr::mutate(residue = list(seq(.data$start, .data$end))) %>%
       dplyr::ungroup() %>%

@@ -1,5 +1,23 @@
 #' Calculate differential abundance between conditions
 #'
+#' `r lifecycle::badge('deprecated')`
+#' This function was deprecated due to its name changing to `calculate_diff_abundance()`.
+#'
+#' @keywords internal
+#' @export
+diff_abundance <-
+  function(...) {
+    # This function has been renamed and is therefore deprecated.
+    lifecycle::deprecate_warn("0.2.0",
+      "diff_abundance()",
+      "calculate_diff_abundance()",
+      details = "This function has been renamed."
+    )
+
+    calculate_diff_abundance(...)
+  }
+#' Calculate differential abundance between conditions
+#'
 #' Performs differential abundance calculations and statistical hypothesis tests on data frames with protein, peptide or precursor data. Different methods for statistical testing are available.
 #'
 #' @param data A data frame containing at least the input variables that are required for the selected method. Ideally the output of \code{assign_missingness} or \code{impute} is used.
@@ -11,7 +29,7 @@
 #' Is not required if \code{method = "t-test_mean_sd"}.
 #' @param comparison The column in the data frame containing comparison information of treatment/reference condition pairs. Can be obtained by
 #' calling \code{assign_missingness}. Comparisons need to be in the form condition1_vs_condition2, meaning two compared conditions are
-#' separated by "_vs_". This column determines for which condition pairs differential abundances are calculated.
+#' separated by \code{"_vs_"}. This column determines for which condition pairs differential abundances are calculated.
 #' Is not required if \code{method = "t-test_mean_sd"}, in that case please provide a reference condition with the ref_condition argument.
 #' @param mean The column in the data frame containing mean values for two conditions. Is only required if \code{method = "t-test_mean_sd"}.
 #' @param sd The column in the data frame containing standard deviations for two conditions. Is only required if \code{method = "t-test_mean_sd"}.
@@ -43,7 +61,7 @@
 #' \code{sd_control} and \code{sd_treated} columns contain the standard deviations for the reference and treatment condition, respectively.
 #' \code{n_control} and \code{n_treated} columns contain the numbers of samples for the reference and treatment condition, respectively. The \code{std_error}
 #' column contains the standard error of the differential abundances. \code{t_statistic} contains the t_statistic for the t-test.}
-#' \item{"moderated_t-test": }{\code{CI_2.5} and \code{CI_97.5} give the 2.5% and 97.5% confidence interval borders for the differential abundance. \code{avg_abundance}
+#' \item{"moderated_t-test": }{\code{CI_2.5} and \code{CI_97.5} contain the 2.5% and 97.5% confidence interval borders for differential abundances. \code{avg_abundance}
 #' contains average abundances for treatment/reference pairs (mean of the two group means). \code{t_statistic} contains the t_statistic for the t-test. \code{B} The
 #' B-statistic is the log-odds that the protein, peptide or precursor (depending on \code{grouping}) has a differential abundance between the two groups. Suppose B=1.5.
 #' The odds of differential abundance is exp(1.5)=4.48, i.e, about four and a half to one. The probability that there is a differential abundance is 4.48/(1+4.48)=0.82,

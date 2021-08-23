@@ -35,7 +35,8 @@ Imports:
     utils,
     grDevices,
     curl,
-    readr
+    readr,
+    lifecycle
 RoxygenNote: 7.1.1
 Suggests: 
     testthat,
@@ -54,7 +55,6 @@ Suggests:
     parallel,
     seriation,
     drc,
-    naniar, 
     httr,
     igraph,
     stringi, 
@@ -64,3 +64,4 @@ Depends:
 URL: https://github.com/jpquast/protti, https://jpquast.github.io/protti/
 BugReports: https://github.com/jpquast/protti/issues
 VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)

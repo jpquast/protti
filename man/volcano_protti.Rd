@@ -32,7 +32,7 @@ volcano_protti(
 \item{significance}{the column containing the p-value or adjusted p-value for the corresponding fold changes. P-value is ideally adjusted using e.g. Benjamini-Hochberg correction.}
 
 \item{method}{character verctor with the method used for the plot. \code{method = "target"} highlights your protein, proteins or any other entities of
-interest (specified in the `target` argument) in the volcano plot. \code{method = "significant"} highlights all significantly changing entities.}
+interest (specified in the \code{target} argument) in the volcano plot. \code{method = "significant"} highlights all significantly changing entities.}
 
 \item{target_column}{optional column required for \code{method = "target"}, can contain for example protein identifiers or a logical that marks
 certain proteins such as proteins that are known to interact with the treatment. Can also be provided if \code{method = "significant"}

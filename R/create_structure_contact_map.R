@@ -100,7 +100,8 @@ create_structure_contact_map <- function(data, id, chain = NULL, start_in_pdb = 
         dplyr::mutate(
           start = {{ start_in_pdb }},
           end = {{ end_in_pdb }}
-        ) %>% # do this so start and end position can be the same column.
+        ) %>%
+        # do this so start and end position can be the same column.
         dplyr::distinct({{ id }}, {{ chain }}, .data$start, .data$end) %>%
         group_by({{ id }}, {{ chain }}, .data$start, .data$end) %>%
         dplyr::mutate(residue = ifelse(!is.na(.data$start), list(seq(.data$start, .data$end)), list(NA))) %>%

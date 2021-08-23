@@ -74,7 +74,8 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
     dplyr::mutate(
       group_number = dplyr::cur_group_id(),
       name = {{ protein_id }}
-    ) %>% # we do this in preparation for faceting later.
+    ) %>%
+    # we do this in preparation for faceting later.
     dplyr::ungroup() %>%
     dplyr::mutate(group_number = ceiling(.data$group_number / 20))
 

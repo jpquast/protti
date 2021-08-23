@@ -15,7 +15,10 @@
 
 ## Renamed functions
  
-* `diff_abundance()` has been renamed to `calculate_diff_abundance()`. `diff_abundance()` still works but it is recommended to use `calculate_diff_abundance()` instead.
+ Multiple functions have been renamed. More function follow the convention that they should be verbs. Other functions are more similar to each other in their naming. The old functions still work but they are deprecated and will be removed in the future. Please use the new versions instead.
+ 
+* `diff_abundance()` has been renamed to `calculate_diff_abundance()`. 
+* `network_analysis()` has been renamed to `create_functional_network()`. 
 
 ## Bug fixes and documentation updates
 

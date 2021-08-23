@@ -77,8 +77,7 @@
 #' }
 #' fit2 <- stats::optim(theta2, lognorm)
 #' fit2
-create_synthetic_data <- function(
-                                  n_proteins,
+create_synthetic_data <- function(n_proteins,
                                   frac_change,
                                   n_replicates,
                                   n_conditions,
@@ -141,7 +140,8 @@ create_synthetic_data <- function(
     proteins_replicates_change <- proteins_replicates %>%
       dplyr::mutate(change = stringr::str_extract(.data$protein, pattern = "\\d+") %in% 1:n_change) %>%
       dplyr::group_by(.data$protein) %>%
-      dplyr::mutate(n_change_peptide = ifelse(.data$change == TRUE, ceiling(stats::rgamma(1, shape = 0.7, rate = 0.4)), 0)) %>% # sample number of significant peptides based on gamma distribution
+      dplyr::mutate(n_change_peptide = ifelse(.data$change == TRUE, ceiling(stats::rgamma(1, shape = 0.7, rate = 0.4)), 0)) %>%
+      # sample number of significant peptides based on gamma distribution
       dplyr::mutate(n_change_peptide = ifelse(.data$n_change_peptide >= .data$n, .data$n, .data$n_change_peptide)) %>%
       dplyr::mutate(change_peptide = .data$change & stringr::str_extract(.data$peptide, pattern = "\\d+$") %in% 1:unique(.data$n_change_peptide)) %>%
       dplyr::mutate(effect = stats::rnorm(dplyr::n(), mean = 0, sd = effect_sd)) %>%
@@ -163,7 +163,8 @@ create_synthetic_data <- function(
     proteins_replicates_change <- proteins_replicates %>%
       dplyr::mutate(change = stringr::str_extract(.data$protein, pattern = "\\d+") %in% 1:n_change) %>%
       dplyr::group_by(.data$protein) %>%
-      dplyr::mutate(n_change_peptide = ifelse(.data$change == TRUE, ceiling(stats::rgamma(1, shape = 0.7, rate = 0.4)), 0)) %>% # sample number of significant peptides based on gamma distribution
+      dplyr::mutate(n_change_peptide = ifelse(.data$change == TRUE, ceiling(stats::rgamma(1, shape = 0.7, rate = 0.4)), 0)) %>%
+      # sample number of significant peptides based on gamma distribution
       dplyr::mutate(n_change_peptide = ifelse(.data$n_change_peptide >= .data$n, .data$n, .data$n_change_peptide)) %>%
       dplyr::mutate(change_peptide = .data$change & stringr::str_extract(.data$peptide, pattern = "\\d+$") %in% 1:unique(.data$n_change_peptide)) %>%
       dplyr::left_join(condition_concentration, by = "condition") %>%
@@ -195,7 +196,8 @@ create_synthetic_data <- function(
     dplyr::mutate(peptide_intensity_missing = ifelse(stats::runif(dplyr::n()) > .data$dropout_probability, .data$peptide_intensity, NA)) %>%
     dplyr::select(-.data$dropout_probability) %>%
     dplyr::group_by(.data$peptide) %>%
-    dplyr::mutate(isna = sum(!is.na(.data$peptide_intensity_missing))) %>% # remove peptides for which every intensity is NA after dropout
+    dplyr::mutate(isna = sum(!is.na(.data$peptide_intensity_missing))) %>%
+    # remove peptides for which every intensity is NA after dropout
     dplyr::filter(.data$isna > 0) %>%
     dplyr::select(-.data$isna) %>%
     dplyr::ungroup()

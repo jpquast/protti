@@ -216,7 +216,7 @@ You can test your data set for gene ontology (GO) term enrichment (`go_enrichmen
 
 If you know which proteins bind or interact with your specific treatment, you can provide your own list of true positive hits and check if these are enriched in your significant hits by using **protti**'s `treatment_enrichment()` function. For our LiP-MS experiment using rapamycin we are probing direct interaction with proteins in contrast to functional effects. The only protein that rapamycin is known to bind to is FKBP12 and testing the significance of enrichment for a single or even a few proteins is not appropriate. However, testing for enrichment is especially useful if your treatment affects many proteins, since it can help you to reduce the complexity of your result.
 
-The [STRING](https://academic.oup.com/nar/article/47/D1/D607/5198476) database provides a good resource for the analysis of protein interaction networks. It is often very useful to check for interactions within your significant hits. For LiP-MS data this sometimes explains why proteins that do not directly interact with your treatment are still significantly affected. With `network_analysis()`, **protti** provides a useful wrapper around some [`STRINGdb`](http://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html) package functions. 
+The [STRING](https://academic.oup.com/nar/article/47/D1/D607/5198476) database provides a good resource for the analysis of protein interaction networks. It is often very useful to check for interactions within your significant hits. For LiP-MS data this sometimes explains why proteins that do not directly interact with your treatment are still significantly affected. With `analyse_functional_network()`, **protti** provides a useful wrapper around some [`STRINGdb`](http://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html) package functions. 
 
 ## Annotation of data
 
@@ -278,7 +278,7 @@ treatment_enrichment(fit_annotated,
 
 fit_annotated %>% 
   filter(passed_filter == TRUE) %>% # only analyse hits that were significant
-  network_analysis(protein_id = pg_protein_accessions,
+  analyse_functional_network(protein_id = pg_protein_accessions,
                    string_id = database_string, # column from UniProt containing STRING IDs
                    organism_id = 9606, # tax ID can be found in function documentation or STRING website
                    binds_treatment = binds_treatment,

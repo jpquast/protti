@@ -169,6 +169,40 @@ test_that("calculate_diff_abundance works", {
 })
 
 if (Sys.getenv("TEST_PROTTI") == "true") {
+  test_that("deprecated diff_abundance works", {
+    diff_deprecated <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, method = "t-test", retain_columns = c(protein))
+    expect_is(diff_deprecated, "data.frame")
+    expect_equal(nrow(diff_deprecated), 601)
+    expect_equal(ncol(diff_deprecated), 9)
+    expect_equal(round(min(diff_deprecated$adj_pval, na.rm = TRUE), digits = 9), 0.00758761)
+
+    if (Sys.getenv("TEST_PROTTI") == "true") {
+      data_mean_sd <- missing_data %>%
+        tidyr::drop_na() %>%
+        dplyr::group_by(condition, peptide, protein) %>%
+        dplyr::summarise(mean = mean(normalised_intensity_log2, na.rm = TRUE), sd = sd(normalised_intensity_log2, na.rm = TRUE), n = dplyr::n(), .groups = "drop")
+
+      diff_mean_sd_deprecated <- diff_abundance(data = data_mean_sd, condition = condition, grouping = peptide, mean = mean, sd = sd, n_samples = n, ref_condition = "condition_1", method = "t-test_mean_sd", retain_columns = c(protein))
+      diff_moderated_deprecated <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, method = "moderated_t-test", retain_columns = c(protein))
+      diff_proDA_deprecated <- diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, method = "proDA", retain_columns = c(protein))
+
+      expect_is(diff_mean_sd_deprecated, "data.frame")
+      expect_is(diff_moderated_deprecated, "data.frame")
+      expect_is(diff_proDA_deprecated, "data.frame")
+      expect_equal(nrow(diff_mean_sd_deprecated), 599)
+      expect_equal(nrow(diff_moderated_deprecated), 601)
+      expect_equal(nrow(diff_proDA_deprecated), 601)
+      expect_equal(ncol(diff_mean_sd_deprecated), 14)
+      expect_equal(ncol(diff_moderated_deprecated), 13)
+      expect_equal(ncol(diff_proDA_deprecated), 12)
+      expect_equal(round(min(diff_mean_sd_deprecated$adj_pval, na.rm = TRUE), digits = 9), 0.00758761)
+      expect_equal(round(min(diff_moderated_deprecated$adj_pval, na.rm = TRUE), digits = 9), 5.1129e-05)
+      expect_equal(round(min(diff_proDA_deprecated$adj_pval, na.rm = TRUE), digits = 5), 0.00125)
+    }
+  })
+}
+
+if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("plot_pval_distribution works", {
     p <- plot_pval_distribution(
       diff,

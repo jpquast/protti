@@ -57,7 +57,8 @@ go_enrichment <- function(data, protein_id, is_significant, go_annotations_unipr
       dplyr::ungroup() %>%
       dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}) %>%
       dplyr::group_by({{ protein_id }}) %>%
-      dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>% # do this to remove accidental double annotations
+      dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
+      # do this to remove accidental double annotations
       dplyr::distinct()
   }
   if (!missing(go_annotations_uniprot)) {
@@ -79,7 +80,7 @@ go_enrichment <- function(data, protein_id, is_significant, go_annotations_unipr
     go_data <- fetch_go(organism_id)
     # if the provided protein_ids are not from uniprot but SGD, they are converted to uniprot
     if (!any(dplyr::pull(data, {{ protein_id }}) %in% go_data$db_id)) {
-      if (organism_id != "559292") stop("The provided protein IDs are not UniProt or SGD IDs or the corresponding organism is wrong. 
+      if (organism_id != "559292") stop("The provided protein IDs are not UniProt or SGD IDs or the corresponding organism is wrong.
                                        Please provide IDs in the correct format and check if you used the right organism ID.")
       annotation <- fetch_uniprot_proteome(559292, columns = c("id", "database(SGD)"), reviewed = TRUE) %>%
         dplyr::mutate(database_sgd = stringr::str_replace(.data$database_sgd, pattern = ";", replacement = ""))
@@ -93,13 +94,15 @@ go_enrichment <- function(data, protein_id, is_significant, go_annotations_unipr
 
   if (!missing(go_data) & missing(go_annotations_uniprot)) {
     if (missing(ontology_type)) stop("Please provide the ontology_type argument!")
-    ontology_type <- switch(ontology_type, "MF" = "F",
+    ontology_type <- switch(ontology_type,
+      "MF" = "F",
       "BP" = "P",
       "CC" = "C"
     )
 
     go_data <- go_data %>%
-      dplyr::filter(.data$ontology == ontology_type) %>% # filter for right ontology
+      dplyr::filter(.data$ontology == ontology_type) %>%
+      # filter for right ontology
       dplyr::distinct(.data$go_id, .data$db_id) %>%
       dplyr::right_join(data, by = c("db_id" = rlang::as_name(rlang::enquo(protein_id)))) %>%
       dplyr::rename(protein_id = .data$db_id)
@@ -112,7 +115,8 @@ go_enrichment <- function(data, protein_id, is_significant, go_annotations_unipr
     dplyr::group_by({{ is_significant }}) %>%
     dplyr::mutate(n_sig = dplyr::n_distinct(.data$protein_id)) %>%
     dplyr::group_by(.data$go_id, {{ is_significant }}) %>%
-    dplyr::mutate(n_has_process = dplyr::n_distinct(.data$protein_id)) %>% # count number of proteins with process for sig and non-sig proteins
+    dplyr::mutate(n_has_process = dplyr::n_distinct(.data$protein_id)) %>%
+    # count number of proteins with process for sig and non-sig proteins
     dplyr::distinct(.data$go_id, {{ is_significant }}, .data$n_sig, .data$n_has_process) %>%
     dplyr::ungroup() %>%
     tidyr::complete(.data$go_id, tidyr::nesting(!!rlang::ensym(is_significant), n_sig), fill = list(n_has_process = 0))

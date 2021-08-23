@@ -52,7 +52,8 @@ kegg_enrichment <- function(data, protein_id, is_significant, pathway_id = pathw
     tidyr::nest(kegg_term = .data$kegg_term) %>%
     dplyr::distinct({{ protein_id }}, {{ is_significant }}, .data$kegg_term) %>%
     dplyr::group_by({{ protein_id }}) %>%
-    dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>% # do this to remove accidental double annotations
+    dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
+    # do this to remove accidental double annotations
     dplyr::distinct()
 
   if (sum(dplyr::pull(data, {{ is_significant }})) == 0) {
@@ -66,7 +67,8 @@ kegg_enrichment <- function(data, protein_id, is_significant, pathway_id = pathw
     tidyr::unnest(.data$kegg_term) %>%
     dplyr::mutate(kegg_term = stringr::str_trim(.data$kegg_term)) %>%
     dplyr::group_by(.data$kegg_term, {{ is_significant }}) %>%
-    dplyr::mutate(n_has_pathway = dplyr::n()) %>% # count number of proteins with process for sig and non-sig proteins
+    dplyr::mutate(n_has_pathway = dplyr::n()) %>%
+    # count number of proteins with process for sig and non-sig proteins
     dplyr::distinct(.data$kegg_term, {{ is_significant }}, .data$n_sig, .data$n_has_pathway) %>%
     dplyr::ungroup() %>%
     tidyr::complete(kegg_term, tidyr::nesting(!!rlang::ensym(is_significant), n_sig), fill = list(n_has_pathway = 0))

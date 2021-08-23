@@ -20,11 +20,11 @@ map_peptides_on_structure(
 }
 \arguments{
 \item{peptide_data}{a data frame containing input columns to this function. If structure or prediction files should be fetched automatically, please provide
-column names to the following arguments: **uniprot_id**, **pdb_id**, **chain**, **start_in_pdb**, **end_in_pdb**, **map_value**. If no PDB structure
+column names to the following arguments: \strong{uniprot_id}, \strong{pdb_id}, \strong{chain}, \strong{start_in_pdb}, \strong{end_in_pdb}, \strong{map_value}. If no PDB structure
 for a protein is available the \code{pdb_id} and \code{chain} column should contain NA at these positions.
 If a structure or prediction file is provided in the \code{structure_file} argument, this data frame should only contain information associated with the provided structure. In case of
-a user provided structure, column names should be provided to the following arguments: **uniprot_id**, **chain**, **start_in_pdb**, **end_in_pdb**,
-**map_value**.}
+a user provided structure, column names should be provided to the following arguments: \strong{uniprot_id}, \strong{chain}, \strong{start_in_pdb}, \strong{end_in_pdb},
+\strong{map_value}.}
 
 \item{uniprot_id}{a character column in the \code{peptide_data} data frame that contains UniProt identifiers for a corresponding peptide, protein region or amino acid.}
 
@@ -33,7 +33,7 @@ If a protein prediction should be fetched from AlphaFold, this column should con
 
 \item{chain}{a character column in the \code{peptide_data} data frame that contains the name of the chain from the PDB structure in which the peptide, protein region or amino acid is found.
 If a protein prediction should be fetched from AlphaFold, this column should contain NA. If an AlphaFold prediction is provided to the \code{structure_file}
-argument the chain should be provided as usual (All AlphaFold predictions only have chain A). **Important:** please provide the author defined chain
+argument the chain should be provided as usual (All AlphaFold predictions only have chain A). \strong{Important:} please provide the author defined chain
 definitions for both ".cif" and ".pdb" files. When the output of the \code{find_peptide_in_structure} function is used as the input for this function, this corresponds to the \code{auth_asym_id} column.}
 
 \item{start_in_pdb}{a numeric column in the \code{peptide_data} data frame that contains start positions for peptides, protein regions or amino acids in the corresponding PDB structure or AlphaFold prediction.

@@ -161,7 +161,8 @@ find_peptide_in_structure <- function(peptide_data, peptide, start, end, uniprot
       label_seq_id_end = ifelse(is.na(.data$pdb_ids), {{ end }}, .data$label_seq_id_end),
       auth_seq_id_start = ifelse(is.na(.data$pdb_ids), {{ start }}, .data$auth_seq_id_start),
       auth_seq_id_end = ifelse(is.na(.data$pdb_ids), {{ end }}, .data$auth_seq_id_end)
-    ) %>% # Make structure positions equal to start and end positions if no structure is available so this can be used for predictions
+    ) %>%
+    # Make structure positions equal to start and end positions if no structure is available so this can be used for predictions
     dplyr::distinct()
 
   if (!missing(retain_columns)) {

@@ -1,5 +1,23 @@
 #' Analyse protein interaction network for significant hits
 #'
+#' `r lifecycle::badge('deprecated')`
+#' This function was deprecated due to its name changing to `analyse_functional_network()`.
+#'
+#' @keywords internal
+#' @export
+network_analysis <-
+  function(...) {
+    # This function has been renamed and is therefore deprecated.
+    lifecycle::deprecate_warn("0.2.0",
+      "network_analysis()",
+      "analyse_functional_network()",
+      details = "This function has been renamed."
+    )
+
+    analyse_functional_network(...)
+  }
+#' Analyse protein interaction network for significant hits
+#'
 #' The STRING database provides a resource for known and predicted protein-protein interactions. The type of
 #' interactions include direct (physical) and indirect (functional) interactions. Through the R package
 #' \code{STRINGdb} this resource if provided to R users. This function provides a convenient wrapper for
@@ -32,7 +50,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' network_analysis(
+#' analyse_functional_network(
 #'   data,
 #'   protein_id = pg_protein_accessions,
 #'   string_id = database_string,
@@ -41,7 +59,14 @@
 #'   plot = TRUE
 #' )
 #' }
-network_analysis <- function(data, protein_id, string_id, organism_id, score_threshold = 900, binds_treatment = NULL, halo_color = NULL, plot = TRUE) {
+analyse_functional_network <- function(data,
+                                      protein_id,
+                                      string_id,
+                                      organism_id,
+                                      score_threshold = 900,
+                                      binds_treatment = NULL,
+                                      halo_color = NULL,
+                                      plot = TRUE) {
   if (!requireNamespace("STRINGdb", quietly = TRUE)) {
     stop("Package \"STRINGdb\" is needed for this function to work. Please install it.", call. = FALSE)
   }

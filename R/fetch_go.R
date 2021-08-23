@@ -16,7 +16,8 @@
 fetch_go <- function(organism_id) {
   organism_id <- match.arg(organism_id, c("9606", "559292", "83333"))
 
-  organism_url <- switch(organism_id, "9606" = "http://current.geneontology.org/annotations/goa_human.gaf.gz",
+  organism_url <- switch(organism_id,
+    "9606" = "http://current.geneontology.org/annotations/goa_human.gaf.gz",
     "559292" = "http://current.geneontology.org/annotations/sgd.gaf.gz",
     "83333" = "http://current.geneontology.org/annotations/ecocyc.gaf.gz"
   )
