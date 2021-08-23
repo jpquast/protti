@@ -11,20 +11,23 @@
 #' NAs. Furthermore, specific residue positions can be provided in start and end columns if the selection should be further reduced. It is not
 #' recommended to create full contact maps for more than a few structures due to time and memory reasons. If contact maps are created only for
 #' small regions it is possible to create multiple maps at once.
-#' @param id a column in the \code{data} data frame that contains PDB or UniProt IDs for structures or AlphaFold predictions of which contact maps should be created. If an own structure
-#' is provided to the \code{structure_file} argument, this column should contain "my_structure" as content.
-#' @param chain an optional column in the \code{data} data frame that contains chain identifiers for the structure file. The author defined identifiers
-#' should be used. Distances will be only calculated between the provided chains and the rest of the structure.
+#' @param id a column in the \code{data} data frame that contains PDB or UniProt IDs for structures or AlphaFold predictions of which contact maps 
+#' should be created. If a structure not downloaded directly from PDB is provided (i.e. a locally stored structure file) to the \code{structure_file} 
+#' argument, this column should contain "my_structure" as content.
+#' @param chain an optional column in the \code{data} data frame that contains chain identifiers for the structure file. Identifiers defined by the structure
+#' author should be used. Distances will be only calculated between the provided chains and the rest of the structure.
 #' @param start_in_pdb an optional column in the \code{data} data frame that contains start positions of regions which for distances should be calculated.
 #' This needs to be always provided in combination with a corresponding end position in \code{end_in_pdb} and chain in \code{chain}. The position should
-#' match the positioning based on author defined positioning. For PDB structures this information can be obtained from the \code{find_peptide_in_structure} function. The
-#' corresponding column in the output is called \code{auth_seq_id_start}. If an AlphaFold prediction is provided, UniProt positions should be used.
+#' match the positioning defined by the structure author. For PDB structures this information can be obtained from the 
+#' \code{find_peptide_in_structure} function. The corresponding column in the output is called \code{auth_seq_id_start}. If an AlphaFold prediction is 
+#' provided, UniProt positions should be used.
 #' @param end_in_pdb an optional column in the \code{data} data frame that contains end positions of regions which for distances should be calculated.
 #' This needs to be always provided in combination with a corresponding start position in \code{start_in_pdb} and chain in \code{chain}. The position should
-#' match the positioning based on author defined positioning. For PDB structures this information can be obtained from the \code{find_peptide_in_structure} function. The
+#' match the positioning defined by the structure author. For PDB structures this information can be obtained from the \code{find_peptide_in_structure} function. The
 #' corresponding column in the output is called \code{auth_seq_id_end}. If an AlphaFold prediction is provided, UniProt positions should be used.
-#' @param distance_cutoff a numeric value specifying the distance cutoff in Angstrom. All values greater than the cutoff will be discarded. This can reduce
-#' the size of the contact map drastically and is therefore recommended. The default value is 10.
+#' @param distance_cutoff a numeric value specifying the distance cutoff in Angstrom. All values for pairwise comparisons are calculated but only values 
+#' smaller than this cutoff will be returned in the output. If a cutoff of e.g. 5 is selected then only residues with a distance of 5 Angstrom and less are returned. 
+#' Using a small value can reduce the size of the contact map drastically and is therefore recommended. The default value is 10.
 #' @param pdb_model_number_selection a numeric vector specifying which models from the structure files should be considered for contact maps. E.g. NMR
 #' models often have many models in one file. The default for this argument is c(0, 1). This means the first model of each structure file is selected for contact map
 #' calculations. For AlphaFold predictions the model number is 0 (only .pdb files), therefore this case is also included here.

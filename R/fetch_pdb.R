@@ -18,7 +18,7 @@
 #' protein sequence. \code{entity_beg_seq_id} is a residue ID based on the standardised convention for mmCIF files.}
 #' \item{auth_seq_id: }{Residue identifier provided by the author of the structure in order to match the identification used in the publication that
 #' describes the structure. This character vector has the same length as the \code{pdb_sequence} and each position is the identifier for the matching amino
-#' acid position in \code{pdb_sequence}. The contained values are not necessarily a numbers and the values do not have to be positive.}
+#' acid position in \code{pdb_sequence}. The contained values are not necessarily numbers and the values do not have to be positive.}
 #' }
 #' @import dplyr
 #' @import progress

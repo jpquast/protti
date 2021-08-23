@@ -57,7 +57,7 @@ name of the file can be chosen using the \code{export_name} argument. Default is
 \item{export_name}{a character vector providing the name of the exported file if \code{export = TRUE}. Default is \code{export_name = "woods_plots"}}
 }
 \value{
-A list containing Woods' plot is returned. Plotting peptide or precursor fold changes across protein sequence.
+A list containing Woods' plots is returned. Plotting peptide or precursor fold changes across protein sequence.
 }
 \description{
 Creates a Woods' plot that plots log2 fold change of peptides or precursors along the protein sequence.

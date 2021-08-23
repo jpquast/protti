@@ -5,8 +5,8 @@
 #' @param uniprot_ids an optional character vector of UniProt identifiers for which predictions should be fetched. This argument is mutually exclusive
 #' to the \code{organism_name} argument.
 #' @param organism_name an optional character variable providing the name of an organism for which all available AlphaFold predictions should be
-#' retreived. The name should be the capitalize scientific species name (e.g. "Homo sapiens"). **Note:** Some organisms contain a lot of predictions
-#' which might take a considerable amount of time and memory to fetch. Therefore you should be sure that your system can handle fetching predictions for
+#' retreived. The name should be the capitalised scientific species name (e.g. "Homo sapiens"). **Note:** Some organisms contain a lot of predictions
+#' which might take a considerable amount of time and memory to fetch. Therefore, you should be sure that your system can handle fetching predictions for
 #' these organisms. This argument is mutually exclusive to the \code{uniprot_ids} argument.
 #' @param timeout a numeric value specifying the time in seconds until the download of an organism archive times out. The default is 3600 seconds.
 #' @param return_data_frame logical, if true, a data frame instead of a list is returned. It is recommended to only use this if not many

@@ -7,7 +7,7 @@
 # # missing from peptides.
 # pgk <- read_protti("pgk.csv")
 #
-# # The ptsI data set is not part of the supplementary tables. The raw data is included in the pride repository. We exported the Spectronaut report
+# # The ptsI data set is not part of the supplementary tables. The raw data is included in the PRIDE repository. We exported the Spectronaut report
 # # and analysed that data using prottis standard pipeline.
 # ptsi <- read_protti("ptsi.csv")
 #

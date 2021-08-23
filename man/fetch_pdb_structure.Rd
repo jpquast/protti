@@ -26,10 +26,10 @@ must be followed by a + or - character. Example values: "C", "Cu2+", "H(SDS)", "
 \item{label_atom_id: }{Uniquely identifies every atom for the given residue following the standardised convention for mmCIF files.
 Example values: "CA", "HB1", "CB", "N"}
 \item{label_comp_id: }{A chemical identifier for the residue. For protein polymer entities, this is the three- letter code for the amino acid.
-For nucleic acid polymer entities, this is the one-letter code for the base. Example values: "ala", "val" , "A", "C".}
+For nucleic acid polymer entities, this is the one-letter code for the base. Example values: "ala", "val", "A", "C".}
 \item{label_asym_id: }{Chain identifier following the standardised convention for mmCIF files. Example values: "1", "A", "2B3".}
 \item{entity_id: }{Records details about the molecular entities that are present in the crystallographic structure. Usually all
-different types of molecular entities such as polymer entities, non-polymer entities or waters are numbered once for each structure. Each type of
+different types of molecular entities such as polymer entities, non-polymer entities or water molecules are numbered once for each structure. Each type of
 non-polymer entity has its own number. Thus, the highest number in this column represents the number of different molecule types in the structure.}
 \item{label_seq_id: }{Uniquely and sequentially identifies residues for each \code{label_asym_id}. This is always a number and
 the sequence of numbers always progresses in increasing numerical order.}
