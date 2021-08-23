@@ -80,13 +80,14 @@ The output of the `create_synthetic_data()` function is modeled after real LiP-M
 Please note that generally, quality control should be conducted on raw unfiltered data (the direct output of your search engine of choice).
 
 ```{r create_synthetic_data, eval = test_protti}
-set.seed(123) # by setting the seed we are making sure that the random object generation can be reproduced
+# by setting the seed we are making sure that the random object generation can be reproduced
+set.seed(123) 
 
 data <- create_synthetic_data(n_proteins = 100,
                               frac_change = 0.05,
                               n_replicates = 3,
                               n_conditions = 2,
-                              method = "random_effect",
+                              method = "effect_random",
                               additional_metadata = TRUE)
 
 ```
@@ -114,7 +115,8 @@ The "combined" group of CVs contains CVs across all samples and not only across 
 
 ```{r qc_cvs, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 input <- data %>%
-  mutate(raw_intensity = 2^peptide_intensity_missing) # as the data is log2 transformed, we need to backtransform it before calculating the CVs
+  # as the data is log2 transformed, we need to backtransform it before calculating the CVs
+  mutate(raw_intensity = 2^peptide_intensity_missing) 
 
 qc_cvs(data = input,
        grouping = peptide,

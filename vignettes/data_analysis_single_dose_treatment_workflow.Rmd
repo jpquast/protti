@@ -241,7 +241,13 @@ diff_abundance_data <- data_filtered_uniprot %>%
     ref_condition = "control",
     completeness_MAR = 0.7,
     completeness_MNAR = 0.25,
-    retain_columns = c(pg_protein_accessions, go_molecular_function, database_string, start, end, length, coverage)
+    retain_columns = c(pg_protein_accessions, 
+                       go_molecular_function, 
+                       database_string, 
+                       start, 
+                       end, 
+                       length, 
+                       coverage)
   ) %>%
   calculate_diff_abundance(
     sample = r_file_name,
@@ -251,7 +257,13 @@ diff_abundance_data <- data_filtered_uniprot %>%
     missingness = missingness,
     comparison = comparison,
     method = "t-test",
-    retain_columns = c(pg_protein_accessions, go_molecular_function, database_string, start, end, length, coverage)
+    retain_columns = c(pg_protein_accessions, 
+                       go_molecular_function, 
+                       database_string, 
+                       start, 
+                       end, 
+                       length, 
+                       coverage)
   ) 
 ```
 
@@ -388,8 +400,10 @@ If you know all known interactors of your specific treatment you can check for a
 
 ```{r additional_functions, eval=FALSE}
 diff_abundance_significant <- diff_abundance_data %>%
-  mutate(is_significant = ifelse((adj_pval < 0.01 & abs(diff) > 1), TRUE, FALSE)) %>% # mark significant peptides
-  mutate(binds_treatment = pg_protein_accessions == "P62942") # mark true positive hits
+  # mark significant peptides
+  mutate(is_significant = ifelse((adj_pval < 0.01 & abs(diff) > 1), TRUE, FALSE)) %>% 
+  # mark true positive hits
+  mutate(binds_treatment = pg_protein_accessions == "P62942") 
 
 ### GO enrichment using "molecular function" annotation from UniProt
 
@@ -413,15 +427,17 @@ analyse_functional_network(data = network_input,
 
 ### KEGG pathway enrichment
 
-# First you need to load KEGG pathway annotations from the KEGG database for your specific organism of interest.
-# In this case HeLa cells were used, therefore the organism of interest is homo sapiens (hsa)
+# First you need to load KEGG pathway annotations from the KEGG database 
+# for your specific organism of interest. In this case HeLa cells were 
+# used, therefore the organism of interest is homo sapiens (hsa)
 
 kegg <- fetch_kegg(species = "hsa")
 
 # Next we need to annotate our data with KEGG pathway IDs and perform enrichment analysis
 
 diff_abundance_significant %>% 
-  left_join(kegg, by = c("pg_protein_accessions" = "uniprot_id")) %>% # columns containing proteins IDs are named differently
+  # columns containing proteins IDs are named differently
+  left_join(kegg, by = c("pg_protein_accessions" = "uniprot_id")) %>% 
   kegg_enrichment(protein_id = pg_protein_accessions,
                   is_significant = is_significant,
                   pathway_id = pathway_id,

@@ -106,12 +106,15 @@ In this section we will show you how to read in the file with `read_protti()` an
 evidence  <- read_protti(filename = "yourpath/evidence.txt")
 
 evidence_proteotypic <- evidence %>%
+  # adds new column with logicals that are TRUE if the peptide can be assigned 
+  # to only one protein and FALSE if it can be assigned to multiple
   mutate(is_proteotypic = str_detect(
     string = proteins,
     pattern = ";",
     negate = TRUE
-  )) %>%# adds new column with logicals that are TRUE if the peptide can be assigned to only one protein and FALSE if it can be assigned to multiple
-  mutate(is_contaminant = ifelse(potential_contaminant == "+", TRUE, FALSE)) # adds new column with logicals indicating if peptide is coming from a potential contaminant
+  )) %>%
+  # adds new column with logicals indicating if peptide is coming from a potential contaminant
+  mutate(is_contaminant = ifelse(potential_contaminant == "+", TRUE, FALSE)) 
 
 # Make an annotation data frame and merge it with your data frame to obtain conditions
 # We are annotating sample 1-3 as controls and samples 4-6 as treated conditions
@@ -150,7 +153,11 @@ We will filter the data and use `tidyr`'s `pivot_longer()` to change the format 
 ```{r MaxQuant_protein, eval=FALSE}
 # To read in your own data you can use read_protti()
 protein_groups  <- read_protti(filename = "yourpath/proteinGroups.txt") %>%
-  mutate(is_potential_contaminant = ifelse(potential_contaminant == "+", TRUE, FALSE)) # adds new column with logicals indicating if protein is a potential contaminant, you can filter these out later on. You should also consider filtering out proteins that were "only identified by site" and reverse hits, as well as proteins with only one identified peptide
+  # adds new column with logicals indicating if protein is a potential contaminant, 
+  # you can filter these out later on. You should also consider filtering out proteins 
+  # that were "only identified by site" and reverse hits, as well as proteins with only 
+  # one identified peptide
+  mutate(is_potential_contaminant = ifelse(potential_contaminant == "+", TRUE, FALSE)) 
 
 # Change wide format to long format and create new columns called `r_file_name`and `intensity`
 protein_groups_long <- protein_groups %>%
@@ -208,14 +215,17 @@ You can add replicate and condition annotations in Skyline directly. However, we
 skyline_data <- read_protti(filename = "yourpath/skyline.csv")
 
 skyline_data_int <- skyline_data %>%
-  mutate(precursor = paste0(peptide_sequence, "_", charge)) %>% # create a column with precursor information
+  # create a column with precursor information
+  mutate(precursor = paste0(peptide_sequence, "_", charge)) %>% 
   group_by(replicate_name, precursor) %>%
-  mutate(sum_intensity = sum(area)) %>% # making a new column containing the summed up intensities of all transitions of one precursor
+  # making a new column containing the summed up intensities of all transitions of one precursor
+  mutate(sum_intensity = sum(area)) %>% 
   select(-c(product_mz, area)) %>% # removing the columns we don't need
   distinct() # removing duplicated rows from the data frame
 
 # Add annotation
-replicate_name <- c( # make sure that the names are the same name as in your report
+# make sure that the names are the same name as in your report
+replicate_name <- c( 
   "sample_1", 
   "sample_2",
   "sample_3",
@@ -292,7 +302,8 @@ pd_pep_long <- pd_pep_filtered %>%
     names_to = "file_name",
     values_to = "intensity"
   ) %>%
-  mutate(precursor = paste(sequence, modifications)) # combine peptide sequence and modifications to make a precursor column
+  # combine peptide sequence and modifications to make a precursor column
+  mutate(precursor = paste(sequence, modifications)) 
 
 # Make annotation data frame
 file_name <- c( # make sure that the names are the same name as in your report

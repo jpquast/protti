@@ -6,7 +6,7 @@ data <- create_synthetic_data(
   frac_change = 0.05,
   n_replicates = 3,
   n_conditions = 2,
-  method = "random_effect"
+  method = "effect_random"
 )
 
 random_proteins <- sample(unique(data$protein), size = 6)

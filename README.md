@@ -73,7 +73,7 @@ You can install the release version from
 `install.packages()` function.
 
 ``` r
-install.packages("protti")
+install.packages("protti", dependencies = TRUE)
 ```
 
 You can install the development version from
@@ -86,8 +86,17 @@ removing the comment sign (\#).
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("jpquast/protti")
+devtools::install_github("jpquast/protti", dependencies = TRUE)
 ```
+
+The `dependencies = TRUE` argument in both `install.packages()` and
+`devtools::install_github()` also installs suggested packages that are
+required for some functions to work. If this argument is not included
+functions that use a package that is not installed by default will throw
+an error and prompt the user to install the missing package. If you
+happen to run into problems during the installation of **protti** we
+recommend removing this argument and installing packages manually if
+they are needed for a certain function.
 
 ## Usage
 
@@ -181,11 +190,12 @@ data <- create_synthetic_data(n_proteins = 100,
                               frac_change = 0.05,
                               n_replicates = 4,
                               n_conditions = 2,
-                              method = "random_effect",
+                              method = "effect_random",
                               additional_metadata = FALSE)
 
-# The method "random_effect" as opposed to "dose-response" just randomly samples the change of significantly 
-# changing peptides for each condition. They do not follow any trend and can go in any direction.
+# The method "effect_random" as opposed to "dose-response" just randomly samples 
+# the extend of the change of significantly changing peptides for each condition. 
+# They do not follow any trend and can go in any direction.
 ```
 
 #### Clean and Normalise Data
@@ -261,8 +271,9 @@ data_missing <- normalised_data %>%
                      ref_condition = "condition_1",
                      retain_columns = c(protein, change_peptide))
 
-# Next to the columns it generates, assign_missingness only contains the columns you provide as input in its output. 
-# If you want to retain additional columns you can provide them in the retain_columns argument.
+# Next to the columns it generates, assign_missingness only contains the columns 
+# you provide as input in its output. If you want to retain additional columns you 
+# can provide them in the retain_columns argument.
 ```
 
 Note: Instead of “peptide” in the `grouping` argument you can provide
@@ -273,23 +284,21 @@ intensities.
 #### Calculate Differential Abundance and Significance
 
 For the calculation of abundance changes and the associated
-significances **protti** provides the function `diff_abundance()`. You
-can choose between different statistical methods. For this example we
-will chose a Welch’s t-test. Obtained p-values are adjusted for multiple
-testing using the Benjamini-Hochberg method ([Benjamini & Hochberg
-1995](http://www.math.tau.ac.il/~ybenja/MyPapers/benjamini_hochberg1995.pdf)).
+significances **protti** provides the function
+`calculate_diff_abundance()`. You can choose between different
+statistical methods. For this example we will chose a moderated t-test.
 
 ``` r
 result <- data_missing %>% 
-  diff_abundance(sample = sample,
-                 condition = condition,
-                 grouping = peptide,
-                 intensity_log2 = normalised_intensity_log2,
-                 missingness = missingness,
-                 comparison = comparison,
-                 filter_NA_missingness = TRUE,
-                 method = "t-test",
-                 retain_columns = c(protein, change_peptide))
+  calculate_diff_abundance(sample = sample,
+                           condition = condition,
+                           grouping = peptide,
+                           intensity_log2 = normalised_intensity_log2,
+                           missingness = missingness,
+                           comparison = comparison,
+                           filter_NA_missingness = TRUE,
+                           method = "moderated_t-test",
+                           retain_columns = c(protein, change_peptide))
 ```
 
 Next we can use a Volcano plot to visualize significantly changing

@@ -154,7 +154,9 @@ fit <- data_normalised %>%
              response = normalised_intensity_log2,
              dose = r_condition,
              filter = "post", 
-             retain_columns = c(pg_protein_accessions)) # make sure to retain columns that you need later but that are not part of the function
+             retain_columns = c(pg_protein_accessions)) 
+
+# make sure to retain columns that you need later but that are not part of the function
 ```
 
 If you have to fit many models this function may take about an hour or longer. If you have the computational resources you can speed this up by using `parallel_fit_drc_4p()`, a parallelised version of this function. 
@@ -183,7 +185,13 @@ If we examine all precursors based on their rank (calculated from correlation an
 ```{r result_analysis, eval = test_protti, echo=FALSE, results='asis'}
 fit %>% 
   filter(rank <= 20) %>% 
-  select(rank, score, eg_precursor_id, pg_protein_accessions, anova_adj_pval, correlation, ec_50) %>% 
+  select(rank, 
+         score, 
+         eg_precursor_id, 
+         pg_protein_accessions, 
+         anova_adj_pval, 
+         correlation, 
+         ec_50) %>% 
   mutate(anova_adj_pval = format(anova_adj_pval, digits = 3),
          correlation = format(correlation, digits = 3),
          ec_50 = format(ec_50, digits = 2),
@@ -231,9 +239,12 @@ uniprot <- fetch_uniprot(unis)
 
 # annotation of fit data based on information from UniProt
 fit_annotated <- fit %>% 
-  left_join(uniprot, by = c("pg_protein_accessions" = "id")) %>% # columns containing proteins IDs are named differently
-  mutate(passed_filter = !is.na(rank)) %>% # mark peptides that pass the filtering
-  mutate(binds_treatment = pg_protein_accessions == "P62942") # create new column with prior knowledge about binding partners of treatment
+  # columns containing proteins IDs are named differently
+  left_join(uniprot, by = c("pg_protein_accessions" = "id")) %>% 
+  # mark peptides that pass the filtering
+  mutate(passed_filter = !is.na(rank)) %>% 
+  # create new column with prior knowledge about binding partners of treatment
+  mutate(binds_treatment = pg_protein_accessions == "P62942") 
 ```
 
 ## Enrichment and network analysis
@@ -252,15 +263,17 @@ go_enrichment(fit_annotated,
 
 ### KEGG pathway enrichment
 
-# First you need to load KEGG pathway annotations from the KEGG database for your specific organism of interest.
-# In this case HeLa cells were used, therefore the organism of interest is homo sapiens (hsa)
+# First you need to load KEGG pathway annotations from the KEGG database 
+# for your specific organism of interest. In this case HeLa cells were 
+# used, therefore the organism of interest is homo sapiens (hsa)
 
 kegg <- fetch_kegg(species = "hsa")
 
 # Next we need to annotate our data with KEGG pathway IDs and perform enrichment analysis
 
 fit %>% 
-  left_join(kegg, by = c("pg_protein_accessions" = "uniprot_id")) %>% # columns containing proteins IDs are named differently
+  # columns containing proteins IDs are named differently
+  left_join(kegg, by = c("pg_protein_accessions" = "uniprot_id")) %>% 
   kegg_enrichment(protein_id = pg_protein_accessions,
                   is_significant = passed_filter,
                   pathway_id = pathway_id, # column name from kegg data frame
@@ -280,7 +293,8 @@ fit_annotated %>%
   filter(passed_filter == TRUE) %>% # only analyse hits that were significant
   analyse_functional_network(protein_id = pg_protein_accessions,
                    string_id = database_string, # column from UniProt containing STRING IDs
-                   organism_id = 9606, # tax ID can be found in function documentation or STRING website
+                   organism_id = 9606, 
+                   # tax ID can be found in function documentation or STRING database
                    binds_treatment = binds_treatment,
                    plot = TRUE)
 ```

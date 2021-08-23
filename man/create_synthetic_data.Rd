@@ -9,7 +9,7 @@ create_synthetic_data(
   frac_change,
   n_replicates,
   n_conditions,
-  method = "random_effect",
+  method = "effect_random",
   concentrations = NULL,
   median_offset_sd = 0.05,
   mean_protein_intensity = 16.88,
@@ -36,7 +36,7 @@ is changing.}
 
 \item{n_conditions}{Numeric, the number of conditions.}
 
-\item{method}{Character, specifies the method type for the random sampling of significantly changing peptides. If \code{method = "random_effect"},
+\item{method}{Character, specifies the method type for the random sampling of significantly changing peptides. If \code{method = "effect_random"},
 the effect for each condition is randomly sampled and conditions do not depend on each other. If \code{method = "dose_response"},
 the effect is sampled based on a dose response curve and conditions are related to each other depending on the curve shape. In this case
 the concentrations argument needs to be specified.}

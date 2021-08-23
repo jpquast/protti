@@ -7,7 +7,7 @@
 #' is changing.
 #' @param n_replicates Numeric, the number of replicates per condition.
 #' @param n_conditions Numeric, the number of conditions.
-#' @param method Character, specifies the method type for the random sampling of significantly changing peptides. If \code{method = "random_effect"},
+#' @param method Character, specifies the method type for the random sampling of significantly changing peptides. If \code{method = "effect_random"},
 #' the effect for each condition is randomly sampled and conditions do not depend on each other. If \code{method = "dose_response"},
 #' the effect is sampled based on a dose response curve and conditions are related to each other depending on the curve shape. In this case
 #' the concentrations argument needs to be specified.
@@ -81,7 +81,7 @@ create_synthetic_data <- function(n_proteins,
                                   frac_change,
                                   n_replicates,
                                   n_conditions,
-                                  method = "random_effect",
+                                  method = "effect_random",
                                   concentrations = NULL,
                                   median_offset_sd = 0.05,
                                   mean_protein_intensity = 16.88,
@@ -135,7 +135,7 @@ create_synthetic_data <- function(n_proteins,
 
   # sample significantly changing peptides
 
-  if (method == "random_effect") {
+  if (method == "effect_random") {
     # sample the direction of the effect randomly
     proteins_replicates_change <- proteins_replicates %>%
       dplyr::mutate(change = stringr::str_extract(.data$protein, pattern = "\\d+") %in% 1:n_change) %>%
