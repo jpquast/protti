@@ -107,7 +107,7 @@ Next, we log2 transform our intensities, then normalise the data to the median v
 
 Note that we are also using the pipe operator `%>%` included in the R package [`magrittr`](https://magrittr.tidyverse.org/index.html). `%>%` takes the output of the preceding function and supplies it as the first argument of the following function. Using `%>%` makes code easier to read and follow.
 
-For normalisation we are using the **protti** function `normalise()`. We generally recommend using median normalisation (`method = "median"`). The function normalises intensities for each run to the median of all runs. This is only necessary if your search algorithm does not already median normalise your intensities. For the example data we have disabled median normalisation in Spectronaut, therefore we need to median normalise now. 
+For normalisation we are using the **protti** function `normalise()`. For this example we will use median normalisation (`method = "median"`). The function normalises intensities for each run to the median of all runs. This is only necessary if your search algorithm does not already median normalise your intensities. For the example data we have disabled median normalisation in Spectronaut, therefore we need to median normalise now. 
 The formula for median normalisation is: 
 
 ```{block, type='blackbox'}
@@ -215,16 +215,20 @@ qc_sequence_coverage(
 
 To test if there is a difference between the peptide abundances in our two conditions (i.e. rapamycin treated and untreated) we use a Welch's t-test (unpaired). Welch's t-test is a method for comparing means of two independent sample groups and it does not assume equal variances between groups (as Student's t-test would).
 
-Before the statistical hypothesis test we have to define the types of missing values present in our data set. We are going to use the function `assign_missingness()` which will return a column with information on the types of missingness we have in our data (i.e. complete, missing at random (MAR) or missing not at random (MNAR)). We use the default parameters of this function which assumes that missing values are MAR when the conditions are at least 70 % complete (adjusted downward). Missing values are assumed to be MNAR when less than 25 % of values are present (adjusted_downward) in one condition if the other condition is complete. 
+Before the statistical hypothesis test we have to define the types of missing values present in our data set. We are going to use the function `assign_missingness()` which will return a column with information on the types of missingness we have in our data (i.e. complete, missing at random (MAR) or missing not at random (MNAR)). We use the default parameters of this function which assumes that missing values are MAR when the conditions are at least 70 % complete (adjusted downward). Missing values are assumed to be MNAR when less than 20 % of values are present (adjusted_downward) in one condition if the other condition is complete. If not "complete" all other comparisons are label as `NA`. If imputation is performed, these are the comparisons that will not be imputed. The type of missingness assigned to a comparison does not have any influence on the statistical test. However, by default (can be changed) comparisons with missingness `NA` are filtered out prior to p-value adjustment. This means that in addition to imputation the user can use missingness cutoffs also in order to define which comparisons are too incomplete to be trustworthy even if significant.
 
-After assigning the types of data missingness we use the function `diff_abundance()`. In this case by selecting `method = t-test` the function will perform a Welch's t-test. There are also options included to perform a moderated t-test based on the R package `limma` or to detect differential abundances based on the algorithm implemented in the R package `proDA`. The algorithm used for `proDA` is based on a probabilistic dropout model which facilitates hypothesis testing without imputation. 
+After assigning the types of data missingness we use the function `calculate_diff_abundance()`. By selecting `method = t-test` the function will perform a Welch's t-test. There are also options included to perform a moderated t-test based on the R package `limma` or to detect differential abundances based on the algorithm implemented in the R package `proDA`. The algorithm used for `proDA` is based on a probabilistic dropout model which facilitates hypothesis testing (using a moderated t-test) while eliminating the need for imputation. 
+
+It has been shown that generally moderated t-tests perform much better also in proteomics data, as compared to t-tests ([Kammers et al. 2015](https://www.sciencedirect.com/science/article/pii/S2212968515000069)). Therefore, we will use a moderated t-test in this example.
 
 Please note that in this example we are not imputing missing values. You can, however, do so by using the function `impute()`. This function uses the output of `assign_missingness()` as its input. You can use two different imputation methods: 
 
 * `method = ludovic` will sample values that are MNAR from a normal distribution around a value that is 3 (log2) lower than the mean intensity of the non-missing condition. The method is was developed by our colleague [Ludovic Gillet](https://imsb.ethz.ch/research/picotti/PeoplePicotti/ludovicgillet.html).
 * `method = noise` will sample MNAR values from a normal distribution around the mean noise of the complete condition. This requires you to have an additional column with information on the noise, which can be obtained from Spectronaut.
 
-Both methods impute MAR data using the mean and variance of the condition with the missing data.
+Both methods impute MAR data using the mean and variance of the condition with the missing data. Missingness assigned as `NA` will not be imputed.
+
+_Note: If data is imputed this can lead to invalid inferential conclusions due to underestimating statistical uncertainty or it can cause loss of statistical power ([Ahlmann-Eltze et al. 2020](https://www.biorxiv.org/content/10.1101/661496v1.full.pdf)). Therefore, we do not recommend using a moderated t-test or the proDA algorithm after imputation._
 
 Since we are dealing with a LiP-MS data set we perform the statistical analysis on the precursor* level. For protein abundance data you can simply use protein abundances as your intensities and select your protein groups column for the grouping argument. Make sure to retain any columns you need for further data analysis with the `retain_columns` argument of both functions.
 
@@ -257,7 +261,7 @@ diff_abundance_data <- data_filtered_uniprot %>%
     intensity_log2 = normalised_intensity_log2,
     missingness = missingness,
     comparison = comparison,
-    method = "t-test",
+    method = "moderated_t-test",
     retain_columns = c(pg_protein_accessions, 
                        go_molecular_function, 
                        database_string, 

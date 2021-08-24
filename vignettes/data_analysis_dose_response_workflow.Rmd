@@ -74,7 +74,7 @@ After loading data into R we would like to clean it up to remove rows that are p
 
 Due to the fact that with increasing raw intensities (`fg_quantity`) also variances increase, statistical tests would have a bias towards lower intense peptides or proteins. Therefore you should log2 transform your data to correct for this mean-variance relationship. We do this by using `dplyr`’s `mutate()` together with `log2()`.
 
-In addition to filtering and log2 transformation it is also advised to normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. **protti** provides the `normalise()` function for this purpose. We generally recommend using median normalisation (`method = "median"`). This function generates an additional column called `normalised_intensity_log2` that contains the normalised intensities.
+In addition to filtering and log2 transformation it is also advised to normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. **protti** provides the `normalise()` function for this purpose. For this example we will use median normalisation (`method = "median"`). This function generates an additional column called `normalised_intensity_log2` that contains the normalised intensities.
 
 _Note: If your search tool already normalised your data you should not normalise it again._
 

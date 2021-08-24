@@ -1,6 +1,7 @@
 #' Assignment of missingness types
 #'
-#' The type of missingness (missing at random, missing not at random) is assigned based on the comparison of a reference condition and every other condition.
+#' The type of missingness (missing at random, missing not at random) is assigned based on the 
+#' comparison of a reference condition and every other condition.
 #'
 #' @param data a data frame containing at least the input variables.
 #' @param sample The column in the data frame containing the sample name.
@@ -19,13 +20,26 @@
 #' additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks,
 #' just like other column names, but in a vector).
 #'
-#' @return A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison
-#' name for the specific treatment/reference pair. The \code{missingness} column reports the type of missingness.
+#' @return A data frame that contains the reference condition paired with each treatment condition. 
+#' The \code{comparison} column contains the comparison name for the specific treatment/reference 
+#' pair. The \code{missingness} column reports the type of missingness.
 #' \itemize{
-#' \item{"complete": }{No missing values for every replicate of this reference/treatment pair for the specific grouping variable.}
-#' \item{"MNAR": }{Missing not at random. All replicates of either the reference or treatment condition have missing values for the specific grouping variable.}
-#' \item{"MAR": }{Missing at random. At least n-1 replicates have missing values for the reference/treatment pair for the specific grouping varible.}
+#' \item{"complete": }{No missing values for every replicate of this reference/treatment pair for 
+#' the specific grouping variable.}
+#' \item{"MNAR": }{Missing not at random. All replicates of either the reference or treatment 
+#' condition have missing values for the specific grouping variable.}
+#' \item{"MAR": }{Missing at random. At least n-1 replicates have missing values for the 
+#' reference/treatment pair for the specific grouping varible.}
+#' \item{NA: }{The comparison is not complete enough to fall into any other category. It will not 
+#' be imputed if imputation is performed. For statistical significance testing these comparisons 
+#' are filtered out after the test and prior to p-value adjustment. This can be prevented by setting
+#' `filter_NA_missingness = FALSE` in the `calculate_diff_abundance()` function.}
 #' }
+#' The type of missingness has an influence on the way values are imputeted if imputation is 
+#' performed subsequently using the `impute()` function. How each type of missingness is 
+#' specifically imputed can be found in the function description. The type of missingness 
+#' assigned to a comparison does not have any influence on the statistical test in the 
+#' `calculate_diff_abundance()` function.
 #' @import dplyr
 #' @import tidyr
 #' @importFrom tibble tibble as_tibble

@@ -15,23 +15,35 @@ calculate_imputation(
 )
 }
 \arguments{
-\item{min}{minimal intensity value of the precursor/peptide. Is only required if \code{method = "ludovic"} and \code{missingness = "MNAR"}.}
+\item{min}{minimal intensity value of the precursor/peptide. Is only required if
+\code{method = "ludovic"} and \code{missingness = "MNAR"}.}
 
-\item{noise}{noise value for the precursor/peptide. Is only required if \code{method = "noise"} and \code{missingness = "MNAR"}.}
+\item{noise}{noise value for the precursor/peptide. Is only required if \code{method = "noise"}
+and \code{missingness = "MNAR"}.}
 
-\item{mean}{mean intensity value of the condition with missing values for a given precursor/peptide. Is only required if \code{missingness = "MAR"}.}
+\item{mean}{mean intensity value of the condition with missing values for a given
+precursor/peptide. Is only required if \code{missingness = "MAR"}.}
 
 \item{sd}{mean of the standard deviation of all conditions for a given precursor/peptide.}
 
-\item{missingness}{the missingness type of the data determines how values for imputation are sampled. This can be \code{"MAR"} or \code{"MNAR"}.}
+\item{missingness}{the missingness type of the data determines how values for imputation are
+sampled. This can be \code{"MAR"} or \code{"MNAR"}.}
 
-\item{method}{the method to be used for imputation. For \code{method = "ludovic"}, MNAR missingness is sampled around a value that is three lower (log2) than the lowest intensity value recorded for the precursor/peptide. For \code{method = "noise"}, MNAR missingness is sampled around the noise value for the precursor/peptide.}
+\item{method}{the method to be used for imputation. For \code{method = "ludovic"}, MNAR
+missingness is sampled around a value that is three lower (log2) than the lowest intensity
+value recorded for the precursor/peptide. For \code{method = "noise"}, MNAR missingness is
+sampled around the noise value for the precursor/peptide.}
 
-\item{skip_log2_transform_error}{logical, if FALSE a check is performed to validate that input values are log2 transformed. If input values are > 40 the test is failed and an error is thrown.}
+\item{skip_log2_transform_error}{logical, if FALSE a check is performed to validate that
+input values are log2 transformed. If input values are > 40 the test is failed and an error is
+thrown.}
 }
 \value{
-A vector of values for the imputation of missing data. The length of the vector depends on the number of replicates.
+A vector of values for the imputation of missing data. The length of the vector depends
+on the number of replicates.
 }
 \description{
-\code{calculate_imputation} is a helper function that is used in the \code{impute} function. Depending on the type of missingness and method, it samples values from a normal distribution that can be used for the imputation. Note: The input intensities should be log2 transformed.
+\code{calculate_imputation} is a helper function that is used in the \code{impute} function.
+Depending on the type of missingness and method, it samples values from a normal distribution
+that can be used for the imputation. Note: The input intensities should be log2 transformed.
 }

@@ -10,10 +10,10 @@ impute(
   grouping,
   intensity,
   condition,
-  comparison,
-  missingness,
+  comparison = comparison,
+  missingness = missingness,
   noise = NULL,
-  method,
+  method = "ludovic",
   skip_log2_transform_error = FALSE,
   retain_columns = NULL
 )
@@ -35,15 +35,18 @@ That means the reference condition should be doublicated once for every treatmen
 \code{assign_missingnes} function.}
 
 \item{missingness}{the name of the column that contains the missingness type of the data determines how values for imputation are sampled.
-This should at least contain \code{"MAR"} or \code{"MNAR"}.}
+This should at least contain \code{"MAR"} or \code{"MNAR"}. Missingness assigned as \code{NA} will not be imputed.}
 
 \item{noise}{the name of the column that contains the noise value for the precursor/peptide. Is only required if \code{method = "noise"}.
 Note: Noise values need to be log2 transformed.}
 
-\item{method}{the method to be used for imputation. For \code{method = "ludovic"}, MNAR missingness is sampled from a normal distribution
-around a value that is three lower (log2) than the lowest intensity value recorded for the precursor/peptide and that has a spread of
-the mean standard deviation for the precursor/peptide. For \code{method = "noise"}, MNAR missingness is sampled from a normal distribution
-around the mean noise for the precursor/peptide and that has a spread of the mean standard deviation (from each condition) for the precursor/peptide.}
+\item{method}{the method to be used for imputation. For \code{method = "ludovic"}, MNAR
+missingness is sampled from a normal distribution around a value that is three lower (log2)
+than the lowest intensity value recorded for the precursor/peptide and that has a spread of
+the mean standard deviation for the precursor/peptide. For \code{method = "noise"}, MNAR
+missingness is sampled from a normal distribution around the mean noise for the precursor/peptide
+and that has a spread of the mean standard deviation (from each condition) for the precursor/peptide.
+Both methods impute MAR data using the mean and variance of the condition with the missing data.}
 
 \item{skip_log2_transform_error}{logical, if FALSE a check is performed to validate that input values are log2 transformed. If input
 values are > 40 the test is failed and an error is thrown.}

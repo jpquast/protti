@@ -133,9 +133,9 @@ On your own data you can easily achieve this with `dplyr`'s `filter()` function.
 
 Due to the fact that variances increase with increasing raw intensities, statistical tests would have a bias towards lower-intensity peptides or proteins. Therefore you should log2 transform your data to correct for this mean-variance relationship. We do not need to do this for the synthetic data as it is already log2 transformed. For your own data just use `dplyr`'s `mutate()` together with `log2()`. 
 
-In addition to filtering and log2 transformation it is also advised to normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. **protti** provides the `normalise()` function for this purpose. We generally recommend using median normalisation (`method = "median"`). This function generates an additional column called `normalised_intensity_log2` that contains the normalised intensities.
+In addition to filtering and log2 transformation it is also advised to normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. **protti** provides the `normalise()` function for this purpose. For this example we will use median normalisation (`method = "median"`). This function generates an additional column called `normalised_intensity_log2` that contains the normalised intensities.
 
-Note: If your search tool already normalised your data you should not normalise it another time.
+_Note: If your search tool already normalised your data you should not normalise it another time._
 
 ```{r normalisation, message=FALSE, warning=FALSE}
 normalised_data <- data %>% 
@@ -146,7 +146,9 @@ normalised_data <- data %>%
 
 #### Assign Missingness
 
-The next step is to deal with missing data points. You could choose to impute missing data in a later step, but this is only recommended if only a small proportion of your data is missing. In order to calculate statistical significance of differentially abundant peptides or proteins we would like to have a minimum number of observations per condition. The **protti** function `assign_missingness()` checks for each treatment-to-reference condition if this number is satisfied and assigns a missingness type to each comparison as follows. If a certain condition has all replicates while the other one has less than 20% (adjusted downward) of total possible replicates, the case is considered to be "missing not at random" (`MNAR`). In order to be labeled "missing at random" (`MAR`) 70% (adjusted downward) of total replicates need to be present in both conditions. Comparisons that have too few observations are labeled `NA`. If you performed an experiment with 4 replicates that means that both conditions need to contain at least 2 observations. You can read the exact details in the documentation of this function and also adjust the thresholds if you want to be more or less conservative with how many data points to retain. 
+The next step is to deal with missing data points. You could choose to impute missing data in a later step, but this is only recommended if only a small proportion of your data is missing. In order to calculate statistical significance of differentially abundant peptides or proteins we would like to have at least a minimum number of observations per condition. The **protti** function `assign_missingness()` checks for each treatment-to-reference condition if the defined minimum number of observations is satisfied and assigns a missingness type to each comparison as follows. 
+
+If a certain condition has all replicates while the other one has less than 20% (adjusted downward) of total possible replicates, the case is considered to be "missing not at random" (`MNAR`). In order to be labeled "missing at random" (`MAR`) 70% (adjusted downward) of total replicates need to be present in both conditions. If you performed an experiment with 4 replicates that means that both conditions need to contain at least 2 observations. Comparisons that have too few observations are labeled `NA`. These will not be imputed if imputation is performed later on using the `impute()` function. You can read the exact details in the documentation of this function and also adjust the thresholds if you want to be more or less conservative with how many data points to retain. 
 
 ```{r assign_missingness, message=FALSE, warning=FALSE}
 data_missing <- normalised_data %>% 
@@ -162,11 +164,13 @@ data_missing <- normalised_data %>%
 # can provide them in the retain_columns argument.
 ```
 
-Note: Instead of "peptide" in the `grouping` argument you can provide protein IDs in case you are working with protein abundance data. However, then intensities should be protein intensities and not peptide intensities.
+_Note: Instead of "peptide" in the `grouping` argument you can provide protein IDs in case you are working with protein abundance data. However, then intensities should be protein intensities and not peptide intensities._
 
 #### Calculate Differential Abundance and Significance
 
 For the calculation of abundance changes and the associated significances **protti** provides the function `calculate_diff_abundance()`. You can choose between different statistical methods. For this example we will chose a moderated t-test.
+
+The type of missingness assigned to a comparison does not have any influence on the statistical test. However, by default (can be changed) comparisons with missingness `NA` are filtered out prior to p-value adjustment. This means that in addition to imputation, the user can use missingness cutoffs also in order to define which comparisons are too incomplete to be trustworthy even if significant.
 
 ```{r calculate_diff_abundance, message=FALSE, warning=FALSE}
 result <- data_missing %>% 
