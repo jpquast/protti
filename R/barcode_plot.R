@@ -70,7 +70,7 @@ barcode_plot <- function(data, start_position, end_position, protein_length, cov
     colouring <- sym("change")
 
     data <- data %>%
-      dplyr::mutate({{ colouring }} := ifelse(((!!ensym(fc_name) >= fc | !!ensym(fc_name) <= -fc) & !!ensym(sig_name) <= sig), "Structural change", "Unchanged")) %>%
+      dplyr::mutate({{ colouring }} := ifelse(((!!ensym(fc_name) >= fc | !!ensym(fc_name) <= -fc) & !!ensym(sig_name) <= sig), "Changed", "Unchanged")) %>%
       dplyr::mutate({{ colouring }} := forcats::fct_rev(ifelse(is.na({{ colouring }}), "Unchanged", {{ colouring }}))) %>%
       dplyr::arrange({{ colouring }})
   }
