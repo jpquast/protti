@@ -133,14 +133,15 @@ On your own data you can easily achieve this with `dplyr`'s `filter()` function.
 
 Due to the fact that variances increase with increasing raw intensities, statistical tests would have a bias towards lower-intensity peptides or proteins. Therefore you should log2 transform your data to correct for this mean-variance relationship. We do not need to do this for the synthetic data as it is already log2 transformed. For your own data just use `dplyr`'s `mutate()` together with `log2()`. 
 
-In addition to filtering and log2 transformation it is also advised to median normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. **protti** provides the `median_normalisation()` function for this purpose. This function generates an additional column called `normalised_intensity_log2` that contains the normalised intensities.
+In addition to filtering and log2 transformation it is also advised to normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. **protti** provides the `normalise()` function for this purpose. We generally recommend using median normalisation (`method = "median"`). This function generates an additional column called `normalised_intensity_log2` that contains the normalised intensities.
 
 Note: If your search tool already normalised your data you should not normalise it another time.
 
 ```{r normalisation, message=FALSE, warning=FALSE}
 normalised_data <- data %>% 
-  median_normalisation(sample = sample,
-                       intensity_log2 = peptide_intensity_missing)
+  normalise(sample = sample,
+            intensity_log2 = peptide_intensity_missing,
+            method = "median")
 ```
 
 #### Assign Missingness
@@ -180,11 +181,11 @@ result <- data_missing %>%
                            retain_columns = c(protein, change_peptide))
 ```
 
-Next we can use a Volcano plot to visualize significantly changing peptides with the function `volcano_protti()`. You can choose to create an interactive plot with the `interactive` argument. Please note that this is not recommended for large datasets.
+Next we can use a Volcano plot to visualize significantly changing peptides with the function `volcano_plot()`. You can choose to create an interactive plot with the `interactive` argument. Please note that this is not recommended for large datasets.
 
 ```{r volcano, fig.height = 5, fig.width = 8, message=FALSE, warning=FALSE}
 result %>% 
-  volcano_protti(grouping = peptide,
+  volcano_plot(grouping = peptide,
                  log2FC = diff,
                  significance = adj_pval,
                  method = "target",

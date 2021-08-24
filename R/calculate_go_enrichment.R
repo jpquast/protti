@@ -1,5 +1,22 @@
 #' Perform gene ontology enrichment analysis
 #'
+#' `r lifecycle::badge('deprecated')`
+#' This function was deprecated due to its name changing to `calculate_go_enrichment()`.
+#'
+#' @keywords internal
+#' @export
+go_enrichment <- function(...) {
+  # This function has been renamed and is therefore deprecated.
+  lifecycle::deprecate_warn("0.2.0",
+    "go_enrichment()",
+    "calculate_go_enrichment()",
+    details = "This function has been renamed."
+  )
+
+  calculate_go_enrichment(...)
+}
+#' Perform gene ontology enrichment analysis
+#'
 #' Analyses enrichment of gene ontology terms associated with proteins in the fraction of significant proteins compared to all detected proteins.
 #' A two-sided Fisher's exact test is performed to test significance of enrichment or depletion. GO annotations can be provided to this
 #' function either through UniProt \code{go_annotations_uniprot}, through a table obtained with \code{fetch_go} in the \code{go_data} argument
@@ -41,14 +58,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' go_enrichment(
+#' calculate_go_enrichment(
 #'   data,
 #'   protein_id = pg_protein_accessions,
 #'   is_significant = significant,
 #'   go_annotations_uniprot = go_molecular_function
 #' )
 #' }
-go_enrichment <- function(data, protein_id, is_significant, go_annotations_uniprot = NULL, ontology_type, organism_id = NULL, go_data = NULL, plot = TRUE, plot_cutoff = "adj_pval top10") {
+calculate_go_enrichment <- function(data, protein_id, is_significant, go_annotations_uniprot = NULL, ontology_type, organism_id = NULL, go_data = NULL, plot = TRUE, plot_cutoff = "adj_pval top10") {
   . <- NULL # to avoid note about no global variable binding. Usually this can be avoided with .data$ but not in nesting in complete function.
   n_sig <- NULL
 

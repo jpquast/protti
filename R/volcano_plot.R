@@ -1,5 +1,21 @@
 #' Volcano plot
 #'
+#' `r lifecycle::badge('deprecated')`
+#' This function was deprecated due to its name changing to `volcano_plot()`.
+#'
+#' @keywords internal
+#' @export
+volcano_protti <- function(...) {
+  # This function has been renamed and is therefore deprecated.
+  lifecycle::deprecate_warn("0.2.0",
+    "volcano_protti()",
+    "volcano_plot()",
+    details = "This function has been renamed."
+  )
+  volcano_plot(...)
+}
+#' Volcano plot
+#'
 #' Plots a volcano plot for the given input.
 #'
 #' @param data a data frame containing at least the input variables.
@@ -35,7 +51,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' volcano_protti(
+#' volcano_plot(
 #'   data,
 #'   grouping = pep_stripped_sequence,
 #'   log2FC = log2FC,
@@ -53,7 +69,21 @@
 #'   interactive = TRUE
 #' )
 #' }
-volcano_protti <- function(data, grouping, log2FC, significance, method, target_column = NULL, target = NULL, facet_by = NULL, title = "Volcano plot", x_axis_label = "log2(fold change)", y_axis_label = "-log10(q-value)", legend_label = "Target", log2FC_cutoff = 1, significance_cutoff = 0.01, interactive = FALSE) {
+volcano_plot <- function(data,
+                         grouping,
+                         log2FC,
+                         significance,
+                         method,
+                         target_column = NULL,
+                         target = NULL,
+                         facet_by = NULL,
+                         title = "Volcano plot",
+                         x_axis_label = "log2(fold change)",
+                         y_axis_label = "-log10(q-value)",
+                         legend_label = "Target",
+                         log2FC_cutoff = 1,
+                         significance_cutoff = 0.01,
+                         interactive = FALSE) {
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
 

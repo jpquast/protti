@@ -1,5 +1,22 @@
 #' Check treatment enrichment
 #'
+#' `r lifecycle::badge('deprecated')`
+#' This function was deprecated due to its name changing to `calculate_treatment_enrichment()`.
+#'
+#' @keywords internal
+#' @export
+treatment_enrichment <- function(...) {
+  # This function has been renamed and is therefore deprecated.
+  lifecycle::deprecate_warn("0.2.0",
+    "treatment_enrichment()",
+    "calculate_treatment_enrichment()",
+    details = "This function has been renamed."
+  )
+
+  calculate_treatment_enrichment(...)
+}
+#' Check treatment enrichment
+#'
 #' Check for an enrichment of proteins interacting with the treatment in significantly changing proteins as compared to all proteins.
 #'
 #' @param data A dataframe contains at least the input variables.
@@ -25,7 +42,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' treatment_enrichment(
+#' calculate_treatment_enrichment(
 #'   data,
 #'   protein_id = pg_protein_accessions,
 #'   is_significant = significant,
@@ -33,7 +50,7 @@
 #'   treatment = "Metals"
 #' )
 #' }
-treatment_enrichment <- function(data, protein_id, is_significant, binds_treatment, treatment_name, plot = TRUE) {
+calculate_treatment_enrichment <- function(data, protein_id, is_significant, binds_treatment, treatment_name, plot = TRUE) {
   data <- data %>%
     dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ binds_treatment }}) %>%
     dplyr::group_by({{ protein_id }}) %>%

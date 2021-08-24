@@ -1,5 +1,22 @@
 #' Perform KEGG pathway enrichment analysis
 #'
+#' `r lifecycle::badge('deprecated')`
+#' This function was deprecated due to its name changing to `calculate_kegg_enrichment()`.
+#'
+#' @keywords internal
+#' @export
+kegg_enrichment <- function(...) {
+  # This function has been renamed and is therefore deprecated.
+  lifecycle::deprecate_warn("0.2.0",
+    "kegg_enrichment()",
+    "calculate_kegg_enrichment()",
+    details = "This function has been renamed."
+  )
+
+  calculate_kegg_enrichment(...)
+}
+#' Perform KEGG pathway enrichment analysis
+#'
 #' Analyses enrichment of KEGG pathways associated with proteins in the fraction of significant proteins compared to all detected proteins. A Fisher's
 #' exact test is performed to test significance of enrichment.
 #'
@@ -30,7 +47,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' kegg_enrichment(
+#' calculate_kegg_enrichment(
 #'   data,
 #'   protein_id = pg_protein_accessions,
 #'   is_significant = significant,
@@ -38,7 +55,7 @@
 #'   pathway_name = pathway_name
 #' )
 #' }
-kegg_enrichment <- function(data, protein_id, is_significant, pathway_id = pathway_id, pathway_name = pathway_name, plot = TRUE, plot_cutoff = "adj_pval top10") {
+calculate_kegg_enrichment <- function(data, protein_id, is_significant, pathway_id = pathway_id, pathway_name = pathway_name, plot = TRUE, plot_cutoff = "adj_pval top10") {
   . <- NULL
   n_sig <- NULL
   kegg_term <- NULL # to avoid node about no global variable binding. Usually this can be avoided with .data$ but not in nesting in complete function.

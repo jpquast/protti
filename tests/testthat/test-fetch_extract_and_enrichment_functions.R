@@ -97,7 +97,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_gt(nrow(metal_info), 40)
   })
 
-  test_that("kegg_enrichment works", {
+  test_that("deprecated kegg_enrichment works", {
     # first fake significances are generated based on the first 10 rows of every group
     kegg_input <- kegg %>%
       dplyr::group_by(pathway_id) %>%
@@ -105,7 +105,45 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       dplyr::group_by(uniprot_id) %>%
       dplyr::mutate(is_significant = rep(.data$is_significant[1], dplyr::n()))
 
-    kegg_enriched <- kegg_enrichment(
+    rlang::with_options(lifecycle_verbosity = "warning", {
+      expect_warning(kegg_enriched <- kegg_enrichment(
+        data = kegg_input,
+        protein_id = uniprot_id,
+        is_significant = is_significant,
+        pathway_id = pathway_id,
+        pathway_name = pathway_name,
+        plot = FALSE
+      ))
+    })
+
+    expect_is(kegg_enriched, "data.frame")
+    expect_equal(ncol(kegg_enriched), 10)
+    expect_gt(nrow(kegg_enriched), 100)
+
+    rlang::with_options(lifecycle_verbosity = "warning", {
+      expect_warning(p <- kegg_enrichment(
+        data = kegg_input,
+        protein_id = uniprot_id,
+        is_significant = is_significant,
+        pathway_id = pathway_id,
+        pathway_name = pathway_name,
+        plot = TRUE,
+        plot_cutoff = "adj_pval 0.01"
+      ))
+    })
+    expect_is(p, "ggplot")
+    expect_error(print(p), NA)
+  })
+
+  test_that("calculate_kegg_enrichment works", {
+    # first fake significances are generated based on the first 10 rows of every group
+    kegg_input <- kegg %>%
+      dplyr::group_by(pathway_id) %>%
+      dplyr::mutate(is_significant = ifelse((match(.data$kegg_id, .data$kegg_id) <= 10), TRUE, FALSE)) %>%
+      dplyr::group_by(uniprot_id) %>%
+      dplyr::mutate(is_significant = rep(.data$is_significant[1], dplyr::n()))
+
+    kegg_enriched <- calculate_kegg_enrichment(
       data = kegg_input,
       protein_id = uniprot_id,
       is_significant = is_significant,
@@ -118,7 +156,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(kegg_enriched), 10)
     expect_gt(nrow(kegg_enriched), 100)
 
-    p <- kegg_enrichment(
+    p <- calculate_kegg_enrichment(
       data = kegg_input,
       protein_id = uniprot_id,
       is_significant = is_significant,
@@ -131,13 +169,78 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_error(print(p), NA)
   })
 
-  test_that("go_enrichment works", {
+  test_that("deprecated go_enrichment works", {
     go_input <- proteome %>%
       dplyr::distinct(.data$id, .data$go_molecular_function) %>%
       dplyr::mutate(is_significant = ifelse((match(.data$id, .data$id) <= 500), TRUE, FALSE)) %>%
       dplyr::slice(1:3000)
 
-    go_enriched <- go_enrichment(
+    rlang::with_options(lifecycle_verbosity = "warning", {
+      expect_warning(go_enriched <- go_enrichment(
+        data = go_input,
+        protein_id = id,
+        is_significant = is_significant,
+        ontology_type = "MF",
+        organism_id = "83333",
+        plot = FALSE
+      ))
+    })
+
+    expect_is(go_enriched, "data.frame")
+    expect_equal(ncol(go_enriched), 9)
+    expect_gt(nrow(go_enriched), 1000)
+
+    rlang::with_options(lifecycle_verbosity = "warning", {
+      expect_warning(go_enriched_data <- go_enrichment(
+        data = go_input,
+        protein_id = id,
+        is_significant = is_significant,
+        ontology_type = "MF",
+        go_data = go_eco,
+        plot = FALSE
+      ))
+    })
+
+    expect_is(go_enriched_data, "data.frame")
+    expect_equal(ncol(go_enriched_data), 9)
+    expect_gt(nrow(go_enriched_data), 1000)
+
+    rlang::with_options(lifecycle_verbosity = "warning", {
+      expect_warning(go_enriched_uniprot <- go_enrichment(
+        data = go_input,
+        protein_id = id,
+        is_significant = is_significant,
+        go_annotations_uniprot = go_molecular_function,
+        plot = FALSE
+      ))
+    })
+
+    expect_is(go_enriched_uniprot, "data.frame")
+    expect_equal(ncol(go_enriched_uniprot), 10)
+    expect_gt(nrow(go_enriched_uniprot), 1000)
+
+    rlang::with_options(lifecycle_verbosity = "warning", {
+      expect_warning(p <- go_enrichment(
+        data = go_input,
+        protein_id = id,
+        is_significant = is_significant,
+        ontology_type = "MF",
+        organism_id = "83333",
+        plot = TRUE,
+        plot_cutoff = "adj_pval 0.05"
+      ))
+    })
+    expect_is(p, "ggplot")
+    expect_error(print(p), NA)
+  })
+
+  test_that("calculate_go_enrichment works", {
+    go_input <- proteome %>%
+      dplyr::distinct(.data$id, .data$go_molecular_function) %>%
+      dplyr::mutate(is_significant = ifelse((match(.data$id, .data$id) <= 500), TRUE, FALSE)) %>%
+      dplyr::slice(1:3000)
+
+    go_enriched <- calculate_go_enrichment(
       data = go_input,
       protein_id = id,
       is_significant = is_significant,
@@ -150,7 +253,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(go_enriched), 9)
     expect_gt(nrow(go_enriched), 1000)
 
-    go_enriched_data <- go_enrichment(
+    go_enriched_data <- calculate_go_enrichment(
       data = go_input,
       protein_id = id,
       is_significant = is_significant,
@@ -163,7 +266,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(go_enriched_data), 9)
     expect_gt(nrow(go_enriched_data), 1000)
 
-    go_enriched_uniprot <- go_enrichment(
+    go_enriched_uniprot <- calculate_go_enrichment(
       data = go_input,
       protein_id = id,
       is_significant = is_significant,
@@ -175,7 +278,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(go_enriched_uniprot), 10)
     expect_gt(nrow(go_enriched_uniprot), 1000)
 
-    p <- go_enrichment(
+    p <- calculate_go_enrichment(
       data = go_input,
       protein_id = id,
       is_significant = is_significant,
@@ -188,14 +291,49 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_error(print(p), NA)
   })
 
-  test_that("treatment_enrichment works", {
+  test_that("deprecated treatment_enrichment works", {
     enrichment_input <- go_eco %>%
       dplyr::distinct(.data$db_id) %>%
       dplyr::mutate(binds_treatment = ifelse((match(.data$db_id, .data$db_id) <= 500), TRUE, FALSE)) %>%
       dplyr::arrange(.data$db_id) %>%
       dplyr::mutate(is_significant = ifelse((match(.data$db_id, .data$db_id) <= 500), TRUE, FALSE))
 
-    treatment_enriched <- treatment_enrichment(
+    rlang::with_options(lifecycle_verbosity = "warning", {
+      expect_warning(treatment_enriched <- treatment_enrichment(
+        data = enrichment_input,
+        protein_id = db_id,
+        is_significant = is_significant,
+        binds_treatment = binds_treatment,
+        treatment_name = "test treatment",
+        plot = FALSE
+      ))
+    })
+    expect_is(treatment_enriched, "data.frame")
+    expect_equal(ncol(treatment_enriched), 4)
+    expect_equal(nrow(treatment_enriched), 4)
+
+    rlang::with_options(lifecycle_verbosity = "warning", {
+      expect_warning(p <- treatment_enrichment(
+        data = enrichment_input,
+        protein_id = db_id,
+        is_significant = is_significant,
+        binds_treatment = binds_treatment,
+        treatment_name = "test treatment",
+        plot = TRUE
+      ))
+    })
+    expect_is(p, "ggplot")
+    expect_error(print(p), NA)
+  })
+
+  test_that("calculate_treatment_enrichment works", {
+    enrichment_input <- go_eco %>%
+      dplyr::distinct(.data$db_id) %>%
+      dplyr::mutate(binds_treatment = ifelse((match(.data$db_id, .data$db_id) <= 500), TRUE, FALSE)) %>%
+      dplyr::arrange(.data$db_id) %>%
+      dplyr::mutate(is_significant = ifelse((match(.data$db_id, .data$db_id) <= 500), TRUE, FALSE))
+
+    treatment_enriched <- calculate_treatment_enrichment(
       data = enrichment_input,
       protein_id = db_id,
       is_significant = is_significant,
@@ -207,7 +345,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(treatment_enriched), 4)
     expect_equal(nrow(treatment_enriched), 4)
 
-    p <- treatment_enrichment(
+    p <- calculate_treatment_enrichment(
       data = enrichment_input,
       protein_id = db_id,
       is_significant = is_significant,
@@ -229,15 +367,17 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       dplyr::slice(1:1000) %>%
       dplyr::mutate(is_known = c(rep(TRUE, 100), rep(FALSE, 900)))
 
-    network <- network_analysis(
-      data = input_many,
-      protein_id = id,
-      string_id = database_string,
-      organism_id = 511145,
-      score_threshold = 900,
-      binds_treatment = is_known,
-      plot = FALSE
-    )
+    rlang::with_options(lifecycle_verbosity = "warning", {
+      expect_warning(network <- network_analysis(
+        data = input_many,
+        protein_id = id,
+        string_id = database_string,
+        organism_id = 511145,
+        score_threshold = 900,
+        binds_treatment = is_known,
+        plot = FALSE
+      ))
+    })
     expect_is(network, "data.frame")
     expect_equal(ncol(network), 5)
     expect_gt(nrow(network), 100)

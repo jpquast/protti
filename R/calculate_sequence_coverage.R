@@ -1,5 +1,21 @@
 #' Protein sequence coverage
 #'
+#' `r lifecycle::badge('deprecated')`
+#' This function was deprecated due to its name changing to `calculate_sequence_coverage()`.
+#'
+#' @keywords internal
+#' @export
+sequence_coverage <- function(...) {
+  # This function has been renamed and is therefore deprecated.
+  lifecycle::deprecate_warn("0.2.0",
+    "sequence_coverage()",
+    "calculate_sequence_coverage()",
+    details = "This function has been renamed."
+  )
+  calculate_sequence_coverage(...)
+}
+#' Protein sequence coverage
+#'
 #' Calculate sequence coverage for each identified protein.
 #'
 #' @param data A dataframe containing at least the protein sequence and the identified peptides as columns.
@@ -19,12 +35,12 @@
 #'   pep_stripped_sequence = c("abc", "jklmn")
 #' )
 #'
-#' sequence_coverage(
+#' calculate_sequence_coverage(
 #'   data,
 #'   protein_sequence = protein_sequence,
 #'   peptides = pep_stripped_sequence
 #' )
-sequence_coverage <-
+calculate_sequence_coverage <-
   function(data, protein_sequence, peptides) {
     result <- data %>%
       dplyr::distinct({{ protein_sequence }}, {{ peptides }}) %>%

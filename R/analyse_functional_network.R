@@ -60,13 +60,13 @@ network_analysis <-
 #' )
 #' }
 analyse_functional_network <- function(data,
-                                      protein_id,
-                                      string_id,
-                                      organism_id,
-                                      score_threshold = 900,
-                                      binds_treatment = NULL,
-                                      halo_color = NULL,
-                                      plot = TRUE) {
+                                       protein_id,
+                                       string_id,
+                                       organism_id,
+                                       score_threshold = 900,
+                                       binds_treatment = NULL,
+                                       halo_color = NULL,
+                                       plot = TRUE) {
   if (!requireNamespace("STRINGdb", quietly = TRUE)) {
     stop("Package \"STRINGdb\" is needed for this function to work. Please install it.", call. = FALSE)
   }

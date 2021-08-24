@@ -226,10 +226,11 @@ synthetic data as it is already log2 transformed. For your own data just
 use `dplyr`’s `mutate()` together with `log2()`.
 
 In addition to filtering and log2 transformation it is also advised to
-median normalise your data to equal out small differences in overall
-sample intensities that result from unequal sample concentrations.
-**protti** provides the `median_normalisation()` function for this
-purpose. This function generates an additional column called
+normalise your data to equal out small differences in overall sample
+intensities that result from unequal sample concentrations. **protti**
+provides the `normalise()` function for this purpose. We generally
+recommend using median normalisation (`method = "median"`). This
+function generates an additional column called
 `normalised_intensity_log2` that contains the normalised intensities.
 
 Note: If your search tool already normalised your data you should not
@@ -237,8 +238,9 @@ normalise it another time.
 
 ``` r
 normalised_data <- data %>% 
-  median_normalisation(sample = sample,
-                       intensity_log2 = peptide_intensity_missing)
+  normalise(sample = sample,
+            intensity_log2 = peptide_intensity_missing,
+            method = "median")
 ```
 
 #### Assign Missingness
@@ -302,13 +304,13 @@ result <- data_missing %>%
 ```
 
 Next we can use a Volcano plot to visualize significantly changing
-peptides with the function `volcano_protti()`. You can choose to create
-an interactive plot with the `interactive` argument. Please note that
-this is not recommended for large datasets.
+peptides with the function `volcano_plot()`. You can choose to create an
+interactive plot with the `interactive` argument. Please note that this
+is not recommended for large datasets.
 
 ``` r
 result %>% 
-  volcano_protti(grouping = peptide,
+  volcano_plot(grouping = peptide,
                  log2FC = diff,
                  significance = adj_pval,
                  method = "target",

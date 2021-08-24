@@ -17,10 +17,22 @@
  Multiple functions have been renamed. More function follow the convention that they should be verbs. Other functions are more similar to each other in their naming. The old functions still work but they are deprecated and will be removed in the future. Please use the new versions instead.
  
 * `diff_abundance()` has been renamed to `calculate_diff_abundance()`. 
-* `network_analysis()` has been renamed to `create_functional_network()`. 
+* `peptide_type()` has been renamed to `assign_peptide_type()`. 
+* `median_normalisation()` has been renamed to `normalise()`. The normalisation method is now defined through an argument called method.
+* `sequence_coverage()` has been renamed to `calculate_sequence_coverage()`.
+* `network_analysis()` has been renamed to `analyse_functional_network()`. 
+* `treatment_enrichment()` has been renamed to `calculate_treatment_enrichment()`.
+* `go_enrichment()` has been renamed to `calculate_go_enrichment()`. 
+* `kegg_enrichment()` has been renamed to `calculate_kegg_enrichment()`.
+* `volcano_protti()` has been renamed to `volcano_plot()`. 
+* `plot_drc_4p()` has been renamed to `drc_4p_plot()`. 
+* `plot_peptide_profiles()` has been renamed to `peptide_profile_plot()`.
+* `plot_pval_distribution()` has been renamed to `pval_distribution_plot()`. 
+
 
 ## Bug fixes and documentation updates
 
+* `calculate_diff_abundance()` had a bug that could not correctly deal with condition names containing spaces when a moderated t-test or the proDA algorithm was used. This has been fixed.
 * `scale_protti()` can now deal with the case that a vector of only equal numbers (e.g. `c(1, 1, 1)`) is provided. In this case it always scales all values to 1 for `method = "01"` and to 0 for `method = "center"`.
 * The `header` argument was removed from `try_query()`. It can now be directly supplied to the elipsis (...) of this function depending on which read method is used. For `type = "text/tab-separated-values"` the argument `col_names` of the corresponding `readr` function `read_tsv()` can be supplied.
 * `split_metal_name()` removes more non-metal specific words that lead to false identifications. Also many metal names containing a "-" are now considered. A bug was resolved that did not deal with iron-sulfur cluster information correctly due to a wrong variable name.

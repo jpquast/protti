@@ -1,3 +1,20 @@
+#' Perform gene ontology enrichment analysis
+#'
+#' `r lifecycle::badge('deprecated')`
+#' This function was deprecated due to its name changing to `drc_4p_plot()`.
+#'
+#' @keywords internal
+#' @export
+plot_drc_4p <- function(...) {
+  # This function has been renamed and is therefore deprecated.
+  lifecycle::deprecate_warn("0.2.0",
+    "plot_drc_4p()",
+    "drc_4p_plot()",
+    details = "This function has been renamed."
+  )
+
+  drc_4p_plot(...)
+}
 #' Plotting of four-parameter dose response curves
 #'
 #' Function for plotting four-parameter dose response curves for each group (precursor, peptide or protein), based on output from \code{fit_drc_4p} function.
@@ -32,7 +49,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' plot_drc_4p(
+#' drc_4p_plot(
 #'   data,
 #'   grouping = eg_precursor_id,
 #'   response = intensity,
@@ -40,7 +57,7 @@
 #'   targets = c("ABCDEFK")
 #' )
 #' }
-plot_drc_4p <- function(data, grouping, response, dose, targets, unit = "uM", y_axis_name = "Response", facet = TRUE, scales = "free", x_axis_scale_log10 = TRUE, export = FALSE, export_name = "dose-response_curves") {
+drc_4p_plot <- function(data, grouping, response, dose, targets, unit = "uM", y_axis_name = "Response", facet = TRUE, scales = "free", x_axis_scale_log10 = TRUE, export = FALSE, export_name = "dose-response_curves") {
   . <- NULL
 
   # early filter to speed up function

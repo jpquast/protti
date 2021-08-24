@@ -1,5 +1,22 @@
 #' Peptide abundance profile plot
 #'
+#' `r lifecycle::badge('deprecated')`
+#' This function was deprecated due to its name changing to `peptide_profile_plot()`.
+#'
+#' @keywords internal
+#' @export
+plot_peptide_profiles <- function(...) {
+  # This function has been renamed and is therefore deprecated.
+  lifecycle::deprecate_warn("0.2.0",
+    "plot_peptide_profiles()",
+    "peptide_profile_plot()",
+    details = "This function has been renamed."
+  )
+
+  peptide_profile_plot(...)
+}
+#' Peptide abundance profile plot
+#'
 #' Creates a plot of peptide abundances across samples. This is helpful to investigate effects of peptide and protein abundance changes
 #' in different samples and conditions.
 #'
@@ -33,7 +50,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' plot_peptide_profiles(
+#' peptide_profile_plot(
 #'   data,
 #'   sample = r_file_name,
 #'   peptide = eg_precursor_id,
@@ -42,7 +59,7 @@
 #'   targets = c("P03421")
 #' )
 #' }
-plot_peptide_profiles <- function(data, sample, peptide, intensity_log2, grouping, targets, protein_abundance_plot = FALSE, interactive = FALSE, export = FALSE, export_name = "peptide_profile_plots") {
+peptide_profile_plot <- function(data, sample, peptide, intensity_log2, grouping, targets, protein_abundance_plot = FALSE, interactive = FALSE, export = FALSE, export_name = "peptide_profile_plots") {
   . <- NULL
   n_samples <- length(unique(dplyr::pull(data, {{ sample }})))
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning

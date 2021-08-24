@@ -1,5 +1,22 @@
 #' Plot histogram of p-value distribution
 #'
+#' `r lifecycle::badge('deprecated')`
+#' This function was deprecated due to its name changing to `pval_distribution_plot()`.
+#'
+#' @keywords internal
+#' @export
+plot_pval_distribution <- function(...) {
+  # This function has been renamed and is therefore deprecated.
+  lifecycle::deprecate_warn("0.2.0",
+    "plot_pval_distribution()",
+    "pval_distribution_plot()",
+    details = "This function has been renamed."
+  )
+
+  pval_distribution_plot(...)
+}
+#' Plot histogram of p-value distribution
+#'
 #' Plots the distribution of p-values derived from any statistical test as a histogram.
 #'
 #' @param data a data frame containing at least grouping identifiers (precursor, peptide or protein) and p-values derived from any
@@ -16,13 +33,13 @@
 #'
 #' @examples
 #' \dontrun{
-#' plot_pval_distribution(
+#' pval_distribution_plot(
 #'   data,
 #'   grouping = eg_precursor_id,
 #'   pval = pval
 #' )
 #' }
-plot_pval_distribution <- function(data, grouping, pval) {
+pval_distribution_plot <- function(data, grouping, pval) {
   input <- data %>%
     dplyr::distinct({{ grouping }}, {{ pval }}) %>%
     tidyr::drop_na()
