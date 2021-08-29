@@ -17,49 +17,105 @@ calculate_protein_abundance(
 )
 }
 \arguments{
-\item{data}{A data frame that contains at least the input variables.}
+\item{data}{a data frame that contains at least the input variables.}
 
-\item{sample}{The name of the column containing the sample name.}
+\item{sample}{a character column in the \code{data} data frame that contains the sample name.}
 
-\item{protein_id}{The name of the column containing the protein accession numbers.}
+\item{protein_id}{a character column in the \code{data} data frame that contains the protein
+accession numbers.}
 
-\item{precursor}{The name of the column containing precursors.}
+\item{precursor}{a character column in the \code{data} data frame that contains precursors.}
 
-\item{peptide}{The name of the column containing peptide sequences. This column is needed to filter for proteins with at least 3
-unique peptides. This can equate to more than three precursors. The quantification is done on the precursor level.}
+\item{peptide}{a character column in the \code{data} data frame that contains peptide sequences.
+This column is needed to filter for proteins with at least 3 unique peptides. This can equate
+to more than three precursors. The quantification is done on the precursor level.}
 
-\item{intensity_log2}{The name of the column containing log2 transformed precursor intensities.}
+\item{intensity_log2}{a numeric column in the \code{data} data frame that contains log2
+transformed precursor intensities.}
 
-\item{method}{A character vector specifying with which method protein quantities should be calculated. Possible options include \code{"sum"},
-which takes the sum of all precursor intensities as the protein abundance. Another option is \code{"iq"}, which performs protein
-quantification based on a maximal peptide ratio extraction algorithm that is adapted from the MaxLFQ algorithm of the MaxQuant software.
-Functions from the \href{https://academic.oup.com/bioinformatics/article/36/8/2611/5697917}{\code{iq}} package are used. Default is \code{"iq"}.}
+\item{method}{a character value specifying with which method protein quantities should be
+calculated. Possible options include \code{"sum"}, which takes the sum of all precursor
+intensities as the protein abundance. Another option is \code{"iq"}, which performs protein
+quantification based on a maximal peptide ratio extraction algorithm that is adapted from the
+MaxLFQ algorithm of the MaxQuant software. Functions from the
+\href{https://academic.oup.com/bioinformatics/article/36/8/2611/5697917}{\code{iq}} package are
+used. Default is \code{"iq"}.}
 
-\item{for_plot}{A logical indicating whether the result should be only protein intensities or protein intensities together with precursor
-intensities that can be used for plotting using \code{qc_protein_abundance}. Default is \code{FALSE}.}
+\item{for_plot}{a logical value indicating whether the result should be only protein intensities
+or protein intensities together with precursor intensities that can be used for plotting using
+\code{qc_protein_abundance}. Default is \code{FALSE}.}
 
-\item{retain_columns}{A vector indicating if certain columns should be retained from the input data frame. Default is not retaining
-additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks,
-just like other column names, but in a vector).}
+\item{retain_columns}{a vector indicating if certain columns should be retained from the input
+data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
+columns can be retained by providing their names (not in quotations marks, just like other
+column names, but in a vector).}
 }
 \value{
-If \code{for_plot = FALSE}, protein abundances are returned, if \code{for_plot = TRUE} also precursor intensities are returned. The
-later output is ideal for plotting with \code{qc_protein_abundance} and can be filtered to only include protein abundances.
+If \code{for_plot = FALSE}, protein abundances are returned, if \code{for_plot = TRUE}
+also precursor intensities are returned in a data frame. The later output is ideal for plotting
+with \code{qc_protein_abundance} and can be filtered to only include protein abundances.
 }
 \description{
-Determines relative protein abundances from ion quantification. Only proteins with at least 3 peptides are considered for quantification.
+Determines relative protein abundances from ion quantification. Only proteins with at least
+three peptides are considered for quantification.
 }
 \examples{
-\dontrun{
-calculate_protein_abundance(
-  data,
-  sample = r_file_name,
-  protein_id = pg_protein_accessions,
-  precursor = eg_precursor_id,
-  peptide = pep_stripped_sequence,
-  intensity_log2 = normalised_intensity_log2,
-  method = "iq",
-  retain_columns = c(pg_protein_accessions)
+# Create example data
+data <- data.frame(
+  sample = c(
+    rep("S1", 6),
+    rep("S2", 6),
+    rep("S1", 2),
+    rep("S2", 2)
+  ),
+  protein_id = c(
+    rep("P1", 12),
+    rep("P2", 4)
+  ),
+  precursor = c(
+    rep(c("A1", "A2", "B1", "B2", "C1", "D1"), 2),
+    rep(c("E1", "F1"), 2)
+  ),
+  peptide = c(
+    rep(c("A", "A", "B", "B", "C", "D"), 2),
+    rep(c("E", "F"), 2)
+  ),
+  intensity = c(
+    rnorm(n = 6, mean = 15, sd = 2),
+    rnorm(n = 6, mean = 21, sd = 1),
+    rnorm(n = 2, mean = 15, sd = 1),
+    rnorm(n = 2, mean = 15, sd = 2)
+  )
 )
-}
+
+data
+
+# Calculate protein abundances
+protein_abundance <- calculate_protein_abundance(
+  data,
+  sample = sample,
+  protein_id = protein_id,
+  precursor = precursor,
+  peptide = peptide,
+  intensity_log2 = intensity,
+  method = "iq",
+  for_plot = FALSE
+)
+
+protein_abundance
+
+# Calculate protein abundances and retain precursor
+# abundances that can be used in a peptide profile plot
+complete_abundances <- calculate_protein_abundance(
+  data,
+  sample = sample,
+  protein_id = protein_id,
+  precursor = precursor,
+  peptide = peptide,
+  intensity_log2 = intensity,
+  method = "iq",
+  for_plot = TRUE
+)
+
+complete_abundances
 }

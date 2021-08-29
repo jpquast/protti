@@ -1,58 +1,72 @@
 #' Fetch structural information about protein-metal binding from MetalPDB
 #'
-#' Fetches information about protein-metal binding sites from the \href{https://metalpdb.cerm.unifi.it}{MetalPDB} database.
-#' A complete list of different search queries possible can be found \href{https://metalpdb.cerm.unifi.it/api_help}{here}.
+#' Fetches information about protein-metal binding sites from the
+#' \href{https://metalpdb.cerm.unifi.it}{MetalPDB} database. A complete list of different search
+#' queries possible can be found \href{https://metalpdb.cerm.unifi.it/api_help}{here}.
 #'
-#' @param id_type character, specifying the type of the IDs provided to \code{id_value}. Default is "uniprot". Possible options include:
-#' "uniprot", "pdb", "ec_number", "molecule" and "organism"
-#' @param id_value a character vector supplying IDs that have the ID type that was specified in \code{id_type}. E.g. UniProt IDs.
-#' Information for these IDs will be retreived.
-#' @param site_type optional character, if only information about structures with a certain nuclearity should be retrieved, the
-#' specific nuclearity can be supplied here. E.g. "tetranuclear".
-#' @param pfam optional character, if only information about structures with a certain Pfam domain should be retrieved, the domain
-#' can be specified here. E.g. "Carb_anhydrase".
-#' @param cath optional character, if only information about structures with a certain CATH ID should be retreived, the ID can be
-#' specified here. E.g. "3.10.200.10".
-#' @param scop optional character, if only information about structures with a certain SCOP ID should be retreived, the ID can be
-#' specified here. E.g. "b.74.1.1".
-#' @param representative optional logical, if only information of representative sites of a family should be retrieved it can
-#' be specified here. A representative site is a site selected to represent a cluster of equivalent sites. The
-#' selection is done by choosing the PDB structure with the best X-ray resolution among those containing the sites in the cluster.
-#' NMR structures are generally discarded in favor of X-ray structures, unless all the sites in the cluster are found in NMR structures.
-#' If it is \code{TRUE}, only representative sites are retrieved, if it is \code{FALSE}, all sites are retrieved.
-#' @param metal optional character, if only information about structures with a certain metal should be retrieved, the metal can be
-#' specified here. E.g. "Zn".
-#' @param ligands optional character, if only information about structures with a certain metal ligand residue should be retrieved,
-#' the ligand can be specified here. E.g. "His".
-#' @param geometry optional character, if only information about structures with a certain metal site geometry should be retrieved,
-#' the geometry can be specified here based on the three letter code for geometries provided on \href{https://metalpdb.cerm.unifi.it/perGeometry}{MetalPDB}.
-#' @param coordination optional character, if only information about structures with a certain coordination number should be retrieved,
-#' the number can be specified here. E.g. "3".
-#' @param donors optional character, if only information about structures with a certain metal ligand atom should be retrieved,
-#' the atom can be specified here. E.g. "S" for sulfur.
-#' @param columns optional character vector, if only specific columns should be retrieved these can be specified here based on the MetalPDB
-#' \href{https://metalpdb.cerm.unifi.it/api_help}{website}. If nothing is supplied here, all possible columns will be retrieved.
+#' @param id_type a character value that specifies the type of the IDs provided to \code{id_value}.
+#' Default is "uniprot". Possible options include: "uniprot", "pdb", "ec_number", "molecule" and
+#' "organism".
+#' @param id_value a character vector supplying IDs that are of the ID type that was specified in
+#' \code{id_type}. E.g. UniProt IDs. Information for these IDs will be retreived.
+#' @param site_type optional, a character value that specifies a nuclearity for which information
+#' should be retrieved. The specific nuclearity can be supplied as e.g. "tetranuclear".
+#' @param pfam optional, a character value that specifies a Pfam domain for which information
+#' should be retrieved. The domain can be specified as e.g. "Carb_anhydrase".
+#' @param cath optional, a character value that specifies a CATH ID for which information
+#' should be retrieved. The ID can be specified as e.g. "3.10.200.10".
+#' @param scop optional, a character value that specifies a SCOP ID for which information
+#' should be retrieved. The ID can be specified as e.g. "b.74.1.1".
+#' @param representative optional, a logical that indicates if only information of representative
+#' sites of a family should be retrieved it can be specified here. A representative site is a
+#' site selected to represent a cluster of equivalent sites. The selection is done by choosing
+#' the PDB structure with the best X-ray resolution among those containing the sites in the
+#' cluster. NMR structures are generally discarded in favor of X-ray structures, unless all the
+#' sites in the cluster are found in NMR structures. If it is \code{TRUE}, only representative
+#' sites are retrieved, if it is \code{FALSE}, all sites are retrieved.
+#' @param metal optional, a character value that specifies a metal for which information
+#' should be retrieved. The metal can be specified as e.g. "Zn".
+#' @param ligands optional, a character value that specifies a metal ligand residue for which
+#' information should be retrieved. The ligand can be specified as e.g. "His".
+#' @param geometry optional, a character value that specifies a metal site geometry for which
+#' information should be retrieved. The geometry can be specified here based on the three letter
+#' code for geometries provided on \href{https://metalpdb.cerm.unifi.it/perGeometry}{MetalPDB}.
+#' @param coordination optional, a character value that specifies a coordination number for which
+#' information should be retrieved. The number can be specified as e.g. "3".
+#' @param donors optional, a character value that specifies a metal ligand atom for which
+#' information should be retrieved. The atom can be specified as e.g. "S" for sulfur.
+#' @param columns optional, a character vector that specifies specific columns that should be
+#' retrieved based on the MetalPDB \href{https://metalpdb.cerm.unifi.it/api_help}{website}. If
+#' nothing is supplied here, all possible columns will be retrieved.
 #' @param show_progress logical, if true, a progress bar will be shown. Default is TRUE.
 #'
-#' @return A data frame that contains information about protein-metal binding sites. The data frame contains some columns
-#' that might not be self explanatory.
+#' @return A data frame that contains information about protein-metal binding sites. The data
+#' frame contains some columns that might not be self explanatory.
 #' \itemize{
-#' \item{auth_id_metal: }{Unique structure atom identifier of the metal, which is provided by the author of the structure in order to match the identification
-#' used in the publication that describes the structure.}
-#' \item{auth_seq_id_metal: }{Residue identifier of the metal, which is provided by the author of the structure in order to match the identification
-#' used in the publication that describes the structure.}
+#' \item{auth_id_metal: }{Unique structure atom identifier of the metal, which is provided by
+#' the author of the structure in order to match the identification used in the publication
+#' that describes the structure.}
+#' \item{auth_seq_id_metal: }{Residue identifier of the metal, which is provided by the author of
+#' the structure in order to match the identification used in the publication that describes the
+#' structure.}
 #' \item{pattern: }{Metal pattern for each metal bound by the structure.}
-#' \item{is_representative: }{A representative site is a site selected to represent a cluster of equivalent sites. The selection is done
-#' by choosing the PDB structure with the best X-ray resolution among those containing the sites in the cluster. NMR structures are generally
-#' discarded in favor of X-ray structures, unless all the sites in the cluster are found in NMR structures.}
-#' \item{auth_asym_id_ligand: }{Chain identifier of the metal-coordinating ligand residues, which is provided by the author of the structure in order
-#' to match the identification used in the publication that describes the structure.}
-#' \item{auth_seq_id_ligand: }{Residue identifier of the metal-coordinating ligand residues, which is provided by the author of the structure in order
-#' to match the identification used in the publication that describes the structure.}
-#' \item{auth_id_ligand: }{Unique structure atom identifier of the metal-coordinating ligand residues, which is provided by the author of the structure in order
-#' to match the identification used in the publication that describes the structure.}
-#' \item{auth_atom_id_ligand: }{Unique residue specific atom identifier of the metal-coordinating ligand residues, which is provided by the author of the structure in order
-#' to match the identification used in the publication that describes the structure.}
+#' \item{is_representative: }{A representative site is a site selected to represent a cluster of
+#' equivalent sites. The selection is done by choosing the PDB structure with the best X-ray
+#' resolution among those containing the sites in the cluster. NMR structures are generally
+#' discarded in favor of X-ray structures, unless all the sites in the cluster are found in NMR
+#' structures.}
+#' \item{auth_asym_id_ligand: }{Chain identifier of the metal-coordinating ligand residues, which
+#' is provided by the author of the structure in order to match the identification used in the
+#' publication that describes the structure.}
+#' \item{auth_seq_id_ligand: }{Residue identifier of the metal-coordinating ligand residues, which
+#' is provided by the author of the structure in order to match the identification used in the
+#' publication that describes the structure.}
+#' \item{auth_id_ligand: }{Unique structure atom identifier of the metal-coordinating ligand r
+#' esidues, which is provided by the author of the structure in order to match the identification
+#' used in the publication that describes the structure.}
+#' \item{auth_atom_id_ligand: }{Unique residue specific atom identifier of the metal-coordinating
+#' ligand residues, which is provided by the author of the structure in order to match the
+#' identification used in the publication that describes the structure.}
 #' }
 #' @import dplyr
 #' @import progress
@@ -215,11 +229,30 @@ fetch_metal_pdb <- function(id_type = "uniprot",
   }
 
   # make sure that the data is complete even if there are columns missing
-  columns <- c("site", "organism", "scop", "site_type", "ec_number", "pfam", "metals", "molecule", "cath", "uniprot", "is_representative", "pdb")
+  columns <- c(
+    "site",
+    "organism",
+    "scop",
+    "site_type",
+    "ec_number",
+    "pfam",
+    "metals",
+    "molecule",
+    "cath",
+    "uniprot",
+    "is_representative",
+    "pdb"
+  )
   should_be_here <- columns[!columns %in% colnames(content)]
 
   content_metal <- content %>%
-    dplyr::bind_cols(stats::setNames(data.frame(matrix(ncol = length(should_be_here), nrow = nrow(content))), should_be_here)) %>%
+    dplyr::bind_cols(stats::setNames(
+      data.frame(matrix(
+        ncol = length(should_be_here),
+        nrow = nrow(content)
+      )),
+      should_be_here
+    )) %>%
     tidyr::unnest(.data$metals)
 
   if ("metals" %in% colnames(content_metal)) {
@@ -227,11 +260,26 @@ fetch_metal_pdb <- function(id_type = "uniprot",
       dplyr::select(-c(.data$metals))
   }
 
-  columns_metal <- c("residue_pdb_number", "atom_pdb_number", "symbol", "ligands", "name", "pattern", "geometry", "coordination")
+  columns_metal <- c(
+    "residue_pdb_number",
+    "atom_pdb_number",
+    "symbol",
+    "ligands",
+    "name",
+    "pattern",
+    "geometry",
+    "coordination"
+  )
   should_be_here_metal <- columns_metal[!columns_metal %in% colnames(content_metal)]
 
   content_ligand <- content_metal %>%
-    dplyr::bind_cols(stats::setNames(data.frame(matrix(ncol = length(should_be_here_metal), nrow = nrow(content_metal))), should_be_here_metal)) %>%
+    dplyr::bind_cols(stats::setNames(
+      data.frame(matrix(
+        ncol = length(should_be_here_metal),
+        nrow = nrow(content_metal)
+      )),
+      should_be_here_metal
+    )) %>%
     dplyr::rename(
       auth_seq_id_metal = .data$residue_pdb_number,
       auth_id_metal = .data$atom_pdb_number,
@@ -247,7 +295,13 @@ fetch_metal_pdb <- function(id_type = "uniprot",
   should_be_here_ligand <- columns_ligand[!columns_ligand %in% colnames(content_ligand)]
 
   content_donor <- content_ligand %>%
-    dplyr::bind_cols(stats::setNames(data.frame(matrix(ncol = length(should_be_here_ligand), nrow = nrow(content_ligand))), should_be_here_ligand)) %>%
+    dplyr::bind_cols(stats::setNames(
+      data.frame(matrix(
+        ncol = length(should_be_here_ligand),
+        nrow = nrow(content_ligand)
+      )),
+      should_be_here_ligand
+    )) %>%
     tidyr::unnest_longer(.data$donors) %>%
     dplyr::bind_cols(atom = .$donors) %>%
     dplyr::select(-c(.data$ligands, .data$donors, .data$check))
@@ -256,7 +310,13 @@ fetch_metal_pdb <- function(id_type = "uniprot",
   should_be_here_donor <- columns_donor[!columns_donor %in% colnames(content_donor)]
 
   result <- content_donor %>%
-    dplyr::bind_cols(stats::setNames(data.frame(matrix(ncol = length(should_be_here_donor), nrow = nrow(content_donor))), should_be_here_donor)) %>%
+    dplyr::bind_cols(stats::setNames(
+      data.frame(matrix(
+        ncol = length(should_be_here_donor),
+        nrow = nrow(content_donor)
+      )),
+      should_be_here_donor
+    )) %>%
     dplyr::rename(
       auth_asym_id_ligand = .data$chain,
       auth_seq_id_ligand = .data$residue_pdb_number,

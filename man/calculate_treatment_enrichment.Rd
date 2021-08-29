@@ -14,36 +14,70 @@ calculate_treatment_enrichment(
 )
 }
 \arguments{
-\item{data}{A dataframe contains at least the input variables.}
+\item{data}{a data frame contains at least the input variables.}
 
-\item{protein_id}{The name of the column containing the protein accession numbers.}
+\item{protein_id}{a character column in the \code{data} data frame that contains the protein
+accession numbers.}
 
-\item{is_significant}{The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide. The input data frame
-may contain peptide level information with significance information. The function is able to extract protein level information from this.}
+\item{is_significant}{a logical column in the \code{data} data frame that indicates if the
+corresponding protein has a significantly changing peptide. The input data frame may contain
+peptide level information with significance information. The function is able to extract protein
+level information from this.}
 
-\item{binds_treatment}{The name of the column containing a logical indicating if the corresponding protein binds to the treatment. This information can be obtained
-from different databases, e.g Uniprot.}
+\item{binds_treatment}{a logical column in the \code{data} data frame that indicates if the
+corresponding protein binds to the treatment. This information can be obtained from different
+databases, e.g. UniProt.}
 
-\item{treatment_name}{A character vector of the treatment name. It will be included in the plot title.}
+\item{treatment_name}{a character value that indicates the treatment name. It will be included
+in the plot title.}
 
-\item{plot}{A logical indicating whether the result should be plotted or returned as a table.}
+\item{plot}{a logical value indicating whether the result should be plotted or returned as a
+table.}
 }
 \value{
-A bar plot displaying the percentage of all detect proteins and all significant proteins that bind to the treatment. A Fisher's exact test is performed to
-calculate the significance of the enrichment in significant proteins compared to all proteins. The result is reported as a p-value. If \code{plot = FALSE} a contingency
-table in long format is returned.
+A bar plot displaying the percentage of all detect proteins and all significant proteins
+that bind to the treatment. A Fisher's exact test is performed to calculate the significance of
+the enrichment in significant proteins compared to all proteins. The result is reported as a
+p-value. If \code{plot = FALSE} a contingency table in long format is returned.
 }
 \description{
-Check for an enrichment of proteins interacting with the treatment in significantly changing proteins as compared to all proteins.
+Check for an enrichment of proteins interacting with the treatment in significantly changing
+proteins as compared to all proteins.
 }
 \examples{
-\dontrun{
+# Create example data
+data <- data.frame(
+  protein_id = c(paste0("protein", 1:50)),
+  significant = c(
+    rep(TRUE, 20),
+    rep(FALSE, 30)
+  ),
+  binds_treatment = c(
+    rep(TRUE, 10),
+    rep(FALSE, 10),
+    rep(TRUE, 5),
+    rep(FALSE, 25)
+  )
+)
+
+# Plot treatment enrichment
 calculate_treatment_enrichment(
   data,
-  protein_id = pg_protein_accessions,
+  protein_id = protein_id,
   is_significant = significant,
-  binds_treatment = binds_metals,
-  treatment = "Metals"
+  binds_treatment = binds_treatment,
+  treatment = "Rapamycin",
+  plot = TRUE
 )
-}
+
+# Calculate treatment enrichment
+enrichment <- calculate_treatment_enrichment(
+  data,
+  protein_id = protein_id,
+  is_significant = significant,
+  binds_treatment = binds_treatment,
+  plot = FALSE
+)
+
+enrichment
 }

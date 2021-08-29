@@ -20,47 +20,88 @@ drc_4p_plot(
 )
 }
 \arguments{
-\item{data}{A data frame that is obtained by calling the \code{fit_drc_4p} function.}
+\item{data}{a data frame that is obtained by calling the \code{fit_drc_4p} function.}
 
-\item{grouping}{The name of the column containing precursor, peptide or protein identifiers.}
+\item{grouping}{a character column in the \code{data} data frame that contains the precursor,
+peptide or protein identifiers.}
 
-\item{response}{The name of the column containing response values, eg. log2 transformed intensities.}
+\item{response}{a numeric column in a nested data frame called \code{plot_points} that is part
+of the \code{data} data frame. This column contains the response values, e.g. log2 transformed
+intensities.}
 
-\item{dose}{The name of the column containing dose values, eg. the treatment concentrations.}
+\item{dose}{a numeric column in a nested data frame called \code{plot_points} that is part
+of the \code{data} data frame. This column contains the dose values, e.g. the treatment
+concentrations.}
 
-\item{targets}{A character vector that specifies the names of the precursors, peptides or proteins (depending on \code{grouping})
-that should be plotted. This can also be \code{"all"} if plots for all curve fits should be created.}
+\item{targets}{a character vector that specifies the names of the precursors, peptides or
+proteins (depending on \code{grouping}) that should be plotted. This can also be \code{"all"}
+if plots for all curve fits should be created.}
 
-\item{unit}{A character vector specifying the unit of the concentration.}
+\item{unit}{a character value specifying the unit of the concentration.}
 
-\item{y_axis_name}{A character vector specifying the name of the y-axis of the plot.}
+\item{y_axis_name}{a character value specifying the name of the y-axis of the plot.}
 
-\item{facet}{A logical indicating if plots should be summarised into facets of 20 plots. This is recommended for many plots.}
+\item{facet}{a logical value that indicates if plots should be summarised into facets of 20
+plots. This is recommended for many plots.}
 
-\item{scales}{A character vector that specifies if the scales in faceted plots (if more than one target was provided) should be \code{"free"} or \code{"fixed"}.}
+\item{scales}{a character value that specifies if the scales in faceted plots (if more than one
+target was provided) should be \code{"free"} or \code{"fixed"}.}
 
-\item{x_axis_scale_log10}{A logical indicating if the x-axis scale should be log10 transformed.}
+\item{x_axis_scale_log10}{a logical value that indicates if the x-axis scale should be log10
+transformed.}
 
-\item{export}{A logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The
-name of the file can be chosen using the \code{export_name} argument. If only one target is selected and \code{export = TRUE},
+\item{export}{a logical value that indicates if plots should be exported as PDF. The output
+directory will be the current working directory. The name of the file can be chosen using the
+\code{export_name} argument. If only one target is selected and \code{export = TRUE},
 the plot is exported and in addition returned in R.}
 
-\item{export_name}{A character vector providing the name of the exported file if \code{export = TRUE}.}
+\item{export_name}{a character value providing the name of the exported file if
+\code{export = TRUE}.}
 }
 \value{
-If \code{targets = "all"} a list containing plots for every unique identifier in the \code{grouping} variable is created. Otherwise a plot for the specified targets is created with maximally 20 facets.
+If \code{targets = "all"} a list containing plots for every unique identifier in the
+\code{grouping} variable is created. Otherwise a plot for the specified targets is created with
+maximally 20 facets.
 }
 \description{
-Function for plotting four-parameter dose response curves for each group (precursor, peptide or protein), based on output from \code{fit_drc_4p} function.
+Function for plotting four-parameter dose response curves for each group (precursor, peptide or
+protein), based on output from \code{fit_drc_4p} function.
 }
 \examples{
-\dontrun{
-drc_4p_plot(
-  data,
-  grouping = eg_precursor_id,
-  response = intensity,
+\donttest{
+set.seed(123) # Makes example reproducible
+
+# Create example data
+data <- create_synthetic_data(
+  n_proteins = 2,
+  frac_change = 1,
+  n_replicates = 3,
+  n_conditions = 8,
+  method = "dose_response",
+  concentrations = c(0, 1, 10, 50, 100, 500, 1000, 5000),
+  additional_metadata = FALSE
+)
+
+# Perform dose response curve fit
+drc_fit <- fit_drc_4p(
+  data = data,
+  sample = sample,
+  grouping = peptide,
+  response = peptide_intensity_missing,
   dose = concentration,
-  targets = c("ABCDEFK")
+  retain_columns = c(protein)
+)
+
+str(drc_fit)
+
+# Plot dose response curves
+drc_4p_plot(
+  data = drc_fit,
+  grouping = peptide,
+  response = peptide_intensity_missing,
+  dose = concentration,
+  targets = c("peptide_2_1", "peptide_2_3"),
+  unit = "pM"
 )
 }
 }

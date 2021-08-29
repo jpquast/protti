@@ -27,64 +27,79 @@ create_synthetic_data(
 )
 }
 \arguments{
-\item{n_proteins}{Numeric, specifies the number of proteins in the synthetic dataset.}
+\item{n_proteins}{a numeric value that specifies the number of proteins in the synthetic dataset.}
 
-\item{frac_change}{Numeric, the fraction of proteins that has a peptide changing in abundance. So far only one peptide per protein
-is changing.}
+\item{frac_change}{a numeric value that specifies the fraction of proteins that has a peptide
+changing in abundance. So far only one peptide per protein is changing.}
 
-\item{n_replicates}{Numeric, the number of replicates per condition.}
+\item{n_replicates}{a numeric value that specifies the number of replicates per condition.}
 
-\item{n_conditions}{Numeric, the number of conditions.}
+\item{n_conditions}{a numeric value that specifies the number of conditions.}
 
-\item{method}{Character, specifies the method type for the random sampling of significantly changing peptides. If \code{method = "effect_random"},
-the effect for each condition is randomly sampled and conditions do not depend on each other. If \code{method = "dose_response"},
-the effect is sampled based on a dose response curve and conditions are related to each other depending on the curve shape. In this case
-the concentrations argument needs to be specified.}
+\item{method}{a character value that specifies the method type for the random sampling of
+significantly changing peptides. If \code{method = "effect_random"}, the effect for each
+condition is randomly sampled and conditions do not depend on each other. If
+\code{method = "dose_response"}, the effect is sampled based on a dose response curve and
+conditions are related to each other depending on the curve shape. In this case the
+concentrations argument needs to be specified.}
 
-\item{concentrations}{Numeric vector of the length of number of conditions, only needs to be specified if \code{method = "dose_response"}.
-This allows equal sampling of peptide intensities. It ensures that the same positions of dose response curves are sampled for each peptide
-based on the provided concentrations.}
+\item{concentrations}{a numeric vector of length equal to the number of conditions, only needs
+to be specified if \code{method = "dose_response"}. This allows equal sampling of peptide
+intensities. It ensures that the same positions of dose response curves are sampled for each
+peptide based on the provided concentrations.}
 
-\item{median_offset_sd}{Numeric, standard deviation of normal distribution that is used for sampling of inter-sample-differences.
-Default is 0.05.}
+\item{median_offset_sd}{a numeric value that specifies the standard deviation of normal
+distribution that is used for sampling of inter-sample-differences. Default is 0.05.}
 
-\item{mean_protein_intensity}{Numeric, mean of the protein intensity distribution. Default: 16.8.}
+\item{mean_protein_intensity}{a numeric value that specifies the mean of the protein intensity
+distribution. Default: 16.8.}
 
-\item{sd_protein_intensity}{Numeric, standard deviation of the protein intensity distribution. Default: 1.4.}
+\item{sd_protein_intensity}{a numeric value that specifies the standard deviation of the
+protein intensity distribution. Default: 1.4.}
 
-\item{mean_n_peptides}{Numeric, mean number of peptides per protein. Default: 12.75.}
+\item{mean_n_peptides}{a numeric value that specifies the mean number of peptides per protein.
+Default: 12.75.}
 
-\item{size_n_peptides}{Numeric, dispersion parameter (the shape parameter of the gamma mixing distribution). Can be theoretically calculated
-as \code{mean + mean^2/variance}, however, it should be rather obtained by fitting the negative binomial distribution to real data. This
-can be done by using the \code{optim} function (see Example section). Default: 0.9.}
+\item{size_n_peptides}{a numeric value that specifies the dispersion parameter (the shape
+parameter of the gamma mixing distribution). Can be theoretically calculated as
+\code{mean + mean^2/variance}, however, it should be rather obtained by fitting the negative
+binomial distribution to real data. This can be done by using the \code{optim} function (see
+Example section). Default: 0.9.}
 
-\item{mean_sd_peptides}{Numeric, mean of peptide intensity standard deviations within a protein. Default: 1.7.}
+\item{mean_sd_peptides}{a numeric value that specifies the mean of peptide intensity standard
+deviations within a protein. Default: 1.7.}
 
-\item{sd_sd_peptides}{Numeric, standard deviation of peptide intensity standard deviation within a protein. Default: 0.75.}
+\item{sd_sd_peptides}{a numeric value that specifies the standard deviation of peptide intensity
+standard deviation within a protein. Default: 0.75.}
 
-\item{mean_log_replicates, sd_log_replicates}{Numeric, \code{meanlog} and \code{sdlog} value of the log normal
-distribution of replicate standard deviations. Can be obtained by fitting a log normal distribution to the distribution
-of replicate standard deviations from a real dataset. This can be done using
-the \code{optim} function (see Example section). Default: -2.2 and 1.05.}
+\item{mean_log_replicates, sd_log_replicates}{a numeric value that specifies the \code{meanlog}
+and \code{sdlog} of the log normal distribution of replicate standard deviations. Can be
+obtained by fitting a log normal distribution to the distribution of replicate standard
+deviations from a real dataset. This can be done using the \code{optim} function (see Example
+section). Default: -2.2 and 1.05.}
 
-\item{effect_sd}{Numeric, standard deviation of a normal distribution around \code{mean = 0} that is used to sample the effect of
-significantly changeing peptides. Default: 2.}
+\item{effect_sd}{a numeric value that specifies the standard deviation of a normal distribution
+around \code{mean = 0} that is used to sample the effect of significantly changeing peptides.
+Default: 2.}
 
-\item{dropout_curve_inflection}{Numeric, intensity inflection point of a probabilistic dropout curve that is used to sample intensity
-dependent missing values. This argument determines how many missing values there are in the dataset. Default: 14.}
+\item{dropout_curve_inflection}{a numeric value that specifies the intensity inflection point
+of a probabilistic dropout curve that is used to sample intensity dependent missing values.
+This argument determines how many missing values there are in the dataset. Default: 14.}
 
-\item{dropout_curve_sd}{Numeric, standard deviation of the probabilistic dropout curve. Needs to be negative to sample a droupout towards
-low intensities. Default: -1.2.}
+\item{dropout_curve_sd}{a numeric value that specifies the standard deviation of the
+probabilistic dropout curve. Needs to be negative to sample a droupout towards low intensities.
+Default: -1.2.}
 
-\item{additional_metadata}{Logical, determines if metadata such as protein coverage, missed cleavages and charge state should be
-sampled and added to the list.}
+\item{additional_metadata}{a logical value that determines if metadata such as protein
+coverage, missed cleavages and charge state should be sampled and added to the list.}
 }
 \value{
-A data frame that contains complete peptide intensities and peptide intensities with values that were created based on a
-probabilistic dropout curve.
+A data frame that contains complete peptide intensities and peptide intensities with
+values that were created based on a probabilistic dropout curve.
 }
 \description{
-This function creates a synthetic limited proteolysis proteomics dataset that can be used to test functions while knowing the ground truth.
+This function creates a synthetic limited proteolysis proteomics dataset that can be used to
+test functions while knowing the ground truth.
 }
 \examples{
 create_synthetic_data(

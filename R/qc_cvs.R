@@ -2,14 +2,21 @@
 #'
 #' Calculates and plots the coefficients of variation for the selected grouping.
 #'
-#' @param data a data frame containing at least peptide, precursor or protein identifiers, information on conditions and intensity values for each peptide, precursor or protein.
-#' @param grouping the column in the input data frame containing the grouping variables (e.g. peptides, precursors or proteins).
-#' @param condition the column in the data data frame containing condition information (e.g. "treated" and "control").
-#' @param intensity the name of the column containing the corresponding raw or untransformed normalised intensity values for each peptide or precursor.
-#' @param plot logical indicating whether the result should be plotted. Default is TRUE.
-#' @param plot_style character vector indicating the plotting style. \code{plot_style = "boxplot"} plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution. \code{plot_style = "violin"} returns a violin plot. Default is \code{plot_style = "density"}.
+#' @param data a data frame containing at least peptide, precursor or protein identifiers,
+#' information on conditions and intensity values for each peptide, precursor or protein.
+#' @param grouping a character column in the \code{data} data frame that contains the grouping
+#' variables (e.g. peptides, precursors or proteins).
+#' @param condition a column in the \code{data} data frame that contains condition information
+#' (e.g. "treated" and "control").
+#' @param intensity a numeric column in the \code{data} data frame that contains the corresponding
+#' raw or untransformed normalised intensity values for each peptide or precursor.
+#' @param plot a logical value that indicates whether the result should be plotted.
+#' @param plot_style a character value that indicates the plotting style. \code{plot_style = "boxplot"}
+#' plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution.
+#' \code{plot_style = "violin"} returns a violin plot. Default is \code{plot_style = "density"}.
 #'
-#' @return Either the median CVs in % or a plot showing the distribution of the CVs.
+#' @return Either a data frame with the median CVs in % or a plot showing the distribution of the CVs
+#' is returned.
 #' @import dplyr
 #' @import ggplot2
 #' @importFrom tidyr drop_na
@@ -21,23 +28,55 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' # Load libraries
+#' library(dplyr)
+#'
+#' set.seed(123) # Makes example reproducible
+#'
+#' # Create example data
+#' data <- create_synthetic_data(
+#'   n_proteins = 100,
+#'   frac_change = 0.05,
+#'   n_replicates = 3,
+#'   n_conditions = 2,
+#'   method = "effect_random"
+#' ) %>%
+#'   mutate(intensity_non_log2 = 2^peptide_intensity_missing)
+#'
+#' # Calculate coefficients of variation
 #' qc_cvs(
-#'   data,
-#'   grouping = pep_stripped_sequence,
+#'   data = data,
+#'   grouping = peptide,
 #'   condition = condition,
-#'   intensity = fg_quantity,
-#'   plot = TRUE,
-#'   plot_style = "density"
+#'   intensity = intensity_non_log2,
+#'   plot = FALSE
 #' )
-#' }
+#'
+#' # Plot coefficients of variation
+#' # Different plot styles are available
+#' qc_cvs(
+#'   data = data,
+#'   grouping = peptide,
+#'   condition = condition,
+#'   intensity = intensity_non_log2,
+#'   plot = TRUE,
+#'   plot_style = "violin"
+#' )
 qc_cvs <-
-  function(data, grouping, condition, intensity, plot = TRUE, plot_style = "density") {
+  function(data,
+           grouping,
+           condition,
+           intensity,
+           plot = TRUE,
+           plot_style = "density") {
     protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
     utils::data("protti_colours", envir = environment()) # then overwrite it with real data
     if (plot == FALSE) {
       if (max(dplyr::pull(data, {{ intensity }}), na.rm = TRUE) < 1000) {
-        stop("Please backtransform your data or use raw values. The function does not handle log2 transformed data.")
+        stop(strwrap("Please backtransform your data or use raw values.
+The function does not handle log2 transformed data.",
+          prefix = "\n", initial = ""
+        ))
       }
 
       result <- data %>%
@@ -61,7 +100,10 @@ qc_cvs <-
 
     if (plot == TRUE) {
       if (max(dplyr::pull(data, {{ intensity }}), na.rm = TRUE) < 1000) {
-        stop("Please backtransform your data or use raw values. The function does not handle log2 transformed data.")
+        stop(strwrap("Please backtransform your data or use raw values.
+The function does not handle log2 transformed data.",
+          prefix = "\n", initial = ""
+        ))
       }
       result <- data %>%
         dplyr::distinct({{ grouping }}, {{ condition }}, {{ intensity }}) %>%
@@ -90,8 +132,18 @@ qc_cvs <-
 
       if (plot_style == "boxplot") {
         plot <- ggplot2::ggplot(result) +
-          ggplot2::geom_boxplot(aes(x = .data$type, y = .data$values, fill = .data$type), na.rm = TRUE) +
-          ggplot2::labs(title = "Coefficients of variation", y = "Coefficient of variation [%]", fill = "Condition") +
+          ggplot2::geom_boxplot(aes(
+            x = .data$type,
+            y = .data$values,
+            fill = .data$type
+          ),
+          na.rm = TRUE
+          ) +
+          ggplot2::labs(
+            title = "Coefficients of variation",
+            y = "Coefficient of variation [%]",
+            fill = "Condition"
+          ) +
           ggplot2::scale_y_continuous(limits = c(0, 200)) +
           ggplot2::scale_fill_manual(values = protti_colours) +
           ggplot2::theme_bw() +
@@ -110,9 +162,23 @@ qc_cvs <-
       if (plot_style == "density") {
         plot <- ggplot2::ggplot(result) +
           ggplot2::geom_density(ggplot2::aes(x = .data$values, col = .data$type), size = 1, na.rm = TRUE) +
-          ggplot2::labs(title = "Coefficients of variation", x = "Coefficient of variation [%]", y = "Density", color = "Condition") +
+          ggplot2::labs(
+            title = "Coefficients of variation",
+            x = "Coefficient of variation [%]",
+            y = "Density",
+            color = "Condition"
+          ) +
           ggplot2::scale_x_continuous(limits = c(0, 200)) +
-          geom_vline(data = dplyr::distinct(result, .data$median, .data$type), ggplot2::aes(xintercept = median, col = .data$type), size = 1, linetype = "dashed", show.legend = FALSE) +
+          geom_vline(
+            data = dplyr::distinct(result, .data$median, .data$type),
+            ggplot2::aes(
+              xintercept = median,
+              col = .data$type
+            ),
+            size = 1,
+            linetype = "dashed",
+            show.legend = FALSE
+          ) +
           ggplot2::scale_color_manual(values = protti_colours) +
           ggplot2::theme_bw() +
           ggplot2::theme(
@@ -131,7 +197,12 @@ qc_cvs <-
         plot <- ggplot2::ggplot(result, aes(x = .data$type, y = .data$values, fill = .data$type)) +
           ggplot2::geom_violin(na.rm = TRUE) +
           ggplot2::geom_boxplot(width = 0.15, fill = "white", na.rm = TRUE, alpha = 0.6) +
-          ggplot2::labs(title = "Coefficients of variation", x = "", y = "Coefficient of variation [%]", fill = "Condition") +
+          ggplot2::labs(
+            title = "Coefficients of variation",
+            x = "",
+            y = "Coefficient of variation [%]",
+            fill = "Condition"
+          ) +
           ggplot2::scale_y_continuous(limits = c(0, 200)) +
           ggplot2::scale_fill_manual(values = protti_colours) +
           ggplot2::theme_bw() +

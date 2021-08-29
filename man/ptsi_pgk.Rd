@@ -5,21 +5,30 @@
 \alias{ptsi_pgk}
 \title{Structural analysis example data}
 \format{
-A data frame containing differential abundances and adjusted p-values for peptides/precursors of two proteins.
+A data frame containing differential abundances and adjusted p-values for
+peptides/precursors of two proteins.
 }
 \source{
-Cappelletti V, Hauser T, Piazza I, Pepelnjak M, Malinovska L, Fuhrer T, Li Y, Dörig C, Boersema P, Gillet L, Grossbach J, Dugourd A, Saez-Rodriguez J, Beyer A, Zamboni N, Caflisch A, de Souza N, Picotti P. Dynamic 3D proteomes reveal protein functional alterations at high resolution in situ. Cell. 2021 Jan 21;184(2):545-559.e22. doi: 10.1016/j.cell.2020.12.021. Epub 2020 Dec 23. PMID: 33357446; PMCID: PMC7836100.
+Cappelletti V, Hauser T, Piazza I, Pepelnjak M, Malinovska L, Fuhrer T, Li Y, Dörig C,
+Boersema P, Gillet L, Grossbach J, Dugourd A, Saez-Rodriguez J, Beyer A, Zamboni N, Caflisch A,
+de Souza N, Picotti P. Dynamic 3D proteomes reveal protein functional alterations at high
+resolution in situ. Cell. 2021 Jan 21;184(2):545-559.e22. doi: 10.1016/j.cell.2020.12.021.
+Epub 2020 Dec 23. PMID: 33357446; PMCID: PMC7836100.
 }
 \usage{
 ptsi_pgk
 }
 \description{
-Example data used for the vignette about structural analysis. The data was obtained from \href{https://www.sciencedirect.com/science/article/pii/S0092867420316913}{Cappelletti 2021}
-and corresponds to two separate experiments. Both experiments were limited proteolyis coupled to mass spectrometry (LiP-MS) experiments conducted on
-purified proteins. The first protein is phosphoglycerate kinase 1 (pgk) and it was treated with 25mM 3-phosphoglyceric acid (3PG). The second protein
-is phosphoenolpyruvate-protein phosphotransferase (ptsI) and it was treated with 25mM fructose 1,6-bisphosphatase (FBP). From both experiments only
-peptides belonging to either protein were used for this data set. The ptsI data set contains precursor level data while the pgk data set contains peptide
-level data. The pgk data can be obtained from supplementary table 3 from the tab named "pgk+3PG". The ptsI data is only included as raw data and was
-analysed using the functions of this package.
+Example data used for the vignette about structural analysis. The data was obtained from
+\href{https://www.sciencedirect.com/science/article/pii/S0092867420316913}{Cappelletti 2021}
+and corresponds to two separate experiments. Both experiments were limited proteolyis coupled to
+mass spectrometry (LiP-MS) experiments conducted on purified proteins. The first protein is
+phosphoglycerate kinase 1 (pgk) and it was treated with 25mM 3-phosphoglyceric acid (3PG).
+The second protein is phosphoenolpyruvate-protein phosphotransferase (ptsI) and it was treated
+with 25mM fructose 1,6-bisphosphatase (FBP). From both experiments only peptides belonging to
+either protein were used for this data set. The ptsI data set contains precursor level data
+while the pgk data set contains peptide level data. The pgk data can be obtained from
+supplementary table 3 from the tab named "pgk+3PG". The ptsI data is only included as raw data
+and was analysed using the functions of this package.
 }
 \keyword{datasets}

@@ -15,13 +15,13 @@ assign_peptide_type(
 \item{data}{a data frame containing at least information about the preceding and C-terminal
 amino acids of peptides.}
 
-\item{aa_before}{a character column in the input data frame that contains the preceding amino
+\item{aa_before}{a character column in the \code{data} data frame that contains the preceding amino
 acid as one letter code.}
 
-\item{last_aa}{a character column in the input data frame that contains the C-terminal amino
+\item{last_aa}{a character column in the \code{data} data frame that contains the C-terminal amino
 acid as one letter code.}
 
-\item{aa_after}{a character column in the input data frame that contains the following amino
+\item{aa_after}{a character column in the \code{data} data frame that contains the following amino
 acid as one letter code.}
 }
 \value{

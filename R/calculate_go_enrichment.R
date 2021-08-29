@@ -17,35 +17,48 @@ go_enrichment <- function(...) {
 }
 #' Perform gene ontology enrichment analysis
 #'
-#' Analyses enrichment of gene ontology terms associated with proteins in the fraction of significant proteins compared to all detected proteins.
-#' A two-sided Fisher's exact test is performed to test significance of enrichment or depletion. GO annotations can be provided to this
-#' function either through UniProt \code{go_annotations_uniprot}, through a table obtained with \code{fetch_go} in the \code{go_data} argument
-#' or GO annotations are fetched automatically by the function by providing \code{ontology_type} and \code{organism_id}.
+#' Analyses enrichment of gene ontology terms associated with proteins in the fraction of
+#' significant proteins compared to all detected proteins. A two-sided Fisher's exact test is
+#' performed to test significance of enrichment or depletion. GO annotations can be provided to
+#' this function either through UniProt \code{go_annotations_uniprot}, through a table obtained
+#' with \code{fetch_go} in the \code{go_data} argument or GO annotations are fetched automatically
+#' by the function by providing \code{ontology_type} and \code{organism_id}.
 #'
-#' @param data A data frame that contains at least the input variables.
-#' @param protein_id The name of the column containing the protein accession numbers.
-#' @param is_significant The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide.
-#' The input data frame may contain peptide level information with significance information. The function is able to extract protein level information from this.
-#' @param go_annotations_uniprot (Recommended) The name of the column containing gene ontology annotations obtained from UniProt using \code{fetch_uniprot}.
-#' These annotations are already separated into the desired ontology type so the argument \code{ontology_type} is not required.
-#' @param ontology_type Optional, A character vector specifying the type of ontology that should be used. Possible values
-#' are molecular function (MF), biological process (BP), cellular component (CC). This argument is not required if GO annotations
-#' are provided from UniProt in \code{go_annotations_uniprot}. It is required if annotations are provided through \code{go_data} or
+#' @param data a data frame that contains at least the input variables.
+#' @param protein_id a character column in the \code{data} data frame that contains the protein
+#' accession numbers.
+#' @param is_significant a logical column in the \code{data} data frame that indicates if the
+#' corresponding protein has a significantly changing peptide. The input data frame may contain
+#' peptide level information with significance information. The function is able to extract
+#' protein level information from this.
+#' @param go_annotations_uniprot recommended, a character column in the \code{data} data frame
+#' that contains gene ontology annotations obtained from UniProt using \code{fetch_uniprot}.
+#' These annotations are already separated into the desired ontology type so the argument
+#' \code{ontology_type} is not required.
+#' @param ontology_type optional, character value specifying the type of ontology that should
+#' be used. Possible values are molecular function (MF), biological process (BP), cellular component
+#' (CC). This argument is not required if GO annotations are provided from UniProt in
+#' \code{go_annotations_uniprot}. It is required if annotations are provided through \code{go_data} or
 #' automatically fetched.
-#' @param organism_id Optional, An NCBI taxonomy identifier of an organism (TaxId). Possible inputs include only: "9606" (Human), "559292" (Yeast) and
-#' "83333" (E. coli). Is only necessary if GO data is not provided either by \code{go_annotations_uniprot} or in \code{go_data}.
-#' @param go_data Optional, a data frame that can be obtained with \code{fetch_go}. If you provide data yourself make sure column
-#' names for protein ID (db_id) and GO ID (go_id) are the same as for data obtained with \code{fetch_go}.
-#' @param plot A logical indicating whether the result should be plotted or returned as a table.
-#' @param plot_cutoff A character vector indicating if the plot should contain the top 10 most significant proteins (p-value or adjusted p-value),
-#' or if a significance cutoff should be used to determine the number of GO terms in the plot. This information should be provided with the
-#' type first followed by the threshold separated by a space. Example are \code{plot_cutoff = "adj_pval top10"}, \code{plot_cutoff = "pval 0.05"}
-#' or \code{plot_cutoff = "adj_pval 0.01"}. The threshold can be chosen freely.
+#' @param organism_id optional, character value specifying an NCBI taxonomy identifier of an
+#' organism (TaxId). Possible inputs include only: "9606" (Human), "559292" (Yeast) and "83333"
+#' (E. coli). Is only necessary if GO data is not provided either by \code{go_annotations_uniprot}
+#' or in \code{go_data}.
+#' @param go_data Optional, a data frame that can be obtained with \code{fetch_go}. If you provide
+#' data not obtained with \code{fetch_go} make sure column names for protein ID (db_id) and GO ID
+#' (go_id) are the same as for data obtained with \code{fetch_go}.
+#' @param plot a logical value indicating whether the result should be plotted or returned as a table.
+#' @param plot_cutoff a character value indicating if the plot should contain the top 10 most
+#' significant proteins (p-value or adjusted p-value), or if a significance cutoff should be used
+#' to determine the number of GO terms in the plot. This information should be provided with the
+#' type first followed by the threshold separated by a space. Example are
+#' \code{plot_cutoff = "adj_pval top10"}, \code{plot_cutoff = "pval 0.05"} or
+#' \code{plot_cutoff = "adj_pval 0.01"}. The threshold can be chosen freely.
 #'
-#' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or depleted gene ontology terms. Alternatively,
-#' plot cutoffs can be chosen individually with the \code{plot_cutoff} argument.
-#' Bars are colored according to the direction of the enrichment. If \code{plot = FALSE}, a data frame is returned. P-values
-#' are adjusted with Benjamini-Hochberg.
+#' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or
+#' depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individually with the
+#' \code{plot_cutoff} argument. Bars are colored according to the direction of the enrichment. If
+#' \code{plot = FALSE}, a data frame is returned. P-values are adjusted with Benjamini-Hochberg.
 #'
 #' @import dplyr
 #' @import ggplot2
@@ -57,16 +70,66 @@ go_enrichment <- function(...) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' # Load libraries
+#' library(dplyr)
+#' library(stringr)
+#'
+#' # Create example data
+#' # Contains artificial de-enrichment for ribosomes.
+#' data <- fetch_uniprot_proteome(
+#'   organism_id = 83333,
+#'   columns = c(
+#'     "id",
+#'     "go(molecular function)"
+#'   )
+#' ) %>%
+#'   mutate(significant = c(
+#'     rep(TRUE, 1000),
+#'     rep(FALSE, n() - 1000)
+#'   )) %>%
+#'   mutate(significant = ifelse(
+#'     str_detect(
+#'       go_molecular_function,
+#'       pattern = "ribosome"
+#'     ),
+#'     FALSE,
+#'     significant
+#'   ))
+#'
+#' # Plot gene ontology enrichment
 #' calculate_go_enrichment(
 #'   data,
-#'   protein_id = pg_protein_accessions,
+#'   protein_id = id,
+#'   go_annotations_uniprot = go_molecular_function,
 #'   is_significant = significant,
-#'   go_annotations_uniprot = go_molecular_function
+#'   plot = TRUE,
+#'   plot_cutoff = "pval 0.01"
 #' )
+#'
+#' # Calculate gene ontology enrichment
+#' go_enrichment <- calculate_go_enrichment(
+#'   data,
+#'   protein_id = id,
+#'   go_annotations_uniprot = go_molecular_function,
+#'   is_significant = significant,
+#'   plot = FALSE,
+#' )
+#'
+#' head(go_enrichment, n = 10)
 #' }
-calculate_go_enrichment <- function(data, protein_id, is_significant, go_annotations_uniprot = NULL, ontology_type, organism_id = NULL, go_data = NULL, plot = TRUE, plot_cutoff = "adj_pval top10") {
-  . <- NULL # to avoid note about no global variable binding. Usually this can be avoided with .data$ but not in nesting in complete function.
+calculate_go_enrichment <- function(data,
+                                    protein_id,
+                                    is_significant,
+                                    go_annotations_uniprot = NULL,
+                                    ontology_type,
+                                    organism_id = NULL,
+                                    go_data = NULL,
+                                    plot = TRUE,
+                                    plot_cutoff = "adj_pval top10") {
+  # to avoid note about no global variable binding. Usually this can be avoided with
+  # .data$ but not in nesting in complete function.
+  . <- NULL
   n_sig <- NULL
 
   if (length(unique(dplyr::pull(data, {{ protein_id }}))) != nrow(data)) {
@@ -79,15 +142,32 @@ calculate_go_enrichment <- function(data, protein_id, is_significant, go_annotat
       dplyr::distinct()
   }
   if (!missing(go_annotations_uniprot)) {
-    if (!stringr::str_detect(dplyr::pull(data, {{ go_annotations_uniprot }})[dplyr::pull(data, {{ go_annotations_uniprot }}) != "" & !is.na(dplyr::pull(data, {{ go_annotations_uniprot }}))][1], pattern = "\\[GO:")) {
-      stop(paste("The column", rlang::as_name(rlang::enquo(go_annotations_uniprot)), "does not contain the right GO annotation format.
-                 Please use the format provided by UniProt or provide data in the go_data argument."))
+    if (!stringr::str_detect(
+      dplyr::pull(
+        data,
+        {{ go_annotations_uniprot }}
+      )[dplyr::pull(
+        data,
+        {{ go_annotations_uniprot }}
+      ) != "" &
+        !is.na(dplyr::pull(
+          data,
+          {{ go_annotations_uniprot }}
+        ))][1],
+      pattern = "\\[GO:"
+    )) {
+      stop(strwrap(paste("The column", rlang::as_name(rlang::enquo(go_annotations_uniprot)), "does not
+contain the right GO annotation format. Please use the format provided by UniProt or provide data in
+the go_data argument."), prefix = "\n", initial = ""))
     }
     input <- data %>%
       dplyr::mutate({{ go_annotations_uniprot }} := stringr::str_split({{ go_annotations_uniprot }}, ";")) %>%
       tidyr::unnest({{ go_annotations_uniprot }}) %>%
       dplyr::mutate({{ go_annotations_uniprot }} := stringr::str_trim({{ go_annotations_uniprot }})) %>%
-      dplyr::mutate({{ go_annotations_uniprot }} := ifelse({{ go_annotations_uniprot }} == "", NA, {{ go_annotations_uniprot }})) %>%
+      dplyr::mutate({{ go_annotations_uniprot }} := ifelse({{ go_annotations_uniprot }} == "",
+        NA,
+        {{ go_annotations_uniprot }}
+      )) %>%
       dplyr::rename(go_id = {{ go_annotations_uniprot }}) %>%
       dplyr::rename(protein_id = {{ protein_id }})
   }
@@ -97,8 +177,9 @@ calculate_go_enrichment <- function(data, protein_id, is_significant, go_annotat
     go_data <- fetch_go(organism_id)
     # if the provided protein_ids are not from uniprot but SGD, they are converted to uniprot
     if (!any(dplyr::pull(data, {{ protein_id }}) %in% go_data$db_id)) {
-      if (organism_id != "559292") stop("The provided protein IDs are not UniProt or SGD IDs or the corresponding organism is wrong.
-                                       Please provide IDs in the correct format and check if you used the right organism ID.")
+      if (organism_id != "559292") stop(strwrap("The provided protein IDs are not UniProt or SGD
+IDs or the corresponding organism is wrong. Please provide IDs in the correct format and check
+if you used the right organism ID.", prefix = "\n", initial = ""))
       annotation <- fetch_uniprot_proteome(559292, columns = c("id", "database(SGD)"), reviewed = TRUE) %>%
         dplyr::mutate(database_sgd = stringr::str_replace(.data$database_sgd, pattern = ";", replacement = ""))
 
@@ -164,7 +245,10 @@ calculate_go_enrichment <- function(data, protein_id, is_significant, go_annotat
     ) %>%
     tidyr::drop_na() %>%
     dplyr::select(-c({{ is_significant }}, .data$n_sig, .data$n_has_process)) %>%
-    dplyr::mutate(n_proteins_expected = round(.data$n_significant_proteins / .data$n_detected_proteins * .data$n_detected_proteins_in_process, digits = 2)) %>%
+    dplyr::mutate(n_proteins_expected = round(
+      .data$n_significant_proteins / .data$n_detected_proteins * .data$n_detected_proteins_in_process,
+      digits = 2
+    )) %>%
     dplyr::mutate(direction = ifelse(.data$n_proteins_expected < .data$n_significant_proteins_in_process, "Up", "Down")) %>%
     dplyr::arrange(.data$pval)
 
@@ -198,9 +282,21 @@ calculate_go_enrichment <- function(data, protein_id, is_significant, go_annotat
   enrichment_plot <-
     {
       if ("term" %in% colnames(plot_input)) {
-        ggplot2::ggplot(plot_input, ggplot2::aes(stats::reorder(.data$term, .data$neg_log_sig), .data$neg_log_sig, fill = .data$direction))
+        ggplot2::ggplot(
+          plot_input,
+          ggplot2::aes(stats::reorder(.data$term, .data$neg_log_sig),
+            .data$neg_log_sig,
+            fill = .data$direction
+          )
+        )
       } else {
-        ggplot2::ggplot(plot_input, ggplot2::aes(stats::reorder(.data$go_id, .data$neg_log_sig), .data$neg_log_sig, fill = .data$direction))
+        ggplot2::ggplot(
+          plot_input,
+          ggplot2::aes(stats::reorder(.data$go_id, .data$neg_log_sig),
+            .data$neg_log_sig,
+            fill = .data$direction
+          )
+        )
       }
     } +
     ggplot2::geom_col(col = "black", size = 1.5) +
@@ -208,10 +304,20 @@ calculate_go_enrichment <- function(data, protein_id, is_significant, go_annotat
     ggplot2::scale_y_continuous(breaks = seq(0, 100, 1)) +
     ggplot2::coord_flip() +
     {
-      if (type == "adj_pval") ggplot2::labs(title = "Gene ontology enrichment of significant proteins", y = "-log10 adjusted p-value")
+      if (type == "adj_pval") {
+        ggplot2::labs(
+          title = "Gene ontology enrichment of significant proteins",
+          y = "-log10 adjusted p-value"
+        )
+      }
     } +
     {
-      if (type == "pval") ggplot2::labs(title = "Gene ontology enrichment of significant proteins", y = "-log10 p-value")
+      if (type == "pval") {
+        ggplot2::labs(
+          title = "Gene ontology enrichment of significant proteins",
+          y = "-log10 p-value"
+        )
+      }
     } +
     ggplot2::theme_bw() +
     ggplot2::theme(

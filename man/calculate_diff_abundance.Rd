@@ -23,47 +23,50 @@ calculate_diff_abundance(
 )
 }
 \arguments{
-\item{data}{A data frame containing at least the input variables that are required for the
+\item{data}{a data frame containing at least the input variables that are required for the
 selected method. Ideally the output of \code{assign_missingness} or \code{impute} is used.}
 
-\item{sample}{The column in the data frame containing the sample name. Is not required if
+\item{sample}{a character column in the \code{data} data frame that contains the sample name.
+Is not required if \code{method = "t-test_mean_sd"}.}
+
+\item{condition}{a character or numeric column in the \code{data} data frame that contains the
+conditions.}
+
+\item{grouping}{a character column in the \code{data} data frame that contains precursor or
+peptide identifiers.}
+
+\item{intensity_log2}{a numeric column in the \code{data} data frame that contains intensity
+values. The intensity values need to be log2 transformed. Is not required if
 \code{method = "t-test_mean_sd"}.}
 
-\item{condition}{The column in the data frame containing the conditions.}
+\item{missingness}{a character column in the \code{data} data frame that contains missingness
+information. Can be obtained by calling \code{assign_missingness()}. Is not required if
+\code{method = "t-test_mean_sd"}. The type of missingness assigned to a comparison does not have
+any influence on the statistical test. However, if \code{filter_NA_missingness = TRUE} then
+comparisons with missingness \code{NA} are filtered out prior to p-value adjustment.}
 
-\item{grouping}{The column in the data frame containing precursor or peptide identifiers.}
-
-\item{intensity_log2}{The column in the data frame containing intensity values. The intensity
-values need to be log2 transformed. Is not required if \code{method = "t-test_mean_sd"}.}
-
-\item{missingness}{The column in the data frame containing missingness information. Can be
-obtained by calling \code{assign_missingness()}. Is not required if \code{method = "t-test_mean_sd"}.
-The type of missingness assigned to a comparison does not have any influence on the statistical
-test. However, if \code{filter_NA_missingness = TRUE} then comparisons with missingness \code{NA}
-are filtered out prior to p-value adjustment.}
-
-\item{comparison}{The column in the data frame containing comparison information of
+\item{comparison}{a character column in the \code{data} data frame that contains information of
 treatment/reference condition pairs. Can be obtained by calling \code{assign_missingness}.
 Comparisons need to be in the form condition1_vs_condition2, meaning two compared conditions are
 separated by \code{"_vs_"}. This column determines for which condition pairs differential
 abundances are calculated. Is not required if \code{method = "t-test_mean_sd"}, in that case
 please provide a reference condition with the ref_condition argument.}
 
-\item{mean}{The column in the data frame containing mean values for two conditions. Is only
-required if \code{method = "t-test_mean_sd"}.}
+\item{mean}{a numeric column in the \code{data} data frame that contains mean values for two
+conditions. Is only required if \code{method = "t-test_mean_sd"}.}
 
-\item{sd}{The column in the data frame containing standard deviations for two conditions. Is
-only required if \code{method = "t-test_mean_sd"}.}
+\item{sd}{a numeric column in the \code{data} data frame that contains standard deviations for
+two conditions. Is only required if \code{method = "t-test_mean_sd"}.}
 
-\item{n_samples}{The column in the data frame containing the number of samples per condition
-for two conditions. Is only required if \code{method = "t-test_mean_sd"}.}
+\item{n_samples}{a numeric column in the \code{data} data frame that contains the number of
+samples per condition for two conditions. Is only required if \code{method = "t-test_mean_sd"}.}
 
-\item{ref_condition}{optional, character vector providing the condition that is used as a
+\item{ref_condition}{optional, character value providing the condition that is used as a
 reference for differential abundance calculation. Only required for \code{method = "t-test_mean_sd"}.
 Instead of providing one reference condition, "all" can be supplied, which will create all
 pairwise condition pairs. By default \code{ref_condition = "all"}.}
 
-\item{filter_NA_missingness}{a logical, default is \code{TRUE}. For all methods except
+\item{filter_NA_missingness}{a logical value, default is \code{TRUE}. For all methods except
 \code{"t-test_mean_sd"} missingness information has to be provided. This information can be
 for example obtained by calling \code{assign_missingness()}. If a reference/treatment pair has
 too few samples to be considered robust based on user defined cutoffs, it is annotated with \code{NA}
@@ -71,22 +74,22 @@ as missingness by the \code{assign_missingness()} function. If this argument is 
 these \code{NA} reference/treatment pairs are filtered out after the testing and prior to p-value
 adjustment.}
 
-\item{method}{A character vector, specifies the method used for statistical hypothesis testing.
-Methods include Welch test ("\code{t-test}"), a Welch test on means, standard deviations and
-number of replicates ("\code{t-test_mean_sd}") and a moderated t-test based on the \code{limma}
-package ("\code{moderated_t-test}"). More information on the moderated t-test can be found in
-the \code{limma} documentation. Furthermore, the \code{proDA} package specific method ("\code{proDA}")
+\item{method}{a character value, specifies the method used for statistical hypothesis testing.
+Methods include Welch test (\code{"t-test"}), a Welch test on means, standard deviations and
+number of replicates ("\code{"t-test_mean_sd"}) and a moderated t-test based on the \code{limma}
+package (\code{"moderated_t-test"}). More information on the moderated t-test can be found in
+the \code{limma} documentation. Furthermore, the \code{proDA} package specific method (\code{"proDA"})
 can be used to infer means across samples based on a probabilistic dropout model. This
 eliminates the need for data imputation since missing values are inferred from the model. More
 information can be found in the \code{proDA} documentation. We do not recommend using the
 \code{moderated_t-test} or \code{proDA} method if the data was filtered for low CVs or imputation
 was performed. Default is \code{method = "moderated_t-test"}.}
 
-\item{p_adj_method}{A character vector, specifies the p-value correction method. Possible
+\item{p_adj_method}{a character value, specifies the p-value correction method. Possible
 methods are c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). Default
 method is \code{"BH"}.}
 
-\item{retain_columns}{A vector indicating if certain columns should be retained from the input
+\item{retain_columns}{a vector indicating if certain columns should be retained from the input
 data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
 columns can be retained by providing their names (not in quotations marks, just like other
 column names, but in a vector).}
@@ -131,17 +134,43 @@ Performs differential abundance calculations and statistical hypothesis tests on
 with protein, peptide or precursor data. Different methods for statistical testing are available.
 }
 \examples{
-\dontrun{
-calculate_diff_abundance(
+set.seed(123) # Makes example reproducible
+
+# Create synthetic data
+data <- create_synthetic_data(
+  n_proteins = 10,
+  frac_change = 0.5,
+  n_replicates = 4,
+  n_conditions = 2,
+  method = "effect_random",
+  additional_metadata = FALSE
+)
+
+# Assign missingness information
+data_missing <- assign_missingness(
   data,
-  sample = r_file_name,
-  condition = r_condition,
-  grouping = eg_precursor_id,
-  intensity_log2 = normalised_intensity_log2,
+  sample = sample,
+  condition = condition,
+  grouping = peptide,
+  intensity = peptide_intensity_missing,
+  ref_condition = "all",
+  retain_columns = c(protein, change_peptide)
+)
+
+# Calculate differential abundances
+# Using "moderated_t-test" and "proDA" improves
+# true positive recovery progressively
+diff <- calculate_diff_abundance(
+  data = data_missing,
+  sample = sample,
+  condition = condition,
+  grouping = peptide,
+  intensity_log2 = peptide_intensity_missing,
   missingness = missingness,
   comparison = comparison,
   method = "t-test",
-  retain_columns = c(pg_protein_accessions)
+  retain_columns = c(protein, change_peptide)
 )
-}
+
+head(diff, n = 10)
 }

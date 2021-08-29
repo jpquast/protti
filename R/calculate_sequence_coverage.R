@@ -18,11 +18,15 @@ sequence_coverage <- function(...) {
 #'
 #' Calculate sequence coverage for each identified protein.
 #'
-#' @param data A dataframe containing at least the protein sequence and the identified peptides as columns.
-#' @param protein_sequence A column containing protein sequences, can be obtained by using the function \code{fetch_uniprot()}
-#' @param peptides A column containing the identified peptides.
+#' @param data a data frame containing at least the protein sequence and the identified peptides
+#' as columns.
+#' @param protein_sequence a character column in the \code{data} data frame that contains protein
+#' sequences. Can be obtained by using the function \code{fetch_uniprot()}
+#' @param peptides a character column in the \code{data} data frame that contains the identified
+#' peptides.
 #'
-#' @return A new column containing the calculated sequence coverages for each identified protein
+#' @return A new column in the \code{data} data frame containing the calculated sequence coverage
+#' for each identified protein
 #' @import dplyr
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_count
@@ -50,7 +54,17 @@ calculate_sequence_coverage <-
       dplyr::mutate(modified_sequence = replace_identified_by_x({{ protein_sequence }}, .data$start, .data$end)) %>%
       dplyr::mutate(covered = stringr::str_count(.data$modified_sequence, "x")) %>%
       dplyr::mutate(coverage = .data$covered / .data$sequence_length * 100) %>%
-      dplyr::select(-c(.data$sequence_length, .data$modified_sequence, .data$covered, .data$start, .data$end, .data$aa_before, .data$last_aa, .data$aa_after, {{ peptides }})) %>%
+      dplyr::select(-c(
+        .data$sequence_length,
+        .data$modified_sequence,
+        .data$covered,
+        .data$start,
+        .data$end,
+        .data$aa_before,
+        .data$last_aa,
+        .data$aa_after,
+        {{ peptides }}
+      )) %>%
       dplyr::distinct() %>%
       dplyr::ungroup()
 

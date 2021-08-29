@@ -1,18 +1,24 @@
 #' Data completeness
 #'
-#' Calculates the percentage of data completeness. That means, what percentage of all detected precursors is present in each sample.
+#' Calculates the percentage of data completeness. That means, what percentage of all detected
+#' precursors is present in each sample.
 #'
-#' @param data A data frame containing at least the input variables.
-#' @param sample The name of the column containing the sample names.
-#' @param grouping The name of the column containing either precursor or peptide identifiers.
-#' @param intensity The name of the column containing any intensity intensity values that missingness should be determined for.
-#' @param digestion Optional column indicating the mode of digestion (limited proteolysis or tryptic digest). Alternatively, any other variable
+#' @param data a data frame containing at least the input variables.
+#' @param sample a character column in the \code{data} data frame that contains the sample names.
+#' @param grouping a character column in the \code{data} data frame that contains either precursor
+#' or peptide identifiers.
+#' @param intensity a numeric column in the \code{data} data frame that contains any intensity
+#' intensity values that missingness should be determined for.
+#' @param digestion optional, a character column in the \code{data} data frame that indicates the
+#' mode of digestion (limited proteolysis or tryptic digest). Alternatively, any other variable
 #' by which the data should be split can be provided.
-#' @param plot Logical, if TRUE a plot is returned. If FALSE a table is returned.
-#' @param interactive Logical, if TRUE the plot is interactive using plotly.
+#' @param plot a logical value that indicates whether the result should be plotted.
+#' @param interactive a logical value that specifies whether the plot should be interactive
+#' (default is FALSE).
 #'
-#' @return A bar plot that displays the percentage of data completeness over all samples. If \code{plot = FALSE} a data frame is returned.
-#' If \code{interactive = TRUE}, the plot is interactive.
+#' @return A bar plot that displays the percentage of data completeness over all samples.
+#' If \code{plot = FALSE} a data frame is returned. If \code{interactive = TRUE}, the plot is
+#' interactive.
 #' @import dplyr
 #' @import ggplot2
 #' @importFrom purrr map2_df
@@ -24,16 +30,41 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' qc_data_completeness(
-#'   data,
-#'   sample = r_file_name,
-#'   grouping = eg_precursor_id,
-#'   intensity = fg_quantity,
-#'   digestion = digestion
+#' set.seed(123) # Makes example reproducible
+#'
+#' # Create example data
+#' data <- create_synthetic_data(
+#'   n_proteins = 100,
+#'   frac_change = 0.05,
+#'   n_replicates = 3,
+#'   n_conditions = 2,
+#'   method = "effect_random"
 #' )
-#' }
-qc_data_completeness <- function(data, sample, grouping, intensity, digestion = NULL, plot = TRUE, interactive = FALSE) {
+#'
+#' # Determine data completeness
+#' qc_data_completeness(
+#'   data = data,
+#'   sample = sample,
+#'   grouping = peptide,
+#'   intensity = peptide_intensity_missing,
+#'   plot = FALSE
+#' )
+#'
+#' # Plot data completeness
+#' qc_data_completeness(
+#'   data = data,
+#'   sample = sample,
+#'   grouping = peptide,
+#'   intensity = peptide_intensity_missing,
+#'   plot = TRUE
+#' )
+qc_data_completeness <- function(data,
+                                 sample,
+                                 grouping,
+                                 intensity,
+                                 digestion = NULL,
+                                 plot = TRUE,
+                                 interactive = FALSE) {
   . <- NULL
 
   if (!missing(digestion)) {
@@ -61,7 +92,9 @@ qc_data_completeness <- function(data, sample, grouping, intensity, digestion = 
   }
 
   completeness_plot <- result %>%
-    dplyr::mutate({{ sample }} := factor({{ sample }}, levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE)))) %>%
+    dplyr::mutate({{ sample }} := factor({{ sample }},
+      levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+    )) %>%
     ggplot2::ggplot(ggplot2::aes({{ sample }}, .data$completeness)) +
     ggplot2::geom_col(fill = "#5680C1", col = "black", size = 1) +
     {
@@ -75,9 +108,15 @@ qc_data_completeness <- function(data, sample, grouping, intensity, digestion = 
     } +
     ggplot2::scale_y_continuous(limits = c(0, 100)) +
     {
-      if (!missing(digestion)) ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(digestion)), scales = "free", ncol = 2)
+      if (!missing(digestion)) {
+        ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(digestion)), scales = "free", ncol = 2)
+      }
     } +
-    ggplot2::labs(title = "Data completeness per .raw file", x = "", y = "Data Completeness [%]") +
+    ggplot2::labs(
+      title = "Data completeness per .raw file",
+      x = "",
+      y = "Data Completeness [%]"
+    ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
       plot.title = ggplot2::element_text(size = 20),

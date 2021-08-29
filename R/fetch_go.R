@@ -2,16 +2,19 @@
 #'
 #' Fetches gene ontology data from geneontology.org for the provided organism ID.
 #'
-#' @param organism_id An NCBI taxonomy identifier of an organism (TaxId). Possible inputs inlude only: "9606" (Human), "559292" (Yeast) and
-#' "83333" (E. coli).
+#' @param organism_id a character value NCBI taxonomy identifier of an organism (TaxId).
+#' Possible inputs inlude only: "9606" (Human), "559292" (Yeast) and "83333" (E. coli).
 #'
-#' @return A data frame that contains gene ontology mappings to UniProt or SGD IDs. The original file is a .GAF file. A detailed description of
-#' all columns can be found here: http://geneontology.org/docs/go-annotation-file-gaf-format-2.1/
+#' @return A data frame that contains gene ontology mappings to UniProt or SGD IDs. The original
+#' file is a .GAF file. A detailed description of all columns can be found here:
+#' http://geneontology.org/docs/go-annotation-file-gaf-format-2.1/
 #' @export
 #'
 #' @examples
 #' \donttest{
-#' head(fetch_go("9606"))
+#' go <- fetch_go("9606")
+#'
+#' head(go)
 #' }
 fetch_go <- function(organism_id) {
   organism_id <- match.arg(organism_id, c("9606", "559292", "83333"))
@@ -22,10 +25,17 @@ fetch_go <- function(organism_id) {
     "83333" = "http://current.geneontology.org/annotations/ecocyc.gaf.gz"
   )
   go_download <- readLines(gzcon(url(organism_url)))
-  go <- utils::read.delim(textConnection(go_download), quote = "", stringsAsFactors = FALSE, comment.char = "!", header = FALSE)
+  go <- utils::read.delim(textConnection(go_download),
+    quote = "",
+    stringsAsFactors = FALSE,
+    comment.char = "!",
+    header = FALSE
+  )
   colnames(go) <- c(
-    "db", "db_id", "symbol", "qualifier", "go_id", "db_reference", "evidence", "with_from", "ontology", "name", "synonyme",
-    "type", "taxon", "date", "assigned_by", "annotation_extension", "gene_product_form_id"
+    "db", "db_id", "symbol", "qualifier", "go_id", "db_reference",
+    "evidence", "with_from", "ontology", "name", "synonyme",
+    "type", "taxon", "date", "assigned_by", "annotation_extension",
+    "gene_product_form_id"
   )
   return(go)
 }

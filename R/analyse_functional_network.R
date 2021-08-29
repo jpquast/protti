@@ -18,28 +18,38 @@ network_analysis <-
   }
 #' Analyse protein interaction network for significant hits
 #'
-#' The STRING database provides a resource for known and predicted protein-protein interactions. The type of
-#' interactions include direct (physical) and indirect (functional) interactions. Through the R package
-#' \code{STRINGdb} this resource if provided to R users. This function provides a convenient wrapper for
-#' \code{STRINGdb} functions that allow an easy use within the protti pipeline.
+#' The STRING database provides a resource for known and predicted protein-protein interactions.
+#' The type of interactions include direct (physical) and indirect (functional) interactions.
+#' Through the R package \code{STRINGdb} this resource if provided to R users. This function
+#' provides a convenient wrapper for \code{STRINGdb} functions that allow an easy use within the
+#' protti pipeline.
 #'
-#' @param data A data frame that contains significantly changing proteins (STRINGdb is only able to plot
-#' 400 proteins at a time so do not provide more for network plots). Information about treatment binding can be provided and will be displayed as colorful halos around
-#' the proteins in the network.
-#' @param protein_id The name of the column containing the protein accession numbers.
-#' @param string_id The name of the column containing STRING database identifiers. These can be obtained from UniProt.
-#' @param organism_id Numeric organism ID (NCBI taxon-ID). This can be obtained from \href{https://string-db.org/cgi/input?sessionId=bpvps5GS2As6&input_page_show_search=on}{here}.
+#' @param data a data frame that contains significantly changing proteins (STRINGdb is only able
+#' to plot 400 proteins at a time so do not provide more for network plots). Information about
+#' treatment binding can be provided and will be displayed as colorful halos around the proteins
+#' in the network.
+#' @param protein_id a character column in the \code{data} data frame that contains the protein
+#' accession numbers.
+#' @param string_id a character column in the \code{data} data frame that contains STRING database
+#' identifiers. These can be obtained from UniProt.
+#' @param organism_id a numeric value specifying an organism ID (NCBI taxon-ID). This can be
+#' obtained from
+#' \href{https://string-db.org/cgi/input?sessionId=bpvps5GS2As6&input_page_show_search=on}{here}.
 #' H. sapiens: 9606, S. cerevisiae: 4932, E. coli: 511145.
-#' @param score_threshold The interaction score based on \href{https://string-db.org/cgi/info?sessionId=bBP5N4cIf0PA&footer_active_subpage=scores}{STRING}
-#' has to be between 0 and 1000. A score closer to 1000 is related to a higher confidence for the interaction. The default value is 900.
-#' @param binds_treatment The name of the column containing a logical indicating if the corresponding
-#' protein binds to the treatment. This information can be obtained from different databases, e.g UniProt.
-#' @param halo_color Optional, A character vector with a color hex-code. This is the color of the halo of proteins that bind the treatment.
-#' @param plot A logical indicating whether the result should be plotted or returned as a table.
+#' @param score_threshold a numeric value specifying the interaction score that based on
+#' \href{https://string-db.org/cgi/info?sessionId=bBP5N4cIf0PA&footer_active_subpage=scores}{STRING}
+#' has to be between 0 and 1000. A score closer to 1000 is related to a higher confidence for the
+#' interaction. The default value is 900.
+#' @param binds_treatment a logical column in the \code{data} data frame that indicates if the
+#' corresponding protein binds to the treatment. This information can be obtained from different
+#' databases, e.g UniProt.
+#' @param halo_color optional, character value with a color hex-code. This is the color of the
+#' halo of proteins that bind the treatment.
+#' @param plot a logical that indicates whether the result should be plotted or returned as a table.
 #'
-#' @return A network plot displaying interactions of the provided proteins. If \code{binds_treatment} was provided halos around
-#' the proteins show which proteins interact with the treatment. If \code{plot = FALSE} a table with interaction information is
-#' returned.
+#' @return A network plot displaying interactions of the provided proteins. If
+#' \code{binds_treatment} was provided halos around the proteins show which proteins interact with
+#' the treatment. If \code{plot = FALSE} a table with interaction information is returned.
 #'
 #' @importFrom dplyr distinct pull mutate filter rename
 #' @importFrom rlang .data ensym !! as_name enquo
@@ -49,15 +59,46 @@ network_analysis <-
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' analyse_functional_network(
+#' \donttest{
+#' # Create example data
+#' data <- data.frame(
+#'   uniprot_id = c(
+#'     "P0A7R1",
+#'     "P02359",
+#'     "P60624",
+#'     "P0A7M2",
+#'     "P0A7X3",
+#'     "P0AGD3"
+#'   ),
+#'   database_string = c(
+#'     "511145.b4203;",
+#'     "511145.b3341;",
+#'     "511145.b3309;",
+#'     "511145.b3637;",
+#'     "511145.b3230;",
+#'     "511145.b1656;"
+#'   ),
+#'   is_known = c(
+#'     TRUE,
+#'     TRUE,
+#'     TRUE,
+#'     TRUE,
+#'     TRUE,
+#'     FALSE
+#'   )
+#' )
+#'
+#' # Perform network analysis
+#' network <- analyse_functional_network(
 #'   data,
-#'   protein_id = pg_protein_accessions,
+#'   protein_id = uniprot_id,
 #'   string_id = database_string,
 #'   organism_id = 511145,
 #'   binds_treatment = is_known,
 #'   plot = TRUE
 #' )
+#'
+#' network
 #' }
 analyse_functional_network <- function(data,
                                        protein_id,
@@ -68,7 +109,9 @@ analyse_functional_network <- function(data,
                                        halo_color = NULL,
                                        plot = TRUE) {
   if (!requireNamespace("STRINGdb", quietly = TRUE)) {
-    stop("Package \"STRINGdb\" is needed for this function to work. Please install it.", call. = FALSE)
+    stop(strwrap("Package \"STRINGdb\" is needed for this function to work. Please install it.",
+      prefix = "\n", initial = ""
+    ), call. = FALSE)
   }
 
   STRINGdb <- get("STRINGdb", envir = loadNamespace("STRINGdb"))
@@ -76,7 +119,10 @@ analyse_functional_network <- function(data,
   data <- data %>%
     dplyr::distinct({{ protein_id }}, {{ string_id }}, {{ binds_treatment }})
 
-  if (length(unique(dplyr::pull(data, !!ensym(protein_id)))) != nrow(data)) stop("Please provide unique annotations for each protein! The number of proteins does not match the number of rows in your data.")
+  if (length(unique(dplyr::pull(data, !!ensym(protein_id)))) != nrow(data)) {
+    stop(strwrap("Please provide unique annotations for each protein! The number of proteins
+does not match the number of rows in your data.", prefix = "\n", initial = ""))
+  }
 
   string_db <- STRINGdb$new(
     version = "11",
@@ -108,7 +154,10 @@ analyse_functional_network <- function(data,
     )
   }
   if (plot == TRUE) {
-    if (length(unique(dplyr::pull(data, !!ensym(protein_id)))) > 400) stop("Please only provide the top 400 significant proteins for plots! String cannot plot more at once.")
+    if (length(unique(dplyr::pull(data, !!ensym(protein_id)))) > 400) {
+      stop(strwrap("Please only provide the top 400 significant proteins for plots! String
+cannot plot more at once.", prefix = "\n", initial = ""))
+    }
     string_db$plot_network(string_ids, payload_id = payload_id)
   } else {
     mapping <- input %>%

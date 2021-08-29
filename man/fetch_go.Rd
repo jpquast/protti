@@ -7,18 +7,21 @@
 fetch_go(organism_id)
 }
 \arguments{
-\item{organism_id}{An NCBI taxonomy identifier of an organism (TaxId). Possible inputs inlude only: "9606" (Human), "559292" (Yeast) and
-"83333" (E. coli).}
+\item{organism_id}{a character value NCBI taxonomy identifier of an organism (TaxId).
+Possible inputs inlude only: "9606" (Human), "559292" (Yeast) and "83333" (E. coli).}
 }
 \value{
-A data frame that contains gene ontology mappings to UniProt or SGD IDs. The original file is a .GAF file. A detailed description of
-all columns can be found here: http://geneontology.org/docs/go-annotation-file-gaf-format-2.1/
+A data frame that contains gene ontology mappings to UniProt or SGD IDs. The original
+file is a .GAF file. A detailed description of all columns can be found here:
+http://geneontology.org/docs/go-annotation-file-gaf-format-2.1/
 }
 \description{
 Fetches gene ontology data from geneontology.org for the provided organism ID.
 }
 \examples{
 \donttest{
-head(fetch_go("9606"))
+go <- fetch_go("9606")
+
+head(go)
 }
 }

@@ -2,16 +2,19 @@
 #'
 #' Performs a Welch's t-test and calculates p-values between two groups.
 #'
-#' @param mean1 Vector containing the means of group1.
-#' @param mean2 Vector containing the means of group2.
-#' @param sd1 Vector containing the standard deviations of group1.
-#' @param sd2 Vector containing the standard deviations of group2.
-#' @param n1 Vector containing the number of replicates used for the calculation of each mean and standard deviation of group1.
-#' @param n2 Vector containing the number of replicates used for the calculation of each mean and standard deviation of group2.
-#' @param log_values Logical indicating if values are log transformed. This determines how fold changes are calculated.
-#' Default is \code{log_values = TRUE}.
+#' @param mean1 a numeric vector that contains the means of group1.
+#' @param mean2 a numeric vector that contains the means of group2.
+#' @param sd1 a numeric vector that contains the standard deviations of group1.
+#' @param sd2 a numeric vector that contains the standard deviations of group2.
+#' @param n1 a numeric vector that contains the number of replicates used for the calculation of
+#' each mean and standard deviation of group1.
+#' @param n2 a numeric vector that contains the number of replicates used for the calculation of
+#' each mean and standard deviation of group2.
+#' @param log_values a logical value that indicates if values are log transformed. This determines
+#' how fold changes are calculated. Default is \code{log_values = TRUE}.
 #'
-#' @return A data frame that contains the calculated differences of means, standard error, t statistic and p-values.
+#' @return A data frame that contains the calculated differences of means, standard error, t
+#' statistic and p-values.
 #' @importFrom stats pt
 #' @export
 #'

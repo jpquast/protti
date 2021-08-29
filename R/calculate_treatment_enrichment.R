@@ -17,20 +17,28 @@ treatment_enrichment <- function(...) {
 }
 #' Check treatment enrichment
 #'
-#' Check for an enrichment of proteins interacting with the treatment in significantly changing proteins as compared to all proteins.
+#' Check for an enrichment of proteins interacting with the treatment in significantly changing
+#' proteins as compared to all proteins.
 #'
-#' @param data A dataframe contains at least the input variables.
-#' @param protein_id The name of the column containing the protein accession numbers.
-#' @param is_significant The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide. The input data frame
-#' may contain peptide level information with significance information. The function is able to extract protein level information from this.
-#' @param binds_treatment The name of the column containing a logical indicating if the corresponding protein binds to the treatment. This information can be obtained
-#' from different databases, e.g Uniprot.
-#' @param treatment_name A character vector of the treatment name. It will be included in the plot title.
-#' @param plot A logical indicating whether the result should be plotted or returned as a table.
+#' @param data a data frame contains at least the input variables.
+#' @param protein_id a character column in the \code{data} data frame that contains the protein
+#' accession numbers.
+#' @param is_significant a logical column in the \code{data} data frame that indicates if the
+#' corresponding protein has a significantly changing peptide. The input data frame may contain
+#' peptide level information with significance information. The function is able to extract protein
+#' level information from this.
+#' @param binds_treatment a logical column in the \code{data} data frame that indicates if the
+#' corresponding protein binds to the treatment. This information can be obtained from different
+#' databases, e.g. UniProt.
+#' @param treatment_name a character value that indicates the treatment name. It will be included
+#' in the plot title.
+#' @param plot a logical value indicating whether the result should be plotted or returned as a
+#' table.
 #'
-#' @return A bar plot displaying the percentage of all detect proteins and all significant proteins that bind to the treatment. A Fisher's exact test is performed to
-#' calculate the significance of the enrichment in significant proteins compared to all proteins. The result is reported as a p-value. If \code{plot = FALSE} a contingency
-#' table in long format is returned.
+#' @return A bar plot displaying the percentage of all detect proteins and all significant proteins
+#' that bind to the treatment. A Fisher's exact test is performed to calculate the significance of
+#' the enrichment in significant proteins compared to all proteins. The result is reported as a
+#' p-value. If \code{plot = FALSE} a contingency table in long format is returned.
 #'
 #' @import dplyr
 #' @import ggplot2
@@ -41,20 +49,54 @@ treatment_enrichment <- function(...) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' # Create example data
+#' data <- data.frame(
+#'   protein_id = c(paste0("protein", 1:50)),
+#'   significant = c(
+#'     rep(TRUE, 20),
+#'     rep(FALSE, 30)
+#'   ),
+#'   binds_treatment = c(
+#'     rep(TRUE, 10),
+#'     rep(FALSE, 10),
+#'     rep(TRUE, 5),
+#'     rep(FALSE, 25)
+#'   )
+#' )
+#'
+#' # Plot treatment enrichment
 #' calculate_treatment_enrichment(
 #'   data,
-#'   protein_id = pg_protein_accessions,
+#'   protein_id = protein_id,
 #'   is_significant = significant,
-#'   binds_treatment = binds_metals,
-#'   treatment = "Metals"
+#'   binds_treatment = binds_treatment,
+#'   treatment = "Rapamycin",
+#'   plot = TRUE
 #' )
-#' }
-calculate_treatment_enrichment <- function(data, protein_id, is_significant, binds_treatment, treatment_name, plot = TRUE) {
+#'
+#' # Calculate treatment enrichment
+#' enrichment <- calculate_treatment_enrichment(
+#'   data,
+#'   protein_id = protein_id,
+#'   is_significant = significant,
+#'   binds_treatment = binds_treatment,
+#'   plot = FALSE
+#' )
+#'
+#' enrichment
+calculate_treatment_enrichment <- function(data,
+                                           protein_id,
+                                           is_significant,
+                                           binds_treatment,
+                                           treatment_name,
+                                           plot = TRUE) {
   data <- data %>%
     dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ binds_treatment }}) %>%
     dplyr::group_by({{ protein_id }}) %>%
-    dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
+    dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0,
+      TRUE,
+      FALSE
+    )) %>%
     dplyr::distinct()
 
   cont_table <- data %>%
@@ -103,11 +145,32 @@ calculate_treatment_enrichment <- function(data, protein_id, is_significant, bin
       names_to = "name",
       values_to = "value"
     ) %>%
-    dplyr::mutate(count = ifelse(.data$name == "All detected proteins", .data$total_interactor, .data$sig_interactor)) %>%
+    dplyr::mutate(count = ifelse(.data$name == "All detected proteins",
+      .data$total_interactor,
+      .data$sig_interactor
+    )) %>%
     ggplot2::ggplot(ggplot2::aes(.data$name, .data$value)) +
     ggplot2::geom_col(fill = "cornflowerblue", col = "black", size = 1.2) +
-    ggplot2::labs(title = paste0("Proteins interacting with ", treatment_name, " (p-value: ", ifelse(cont_table$pval < 0.01, formatC(cont_table$pval, format = "e", digits = 1), round(cont_table$pval, digits = 2)), ")"), x = "", y = paste("Interact with", treatment_name, "[%]")) +
-    ggplot2::geom_text(aes(label = paste("n =", count)), position = position_stack(vjust = 0.5), size = 8) +
+    ggplot2::labs(
+      title = paste0(
+        "Proteins interacting with ",
+        treatment_name,
+        " (p-value: ",
+        ifelse(cont_table$pval < 0.01,
+          formatC(cont_table$pval,
+            format = "e", digits = 1
+          ),
+          round(cont_table$pval, digits = 2)
+        ),
+        ")"
+      ),
+      x = "",
+      y = paste("Interact with", treatment_name, "[%]")
+    ) +
+    ggplot2::geom_text(aes(label = paste("n =", count)),
+      position = position_stack(vjust = 0.5),
+      size = 8
+    ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
       plot.title = ggplot2::element_text(

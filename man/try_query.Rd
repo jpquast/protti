@@ -13,14 +13,18 @@ try_query(
 )
 }
 \arguments{
-\item{url}{a character vector of an URL to the website that contains the table that should be downloaded.}
+\item{url}{a character value of an URL to the website that contains the table that should be
+downloaded.}
 
-\item{max_tries}{a numeric vector specifying the number of times the function tries to download the data in case an error occurs.}
+\item{max_tries}{a numeric value that specifies the number of times the function tries to download
+the data in case an error occurs.}
 
-\item{silent}{a logical, if TRUE no individual messages are printed after each try that failed.}
+\item{silent}{a logical value that specifies if individual messages are printed after each try
+that failed.}
 
-\item{type}{a character vector, specifying the type of data at the target URL. Options are all options that can be supplied to httr::content,
-these include e.g. "text/tab-separated-values", "application/json" and "txt/csv". Default is "text/tab-separated-values".
+\item{type}{a character value that specifies the type of data at the target URL. Options are
+all options that can be supplied to httr::content, these include e.g.
+"text/tab-separated-values", "application/json" and "txt/csv". Default is "text/tab-separated-values".
 Default is "tab-separated-values".}
 
 \item{...}{other parameters supplied to the parsing function used by httr::content.}
@@ -29,6 +33,7 @@ Default is "tab-separated-values".}
 A data frame that contains the table from the url.
 }
 \description{
-Downloads data table from URL. If an error occurs during the query (for example due to no connection) the function waits 3 seconds
-and tries again. If no result could be obtained after the given number of tries a message indicating the problem is returned.
+Downloads data table from URL. If an error occurs during the query (for example due to no
+connection) the function waits 3 seconds and tries again. If no result could be obtained
+after the given number of tries a message indicating the problem is returned.
 }

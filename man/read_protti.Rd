@@ -7,7 +7,7 @@
 read_protti(filename, ...)
 }
 \arguments{
-\item{filename}{the path to the file.}
+\item{filename}{a character value that specifies the path to the file.}
 
 \item{...}{additional arguments for the fread function.}
 }
@@ -15,7 +15,10 @@ read_protti(filename, ...)
 A data frame (with class tibble) that contains the content of the specified file.
 }
 \description{
-The function uses the very fast \code{fread} function form the \code{data.table} package. The column names of the resulting data table are made more r-friendly using \code{clean_names} from the \code{janitor} package. It replaces "." and " " with "_" and converts names to lower case which is also known as snake_case. In the end the data table is converted to a tibble.
+The function uses the very fast \code{fread} function form the \code{data.table} package. The
+column names of the resulting data table are made more r-friendly using \code{clean_names} from
+the \code{janitor} package. It replaces "." and " " with "_" and converts names to lower case
+which is also known as snake_case. In the end the data table is converted to a tibble.
 }
 \examples{
 \dontrun{

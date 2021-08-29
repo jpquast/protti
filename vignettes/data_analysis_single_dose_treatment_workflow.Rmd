@@ -348,8 +348,9 @@ barcode_plot(
 
 ### Wood's plot
 
-An additional way to plot LiP-MS changes are Woods' plots. These plots will show the extent of the change along the protein sequence.
-To produce a Wood's plot we use the function `woods_plot()` and colour the peptides according to their adjusted p-values. We are highlighting significant q-values (< 0.01) with an asterisk.
+An additional way to plot LiP-MS changes is the Woods' plot. This plot will show the extent of the precursor fold changes along the protein sequence. The precursors are located on the x-axis based on their start and end positions. The position on the y-axis displays the fold change. The vertical size (y-axis) of the box representing the precurors does not have any meaning.
+
+To produce a Woods' plot we use the function `woods_plot()` and colour the peptides according to their adjusted p-values. We are highlighting significant adjusted p-values (< 0.01) with an asterisk. Peptides can also be coloured by another categorical or continous variable. Asterisks can be added for any logical (binary) variable.
 
 ```{r woods_plot, eval = test_protti, fig.align = "center", fig.width = 6, message = FALSE, warning = FALSE}
 

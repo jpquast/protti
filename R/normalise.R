@@ -23,8 +23,8 @@ median_normalisation <- function(...) {
 #' implemented in the Spectronaut search engine.
 #'
 #' @param data a data frame containing at least sample names and intensity values.
-#' @param sample a column in the \code{data} data frame that contains the sample names.
-#' @param intensity_log2 a column in the \code{data} data frame that contains the log2 transformed
+#' @param sample a character column in the \code{data} data frame that contains the sample names.
+#' @param intensity_log2 a numeric column in the \code{data} data frame that contains the log2 transformed
 #' intensity values to be normalised.
 #' @param method a character value specifying the method to be used for normalisation. Default
 #' is "median".

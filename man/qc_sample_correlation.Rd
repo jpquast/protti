@@ -17,38 +17,58 @@ qc_sample_correlation(
 )
 }
 \arguments{
-\item{data}{a dataframe contains at least the input variables.}
+\item{data}{a data frame that contains at least the input variables.}
 
-\item{sample}{the name of the column containing the sample names.}
+\item{sample}{a character column in the \code{data} data frame that contains the sample names.}
 
-\item{grouping}{the name of the column containing precursor or peptide identifiers.}
+\item{grouping}{a character column in the \code{data} data frame that contains precursor or
+peptide identifiers.}
 
-\item{intensity_log2}{the name of the column containing log2 intensity values.}
+\item{intensity_log2}{a numeric column in the \code{data} data frame that contains log2
+intensity values.}
 
-\item{condition}{the name of the column containing the conditions.}
+\item{condition}{a character or numeric column in the \code{data} data frame that contains the
+conditions.}
 
-\item{digestion}{optional, the name of the column containing information about the digestion method used. Eg. "LiP" or "tryptic control".}
+\item{digestion}{optional, a character column in the \code{data} data frame that contains
+information about the digestion method used. e.g. "LiP" or "tryptic control".}
 
-\item{run_order}{optional, the name of the column containing the order in which samples were measured. Useful to investigate batch effects due to run order.}
+\item{run_order}{optional, a character or numeric column in the \code{data} data frame that
+contains the order in which samples were measured. Useful to investigate batch effects due to
+run order.}
 
-\item{method}{the method to be used for correlation. \code{"spearman"} is the default but can be changed to \code{"pearson"} or \code{"kendall"}.}
+\item{method}{a character value that specifies the method to be used for correlation.
+\code{"spearman"} is the default but can be changed to \code{"pearson"} or \code{"kendall"}.}
 
-\item{interactive}{logical, default is \code{FALSE}. Determines if an interactive or static heatmap should be created using \code{heatmaply} or \code{pheatmap}, respectively.}
+\item{interactive}{a logical value that specifies whether the plot should be interactive.
+Determines if an interactive or static heatmap should be created using \code{heatmaply} or
+\code{pheatmap}, respectively.}
 }
 \value{
-A correlation heatmap that compares each sample. The dendrogram is sorted by optimal leaf ordering.
+A correlation heatmap that compares each sample. The dendrogram is sorted by optimal
+leaf ordering.
 }
 \description{
 A correlation heatmap is created that uses hirachical clustering to determine sample similarity.
 }
 \examples{
-\dontrun{
-qc_sample_correlation(
-  data,
-  sample = r_file_name,
-  grouping = eg_precursor_id,
-  intensity_log2 = intensity_log2,
-  condition = r_condition
+set.seed(123) # Makes example reproducible
+
+# Create example data
+data <- create_synthetic_data(
+  n_proteins = 100,
+  frac_change = 0.05,
+  n_replicates = 3,
+  n_conditions = 2,
+  method = "effect_random"
 )
-}
+
+# Create sample correlation heatmap
+qc_sample_correlation(
+  data = data,
+  sample = sample,
+  grouping = peptide,
+  intensity_log2 = peptide_intensity_missing,
+  condition = condition
+)
 }

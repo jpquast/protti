@@ -7,25 +7,35 @@
 pval_distribution_plot(data, grouping, pval)
 }
 \arguments{
-\item{data}{a data frame containing at least grouping identifiers (precursor, peptide or protein) and p-values derived from any
-statistical test.}
+\item{data}{a data frame that contains at least grouping identifiers (precursor, peptide or
+protein) and p-values derived from any statistical test.}
 
-\item{grouping}{the column in the data frame containing either precursor, peptide or protein identifiers.}
+\item{grouping}{a character column in the \code{data} data frame that contains either precursor,
+peptide or protein identifiers. For each entry in this column there should be one unique p-value.
+That means the statistical test that created the p-value should have been performed on the
+level of the content of this column}
 
-\item{pval}{the column in the data frame containing p-values.}
+\item{pval}{a numeric column in the \code{data} data frame that contains p-values.}
 }
 \value{
-A histogram or boxplot that shows the intensity distribution over all samples or by sample.
+A histogram that shows the p-value distribution.
 }
 \description{
 Plots the distribution of p-values derived from any statistical test as a histogram.
 }
 \examples{
-\dontrun{
+set.seed(123) # Makes example reproducible
+
+# Create example data
+data <- data.frame(
+  peptide = paste0("peptide", 1:1000),
+  pval = runif(n = 1000)
+)
+
+# Plot p-values
 pval_distribution_plot(
-  data,
-  grouping = eg_precursor_id,
+  data = data,
+  grouping = peptide,
   pval = pval
 )
-}
 }

@@ -18,94 +18,97 @@ diff_abundance <-
   }
 #' Calculate differential abundance between conditions
 #'
-#' Performs differential abundance calculations and statistical hypothesis tests on data frames 
+#' Performs differential abundance calculations and statistical hypothesis tests on data frames
 #' with protein, peptide or precursor data. Different methods for statistical testing are available.
 #'
-#' @param data A data frame containing at least the input variables that are required for the 
+#' @param data a data frame containing at least the input variables that are required for the
 #' selected method. Ideally the output of \code{assign_missingness} or \code{impute} is used.
-#' @param sample The column in the data frame containing the sample name. Is not required if 
+#' @param sample a character column in the \code{data} data frame that contains the sample name.
+#' Is not required if \code{method = "t-test_mean_sd"}.
+#' @param condition a character or numeric column in the \code{data} data frame that contains the
+#' conditions.
+#' @param grouping a character column in the \code{data} data frame that contains precursor or
+#' peptide identifiers.
+#' @param intensity_log2 a numeric column in the \code{data} data frame that contains intensity
+#' values. The intensity values need to be log2 transformed. Is not required if
 #' \code{method = "t-test_mean_sd"}.
-#' @param condition The column in the data frame containing the conditions.
-#' @param grouping The column in the data frame containing precursor or peptide identifiers.
-#' @param intensity_log2 The column in the data frame containing intensity values. The intensity 
-#' values need to be log2 transformed. Is not required if \code{method = "t-test_mean_sd"}.
-#' @param missingness The column in the data frame containing missingness information. Can be 
-#' obtained by calling \code{assign_missingness()}. Is not required if \code{method = "t-test_mean_sd"}.
-#' The type of missingness assigned to a comparison does not have any influence on the statistical
-#' test. However, if \code{filter_NA_missingness = TRUE} then comparisons with missingness \code{NA}
-#' are filtered out prior to p-value adjustment.
-#' @param comparison The column in the data frame containing comparison information of 
-#' treatment/reference condition pairs. Can be obtained by calling \code{assign_missingness}. 
+#' @param missingness a character column in the \code{data} data frame that contains missingness
+#' information. Can be obtained by calling \code{assign_missingness()}. Is not required if
+#' \code{method = "t-test_mean_sd"}. The type of missingness assigned to a comparison does not have
+#' any influence on the statistical test. However, if \code{filter_NA_missingness = TRUE} then
+#' comparisons with missingness \code{NA} are filtered out prior to p-value adjustment.
+#' @param comparison a character column in the \code{data} data frame that contains information of
+#' treatment/reference condition pairs. Can be obtained by calling \code{assign_missingness}.
 #' Comparisons need to be in the form condition1_vs_condition2, meaning two compared conditions are
-#' separated by \code{"_vs_"}. This column determines for which condition pairs differential 
-#' abundances are calculated. Is not required if \code{method = "t-test_mean_sd"}, in that case 
+#' separated by \code{"_vs_"}. This column determines for which condition pairs differential
+#' abundances are calculated. Is not required if \code{method = "t-test_mean_sd"}, in that case
 #' please provide a reference condition with the ref_condition argument.
-#' @param mean The column in the data frame containing mean values for two conditions. Is only 
-#' required if \code{method = "t-test_mean_sd"}.
-#' @param sd The column in the data frame containing standard deviations for two conditions. Is 
-#' only required if \code{method = "t-test_mean_sd"}.
-#' @param n_samples The column in the data frame containing the number of samples per condition 
-#' for two conditions. Is only required if \code{method = "t-test_mean_sd"}.
-#' @param ref_condition optional, character vector providing the condition that is used as a 
+#' @param mean a numeric column in the \code{data} data frame that contains mean values for two
+#' conditions. Is only required if \code{method = "t-test_mean_sd"}.
+#' @param sd a numeric column in the \code{data} data frame that contains standard deviations for
+#' two conditions. Is only required if \code{method = "t-test_mean_sd"}.
+#' @param n_samples a numeric column in the \code{data} data frame that contains the number of
+#' samples per condition for two conditions. Is only required if \code{method = "t-test_mean_sd"}.
+#' @param ref_condition optional, character value providing the condition that is used as a
 #' reference for differential abundance calculation. Only required for \code{method = "t-test_mean_sd"}.
-#' Instead of providing one reference condition, "all" can be supplied, which will create all 
+#' Instead of providing one reference condition, "all" can be supplied, which will create all
 #' pairwise condition pairs. By default \code{ref_condition = "all"}.
-#' @param filter_NA_missingness a logical, default is \code{TRUE}. For all methods except 
-#' \code{"t-test_mean_sd"} missingness information has to be provided. This information can be 
-#' for example obtained by calling \code{assign_missingness()}. If a reference/treatment pair has 
-#' too few samples to be considered robust based on user defined cutoffs, it is annotated with \code{NA} 
-#' as missingness by the \code{assign_missingness()} function. If this argument is \code{TRUE}, 
+#' @param filter_NA_missingness a logical value, default is \code{TRUE}. For all methods except
+#' \code{"t-test_mean_sd"} missingness information has to be provided. This information can be
+#' for example obtained by calling \code{assign_missingness()}. If a reference/treatment pair has
+#' too few samples to be considered robust based on user defined cutoffs, it is annotated with \code{NA}
+#' as missingness by the \code{assign_missingness()} function. If this argument is \code{TRUE},
 #' these \code{NA} reference/treatment pairs are filtered out after the testing and prior to p-value
 #' adjustment.
-#' @param method A character vector, specifies the method used for statistical hypothesis testing. 
-#' Methods include Welch test ("\code{t-test}"), a Welch test on means, standard deviations and 
-#' number of replicates ("\code{t-test_mean_sd}") and a moderated t-test based on the \code{limma} 
-#' package ("\code{moderated_t-test}"). More information on the moderated t-test can be found in 
-#' the \code{limma} documentation. Furthermore, the \code{proDA} package specific method ("\code{proDA}") 
-#' can be used to infer means across samples based on a probabilistic dropout model. This 
-#' eliminates the need for data imputation since missing values are inferred from the model. More 
-#' information can be found in the \code{proDA} documentation. We do not recommend using the 
+#' @param method a character value, specifies the method used for statistical hypothesis testing.
+#' Methods include Welch test (\code{"t-test"}), a Welch test on means, standard deviations and
+#' number of replicates ("\code{"t-test_mean_sd"}) and a moderated t-test based on the \code{limma}
+#' package (\code{"moderated_t-test"}). More information on the moderated t-test can be found in
+#' the \code{limma} documentation. Furthermore, the \code{proDA} package specific method (\code{"proDA"})
+#' can be used to infer means across samples based on a probabilistic dropout model. This
+#' eliminates the need for data imputation since missing values are inferred from the model. More
+#' information can be found in the \code{proDA} documentation. We do not recommend using the
 #' \code{moderated_t-test} or \code{proDA} method if the data was filtered for low CVs or imputation
 #' was performed. Default is \code{method = "moderated_t-test"}.
-#' @param p_adj_method A character vector, specifies the p-value correction method. Possible 
-#' methods are c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). Default 
+#' @param p_adj_method a character value, specifies the p-value correction method. Possible
+#' methods are c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). Default
 #' method is \code{"BH"}.
-#' @param retain_columns A vector indicating if certain columns should be retained from the input 
-#' data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific 
-#' columns can be retained by providing their names (not in quotations marks, just like other 
+#' @param retain_columns a vector indicating if certain columns should be retained from the input
+#' data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
+#' columns can be retained by providing their names (not in quotations marks, just like other
 #' column names, but in a vector).
 #'
-#' @return A data frame that contains differential abundances (\code{diff}), p-values (\code{pval}) 
-#' and adjusted p-values (\code{adj_pval}) for each protein, peptide or precursor (depending on 
-#' the \code{grouping} variable) and the associated treatment/reference pair. Depending on the 
+#' @return A data frame that contains differential abundances (\code{diff}), p-values (\code{pval})
+#' and adjusted p-values (\code{adj_pval}) for each protein, peptide or precursor (depending on
+#' the \code{grouping} variable) and the associated treatment/reference pair. Depending on the
 #' method the data frame contains additional columns:
 #' \itemize{
-#' \item{"t-test": }{The \code{std_error} column contains the standard error of the differential 
-#' abundances. \code{n_obs} contains the number of observations for the specific protein, peptide 
+#' \item{"t-test": }{The \code{std_error} column contains the standard error of the differential
+#' abundances. \code{n_obs} contains the number of observations for the specific protein, peptide
 #' or precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
-#' \item{"t-test_mean_sd": }{Columns labeled as control refer to the second condition of the 
-#' comparison pairs. Treated refers to the first condition. \code{mean_control} and \code{mean_treated} 
-#' columns contain the means for the reference and treatment condition, respectively. \code{sd_control} 
-#' and \code{sd_treated} columns contain the standard deviations for the reference and treatment 
-#' condition, respectively. \code{n_control} and \code{n_treated} columns contain the numbers of 
-#' samples for the reference and treatment condition, respectively. The \code{std_error} column 
-#' contains the standard error of the differential abundances. \code{t_statistic} contains the 
+#' \item{"t-test_mean_sd": }{Columns labeled as control refer to the second condition of the
+#' comparison pairs. Treated refers to the first condition. \code{mean_control} and \code{mean_treated}
+#' columns contain the means for the reference and treatment condition, respectively. \code{sd_control}
+#' and \code{sd_treated} columns contain the standard deviations for the reference and treatment
+#' condition, respectively. \code{n_control} and \code{n_treated} columns contain the numbers of
+#' samples for the reference and treatment condition, respectively. The \code{std_error} column
+#' contains the standard error of the differential abundances. \code{t_statistic} contains the
 #' t_statistic for the t-test.}
-#' \item{"moderated_t-test": }{\code{CI_2.5} and \code{CI_97.5} contain the 2.5% and 97.5% 
-#' confidence interval borders for differential abundances. \code{avg_abundance} contains average 
-#' abundances for treatment/reference pairs (mean of the two group means). \code{t_statistic} 
-#' contains the t_statistic for the t-test. \code{B} The B-statistic is the log-odds that the 
-#' protein, peptide or precursor (depending on \code{grouping}) has a differential abundance 
-#' between the two groups. Suppose B=1.5. The odds of differential abundance is exp(1.5)=4.48, i.e, 
-#' about four and a half to one. The probability that there is a differential abundance is 
-#' 4.48/(1+4.48)=0.82, i.e., the probability is about 82% that this group is differentially 
+#' \item{"moderated_t-test": }{\code{CI_2.5} and \code{CI_97.5} contain the 2.5% and 97.5%
+#' confidence interval borders for differential abundances. \code{avg_abundance} contains average
+#' abundances for treatment/reference pairs (mean of the two group means). \code{t_statistic}
+#' contains the t_statistic for the t-test. \code{B} The B-statistic is the log-odds that the
+#' protein, peptide or precursor (depending on \code{grouping}) has a differential abundance
+#' between the two groups. Suppose B=1.5. The odds of differential abundance is exp(1.5)=4.48, i.e,
+#' about four and a half to one. The probability that there is a differential abundance is
+#' 4.48/(1+4.48)=0.82, i.e., the probability is about 82% that this group is differentially
 #' abundant. A B-statistic of zero corresponds to a 50-50 chance that the group is differentially
-#' abundant.\code{n_obs} contains the number of observations for the specific protein, peptide or 
+#' abundant.\code{n_obs} contains the number of observations for the specific protein, peptide or
 #' precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
-#' \item{"proDA": }{The \code{std_error} column contains the standard error of the differential 
-#' abundances. \code{avg_abundance} contains average abundances for treatment/reference pairs 
-#' (mean of the two group means). \code{t_statistic} contains the t_statistic for the t-test. 
-#' \code{n_obs} contains the number of observations for the specific protein, peptide or precursor 
+#' \item{"proDA": }{The \code{std_error} column contains the standard error of the differential
+#' abundances. \code{avg_abundance} contains average abundances for treatment/reference pairs
+#' (mean of the two group means). \code{t_statistic} contains the t_statistic for the t-test.
+#' \code{n_obs} contains the number of observations for the specific protein, peptide or precursor
 #' (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
 #' }
 #' @import dplyr
@@ -118,19 +121,45 @@ diff_abundance <-
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' calculate_diff_abundance(
+#' set.seed(123) # Makes example reproducible
+#'
+#' # Create synthetic data
+#' data <- create_synthetic_data(
+#'   n_proteins = 10,
+#'   frac_change = 0.5,
+#'   n_replicates = 4,
+#'   n_conditions = 2,
+#'   method = "effect_random",
+#'   additional_metadata = FALSE
+#' )
+#'
+#' # Assign missingness information
+#' data_missing <- assign_missingness(
 #'   data,
-#'   sample = r_file_name,
-#'   condition = r_condition,
-#'   grouping = eg_precursor_id,
-#'   intensity_log2 = normalised_intensity_log2,
+#'   sample = sample,
+#'   condition = condition,
+#'   grouping = peptide,
+#'   intensity = peptide_intensity_missing,
+#'   ref_condition = "all",
+#'   retain_columns = c(protein, change_peptide)
+#' )
+#'
+#' # Calculate differential abundances
+#' # Using "moderated_t-test" and "proDA" improves
+#' # true positive recovery progressively
+#' diff <- calculate_diff_abundance(
+#'   data = data_missing,
+#'   sample = sample,
+#'   condition = condition,
+#'   grouping = peptide,
+#'   intensity_log2 = peptide_intensity_missing,
 #'   missingness = missingness,
 #'   comparison = comparison,
 #'   method = "t-test",
-#'   retain_columns = c(pg_protein_accessions)
+#'   retain_columns = c(protein, change_peptide)
 #' )
-#' }
+#'
+#' head(diff, n = 10)
 calculate_diff_abundance <-
   function(data,
            sample,
@@ -149,7 +178,8 @@ calculate_diff_abundance <-
            retain_columns = NULL) {
     . <- NULL
     if (!(ref_condition %in% unique(pull(data, {{ condition }}))) & ref_condition != "all") {
-      stop("The name provided to ref_condition cannot be found in your conditions! Please provide a valid reference condition.")
+      stop(strwrap("The name provided to ref_condition cannot be found in your conditions!
+Please provide a valid reference condition.", prefix = "\n", initial = ""))
     }
 
     method <- match.arg(method)
@@ -179,7 +209,10 @@ calculate_diff_abundance <-
         tidyr::drop_na({{ intensity_log2 }}) %>%
         dplyr::group_by({{ comparison }}, {{ grouping }}, {{ condition }}) %>%
         dplyr::summarize(intensity = list({{ intensity_log2 }}), .groups = "drop") %>%
-        dplyr::mutate(type = ifelse({{ condition }} == stringr::str_extract({{ comparison }}, pattern = "(?<=_vs_).+"), "control", "treated")) %>%
+        dplyr::mutate(type = ifelse({{ condition }} == stringr::str_extract({{ comparison }}, pattern = "(?<=_vs_).+"),
+          "control",
+          "treated"
+        )) %>%
         dplyr::select(-{{ condition }}) %>%
         tidyr::pivot_wider(names_from = .data$type, values_from = .data$intensity, values_fill = list(NA))
 
@@ -236,19 +269,37 @@ calculate_diff_abundance <-
         dplyr::ungroup() %>%
         dplyr::select(-c(.data$control, .data$treated)) %>%
         dplyr::left_join(t_test_missingness_obs, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison")) %>%
-        dplyr::arrange(.data$adj_pval)
+        dplyr::arrange(.data$adj_pval, .data$pval)
 
       message("DONE", appendLF = TRUE)
 
       if (!missing(retain_columns)) {
         t_test_result <- data %>%
           dplyr::ungroup() %>%
-          dplyr::select(!!enquo(retain_columns), {{ intensity_log2 }}, colnames(t_test_result)[!colnames(t_test_result) %in% c("pval", "std_error", "diff", "adj_pval", "n_obs")]) %>%
+          dplyr::select(
+            !!enquo(retain_columns),
+            {{ intensity_log2 }},
+            colnames(t_test_result)[!colnames(t_test_result) %in%
+              c(
+                "pval",
+                "std_error",
+                "diff",
+                "adj_pval",
+                "n_obs"
+              )]
+          ) %>%
           tidyr::drop_na({{ intensity_log2 }}) %>%
           dplyr::select(-{{ intensity_log2 }}) %>%
           dplyr::distinct() %>%
-          dplyr::right_join(t_test_result, by = colnames(t_test_result)[!colnames(t_test_result) %in% c("pval", "std_error", "diff", "adj_pval", "n_obs")]) %>%
-          dplyr::arrange(.data$adj_pval)
+          dplyr::right_join(t_test_result, by = colnames(t_test_result)[!colnames(t_test_result) %in%
+            c(
+              "pval",
+              "std_error",
+              "diff",
+              "adj_pval",
+              "n_obs"
+            )]) %>%
+          dplyr::arrange(.data$adj_pval, .data$pval)
       }
 
       if (filter_NA_missingness == TRUE) {
@@ -257,7 +308,7 @@ calculate_diff_abundance <-
           dplyr::group_by({{ comparison }}) %>%
           dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
           dplyr::ungroup() %>%
-          dplyr::arrange(.data$adj_pval)
+          dplyr::arrange(.data$adj_pval, .data$pval)
         return(t_test_result)
       }
       if (filter_NA_missingness == FALSE) {
@@ -273,7 +324,11 @@ calculate_diff_abundance <-
         all_combinations <- tibble::as_tibble(t(combn(all_conditions, m = 2))) %>%
           dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2))
 
-        message("All pairwise comparisons are created from all conditions and their missingness type is assigned.\n The created comparisons are: \n", paste(all_combinations$combinations, collapse = "\n"))
+        message(
+          strwrap("All pairwise comparisons are created from all conditions and their
+missingness type is assigned.\n The created comparisons are: \n", prefix = "\n", initial = ""),
+          paste(all_combinations$combinations, collapse = "\n")
+        )
       }
 
       if (ref_condition != "all") {
@@ -297,21 +352,59 @@ calculate_diff_abundance <-
         dplyr::left_join(all_combinations, by = rlang::as_name(rlang::enquo(condition))) %>%
         tidyr::unnest(.data$comparison) %>%
         dplyr::rename(mean = {{ mean }}, sd = {{ sd }}, n = {{ n_samples }}) %>%
-        dplyr::mutate({{ condition }} := ifelse({{ condition }} == stringr::str_extract(.data$comparison, pattern = "(?<=_vs_).+"), "control", "treated")) %>%
+        dplyr::mutate({{ condition }} := ifelse({{ condition }} == stringr::str_extract(.data$comparison, pattern = "(?<=_vs_).+"),
+          "control",
+          "treated"
+        )) %>%
         tidyr::pivot_wider(names_from = {{ condition }}, values_from = c(.data$mean, .data$sd, .data$n)) %>%
-        dplyr::mutate(ttest_protti(mean1 = .data$mean_control, mean2 = .data$mean_treated, sd1 = .data$sd_control, sd2 = .data$sd_treated, n1 = .data$n_control, n2 = .data$n_treated)) %>%
+        dplyr::mutate(ttest_protti(
+          mean1 = .data$mean_control,
+          mean2 = .data$mean_treated,
+          sd1 = .data$sd_control,
+          sd2 = .data$sd_treated,
+          n1 = .data$n_control,
+          n2 = .data$n_treated
+        )) %>%
         tidyr::drop_na(.data$pval) %>%
         dplyr::group_by(.data$comparison) %>%
         dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
-        dplyr::arrange(.data$adj_pval)
+        dplyr::arrange(.data$adj_pval, .data$pval)
 
       if (!missing(retain_columns)) {
         t_test_mean_sd_result <- data %>%
           dplyr::ungroup() %>%
-          dplyr::select(!!enquo(retain_columns), colnames(t_test_mean_sd_result)[!colnames(t_test_mean_sd_result) %in% c("mean_control", "mean_treated", "sd_control", "sd_treated", "n_control", "n_treated", "pval", "std_error", "diff", "adj_pval", "t_statistic", "comparison")]) %>%
+          dplyr::select(!!enquo(retain_columns), colnames(t_test_mean_sd_result)[!colnames(t_test_mean_sd_result) %in%
+            c(
+              "mean_control",
+              "mean_treated",
+              "sd_control",
+              "sd_treated",
+              "n_control",
+              "n_treated",
+              "pval",
+              "std_error",
+              "diff",
+              "adj_pval",
+              "t_statistic",
+              "comparison"
+            )]) %>%
           dplyr::distinct() %>%
-          dplyr::right_join(t_test_mean_sd_result, by = colnames(t_test_mean_sd_result)[!colnames(t_test_mean_sd_result) %in% c("mean_control", "mean_treated", "sd_control", "sd_treated", "n_control", "n_treated", "pval", "std_error", "diff", "adj_pval", "t_statistic", "comparison")]) %>%
-          dplyr::arrange(.data$adj_pval)
+          dplyr::right_join(t_test_mean_sd_result, by = colnames(t_test_mean_sd_result)[!colnames(t_test_mean_sd_result) %in%
+            c(
+              "mean_control",
+              "mean_treated",
+              "sd_control",
+              "sd_treated",
+              "n_control",
+              "n_treated",
+              "pval",
+              "std_error",
+              "diff",
+              "adj_pval",
+              "t_statistic",
+              "comparison"
+            )]) %>%
+          dplyr::arrange(.data$adj_pval, .data$pval)
       }
       return(t_test_mean_sd_result)
     }
@@ -340,9 +433,24 @@ calculate_diff_abundance <-
         dplyr::mutate({{ condition }} := paste0("x", {{ condition }})) %>%
         dplyr::arrange({{ sample }})
 
-      moderated_t_test_design <- stats::model.matrix(~ 0 + factor(stringr::str_replace_all(dplyr::pull(moderated_t_test_map, {{ condition }}), pattern = " ", replacement = "_")))
+      moderated_t_test_design <- stats::model.matrix(~ 0 + factor(
+        stringr::str_replace_all(
+          dplyr::pull(moderated_t_test_map, {{ condition }}),
+          pattern = " ",
+          replacement = "_"
+        )
+      ))
 
-      colnames(moderated_t_test_design) <- levels(factor(stringr::str_replace_all(dplyr::pull(moderated_t_test_map, {{ condition }}), pattern = " ", replacement = "_")))
+      colnames(moderated_t_test_design) <- levels(factor(
+        stringr::str_replace_all(
+          dplyr::pull(
+            moderated_t_test_map,
+            {{ condition }}
+          ),
+          pattern = " ",
+          replacement = "_"
+        )
+      ))
 
       message("DONE", appendLF = TRUE)
       message("[3/7] Fitting lmFit model ... ", appendLF = FALSE)
@@ -358,8 +466,28 @@ calculate_diff_abundance <-
       )
 
       comparisons <- paste0(
-        "x", stringr::str_extract(stringr::str_replace_all(unique(dplyr::pull(data, {{ comparison }})), pattern = " ", replacement = "_"), pattern = ".+(?=_vs_)"), "-x",
-        stringr::str_extract(stringr::str_replace_all(unique(dplyr::pull(data, {{ comparison }})), pattern = " ", replacement = "_"), pattern = "(?<=_vs_).+")
+        "x", stringr::str_extract(
+          stringr::str_replace_all(
+            unique(dplyr::pull(
+              data,
+              {{ comparison }}
+            )),
+            pattern = " ",
+            replacement = "_"
+          ),
+          pattern = ".+(?=_vs_)"
+        ),
+        "-x", stringr::str_extract(
+          stringr::str_replace_all(
+            unique(dplyr::pull(
+              data,
+              {{ comparison }}
+            )),
+            pattern = " ",
+            replacement = "_"
+          ),
+          pattern = "(?<=_vs_).+"
+        )
       )
 
       combinations <- purrr::map2(
@@ -395,12 +523,26 @@ calculate_diff_abundance <-
 
       moderated_t_test_result <- purrr::map_dfr(
         .x = names,
-        .f = ~ limma::topTable(moderated_t_test_fit3, coef = .x, number = Inf, confint = TRUE, sort.by = "p", adjust.method = p_adj_method) %>%
+        .f = ~ limma::topTable(moderated_t_test_fit3,
+          coef = .x,
+          number = Inf,
+          confint = TRUE,
+          sort.by = "p",
+          adjust.method = p_adj_method
+        ) %>%
           tibble::rownames_to_column(rlang::as_name(rlang::enquo(grouping))) %>%
           dplyr::mutate(comparison = .x)
       ) %>%
         dplyr::mutate(comparison = stringr::str_replace_all({{ comparison }}, pattern = "^x|(?<=_vs_)x", replacement = "")) %>%
-        dplyr::rename(diff = .data$logFC, CI_2.5 = .data$CI.L, CI_97.5 = .data$CI.R, t_statistic = .data$t, avg_abundance = .data$AveExpr, pval = .data$P.Value, adj_pval = .data$adj.P.Val) %>%
+        dplyr::rename(
+          diff = .data$logFC,
+          CI_2.5 = .data$CI.L,
+          CI_97.5 = .data$CI.R,
+          t_statistic = .data$t,
+          avg_abundance = .data$AveExpr,
+          pval = .data$P.Value,
+          adj_pval = .data$adj.P.Val
+        ) %>%
         dplyr::left_join(moderated_t_test_missingness, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison"))
 
       message("DONE", appendLF = TRUE)
@@ -408,12 +550,38 @@ calculate_diff_abundance <-
       if (!missing(retain_columns)) {
         moderated_t_test_result <- data %>%
           dplyr::ungroup() %>%
-          dplyr::select(!!enquo(retain_columns), {{ intensity_log2 }}, colnames(moderated_t_test_result)[!colnames(moderated_t_test_result) %in% c("CI_2.5", "CI_97.5", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "B", "n_obs")]) %>%
+          dplyr::select(
+            !!enquo(retain_columns),
+            {{ intensity_log2 }},
+            colnames(moderated_t_test_result)[!colnames(moderated_t_test_result) %in%
+              c(
+                "CI_2.5",
+                "CI_97.5",
+                "avg_abundance",
+                "pval",
+                "diff",
+                "adj_pval",
+                "t_statistic",
+                "B",
+                "n_obs"
+              )]
+          ) %>%
           tidyr::drop_na({{ intensity_log2 }}) %>%
           dplyr::select(-{{ intensity_log2 }}) %>%
           dplyr::distinct() %>%
-          dplyr::right_join(moderated_t_test_result, by = colnames(moderated_t_test_result)[!colnames(moderated_t_test_result) %in% c("CI_2.5", "CI_97.5", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "B", "n_obs")]) %>%
-          dplyr::arrange(.data$adj_pval)
+          dplyr::right_join(moderated_t_test_result, by = colnames(moderated_t_test_result)[!colnames(moderated_t_test_result) %in%
+            c(
+              "CI_2.5",
+              "CI_97.5",
+              "avg_abundance",
+              "pval",
+              "diff",
+              "adj_pval",
+              "t_statistic",
+              "B",
+              "n_obs"
+            )]) %>%
+          dplyr::arrange(.data$adj_pval, .data$pval)
       }
 
       if (filter_NA_missingness == TRUE) {
@@ -422,7 +590,7 @@ calculate_diff_abundance <-
           dplyr::group_by(.data$comparison) %>%
           dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
           dplyr::ungroup() %>%
-          dplyr::arrange(.data$adj_pval)
+          dplyr::arrange(.data$adj_pval, .data$pval)
         return(moderated_t_test_result)
       }
       if (filter_NA_missingness == FALSE) {
@@ -481,8 +649,28 @@ calculate_diff_abundance <-
 
       names <- unique(dplyr::pull(data, {{ comparison }}))
       comparisons <- paste0(
-        stringr::str_extract(stringr::str_replace_all(unique(dplyr::pull(data, {{ comparison }})), pattern = " ", replacement = "_"), pattern = ".+(?=_vs_)"), " - ",
-        stringr::str_extract(stringr::str_replace_all(unique(dplyr::pull(data, {{ comparison }})), pattern = " ", replacement = "_"), pattern = "(?<=_vs_).+")
+        stringr::str_extract(
+          stringr::str_replace_all(
+            unique(dplyr::pull(
+              data,
+              {{ comparison }}
+            )),
+            pattern = " ",
+            replacement = "_"
+          ),
+          pattern = ".+(?=_vs_)"
+        ), " - ",
+        stringr::str_extract(
+          stringr::str_replace_all(
+            unique(dplyr::pull(
+              data,
+              {{ comparison }}
+            )),
+            pattern = " ",
+            replacement = "_"
+          ),
+          pattern = "(?<=_vs_).+"
+        )
       )
 
       proDA_result <- names %>%
@@ -528,12 +716,36 @@ calculate_diff_abundance <-
       if (!missing(retain_columns)) {
         proDA_result <- data %>%
           dplyr::ungroup() %>%
-          dplyr::select(!!enquo(retain_columns), {{ intensity_log2 }}, colnames(proDA_result)[!colnames(proDA_result) %in% c("std_error", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "df", "n_obs")]) %>%
+          dplyr::select(
+            !!enquo(retain_columns),
+            {{ intensity_log2 }},
+            colnames(proDA_result)[!colnames(proDA_result) %in%
+              c(
+                "std_error",
+                "avg_abundance",
+                "pval",
+                "diff",
+                "adj_pval",
+                "t_statistic",
+                "df",
+                "n_obs"
+              )]
+          ) %>%
           tidyr::drop_na({{ intensity_log2 }}) %>%
           dplyr::select(-{{ intensity_log2 }}) %>%
           dplyr::distinct() %>%
-          dplyr::right_join(proDA_result, by = colnames(proDA_result)[!colnames(proDA_result) %in% c("std_error", "avg_abundance", "pval", "diff", "adj_pval", "t_statistic", "df", "n_obs")]) %>%
-          dplyr::arrange(.data$adj_pval)
+          dplyr::right_join(proDA_result, by = colnames(proDA_result)[!colnames(proDA_result) %in%
+            c(
+              "std_error",
+              "avg_abundance",
+              "pval",
+              "diff",
+              "adj_pval",
+              "t_statistic",
+              "df",
+              "n_obs"
+            )]) %>%
+          dplyr::arrange(.data$adj_pval, .data$pval)
       }
       return(proDA_result)
     }

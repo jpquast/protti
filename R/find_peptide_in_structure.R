@@ -1,42 +1,57 @@
 #' Finds peptide positions in a PDB structure based on positional matching
 #'
-#' Finds peptide positions in a PDB structure. Often positions of peptides in UniProt and a PDB structure are different due to different
-#' lengths of structures. This function maps a peptide based on its UniProt positions onto a PDB structure. This method is superior to
-#' sequence alignment of the peptide to the PDB structure sequence, since it can also match the peptide if there are truncations or
-#' mismatches. This function also provides an easy way to check if a peptide is present in a PDB structure.
+#' Finds peptide positions in a PDB structure. Often positions of peptides in UniProt and a PDB
+#' structure are different due to different lengths of structures. This function maps a peptide
+#' based on its UniProt positions onto a PDB structure. This method is superior to sequence
+#' alignment of the peptide to the PDB structure sequence, since it can also match the peptide if
+#' there are truncations or mismatches. This function also provides an easy way to check if a
+#' peptide is present in a PDB structure.
 #'
 #' @param peptide_data a data frame containing at least the input columns to this function.
-#' @param peptide a character column in the \code{peptide_data} data frame that contains the sequence or any other unique identifier
-#' for the peptide that should be found.
-#' @param start a numeric column in the \code{peptide_data} data frame that contains start positions of peptides.
-#' @param end a numeric column in the \code{peptide_data} data frame that contains end positions of peptides.
-#' @param uniprot_id a character column in the \code{peptide_data} data frame that contains UniProt identifiers that correspond to the
+#' @param peptide a character column in the \code{peptide_data} data frame that contains the
+#' sequence or any other unique identifier for the peptide that should be found.
+#' @param start a numeric column in the \code{peptide_data} data frame that contains start positions
+#' of peptides.
+#' @param end a numeric column in the \code{peptide_data} data frame that contains end positions of
 #' peptides.
-#' @param pdb_data optional data frame containing data obtained with \code{fetch_pdb()}. If not provided, information is fetched automatically.
-#' If this function should be run multiple times it is faster to fetch the information once and provide it to the function. If provided,
-#' make sure that the column names are identical to the ones that would be obtained by calling \code{fetch_pdb()}.
-#' @param retain_columns a vector indicating if certain columns should be retained from the input data frame. Default is not retaining
-#' additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks,
-#' just like other column names, but in a vector).
+#' @param uniprot_id a character column in the \code{peptide_data} data frame that contains UniProt
+#' identifiers that correspond to the peptides.
+#' @param pdb_data optional, a data frame containing data obtained with \code{fetch_pdb()}. If not
+#' provided, information is fetched automatically. If this function should be run multiple times
+#' it is faster to fetch the information once and provide it to the function. If provided, make
+#' sure that the column names are identical to the ones that would be obtained by calling \code{fetch_pdb()}.
+#' @param retain_columns a vector indicating if certain columns should be retained from the input
+#' data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
+#' columns can be retained by providing their names (not in quotations marks, just like other
+#' column names, but in a vector).
 #'
-#' @return A data frame that contains peptide positions in the corresponding PDB structures. If a peptide is not found in any structure or no structure
-#' is associated with the protein, the data frame contains NAs values for the output columns. The data frame contains the following and additional columns:
+#' @return A data frame that contains peptide positions in the corresponding PDB structures. If a
+#' peptide is not found in any structure or no structure is associated with the protein, the data
+#' frame contains NAs values for the output columns. The data frame contains the following and
+#' additional columns:
 #' \itemize{
-#' \item{auth_asym_id: }{Chain identifier provided by the author of the structure in order to match the identification used in the publication that
-#' describes the structure.}
+#' \item{auth_asym_id: }{Chain identifier provided by the author of the structure in order to
+#' match the identification used in the publication that describes the structure.}
 #' \item{label_asym_id: }{Chain identifier following the standardised convention for mmCIF files.}
-#' \item{peptide_sequence_in_pdb: }{The sequence of the peptide mapped to the structure. If the peptide only maps partially, then only the part of
-#' the sequence that maps on the structure is returned.}
-#' \item{fit_type: }{The fit type is either "partial" or "fully" and it indicates if the complete peptide or only part of it was found in the structure.}
-#' \item{label_seq_id_start: }{Contains the first residue position of the peptide in the structure following the standardised convention for mmCIF
-#' files.}
-#' \item{label_seq_id_end: }{Contains the last residue position of the peptide in the structure following the standardised convention for mmCIF files.}
-#' \item{auth_seq_id_start: }{Contains the first residue position of the peptide in the structure based on the alternative residue identifier provided
-#' by the author of the structure in order to match the identification used in the publication that describes the structure.}
-#' \item{auth_seq_id_end: }{Contains the last residue position of the peptide in the structure based on the alternative residue identifier provided
-#' by the author of the structure in order to match the identification used in the publication that describes the structure.}
-#' \item{n_peptides: }{The number of peptides from one protein that were searched for within the current structure.}
-#' \item{n_peptides_in_structure: }{The number of peptides from one protein that were found within the current structure.}
+#' \item{peptide_sequence_in_pdb: }{The sequence of the peptide mapped to the structure. If the
+#' peptide only maps partially, then only the part of the sequence that maps on the structure is
+#' returned.}
+#' \item{fit_type: }{The fit type is either "partial" or "fully" and it indicates if the complete
+#' peptide or only part of it was found in the structure.}
+#' \item{label_seq_id_start: }{Contains the first residue position of the peptide in the structure
+#' following the standardised convention for mmCIF files.}
+#' \item{label_seq_id_end: }{Contains the last residue position of the peptide in the structure
+#' following the standardised convention for mmCIF files.}
+#' \item{auth_seq_id_start: }{Contains the first residue position of the peptide in the structure
+#' based on the alternative residue identifier provided by the author of the structure in order
+#' to match the identification used in the publication that describes the structure.}
+#' \item{auth_seq_id_end: }{Contains the last residue position of the peptide in the structure
+#' based on the alternative residue identifier provided by the author of the structure in order
+#' to match the identification used in the publication that describes the structure.}
+#' \item{n_peptides: }{The number of peptides from one protein that were searched for within the
+#' current structure.}
+#' \item{n_peptides_in_structure: }{The number of peptides from one protein that were found within
+#' the current structure.}
 #' }
 #' @import dplyr
 #' @import tidyr
@@ -46,18 +61,37 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' find_peptide_in_structure(
+#' \donttest{
+#' # Create example data
+#' peptide_data <- data.frame(
+#'   uniprot_id = c("P0A8T7", "P0A8T7", "P60906"),
+#'   peptide_sequence = c(
+#'     "SGIVSFGKETKGKRRLVITPVDGSDPYEEMIPKWRQLNV",
+#'     "NVFEGERVER",
+#'     "AIGEVTDVVEKE"
+#'   ),
+#'   start = c(1160, 1197, 55),
+#'   end = c(1198, 1206, 66)
+#' )
+#'
+#' # Find peptides in protein structure
+#' peptide_in_structure <- find_peptide_in_structure(
 #'   peptide_data = peptide_data,
-#'   peptide = peptide,
+#'   peptide = peptide_sequence,
 #'   start = start,
 #'   end = end,
-#'   uniprot_id = pg_protein_accessions,
-#'   pdb_data = pdb_data,
-#'   retain_columns = c(map_value)
+#'   uniprot_id = uniprot_id
 #' )
+#'
+#' head(peptide_in_structure, n = 10)
 #' }
-find_peptide_in_structure <- function(peptide_data, peptide, start, end, uniprot_id, pdb_data = NULL, retain_columns = NULL) {
+find_peptide_in_structure <- function(peptide_data,
+                                      peptide,
+                                      start,
+                                      end,
+                                      uniprot_id,
+                                      pdb_data = NULL,
+                                      retain_columns = NULL) {
   peptide_data_prep <- peptide_data %>%
     dplyr::distinct({{ peptide }}, {{ start }}, {{ end }}, {{ uniprot_id }})
 
@@ -67,7 +101,9 @@ find_peptide_in_structure <- function(peptide_data, peptide, start, end, uniprot
 
     uniprot_info <- fetch_uniprot(unis, columns = c("database(PDB)"))
 
-    if (!all(is.na(uniprot_info$database_pdb))) { # Make sure to only execute the code below if there aren't any PDB structures to be extracted and fetched.
+    # Make sure to only execute the code below if there aren't any
+    # PDB structures to be extracted and fetched.
+    if (!all(is.na(uniprot_info$database_pdb))) {
       pdb_id_mapping <- uniprot_info %>%
         tidyr::drop_na() %>%
         dplyr::mutate(pdb_ids = strsplit(.data$database_pdb, split = ";")) %>%
@@ -77,10 +113,16 @@ find_peptide_in_structure <- function(peptide_data, peptide, start, end, uniprot
     }
   }
 
-  # Rescue the case that none of the provided proteins has a structure or no matching structure was provided in pdb_data.
-  # Then the output data frame is returned that contains NAs in all fields usually added by this function.
+  # Rescue the case that none of the provided proteins has a structure
+  # or no matching structure was provided in pdb_data. Then the output
+  # data frame is returned that contains NAs in all fields usually
+  # added by this function.
 
-  if (ifelse(missing(pdb_data), all(is.na(uniprot_info$database_pdb)), !any(unique(dplyr::pull(peptide_data_prep, {{ uniprot_id }})) %in% pdb_data$reference_database_accession))) {
+  if (ifelse(missing(pdb_data),
+    all(is.na(uniprot_info$database_pdb)),
+    !any(unique(dplyr::pull(peptide_data_prep, {{ uniprot_id }})) %in%
+      pdb_data$reference_database_accession)
+  )) {
     result <- peptide_data_prep %>%
       dplyr::mutate(
         pdb_ids = NA,
@@ -97,7 +139,17 @@ find_peptide_in_structure <- function(peptide_data, peptide, start, end, uniprot
       )
   } else {
     result <- pdb_data %>%
-      dplyr::distinct(.data$reference_database_accession, .data$pdb_ids, .data$auth_asym_id, .data$entity_beg_seq_id, .data$ref_beg_seq_id, .data$length, .data$pdb_sequence, .data$auth_seq_id, .data$label_asym_id) %>%
+      dplyr::distinct(
+        .data$reference_database_accession,
+        .data$pdb_ids,
+        .data$auth_asym_id,
+        .data$entity_beg_seq_id,
+        .data$ref_beg_seq_id,
+        .data$length,
+        .data$pdb_sequence,
+        .data$auth_seq_id,
+        .data$label_asym_id
+      ) %>%
       dplyr::rename(length_pdb = .data$length) %>%
       dplyr::mutate({{ uniprot_id }} := .data$reference_database_accession) %>%
       dplyr::mutate(length_pdb_sequence = nchar(.data$pdb_sequence)) %>%
@@ -105,9 +157,26 @@ find_peptide_in_structure <- function(peptide_data, peptide, start, end, uniprot
         ref_end_seq_id = as.numeric(.data$ref_beg_seq_id) + as.numeric(.data$length_pdb) - 1,
         entity_end_seq_id = as.numeric(.data$entity_beg_seq_id) + as.numeric(.data$length_pdb) - 1
       ) %>%
-      dplyr::select(.data$pdb_ids, .data$auth_asym_id, {{ uniprot_id }}, .data$entity_beg_seq_id, .data$entity_end_seq_id, .data$ref_beg_seq_id, .data$ref_end_seq_id, .data$pdb_sequence, .data$length_pdb_sequence, .data$auth_seq_id, .data$label_asym_id) %>%
+      dplyr::select(
+        .data$pdb_ids,
+        .data$auth_asym_id,
+        {{ uniprot_id }},
+        .data$entity_beg_seq_id,
+        .data$entity_end_seq_id,
+        .data$ref_beg_seq_id,
+        .data$ref_end_seq_id,
+        .data$pdb_sequence,
+        .data$length_pdb_sequence,
+        .data$auth_seq_id,
+        .data$label_asym_id
+      ) %>%
       dplyr::right_join(peptide_data_prep, by = c(rlang::as_name(rlang::enquo(uniprot_id)))) %>%
-      dplyr::mutate(peptide_in_pdb = ({{ start }} >= .data$ref_beg_seq_id & {{ start }} <= .data$ref_end_seq_id) | ({{ end }} >= .data$ref_beg_seq_id & {{ end }} <= .data$ref_end_seq_id) | ({{ start }} < .data$ref_beg_seq_id & {{ end }} > .data$ref_end_seq_id)) %>%
+      dplyr::mutate(peptide_in_pdb = ({{ start }} >= .data$ref_beg_seq_id &
+        {{ start }} <= .data$ref_end_seq_id) |
+        ({{ end }} >= .data$ref_beg_seq_id &
+          {{ end }} <= .data$ref_end_seq_id) |
+        ({{ start }} < .data$ref_beg_seq_id &
+          {{ end }} > .data$ref_end_seq_id)) %>%
       dplyr::group_by(.data$pdb_ids, .data$auth_asym_id) %>%
       dplyr::mutate(n_peptides = dplyr::n_distinct({{ peptide }})) %>%
       tidyr::drop_na(.data$pdb_ids) %>%
@@ -117,14 +186,34 @@ find_peptide_in_structure <- function(peptide_data, peptide, start, end, uniprot
         label_seq_id_start = .data$entity_beg_seq_id - .data$ref_beg_seq_id + {{ start }},
         label_seq_id_end = .data$entity_beg_seq_id - .data$ref_beg_seq_id + {{ end }}
       ) %>%
-      dplyr::mutate(fit_type = ifelse((.data$label_seq_id_start < .data$entity_beg_seq_id | .data$label_seq_id_end > .data$entity_end_seq_id), "partial", "fully")) %>%
+      dplyr::mutate(fit_type = ifelse((.data$label_seq_id_start < .data$entity_beg_seq_id |
+        .data$label_seq_id_end > .data$entity_end_seq_id),
+      "partial",
+      "fully"
+      )) %>%
       dplyr::mutate(
-        label_seq_id_end = ifelse(.data$label_seq_id_end > .data$length_pdb_sequence, .data$length_pdb_sequence, .data$label_seq_id_end),
-        label_seq_id_start = ifelse(.data$label_seq_id_start < 1, 1, .data$label_seq_id_start),
-        label_seq_id_end = ifelse(.data$label_seq_id_end > .data$entity_end_seq_id, .data$entity_end_seq_id, .data$label_seq_id_end),
-        label_seq_id_start = ifelse(.data$label_seq_id_start < .data$entity_beg_seq_id, .data$entity_beg_seq_id, .data$label_seq_id_start)
+        label_seq_id_end = ifelse(.data$label_seq_id_end > .data$length_pdb_sequence,
+          .data$length_pdb_sequence,
+          .data$label_seq_id_end
+        ),
+        label_seq_id_start = ifelse(.data$label_seq_id_start < 1,
+          1,
+          .data$label_seq_id_start
+        ),
+        label_seq_id_end = ifelse(.data$label_seq_id_end > .data$entity_end_seq_id,
+          .data$entity_end_seq_id,
+          .data$label_seq_id_end
+        ),
+        label_seq_id_start = ifelse(.data$label_seq_id_start < .data$entity_beg_seq_id,
+          .data$entity_beg_seq_id,
+          .data$label_seq_id_start
+        )
       ) %>%
-      dplyr::mutate(peptide_sequence_in_pdb = stringr::str_sub(.data$pdb_sequence, start = .data$label_seq_id_start, end = .data$label_seq_id_end)) %>%
+      dplyr::mutate(peptide_sequence_in_pdb = stringr::str_sub(
+        .data$pdb_sequence,
+        start = .data$label_seq_id_start,
+        end = .data$label_seq_id_end
+      )) %>%
       dplyr::mutate(
         label_seq_id_start = ifelse(.data$peptide_in_pdb, .data$label_seq_id_start, Inf),
         label_seq_id_end = ifelse(.data$peptide_in_pdb, .data$label_seq_id_end, Inf),
@@ -141,9 +230,26 @@ find_peptide_in_structure <- function(peptide_data, peptide, start, end, uniprot
         label_seq_id_start = ifelse(.data$label_seq_id_start != Inf, .data$label_seq_id_start, NA),
         label_seq_id_end = ifelse(.data$label_seq_id_end != Inf, .data$label_seq_id_end, NA)
       ) %>%
-      dplyr::select({{ uniprot_id }}, .data$pdb_ids, .data$auth_asym_id, .data$label_asym_id, {{ peptide }}, .data$peptide_sequence_in_pdb, .data$fit_type, {{ start }}, {{ end }}, .data$label_seq_id_start, .data$label_seq_id_end, .data$auth_seq_id_start, .data$auth_seq_id_end, .data$n_peptides, .data$n_peptides_in_structure)
+      dplyr::select(
+        {{ uniprot_id }},
+        .data$pdb_ids,
+        .data$auth_asym_id,
+        .data$label_asym_id,
+        {{ peptide }},
+        .data$peptide_sequence_in_pdb,
+        .data$fit_type,
+        {{ start }},
+        {{ end }},
+        .data$label_seq_id_start,
+        .data$label_seq_id_end,
+        .data$auth_seq_id_start,
+        .data$auth_seq_id_end,
+        .data$n_peptides,
+        .data$n_peptides_in_structure
+      )
   }
-  # Retain also peptides in the data frame that were not found in any pdb structure or of which no peptide was found in the available pdb structures.
+  # Retain also peptides in the data frame that were not found in any pdb structure or of
+  # which no peptide was found in the available pdb structures.
 
   # All proteins with structures and that map at least one of their peptides
   good_result <- result %>%
@@ -162,7 +268,8 @@ find_peptide_in_structure <- function(peptide_data, peptide, start, end, uniprot
       auth_seq_id_start = ifelse(is.na(.data$pdb_ids), {{ start }}, .data$auth_seq_id_start),
       auth_seq_id_end = ifelse(is.na(.data$pdb_ids), {{ end }}, .data$auth_seq_id_end)
     ) %>%
-    # Make structure positions equal to start and end positions if no structure is available so this can be used for predictions
+    # Make structure positions equal to start and end positions if no structure is
+    # available so this can be used for predictions
     dplyr::distinct()
 
   if (!missing(retain_columns)) {

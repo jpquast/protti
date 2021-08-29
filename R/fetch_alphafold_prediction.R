@@ -1,29 +1,40 @@
 #' Fetch AlphaFold prediction
 #'
-#' Fetches atom level data for AlphaFold predictions either for selected proteins or whole organisms.
+#' Fetches atom level data for AlphaFold predictions either for selected proteins or whole
+#' organisms.
 #'
-#' @param uniprot_ids an optional character vector of UniProt identifiers for which predictions should be fetched. This argument is mutually exclusive
-#' to the \code{organism_name} argument.
-#' @param organism_name an optional character variable providing the name of an organism for which all available AlphaFold predictions should be
-#' retreived. The name should be the capitalised scientific species name (e.g. "Homo sapiens"). **Note:** Some organisms contain a lot of predictions
-#' which might take a considerable amount of time and memory to fetch. Therefore, you should be sure that your system can handle fetching predictions for
-#' these organisms. This argument is mutually exclusive to the \code{uniprot_ids} argument.
-#' @param timeout a numeric value specifying the time in seconds until the download of an organism archive times out. The default is 3600 seconds.
-#' @param return_data_frame logical, if true, a data frame instead of a list is returned. It is recommended to only use this if not many
-#' pdb structures are retrieved. Default is FALSE.
-#' @param show_progress logical, if true, a progress bar will be shown. Default is TRUE.
+#' @param uniprot_ids optional, a character vector of UniProt identifiers for which predictions
+#' should be fetched. This argument is mutually exclusive to the \code{organism_name} argument.
+#' @param organism_name optional, a character value providing the name of an organism for which
+#' all available AlphaFold predictions should be retreived. The name should be the capitalised
+#' scientific species name (e.g. "Homo sapiens"). **Note:** Some organisms contain a lot of
+#' predictions which might take a considerable amount of time and memory to fetch. Therefore, you
+#' should be sure that your system can handle fetching predictions for these organisms. This
+#' argument is mutually exclusive to the \code{uniprot_ids} argument.
+#' @param timeout a numeric value specifying the time in seconds until the download of an organism
+#' archive times out. The default is 3600 seconds.
+#' @param return_data_frame a logical value that specifies if true, a data frame instead of a list
+#' is returned. It is recommended to only use this if not many pdb structures are retrieved.
+#' Default is FALSE.
+#' @param show_progress a logical value that specifies if true, a progress bar will be shown.
+#' Default is TRUE.
 #'
-#' @return A list that contains atom level data for AlphaFold predictions. If return_data_frame is TRUE, a data frame with this
-#' information is returned instead. The data frame contains the following columns:
+#' @return A list that contains atom level data for AlphaFold predictions. If return_data_frame is
+#' TRUE, a data frame with this information is returned instead. The data frame contains the
+#' following columns:
 #' \itemize{
-#' \item{label_id: }{Uniquely identifies every atom in the prediction following the standardised convention for mmCIF files.}
-#' \item{type_symbol: }{The code used to identify the atom species representing this atom type. This code is the element symbol.}
-#' \item{label_atom_id: }{Uniquely identifies every atom for the given residue following the standardised convention for mmCIF files.}
-#' \item{label_comp_id: }{A chemical identifier for the residue. This is the three- letter code for the amino acid.}
-#' \item{label_asym_id: }{Chain identifier following the standardised convention for mmCIF files. Since every prediction only contains one protein this
-#' is always "A".}
-#' \item{label_seq_id: }{Uniquely and sequentially identifies residues for each protein. The numbering corresponds to the UniProt amino acid
-#' positions.}
+#' \item{label_id: }{Uniquely identifies every atom in the prediction following the standardised
+#' convention for mmCIF files.}
+#' \item{type_symbol: }{The code used to identify the atom species representing this atom type.
+#' This code is the element symbol.}
+#' \item{label_atom_id: }{Uniquely identifies every atom for the given residue following the
+#' standardised convention for mmCIF files.}
+#' \item{label_comp_id: }{A chemical identifier for the residue. This is the three- letter code
+#' for the amino acid.}
+#' \item{label_asym_id: }{Chain identifier following the standardised convention for mmCIF files.
+#' Since every prediction only contains one protein this is always "A".}
+#' \item{label_seq_id: }{Uniquely and sequentially identifies residues for each protein. The
+#' numbering corresponds to the UniProt amino acid positions.}
 #' \item{x: }{The x coordinate of the atom.}
 #' \item{y: }{The y coordinate of the atom.}
 #' \item{z: }{The z coordinate of the atom.}
@@ -48,20 +59,26 @@
 #'
 #' @examples
 #' \donttest{
-#' dplyr::glimpse(
-#'   fetch_alphafold_prediction(
-#'     uniprot_ids = c("F4HVG8", "O15552"),
-#'     return_data_frame = TRUE
-#'   )
+#' alphafold <- fetch_alphafold_prediction(
+#'   uniprot_ids = c("F4HVG8", "O15552"),
+#'   return_data_frame = TRUE
 #' )
+#'
+#' head(alphafold, n = 10)
 #' }
-fetch_alphafold_prediction <- function(uniprot_ids = NULL, organism_name = NULL, timeout = 3600, return_data_frame = FALSE, show_progress = TRUE) {
+fetch_alphafold_prediction <- function(uniprot_ids = NULL,
+                                       organism_name = NULL,
+                                       timeout = 3600,
+                                       return_data_frame = FALSE,
+                                       show_progress = TRUE) {
   if (!curl::has_internet()) {
     message("No internet connection.")
     return(invisible(NULL))
   }
   if (!missing(uniprot_ids) & !missing(organism_name)) {
-    stop("Please only provide either a list of UniProt identifiers or one organism name!")
+    stop(strwrap("Please only provide either a list of UniProt identifiers or one organism name!",
+      prefix = "\n", initial = ""
+    ))
   }
   # if organism name is provided fetch all information about that organism
   if (!missing(organism_name)) {
@@ -121,16 +138,38 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL, organism_name = NULL,
 
     utils::download.file(url, destfile = paste0(tempdir(), "/alphafold.tar"))
 
-    utils::untar(tarfile = paste0(tempdir(), "/alphafold.tar"), exdir = paste0(tempdir(), "/alphafold"))
+    utils::untar(
+      tarfile = paste0(tempdir(), "/alphafold.tar"),
+      exdir = paste0(tempdir(), "/alphafold")
+    )
 
-    all_files <- paste0(tempdir(), "/alphafold/", list.files(path = paste0(tempdir(), "/alphafold"), pattern = ".cif.gz"))
+    all_files <- paste0(
+      tempdir(),
+      "/alphafold/",
+      list.files(
+        path = paste0(
+          tempdir(),
+          "/alphafold"
+        ),
+        pattern = ".cif.gz"
+      )
+    )
 
-    all_protein_ids <- str_extract(all_files, pattern = "(?<=AF-).+(?=-F1)")
+    all_protein_ids <- str_extract(all_files,
+      pattern = "(?<=AF-).+(?=-F1)"
+    )
 
     names(all_files) <- all_protein_ids
 
     if (show_progress == TRUE) {
-      pb <- progress::progress_bar$new(total = length(all_files), format = paste0("Importing AlphaFold predictions for ", organism_name, "[:bar] :current/:total (:percent) :eta"))
+      pb <- progress::progress_bar$new(
+        total = length(all_files),
+        format = paste0(
+          "Importing AlphaFold predictions for ",
+          organism_name,
+          "[:bar] :current/:total (:percent) :eta"
+        )
+      )
     }
 
     query_result <- purrr::map(
@@ -144,9 +183,48 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL, organism_name = NULL,
           dplyr::mutate(X2 = stringr::str_replace_all(X1, pattern = "\\s+", replacement = " ")) %>%
           tidyr::separate(X2,
             sep = " ",
-            into = c("x1", "label_id", "type_symbol", "label_atom_id", "x2", "label_comp_id", "label_asym_id", "entity_id", "label_seq_id", "x3", "x", "y", "z", "site_occupancy", "prediction_score", "formal_charge", "auth_seq_id", "auth_comp_id", "auth_asym_id", "x4", "pdb_model_number", "uniprot_id", "x5", "x6", "x7")
+            into = c(
+              "x1",
+              "label_id",
+              "type_symbol",
+              "label_atom_id",
+              "x2",
+              "label_comp_id",
+              "label_asym_id",
+              "entity_id",
+              "label_seq_id",
+              "x3",
+              "x",
+              "y",
+              "z",
+              "site_occupancy",
+              "prediction_score",
+              "formal_charge",
+              "auth_seq_id",
+              "auth_comp_id",
+              "auth_asym_id",
+              "x4",
+              "pdb_model_number",
+              "uniprot_id",
+              "x5",
+              "x6",
+              "x7"
+            )
           ) %>%
-          dplyr::select(-c(.data$X1, .data$x1, .data$x2, .data$x3, .data$x4, .data$x5, .data$x6, .data$x7, .data$formal_charge, .data$site_occupancy, .data$entity_id, .data$pdb_model_number)) %>%
+          dplyr::select(-c(
+            .data$X1,
+            .data$x1,
+            .data$x2,
+            .data$x3,
+            .data$x4,
+            .data$x5,
+            .data$x6,
+            .data$x7,
+            .data$formal_charge,
+            .data$site_occupancy,
+            .data$entity_id,
+            .data$pdb_model_number
+          )) %>%
           dplyr::mutate(
             label_id = as.numeric(.data$label_id),
             label_seq_id = as.numeric(.data$label_seq_id),
@@ -182,7 +260,10 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL, organism_name = NULL,
     names(batches) <- uniprot_ids
 
     if (show_progress == TRUE) {
-      pb <- progress::progress_bar$new(total = length(batches), format = "  Fetching AlphaFold predictions [:bar] :current/:total (:percent) :eta")
+      pb <- progress::progress_bar$new(
+        total = length(batches),
+        format = "  Fetching AlphaFold predictions [:bar] :current/:total (:percent) :eta"
+      )
     }
 
     query_result <- purrr::map(
@@ -190,7 +271,13 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL, organism_name = NULL,
       .f = ~ {
         # query information from database
         if (!is.null(batches)) {
-          query <- try_query(.x, type = "text/tab-separated-values", col_names = FALSE, quote = "", show_col_types = FALSE, progress = FALSE)
+          query <- try_query(.x,
+            type = "text/tab-separated-values",
+            col_names = FALSE,
+            quote = "",
+            show_col_types = FALSE,
+            progress = FALSE
+          )
         }
         if (show_progress == TRUE & "tbl" %in% class(query)) {
           pb$tick()
@@ -206,9 +293,48 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL, organism_name = NULL,
             dplyr::mutate(X2 = stringr::str_replace_all(X1, pattern = "\\s+", replacement = " ")) %>%
             tidyr::separate(X2,
               sep = " ",
-              into = c("x1", "label_id", "type_symbol", "label_atom_id", "x2", "label_comp_id", "label_asym_id", "entity_id", "label_seq_id", "x3", "x", "y", "z", "site_occupancy", "prediction_score", "formal_charge", "auth_seq_id", "auth_comp_id", "auth_asym_id", "x4", "pdb_model_number", "uniprot_id", "x5", "x6", "x7")
+              into = c(
+                "x1",
+                "label_id",
+                "type_symbol",
+                "label_atom_id",
+                "x2",
+                "label_comp_id",
+                "label_asym_id",
+                "entity_id",
+                "label_seq_id",
+                "x3",
+                "x",
+                "y",
+                "z",
+                "site_occupancy",
+                "prediction_score",
+                "formal_charge",
+                "auth_seq_id",
+                "auth_comp_id",
+                "auth_asym_id",
+                "x4",
+                "pdb_model_number",
+                "uniprot_id",
+                "x5",
+                "x6",
+                "x7"
+              )
             ) %>%
-            dplyr::select(-c(.data$X1, .data$x1, .data$x2, .data$x3, .data$x4, .data$x5, .data$x6, .data$x7, .data$formal_charge, .data$site_occupancy, .data$entity_id, .data$pdb_model_number)) %>%
+            dplyr::select(-c(
+              .data$X1,
+              .data$x1,
+              .data$x2,
+              .data$x3,
+              .data$x4,
+              .data$x5,
+              .data$x6,
+              .data$x7,
+              .data$formal_charge,
+              .data$site_occupancy,
+              .data$entity_id,
+              .data$pdb_model_number
+            )) %>%
             dplyr::mutate(
               label_id = as.numeric(.data$label_id),
               label_seq_id = as.numeric(.data$label_seq_id),

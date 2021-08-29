@@ -2,20 +2,29 @@
 #'
 #' Plots a principal component analysis based on peptide or precursor intensities.
 #'
-#' @param data a data frame containing  sample names, peptide or precursor identifiers, corresponding intensities and a condition column indicating e.g. the treatment.
-#' @param sample the column in the data data frame containing the sample name.
-#' @param grouping the column in the data data frame containing either precursor or peptide identifiers.
-#' @param intensity the column in the data data frame containing containing the corresponding intensity values for each peptide or precursor.
-#' @param condition the column in the data data frame indicating the treatment or condition for each sample.
-#' @param components character vector indicating the two components that should be displayed in the plot. By default these are PC1 and
-#' PC2. You can provide these using a character vector of the form c("PC1", "PC2").
-#' @param digestion optional column indicating the mode of digestion (limited proteolysis or tryptic digest).
-#' @param plot_style character vector specifying what plot should be returned. If `plot_style = "pca"` is selected the two PCA
-#' components supplied with the `components` argument are plottet against each other. This is the default. `plot_style = "scree"` returns
-#' a scree plot that displays the variance explained by each principal component in percent. The scree is useful for checking if any other
-#' than the default first two components should be plotted.
+#' @param data a data frame that contains sample names, peptide or precursor identifiers,
+#' corresponding intensities and a condition column indicating e.g. the treatment.
+#' @param sample a character column in the \code{data} data frame that contains the sample name.
+#' @param grouping a character column in the \code{data} data frame that contains either precursor
+#' or peptide identifiers.
+#' @param intensity a numeric column in the \code{data} data frame that contains the corresponding
+#' intensity values for each peptide or precursor.
+#' @param condition a column in the \code{data} data frame that contains condition information
+#' (e.g. "treated" and "control").
+#' @param components a character vector indicating the two components that should be displayed in
+#' the plot. By default these are PC1 and PC2. You can provide these using a character vector of
+#' the form c("PC1", "PC2").
+#' @param digestion optional, a character column in the \code{data} data frame that indicates the
+#' mode of digestion (limited proteolysis or tryptic digest). Alternatively, any other variable
+#' by which the data should be split can be provided.
+#' @param plot_style a character value that specifies what plot should be returned. If
+#' `plot_style = "pca"` is selected the two PCA components supplied with the `components` argument
+#' are plottet against each other. This is the default. `plot_style = "scree"` returns a scree
+#' plot that displays the variance explained by each principal component in percent. The scree is
+#' useful for checking if any other than the default first two components should be plotted.
 #'
-#' @return A plotted principal component analysis showing PC1 and PC2
+#' @return A principal component analysis plot showing PC1 and PC2. If `plot_style = "scree"`, a
+#' scree plot for all dimensions is returned.
 #' @import dplyr
 #' @import ggplot2
 #' @import tidyr
@@ -28,20 +37,43 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' set.seed(123) # Makes example reproducible
+#'
+#' # Create example data
+#' data <- create_synthetic_data(
+#'   n_proteins = 100,
+#'   frac_change = 0.05,
+#'   n_replicates = 3,
+#'   n_conditions = 2,
+#' )
+#'
+#' # Plot scree plot
 #' qc_pca(
-#'   data,
-#'   sample = r_file_name,
-#'   grouping = eg_precursor_id,
-#'   intensity = normalised_intensity_log2,
-#'   condition = r_condition,
-#'   components = c("PC2", "PC3"),
+#'   data = data,
+#'   sample = sample,
+#'   grouping = peptide,
+#'   intensity = peptide_intensity_missing,
+#'   condition = condition,
 #'   plot_style = "scree"
 #' )
-#' }
 #'
+#' # Plot principal components
+#' qc_pca(
+#'   data = data,
+#'   sample = sample,
+#'   grouping = peptide,
+#'   intensity = peptide_intensity_missing,
+#'   condition = condition
+#' )
 qc_pca <-
-  function(data, sample, grouping, intensity, condition, components = c("PC1", "PC2"), digestion = NULL, plot_style = "pca") {
+  function(data,
+           sample,
+           grouping,
+           intensity,
+           condition,
+           components = c("PC1", "PC2"),
+           digestion = NULL,
+           plot_style = "pca") {
     protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
     utils::data("protti_colours", envir = environment()) # then overwrite it with real data
     . <- NULL
@@ -71,15 +103,32 @@ qc_pca <-
         percent_variance = (pca$sdev^2 / sum(pca$sdev^2) * 100),
         dimension = row.names(.)
       ) %>%
-      dplyr::mutate(dimension = factor(.data$dimension, levels = unique(stringr::str_sort(.data$dimension, numeric = TRUE))))
+      dplyr::mutate(dimension = factor(.data$dimension,
+        levels = unique(stringr::str_sort(.data$dimension, numeric = TRUE))
+      ))
     if (plot_style == "pca") {
       plot <- pca_df %>%
-        ggplot2::ggplot(aes(x = !!rlang::sym(components[1]), y = !!rlang::sym(components[2]), col = as.character({{ condition }}), shape = {{ digestion }})) +
+        ggplot2::ggplot(aes(
+          x = !!rlang::sym(components[1]),
+          y = !!rlang::sym(components[2]),
+          col = as.character({{ condition }}),
+          shape = {{ digestion }}
+        )) +
         ggplot2::geom_point(size = 3) +
         ggplot2::labs(
           title = "Principal component analysis",
-          x = paste(components[1], "(", round(pca_sdev_df$percent_variance[pca_sdev_df$dimension == stringr::str_extract(components[1], "\\d")], 1), "%)"),
-          y = paste(components[2], "(", round(pca_sdev_df$percent_variance[pca_sdev_df$dimension == stringr::str_extract(components[2], "\\d")], 1), "%)"),
+          x = paste(
+            components[1],
+            "(",
+            round(pca_sdev_df$percent_variance[pca_sdev_df$dimension == stringr::str_extract(components[1], "\\d")], 1),
+            "%)"
+          ),
+          y = paste(
+            components[2],
+            "(",
+            round(pca_sdev_df$percent_variance[pca_sdev_df$dimension == stringr::str_extract(components[2], "\\d")], 1),
+            "%)"
+          ),
           color = "Condition"
         ) +
         ggrepel::geom_text_repel(aes(label = paste(
@@ -121,7 +170,10 @@ qc_pca <-
         vjust = -0.6,
         hjust = -0.1
         ) +
-        ggplot2::scale_y_continuous(limits = NULL, expand = ggplot2::expansion(mult = c(0.05, 0.08))) +
+        ggplot2::scale_y_continuous(
+          limits = NULL,
+          expand = ggplot2::expansion(mult = c(0.05, 0.08))
+        ) +
         ggplot2::theme_bw() +
         ggplot2::theme(
           plot.title = ggplot2::element_text(size = 20),

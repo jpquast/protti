@@ -7,14 +7,18 @@
 fetch_mobidb(organism_id, protein_ids)
 }
 \arguments{
-\item{organism_id}{An NCBI taxonomy identifier of an organism (TaxId). Possible inputs inlude only: "9606" (Human), "559292" (Yeast),
-"83333" (E. coli), "10090" (Mouse), "9913" (Bovine), "7227" (Fruit fly).}
+\item{organism_id}{a character value that specifies the NCBI taxonomy identifier of an organism
+(TaxId). Possible inputs inlude only: "9606" (Human), "559292" (Yeast), "83333" (E. coli),
+"10090" (Mouse), "9913" (Bovine), "7227" (Fruit fly).}
 
-\item{protein_ids}{A character vector of UniProt identifiers. These need to be proteins from the organism provided in \code{organism_id}.}
+\item{protein_ids}{a character vector of UniProt identifiers. These need to be proteins from
+the organism provided in \code{organism_id}.}
 }
 \value{
-A data frame that contains start and end positions for disordered regions for each protein provided. The \code{feature} column
-contains information on the source of this annotation. More information on the source can be found \href{https://mobidb.bio.unipd.it/about/mobidb}{here}.
+A data frame that contains start and end positions for disordered regions for each
+protein provided. The \code{feature} column contains information on the source of this
+annotation. More information on the source can be found
+\href{https://mobidb.bio.unipd.it/about/mobidb}{here}.
 }
 \description{
 Fetches information about disordered protein regions from MobiDB.

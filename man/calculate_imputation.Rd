@@ -15,32 +15,34 @@ calculate_imputation(
 )
 }
 \arguments{
-\item{min}{minimal intensity value of the precursor/peptide. Is only required if
-\code{method = "ludovic"} and \code{missingness = "MNAR"}.}
+\item{min}{a numeric value specifying the minimal intensity value of the precursor/peptide.
+Is only required if \code{method = "ludovic"} and \code{missingness = "MNAR"}.}
 
-\item{noise}{noise value for the precursor/peptide. Is only required if \code{method = "noise"}
-and \code{missingness = "MNAR"}.}
+\item{noise}{a numeric value specifying a noise value for the precursor/peptide. Is only
+required if \code{method = "noise"} and \code{missingness = "MNAR"}.}
 
-\item{mean}{mean intensity value of the condition with missing values for a given
-precursor/peptide. Is only required if \code{missingness = "MAR"}.}
+\item{mean}{a numeric value specifying the mean intensity value of the condition with missing
+values for a given precursor/peptide. Is only required if \code{missingness = "MAR"}.}
 
-\item{sd}{mean of the standard deviation of all conditions for a given precursor/peptide.}
+\item{sd}{a numeric value specifying the mean of the standard deviation of all conditions for
+a given precursor/peptide.}
 
-\item{missingness}{the missingness type of the data determines how values for imputation are
-sampled. This can be \code{"MAR"} or \code{"MNAR"}.}
+\item{missingness}{a character value specifying the missingness type of the data determines
+how values for imputation are sampled. This can be \code{"MAR"} or \code{"MNAR"}.}
 
-\item{method}{the method to be used for imputation. For \code{method = "ludovic"}, MNAR
-missingness is sampled around a value that is three lower (log2) than the lowest intensity
-value recorded for the precursor/peptide. For \code{method = "noise"}, MNAR missingness is
-sampled around the noise value for the precursor/peptide.}
+\item{method}{a character value specifying the method to be used for imputation. For
+\code{method = "ludovic"}, MNAR missingness is sampled around a value that is three lower
+(log2) than the lowest intensity value recorded for the precursor/peptide. For
+\code{method = "noise"}, MNAR missingness is sampled around the noise value for the
+precursor/peptide.}
 
-\item{skip_log2_transform_error}{logical, if FALSE a check is performed to validate that
+\item{skip_log2_transform_error}{a logical value, if FALSE a check is performed to validate that
 input values are log2 transformed. If input values are > 40 the test is failed and an error is
-thrown.}
+returned.}
 }
 \value{
-A vector of values for the imputation of missing data. The length of the vector depends
-on the number of replicates.
+A value sampled from a normal distribution with the input parameters. Method specifics
+are applied to input parameters prior to sampling.
 }
 \description{
 \code{calculate_imputation} is a helper function that is used in the \code{impute} function.

@@ -15,40 +15,82 @@ calculate_kegg_enrichment(
 )
 }
 \arguments{
-\item{data}{A data frame that contains at least the input variables.}
+\item{data}{a data frame that contains at least the input variables.}
 
-\item{protein_id}{The name of the column containing the protein accession numbers.}
+\item{protein_id}{a character column in the \code{data} data frame that contains the protein
+accession numbers.}
 
-\item{is_significant}{The name of the column containing a logical indicating if the corresponding protein has a significantly changing peptide.
-The input data frame may contain peptide level information with significance information. The function is able to extract protein level information from this.}
+\item{is_significant}{a logical column in the \code{data} data frame that indicates if the
+corresponding protein has a significantly changing peptide. The input data frame may contain
+peptide level information with significance information. The function is able to extract
+protein level information from this.}
 
-\item{pathway_id}{The name of the column containing KEGG pathway identifiers. These can be obtained from KEGG using \code{fetch_kegg}.}
+\item{pathway_id}{a character column in the \code{data} data frame that contains KEGG pathway
+identifiers. These can be obtained from KEGG using \code{fetch_kegg}.}
 
-\item{pathway_name}{The name of the column containing KEGG pathway names. These can be obtained from KEGG using \code{fetch_kegg}.}
+\item{pathway_name}{a character column in the \code{data} data frame that contains KEGG pathway
+names. These can be obtained from KEGG using \code{fetch_kegg}.}
 
-\item{plot}{A logical indicating whether the result should be plotted or returned as a table.}
+\item{plot}{a logical value indicating whether the result should be plotted or returned as a
+table.}
 
-\item{plot_cutoff}{A character vector indicating if the plot should contain the top 10 most significant proteins (p-value or adjusted p-value),
-or if a significance cutoff should be used to determine the number of GO terms in the plot. This information should be provided with the
-type first followed by the threshold separated by a space. Example are \code{plot_cutoff = "adj_pval top10"}, \code{plot_cutoff = "pval 0.05"}
-or \code{plot_cutoff = "adj_pval 0.01"}. The threshold can be chosen freely.}
+\item{plot_cutoff}{a character value indicating if the plot should contain the top 10 most
+significant proteins (p-value or adjusted p-value), or if a significance cutoff should be used
+to determine the number of GO terms in the plot. This information should be provided with the
+type first followed by the threshold separated by a space. Example are
+\code{plot_cutoff = "adj_pval top10"}, \code{plot_cutoff = "pval 0.05"} or
+\code{plot_cutoff = "adj_pval 0.01"}. The threshold can be chosen freely.}
 }
 \value{
-A bar plot displaying negative log10 adjusted p-values for the top 10 enriched pathways. Bars are coloured according to the direction of the
-enrichment. If \code{plot = FALSE}, a data frame is returned.
+A bar plot displaying negative log10 adjusted p-values for the top 10 enriched pathways.
+Bars are coloured according to the direction of the enrichment. If \code{plot = FALSE}, a data
+frame is returned.
 }
 \description{
-Analyses enrichment of KEGG pathways associated with proteins in the fraction of significant proteins compared to all detected proteins. A Fisher's
-exact test is performed to test significance of enrichment.
+Analyses enrichment of KEGG pathways associated with proteins in the fraction of significant
+proteins compared to all detected proteins. A Fisher's exact test is performed to test
+significance of enrichment.
 }
 \examples{
-\dontrun{
+\donttest{
+# Load libraries
+library(dplyr)
+
+set.seed(123) # Makes example reproducible
+
+# Create example data
+data <- fetch_kegg(species = "eco") \%>\%
+  group_by(uniprot_id) \%>\%
+  mutate(significant = rep(sample(
+    x = c(TRUE, FALSE),
+    size = 1,
+    replace = TRUE,
+    prob = c(0.2, 0.8)
+  ),
+  n = n()
+  ))
+
+# Plot KEGG enrichment
 calculate_kegg_enrichment(
   data,
-  protein_id = pg_protein_accessions,
+  protein_id = uniprot_id,
   is_significant = significant,
   pathway_id = pathway_id,
-  pathway_name = pathway_name
+  pathway_name = pathway_name,
+  plot = TRUE,
+  plot_cutoff = "pval 0.05"
 )
+
+# Calculate KEGG enrichment
+kegg <- calculate_kegg_enrichment(
+  data,
+  protein_id = uniprot_id,
+  is_significant = significant,
+  pathway_id = pathway_id,
+  pathway_name = pathway_name,
+  plot = FALSE
+)
+
+head(kegg, n = 10)
 }
 }

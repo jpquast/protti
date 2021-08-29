@@ -16,47 +16,88 @@ analyse_functional_network(
 )
 }
 \arguments{
-\item{data}{A data frame that contains significantly changing proteins (STRINGdb is only able to plot
-400 proteins at a time so do not provide more for network plots). Information about treatment binding can be provided and will be displayed as colorful halos around
-the proteins in the network.}
+\item{data}{a data frame that contains significantly changing proteins (STRINGdb is only able
+to plot 400 proteins at a time so do not provide more for network plots). Information about
+treatment binding can be provided and will be displayed as colorful halos around the proteins
+in the network.}
 
-\item{protein_id}{The name of the column containing the protein accession numbers.}
+\item{protein_id}{a character column in the \code{data} data frame that contains the protein
+accession numbers.}
 
-\item{string_id}{The name of the column containing STRING database identifiers. These can be obtained from UniProt.}
+\item{string_id}{a character column in the \code{data} data frame that contains STRING database
+identifiers. These can be obtained from UniProt.}
 
-\item{organism_id}{Numeric organism ID (NCBI taxon-ID). This can be obtained from \href{https://string-db.org/cgi/input?sessionId=bpvps5GS2As6&input_page_show_search=on}{here}.
+\item{organism_id}{a numeric value specifying an organism ID (NCBI taxon-ID). This can be
+obtained from
+\href{https://string-db.org/cgi/input?sessionId=bpvps5GS2As6&input_page_show_search=on}{here}.
 H. sapiens: 9606, S. cerevisiae: 4932, E. coli: 511145.}
 
-\item{score_threshold}{The interaction score based on \href{https://string-db.org/cgi/info?sessionId=bBP5N4cIf0PA&footer_active_subpage=scores}{STRING}
-has to be between 0 and 1000. A score closer to 1000 is related to a higher confidence for the interaction. The default value is 900.}
+\item{score_threshold}{a numeric value specifying the interaction score that based on
+\href{https://string-db.org/cgi/info?sessionId=bBP5N4cIf0PA&footer_active_subpage=scores}{STRING}
+has to be between 0 and 1000. A score closer to 1000 is related to a higher confidence for the
+interaction. The default value is 900.}
 
-\item{binds_treatment}{The name of the column containing a logical indicating if the corresponding
-protein binds to the treatment. This information can be obtained from different databases, e.g UniProt.}
+\item{binds_treatment}{a logical column in the \code{data} data frame that indicates if the
+corresponding protein binds to the treatment. This information can be obtained from different
+databases, e.g UniProt.}
 
-\item{halo_color}{Optional, A character vector with a color hex-code. This is the color of the halo of proteins that bind the treatment.}
+\item{halo_color}{optional, character value with a color hex-code. This is the color of the
+halo of proteins that bind the treatment.}
 
-\item{plot}{A logical indicating whether the result should be plotted or returned as a table.}
+\item{plot}{a logical that indicates whether the result should be plotted or returned as a table.}
 }
 \value{
-A network plot displaying interactions of the provided proteins. If \code{binds_treatment} was provided halos around
-the proteins show which proteins interact with the treatment. If \code{plot = FALSE} a table with interaction information is
-returned.
+A network plot displaying interactions of the provided proteins. If
+\code{binds_treatment} was provided halos around the proteins show which proteins interact with
+the treatment. If \code{plot = FALSE} a table with interaction information is returned.
 }
 \description{
-The STRING database provides a resource for known and predicted protein-protein interactions. The type of
-interactions include direct (physical) and indirect (functional) interactions. Through the R package
-\code{STRINGdb} this resource if provided to R users. This function provides a convenient wrapper for
-\code{STRINGdb} functions that allow an easy use within the protti pipeline.
+The STRING database provides a resource for known and predicted protein-protein interactions.
+The type of interactions include direct (physical) and indirect (functional) interactions.
+Through the R package \code{STRINGdb} this resource if provided to R users. This function
+provides a convenient wrapper for \code{STRINGdb} functions that allow an easy use within the
+protti pipeline.
 }
 \examples{
-\dontrun{
-analyse_functional_network(
+\donttest{
+# Create example data
+data <- data.frame(
+  uniprot_id = c(
+    "P0A7R1",
+    "P02359",
+    "P60624",
+    "P0A7M2",
+    "P0A7X3",
+    "P0AGD3"
+  ),
+  database_string = c(
+    "511145.b4203;",
+    "511145.b3341;",
+    "511145.b3309;",
+    "511145.b3637;",
+    "511145.b3230;",
+    "511145.b1656;"
+  ),
+  is_known = c(
+    TRUE,
+    TRUE,
+    TRUE,
+    TRUE,
+    TRUE,
+    FALSE
+  )
+)
+
+# Perform network analysis
+network <- analyse_functional_network(
   data,
-  protein_id = pg_protein_accessions,
+  protein_id = uniprot_id,
   string_id = database_string,
   organism_id = 511145,
   binds_treatment = is_known,
   plot = TRUE
 )
+
+network
 }
 }

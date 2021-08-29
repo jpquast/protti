@@ -18,7 +18,7 @@
  
 * `diff_abundance()` has been renamed to `calculate_diff_abundance()`. 
 * `peptide_type()` has been renamed to `assign_peptide_type()`. 
-* `median_normalisation()` has been renamed to `normalise()`. The normalisation method is now defined through an argument called method.
+* `median_normalisation()` has been renamed to `normalise()`. The normalisation method is now defined through an argument called `method`.
 * `sequence_coverage()` has been renamed to `calculate_sequence_coverage()`.
 * `network_analysis()` has been renamed to `analyse_functional_network()`. 
 * `treatment_enrichment()` has been renamed to `calculate_treatment_enrichment()`.
@@ -34,11 +34,13 @@
 
 * `calculate_diff_abundance()` had a bug that could not correctly deal with condition names containing spaces when a moderated t-test or the proDA algorithm was used. This has been fixed.
 * `scale_protti()` can now deal with the case that a vector of only equal numbers (e.g. `c(1, 1, 1)`) is provided. In this case it always scales all values to 1 for `method = "01"` and to 0 for `method = "center"`.
+* `pval_distribution_plot()` had a bug centered each bin around values, which meant that the first and last bin were smaller. This has been fixed.
 * The `header` argument was removed from `try_query()`. It can now be directly supplied to the elipsis (...) of this function depending on which read method is used. For `type = "text/tab-separated-values"` the argument `col_names` of the corresponding `readr` function `read_tsv()` can be supplied.
 * `split_metal_name()` removes more non-metal specific words that lead to false identifications. Also many metal names containing a "-" are now considered. A bug was resolved that did not deal with iron-sulfur cluster information correctly due to a wrong variable name.
 * `extract_metal_binders()` now also correctly identifies monovalent inorganic cations as metals.
 * Improve documentation of "Dose-Response Data Analysis Workflow" vignette. Added code for the creation of the `passed_filter` example column that is used in functions afterwards. 
-* Small fixes in some examples.
+* Examples for most functions have been added.
+* Function documentation and code has been formatted to fit mostly within 100 characters line width.
 
 # protti 0.1.1
 

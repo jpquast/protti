@@ -7,23 +7,26 @@
 ttest_protti(mean1, mean2, sd1, sd2, n1, n2, log_values = TRUE)
 }
 \arguments{
-\item{mean1}{Vector containing the means of group1.}
+\item{mean1}{a numeric vector that contains the means of group1.}
 
-\item{mean2}{Vector containing the means of group2.}
+\item{mean2}{a numeric vector that contains the means of group2.}
 
-\item{sd1}{Vector containing the standard deviations of group1.}
+\item{sd1}{a numeric vector that contains the standard deviations of group1.}
 
-\item{sd2}{Vector containing the standard deviations of group2.}
+\item{sd2}{a numeric vector that contains the standard deviations of group2.}
 
-\item{n1}{Vector containing the number of replicates used for the calculation of each mean and standard deviation of group1.}
+\item{n1}{a numeric vector that contains the number of replicates used for the calculation of
+each mean and standard deviation of group1.}
 
-\item{n2}{Vector containing the number of replicates used for the calculation of each mean and standard deviation of group2.}
+\item{n2}{a numeric vector that contains the number of replicates used for the calculation of
+each mean and standard deviation of group2.}
 
-\item{log_values}{Logical indicating if values are log transformed. This determines how fold changes are calculated.
-Default is \code{log_values = TRUE}.}
+\item{log_values}{a logical value that indicates if values are log transformed. This determines
+how fold changes are calculated. Default is \code{log_values = TRUE}.}
 }
 \value{
-A data frame that contains the calculated differences of means, standard error, t statistic and p-values.
+A data frame that contains the calculated differences of means, standard error, t
+statistic and p-values.
 }
 \description{
 Performs a Welch's t-test and calculates p-values between two groups.

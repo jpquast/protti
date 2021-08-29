@@ -2,28 +2,40 @@
 #'
 #' Performs an ANOVA statistical test
 #'
-#' @param data A data frame containing at least the input variables.
-#' @param grouping The column in the data frame containing precursor or peptide identifiers.
-#' @param condition The column in the data frame containing the conditions.
-#' @param mean_ratio The column in the data frame containing mean intensities or mean intensity ratios.
-#' @param sd The column in the data frame containing the standard deviation corresponding to the mean.
-#' @param n The column in the data frame containing the number of replicates for which the corresponding mean was calculated.
+#' @param data a data frame containing at least the input variables.
+#' @param grouping a character column in the \code{data} data frame that contains precursor or
+#' peptide identifiers.
+#' @param condition a character or numeric column in the \code{data} data frame that contains the
+#' conditions.
+#' @param mean_ratio a numeric column in the \code{data} data frame that contains mean intensities
+#' or mean intensity ratios.
+#' @param sd a numeric column in the \code{data} data frame that contains the standard deviation
+#' corresponding to the mean.
+#' @param n a numeric column in the \code{data} data frame that contains the number of replicates
+#' for which the corresponding mean was calculated.
 #'
-#' @return A data frame that contains the within group error (\code{ms_group}) and the between group error (\code{ms_error}), f statistic and p-values.
+#' @return a data frame that contains the within group error (\code{ms_group}) and the between
+#' group error (\code{ms_error}), f statistic and p-values.
 #' @import dplyr
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' data <- data.frame(
+#'   precursor = c("A", "A", "A", "B", "B", "B"),
+#'   condition = c("C1", "C2", "C3", "C1", "C2", "C3"),
+#'   mean = c(10, 12, 20, 11, 12, 8),
+#'   sd = c(2, 1, 1.5, 1, 2, 4),
+#'   n = c(4, 4, 4, 4, 4, 4)
+#' )
+#'
 #' anova_protti(
 #'   data,
-#'   grouping = eg_precursor_id,
-#'   condition = r_condition,
+#'   grouping = precursor,
+#'   condition = condition,
 #'   mean = mean,
 #'   sd = sd,
 #'   n = n
 #' )
-#' }
 anova_protti <- function(data, grouping, condition, mean_ratio, sd, n) {
   result <- data %>%
     dplyr::distinct({{ grouping }}, {{ condition }}, {{ mean_ratio }}, {{ sd }}, {{ n }}) %>%

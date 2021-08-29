@@ -39,10 +39,12 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       dplyr::summarise(median = median(normalised_intensity_log2, na.rm = TRUE), .groups = "drop")
 
     all_equal_non_normalised <- range(non_normalised$median) / mean(non_normalised$median)
-    expect_false(isTRUE(all.equal(all_equal_non_normalised[1], all_equal_non_normalised[2]))) # test that medians are unequal before normalizing
+    # test that medians are unequal before normalizing
+    expect_false(isTRUE(all.equal(all_equal_non_normalised[1], all_equal_non_normalised[2])))
 
     all_equal_normalised <- range(normalised$median) / mean(normalised$median)
-    expect_equal(all_equal_normalised[1], all_equal_normalised[2]) # test that medians are equal after normalizing
+    # test that medians are equal after normalizing
+    expect_equal(all_equal_normalised[1], all_equal_normalised[2])
 
     ## test drc data
     non_normalised_drc <- normalised_data_drc %>%
@@ -53,10 +55,12 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       dplyr::summarise(median = median(normalised_intensity_log2, na.rm = TRUE), .groups = "drop")
 
     all_equal_non_normalised_drc <- range(non_normalised_drc$median) / mean(non_normalised_drc$median)
-    expect_false(isTRUE(all.equal(all_equal_non_normalised_drc[1], all_equal_non_normalised_drc[2]))) # test that medians are unequal before normalizing
+    # test that medians are unequal before normalizing
+    expect_false(isTRUE(all.equal(all_equal_non_normalised_drc[1], all_equal_non_normalised_drc[2])))
 
     all_equal_normalised_drc <- range(normalised_drc$median) / mean(normalised_drc$median)
-    expect_equal(all_equal_normalised_drc[1], all_equal_normalised_drc[2]) # test that medians are equal after normalizing
+    # test that medians are equal after normalizing
+    expect_equal(all_equal_normalised_drc[1], all_equal_normalised_drc[2])
   })
 }
 
@@ -75,10 +79,12 @@ test_that("normalise works", {
     dplyr::summarise(median = median(normalised_intensity_log2, na.rm = TRUE), .groups = "drop")
 
   all_equal_non_normalised <- range(non_normalised$median) / mean(non_normalised$median)
-  expect_false(isTRUE(all.equal(all_equal_non_normalised[1], all_equal_non_normalised[2]))) # test that medians are unequal before normalizing
+  # test that medians are unequal before normalizing
+  expect_false(isTRUE(all.equal(all_equal_non_normalised[1], all_equal_non_normalised[2])))
 
   all_equal_normalised <- range(normalised$median) / mean(normalised$median)
-  expect_equal(all_equal_normalised[1], all_equal_normalised[2]) # test that medians are equal after normalizing
+  # test that medians are equal after normalizing
+  expect_equal(all_equal_normalised[1], all_equal_normalised[2])
 
   if (Sys.getenv("TEST_PROTTI") == "true") {
     ## test drc data
@@ -90,15 +96,24 @@ test_that("normalise works", {
       dplyr::summarise(median = median(normalised_intensity_log2, na.rm = TRUE), .groups = "drop")
 
     all_equal_non_normalised_drc <- range(non_normalised_drc$median) / mean(non_normalised_drc$median)
-    expect_false(isTRUE(all.equal(all_equal_non_normalised_drc[1], all_equal_non_normalised_drc[2]))) # test that medians are unequal before normalizing
+    # test that medians are unequal before normalizing
+    expect_false(isTRUE(all.equal(all_equal_non_normalised_drc[1], all_equal_non_normalised_drc[2])))
 
     all_equal_normalised_drc <- range(normalised_drc$median) / mean(normalised_drc$median)
-    expect_equal(all_equal_normalised_drc[1], all_equal_normalised_drc[2]) # test that medians are equal after normalizing
+    # test that medians are equal after normalizing
+    expect_equal(all_equal_normalised_drc[1], all_equal_normalised_drc[2])
   }
 })
 
 missing_data <- normalised_data %>%
-  assign_missingness(sample = sample, condition = condition, grouping = peptide, intensity = normalised_intensity_log2, ref_condition = "condition_1", retain_columns = c(protein))
+  assign_missingness(
+    sample = sample,
+    condition = condition,
+    grouping = peptide,
+    intensity = normalised_intensity_log2,
+    ref_condition = "condition_1",
+    retain_columns = c(protein)
+  )
 
 test_that("assign_missingness works", {
   # not testing noise argument. Also no change of default values for completeness_MAR and completeness_MNAR
@@ -113,8 +128,18 @@ test_that("assign_missingness works", {
 
 if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("impute works", {
-    # only test method = "ludovic" and not method = "noise". Does not test switching off log2 transformation error.
-    imputed_data <- impute(missing_data, sample = sample, grouping = peptide, intensity = normalised_intensity_log2, condition = condition, comparison = comparison, missingness = missingness, method = "ludovic", retain_columns = protein)
+    # only test method = "ludovic" and not method = "noise".
+    # Does not test switching off log2 transformation error.
+    imputed_data <- impute(missing_data,
+      sample = sample,
+      grouping = peptide,
+      intensity_log2 = normalised_intensity_log2,
+      condition = condition,
+      comparison = comparison,
+      missingness = missingness,
+      method = "ludovic",
+      retain_columns = protein
+    )
 
     expect_is(imputed_data, "data.frame")
     expect_equal(sum(imputed_data$imputed), 115)
@@ -124,8 +149,26 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   })
 }
 
-protein_abundance <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide, peptide = peptide, intensity_log2 = normalised_intensity_log2, method = "iq", retain_columns = condition)
-protein_abundance_all <- calculate_protein_abundance(data = missing_data, sample = sample, protein_id = protein, precursor = peptide, peptide = peptide, intensity_log2 = normalised_intensity_log2, method = "sum", for_plot = TRUE)
+protein_abundance <- calculate_protein_abundance(
+  data = missing_data,
+  sample = sample,
+  protein_id = protein,
+  precursor = peptide,
+  peptide = peptide,
+  intensity_log2 = normalised_intensity_log2,
+  method = "iq",
+  retain_columns = condition
+)
+protein_abundance_all <- calculate_protein_abundance(
+  data = missing_data,
+  sample = sample,
+  protein_id = protein,
+  precursor = peptide,
+  peptide = peptide,
+  intensity_log2 = normalised_intensity_log2,
+  method = "sum",
+  for_plot = TRUE
+)
 
 test_that("calculate_protein_abundance works", {
   arranged_data <- protein_abundance %>%
@@ -209,7 +252,17 @@ test_that("peptide_profile_plot works", {
   }
 })
 
-diff <- calculate_diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, method = "t-test", retain_columns = c(protein))
+diff <- calculate_diff_abundance(
+  data = missing_data,
+  sample = sample,
+  condition = condition,
+  grouping = peptide,
+  intensity_log2 = normalised_intensity_log2,
+  missingness = missingness,
+  comparison = comparison,
+  method = "t-test",
+  retain_columns = c(protein)
+)
 
 test_that("calculate_diff_abundance works", {
   expect_is(diff, "data.frame")
@@ -221,11 +274,45 @@ test_that("calculate_diff_abundance works", {
     data_mean_sd <- missing_data %>%
       tidyr::drop_na() %>%
       dplyr::group_by(condition, peptide, protein) %>%
-      dplyr::summarise(mean = mean(normalised_intensity_log2, na.rm = TRUE), sd = sd(normalised_intensity_log2, na.rm = TRUE), n = dplyr::n(), .groups = "drop")
+      dplyr::summarise(
+        mean = mean(normalised_intensity_log2, na.rm = TRUE),
+        sd = sd(normalised_intensity_log2, na.rm = TRUE),
+        n = dplyr::n(), .groups = "drop"
+      )
 
-    diff_mean_sd <- calculate_diff_abundance(data = data_mean_sd, condition = condition, grouping = peptide, mean = mean, sd = sd, n_samples = n, ref_condition = "condition_1", method = "t-test_mean_sd", retain_columns = c(protein))
-    diff_moderated <- calculate_diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, method = "moderated_t-test", retain_columns = c(protein))
-    diff_proDA <- calculate_diff_abundance(data = missing_data, sample = sample, condition = condition, grouping = peptide, intensity_log2 = normalised_intensity_log2, missingness = missingness, comparison = comparison, method = "proDA", retain_columns = c(protein))
+    diff_mean_sd <- calculate_diff_abundance(
+      data = data_mean_sd,
+      condition = condition,
+      grouping = peptide,
+      mean = mean,
+      sd = sd,
+      n_samples = n,
+      ref_condition = "condition_1",
+      method = "t-test_mean_sd",
+      retain_columns = c(protein)
+    )
+    diff_moderated <- calculate_diff_abundance(
+      data = missing_data,
+      sample = sample,
+      condition = condition,
+      grouping = peptide,
+      intensity_log2 = normalised_intensity_log2,
+      missingness = missingness,
+      comparison = comparison,
+      method = "moderated_t-test",
+      retain_columns = c(protein)
+    )
+    diff_proDA <- calculate_diff_abundance(
+      data = missing_data,
+      sample = sample,
+      condition = condition,
+      grouping = peptide,
+      intensity_log2 = normalised_intensity_log2,
+      missingness = missingness,
+      comparison = comparison,
+      method = "proDA",
+      retain_columns = c(protein)
+    )
 
     expect_is(diff_mean_sd, "data.frame")
     expect_is(diff_moderated, "data.frame")
@@ -265,7 +352,12 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     data_mean_sd <- missing_data %>%
       tidyr::drop_na() %>%
       dplyr::group_by(condition, peptide, protein) %>%
-      dplyr::summarise(mean = mean(normalised_intensity_log2, na.rm = TRUE), sd = sd(normalised_intensity_log2, na.rm = TRUE), n = dplyr::n(), .groups = "drop")
+      dplyr::summarise(
+        mean = mean(normalised_intensity_log2, na.rm = TRUE),
+        sd = sd(normalised_intensity_log2, na.rm = TRUE),
+        n = dplyr::n(),
+        .groups = "drop"
+      )
 
     rlang::with_options(lifecycle_verbosity = "warning", {
       expect_warning(diff_mean_sd_deprecated <- diff_abundance(
@@ -468,7 +560,15 @@ test_that("volcano_plot works", {
   expect_error(print(p_target), NA)
 })
 
-drc_fit <- fit_drc_4p(data = normalised_data_drc, sample = sample, grouping = peptide, response = normalised_intensity_log2, dose = concentration, log_logarithmic = TRUE, retain_columns = c(protein))
+drc_fit <- fit_drc_4p(
+  data = normalised_data_drc,
+  sample = sample,
+  grouping = peptide,
+  response = normalised_intensity_log2,
+  dose = concentration,
+  log_logarithmic = TRUE,
+  retain_columns = c(protein)
+)
 
 test_that("fit_drc_4p works", {
   # did not test the argument include_models = TRUE
@@ -545,7 +645,11 @@ test_that("filter_cv works", {
 
   normalised_data_filtered_cv_count <- normalised_data_filtered %>%
     dplyr::group_by(peptide, condition) %>%
-    dplyr::summarise(cv_count = sum((sd(2^peptide_intensity_missing, na.rm = TRUE) / mean(2^peptide_intensity_missing, na.rm = TRUE)) > 0.25), .groups = "drop") %>%
+    dplyr::summarise(
+      cv_count = sum((sd(2^peptide_intensity_missing, na.rm = TRUE) /
+        mean(2^peptide_intensity_missing, na.rm = TRUE)) > 0.25),
+      .groups = "drop"
+    ) %>%
     dplyr::filter(cv_count > 0)
 
   expect_is(normalised_data_filtered, "data.frame")
@@ -557,7 +661,11 @@ test_that("filter_cv works", {
 
   normalised_data_filtered_drc_cv_count <- normalised_data_drc_filtered %>%
     dplyr::group_by(peptide, condition) %>%
-    dplyr::summarise(cv_count = sum((sd(2^peptide_intensity_missing, na.rm = TRUE) / mean(2^peptide_intensity_missing, na.rm = TRUE)) > 0.25), .groups = "drop") %>%
+    dplyr::summarise(
+      cv_count = sum((sd(2^peptide_intensity_missing, na.rm = TRUE) /
+        mean(2^peptide_intensity_missing, na.rm = TRUE)) > 0.25),
+      .groups = "drop"
+    ) %>%
     dplyr::filter(cv_count > 0)
 
   expect_is(normalised_data_drc_filtered, "data.frame")
@@ -606,8 +714,8 @@ test_that("calculate_aa_scores works", {
     grouping = pep_stripped_sequence,
     diff = diff,
     adj_pval = adj_pval,
-    start = start,
-    end = end
+    start_position = start,
+    end_position = end
   )
 
   expect_is(aa_fingerprint, "data.frame")

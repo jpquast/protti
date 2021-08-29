@@ -9,9 +9,9 @@ normalise(data, sample, intensity_log2, method = "median")
 \arguments{
 \item{data}{a data frame containing at least sample names and intensity values.}
 
-\item{sample}{a column in the \code{data} data frame that contains the sample names.}
+\item{sample}{a character column in the \code{data} data frame that contains the sample names.}
 
-\item{intensity_log2}{a column in the \code{data} data frame that contains the log2 transformed
+\item{intensity_log2}{a numeric column in the \code{data} data frame that contains the log2 transformed
 intensity values to be normalised.}
 
 \item{method}{a character value specifying the method to be used for normalisation. Default

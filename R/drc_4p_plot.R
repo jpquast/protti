@@ -17,25 +17,39 @@ plot_drc_4p <- function(...) {
 }
 #' Plotting of four-parameter dose response curves
 #'
-#' Function for plotting four-parameter dose response curves for each group (precursor, peptide or protein), based on output from \code{fit_drc_4p} function.
+#' Function for plotting four-parameter dose response curves for each group (precursor, peptide or
+#' protein), based on output from \code{fit_drc_4p} function.
 #'
-#' @param data A data frame that is obtained by calling the \code{fit_drc_4p} function.
-#' @param grouping The name of the column containing precursor, peptide or protein identifiers.
-#' @param response The name of the column containing response values, eg. log2 transformed intensities.
-#' @param dose The name of the column containing dose values, eg. the treatment concentrations.
-#' @param targets A character vector that specifies the names of the precursors, peptides or proteins (depending on \code{grouping})
-#' that should be plotted. This can also be \code{"all"} if plots for all curve fits should be created.
-#' @param unit A character vector specifying the unit of the concentration.
-#' @param y_axis_name A character vector specifying the name of the y-axis of the plot.
-#' @param facet A logical indicating if plots should be summarised into facets of 20 plots. This is recommended for many plots.
-#' @param scales A character vector that specifies if the scales in faceted plots (if more than one target was provided) should be \code{"free"} or \code{"fixed"}.
-#' @param x_axis_scale_log10 A logical indicating if the x-axis scale should be log10 transformed.
-#' @param export A logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The
-#' name of the file can be chosen using the \code{export_name} argument. If only one target is selected and \code{export = TRUE},
+#' @param data a data frame that is obtained by calling the \code{fit_drc_4p} function.
+#' @param grouping a character column in the \code{data} data frame that contains the precursor,
+#' peptide or protein identifiers.
+#' @param response a numeric column in a nested data frame called \code{plot_points} that is part
+#' of the \code{data} data frame. This column contains the response values, e.g. log2 transformed
+#' intensities.
+#' @param dose a numeric column in a nested data frame called \code{plot_points} that is part
+#' of the \code{data} data frame. This column contains the dose values, e.g. the treatment
+#' concentrations.
+#' @param targets a character vector that specifies the names of the precursors, peptides or
+#' proteins (depending on \code{grouping}) that should be plotted. This can also be \code{"all"}
+#' if plots for all curve fits should be created.
+#' @param unit a character value specifying the unit of the concentration.
+#' @param y_axis_name a character value specifying the name of the y-axis of the plot.
+#' @param facet a logical value that indicates if plots should be summarised into facets of 20
+#' plots. This is recommended for many plots.
+#' @param scales a character value that specifies if the scales in faceted plots (if more than one
+#' target was provided) should be \code{"free"} or \code{"fixed"}.
+#' @param x_axis_scale_log10 a logical value that indicates if the x-axis scale should be log10
+#' transformed.
+#' @param export a logical value that indicates if plots should be exported as PDF. The output
+#' directory will be the current working directory. The name of the file can be chosen using the
+#' \code{export_name} argument. If only one target is selected and \code{export = TRUE},
 #' the plot is exported and in addition returned in R.
-#' @param export_name A character vector providing the name of the exported file if \code{export = TRUE}.
+#' @param export_name a character value providing the name of the exported file if
+#' \code{export = TRUE}.
 #'
-#' @return If \code{targets = "all"} a list containing plots for every unique identifier in the \code{grouping} variable is created. Otherwise a plot for the specified targets is created with maximally 20 facets.
+#' @return If \code{targets = "all"} a list containing plots for every unique identifier in the
+#' \code{grouping} variable is created. Otherwise a plot for the specified targets is created with
+#' maximally 20 facets.
 #' @import dplyr
 #' @import tidyr
 #' @import progress
@@ -48,16 +62,54 @@ plot_drc_4p <- function(...) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' drc_4p_plot(
-#'   data,
-#'   grouping = eg_precursor_id,
-#'   response = intensity,
+#' \donttest{
+#' set.seed(123) # Makes example reproducible
+#'
+#' # Create example data
+#' data <- create_synthetic_data(
+#'   n_proteins = 2,
+#'   frac_change = 1,
+#'   n_replicates = 3,
+#'   n_conditions = 8,
+#'   method = "dose_response",
+#'   concentrations = c(0, 1, 10, 50, 100, 500, 1000, 5000),
+#'   additional_metadata = FALSE
+#' )
+#'
+#' # Perform dose response curve fit
+#' drc_fit <- fit_drc_4p(
+#'   data = data,
+#'   sample = sample,
+#'   grouping = peptide,
+#'   response = peptide_intensity_missing,
 #'   dose = concentration,
-#'   targets = c("ABCDEFK")
+#'   retain_columns = c(protein)
+#' )
+#'
+#' str(drc_fit)
+#'
+#' # Plot dose response curves
+#' drc_4p_plot(
+#'   data = drc_fit,
+#'   grouping = peptide,
+#'   response = peptide_intensity_missing,
+#'   dose = concentration,
+#'   targets = c("peptide_2_1", "peptide_2_3"),
+#'   unit = "pM"
 #' )
 #' }
-drc_4p_plot <- function(data, grouping, response, dose, targets, unit = "uM", y_axis_name = "Response", facet = TRUE, scales = "free", x_axis_scale_log10 = TRUE, export = FALSE, export_name = "dose-response_curves") {
+drc_4p_plot <- function(data,
+                        grouping,
+                        response,
+                        dose,
+                        targets,
+                        unit = "uM",
+                        y_axis_name = "Response",
+                        facet = TRUE,
+                        scales = "free",
+                        x_axis_scale_log10 = TRUE,
+                        export = FALSE,
+                        export_name = "dose-response_curves") {
   . <- NULL
 
   # early filter to speed up function
@@ -69,7 +121,14 @@ drc_4p_plot <- function(data, grouping, response, dose, targets, unit = "uM", y_
 
   data <- data %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(name = paste0({{ grouping }}, " (correlation = ", round(.data$correlation, digits = 2), ", EC50 = ", round(.data$ec_50), ")")) %>%
+    dplyr::mutate(name = paste0(
+      {{ grouping }},
+      " (correlation = ",
+      round(.data$correlation, digits = 2),
+      ", EC50 = ",
+      round(.data$ec_50),
+      ")"
+    )) %>%
     dplyr::mutate(name = forcats::fct_reorder(.data$name, dplyr::desc(.data$correlation))) %>%
     dplyr::mutate(
       group_number = 1,
@@ -92,11 +151,38 @@ drc_4p_plot <- function(data, grouping, response, dose, targets, unit = "uM", y_
       input_curve_plot <- input_curve %>%
         dplyr::filter({{ grouping }} == targets)
 
-      plot <- ggplot2::ggplot(data = input_points_plot, ggplot2::aes(x = {{ dose }}, y = {{ response }})) +
+      plot <- ggplot2::ggplot(
+        data = input_points_plot,
+        ggplot2::aes(
+          x = {{ dose }},
+          y = {{ response }}
+        )
+      ) +
         ggplot2::geom_point(size = 2, col = "#5680C1") +
-        ggplot2::geom_ribbon(data = input_curve_plot, ggplot2::aes(x = .data$dose, y = .data$Prediction, ymin = .data$Lower, ymax = .data$Upper), alpha = 0.2, fill = "#B96DAD") +
-        ggplot2::geom_line(data = input_curve_plot, ggplot2::aes(x = .data$dose, y = .data$Prediction), size = 1.2) +
-        ggplot2::labs(title = unique(input_points_plot$name), x = paste0("Concentration [", unit, "]"), y = y_axis_name) +
+        ggplot2::geom_ribbon(
+          data = input_curve_plot,
+          ggplot2::aes(
+            x = .data$dose,
+            y = .data$Prediction,
+            ymin = .data$Lower,
+            ymax = .data$Upper
+          ),
+          alpha = 0.2,
+          fill = "#B96DAD"
+        ) +
+        ggplot2::geom_line(
+          data = input_curve_plot,
+          ggplot2::aes(
+            x = .data$dose,
+            y = .data$Prediction
+          ),
+          size = 1.2
+        ) +
+        ggplot2::labs(
+          title = unique(input_points_plot$name),
+          x = paste0("Concentration [", unit, "]"),
+          y = y_axis_name
+        ) +
         ggplot2::scale_x_log10() +
         ggplot2::theme_bw() +
         ggplot2::theme(
@@ -164,57 +250,95 @@ drc_4p_plot <- function(data, grouping, response, dose, targets, unit = "uM", y_
     input_curve_plot <- input_curve %>%
       split(.$name)
   }
-  pb <- progress::progress_bar$new(total = length(input_points_plot), format = " Plotting curves [:bar] :current/:total (:percent) :eta")
-  plots <- purrr::pmap(list(x = input_points_plot, y = input_curve_plot, z = names(input_points_plot)), function(x, y, z) {
-    pb$tick()
-    ggplot2::ggplot(data = x, ggplot2::aes(x = {{ dose }}, y = {{ response }})) +
-      ggplot2::geom_point(size = 2, col = "#5680C1") +
-      ggplot2::geom_ribbon(data = y, ggplot2::aes(x = .data$dose, y = .data$Prediction, ymin = .data$Lower, ymax = .data$Upper), alpha = 0.2, fill = "#B96DAD") +
-      ggplot2::geom_line(data = y, ggplot2::aes(x = dose, y = .data$Prediction), size = 1.2) +
-      {
-        if (facet == FALSE) ggplot2::labs(title = z, x = paste0("Concentration [", unit, "]"), y = y_axis_name)
-      } +
-      {
-        if (facet == TRUE) ggplot2::labs(title = "Dose-response curves", x = paste0("Concentration [", unit, "]"), y = y_axis_name)
-      } +
-      {
-        if (x_axis_scale_log10 == TRUE) ggplot2::scale_x_log10()
-      } +
-      {
-        if (facet == TRUE) ggplot2::facet_wrap(~ .data$name, scales = scales, ncol = 4)
-      } +
-      ggplot2::theme_bw() +
-      ggplot2::theme(
-        plot.title = ggplot2::element_text(
-          size = 18
-        ),
-        axis.text.x = ggplot2::element_text(
-          size = 15
-        ),
-        axis.text.y = ggplot2::element_text(
-          size = 15
-        ),
-        axis.title.y = ggplot2::element_text(
-          size = 15
-        ),
-        axis.title.x = ggplot2::element_text(
-          size = 15
-        ),
-        legend.title = ggplot2::element_text(
-          size = 15
-        ),
-        legend.text = ggplot2::element_text(
-          size = 15
-        ),
-        strip.text.x = ggplot2::element_text(
-          size = 15
-        ),
-        strip.text = ggplot2::element_text(
-          size = 15
-        ),
-        strip.background = element_blank()
-      )
-  })
+  pb <- progress::progress_bar$new(
+    total = length(input_points_plot),
+    format = " Plotting curves [:bar] :current/:total (:percent) :eta"
+  )
+  plots <- purrr::pmap(
+    list(
+      x = input_points_plot,
+      y = input_curve_plot,
+      z = names(input_points_plot)
+    ),
+    function(x, y, z) {
+      pb$tick()
+      ggplot2::ggplot(data = x, ggplot2::aes(x = {{ dose }}, y = {{ response }})) +
+        ggplot2::geom_point(size = 2, col = "#5680C1") +
+        ggplot2::geom_ribbon(
+          data = y,
+          ggplot2::aes(
+            x = .data$dose,
+            y = .data$Prediction,
+            ymin = .data$Lower,
+            ymax = .data$Upper
+          ),
+          alpha = 0.2,
+          fill = "#B96DAD"
+        ) +
+        ggplot2::geom_line(
+          data = y, ggplot2::aes(
+            x = dose,
+            y = .data$Prediction
+          ),
+          size = 1.2
+        ) +
+        {
+          if (facet == FALSE) {
+            ggplot2::labs(
+              title = z,
+              x = paste0("Concentration [", unit, "]"),
+              y = y_axis_name
+            )
+          }
+        } +
+        {
+          if (facet == TRUE) {
+            ggplot2::labs(
+              title = "Dose-response curves",
+              x = paste0("Concentration [", unit, "]"),
+              y = y_axis_name
+            )
+          }
+        } +
+        {
+          if (x_axis_scale_log10 == TRUE) ggplot2::scale_x_log10()
+        } +
+        {
+          if (facet == TRUE) ggplot2::facet_wrap(~ .data$name, scales = scales, ncol = 4)
+        } +
+        ggplot2::theme_bw() +
+        ggplot2::theme(
+          plot.title = ggplot2::element_text(
+            size = 18
+          ),
+          axis.text.x = ggplot2::element_text(
+            size = 15
+          ),
+          axis.text.y = ggplot2::element_text(
+            size = 15
+          ),
+          axis.title.y = ggplot2::element_text(
+            size = 15
+          ),
+          axis.title.x = ggplot2::element_text(
+            size = 15
+          ),
+          legend.title = ggplot2::element_text(
+            size = 15
+          ),
+          legend.text = ggplot2::element_text(
+            size = 15
+          ),
+          strip.text.x = ggplot2::element_text(
+            size = 15
+          ),
+          strip.text = ggplot2::element_text(
+            size = 15
+          ),
+          strip.background = element_blank()
+        )
+    }
+  )
   if (export == FALSE) {
     plots
   } else {

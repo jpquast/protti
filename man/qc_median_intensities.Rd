@@ -14,31 +14,55 @@ qc_median_intensities(
 )
 }
 \arguments{
-\item{data}{a data frame containing at least the input variables.}
+\item{data}{a data frame that contains at least the input variables.}
 
-\item{sample}{the name of the column containing the sample names.}
+\item{sample}{a character column in the \code{data} data frame that contains the sample name.}
 
-\item{grouping}{the name of the column containing precursor or peptide identifiers.}
+\item{grouping}{a character column in the \code{data} data frame that contains either precursor or
+peptide identifiers.}
 
-\item{intensity}{the name of the column containing intensity values. The intensity should be ideally log2 transformed, but also non-transformed values can be used.}
+\item{intensity}{a numeric column in the \code{data} data frame that contains intensity values.
+The intensity should be ideally log2 transformed, but also non-transformed values can be used.}
 
-\item{plot}{logical, if TRUE a plot is returned. If FALSE a table is returned.}
+\item{plot}{a logical value that indicates whether the result should be plotted.}
 
-\item{interactive}{logical, if TRUE the plot is interactive using plotly.}
+\item{interactive}{a logical value that specifies whether the plot should be interactive
+(default is FALSE).}
 }
 \value{
-A plot that displays median intensity over all samples. If \code{plot = FALSE} a data frame containing median intensities is returned.
+A plot that displays median intensity over all samples. If \code{plot = FALSE} a data
+frame containing median intensities is returned.
 }
 \description{
 Median intensities per run are returned either as a plot or a table.
 }
 \examples{
-\dontrun{
-qc_median_intensities(
-  data,
-  sample = r_file_name,
-  grouping = eg_precursor_id,
-  intensity = log2_intensity
+set.seed(123) # Makes example reproducible
+
+# Create example data
+data <- create_synthetic_data(
+  n_proteins = 100,
+  frac_change = 0.05,
+  n_replicates = 3,
+  n_conditions = 2,
+  method = "effect_random"
 )
-}
+
+# Calculate median intensities
+qc_median_intensities(
+  data = data,
+  sample = sample,
+  grouping = peptide,
+  intensity = peptide_intensity_missing,
+  plot = FALSE
+)
+
+# Plot median intensities
+qc_median_intensities(
+  data = data,
+  sample = sample,
+  grouping = peptide,
+  intensity = peptide_intensity_missing,
+  plot = TRUE
+)
 }

@@ -111,11 +111,11 @@ $$CV = \frac{standard ~ deviation}{mean} * 100$$
 Since the CV function works only with raw values, we will backtransform our log2 transformed data and create a new column called `raw_intensity` from the `peptide_intensity_missing` column which contains peptide intensities. To create the new column, we are using the function `mutate()` from the R package `dplyr`.
 We also make use of the pipe operator `%>%` included in the R package `magrittr` which takes the output of the preceding function and supplies it as the first argument of the following function. Using `%>%` makes code easier to read and follow. 
 
-The "combined" group of CVs contains CVs across all samples and not only across the replicates of a certain condition. Ideally the combined CVs should always be the group with the highest CV.  
+The "combined" group of CVs contains CVs across all samples and not only across the replicates of a certain condition. Ideally the combined CVs should always be the group with the highest CV. This would indicates that CVs within conditions are low and the treatment had and effect that causes an increase in overall CVs. If the treatment did not have an effect or only a very small one then the combined CV could be as high as the CVs of individual conditions. If an individual condition has a higher CV than the combined CV then there was potentially a problem with one or multiple of the samples. You can check if there are suspicious samples behaving differently from the rest in the other quality control metrics. If there is a consistent different behaviour these samples should potentially be excluded for analysis. Sometimes a condition can also just be noisy because of the treatment in this condition that causes a larger variation. Therefore comparing individual CVs with the combined CV should only be done with caution.
 
 ```{r qc_cvs, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 input <- data %>%
-  # as the data is log2 transformed, we need to backtransform it before calculating the CVs
+  # as the data is log2 transformed, we need to transform it back before calculating the CVs
   mutate(raw_intensity = 2^peptide_intensity_missing) 
 
 qc_cvs(data = input,

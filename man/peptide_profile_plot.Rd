@@ -18,47 +18,97 @@ peptide_profile_plot(
 )
 }
 \arguments{
-\item{data}{Data frame containing at least the input variables.}
+\item{data}{a data frame that contains at least the input variables.}
 
-\item{sample}{Column in the data frame containing sample names.}
+\item{sample}{a character column in the \code{data} data frame that contains sample names.}
 
-\item{peptide}{Column in the data frame containing peptide or precursor names.}
+\item{peptide}{a character column in the \code{data} data frame that contains peptide or
+precursor names.}
 
-\item{intensity_log2}{Column in the data frame containing log2 transformed intensities.}
+\item{intensity_log2}{a numeric column in the \code{data} data frame that contains log2
+transformed intensities.}
 
-\item{grouping}{Column in the data frame containing groups by which the data should be split. This can be for example protein IDs.}
+\item{grouping}{a character column in the \code{data} data frame that contains groups by which
+the data should be split. This can be for example protein IDs.}
 
-\item{targets}{Character vector specifying elements of the grouping column which should be plotted. This can also be
-\code{"all"} if plots for all groups should be created. Depending on the number of elements in your grouping column this can be many
-plots.}
+\item{targets}{a character vector that specifies elements of the grouping column which should
+be plotted. This can also be \code{"all"} if plots for all groups should be created. Depending
+on the number of elements in your grouping column this can be many plots.}
 
-\item{protein_abundance_plot}{Logical, if the input for this plot comes directly from \code{calculate_protein_abundance} this argument
-can be set to \code{TRUE}. This displays all peptides in gray, while the protein abundance is displayed in green.}
+\item{protein_abundance_plot}{a logical value. If the input for this plot comes directly from
+\code{calculate_protein_abundance} this argument can be set to \code{TRUE}. This displays all
+peptides in gray, while the protein abundance is displayed in green.}
 
-\item{interactive}{A logical indicating whether the plot should be interactive (default is FALSE). If this is TRUE only one target can
-be supplied to the function. Interactive plots cannot be exported either.}
+\item{interactive}{a logical value that indicates whether the plot should be interactive
+(default is FALSE). If this is TRUE only one target can be supplied to the function. Interactive
+plots cannot be exported either.}
 
-\item{export}{A logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The
-name of the file can be chosen using the \code{export_name} argument.}
+\item{export}{a logical value that indicates if plots should be exported as PDF. The output
+directory will be the current working directory. The name of the file can be chosen using the
+\code{export_name} argument.}
 
-\item{export_name}{A character vector providing the name of the exported file if \code{export = TRUE}.}
+\item{export_name}{Aacharacter vector that provides the name of the exported file if
+\code{export = TRUE}.}
 }
 \value{
 A list of peptide profile plots.
 }
 \description{
-Creates a plot of peptide abundances across samples. This is helpful to investigate effects of peptide and protein abundance changes
-in different samples and conditions.
+Creates a plot of peptide abundances across samples. This is helpful to investigate effects of
+peptide and protein abundance changes in different samples and conditions.
 }
 \examples{
-\dontrun{
-peptide_profile_plot(
-  data,
-  sample = r_file_name,
-  peptide = eg_precursor_id,
-  intensity_log2 = log2_intensity,
-  grouping = pg_protein_accessions,
-  targets = c("P03421")
+# Create example data
+data <- data.frame(
+  sample = c(
+    rep("S1", 6),
+    rep("S2", 6),
+    rep("S1", 2),
+    rep("S2", 2)
+  ),
+  protein_id = c(
+    rep("P1", 12),
+    rep("P2", 4)
+  ),
+  precursor = c(
+    rep(c("A1", "A2", "B1", "B2", "C1", "D1"), 2),
+    rep(c("E1", "F1"), 2)
+  ),
+  peptide = c(
+    rep(c("A", "A", "B", "B", "C", "D"), 2),
+    rep(c("E", "F"), 2)
+  ),
+  intensity = c(
+    rnorm(n = 6, mean = 15, sd = 2),
+    rnorm(n = 6, mean = 21, sd = 1),
+    rnorm(n = 2, mean = 15, sd = 1),
+    rnorm(n = 2, mean = 15, sd = 2)
+  )
 )
-}
+
+# Calculate protein abundances and retain precursor
+# abundances that can be used in a peptide profile plot
+complete_abundances <- calculate_protein_abundance(
+  data,
+  sample = sample,
+  protein_id = protein_id,
+  precursor = precursor,
+  peptide = peptide,
+  intensity_log2 = intensity,
+  method = "iq",
+  for_plot = TRUE
+)
+
+# Plot protein abundance profile
+# protein_abundance_plot can be set to
+# FALSE to to also colour precursors
+peptide_profile_plot(
+  data = complete_abundances,
+  sample = sample,
+  peptide = precursor,
+  intensity_log2 = intensity,
+  grouping = protein_id,
+  targets = c("P1"),
+  protein_abundance_plot = TRUE
+)
 }

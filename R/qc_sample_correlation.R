@@ -2,17 +2,27 @@
 #'
 #' A correlation heatmap is created that uses hirachical clustering to determine sample similarity.
 #'
-#' @param data a dataframe contains at least the input variables.
-#' @param sample the name of the column containing the sample names.
-#' @param grouping the name of the column containing precursor or peptide identifiers.
-#' @param intensity_log2 the name of the column containing log2 intensity values.
-#' @param condition the name of the column containing the conditions.
-#' @param digestion optional, the name of the column containing information about the digestion method used. Eg. "LiP" or "tryptic control".
-#' @param run_order optional, the name of the column containing the order in which samples were measured. Useful to investigate batch effects due to run order.
-#' @param method the method to be used for correlation. \code{"spearman"} is the default but can be changed to \code{"pearson"} or \code{"kendall"}.
-#' @param interactive logical, default is \code{FALSE}. Determines if an interactive or static heatmap should be created using \code{heatmaply} or \code{pheatmap}, respectively.
+#' @param data a data frame that contains at least the input variables.
+#' @param sample a character column in the \code{data} data frame that contains the sample names.
+#' @param grouping a character column in the \code{data} data frame that contains precursor or
+#' peptide identifiers.
+#' @param intensity_log2 a numeric column in the \code{data} data frame that contains log2
+#' intensity values.
+#' @param condition a character or numeric column in the \code{data} data frame that contains the
+#' conditions.
+#' @param digestion optional, a character column in the \code{data} data frame that contains
+#' information about the digestion method used. e.g. "LiP" or "tryptic control".
+#' @param run_order optional, a character or numeric column in the \code{data} data frame that
+#' contains the order in which samples were measured. Useful to investigate batch effects due to
+#' run order.
+#' @param method a character value that specifies the method to be used for correlation.
+#' \code{"spearman"} is the default but can be changed to \code{"pearson"} or \code{"kendall"}.
+#' @param interactive a logical value that specifies whether the plot should be interactive.
+#' Determines if an interactive or static heatmap should be created using \code{heatmaply} or
+#' \code{pheatmap}, respectively.
 #'
-#' @return A correlation heatmap that compares each sample. The dendrogram is sorted by optimal leaf ordering.
+#' @return A correlation heatmap that compares each sample. The dendrogram is sorted by optimal
+#' leaf ordering.
 #'
 #' @import dplyr
 #' @importFrom tidyr pivot_wider
@@ -21,16 +31,34 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' qc_sample_correlation(
-#'   data,
-#'   sample = r_file_name,
-#'   grouping = eg_precursor_id,
-#'   intensity_log2 = intensity_log2,
-#'   condition = r_condition
+#' set.seed(123) # Makes example reproducible
+#'
+#' # Create example data
+#' data <- create_synthetic_data(
+#'   n_proteins = 100,
+#'   frac_change = 0.05,
+#'   n_replicates = 3,
+#'   n_conditions = 2,
+#'   method = "effect_random"
 #' )
-#' }
-qc_sample_correlation <- function(data, sample, grouping, intensity_log2, condition, digestion = NULL, run_order = NULL, method = "spearman", interactive = FALSE) {
+#'
+#' # Create sample correlation heatmap
+#' qc_sample_correlation(
+#'   data = data,
+#'   sample = sample,
+#'   grouping = peptide,
+#'   intensity_log2 = peptide_intensity_missing,
+#'   condition = condition
+#' )
+qc_sample_correlation <- function(data,
+                                  sample,
+                                  grouping,
+                                  intensity_log2,
+                                  condition,
+                                  digestion = NULL,
+                                  run_order = NULL,
+                                  method = "spearman",
+                                  interactive = FALSE) {
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
 
@@ -71,7 +99,11 @@ qc_sample_correlation <- function(data, sample, grouping, intensity_log2, condit
     run_ord_colours <- protti_colours[(n_digest + n_conditions + 1):(n_run_ord + n_digest + n_conditions)]
     names(run_ord_colours) <- run_ord
   }
-  annotation_colours <- list(conditions_colours, digest_colours, run_ord_colours)
+  annotation_colours <- list(
+    conditions_colours,
+    digest_colours,
+    run_ord_colours
+  )
   names(annotation_colours) <- c(if (!missing(condition)) {
     rlang::as_name(enquo(condition))
   } else {
@@ -95,7 +127,11 @@ qc_sample_correlation <- function(data, sample, grouping, intensity_log2, condit
         correlation,
         main = "Correlation based hirachical clustering of samples",
         col_side_colors = annotation,
-        col_side_palette = c(annotation_colours[[1]], annotation_colours[[2]], annotation_colours[[3]]),
+        col_side_palette = c(
+          annotation_colours[[1]],
+          annotation_colours[[2]],
+          annotation_colours[[3]]
+        ),
         k_col = NA,
         k_row = NA,
         plot_method = "plotly"
@@ -112,9 +148,17 @@ qc_sample_correlation <- function(data, sample, grouping, intensity_log2, condit
     if (any(dependency_test)) {
       dependency_name <- names(dependency_test[dependency_test == TRUE])
       if (length(dependency_name) == 1) {
-        stop("Package \"", paste(dependency_name), "\" is needed for this function to work. Please install it.", call. = FALSE)
+        stop("Package \"",
+          paste(dependency_name),
+          "\" is needed for this function to work. Please install it.",
+          call. = FALSE
+        )
       } else {
-        stop("Packages \"", paste(dependency_name, collapse = "\" and \""), "\" are needed for this function to work. Please install them.", call. = FALSE)
+        stop("Packages \"",
+          paste(dependency_name, collapse = "\" and \""),
+          "\" are needed for this function to work. Please install them.",
+          call. = FALSE
+        )
       }
     }
 
@@ -123,7 +167,9 @@ qc_sample_correlation <- function(data, sample, grouping, intensity_log2, condit
     hierachical_clustering <- stats::hclust(distance)
     dendrogram <- stats::as.dendrogram(hierachical_clustering)
     dendrogram_row <- dendextend::seriate_dendrogram(dendrogram, distance, method = "OLO")
-    dendrogram_column <- dendextend::rotate(dendrogram_row, order = rev(labels(distance)[seriation::get_order(stats::as.hclust(dendrogram_row))]))
+    dendrogram_column <- dendextend::rotate(dendrogram_row,
+      order = rev(labels(distance)[seriation::get_order(stats::as.hclust(dendrogram_row))])
+    )
 
     heatmap_static <-
       pheatmap::pheatmap(

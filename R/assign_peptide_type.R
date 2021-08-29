@@ -26,11 +26,11 @@ peptide_type <- function(...) {
 #'
 #' @param data a data frame containing at least information about the preceding and C-terminal
 #' amino acids of peptides.
-#' @param aa_before a character column in the input data frame that contains the preceding amino
+#' @param aa_before a character column in the \code{data} data frame that contains the preceding amino
 #' acid as one letter code.
-#' @param last_aa a character column in the input data frame that contains the C-terminal amino
+#' @param last_aa a character column in the \code{data} data frame that contains the C-terminal amino
 #' acid as one letter code.
-#' @param aa_after a character column in the input data frame that contains the following amino
+#' @param aa_after a character column in the \code{data} data frame that contains the following amino
 #' acid as one letter code.
 #'
 #' @return A data frame that contains the input data and an additional column with the peptide
@@ -53,8 +53,18 @@ assign_peptide_type <- function(data,
                                 last_aa = last_aa,
                                 aa_after = aa_after) {
   data %>%
-    dplyr::mutate(N_term_tryp = dplyr::if_else({{ aa_before }} == "" | {{ aa_before }} == "K" | {{ aa_before }} == "R", TRUE, FALSE)) %>%
-    dplyr::mutate(C_term_tryp = dplyr::if_else({{ last_aa }} == "K" | {{ last_aa }} == "R" | {{ aa_after }} == "", TRUE, FALSE)) %>%
+    dplyr::mutate(N_term_tryp = dplyr::if_else({{ aa_before }} == "" |
+      {{ aa_before }} == "K" |
+      {{ aa_before }} == "R",
+    TRUE,
+    FALSE
+    )) %>%
+    dplyr::mutate(C_term_tryp = dplyr::if_else({{ last_aa }} == "K" |
+      {{ last_aa }} == "R" |
+      {{ aa_after }} == "",
+    TRUE,
+    FALSE
+    )) %>%
     dplyr::mutate(pep_type = dplyr::case_when(
       .data$N_term_tryp + .data$C_term_tryp == 2 ~ "fully-tryptic",
       .data$N_term_tryp + .data$C_term_tryp == 1 ~ "semi-tryptic",

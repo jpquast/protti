@@ -36,75 +36,101 @@ create_queue(
 )
 }
 \arguments{
-\item{date}{Optional, start date of the measurements.}
+\item{date}{optional, character value indicating the start date of the measurements.}
 
-\item{instrument}{Optional, instrument initials.}
+\item{instrument}{optional, character value indicating the instrument initials.}
 
-\item{user}{Optional, user name.}
+\item{user}{optional, character value indicating the user name.}
 
-\item{measurement_type}{Optional, the measurement type of the samples (e.g "DIA", "DDA", "library" etc.).}
+\item{measurement_type}{optional, character value indicating the measurement type of the
+samples (e.g "DIA", "DDA", "library" etc.).}
 
-\item{experiment_name}{Optional, name of the experiment.}
+\item{experiment_name}{optional, character value indicating the name of the experiment.}
 
-\item{digestion}{Optional, the digestion types used in this experiment (e.g "LiP" and/or "tryptic control").}
+\item{digestion}{optional, character vector indicating the digestion types used in this
+experiment (e.g "LiP" and/or "tryptic control").}
 
-\item{treatment_type_1}{Optional, name of the treatment.}
+\item{treatment_type_1}{optional, character vector indicating the name of the treatment.}
 
-\item{treatment_type_2}{Optional, name of a second treatment that was combined with the first treatment.}
+\item{treatment_type_2}{optional, character vector indicating the name of a second treatment
+that was combined with the first treatment.}
 
-\item{treatment_dose_1}{Optional, doses used for treatment 1. These can be concentrations or times etc.}
+\item{treatment_dose_1}{optional, numeric vector indicating the doses used for treatment 1.
+These can be concentrations or times etc.}
 
-\item{treatment_dose_2}{Optional, doses used for treatment 2. These can be concentrations or times etc.}
+\item{treatment_dose_2}{optional, numeric vector indicating the doses used for treatment 2.
+These can be concentrations or times etc.}
 
-\item{treatment_unit_1}{Optional, unit of the doses for treatment 1 (e.g min, mM, etc.).}
+\item{treatment_unit_1}{optional, character vector indicating the unit of the doses for
+treatment 1 (e.g min, mM, etc.).}
 
-\item{treatment_unit_2}{Optional, unit of the doses for treatment 2 (e.g min, mM, etc.).}
+\item{treatment_unit_2}{optional, character vector indicating the unit of the doses for
+treatment 2 (e.g min, mM, etc.).}
 
-\item{n_replicates}{Optional, number of replicates used per sample.}
+\item{n_replicates}{optional, a numeric value indicating the number of replicates used per sample.}
 
-\item{number_runs}{Specifies if file names should be numbered from 1:n instead of adding experiment information. Default is FALSE.}
+\item{number_runs}{a logical that specifies if file names should be numbered from 1:n instead of
+adding experiment information. Default is FALSE.}
 
-\item{organism}{Optional, name of the organism used.}
+\item{organism}{optional, character value indicating the name of the organism used.}
 
-\item{exclude_combinations}{Optional, list of lists that contains vectors treatment types and treatment doses whos combinations should be
-excluded from the final queue.}
+\item{exclude_combinations}{optional, list of lists that contains vectors of treatment types and
+treatment doses of which combinations should be excluded from the final queue.}
 
-\item{inj_vol}{The volume used for injection in microliter. Will be \code{NA} if not specified. Then it needs to be manually specified before the queue can be used.}
+\item{inj_vol}{a numeric value indicating the volume used for injection in microliter. Will be
+\code{NA} if not specified. Then it needs to be manually specified before the queue can be used.}
 
-\item{data_path}{The file path where the MS raw data should be saved. Backslashes should be escaped by another backslash. Will be \code{NA} if not specified, but needs to be specified later on then.}
+\item{data_path}{a character value indicating the file path where the MS raw data should be saved.
+Backslashes should be escaped by another backslash. Will be \code{NA} if not specified, but
+needs to be specified later on then.}
 
-\item{method_path}{The file path of the MS acquisition method. Backslashes should be escaped by another backslash. Will be \code{NA} if not specified, but needs to be specified later on then.}
+\item{method_path}{a character value indicating the file path of the MS acquisition method.
+Backslashes should be escaped by another backslash. Will be \code{NA} if not specified, but
+needs to be specified later on then.}
 
-\item{position_row}{The row positions that can be used for the samples (e.g c("A", "B")). If the number of specified rows and columns does not equal the total number
+\item{position_row}{a character vector that contains row positions that can be used for the
+samples (e.g c("A", "B")). If the number of specified rows and columns does not equal the total
+number of samples, positions will be repeated.}
+
+\item{position_column}{a character vector that contains column positions that can be used for the
+samples (e.g 8). If the number of specified rows and columns does not equal the total number
 of samples, positions will be repeated.}
 
-\item{position_column}{The column positions that can be used for the samples (e.g 8). If the number of specified rows and columns does not equal the total number
-of samples, positions will be repeated.}
+\item{blank_every_n}{optional, numeric value that specifies in which intervals a blank sample
+should be inserted.}
 
-\item{blank_every_n}{Optional, specifies in which intervals a blank sample should be inserted.}
+\item{blank_position}{a character value that specifies the plate position of the blank. Will be
+\code{NA} if not specified, but needs to be specified later on then.}
 
-\item{blank_position}{The plate position of the blank. Will be \code{NA} if not specified, but needs to be specified later on then.}
+\item{blank_method_path}{a character value that specifies the file path of the MS acquisition
+method of the blank. Backslashes should be escaped by another backslash. Will be \code{NA} if
+not specified, but needs to be specified later on then.}
 
-\item{blank_method_path}{The file path of the MS acquisition method of the blank. Backslashes should be escaped by another backslash.
+\item{blank_inj_vol}{a numeric value that specifies the injection volume of the blank sample.
 Will be \code{NA} if not specified, but needs to be specified later on then.}
 
-\item{blank_inj_vol}{Injection volume of the blank sample. Will be \code{NA} if not specified, but needs to be specified later on then.}
+\item{export}{a logical value that specifies if the queue should be exported from R and saved
+as a .csv file. Default is TRUE. Further options for export can be adjusted with the
+\code{export_to_queue} and \code{queue_path} arguments.}
 
-\item{export}{Logical, specifying if queue should be exported from R and saved as a .csv file. Default is TRUE. Further options for
-export can be adjusted with the \code{export_to_queue} and \code{queue_path} arguments.}
+\item{export_to_queue}{a logical value that specifies if the resulting queue should be appended
+to an already existing queue. If false result will be saved as \code{queue.csv}.}
 
-\item{export_to_queue}{Logical, specifying if the resulting queue should be appended to an already existing queue. If false result will be saved as \code{queue.csv}.}
-
-\item{queue_path}{Optional, file path to a queue file to which the generated queue should be appended if \code{export_to_queue = TRUE}.
-If not specified queue file can be chosen interactively.}
+\item{queue_path}{optional, a character value that specifies the file path to a queue file to
+which the generated queue should be appended if \code{export_to_queue = TRUE}. If not specified
+queue file can be chosen interactively.}
 }
 \value{
-If \code{export_to_queue = FALSE} a file named \code{queue.csv} will be returned that contains the generated queue. If \code{export_to_queue = TRUE}, the resulting
-generated queue will be appended to an already existing queue that needs to be specified either interactively or through the argument \code{queue_path}.
+If \code{export_to_queue = FALSE} a file named \code{queue.csv} will be returned that
+contains the generated queue. If \code{export_to_queue = TRUE}, the resulting generated queue
+will be appended to an already existing queue that needs to be specified either interactively
+or through the argument \code{queue_path}.
 }
 \description{
-This function creates a measurement queue for sample acquisition for the software Xcalibur. All possible combinations of the
-provided information will be created to make file and sample names.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+This function creates a measurement queue for sample acquisition for the software Xcalibur.
+All possible combinations of the provided information will be created to make file and
+sample names.
 }
 \examples{
 create_queue(
@@ -128,7 +154,7 @@ create_queue(
   )),
   inj_vol = c(2),
   data_path = "D:\\\\2007_Data",
-  method_path = "C:\\\\Xcalibur\\\\methods\\\\user\\\\DIA_120min_41var_AGC200",
+  method_path = "C:\\\\Xcalibur\\\\methods\\\\DIA_120min",
   position_row = c("A", "B", "C", "D", "E", "F"),
   position_column = 8,
   blank_every_n = 4,

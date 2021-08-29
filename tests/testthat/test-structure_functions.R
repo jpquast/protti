@@ -9,20 +9,6 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     map_value = c(70, 100, 100)
   )
 
-  test_that("find_peptide_in_structure works", {
-    positions_structure <- find_peptide_in_structure(peptide_data,
-      peptide = peptide_sequence,
-      start = start,
-      end = end,
-      uniprot_id = uniprot_id,
-      retain_columns = c(map_value)
-    )
-
-    expect_is(positions_structure, "data.frame")
-    expect_equal(nrow(positions_structure), 312)
-    expect_equal(ncol(positions_structure), 16)
-  })
-
   positions_structure <- find_peptide_in_structure(peptide_data,
     peptide = peptide_sequence,
     start = start,
@@ -30,6 +16,12 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     uniprot_id = uniprot_id,
     retain_columns = c(map_value)
   )
+
+  test_that("find_peptide_in_structure works", {
+    expect_is(positions_structure, "data.frame")
+    expect_equal(nrow(positions_structure), 312)
+    expect_equal(ncol(positions_structure), 16)
+  })
 
   positions_structure_filter <- positions_structure %>%
     filter(pdb_ids %in% c("6UU2", "2EL9"))
@@ -44,7 +36,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       end_in_pdb = auth_seq_id_end,
       map_value = map_value,
       file_format = ".cif",
-      export_location = paste0(tempdir(), "/")
+      export_location = tempdir()
     )
 
     expect_gt(file.info(paste0(tempdir(), "/6UU2_P0A8T7.cif"))$size, 5000000)
@@ -73,7 +65,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       end_in_pdb = auth_seq_id_end,
       map_value = map_value,
       file_format = ".pdb",
-      export_location = paste0(tempdir(), "/")
+      export_location = tempdir()
     ))
 
     expect_false(file.exists(paste0(tempdir(), "/6UU2_P0A8T7.pdb")))

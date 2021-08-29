@@ -7,14 +7,18 @@
 calculate_sequence_coverage(data, protein_sequence, peptides)
 }
 \arguments{
-\item{data}{A dataframe containing at least the protein sequence and the identified peptides as columns.}
+\item{data}{a data frame containing at least the protein sequence and the identified peptides
+as columns.}
 
-\item{protein_sequence}{A column containing protein sequences, can be obtained by using the function \code{fetch_uniprot()}}
+\item{protein_sequence}{a character column in the \code{data} data frame that contains protein
+sequences. Can be obtained by using the function \code{fetch_uniprot()}}
 
-\item{peptides}{A column containing the identified peptides.}
+\item{peptides}{a character column in the \code{data} data frame that contains the identified
+peptides.}
 }
 \value{
-A new column containing the calculated sequence coverages for each identified protein
+A new column in the \code{data} data frame containing the calculated sequence coverage
+for each identified protein
 }
 \description{
 Calculate sequence coverage for each identified protein.

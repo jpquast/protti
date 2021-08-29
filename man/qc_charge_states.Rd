@@ -17,41 +17,79 @@ qc_charge_states(
 )
 }
 \arguments{
-\item{data}{A data frame containing at least sample names, peptide or precursor identifiers and missed cleavage counts for each peptide or precursor.}
+\item{data}{a data frame that contains at least sample names, peptide or precursor identifiers
+and missed cleavage counts for each peptide or precursor.}
 
-\item{sample}{the column in the data data frame containing the sample name.}
+\item{sample}{a character column in the \code{data} data frame that contains the sample name.}
 
-\item{grouping}{the column in the data data frame containing either precursor or peptide identifiers.}
+\item{grouping}{a character column in the \code{data} data frame that contains either precursor or
+peptide identifiers.}
 
-\item{charge_states}{the column in the data data frame containing the different charge states assigned to the precursor or peptide.}
+\item{charge_states}{a character or numeric column in the \code{data} data frame that contains
+the different charge states assigned to the precursor or peptide.}
 
-\item{intensity}{the name of the column containing the corresponding raw or normalised intensity values (not log2) for each peptide or precursor. Required when "intensity" is chosen as the method.}
+\item{intensity}{a numeric column in the \code{data} data frame that contains the corresponding
+raw or normalised intensity values (not log2) for each peptide or precursor. Required when
+"intensity" is chosen as the method.}
 
-\item{remove_na_intensities}{logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should
-be dropped from the data frame for analysis of missed cleavages. Default is TRUE since we are usually
-interested in quantifiable peptides. This is only relevant for method = "count".}
+\item{remove_na_intensities}{a logical value that specifies if sample/grouping combinations with
+intensities that are NA (not quantified IDs) should be dropped from the data frame for analysis
+of missed cleavages. Default is TRUE since we are usually interested in quantifiable peptides.
+This is only relevant for method = "count".}
 
-\item{method}{character vector indicating the method used for evaluation. "count" calculates the charge state distribution based on counts of the corresponding peptides or precursors in the charge state group, "intensity" calculates the percentage of precursors or peptides in each charge state group based on the corresponding intensity values.}
+\item{method}{a character value that indicates the method used for evaluation. "count"
+calculates the charge state distribution based on counts of the corresponding peptides or
+precursors in the charge state group, "intensity" calculates the percentage of precursors or
+peptides in each charge state group based on the corresponding intensity values.}
 
-\item{plot}{logical indicating whether the result should be plotted.}
+\item{plot}{a logical value that indicates whether the result should be plotted.}
 
-\item{interactive}{argument specifying whether the plot should be interactive (default is FALSE).}
+\item{interactive}{a logical value that specifies whether the plot should be interactive
+(default is FALSE).}
 }
 \value{
-A data frame that contains the calculated percentage made up by the sum of either all counts or intensities of peptides or precursors of the corresponding charge state (depending on which method is chosen).
+A data frame that contains the calculated percentage made up by the sum of either
+all counts or intensities of peptides or precursors of the corresponding charge state
+(depending on which method is chosen).
 }
 \description{
 Calculates the charge state distribution for each sample (by count or intensity).
 }
 \examples{
-\dontrun{
+# Load libraries
+library(dplyr)
+
+set.seed(123) # Makes example reproducible
+
+# Create example data
+data <- create_synthetic_data(
+  n_proteins = 100,
+  frac_change = 0.05,
+  n_replicates = 3,
+  n_conditions = 2,
+  method = "effect_random"
+) \%>\%
+  mutate(intensity_non_log2 = 2^peptide_intensity_missing)
+
+# Calculate charge percentages
 qc_charge_states(
-  data,
-  sample = r_file_name,
-  grouping = pep_stripped_sequence,
-  charge_states = fg_charge,
-  method = "count",
+  data = data,
+  sample = sample,
+  grouping = peptide,
+  charge_states = charge,
+  intensity = intensity_non_log2,
+  method = "intensity",
+  plot = FALSE
+)
+
+# Plot charge states
+qc_charge_states(
+  data = data,
+  sample = sample,
+  grouping = peptide,
+  charge_states = charge,
+  intensity = intensity_non_log2,
+  method = "intensity",
   plot = TRUE
 )
-}
 }

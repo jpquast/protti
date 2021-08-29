@@ -14,31 +14,54 @@ qc_proteome_coverage(
 )
 }
 \arguments{
-\item{data}{A data frame containing at least sample names and protein ID's.}
+\item{data}{a data frame that contains at least sample names and protein ID's.}
 
-\item{sample}{The column in the data data frame containing the sample name.}
+\item{sample}{a character column in the \code{data} data frame that contains the sample name.}
 
-\item{protein_id}{The column in the data data frame containing protein identifiers such as UniProt accessions.}
+\item{protein_id}{a character or numeric column in the \code{data} data frame that contains
+protein identifiers such as UniProt accessions.}
 
-\item{organism_id}{The NCBI taxonomy identifier (TaxId) of the organism used. Human: 9606, S. cerevisiae: 559292, E. coli: 83333.}
+\item{organism_id}{a numeric value that specifies a NCBI taxonomy identifier (TaxId) of the
+organism used. Human: 9606, S. cerevisiae: 559292, E. coli: 83333.}
 
-\item{plot}{A logical indicating whether the result should be plotted (default is TRUE).}
+\item{plot}{a logical value that specifies whether the result should be plotted.}
 
-\item{interactive}{A logical indicating whether the plot should be interactive (default is FALSE).}
+\item{interactive}{a logical value that indicates whether the plot should be interactive
+(default is FALSE).}
 }
 \value{
-A bar plot showing the percentage of of the proteome detected and undetected in total and for each sample. If \code{plot = FALSE} a data frame containing the numbers is returned.
+A bar plot showing the percentage of of the proteome detected and undetected in total
+and for each sample. If \code{plot = FALSE} a data frame containing the numbers is returned.
 }
 \description{
-Calculates the proteome coverage for each samples and for all samples combined. In other words the fraction of detected proteins to all proteins in the proteome is calculated.
+Calculates the proteome coverage for each samples and for all samples combined. In other words t
+he fraction of detected proteins to all proteins in the proteome is calculated.
 }
 \examples{
-\dontrun{
+\donttest{
+# Create example data
+proteome <- data.frame(id = 1:4518)
+data <- data.frame(
+  sample = c(rep("A", 101), rep("B", 1000), rep("C", 1000)),
+  protein_id = c(proteome$id[1:100], proteome$id[1:1000], proteome$id[1000:2000])
+)
+
+# Calculate proteome coverage
 qc_proteome_coverage(
-  data,
-  sample = r_file_name,
-  protein_id = pg_protein_accession,
-  organism_id = 9606
+  data = data,
+  sample = sample,
+  protein_id = protein_id,
+  organism_id = 83333,
+  plot = FALSE
+)
+
+# Plot proteome coverage
+qc_proteome_coverage(
+  data = data,
+  sample = sample,
+  protein_id = protein_id,
+  organism_id = 83333,
+  plot = TRUE
 )
 }
 }

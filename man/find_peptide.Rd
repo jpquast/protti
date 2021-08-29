@@ -7,19 +7,33 @@
 find_peptide(data, protein_sequence, peptide_sequence)
 }
 \arguments{
-\item{data}{A data frame containing at least the protein and peptide sequence.}
+\item{data}{a data frame that contains at least the protein and peptide sequence.}
 
-\item{protein_sequence}{The name of the column containing the protein sequence.}
+\item{protein_sequence}{a character column in the \code{data} data frame that contains the
+protein sequence.}
 
-\item{peptide_sequence}{The name of the column containing the peptide sequence.}
+\item{peptide_sequence}{a character column in the \code{data} data frame that contains the
+peptide sequence.}
 }
 \value{
-A data frame that contains the input data and four additional columns with start and end position, the last amino acid and the amino acid before.
+A data frame that contains the input data and four additional columns with peptide
+start and end position, the last amino acid and the amino acid before the peptide.
 }
 \description{
-The position of the given peptide sequence is searched within the given protein sequence. In addition the last amino acid of the peptide and the amino acid right before are reported.
+The position of the given peptide sequence is searched within the given protein sequence. In
+addition the last amino acid of the peptide and the amino acid right before are reported.
 }
 \examples{
-data <- data.frame(protein_sequence = c("abcdefg"), peptide_sequence = c("cde"))
-find_peptide(data, protein_sequence, peptide_sequence)
+# Create example data
+data <- data.frame(
+  protein_sequence = c("abcdefg"),
+  peptide_sequence = c("cde")
+)
+
+# Find peptide
+find_peptide(
+  data = data,
+  protein_sequence = protein_sequence,
+  peptide_sequence = peptide_sequence
+)
 }

@@ -22,57 +22,80 @@ woods_plot(
 )
 }
 \arguments{
-\item{data}{a data frame containing differential abundance, start and end peptide or precursor positions, protein
-length and optionally a variable based on which peptides or precursors should be coloured.}
+\item{data}{a data frame that contains differential abundance, start and end peptide or
+precursor positions, protein length and optionally a variable based on which peptides or
+precursors should be coloured.}
 
-\item{fold_change}{a column in the data frame containing log2 fold changes.}
+\item{fold_change}{a numeric column in the \code{data} data frame that contains log2 fold
+changes.}
 
-\item{start_position}{a column in the data frame containing the start positions for each peptide or precursor.}
+\item{start_position}{a numeric column in the \code{data} data frame that contains the start
+positions for each peptide or precursor.}
 
-\item{end_position}{a column in the data frame containing the end positions for each peptide or precursor.}
+\item{end_position}{a numeric column in the \code{data} data frame that contains the end
+positions for each peptide or precursor.}
 
-\item{protein_length}{a column in the data frame containing the length of the protein.}
+\item{protein_length}{a numeric column in the \code{data} data frame that contains the length
+of the protein.}
 
-\item{coverage}{optional, column in the data frame containing coverage in percent. Will appear in the title of the Woods' plot
-if provided.}
+\item{coverage}{optional, a numeric column in the \code{data} data frame that contains coverage
+in percent. Will appear in the title of the Woods' plot if provided.}
 
-\item{protein_id}{a column in the data frame containing protein identifiers.}
+\item{protein_id}{a character column in the \code{data} data frame that contains protein
+identifiers.}
 
-\item{targets}{a character vector that specifies the identifiers of the proteins (depending on \code{protein_id})
-that should be plotted. This can also be \code{"all"} if plots for all proteins should be created. Default is \code{"all"}.}
+\item{targets}{a character vector that specifies the identifiers of the proteins (depending on
+\code{protein_id}) that should be plotted. This can also be \code{"all"} if plots for all
+proteins should be created. Default is \code{"all"}.}
 
-\item{facet}{a logical indicating if plots should be summarised into facets of 20 plots. This is recommended for many plots.
-Default is \code{facet = TRUE}.}
+\item{facet}{a logical value that indicates if plots should be summarised into facets of 20
+plots. This is recommended for many plots. Default is \code{facet = TRUE}.}
 
-\item{colouring}{optional, column in the data frame containing information by which peptide or precursors should
-be coloured.}
+\item{colouring}{optional, a character or numeric (discrete or continous) column in the data
+frame containing information by which peptide or precursors should be coloured.}
 
-\item{fold_change_cutoff}{optional, numeric argument specifying the log2 fold change cutoff used in the plot. The default value is 2.}
+\item{fold_change_cutoff}{optional, a numeric value that specifies the log2 fold change cutoff
+used in the plot. The default value is 2.}
 
-\item{highlight}{optional logical column containing logicals, specifying whether specific peptides or precursors should be highlighted with an asterisk.}
+\item{highlight}{optional, a logical column that specifies whether specific peptides or
+precursors should be highlighted with an asterisk.}
 
-\item{export}{a logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The
-name of the file can be chosen using the \code{export_name} argument. Default is \code{export = FALSE}.}
+\item{export}{a logical value that indicates if plots should be exported as PDF. The output
+directory will be the current working directory. The name of the file can be chosen using the
+\code{export_name} argument. Default is \code{export = FALSE}.}
 
-\item{export_name}{a character vector providing the name of the exported file if \code{export = TRUE}. Default is \code{export_name = "woods_plots"}}
+\item{export_name}{a character vector that provides the name of the exported file if
+\code{export = TRUE}. Default is \code{export_name = "woods_plots"}}
 }
 \value{
-A list containing Woods' plots is returned. Plotting peptide or precursor fold changes across protein sequence.
+A list containing Woods' plots is returned. Plotting peptide or precursor log2 fold
+changes along the protein sequence.
 }
 \description{
-Creates a Woods' plot that plots log2 fold change of peptides or precursors along the protein sequence.
+Creates a Woods' plot that plots log2 fold change of peptides or precursors along the protein
+sequence. The peptides or precursors are located on the x-axis based on their start and end
+positions. The position on the y-axis displays the fold change. The vertical size (y-axis) of
+the box representing the peptides or precursors do not have any meaning.
 }
 \examples{
-\dontrun{
-woods_plot(test,
-  fold_change = diff,
+# Create example data
+data <- data.frame(
+  fold_change = c(2.3, 0.3, -0.4, -4, 1),
+  pval = c(0.001, 0.7, 0.9, 0.003, 0.03),
+  start = c(20, 30, 45, 90, 140),
+  end = c(33, 40, 64, 100, 145),
+  protein_length = c(rep(150, 5)),
+  protein_id = c(rep("P1", 5))
+)
+
+# Plot Woods' plot
+woods_plot(
+  data = data,
+  fold_change = fold_change,
   start_position = start,
   end_position = end,
-  protein_length = length,
-  colouring = pep_type,
-  protein_id, pg_protein_accessions,
-  facet = TRUE,
-  highlight = is_significant
+  protein_length = protein_length,
+  protein_id = protein_id,
+  colouring = pval
 )
-}
 }
