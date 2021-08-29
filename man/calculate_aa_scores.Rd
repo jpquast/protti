@@ -37,6 +37,7 @@ A data frame that contains the aggregated scores per amino acid position, enabli
 draw fingerprints for each individual protein.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Calculate a score for each amino acid position in a protein sequence based on the product of the
 -log10(adjusted p-value) and the absolute log2 fold change per peptide. In detail, all the
 peptides are aligned along the sequence of the corresponding protein, and the average score per

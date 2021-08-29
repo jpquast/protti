@@ -24,8 +24,8 @@ volcano_protti <- function(...) {
 #' @param log2FC a character column in the \code{data} data frame that contains the log2
 #' transfromed fold changes between two conditions.
 #' @param significance a character column in the \code{data} data frame that contains the p-value
-#' or adjusted p-value for the corresponding fold changes. P-value is ideally adjusted using e.g.
-#' Benjamini-Hochberg correction.
+#' or adjusted p-value for the corresponding fold changes. The values in this column will be 
+#' transformed using the -log10 and displayed on the y-axis of the plot.
 #' @param method a character value that specifies the method used for the plot.
 #' \code{method = "target"} highlights your protein, proteins or any other entities of interest
 #' (specified in the `target` argument) in the volcano plot. \code{method = "significant"}
@@ -49,9 +49,22 @@ volcano_protti <- function(...) {
 #' @param legend_label optional, a character value that specifies the legend label. Default is
 #' "Target".
 #' @param log2FC_cutoff optional, a numeric value that specifies the log2 transformed fold change
-#' cutoff used for assessing whether changes are significant. Default value is 1.
-#' @param significance_cutoff optional, a numeric value that specifies the p-value cutoff used for
-#' assessing significance of changes. Default is 0.01.
+#' cutoff used for the vertical lines, which can be used to assess the significance of changes. 
+#' Default value is 1.
+#' @param significance_cutoff optional, a character vector that specifies the p-value cutoff used 
+#' for the horizontal cutoff line, which can be used to assess the significance of changes. The 
+#' vector can consist solely of one element, which is the cutoff value. In that case the cutoff 
+#' will be applied directly to the plot. Alternatively, a second element can be provided to the 
+#' vector that specifies a column in the \code{data} data frame which contains e.g. adjusted 
+#' p-values. In that case the y-axis of the plot could display p-values that are provided to the 
+#' \code{significance} argument, while the horizontal cutoff line is on the scale of adjusted 
+#' p-values transformed to the scale of p-values. The provided vector can be e.g. 
+#' \code{c(0.05, "adj_pval")}. In that case the function looks for the closest adjusted p-value 
+#' above and below 0.05 and takes the mean of the corresponding p-values as the cutoff line. If 
+#' there is no adjusted p-value in the data that is below 0.05 no line is displayed. This allows 
+#' the user to display volcano plots using p-values while using adjusted p-values for the cutoff 
+#' criteria. This is often preferred because adjusted p-values are related to unadjusted p-values
+#' often in a complex way that makes them hard to be interpret when plotted. Default is \code{c(0.01)}.
 #' @param interactive a logical value that specifies whether the plot should be interactive
 #' (default is FALSE).
 #'
@@ -76,7 +89,7 @@ volcano_protti <- function(...) {
 #'   n_proteins = 10,
 #'   frac_change = 0.5,
 #'   n_replicates = 4,
-#'   n_conditions = 2,
+#'   n_conditions = 3,
 #'   method = "effect_random",
 #'   additional_metadata = FALSE
 #' )
@@ -114,7 +127,7 @@ volcano_protti <- function(...) {
 #'   target_column = change_peptide,
 #'   target = TRUE,
 #'   facet_by = comparison,
-#'   significance_cutoff = 0.05
+#'   significance_cutoff = c(0.05, "adj_pval")
 #' )
 volcano_plot <- function(data,
                          grouping,
@@ -136,6 +149,35 @@ volcano_plot <- function(data,
 
   data <- data %>%
     tidyr::drop_na({{ log2FC }}, {{ significance }})
+  
+  # check if significance_cutoff has a second element specifiying the column
+  # the cutoff should be based on.
+  if (length(significance_cutoff) > 1){
+    adjusted_significance <- significance_cutoff[2]
+
+    data <- data %>% 
+      dplyr::mutate(centered_cutoff = !!rlang::ensym(adjusted_significance) - as.numeric(significance_cutoff[1]),
+                    positive = .data$centered_cutoff > 0) %>% 
+      dplyr::group_by(.data$positive, {{ facet_by }}) %>% 
+      dplyr::mutate(is_closest_to_cutoff = abs(.data$centered_cutoff) == min(abs(.data$centered_cutoff))) %>% 
+      dplyr::group_by(.data$is_closest_to_cutoff, {{ facet_by }}) %>%
+      dplyr::mutate(mean_adjusted_cutoff = mean({{ significance }})) %>% 
+      dplyr::ungroup() %>% 
+      dplyr::group_by({{ facet_by }}) %>% 
+      dplyr::mutate(mean_adjusted_cutoff = max(ifelse(.data$is_closest_to_cutoff, .data$mean_adjusted_cutoff, NA), na.rm = TRUE)) %>% 
+      dplyr::mutate(mean_adjusted_cutoff = ifelse(all(.data$positive), NA, .data$mean_adjusted_cutoff)) 
+  } else {
+    # just use the regular cutoff if no second element for corrected 
+    # adjustment was provided.
+    data <- data %>% 
+      dplyr::mutate(mean_adjusted_cutoff = as.numeric(significance_cutoff[1])) 
+  }
+  
+  # create variable that contains cutoff line information
+  cutoff_line <- data %>% 
+    dplyr::mutate(mean_adjusted_cutoff = -log10(.data$mean_adjusted_cutoff)) %>% 
+    dplyr::distinct({{ facet_by }}, .data$mean_adjusted_cutoff) %>% 
+    tidyr::drop_na(.data$mean_adjusted_cutoff)
 
   if (method == "target") {
     data <- data %>%
@@ -168,7 +210,7 @@ volcano_plot <- function(data,
         y = y_axis_label,
         color = legend_label
       ) +
-      geom_hline(yintercept = -log10(significance_cutoff), linetype = "dashed") +
+      geom_hline(data = cutoff_line, aes(yintercept = .data$mean_adjusted_cutoff), linetype = "dashed") +
       geom_vline(xintercept = log2FC_cutoff, linetype = "dashed") +
       geom_vline(xintercept = -log2FC_cutoff, linetype = "dashed") +
       {
@@ -207,8 +249,8 @@ volcano_plot <- function(data,
   }
   if (method == "significant") {
     plot <- data %>%
-      dplyr::filter(!((({{ log2FC }} > log2FC_cutoff) & ({{ significance }} < significance_cutoff)) |
-        (({{ log2FC }} < -log2FC_cutoff) & ({{ significance }} < significance_cutoff)))) %>%
+      dplyr::filter(!((({{ log2FC }} > log2FC_cutoff) & ({{ significance }} < .data$mean_adjusted_cutoff)) |
+        (({{ log2FC }} < -log2FC_cutoff) & ({{ significance }} < .data$mean_adjusted_cutoff)))) %>%
       ggplot2::ggplot(aes(
         label1 = {{ target_column }},
         label2 = {{ grouping }}
@@ -220,8 +262,8 @@ volcano_plot <- function(data,
       colour = "grey60"
       ) +
       geom_point(
-        data = dplyr::filter(data, (({{ log2FC }} > log2FC_cutoff) & ({{ significance }} < significance_cutoff)) |
-          (({{ log2FC }} < -log2FC_cutoff) & ({{ significance }} < significance_cutoff))),
+        data = dplyr::filter(data, (({{ log2FC }} > log2FC_cutoff) & ({{ significance }} < .data$mean_adjusted_cutoff)) |
+          (({{ log2FC }} < -log2FC_cutoff) & ({{ significance }} < .data$mean_adjusted_cutoff))),
         aes(
           x = {{ log2FC }},
           y = -log10({{ significance }})
@@ -234,7 +276,7 @@ volcano_plot <- function(data,
         x = x_axis_label,
         y = y_axis_label
       ) +
-      geom_hline(yintercept = -1 * log10(significance_cutoff), linetype = "dashed") +
+      geom_hline(data = cutoff_line, aes(yintercept = .data$mean_adjusted_cutoff), linetype = "dashed") +
       geom_vline(xintercept = log2FC_cutoff, linetype = "dashed") +
       geom_vline(xintercept = -1 * log2FC_cutoff, linetype = "dashed") +
       {

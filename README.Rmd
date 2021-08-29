@@ -191,11 +191,10 @@ Next we can use a Volcano plot to visualize significantly changing peptides with
 result %>% 
   volcano_plot(grouping = peptide,
                  log2FC = diff,
-                 significance = adj_pval,
+                 significance = pval,
                  method = "target",
                  target_column = change_peptide,
                  target = TRUE,
                  legend_label = "Ground Truth",
-                 significance_cutoff = 0.05,
-                 interactive = FALSE)
+                 significance_cutoff = c(0.05, "adj_pval"))
 ```

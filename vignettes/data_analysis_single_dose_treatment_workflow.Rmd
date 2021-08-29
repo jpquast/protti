@@ -289,10 +289,11 @@ _Note: If the p-values do not fulfill the assumption for multiple-testing correc
 
 ### Volcano plot
 
-Next we are going to visualise the output of the previously performed hypothesis test to assess the results of our experiment. For this we are going to plot a volcano plot with fold-changes on the x-axis and the adjusted p-value (q-value) or p-value on the y-axis. 
-The output of the previously used `calculate_diff_abundance()` function is ideal to use for the `volcano_plot()` function as it contains all the information we need: precursor IDs, protein IDs, fold changes (`diff`) and adjusted p-values (`adj_pval`).
+Next we are going to visualise the output of the previously performed hypothesis test to assess the results of our experiment. For this we are going to plot a volcano plot with fold-changes on the x-axis and the p-value on the y-axis. 
+The output of the previously used `calculate_diff_abundance()` function is ideal to use for the `volcano_plot()` function as it contains all the information we need: precursor IDs, protein IDs, fold changes (`diff`), p-values (`pval`) and adjusted p-values (`adj_pval`).
 We are going to highlight the peptides of the known target of rapamycin FKBP12 (UniProt ID = P62942) in blue to quickly find the peptides in the plot. You can also make the plot interactive by setting `interactive = TRUE`. This will help you quickly obtain more information on each point in the plot.
-We are going to plot the volcano plot with and without adjusted p-values. 
+
+Since adjusted p-values are related to unadjusted p-values often in a complex way, it makes them hard to be interpret if they would be used for the y-axis. To nevertheless use the information of adjusted p-values for the plot, you can provide the column name of the adjusted p-values to the `significance_cutoff` argument next to the desired cutoff. The function will look for the closest adjusted p-values above and below the set cutoff and take the mean of the corresponding p-value as the cutoff line. If there is no adjusted p-value in the data that is below the set cutoff no line is displayed. This allows you to display volcano plots using p-values while using adjusted p-values for the cutoff criteria.
 
 ```{r volcano_plot, eval = test_protti, fig.align= "center", fig.width = 6, fig.height = 5, message = FALSE, warning = FALSE}
 volcano_plot(
@@ -306,22 +307,12 @@ volcano_plot(
   x_axis_label = "log2(fold change) Rapamycin treated vs. untreated",
   y_axis_label = "-log10(p-value)",
   title = "Volcano plot (p-value not adjusted)",
-  significance_cutoff = 0.05
+  significance_cutoff = c(0.05, "adj_pval") 
 )
 
-volcano_plot(
-  data = diff_abundance_data,
-  grouping = eg_precursor_id,
-  log2FC = diff,
-  significance = adj_pval,
-  method = "target",
-  target_column = pg_protein_accessions,
-  target = "P62942",
-  x_axis_label = "log2(fold change) Rapamycin treated vs. untreated",
-  y_axis_label = "-log10(q-value)",
-  title = "Volcano plot",
-  significance_cutoff = 0.05
-)
+# The significance_cutoff argument can also just be used for a 
+# regular cutoff line by just providing the cutoff value, e.g.
+# signficiance_cutoff = 0.05
 ```
 
 ### Barcode plot

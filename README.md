@@ -323,13 +323,12 @@ is not recommended for large datasets.
 result %>% 
   volcano_plot(grouping = peptide,
                  log2FC = diff,
-                 significance = adj_pval,
+                 significance = pval,
                  method = "target",
                  target_column = change_peptide,
                  target = TRUE,
                  legend_label = "Ground Truth",
-                 significance_cutoff = 0.05,
-                 interactive = FALSE)
+                 significance_cutoff = c(0.05, "adj_pval"))
 ```
 
 <img src="man/figures/README-volcano-1.png" width="100%" />

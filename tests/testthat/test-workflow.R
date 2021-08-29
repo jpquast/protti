@@ -527,14 +527,14 @@ test_that("volcano_plot works", {
       data = diff,
       grouping = peptide,
       log2FC = diff,
-      significance = adj_pval,
+      significance = pval,
       method = "significant",
       target_column = protein,
       title = "Test tile",
       x_axis_label = "test x-Axis",
       y_axis_label = "test y-Axis",
       log2FC_cutoff = 1,
-      significance_cutoff = 0.05,
+      significance_cutoff = c(0.05, "adj_pval"),
       interactive = TRUE
     )
     expect_is(p_interactive, "plotly")

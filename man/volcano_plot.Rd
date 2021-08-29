@@ -32,8 +32,8 @@ or peptide identifiers.}
 transfromed fold changes between two conditions.}
 
 \item{significance}{a character column in the \code{data} data frame that contains the p-value
-or adjusted p-value for the corresponding fold changes. P-value is ideally adjusted using e.g.
-Benjamini-Hochberg correction.}
+or adjusted p-value for the corresponding fold changes. The values in this column will be
+transformed using the -log10 and displayed on the y-axis of the plot.}
 
 \item{method}{a character value that specifies the method used for the plot.
 \code{method = "target"} highlights your protein, proteins or any other entities of interest
@@ -66,10 +66,23 @@ is "Volcano plot".}
 "Target".}
 
 \item{log2FC_cutoff}{optional, a numeric value that specifies the log2 transformed fold change
-cutoff used for assessing whether changes are significant. Default value is 1.}
+cutoff used for the vertical lines, which can be used to assess the significance of changes.
+Default value is 1.}
 
-\item{significance_cutoff}{optional, a numeric value that specifies the p-value cutoff used for
-assessing significance of changes. Default is 0.01.}
+\item{significance_cutoff}{optional, a character vector that specifies the p-value cutoff used
+for the horizontal cutoff line, which can be used to assess the significance of changes. The
+vector can consist solely of one element, which is the cutoff value. In that case the cutoff
+will be applied directly to the plot. Alternatively, a second element can be provided to the
+vector that specifies a column in the \code{data} data frame which contains e.g. adjusted
+p-values. In that case the y-axis of the plot could display p-values that are provided to the
+\code{significance} argument, while the horizontal cutoff line is on the scale of adjusted
+p-values transformed to the scale of p-values. The provided vector can be e.g.
+\code{c(0.05, "adj_pval")}. In that case the function looks for the closest adjusted p-value
+above and below 0.05 and takes the mean of the corresponding p-values as the cutoff line. If
+there is no adjusted p-value in the data that is below 0.05 no line is displayed. This allows
+the user to display volcano plots using p-values while using adjusted p-values for the cutoff
+criteria. This is often preferred because adjusted p-values are related to unadjusted p-values
+often in a complex way that makes them hard to be interpret when plotted. Default is \code{c(0.01)}.}
 
 \item{interactive}{a logical value that specifies whether the plot should be interactive
 (default is FALSE).}
@@ -90,7 +103,7 @@ data <- create_synthetic_data(
   n_proteins = 10,
   frac_change = 0.5,
   n_replicates = 4,
-  n_conditions = 2,
+  n_conditions = 3,
   method = "effect_random",
   additional_metadata = FALSE
 )
@@ -128,6 +141,6 @@ volcano_plot(
   target_column = change_peptide,
   target = TRUE,
   facet_by = comparison,
-  significance_cutoff = 0.05
+  significance_cutoff = c(0.05, "adj_pval")
 )
 }
