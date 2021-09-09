@@ -274,7 +274,7 @@ diff_abundance_data <- data_filtered_uniprot %>%
 
 ### p-value distribution
 
-The p-value calculated with the t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg (FDR) correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall even distribution with a concentration of values in the significant range. You can check this by using the protti function `pval_distribution_plot()`.
+The p-value calculated with the moderated t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall uniform distribution. If there is an effect in the data, there will be an increased frequency of low p-values. You can check this by using the protti function `pval_distribution_plot()`.
 
 ```{r pval_distribution, eval = test_protti, message = FALSE, warning = FALSE, fig.align= "center", fig.width = 6, fig.height = 5}
 pval_distribution_plot(data = diff_abundance_data,
@@ -283,9 +283,9 @@ pval_distribution_plot(data = diff_abundance_data,
                        )
 ```
 
-For this subset of data the distribution of p-values is relatively flat and there is no increase in values in the low p-value range but rather a decrease. This means that the Benjamini-Hochberg algorithm might not be suitable for correcting these p-values. You can pick another algorithm for the correction and supply it to the `p_adj_method` argument and run `calculate_diff_abundance()` again. The available methods are any methods that can be supplied to the standard R function `p.adjust()` that is used internally within `calculate_diff_abundance()`. You can also just use this function or any other correction algorithm on your data and overwrite the values in the `adj_pval` column.
+For this subset of data the distribution of p-values is relatively flat and there is no large increase in values in the low p-value range. This is likely because, especially for certain LiP-MS experiments, only a very small fraction of peptides show changes. If so, it can happen that none or only a few significant hits remain after adjusting the p-value using the Benjamini-Hochberg correction. The Benjamini-Hochberg adjustment is an appropriate method to use in such a case, however, there might be correction methods that better account for the low number of true positive hits.
 
-_Note: If the p-values do not fulfill the assumption for multiple-testing correction, meaning very few observations are changing significantly, it can happen that only a few significant hits remain after adjusting the p-value. This can be a common occurrence so you should always look at the p-value distribution. This will help you decide whether or not you should use adjusted p-values, not adjusted p-values or if you should adjust them with a specific method._
+It is recommended to always check the p-value distribution after the statistical test in order to make sure that the mathematical assumptions for multiple testing correction are met. Any histogram that does not have a uniform distribution (that is not flat) with or without a specific enrichment for very low p-values (due to a treatment induced effect) might indicate a failed mathematical assumption that is caused by correlation across proteins or peptides, correlation across samples or unobserved confounders ([Efron 2010, chapter 6](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/0BD692B5CFF1C51B73D480B72B0B3A28/9780511761362c6_p89-112_CBO.pdf/theoretical_permutation_and_empirical_null_distributions.pdf)). In this case you should carefully evaluate where the correlation comes from and see if you can correct for it with a method such as local FDR correction ([Efron 2010, chapter 5](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/010A779FBAA2456833678F25F7BDBB2B/9780511761362c5_p70-88_CBO.pdf/local_false_discovery_rates.pdf)).
 
 ### Volcano plot
 

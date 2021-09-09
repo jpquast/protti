@@ -382,7 +382,8 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(network), 5)
     expect_gt(nrow(network), 100)
 
-    expect_error(network_analysis(
+    rlang::with_options(lifecycle_verbosity = "warning", {
+    expect_warning(expect_error(network_analysis(
       data = input,
       protein_id = id,
       string_id = database_string,
@@ -390,7 +391,8 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       score_threshold = 900,
       binds_treatment = is_known,
       plot = TRUE
-    ), NA)
+    ), NA))
+    })
   })
 
   test_that("analyse_functional_network works", {

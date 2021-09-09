@@ -20,7 +20,7 @@
 #' @param pdb_id a character column in the \code{peptide_data} data frame that contains PDB
 #' identifiers for structures in which a corresponding peptide, protein region or amino acid is found.
 #' If a protein prediction should be fetched from AlphaFold, this column should contain NA. This
-#' column is not required if a structure or pediction file is provided in the \code{structure_file}
+#' column is not required if a structure or prediction file is provided in the \code{structure_file}
 #' argument.
 #' @param chain a character column in the \code{peptide_data} data frame that contains the name of
 #' the chain from the PDB structure in which the peptide, protein region or amino acid is found.
@@ -45,7 +45,8 @@
 #' be provided to both \code{start_in_pdb} and \code{end_in_pdb}. In case of AlphaFold
 #' predictions, UniProt positions should be used.
 #' @param map_value a numeric column in the \code{peptide_data} data frame that contains a value
-#' associated with each peptide, protein region or amino acid. This value will be displayed as a
+#' associated with each peptide, protein region or amino acid. If one start to end position pair 
+#' has multiple different map values, the maximum will be used. This value will be displayed as a
 #' colour gradient when mapped onto the structure. The value can for example be the fold change,
 #' p-value or score associated with each peptide, protein region or amino acid (selection). If
 #' the selections should be displayed with just one colour, the value in this column should be
@@ -60,6 +61,10 @@
 #' Fetching and mapping onto ".cif" files takes longer than for ".pdb" files. If a structure file
 #' is provided in the \code{structure_file} argument, the file format is detected automatically
 #' and does not need to be provided.
+#' @param scale_per_structure a logical value that specifies if scaling should be performed for 
+#' each structure independently (TRUE) or over the whole data set (FALSE). The default is TRUE,
+#' which scales the scores of each structure independently so that each structure has a score 
+#' range from 50 to 100.
 #' @param export_location optional, a character argument specifying the path to the location in
 #' which the fetched and altered structure files should be saved. If left empty, they will be
 #' saved in the current working directory. The location should be provided in the following
@@ -141,6 +146,7 @@ map_peptides_on_structure <- function(peptide_data,
                                       end_in_pdb,
                                       map_value,
                                       file_format = ".cif",
+                                      scale_per_structure = TRUE,
                                       export_location = NULL,
                                       structure_file = NULL,
                                       show_progress = TRUE) {
@@ -176,6 +182,11 @@ map_peptides_on_structure <- function(peptide_data,
         end = {{ end_in_pdb }}
       ) %>%
       # do this so start and end position can be the same column.
+      dplyr::group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, .data$start, .data$end) %>% 
+      dplyr::mutate({{ map_value}} := max({{ map_value }}, na.rm = TRUE)) %>% 
+      # This makes sure that there is only one value per peptide.
+      # It will always take the maximum value.
+      dplyr::ungroup() %>% 
       dplyr::distinct(
         {{ uniprot_id }},
         {{ pdb_id }},
@@ -184,6 +195,12 @@ map_peptides_on_structure <- function(peptide_data,
         .data$end,
         {{ map_value }}
       ) %>%
+      dplyr::mutate(scaling_info = ifelse(rep(scale_per_structure, dplyr::n()), 
+                                          {{ pdb_id }},
+                                          "scale_overall")) %>% 
+      # determines if scores should by scaled by structure or 
+      # one scale for the whole data set.
+      dplyr::group_by(.data$scaling_info) %>% 
       dplyr::mutate({{ map_value }} := round(
         scale_protti(c({{ map_value }}), method = "01") * 50 + 50,
         digits = 2
@@ -196,6 +213,7 @@ map_peptides_on_structure <- function(peptide_data,
       dplyr::group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, .data$residue) %>%
       dplyr::mutate({{ map_value }} := max({{ map_value }})) %>%
       dplyr::ungroup() %>%
+      dplyr::select(-c(.data$start, .data$end, .data$scaling_info)) %>% 
       dplyr::distinct() %>%
       dplyr::mutate(
         id = ifelse(is.na({{ pdb_id }}), {{ uniprot_id }}, {{ pdb_id }}),

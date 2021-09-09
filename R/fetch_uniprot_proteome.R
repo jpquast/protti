@@ -49,7 +49,7 @@ fetch_uniprot_proteome <-
         "&format=tab&columns=",
         collapsed_columns
       ))
-    result <- try_query(query_url)
+    result <- try_query(query_url, progress = FALSE, show_col_types = FALSE)
     if (is.null(result)) {
       return(result)
     }

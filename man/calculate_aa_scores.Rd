@@ -7,20 +7,17 @@
 calculate_aa_scores(
   data,
   protein,
-  grouping,
   diff = diff,
   adj_pval = adj_pval,
   start_position,
-  end_position
+  end_position,
+  retain_columns = NULL
 )
 }
 \arguments{
 \item{data}{a data frame containing at least the input columns.}
 
 \item{protein}{a character column in the data frame containing the protein identifier or name.}
-
-\item{grouping}{a character column in \code{data} the data frame containing peptide or precursor
-identifiers.}
 
 \item{diff}{a numeric column in the \code{data} data frame containing the log2 fold change.}
 
@@ -31,6 +28,11 @@ of a peptide or precursor.}
 
 \item{end_position}{a numeric column in the data frame containing the end position of a peptide or
 precursor.}
+
+\item{retain_columns}{a vector indicating if certain columns should be retained from the input
+data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
+columns can be retained by providing their names (not in quotations marks, just like other
+column names, but in a vector).}
 }
 \value{
 A data frame that contains the aggregated scores per amino acid position, enabling to
@@ -39,7 +41,7 @@ draw fingerprints for each individual protein.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Calculate a score for each amino acid position in a protein sequence based on the product of the
--log10(adjusted p-value) and the absolute log2 fold change per peptide. In detail, all the
+-log10(adjusted p-value) and the absolute log2(fold change) per peptide covering this amino acid. In detail, all the
 peptides are aligned along the sequence of the corresponding protein, and the average score per
 amino acid position is computed. In a limited proteolysis coupled to mass spectrometry (LiP-MS)
 experiment, the score allows to prioritize and narrow down structurally affected regions.
@@ -49,7 +51,6 @@ experiment, the score allows to prioritize and narrow down structurally affected
 calculate_aa_scores(
   data,
   protein = pg_protein_accessions,
-  grouping = pep_stripped_sequence,
   diff = diff,
   adj_pval = adj_pval,
   start_position = start,

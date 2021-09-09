@@ -13,6 +13,7 @@ map_peptides_on_structure(
   end_in_pdb,
   map_value,
   file_format = ".cif",
+  scale_per_structure = TRUE,
   export_location = NULL,
   structure_file = NULL,
   show_progress = TRUE
@@ -34,7 +35,7 @@ identifiers for a corresponding peptide, protein region or amino acid.}
 \item{pdb_id}{a character column in the \code{peptide_data} data frame that contains PDB
 identifiers for structures in which a corresponding peptide, protein region or amino acid is found.
 If a protein prediction should be fetched from AlphaFold, this column should contain NA. This
-column is not required if a structure or pediction file is provided in the \code{structure_file}
+column is not required if a structure or prediction file is provided in the \code{structure_file}
 argument.}
 
 \item{chain}{a character column in the \code{peptide_data} data frame that contains the name of
@@ -63,7 +64,8 @@ be provided to both \code{start_in_pdb} and \code{end_in_pdb}. In case of AlphaF
 predictions, UniProt positions should be used.}
 
 \item{map_value}{a numeric column in the \code{peptide_data} data frame that contains a value
-associated with each peptide, protein region or amino acid. This value will be displayed as a
+associated with each peptide, protein region or amino acid. If one start to end position pair
+has multiple different map values, the maximum will be used. This value will be displayed as a
 colour gradient when mapped onto the structure. The value can for example be the fold change,
 p-value or score associated with each peptide, protein region or amino acid (selection). If
 the selections should be displayed with just one colour, the value in this column should be
@@ -79,6 +81,11 @@ since every structure contains a ".cif" file but not every structure contains a 
 Fetching and mapping onto ".cif" files takes longer than for ".pdb" files. If a structure file
 is provided in the \code{structure_file} argument, the file format is detected automatically
 and does not need to be provided.}
+
+\item{scale_per_structure}{a logical value that specifies if scaling should be performed for
+each structure independently (TRUE) or over the whole data set (FALSE). The default is TRUE,
+which scales the scores of each structure independently so that each structure has a score
+range from 50 to 100.}
 
 \item{export_location}{optional, a character argument specifying the path to the location in
 which the fetched and altered structure files should be saved. If left empty, they will be
