@@ -1,4 +1,4 @@
-# protti 0.2.0.9000
+# protti 0.2.0
 
 ## New features
 
