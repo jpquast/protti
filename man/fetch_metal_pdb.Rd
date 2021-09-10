@@ -57,7 +57,7 @@ information should be retrieved. The ligand can be specified as e.g. "His".}
 
 \item{geometry}{optional, a character value that specifies a metal site geometry for which
 information should be retrieved. The geometry can be specified here based on the three letter
-code for geometries provided on \href{https://metalpdb.cerm.unifi.it/perGeometry}{MetalPDB}.}
+code for geometries provided on \href{https://metalpdb.cerm.unifi.it/perGeometry/}{MetalPDB}.}
 
 \item{coordination}{optional, a character value that specifies a coordination number for which
 information should be retrieved. The number can be specified as e.g. "3".}
@@ -66,7 +66,7 @@ information should be retrieved. The number can be specified as e.g. "3".}
 information should be retrieved. The atom can be specified as e.g. "S" for sulfur.}
 
 \item{columns}{optional, a character vector that specifies specific columns that should be
-retrieved based on the MetalPDB \href{https://metalpdb.cerm.unifi.it/api_help}{website}. If
+retrieved based on the MetalPDB \href{https://metalpdb.cerm.unifi.it/api_help/}{website}. If
 nothing is supplied here, all possible columns will be retrieved.}
 
 \item{show_progress}{logical, if true, a progress bar will be shown. Default is TRUE.}
@@ -103,8 +103,8 @@ identification used in the publication that describes the structure.}
 }
 \description{
 Fetches information about protein-metal binding sites from the
-\href{https://metalpdb.cerm.unifi.it}{MetalPDB} database. A complete list of different search
-queries possible can be found \href{https://metalpdb.cerm.unifi.it/api_help}{here}.
+\href{https://metalpdb.cerm.unifi.it/}{MetalPDB} database. A complete list of different search
+queries possible can be found \href{https://metalpdb.cerm.unifi.it/api_help/}{here}.
 }
 \examples{
 \donttest{
