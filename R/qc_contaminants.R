@@ -1,18 +1,22 @@
 #' Percentage of contaminants per sample
 #'
-#' Calculates the percentage of contaminating proteins as the share of total intensity
+#' Calculates the percentage of contaminating proteins as the share of total intensity.
 #'
-#' @param data a data frame containing at least the input variables.
-#' @param sample the name of the column containing the sample names.
-#' @param protein the name of the column containing protein IDs or protein names.
-#' @param is_contaminant the name of the column containing a logical indicating if the protein is a contaminant.
-#' @param intensity the name of the column containing the corresponding raw or untransformed normalised intensity values.
-#' @param n_contaminants numeric, indicating how many contaminants should be displayed individually. The rest is combined to a group called "other". The
-#' default is 5.
-#' @param plot logical, if TRUE a plot is returned. If FALSE a table is returned.
-#' @param interactive logical, if TRUE the plot is interactive using plotly.
+#' @param data a data frame that contains at least the input variables.
+#' @param sample a character column in the \code{data} data frame that contains the sample names.
+#' @param protein a character column in the \code{data} data frame that contains protein IDs or
+#' protein names.
+#' @param is_contaminant a logical column that indicates if the protein is a contaminant.
+#' @param intensity a numeric column in the \code{data} data frame that contains the corresponding
+#' raw or normalised intensity values (not log2).
+#' @param n_contaminants a numeric value that indicates how many contaminants should be displayed
+#' individually. The rest is combined to a group called "other". The default is 5.
+#' @param plot a logical value that indicates if a plot is returned. If FALSE a table is returned.
+#' @param interactive a logical value that indicates if the plot is made interactive using the r
+#' package `plotly`.
 #'
-#' @return A bar plot that displays the percentage of contaminating proteins over all samples. If \code{plot = FALSE} a data frame is returned.
+#' @return A bar plot that displays the percentage of contaminating proteins over all samples.
+#' If \code{plot = FALSE} a data frame is returned.
 #' @import dplyr
 #' @import ggplot2
 #' @importFrom utils head
@@ -34,7 +38,14 @@
 #'   intensity = intensity
 #' )
 #' }
-qc_contaminants <- function(data, sample, protein, is_contaminant, intensity, n_contaminants = 5, plot = TRUE, interactive = FALSE) {
+qc_contaminants <- function(data,
+                            sample,
+                            protein,
+                            is_contaminant,
+                            intensity,
+                            n_contaminants = 5,
+                            plot = TRUE,
+                            interactive = FALSE) {
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
   result <- data %>%
@@ -46,9 +57,10 @@ qc_contaminants <- function(data, sample, protein, is_contaminant, intensity, n_
     dplyr::summarise(sum_protein_intensity = sum({{ intensity }}, na.rm = TRUE), .groups = "drop") %>%
     dplyr::mutate(contaminant_percentage = .data$sum_protein_intensity / .data$total_intensity * 100) %>%
     dplyr::group_by({{ sample }}) %>%
-    dplyr::mutate({{ protein }} := ifelse(.data$contaminant_percentage %in% utils::head(sort(.data$contaminant_percentage, decreasing = TRUE), n_contaminants),
-      {{ protein }},
-      "other"
+    dplyr::mutate({{ protein }} := ifelse(.data$contaminant_percentage %in%
+      utils::head(sort(.data$contaminant_percentage, decreasing = TRUE), n_contaminants),
+    {{ protein }},
+    "other"
     )) %>%
     dplyr::arrange(.data$contaminant_percentage) %>%
     dplyr::ungroup() %>%
@@ -64,7 +76,12 @@ qc_contaminants <- function(data, sample, protein, is_contaminant, intensity, n_
     dplyr::mutate({{ sample }} := factor({{ sample }}, levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE)))) %>%
     ggplot2::ggplot(ggplot2::aes({{ sample }}, .data$contaminant_percentage, fill = {{ protein }})) +
     ggplot2::geom_col(col = "black", size = 1) +
-    ggplot2::labs(title = "Contaminants per .raw file", x = "Sample", y = "% of total intensity", fill = "Contaminant Protein") +
+    ggplot2::labs(
+      title = "Contaminants per .raw file",
+      x = "Sample",
+      y = "% of total intensity",
+      fill = "Contaminant Protein"
+    ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
       plot.title = ggplot2::element_text(size = 20),

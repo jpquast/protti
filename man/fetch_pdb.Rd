@@ -9,18 +9,40 @@ fetch_pdb(pdb_ids, batchsize = 200, show_progress = TRUE)
 \arguments{
 \item{pdb_ids}{a character vector of PDB identifiers.}
 
-\item{batchsize}{numeric, specifying the number of structures to be processed in a single query. Default is 2000.}
+\item{batchsize}{a numeric value that specifies the number of structures to be processed in a
+single query. Default is 2000.}
 
-\item{show_progress}{logical, if true, a progress bar will be shown. Default is TRUE.}
+\item{show_progress}{a logical value that indicates if a progress bar will be shown. Default is
+TRUE.}
 }
 \value{
-A data frame that contains all structure metadata for the PDB IDs provided.
+A data frame that contains structure metadata for the PDB IDs provided. The data frame
+contains some columns that might not be self explanatory.
+\itemize{
+\item{auth_asym_id: }{Chain identifier provided by the author of the structure in order to
+match the identification used in the publication that describes the structure.}
+\item{label_asym_id: }{Chain identifier following the standardised convention for mmCIF files.}
+\item{entity_beg_seq_id, ref_beg_seq_id, length, pdb_sequence: }{\code{entity_beg_seq_id} is a
+position in the structure sequence (\code{pdb_sequence}) that matches the position given in
+\code{ref_beg_seq_id}, which is a position within the protein sequence (not included in the
+data frame). \code{length} identifies the stretch of sequence for which positions match
+accordingly between structure and protein sequence. \code{entity_beg_seq_id} is a residue ID
+based on the standardised convention for mmCIF files.}
+\item{auth_seq_id: }{Residue identifier provided by the author of the structure in order to
+match the identification used in the publication that describes the structure. This character
+vector has the same length as the \code{pdb_sequence} and each position is the identifier for
+the matching amino acid position in \code{pdb_sequence}. The contained values are not
+necessarily numbers and the values do not have to be positive.}
+}
 }
 \description{
-Fetches structure metadata from RCSB. If you want to retrieve atom data such as positions, use the function \code{fetch_pdb_structure()}.
+Fetches structure metadata from RCSB. If you want to retrieve atom data such as positions, use
+the function \code{fetch_pdb_structure()}.
 }
 \examples{
 \donttest{
-head(fetch_pdb(c("6HG1", "1E9I", "6D3Q", "4JHW")))
+pdb <- fetch_pdb(pdb_ids = c("6HG1", "1E9I", "6D3Q", "4JHW"))
+
+head(pdb)
 }
 }

@@ -9,13 +9,19 @@ scale_protti(x, method)
 \arguments{
 \item{x}{a numeric vector}
 
-\item{method}{the method to be used for scaling. "01" scales the vector between 0 and 1. "center" scales the vector equal to \code{base::scale} around a center. This is done by subtracting the mean from every value and then deviding them by the standard deviation.}
+\item{method}{a character value that specifies the method to be used for scaling. "01" scales
+the vector between 0 and 1. "center" scales the vector equal to \code{base::scale} around a
+center. This is done by subtracting the mean from every value and then deviding them by the
+standard deviation.}
 }
 \value{
 A scaled numeric vector.
 }
 \description{
-\code{scale_protti} is used to scale a numeric vector either between 0 and 1 or around a centered value using the standard deviation.
+\code{scale_protti} is used to scale a numeric vector either between 0 and 1 or around a
+centered value using the standard deviation. If a vector containing only one value or
+repeatedly the same value is provided, 1 is returned as the scaled value for \code{method = "01"}
+and 0 is returned for \code{metod = "center"}.
 }
 \examples{
 scale_protti(c(1, 2, 1, 4, 6, 8), method = "01")

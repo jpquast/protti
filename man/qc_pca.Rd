@@ -16,43 +16,68 @@ qc_pca(
 )
 }
 \arguments{
-\item{data}{a data frame containing  sample names, peptide or precursor identifiers, corresponding intensities and a condition column indicating e.g. the treatment.}
+\item{data}{a data frame that contains sample names, peptide or precursor identifiers,
+corresponding intensities and a condition column indicating e.g. the treatment.}
 
-\item{sample}{the column in the data data frame containing the sample name.}
+\item{sample}{a character column in the \code{data} data frame that contains the sample name.}
 
-\item{grouping}{the column in the data data frame containing either precursor or peptide identifiers.}
+\item{grouping}{a character column in the \code{data} data frame that contains either precursor
+or peptide identifiers.}
 
-\item{intensity}{the column in the data data frame containing containing the corresponding intensity values for each peptide or precursor.}
+\item{intensity}{a numeric column in the \code{data} data frame that contains the corresponding
+intensity values for each peptide or precursor.}
 
-\item{condition}{the column in the data data frame indicating the treatment or condition for each sample.}
+\item{condition}{a column in the \code{data} data frame that contains condition information
+(e.g. "treated" and "control").}
 
-\item{components}{character vector indicating the two components that should be displayed in the plot. By default these are PC1 and
-PC2. You can provide these using a character vector of the form c("PC1", "PC2").}
+\item{components}{a character vector indicating the two components that should be displayed in
+the plot. By default these are PC1 and PC2. You can provide these using a character vector of
+the form c("PC1", "PC2").}
 
-\item{digestion}{optional column indicating the mode of digestion (limited proteolysis or tryptic digest).}
+\item{digestion}{optional, a character column in the \code{data} data frame that indicates the
+mode of digestion (limited proteolysis or tryptic digest). Alternatively, any other variable
+by which the data should be split can be provided.}
 
-\item{plot_style}{character vector specifying what plot should be returned. If `plot_style = "pca"` is selected the two PCA
-components supplied with the `components` argument are plottet against each other. This is the default. `plot_style = "scree"` returns
-a scree plot that displays the variance explained by each principal component in percent. The scree is useful for checking if any other
-than the default first two components should be plotted.}
+\item{plot_style}{a character value that specifies what plot should be returned. If
+\code{plot_style = "pca"} is selected the two PCA components supplied with the \code{components} argument
+are plottet against each other. This is the default. \code{plot_style = "scree"} returns a scree
+plot that displays the variance explained by each principal component in percent. The scree is
+useful for checking if any other than the default first two components should be plotted.}
 }
 \value{
-A plotted principal component analysis showing PC1 and PC2
+A principal component analysis plot showing PC1 and PC2. If \code{plot_style = "scree"}, a
+scree plot for all dimensions is returned.
 }
 \description{
 Plots a principal component analysis based on peptide or precursor intensities.
 }
 \examples{
-\dontrun{
+set.seed(123) # Makes example reproducible
+
+# Create example data
+data <- create_synthetic_data(
+  n_proteins = 100,
+  frac_change = 0.05,
+  n_replicates = 3,
+  n_conditions = 2,
+)
+
+# Plot scree plot
 qc_pca(
-  data,
-  sample = r_file_name,
-  grouping = eg_precursor_id,
-  intensity = normalised_intensity_log2,
-  condition = r_condition,
-  components = c("PC2", "PC3"),
+  data = data,
+  sample = sample,
+  grouping = peptide,
+  intensity = peptide_intensity_missing,
+  condition = condition,
   plot_style = "scree"
 )
-}
 
+# Plot principal components
+qc_pca(
+  data = data,
+  sample = sample,
+  grouping = peptide,
+  intensity = peptide_intensity_missing,
+  condition = condition
+)
 }

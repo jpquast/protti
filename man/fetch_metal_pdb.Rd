@@ -22,56 +22,89 @@ fetch_metal_pdb(
 )
 }
 \arguments{
-\item{id_type}{character, specifying the type of the IDs provided to \code{id_value}. Default is "uniprot". Possible options include:
-"uniprot", "pdb", "ec_number", "molecule" and "organism"}
+\item{id_type}{a character value that specifies the type of the IDs provided to \code{id_value}.
+Default is "uniprot". Possible options include: "uniprot", "pdb", "ec_number", "molecule" and
+"organism".}
 
-\item{id_value}{a character vector supplying IDs that have the ID type that was specified in \code{id_type}. E.g. UniProt IDs.
-Information for these IDs will be retreived.}
+\item{id_value}{a character vector supplying IDs that are of the ID type that was specified in
+\code{id_type}. E.g. UniProt IDs. Information for these IDs will be retreived.}
 
-\item{site_type}{optional character, if only information about structures with a certain nuclearity should be retrieved, the
-specific nuclearity can be supplied here. E.g. "tetranuclear".}
+\item{site_type}{optional, a character value that specifies a nuclearity for which information
+should be retrieved. The specific nuclearity can be supplied as e.g. "tetranuclear".}
 
-\item{pfam}{optional character, if only information about structures with a certain Pfam domain should be retrieved, the domain
-can be specified here. E.g. "Carb_anhydrase".}
+\item{pfam}{optional, a character value that specifies a Pfam domain for which information
+should be retrieved. The domain can be specified as e.g. "Carb_anhydrase".}
 
-\item{cath}{optional character, if only information about structures with a certain CATH ID should be retreived, the ID can be
-specified here. E.g. "3.10.200.10".}
+\item{cath}{optional, a character value that specifies a CATH ID for which information
+should be retrieved. The ID can be specified as e.g. "3.10.200.10".}
 
-\item{scop}{optional character, if only information about structures with a certain SCOP ID should be retreived, the ID can be
-specified here. E.g. "b.74.1.1".}
+\item{scop}{optional, a character value that specifies a SCOP ID for which information
+should be retrieved. The ID can be specified as e.g. "b.74.1.1".}
 
-\item{representative}{optional logical, if only information of representative sites of a family should be retrieved it can
-be specified here. A representative site is a site selected to represent a cluster of equivalent sites. The
-selection is done by choosing the PDB structure with the best X-ray resolution among those containing the sites in the cluster.
-NMR structures are generally discarded in favor of X-ray structures, unless all the sites in the cluster are found in NMR structures.
-If it is \code{TRUE}, only representative sites are retrieved, if it is \code{FALSE}, all sites are retrieved.}
+\item{representative}{optional, a logical that indicates if only information of representative
+sites of a family should be retrieved it can be specified here. A representative site is a
+site selected to represent a cluster of equivalent sites. The selection is done by choosing
+the PDB structure with the best X-ray resolution among those containing the sites in the
+cluster. NMR structures are generally discarded in favor of X-ray structures, unless all the
+sites in the cluster are found in NMR structures. If it is \code{TRUE}, only representative
+sites are retrieved, if it is \code{FALSE}, all sites are retrieved.}
 
-\item{metal}{optional character, if only information about structures with a certain metal should be retrieved, the metal can be
-specified here. E.g. "Zn".}
+\item{metal}{optional, a character value that specifies a metal for which information
+should be retrieved. The metal can be specified as e.g. "Zn".}
 
-\item{ligands}{optional character, if only information about structures with a certain metal ligand residue should be retrieved,
-the ligand can be specified here. E.g. "His".}
+\item{ligands}{optional, a character value that specifies a metal ligand residue for which
+information should be retrieved. The ligand can be specified as e.g. "His".}
 
-\item{geometry}{optional character, if only information about structures with a certain metal site geometry should be retrieved,
-the geometry can be specified here based on the three letter code for geometries provided on \href{https://metalpdb.cerm.unifi.it/perGeometry}{MetalPDB}.}
+\item{geometry}{optional, a character value that specifies a metal site geometry for which
+information should be retrieved. The geometry can be specified here based on the three letter
+code for geometries provided on \href{https://metalpdb.cerm.unifi.it/perGeometry/}{MetalPDB}.}
 
-\item{coordination}{optional character, if only information about structures with a certain coordination number should be retrieved,
-the number can be specified here. E.g. "3".}
+\item{coordination}{optional, a character value that specifies a coordination number for which
+information should be retrieved. The number can be specified as e.g. "3".}
 
-\item{donors}{optional character, if only information about structures with a certain metal ligand atom should be retrieved,
-the atom can be specified here. E.g. "S" for sulfur.}
+\item{donors}{optional, a character value that specifies a metal ligand atom for which
+information should be retrieved. The atom can be specified as e.g. "S" for sulfur.}
 
-\item{columns}{optional character vector, if only specific columns should be retrieved these can be specified here based on the MetalPDB
-\href{https://metalpdb.cerm.unifi.it/api_help}{website}. If nothing is supplied here, all possible columns will be retrieved.}
+\item{columns}{optional, a character vector that specifies specific columns that should be
+retrieved based on the MetalPDB \href{https://metalpdb.cerm.unifi.it/api_help/}{website}. If
+nothing is supplied here, all possible columns will be retrieved.}
 
 \item{show_progress}{logical, if true, a progress bar will be shown. Default is TRUE.}
 }
 \value{
-A data frame that contains information about protein-metal binding sites.
+A data frame that contains information about protein-metal binding sites. The data
+frame contains some columns that might not be self explanatory.
+\itemize{
+\item{auth_id_metal: }{Unique structure atom identifier of the metal, which is provided by
+the author of the structure in order to match the identification used in the publication
+that describes the structure.}
+\item{auth_seq_id_metal: }{Residue identifier of the metal, which is provided by the author of
+the structure in order to match the identification used in the publication that describes the
+structure.}
+\item{pattern: }{Metal pattern for each metal bound by the structure.}
+\item{is_representative: }{A representative site is a site selected to represent a cluster of
+equivalent sites. The selection is done by choosing the PDB structure with the best X-ray
+resolution among those containing the sites in the cluster. NMR structures are generally
+discarded in favor of X-ray structures, unless all the sites in the cluster are found in NMR
+structures.}
+\item{auth_asym_id_ligand: }{Chain identifier of the metal-coordinating ligand residues, which
+is provided by the author of the structure in order to match the identification used in the
+publication that describes the structure.}
+\item{auth_seq_id_ligand: }{Residue identifier of the metal-coordinating ligand residues, which
+is provided by the author of the structure in order to match the identification used in the
+publication that describes the structure.}
+\item{auth_id_ligand: }{Unique structure atom identifier of the metal-coordinating ligand r
+esidues, which is provided by the author of the structure in order to match the identification
+used in the publication that describes the structure.}
+\item{auth_atom_id_ligand: }{Unique residue specific atom identifier of the metal-coordinating
+ligand residues, which is provided by the author of the structure in order to match the
+identification used in the publication that describes the structure.}
+}
 }
 \description{
-Fetches information about protein-metal binding sites from the \href{https://metalpdb.cerm.unifi.it}{MetalPDB} database.
-A complete list of different search queries possible can be found \href{https://metalpdb.cerm.unifi.it/api_help}{here}.
+Fetches information about protein-metal binding sites from the
+\href{https://metalpdb.cerm.unifi.it/}{MetalPDB} database. A complete list of different search
+queries possible can be found \href{https://metalpdb.cerm.unifi.it/api_help/}{here}.
 }
 \examples{
 \donttest{

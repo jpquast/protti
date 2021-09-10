@@ -15,36 +15,61 @@ qc_data_completeness(
 )
 }
 \arguments{
-\item{data}{A data frame containing at least the input variables.}
+\item{data}{a data frame containing at least the input variables.}
 
-\item{sample}{The name of the column containing the sample names.}
+\item{sample}{a character column in the \code{data} data frame that contains the sample names.}
 
-\item{grouping}{The name of the column containing either precursor or peptide identifiers.}
+\item{grouping}{a character column in the \code{data} data frame that contains either precursor
+or peptide identifiers.}
 
-\item{intensity}{The name of the column containing any intensity intensity values that missingness should be determined for.}
+\item{intensity}{a numeric column in the \code{data} data frame that contains any intensity
+intensity values that missingness should be determined for.}
 
-\item{digestion}{Optional column indicating the mode of digestion (limited proteolysis or tryptic digest). Alternatively, any other variable
+\item{digestion}{optional, a character column in the \code{data} data frame that indicates the
+mode of digestion (limited proteolysis or tryptic digest). Alternatively, any other variable
 by which the data should be split can be provided.}
 
-\item{plot}{Logical, if TRUE a plot is returned. If FALSE a table is returned.}
+\item{plot}{a logical value that indicates whether the result should be plotted.}
 
-\item{interactive}{Logical, if TRUE the plot is interactive using plotly.}
+\item{interactive}{a logical value that specifies whether the plot should be interactive
+(default is FALSE).}
 }
 \value{
-A bar plot that displays the percentage of data completeness over all samples. If \code{plot = FALSE} a data frame is returned.
-If \code{interactive = TRUE}, the plot is interactive.
+A bar plot that displays the percentage of data completeness over all samples.
+If \code{plot = FALSE} a data frame is returned. If \code{interactive = TRUE}, the plot is
+interactive.
 }
 \description{
-Calculates the percentage of data completeness. That means, what percentage of all detected precursors is present in each sample.
+Calculates the percentage of data completeness. That means, what percentage of all detected
+precursors is present in each sample.
 }
 \examples{
-\dontrun{
-qc_data_completeness(
-  data,
-  sample = r_file_name,
-  grouping = eg_precursor_id,
-  intensity = fg_quantity,
-  digestion = digestion
+set.seed(123) # Makes example reproducible
+
+# Create example data
+data <- create_synthetic_data(
+  n_proteins = 100,
+  frac_change = 0.05,
+  n_replicates = 3,
+  n_conditions = 2,
+  method = "effect_random"
 )
-}
+
+# Determine data completeness
+qc_data_completeness(
+  data = data,
+  sample = sample,
+  grouping = peptide,
+  intensity = peptide_intensity_missing,
+  plot = FALSE
+)
+
+# Plot data completeness
+qc_data_completeness(
+  data = data,
+  sample = sample,
+  grouping = peptide,
+  intensity = peptide_intensity_missing,
+  plot = TRUE
+)
 }

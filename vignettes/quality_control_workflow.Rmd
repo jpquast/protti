@@ -80,13 +80,14 @@ The output of the `create_synthetic_data()` function is modeled after real LiP-M
 Please note that generally, quality control should be conducted on raw unfiltered data (the direct output of your search engine of choice).
 
 ```{r create_synthetic_data, eval = test_protti}
-set.seed(123) # by setting the seed we are making sure that the random object generation can be reproduced
+# by setting the seed we are making sure that the random object generation can be reproduced
+set.seed(123) 
 
 data <- create_synthetic_data(n_proteins = 100,
                               frac_change = 0.05,
                               n_replicates = 3,
                               n_conditions = 2,
-                              method = "random_effect",
+                              method = "effect_random",
                               additional_metadata = TRUE)
 
 ```
@@ -95,7 +96,7 @@ data <- create_synthetic_data(n_proteins = 100,
 
 ### Coefficients of variation
 
-A good first step of quality control is to check if coefficients of variation between replicates are in a reasonable range. Ideally, these should be below 15-20 %. If you see groups with higher CVs, there might have been a sample preparation error or the instrument performance was not ideal at the time of measurement. You can check if after `median_normalisation()` (depending on whether your search engine has performed median normalisation already) your CVs improve.
+A good first step of quality control is to check if coefficients of variation between replicates are in a reasonable range. Ideally, these should be below 15-20 %. If you see groups with higher CVs, there might have been a sample preparation error or the instrument performance was not ideal at the time of measurement. You can check if after `normalise()` (depending on whether your search engine has performed normalisation already) your CVs improve.
 
 To conduct the CV-based quality control, we make use of the function `qc_cvs()`. This function calculates the coefficients of variation. The output can either be a table or a plot of coefficients of variations for each condition. Below we are returning a CV table and a violin plot, showing the CVs for different conditions.
 
@@ -110,11 +111,12 @@ $$CV = \frac{standard ~ deviation}{mean} * 100$$
 Since the CV function works only with raw values, we will backtransform our log2 transformed data and create a new column called `raw_intensity` from the `peptide_intensity_missing` column which contains peptide intensities. To create the new column, we are using the function `mutate()` from the R package `dplyr`.
 We also make use of the pipe operator `%>%` included in the R package `magrittr` which takes the output of the preceding function and supplies it as the first argument of the following function. Using `%>%` makes code easier to read and follow. 
 
-The "combined" group of CVs contains CVs across all samples and not only across the replicates of a certain condition. Ideally the combined CVs should always be the group with the highest CV.  
+The "combined" group of CVs contains CVs across all samples and not only across the replicates of a certain condition. Ideally the combined CVs should always be the group with the highest CV. This would indicates that CVs within conditions are low and the treatment had and effect that causes an increase in overall CVs. If the treatment did not have an effect or only a very small one then the combined CV could be as high as the CVs of individual conditions. If an individual condition has a higher CV than the combined CV then there was potentially a problem with one or multiple of the samples. You can check if there are suspicious samples behaving differently from the rest in the other quality control metrics. If there is a consistent different behaviour these samples should potentially be excluded for analysis. Sometimes a condition can also just be noisy because of the treatment in this condition that causes a larger variation. Therefore comparing individual CVs with the combined CV should only be done with caution.
 
 ```{r qc_cvs, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 input <- data %>%
-  mutate(raw_intensity = 2^peptide_intensity_missing) # as the data is log2 transformed, we need to backtransform it before calculating the CVs
+  # as the data is log2 transformed, we need to transform it back before calculating the CVs
+  mutate(raw_intensity = 2^peptide_intensity_missing) 
 
 qc_cvs(data = input,
        grouping = peptide,
@@ -163,7 +165,7 @@ In a standard LiP-MS experiment we use 3 different proteases:
   * Trypsin (specific, cleaves after lysines or arginines)
   * Lys-C (specific, cleaves after lysines)
 
-Peptide types can be assessed in Spectronaut directly or by using the **protti** function `peptide_type()`. This function takes amino acids before and after the first and last amino acid in the peptide into account. A peptide that starts after a lysine or arginine and ends with a lysine or arginine is a _tryptic_ peptide. A peptide that has one proteinase K cleavage site (not lysine or arginine) and one trypsin cleavage site either at the beginning or at the end of the peptide is a _semi-tryptic_ peptide. A peptide that does not have any trypsin cleavage sites is a _non-tryptic_ peptide. If information about the amino acid before and the last amino acid of a peptide are not available in your data you can use the `find_peptide` function from the **protti** package to create it.
+Peptide types can be assessed in Spectronaut directly or by using the **protti** function `assign_peptide_type()`. This function takes amino acids before and after the first and last amino acid in the peptide into account. A peptide that starts after a lysine or arginine and ends with a lysine or arginine is a _tryptic_ peptide. A peptide that has one proteinase K cleavage site (not lysine or arginine) and one trypsin cleavage site either at the beginning or at the end of the peptide is a _semi-tryptic_ peptide. A peptide that does not have any trypsin cleavage sites is a _non-tryptic_ peptide. If information about the amino acid before and the last amino acid of a peptide are not available in your data you can use the `find_peptide` function from the **protti** package to create it.
 
 We are going to use the function `qc_peptide_type()` to evaluate the distribution of peptide types between our samples. The function can return a plot or a table, based on either peptide type counts or intensities. Both are equally important when assessing how homogenous the samples are. For `method = intensity` the function uses raw intensity values, so we are going to use the column `raw_intensity` which we added previously. 
 
@@ -245,7 +247,7 @@ qc_missed_cleavages(data = input,
 
 The following function gives you insight into the protein coverage (i.e. what percentage of the protein sequence is covered by the identified peptides) in the dataset. For a LiP-MS experiment, or any other peptide-centric proteomics experiment, high sequence coverages are desirable. 
 
-To assess the protein coverage distribution, we are going to use the function `qc_protein_coverage()`. If you do not have a column containing the protein coverages in your data, you can use the function `sequence_coverage()` to obtain this information. 
+To assess the protein coverage distribution, we are going to use the function `qc_protein_coverage()`. If you do not have a column containing the protein coverages in your data, you can use the function `calculate_sequence_coverage()` to obtain this information. 
 
 ```{r qc_sequence_coverage, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 qc_sequence_coverage(data = input, 

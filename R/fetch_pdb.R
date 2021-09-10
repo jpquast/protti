@@ -1,12 +1,32 @@
 #' Fetch structure information from RCSB
 #'
-#' Fetches structure metadata from RCSB. If you want to retrieve atom data such as positions, use the function \code{fetch_pdb_structure()}.
+#' Fetches structure metadata from RCSB. If you want to retrieve atom data such as positions, use
+#' the function \code{fetch_pdb_structure()}.
 #'
 #' @param pdb_ids a character vector of PDB identifiers.
-#' @param batchsize numeric, specifying the number of structures to be processed in a single query. Default is 2000.
-#' @param show_progress logical, if true, a progress bar will be shown. Default is TRUE.
+#' @param batchsize a numeric value that specifies the number of structures to be processed in a
+#' single query. Default is 2000.
+#' @param show_progress a logical value that indicates if a progress bar will be shown. Default is
+#' TRUE.
 #'
-#' @return A data frame that contains all structure metadata for the PDB IDs provided.
+#' @return A data frame that contains structure metadata for the PDB IDs provided. The data frame
+#' contains some columns that might not be self explanatory.
+#' \itemize{
+#' \item{auth_asym_id: }{Chain identifier provided by the author of the structure in order to
+#' match the identification used in the publication that describes the structure.}
+#' \item{label_asym_id: }{Chain identifier following the standardised convention for mmCIF files.}
+#' \item{entity_beg_seq_id, ref_beg_seq_id, length, pdb_sequence: }{\code{entity_beg_seq_id} is a
+#' position in the structure sequence (\code{pdb_sequence}) that matches the position given in
+#' \code{ref_beg_seq_id}, which is a position within the protein sequence (not included in the
+#' data frame). \code{length} identifies the stretch of sequence for which positions match
+#' accordingly between structure and protein sequence. \code{entity_beg_seq_id} is a residue ID
+#' based on the standardised convention for mmCIF files.}
+#' \item{auth_seq_id: }{Residue identifier provided by the author of the structure in order to
+#' match the identification used in the publication that describes the structure. This character
+#' vector has the same length as the \code{pdb_sequence} and each position is the identifier for
+#' the matching amino acid position in \code{pdb_sequence}. The contained values are not
+#' necessarily numbers and the values do not have to be positive.}
+#' }
 #' @import dplyr
 #' @import progress
 #' @import purrr
@@ -20,7 +40,9 @@
 #'
 #' @examples
 #' \donttest{
-#' head(fetch_pdb(c("6HG1", "1E9I", "6D3Q", "4JHW")))
+#' pdb <- fetch_pdb(pdb_ids = c("6HG1", "1E9I", "6D3Q", "4JHW"))
+#'
+#' head(pdb)
 #' }
 fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
   if (!requireNamespace("httr", quietly = TRUE)) {
@@ -132,6 +154,11 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
   }
 }'
 
+  # remove NA values
+  pdb_ids <- pdb_ids[!is.na(pdb_ids)]
+  if (length(pdb_ids) == 0) {
+    stop("No PDB IDs were provided.")
+  }
   # split pdb_ids into batches
   batches <- split(pdb_ids, ceiling(seq_along(pdb_ids) / batchsize))
   if (show_progress == TRUE) {
@@ -148,7 +175,12 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       stringr::str_replace_all(pattern = "\\]", replacement = "%5D")
     # only try to fetch more batches if previous cycle did not encounter a connection problem.
     if (!is.null(batches)) {
-      query <- try_query(httr::modify_url("https://data.rcsb.org/graphql", query = url_encode_query), type = "application/json", simplifyDataFrame = TRUE)
+      query <- try_query(httr::modify_url("https://data.rcsb.org/graphql",
+        query = url_encode_query
+      ),
+      type = "application/json",
+      simplifyDataFrame = TRUE
+      )
     }
     if (show_progress == TRUE & "list" %in% class(query)) {
       pb$tick()
@@ -186,12 +218,33 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
     tidyr::unnest(.data$entries.exptl_crystal_grow)
 
   # make sure that the data is complete even if there is no crystal structure
-  should_not_be_here <- colnames(crystal_growth_info)[!colnames(crystal_growth_info) %in% c("pdb_ids", "method", "pH", "temp")]
-  should_be_here <- c("pdb_ids", "method", "pH", "temp")[!c("pdb_ids", "method", "pH", "temp") %in% colnames(crystal_growth_info)]
+  should_not_be_here <- colnames(crystal_growth_info)[!colnames(crystal_growth_info) %in% c(
+    "pdb_ids",
+    "method",
+    "pH",
+    "temp"
+  )]
+  should_be_here <- c(
+    "pdb_ids",
+    "method",
+    "pH",
+    "temp"
+  )[!c(
+    "pdb_ids",
+    "method",
+    "pH",
+    "temp"
+  ) %in% colnames(crystal_growth_info)]
 
   crystal_growth_info <- crystal_growth_info %>%
     dplyr::select(-should_not_be_here) %>%
-    dplyr::bind_cols(stats::setNames(data.frame(matrix(ncol = length(should_be_here), nrow = nrow(crystal_growth_info))), should_be_here)) %>%
+    dplyr::bind_cols(stats::setNames(
+      data.frame(matrix(
+        ncol = length(should_be_here),
+        nrow = nrow(crystal_growth_info)
+      )),
+      should_be_here
+    )) %>%
     dplyr::rename(
       pH_crystallisation = .data$pH,
       method_crystallisation = .data$method,
@@ -203,18 +256,50 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
     tidyr::unnest(.data$resolution_combined)
 
   nmr_info <- query_result_clean %>%
-    dplyr::select(.data$pdb_ids, .data$entries.pdbx_nmr_exptl, .data$entries.pdbx_nmr_exptl_sample_conditions, .data$entries.pdbx_nmr_refine) %>%
+    dplyr::select(
+      .data$pdb_ids,
+      .data$entries.pdbx_nmr_exptl,
+      .data$entries.pdbx_nmr_exptl_sample_conditions,
+      .data$entries.pdbx_nmr_refine
+    ) %>%
     tidyr::unnest(.data$entries.pdbx_nmr_exptl) %>%
     tidyr::unnest(.data$entries.pdbx_nmr_exptl_sample_conditions) %>%
     tidyr::unnest(.data$entries.pdbx_nmr_refine)
 
   # make sure that the data is complete even if there is no NMR structure
-  should_not_be_here <- colnames(nmr_info)[!colnames(nmr_info) %in% c("pdb_ids", "type", "pH", "temperature", "method", "ionic_strength")]
-  should_be_here <- c("pdb_ids", "type", "pH", "temperature", "method", "ionic_strength")[!c("pdb_ids", "type", "pH", "temperature", "method", "ionic_strength") %in% colnames(nmr_info)]
+  should_not_be_here <- colnames(nmr_info)[!colnames(nmr_info) %in% c(
+    "pdb_ids",
+    "type",
+    "pH",
+    "temperature",
+    "method",
+    "ionic_strength"
+  )]
+  should_be_here <- c(
+    "pdb_ids",
+    "type",
+    "pH",
+    "temperature",
+    "method",
+    "ionic_strength"
+  )[!c(
+    "pdb_ids",
+    "type",
+    "pH",
+    "temperature",
+    "method",
+    "ionic_strength"
+  ) %in% colnames(nmr_info)]
 
   nmr_info <- nmr_info %>%
     dplyr::select(-should_not_be_here) %>%
-    dplyr::bind_cols(stats::setNames(data.frame(matrix(ncol = length(should_be_here), nrow = nrow(nmr_info))), should_be_here)) %>%
+    dplyr::bind_cols(stats::setNames(
+      data.frame(matrix(
+        ncol = length(should_be_here),
+        nrow = nrow(nmr_info)
+      )),
+      should_be_here
+    )) %>%
     dplyr::rename(
       type_nmr = .data$type,
       pH_nmr = .data$pH,
@@ -228,12 +313,30 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
     tidyr::unnest(.data$entries.rcsb_binding_affinity)
 
   # make sure that the data is complete even if there is no affinity information
-  should_not_be_here <- colnames(rcsb_binding_affinity)[!colnames(rcsb_binding_affinity) %in% c("pdb_ids", "comp_id", "value")]
-  should_be_here <- c("pdb_ids", "comp_id", "value")[!c("pdb_ids", "comp_id", "value") %in% colnames(rcsb_binding_affinity)]
+  should_not_be_here <- colnames(rcsb_binding_affinity)[!colnames(rcsb_binding_affinity) %in% c(
+    "pdb_ids",
+    "comp_id",
+    "value"
+  )]
+  should_be_here <- c(
+    "pdb_ids",
+    "comp_id",
+    "value"
+  )[!c(
+    "pdb_ids",
+    "comp_id",
+    "value"
+  ) %in% colnames(rcsb_binding_affinity)]
 
   rcsb_binding_affinity <- rcsb_binding_affinity %>%
     dplyr::select(-should_not_be_here) %>%
-    dplyr::bind_cols(stats::setNames(data.frame(matrix(ncol = length(should_be_here), nrow = nrow(rcsb_binding_affinity))), should_be_here)) %>%
+    dplyr::bind_cols(stats::setNames(
+      data.frame(matrix(
+        ncol = length(should_be_here),
+        nrow = nrow(rcsb_binding_affinity)
+      )),
+      should_be_here
+    )) %>%
     dplyr::rename(
       affinity_comp_id = .data$comp_id,
       affinity_value = .data$value
@@ -246,7 +349,11 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       .$entity_poly,
       .$rcsb_polymer_entity_container_identifiers
     ) %>%
-    dplyr::select(-c(.data$entity_poly, .data$rcsb_polymer_entity_container_identifiers, .data$rcsb_entity_source_organism)) %>%
+    dplyr::select(-c(
+      .data$entity_poly,
+      .data$rcsb_polymer_entity_container_identifiers,
+      .data$rcsb_entity_source_organism
+    )) %>%
     tidyr::unnest(c(.data$uniprots, .data$rcsb_polymer_entity_align)) %>%
     dplyr::bind_cols(
       uniprot_container_identifiers = .$rcsb_uniprot_container_identifiers,
@@ -257,14 +364,19 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
     dplyr::bind_cols(.$name) %>%
     dplyr::select(-c(.data$name, .data$entry_id)) %>%
     dplyr::rename(name_protein = .data$value) %>%
-    tidyr::unnest(c(.data$auth_asym_ids, .data$polymer_entity_instances)) %>% 
+    tidyr::unnest(c(.data$auth_asym_ids, .data$polymer_entity_instances)) %>%
     dplyr::bind_cols(
       rcsb_polymer_entity_instance_container_identifiers = .$rcsb_polymer_entity_instance_container_identifiers
-    ) %>% 
+    ) %>%
     dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers))
-  
-  entity_instance_info <- polymer_entities %>% 
-    dplyr::distinct(.data$asym_id, .data$auth_asym_id, .data$entry_id, .data$auth_to_entity_poly_seq_mapping) %>%
+
+  entity_instance_info <- polymer_entities %>%
+    dplyr::distinct(
+      .data$asym_id,
+      .data$auth_asym_id,
+      .data$entry_id,
+      .data$auth_to_entity_poly_seq_mapping
+    ) %>%
     dplyr::rename(
       auth_asym_ids = .data$auth_asym_id,
       pdb_ids = .data$entry_id
@@ -278,7 +390,14 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
     )
 
   polymer_entities <- polymer_entities %>%
-    select(-c(.data$uniprot_id, .data$name_protein, .data$asym_id, .data$auth_asym_id, .data$entry_id, .data$auth_to_entity_poly_seq_mapping)) %>%
+    select(-c(
+      .data$uniprot_id,
+      .data$name_protein,
+      .data$asym_id,
+      .data$auth_asym_id,
+      .data$entry_id,
+      .data$auth_to_entity_poly_seq_mapping
+    )) %>%
     distinct()
 
   if (!all(is.na(query_result_clean$entries.nonpolymer_entities))) {
@@ -290,7 +409,12 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
         .$nonpolymer_comp
       ) %>%
       dplyr::bind_cols(.$chem_comp) %>%
-      dplyr::select(-c(.data$nonpolymer_comp, .data$rcsb_nonpolymer_entity_container_identifiers, .data$chem_comp, .data$entry_id)) %>%
+      dplyr::select(-c(
+        .data$nonpolymer_comp,
+        .data$rcsb_nonpolymer_entity_container_identifiers,
+        .data$chem_comp,
+        .data$entry_id
+      )) %>%
       tidyr::unnest(.data$auth_asym_ids) %>%
       dplyr::rename(
         name_nonpolymer = .data$name,
@@ -331,16 +455,17 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
     dplyr::left_join(nmr_info, by = "pdb_ids") %>%
     dplyr::left_join(resolution_info, by = "pdb_ids") %>%
     dplyr::left_join(uniprot_info, by = "reference_database_accession") %>%
-    dplyr::left_join(entity_instance_info, by = c("pdb_ids", "auth_asym_ids")) %>% 
+    dplyr::left_join(entity_instance_info, by = c("pdb_ids", "auth_asym_ids")) %>%
     dplyr::rename(
-      chain = .data$auth_asym_ids,
-      chain_alternative = .data$asym_id,
-      pdb_sequence = .data$pdbx_seq_one_letter_code_can
+      auth_asym_id = .data$auth_asym_ids,
+      label_asym_id = .data$asym_id,
+      pdb_sequence = .data$pdbx_seq_one_letter_code_can,
+      auth_seq_id = .data$auth_to_entity_poly_seq_mapping
     ) %>%
     dplyr::select(
       .data$pdb_ids,
-      .data$chain,
-      .data$chain_alternative,
+      .data$auth_asym_id,
+      .data$label_asym_id,
       .data$reference_database_accession,
       .data$protein_name,
       .data$reference_database_name,
@@ -348,7 +473,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       .data$ref_beg_seq_id,
       .data$length,
       .data$pdb_sequence,
-      .data$auth_to_entity_poly_seq_mapping,
+      .data$auth_seq_id,
       .data$id_nonpolymer,
       .data$type_nonpolymer,
       .data$formula_weight_nonpolymer,

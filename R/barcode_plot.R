@@ -39,7 +39,15 @@
 #'   cutoffs = c(diff = 2, pval = 0.05)
 #' )
 #' }
-barcode_plot <- function(data, start_position, end_position, protein_length, coverage = NULL, colouring = NULL, protein_id = NULL, facet = NULL, cutoffs = NULL) {
+barcode_plot <- function(data,
+                         start_position,
+                         end_position,
+                         protein_length,
+                         coverage = NULL,
+                         colouring = NULL,
+                         protein_id = NULL,
+                         facet = NULL,
+                         cutoffs = NULL) {
   # Check if there is more than one protein even though protein_id was specified.
   if (!missing(protein_id)) {
     if (length(unique(dplyr::pull(data, {{ protein_id }}))) > 1) {
@@ -70,7 +78,7 @@ barcode_plot <- function(data, start_position, end_position, protein_length, cov
     colouring <- sym("change")
 
     data <- data %>%
-      dplyr::mutate({{ colouring }} := ifelse(((!!ensym(fc_name) >= fc | !!ensym(fc_name) <= -fc) & !!ensym(sig_name) <= sig), "Structural change", "Unchanged")) %>%
+      dplyr::mutate({{ colouring }} := ifelse(((!!ensym(fc_name) >= fc | !!ensym(fc_name) <= -fc) & !!ensym(sig_name) <= sig), "Changed", "Unchanged")) %>%
       dplyr::mutate({{ colouring }} := forcats::fct_rev(ifelse(is.na({{ colouring }}), "Unchanged", {{ colouring }}))) %>%
       dplyr::arrange({{ colouring }})
   }

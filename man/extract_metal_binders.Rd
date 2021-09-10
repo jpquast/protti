@@ -15,48 +15,79 @@ extract_metal_binders(
 )
 }
 \arguments{
-\item{data}{A data frame containing at least the input columns.}
+\item{data}{a data frame containing at least the input columns.}
 
-\item{protein_id}{The name of the column containing protein identifiers.}
+\item{protein_id}{a character column in the \code{data} data frame that contains the protein
+identifiers.}
 
-\item{feature_metal_binding}{The name of the column containing feature metal binding information from UniProt.}
+\item{feature_metal_binding}{a character column in the \code{data} data frame that contains the
+feature metal binding information from UniProt.}
 
-\item{chebi_cofactor}{The name of the column containing ChEBI cofactor information from UniProt.}
+\item{chebi_cofactor}{a character column in the \code{data} data frame that contains the ChEBI
+cofactor information from UniProt.}
 
-\item{chebi_catalytic_activity}{The name of the column containing ChEBI catalytic activity information from UniProt.}
+\item{chebi_catalytic_activity}{a character column in the \code{data} data frame that contains
+the ChEBI catalytic activity information from UniProt.}
 
-\item{chebi_data}{Optional, a data frame that can be manually obtained with \code{fetch_chebi()}. If not provided it will be fetched within the function.
-If the function is run many times it is recommended to provide the data frame to save time.}
+\item{chebi_data}{optional, a data frame that can be manually obtained with \code{fetch_chebi()}.
+If not provided it will be fetched within the function. If the function is run many times it
+is recommended to provide the data frame to save time.}
 
-\item{chebi_relation_data}{Optional, a data frame that can be manually obtained with \code{fetch_chebi(relation = TRUE)}. If not provided it will be fetched within the function.
+\item{chebi_relation_data}{optional, a data frame that can be manually obtained with
+\code{fetch_chebi(relation = TRUE)}. If not provided it will be fetched within the function.
 If the function is run many times it is recommended to provide the data frame to save time.}
 }
 \value{
-A data frame containing information on protein metal binding state. It contains the following types of columns (the naming might vary based on the input):
+A data frame containing information on protein metal binding state. It contains the
+following types of columns (the naming might vary based on the input):
 \itemize{
 \item{\code{protein_id}: }{UniProt protein identifier.}
-\item{\code{source}: }{The source of the information, can be either \code{feature_metal_binding}, \code{chebi_cofactor} or \code{chebi_catalytic_activity}.}
-\item{\code{ids}: }{ChEBI ID assigned to protein and binding site based on \code{metal_type} column name. These are general IDs that have sub-IDs. Thus, they generally describe the type of metal ion bound to the protein.}
-\item{\code{metal_position}: }{Amino acid position within the protein that is involved in metal binding.}
-\item{\code{metal_type}: }{Metal name extracted from \code{feature_metal_binding} information. This is the name that is used as a search pattern in order to assign a ChEBI ID with the \code{split_metal_name} helper function within this function.}
-\item{\code{sub_ids}: }{ChEBI ID that is a sub-ID (incoming) of the ID in the \code{ids} column. Thus, they more specifically describe the potential nature of the metal ion.}
+\item{\code{source}: }{The source of the information, can be either \code{feature_metal_binding},
+\code{chebi_cofactor} or \code{chebi_catalytic_activity}.}
+\item{\code{ids}: }{ChEBI ID assigned to protein and binding site based on \code{metal_type}
+column name. These are general IDs that have sub-IDs. Thus, they generally describe the type of
+metal ion bound to the protein.}
+\item{\code{metal_position}: }{Amino acid position within the protein that is involved in metal
+binding.}
+\item{\code{metal_type}: }{Metal name extracted from \code{feature_metal_binding} information.
+This is the name that is used as a search pattern in order to assign a ChEBI ID with the
+\code{split_metal_name} helper function within this function.}
+\item{\code{sub_ids}: }{ChEBI ID that is a sub-ID (incoming) of the ID in the \code{ids} column.
+Thus, they more specifically describe the potential nature of the metal ion.}
 \item{\code{main_id_name}: }{Official ChEBI name associated with the ID in the \code{ids} column.}
-\item{\code{multi_evidence}: }{If there is overlapping information in \code{feature_metal_binding} and \code{chebi_cofactor} or \code{chebi_catalytic_activity}, only \code{feature_metal_binding} is retained and multi_evidence is TRUE.}
-\item{\code{sub_id_name}: }{Official ChEBI name associated with the ID in the \code{sub_ids} column.}
+\item{\code{multi_evidence}: }{If there is overlapping information in \code{feature_metal_binding}
+and \code{chebi_cofactor} or \code{chebi_catalytic_activity}, only \code{feature_metal_binding}
+is retained and multi_evidence is TRUE.}
+\item{\code{sub_id_name}: }{Official ChEBI name associated with the ID in the \code{sub_ids}
+column.}
 }
 }
 \description{
-Information of metal binding proteins is extracted from UniProt data retrieved with \code{fetch_uniprot}. ChEBI IDs, potential
-sub-IDs for metal cations, binding site locations in the protein and sub-ID evidence level (based on metal presence as cofactor) are extracted.
+Information of metal binding proteins is extracted from UniProt data retrieved with
+\code{fetch_uniprot}. ChEBI IDs, potential sub-IDs for metal cations, binding site locations
+in the protein and sub-ID evidence level (based on metal presence as cofactor) are extracted.
 }
 \examples{
-\dontrun{
-extract_metal_binders(
-  data,
+\donttest{
+# Create example data
+data <- fetch_uniprot(
+  uniprot_ids = c("Q03640", "Q03778", "P22276"),
+  columns = c(
+    "feature(METAL BINDING)",
+    "chebi(Cofactor)",
+    "chebi(Catalytic activity)"
+  )
+)
+
+# Extract metal binding information
+metal_info <- extract_metal_binders(
+  data = data,
   protein_id = id,
   feature_metal_binding = feature_metal_binding,
   chebi_cofactor = chebi_cofactor,
   chebi_catalytic_activity = chebi_catalytic_activity
 )
+
+metal_info
 }
 }

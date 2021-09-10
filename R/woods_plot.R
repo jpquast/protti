@@ -1,29 +1,44 @@
 #' Woods' plot
 #'
-#' Creates a Woods' plot that plots log2 fold change of peptides or precursors along the protein sequence.
+#' Creates a Woods' plot that plots log2 fold change of peptides or precursors along the protein
+#' sequence. The peptides or precursors are located on the x-axis based on their start and end
+#' positions. The position on the y-axis displays the fold change. The vertical size (y-axis) of
+#' the box representing the peptides or precursors do not have any meaning.
 #'
-#' @param data a data frame containing differential abundance, start and end peptide or precursor positions, protein
-#' length and optionally a variable based on which peptides or precursors should be coloured.
-#' @param fold_change a column in the data frame containing log2 fold changes.
-#' @param start_position a column in the data frame containing the start positions for each peptide or precursor.
-#' @param end_position a column in the data frame containing the end positions for each peptide or precursor.
-#' @param protein_length a column in the data frame containing the length of the protein.
-#' @param coverage optional, column in the data frame containing coverage in percent. Will appear in the title of the Woods' plot 
-#' if provided.
-#' @param protein_id a column in the data frame containing protein identifiers.
-#' @param targets a character vector that specifies the identifiers of the proteins (depending on \code{protein_id})
-#' that should be plotted. This can also be \code{"all"} if plots for all proteins should be created. Default is \code{"all"}.
-#' @param facet a logical indicating if plots should be summarised into facets of 20 plots. This is recommended for many plots.
-#' Default is \code{facet = TRUE}.
-#' @param colouring optional, column in the data frame containing information by which peptide or precursors should
-#' be coloured.
-#' @param fold_change_cutoff optional, numeric argument specifying the log2 fold change cutoff used in the plot. The default value is 2.
-#' @param highlight optional logical column containing logicals, specifying whether specific peptides or precursors should be highlighted with an asterisk.
-#' @param export a logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The
-#' name of the file can be chosen using the \code{export_name} argument. Default is \code{export = FALSE}.
-#' @param export_name a character vector providing the name of the exported file if \code{export = TRUE}. Default is \code{export_name = "woods_plots"}
+#' @param data a data frame that contains differential abundance, start and end peptide or
+#' precursor positions, protein length and optionally a variable based on which peptides or
+#' precursors should be coloured.
+#' @param fold_change a numeric column in the \code{data} data frame that contains log2 fold
+#' changes.
+#' @param start_position a numeric column in the \code{data} data frame that contains the start
+#' positions for each peptide or precursor.
+#' @param end_position a numeric column in the \code{data} data frame that contains the end
+#' positions for each peptide or precursor.
+#' @param protein_length a numeric column in the \code{data} data frame that contains the length
+#' of the protein.
+#' @param coverage optional, a numeric column in the \code{data} data frame that contains coverage
+#' in percent. Will appear in the title of the Woods' plot if provided.
+#' @param protein_id a character column in the \code{data} data frame that contains protein
+#' identifiers.
+#' @param targets a character vector that specifies the identifiers of the proteins (depending on
+#' \code{protein_id}) that should be plotted. This can also be \code{"all"} if plots for all
+#' proteins should be created. Default is \code{"all"}.
+#' @param facet a logical value that indicates if plots should be summarised into facets of 20
+#' plots. This is recommended for many plots. Default is \code{facet = TRUE}.
+#' @param colouring optional, a character or numeric (discrete or continous) column in the data
+#' frame containing information by which peptide or precursors should be coloured.
+#' @param fold_change_cutoff optional, a numeric value that specifies the log2 fold change cutoff
+#' used in the plot. The default value is 2.
+#' @param highlight optional, a logical column that specifies whether specific peptides or
+#' precursors should be highlighted with an asterisk.
+#' @param export a logical value that indicates if plots should be exported as PDF. The output
+#' directory will be the current working directory. The name of the file can be chosen using the
+#' \code{export_name} argument. Default is \code{export = FALSE}.
+#' @param export_name a character vector that provides the name of the exported file if
+#' \code{export = TRUE}. Default is \code{export_name = "woods_plots"}
 #'
-#' @return A Woods' plot is returned. Plotting peptide or precursor fold changes across protein sequence.
+#' @return A list containing Woods' plots is returned. Plotting peptide or precursor log2 fold
+#' changes along the protein sequence.
 #' @import ggplot2
 #' @import tidyr
 #' @import progress
@@ -34,23 +49,45 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' woods_plot(test,
-#'   fold_change = diff,
+#' # Create example data
+#' data <- data.frame(
+#'   fold_change = c(2.3, 0.3, -0.4, -4, 1),
+#'   pval = c(0.001, 0.7, 0.9, 0.003, 0.03),
+#'   start = c(20, 30, 45, 90, 140),
+#'   end = c(33, 40, 64, 100, 145),
+#'   protein_length = c(rep(150, 5)),
+#'   protein_id = c(rep("P1", 5))
+#' )
+#'
+#' # Plot Woods' plot
+#' woods_plot(
+#'   data = data,
+#'   fold_change = fold_change,
 #'   start_position = start,
 #'   end_position = end,
-#'   protein_length = length,
-#'   colouring = pep_type,
-#'   protein_id, pg_protein_accessions,
-#'   facet = TRUE,
-#'   highlight = is_significant
+#'   protein_length = protein_length,
+#'   protein_id = protein_id,
+#'   colouring = pval
 #' )
-#' }
-woods_plot <- function(data, fold_change, start_position, end_position, protein_length, coverage = NULL, protein_id, targets = "all", facet = TRUE, colouring = NULL, fold_change_cutoff = 1, highlight = NULL, export = FALSE, export_name = "woods_plots") {
+woods_plot <- function(data,
+                       fold_change,
+                       start_position,
+                       end_position,
+                       protein_length,
+                       coverage = NULL,
+                       protein_id,
+                       targets = "all",
+                       facet = TRUE,
+                       colouring = NULL,
+                       fold_change_cutoff = 1,
+                       highlight = NULL,
+                       export = FALSE,
+                       export_name = "woods_plots") {
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
   . <- NULL
-  # create variable that contains information about the missingness of certain variables so it can be used in the mapping through which the plot is created.
+  # create variable that contains information about the missingness of
+  # certain variables so it can be used in the mapping through which the plot is created.
   colouring_missing <- missing(colouring)
   highlight_missing <- missing(highlight)
 
@@ -69,12 +106,15 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
   data <- data %>%
     dplyr::ungroup() %>%
     tidyr::drop_na({{ protein_id }}) %>%
-    dplyr::mutate({{ protein_id }} := factor({{ protein_id }}, levels = unique(dplyr::pull(data, {{ protein_id }})))) %>%
+    dplyr::mutate({{ protein_id }} := factor({{ protein_id }},
+      levels = unique(dplyr::pull(data, {{ protein_id }}))
+    )) %>%
     dplyr::group_by({{ protein_id }}) %>%
     dplyr::mutate(
       group_number = dplyr::cur_group_id(),
       name = {{ protein_id }}
-    ) %>% # we do this in preparation for faceting later.
+    ) %>%
+    # we do this in preparation for faceting later.
     dplyr::ungroup() %>%
     dplyr::mutate(group_number = ceiling(.data$group_number / 20))
 
@@ -92,7 +132,10 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
       split(.$name)
   }
 
-  pb <- progress::progress_bar$new(total = length(data_facet), format = " Creating Woods' plots [:bar] :current/:total (:percent) :eta")
+  pb <- progress::progress_bar$new(
+    total = length(data_facet),
+    format = " Creating Woods' plots [:bar] :current/:total (:percent) :eta"
+  )
 
   plots <- purrr::map2(.x = data_facet, .y = names(data_facet), function(x, y) {
     pb$tick()
@@ -142,7 +185,10 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
         alpha = .8,
         size = 0.7
       ) +
-      ggplot2::ylim(min(-2.5, dplyr::pull(data, {{ fold_change }})) - 0.5, max(2.5, dplyr::pull(data, {{ fold_change }})) + 0.5) +
+      ggplot2::ylim(
+        min(-2.5, dplyr::pull(data, {{ fold_change }})) - 0.5,
+        max(2.5, dplyr::pull(data, {{ fold_change }})) + 0.5
+      ) +
       ggplot2::scale_x_continuous(limits = NULL, expand = c(0, 0)) +
       {
         if (facet == FALSE) {
@@ -165,12 +211,16 @@ woods_plot <- function(data, fold_change, start_position, end_position, protein_
       {
         if (facet == TRUE) ggplot2::facet_wrap(~ .data$name, scales = "free", ncol = 4)
       } +
-      ggplot2::guides(size = FALSE) +
+      ggplot2::guides(size = "none") +
       {
-        if (!colouring_missing && !is.numeric(dplyr::pull(data, {{ colouring }}))) ggplot2::scale_fill_manual(values = protti_colours)
+        if (!colouring_missing && !is.numeric(dplyr::pull(data, {{ colouring }}))) {
+          ggplot2::scale_fill_manual(values = protti_colours)
+        }
       } +
       {
-        if (!colouring_missing && is.numeric(dplyr::pull(data, {{ colouring }}))) ggplot2::scale_fill_gradient(low = protti_colours[1], high = protti_colours[2])
+        if (!colouring_missing && is.numeric(dplyr::pull(data, {{ colouring }}))) {
+          ggplot2::scale_fill_gradient(low = protti_colours[1], high = protti_colours[2])
+        }
       } +
       ggplot2::theme_bw() +
       ggplot2::theme(

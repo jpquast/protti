@@ -7,16 +7,22 @@
 fetch_chebi(relation = FALSE)
 }
 \arguments{
-\item{relation}{a logical, if TRUE, ChEBI Ontology data will be returned instead the main compound data. This data can be used to check the relations of ChEBI ID's to eachother.}
+\item{relation}{a logical value that indicates if ChEBI Ontology data will be returned instead
+the main compound data. This data can be used to check the relations of ChEBI ID's to each other.
+Default is FALSE.}
 }
 \value{
-A data frame that contains all information about each molecule in the ChEBI database. Only "3-star" observations are included in the result. These are entries manually annotated by the ChEBI curator team.
+A data frame that contains all information about each molecule in the ChEBI database.
+Only "3-star" observations are included in the result. These are entries manually annotated
+by the ChEBI curator team.
 }
 \description{
 Fetches all information from the ChEBI database.
 }
 \examples{
 \donttest{
-head(fetch_chebi())
+chebi <- fetch_chebi()
+
+head(chebi)
 }
 }

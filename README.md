@@ -73,7 +73,7 @@ You can install the release version from
 `install.packages()` function.
 
 ``` r
-install.packages("protti")
+install.packages("protti", dependencies = TRUE)
 ```
 
 You can install the development version from
@@ -86,8 +86,17 @@ removing the comment sign (\#).
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("jpquast/protti")
+devtools::install_github("jpquast/protti", dependencies = TRUE)
 ```
+
+The `dependencies = TRUE` argument in both `install.packages()` and
+`devtools::install_github()` also installs suggested packages that are
+required for some functions to work. If this argument is not included
+functions that use a package that is not installed by default will throw
+an error and prompt the user to install the missing package. If you
+happen to run into problems during the installation of **protti** we
+recommend removing this argument and installing packages manually if
+they are needed for a certain function.
 
 ## Usage
 
@@ -181,11 +190,12 @@ data <- create_synthetic_data(n_proteins = 100,
                               frac_change = 0.05,
                               n_replicates = 4,
                               n_conditions = 2,
-                              method = "random_effect",
+                              method = "effect_random",
                               additional_metadata = FALSE)
 
-# The method "random_effect" as opposed to "dose-response" just randomly samples the change of significantly 
-# changing peptides for each condition. They do not follow any trend and can go in any direction.
+# The method "effect_random" as opposed to "dose-response" just randomly samples 
+# the extend of the change of significantly changing peptides for each condition. 
+# They do not follow any trend and can go in any direction.
 ```
 
 #### Clean and Normalise Data
@@ -216,19 +226,21 @@ synthetic data as it is already log2 transformed. For your own data just
 use `dplyr`’s `mutate()` together with `log2()`.
 
 In addition to filtering and log2 transformation it is also advised to
-median normalise your data to equal out small differences in overall
-sample intensities that result from unequal sample concentrations.
-**protti** provides the `median_normalisation()` function for this
-purpose. This function generates an additional column called
-`normalised_intensity_log2` that contains the normalised intensities.
+normalise your data to equal out small differences in overall sample
+intensities that result from unequal sample concentrations. **protti**
+provides the `normalise()` function for this purpose. For this example
+we will use median normalisation (`method = "median"`). This function
+generates an additional column called `normalised_intensity_log2` that
+contains the normalised intensities.
 
-Note: If your search tool already normalised your data you should not
-normalise it another time.
+*Note: If your search tool already normalised your data you should not
+normalise it another time.*
 
 ``` r
 normalised_data <- data %>% 
-  median_normalisation(sample = sample,
-                       intensity_log2 = peptide_intensity_missing)
+  normalise(sample = sample,
+            intensity_log2 = peptide_intensity_missing,
+            method = "median")
 ```
 
 #### Assign Missingness
@@ -237,20 +249,24 @@ The next step is to deal with missing data points. You could choose to
 impute missing data in a later step, but this is only recommended if
 only a small proportion of your data is missing. In order to calculate
 statistical significance of differentially abundant peptides or proteins
-we would like to have a minimum number of observations per condition.
-The **protti** function `assign_missingness()` checks for each
-treatment-to-reference condition if this number is satisfied and assigns
-a missingness type to each comparison as follows. If a certain condition
-has all replicates while the other one has less than 20% (adjusted
-downward) of total possible replicates, the case is considered to be
-“missing not at random” (`MNAR`). In order to be labeled “missing at
-random” (`MAR`) 70% (adjusted downward) of total replicates need to be
-present in both conditions. Comparisons that have too few observations
-are labeled `NA`. If you performed an experiment with 4 replicates that
-means that both conditions need to contain at least 2 observations. You
-can read the exact details in the documentation of this function and
-also adjust the thresholds if you want to be more or less conservative
-with how many data points to retain.
+we would like to have at least a minimum number of observations per
+condition. The **protti** function `assign_missingness()` checks for
+each treatment-to-reference condition if the defined minimum number of
+observations is satisfied and assigns a missingness type to each
+comparison as follows.
+
+If a certain condition has all replicates while the other one has less
+than 20% (adjusted downward) of total possible replicates, the case is
+considered to be “missing not at random” (`MNAR`). In order to be
+labeled “missing at random” (`MAR`) 70% (adjusted downward) of total
+replicates need to be present in both conditions. If you performed an
+experiment with 4 replicates that means that both conditions need to
+contain at least 2 observations. Comparisons that have too few
+observations are labeled `NA`. These will not be imputed if imputation
+is performed later on using the `impute()` function. You can read the
+exact details in the documentation of this function and also adjust the
+thresholds if you want to be more or less conservative with how many
+data points to retain.
 
 ``` r
 data_missing <- normalised_data %>% 
@@ -261,53 +277,58 @@ data_missing <- normalised_data %>%
                      ref_condition = "condition_1",
                      retain_columns = c(protein, change_peptide))
 
-# Next to the columns it generates, assign_missingness only contains the columns you provide as input in its output. 
-# If you want to retain additional columns you can provide them in the retain_columns argument.
+# Next to the columns it generates, assign_missingness only contains the columns 
+# you provide as input in its output. If you want to retain additional columns you 
+# can provide them in the retain_columns argument.
 ```
 
-Note: Instead of “peptide” in the `grouping` argument you can provide
+*Note: Instead of “peptide” in the `grouping` argument you can provide
 protein IDs in case you are working with protein abundance data.
 However, then intensities should be protein intensities and not peptide
-intensities.
+intensities.*
 
 #### Calculate Differential Abundance and Significance
 
 For the calculation of abundance changes and the associated
-significances **protti** provides the function `diff_abundance()`. You
-can choose between different statistical methods. For this example we
-will chose a Welch’s t-test. Obtained p-values are adjusted for multiple
-testing using the Benjamini-Hochberg method ([Benjamini & Hochberg
-1995](http://www.math.tau.ac.il/~ybenja/MyPapers/benjamini_hochberg1995.pdf)).
+significances **protti** provides the function
+`calculate_diff_abundance()`. You can choose between different
+statistical methods. For this example we will chose a moderated t-test.
+
+The type of missingness assigned to a comparison does not have any
+influence on the statistical test. However, by default (can be changed)
+comparisons with missingness `NA` are filtered out prior to p-value
+adjustment. This means that in addition to imputation, the user can use
+missingness cutoffs also in order to define which comparisons are too
+incomplete to be trustworthy even if significant.
 
 ``` r
 result <- data_missing %>% 
-  diff_abundance(sample = sample,
-                 condition = condition,
-                 grouping = peptide,
-                 intensity_log2 = normalised_intensity_log2,
-                 missingness = missingness,
-                 comparison = comparison,
-                 filter_NA_missingness = TRUE,
-                 method = "t-test",
-                 retain_columns = c(protein, change_peptide))
+  calculate_diff_abundance(sample = sample,
+                           condition = condition,
+                           grouping = peptide,
+                           intensity_log2 = normalised_intensity_log2,
+                           missingness = missingness,
+                           comparison = comparison,
+                           filter_NA_missingness = TRUE,
+                           method = "moderated_t-test",
+                           retain_columns = c(protein, change_peptide))
 ```
 
 Next we can use a Volcano plot to visualize significantly changing
-peptides with the function `volcano_protti()`. You can choose to create
-an interactive plot with the `interactive` argument. Please note that
-this is not recommended for large datasets.
+peptides with the function `volcano_plot()`. You can choose to create an
+interactive plot with the `interactive` argument. Please note that this
+is not recommended for large datasets.
 
 ``` r
 result %>% 
-  volcano_protti(grouping = peptide,
+  volcano_plot(grouping = peptide,
                  log2FC = diff,
-                 significance = adj_pval,
+                 significance = pval,
                  method = "target",
                  target_column = change_peptide,
                  target = TRUE,
                  legend_label = "Ground Truth",
-                 significance_cutoff = 0.05,
-                 interactive = FALSE)
+                 significance_cutoff = c(0.05, "adj_pval"))
 ```
 
 <img src="man/figures/README-volcano-1.png" width="100%" />

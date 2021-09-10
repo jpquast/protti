@@ -7,14 +7,20 @@
 fetch_uniprot_proteome(organism_id, columns = c("id"), reviewed = TRUE)
 }
 \arguments{
-\item{organism_id}{a numeric vector of one NCBI taxonomy identifier (TaxId) for and organism of choice.}
+\item{organism_id}{a numeric value that specifies the NCBI taxonomy identifier (TaxId) for and
+organism.}
 
-\item{columns}{a character vector of metadata columns that should be imported from UniProt (all possible columns can be found here: https://www.uniprot.org/help/uniprotkb_column_names). Note: Not more than one or two columns should be selected otherwise the function will not be able to efficiently retrieve the information. If more information is needed, \code{fetch_uniprot()} can be used with the IDs retrieved by this function.}
+\item{columns}{a character vector of metadata columns that should be imported from UniProt (all
+possible columns can be found here: https://www.uniprot.org/help/uniprotkb_column_names).
+Note: Not more than one or two columns should be selected otherwise the function will not be
+able to efficiently retrieve the information. If more information is needed, \code{fetch_uniprot()}
+can be used with the IDs retrieved by this function.}
 
-\item{reviewed}{a logical. If true, only reviewed protein entries will be retrieved.}
+\item{reviewed}{a logical value that determines if only reviewed protein entries will be retrieved.}
 }
 \value{
-A data frame that contains all protein metadata specified in \code{columns} for the organism of choice.
+A data frame that contains all protein metadata specified in \code{columns} for the
+organism of choice.
 }
 \description{
 Fetches proteome data from UniProt for the provided organism ID.

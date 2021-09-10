@@ -13,33 +13,50 @@ qc_intensity_distribution(
 )
 }
 \arguments{
-\item{data}{A data frame containing at least sample names, grouping identifiers (precursor, peptide or protein) and
-log2 transformed intensities for each grouping identifier.}
+\item{data}{a data frame that contains at least sample names, grouping identifiers (precursor,
+peptide or protein) and log2 transformed intensities for each grouping identifier.}
 
-\item{sample}{The column in the data frame containing the sample name. NOTE: If the overall distribution should be returned please
-do not provide the name of the sample column.}
+\item{sample}{a character column in the \code{data} data frame that contains the sample name.
+NOTE: If the overall distribution should be returned please do not provide the name of the
+sample column.}
 
-\item{grouping}{The column in the data frame containing either precursor, peptide or protein identifiers.}
+\item{grouping}{a character column in the \code{data} data frame that contains the grouping
+variables (e.g. peptides, precursors or proteins).}
 
-\item{intensity_log2}{The column in the data frame containing the log2 transformed intensities of each grouping identifier sample combination.}
+\item{intensity_log2}{a numeric column in the \code{data} data frame that contains the log2
+transformed intensities of each grouping identifier sample combination.}
 
-\item{plot_style}{A character vector indicating the plot type. This can be either "histogram", "boxplot" or "violin". Plot style "boxplot" and "violin" can
-only be used if a sample column is provided.}
+\item{plot_style}{a character value that indicates the plot type. This can be either
+"histogram", "boxplot" or "violin". Plot style "boxplot" and "violin" can only be used if a
+sample column is provided.}
 }
 \value{
-A histogram or boxplot that shows the intensity distribution over all samples or by sample.
+A histogram or boxplot that shows the intensity distribution over all samples or by
+sample.
 }
 \description{
-Plots the overall or sample-wise distribution of all peptide intensities as a boxplot or histogram.
+Plots the overall or sample-wise distribution of all peptide intensities as a boxplot or
+histogram.
 }
 \examples{
-\dontrun{
+set.seed(123) # Makes example reproducible
+
+# Create example data
+data <- create_synthetic_data(
+  n_proteins = 100,
+  frac_change = 0.05,
+  n_replicates = 3,
+  n_conditions = 2,
+  method = "effect_random"
+)
+
+# Plot intensity distribution
+# The plot style can be changed
 qc_intensity_distribution(
-  data,
-  sample = r_file_name,
-  grouping = eg_precursor_id,
-  intensity_log2 = normalised_intensity_log2,
+  data = data,
+  sample = sample,
+  grouping = peptide,
+  intensity_log2 = peptide_intensity_missing,
   plot_style = "boxplot"
 )
-}
 }

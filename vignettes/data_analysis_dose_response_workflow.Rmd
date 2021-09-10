@@ -74,7 +74,7 @@ After loading data into R we would like to clean it up to remove rows that are p
 
 Due to the fact that with increasing raw intensities (`fg_quantity`) also variances increase, statistical tests would have a bias towards lower intense peptides or proteins. Therefore you should log2 transform your data to correct for this mean-variance relationship. We do this by using `dplyr`’s `mutate()` together with `log2()`.
 
-In addition to filtering and log2 transformation it is also advised to median normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. **protti** provides the `median_normalisation()` function for this purpose. This function generates an additional column called `normalised_intensity_log2` that contains the normalised intensities.
+In addition to filtering and log2 transformation it is also advised to normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. **protti** provides the `normalise()` function for this purpose. For this example we will use median normalisation (`method = "median"`). This function generates an additional column called `normalised_intensity_log2` that contains the normalised intensities.
 
 _Note: If your search tool already normalised your data you should not normalise it again._
 
@@ -85,8 +85,9 @@ In addition to the removal of decoys we also remove any non-proteotypic peptides
 data_normalised <- rapamycin_dose_response %>% 
   filter(eg_is_decoy == FALSE) %>% 
   mutate(intensity_log2 = log2(fg_quantity)) %>% 
-  median_normalisation(sample = r_file_name,
-                       intensity_log2 = intensity_log2) %>% 
+  normalise(sample = r_file_name,
+            intensity_log2 = intensity_log2,
+            method = "median") %>% 
   filter(pep_is_proteotypic == TRUE)
 ```
 
@@ -154,7 +155,9 @@ fit <- data_normalised %>%
              response = normalised_intensity_log2,
              dose = r_condition,
              filter = "post", 
-             retain_columns = c(pg_protein_accessions)) # make sure to retain columns that you need later but that are not part of the function
+             retain_columns = c(pg_protein_accessions)) 
+
+# make sure to retain columns that you need later but that are not part of the function
 ```
 
 If you have to fit many models this function may take about an hour or longer. If you have the computational resources you can speed this up by using `parallel_fit_drc_4p()`, a parallelised version of this function. 
@@ -183,7 +186,13 @@ If we examine all precursors based on their rank (calculated from correlation an
 ```{r result_analysis, eval = test_protti, echo=FALSE, results='asis'}
 fit %>% 
   filter(rank <= 20) %>% 
-  select(rank, score, eg_precursor_id, pg_protein_accessions, anova_adj_pval, correlation, ec_50) %>% 
+  select(rank, 
+         score, 
+         eg_precursor_id, 
+         pg_protein_accessions, 
+         anova_adj_pval, 
+         correlation, 
+         ec_50) %>% 
   mutate(anova_adj_pval = format(anova_adj_pval, digits = 3),
          correlation = format(correlation, digits = 3),
          ec_50 = format(ec_50, digits = 2),
@@ -193,13 +202,13 @@ fit %>%
 
 ## Model fit plotting
 
-After model fitting, you can easily visualise model fits by plotting them with the `plot_drc_4p()` function. You can provide one or more precursor IDs to the `targets` argument or just return plots for all precursors with `targets = "all"`. Make sure that the number of plots is reasonable to return within R. You can also directly export your plots by setting `export = TRUE`. 
+After model fitting, you can easily visualise model fits by plotting them with the `drc_4p_plot()` function. You can provide one or more precursor IDs to the `targets` argument or just return plots for all precursors with `targets = "all"`. Make sure that the number of plots is reasonable to return within R. You can also directly export your plots by setting `export = TRUE`. 
 
 Note: The output of `fit_drc_4p()` includes two columns with data frames containing the model and original data points required for the plot. These data frames contain the original names for `dose` and `response` that you provided to `fit_drc_4p()`. 
 
 ```{r model_plot, eval = test_protti, fig.align = "center", fig.width = 7, fig.height = 5, message = FALSE, warning = FALSE}
 # Model plotting
-plot_drc_4p(fit,
+drc_4p_plot(fit,
             grouping = eg_precursor_id,
             dose = r_condition,
             response = normalised_intensity_log2,
@@ -212,15 +221,17 @@ plot_drc_4p(fit,
 
 After models are fit, you can have a deeper look into the hits you obtained. **protti** provides several functions that help you to identify patterns in your data. 
 
-You can test your data set for gene ontology (GO) term enrichment (`go_enrichment()`). Alternatively, pathway annotations provided in the KEGG database can be used to test for pathway enrichments (`kegg_enrichment()`). 
+You can test your data set for gene ontology (GO) term enrichment (`calculate_go_enrichment()`). Alternatively, pathway annotations provided in the KEGG database can be used to test for pathway enrichments (`calculate_kegg_enrichment()`). 
 
-If you know which proteins bind or interact with your specific treatment, you can provide your own list of true positive hits and check if these are enriched in your significant hits by using **protti**'s `treatment_enrichment()` function. For our LiP-MS experiment using rapamycin we are probing direct interaction with proteins in contrast to functional effects. The only protein that rapamycin is known to bind to is FKBP12 and testing the significance of enrichment for a single or even a few proteins is not appropriate. However, testing for enrichment is especially useful if your treatment affects many proteins, since it can help you to reduce the complexity of your result.
+If you know which proteins bind or interact with your specific treatment, you can provide your own list of true positive hits and check if these are enriched in your significant hits by using **protti**'s `calculate_treatment_enrichment()` function. For our LiP-MS experiment using rapamycin we are probing direct interaction with proteins in contrast to functional effects. The only protein that rapamycin is known to bind to is FKBP12 and testing the significance of enrichment for a single or even a few proteins is not appropriate. However, testing for enrichment is especially useful if your treatment affects many proteins, since it can help you to reduce the complexity of your result.
 
-The [STRING](https://academic.oup.com/nar/article/47/D1/D607/5198476) database provides a good resource for the analysis of protein interaction networks. It is often very useful to check for interactions within your significant hits. For LiP-MS data this sometimes explains why proteins that do not directly interact with your treatment are still significantly affected. With `network_analysis()`, **protti** provides a useful wrapper around some [`STRINGdb`](http://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html) package functions. 
+The [STRING](https://academic.oup.com/nar/article/47/D1/D607/5198476) database provides a good resource for the analysis of protein interaction networks. It is often very useful to check for interactions within your significant hits. For LiP-MS data this sometimes explains why proteins that do not directly interact with your treatment are still significantly affected. With `analyse_functional_network()`, **protti** provides a useful wrapper around some [`STRINGdb`](http://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html) package functions. 
 
 ## Annotation of data
 
 **protti** has several functions for fetching database information. One commonly used database in the proteomics community is UniProt. By providing the `fetch_uniprot()` function with a character vector of your protein IDs, you can fetch additional information about the proteins. These include names, IDs from other databases, gene ontology annotations, information about the active metabolite and metal binding sites, protein length and sequence. You can freely select which information you are most interested in by providing it to the `columns` arguments of the `fetch_uniprot()` function based on the information they [provide](https://www.uniprot.org/help/uniprotkb_column_names) for download. 
+
+Furthermore, we will add a `passed_filter` column to the data that contains TRUE or FALSE information based on if a precursor passed the filtering criterion defined in the `fit_drc_4p()` function. This is the case if the peptide was assigned a rank. 
 
 ```{r uniprot_annotation, eval = test_protti}
 # fetching of UniProt information
@@ -229,8 +240,12 @@ uniprot <- fetch_uniprot(unis)
 
 # annotation of fit data based on information from UniProt
 fit_annotated <- fit %>% 
-  left_join(uniprot, by = c("pg_protein_accessions" = "id")) %>% # columns containing proteins IDs are named differently
-  mutate(binds_treatment = pg_protein_accessions == "P62942") # create new column with prior knowledge about binding partners of treatment
+  # columns containing proteins IDs are named differently
+  left_join(uniprot, by = c("pg_protein_accessions" = "id")) %>% 
+  # mark peptides that pass the filtering
+  mutate(passed_filter = !is.na(rank)) %>% 
+  # create new column with prior knowledge about binding partners of treatment
+  mutate(binds_treatment = pg_protein_accessions == "P62942") 
 ```
 
 ## Enrichment and network analysis
@@ -242,30 +257,32 @@ Nevertheless, we will demonstrate below how you could use some additional functi
 ```{r post_analysis, eval = FALSE}
 ### GO enrichment using "molecular function" annotation from UniProt
 
-go_enrichment(fit_annotated,
+calculate_go_enrichment(fit_annotated,
               protein_id = pg_protein_accessions,
               is_significant = passed_filter,
               go_annotations_uniprot = go_molecular_function) # column obtained from UniProt
 
 ### KEGG pathway enrichment
 
-# First you need to load KEGG pathway annotations from the KEGG database for your specific organism of interest.
-# In this case HeLa cells were used, therefore the organism of interest is homo sapiens (hsa)
+# First you need to load KEGG pathway annotations from the KEGG database 
+# for your specific organism of interest. In this case HeLa cells were 
+# used, therefore the organism of interest is homo sapiens (hsa)
 
 kegg <- fetch_kegg(species = "hsa")
 
 # Next we need to annotate our data with KEGG pathway IDs and perform enrichment analysis
 
 fit %>% 
-  left_join(kegg, by = c("pg_protein_accessions" = "uniprot_id")) %>% # columns containing proteins IDs are named differently
-  kegg_enrichment(protein_id = pg_protein_accessions,
+  # columns containing proteins IDs are named differently
+  left_join(kegg, by = c("pg_protein_accessions" = "uniprot_id")) %>% 
+  calculate_kegg_enrichment(protein_id = pg_protein_accessions,
                   is_significant = passed_filter,
                   pathway_id = pathway_id, # column name from kegg data frame
                   pathway_name = pathway_name) # column name from kegg data frame
 
 ### Treatment enrichment analysis
 
-treatment_enrichment(fit_annotated,
+calculate_treatment_enrichment(fit_annotated,
                      protein_id = pg_protein_accessions,
                      is_significant = passed_filter,
                      binds_treatment = binds_treatment,
@@ -275,9 +292,10 @@ treatment_enrichment(fit_annotated,
 
 fit_annotated %>% 
   filter(passed_filter == TRUE) %>% # only analyse hits that were significant
-  network_analysis(protein_id = pg_protein_accessions,
+  analyse_functional_network(protein_id = pg_protein_accessions,
                    string_id = database_string, # column from UniProt containing STRING IDs
-                   organism_id = 9606, # tax ID can be found in function documentation or STRING website
+                   organism_id = 9606, 
+                   # tax ID can be found in function documentation or STRING database
                    binds_treatment = binds_treatment,
                    plot = TRUE)
 ```

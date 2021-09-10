@@ -2,18 +2,29 @@
 #'
 #' Plots one minute binned median precursor elution peak width over retention time for each sample.
 #'
-#' @param data A data frame containing at least sample names and protein IDs.
-#' @param sample The column in the data frame containing the sample names.
-#' @param intensity The column in the data frame containing intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.
-#' @param retention_time The column in the data frame containing retention times of precursors.
-#' @param peak_width The column in the data frame containing peak width information. It is not required if \code{retention_time_start} and \code{retention_time_end} columns are provided.
-#' @param retention_time_start The column in the data frame containing the start time of the precursor elution peak. It is not required if the \code{peak_width} column is provided.
-#' @param retention_time_end The column in the data frame containing the end time of the precursor elution peak. It is not required if the \code{peak_width} column is provided.
-#' @param remove_na_intensities Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
+#' @param data a data frame containing at least sample names and protein IDs.
+#' @param sample a character column in the \code{data} data frame that contains the sample names.
+#' @param intensity a numeric column in the \code{data} data frame that contains intensities. If
+#' \code{remove_na_intensities = FALSE}, this argument is not required.
+#' @param retention_time a numeric column in the \code{data} data frame that contains retention
+#' times of precursors.
+#' @param peak_width a numeric column in the \code{data} data frame that contains peak width
+#' information. It is not required if \code{retention_time_start} and \code{retention_time_end}
+#' columns are provided.
+#' @param retention_time_start a numeric column in the \code{data} data frame that contains the
+#' start time of the precursor elution peak. It is not required if the \code{peak_width} column
+#' is provided.
+#' @param retention_time_end a numeric column in the \code{data} data frame that contains the end
+#' time of the precursor elution peak. It is not required if the \code{peak_width} column is
+#' provided.
+#' @param remove_na_intensities a logical value that specifies if sample/grouping combinations
+#' with intensities that are NA (not quantified IDs) should be dropped from the data frame.
 #' Default is TRUE since we are usually interested in the peak width of quantifiable data.
-#' @param interactive A logical indicating whether the plot should be interactive (default is FALSE).
+#' @param interactive a logical value that specifies whether the plot should be interactive
+#' (default is FALSE).
 #'
-#' @return A line plot displaying one minute binned median precursor elution peak width over retention time for each sample.
+#' @return A line plot displaying one minute binned median precursor elution peak width over
+#' retention time for each sample.
 #' @import ggplot2
 #' @importFrom stats median
 #' @importFrom dplyr distinct rename mutate
@@ -35,32 +46,71 @@
 #'   retention_time_end = eg_end_rt
 #' )
 #' }
-qc_peak_width <- function(data, sample, intensity, retention_time, peak_width = NULL, retention_time_start = NULL, retention_time_end = NULL, remove_na_intensities = TRUE, interactive = FALSE) {
+qc_peak_width <- function(data,
+                          sample,
+                          intensity,
+                          retention_time,
+                          peak_width = NULL,
+                          retention_time_start = NULL,
+                          retention_time_end = NULL,
+                          remove_na_intensities = TRUE,
+                          interactive = FALSE) {
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
   if (remove_na_intensities == TRUE) {
-    if (missing(intensity)) stop("Please provide a column containing intensities or set remove_na_intensities to FALSE")
+    if (missing(intensity)) {
+      stop(strwrap("Please provide a column containing
+intensities or set remove_na_intensities to FALSE",
+        prefix = "\n", initial = ""
+      ))
+    }
 
     data <- data %>%
       tidyr::drop_na({{ intensity }})
   }
-  if (missing(peak_width) & missing(retention_time_start)) stop("Please provide either a peak_width column or retention_time_start and retention_time_end columns.")
+  if (missing(peak_width) & missing(retention_time_start)) {
+    stop(strwrap("Please provide either a peak_width column or
+retention_time_start and retention_time_end columns.",
+      prefix = "\n", initial = ""
+    ))
+  }
   if (!missing(peak_width)) {
     result <- data %>%
-      dplyr::distinct({{ sample }}, {{ retention_time }}, {{ peak_width }}) %>%
+      dplyr::distinct(
+        {{ sample }},
+        {{ retention_time }},
+        {{ peak_width }}
+      ) %>%
       dplyr::rename(peak_width = {{ peak_width }})
   }
   if (!missing(retention_time_start)) {
     result <- data %>%
-      dplyr::distinct({{ sample }}, {{ retention_time }}, {{ retention_time_start }}, {{ retention_time_end }}) %>%
+      dplyr::distinct(
+        {{ sample }},
+        {{ retention_time }},
+        {{ retention_time_start }},
+        {{ retention_time_end }}
+      ) %>%
       dplyr::mutate(peak_width = {{ retention_time_end }} - {{ retention_time_start }})
   }
 
   peak_width_plot <- result %>%
-    dplyr::mutate({{ sample }} := factor({{ sample }}, levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE)))) %>%
+    dplyr::mutate({{ sample }} := factor({{ sample }},
+      levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+    )) %>%
     ggplot2::ggplot(ggplot2::aes({{ retention_time }}, .data$peak_width)) +
-    ggplot2::stat_summary_bin(aes(col = {{ sample }}), size = 1, geom = "line", binwidth = 1, fun = median) +
-    ggplot2::labs(title = "Median peak width over retention time", x = "Retention time [min]", y = "Median peak width [min]", color = "Sample") +
+    ggplot2::stat_summary_bin(aes(col = {{ sample }}),
+      size = 1,
+      geom = "line",
+      binwidth = 1,
+      fun = median
+    ) +
+    ggplot2::labs(
+      title = "Median peak width over retention time",
+      x = "Retention time [min]",
+      y = "Median peak width [min]",
+      color = "Sample"
+    ) +
     ggplot2::scale_color_manual(values = rep(protti_colours, 10)) +
     ggplot2::theme_bw() +
     ggplot2::theme(

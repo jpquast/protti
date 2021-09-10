@@ -1,35 +1,55 @@
 #' Assignment of missingness types
 #'
-#' The type of missingness (missing at random, missing not at random) is assigned based on the comparison of a reference condition and every other condition.
+#' The type of missingness (missing at random, missing not at random) is assigned based on the
+#' comparison of a reference condition and every other condition.
 #'
 #' @param data a data frame containing at least the input variables.
-#' @param sample The column in the data frame containing the sample name.
-#' @param condition The column in the data frame containing the conditions.
-#' @param grouping The column in the data frame containing precursor or peptide identifiers.
-#' @param intensity The column in the data frame containing intensity values.
-#' @param ref_condition a character vector providing the condition that is used as a reference for missingness determination.
-#' Instead of providing one reference condition, "all" can be supplied, which will create all pairwise condition pairs. By default \code{ref_condition = "all"}.
-#' @param completeness_MAR The minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7.
-#' It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each
-#' condition to be considered as MAR. This number is always at least 1.
-#' @param completeness_MNAR The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.20.
-#' It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one
-#' condition to be considered as MNAR when the other condition is complete.
-#' @param retain_columns A vector indicating if certain columns should be retained from the input data frame. Default is not retaining
-#' additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks,
-#' just like other column names, but in a vector).
+#' @param sample a character column in the \code{data} data frame that contains the sample name.
+#' @param condition a character or numeric column in the \code{data} data frame that contains the
+#' conditions.
+#' @param grouping a character column in the \code{data} data frame that contains precursor or
+#' peptide identifiers.
+#' @param intensity a numeric column in the \code{data} data frame that contains intensity values.
+#' @param ref_condition a character vector providing the condition that is used as a reference for
+#' missingness determination. Instead of providing one reference condition, "all" can be supplied,
+#' which will create all pairwise condition pairs. By default \code{ref_condition = "all"}.
+#' @param completeness_MAR a numeric value that specifies the minimal degree of data completeness to
+#' be considered as MAR. Value has to be between 0 and 1, default is 0.7. It is multiplied with
+#' the number of replicates and then adjusted downward. The resulting number is the minimal number
+#' of observations for each condition to be considered as MAR. This number is always at least 1.
+#' @param completeness_MNAR a numeric value that specifies the maximal degree of data completeness to
+#' be considered as MNAR. Value has to be between 0 and 1, default is 0.20. It is multiplied with
+#' the number of replicates and then adjusted downward. The resulting number is the maximal number
+#' of observations for one condition to be considered as MNAR when the other condition is complete.
+#' @param retain_columns a vector that indicates columns that should be retained from the input
+#' data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
+#' columns can be retained by providing their names (not in quotations marks, just like other
+#' column names, but in a vector).
 #'
-#' @return A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison
-#' name for the specific treatment/reference pair. The \code{missingness} column reports the type of missingness.
+#' @return A data frame that contains the reference condition paired with each treatment condition.
+#' The \code{comparison} column contains the comparison name for the specific treatment/reference
+#' pair. The \code{missingness} column reports the type of missingness.
 #' \itemize{
-#' \item{"complete": }{No missing values for every replicate of this reference/treatment pair for the specific grouping variable.}
-#' \item{"MNAR": }{Missing not at random. All replicates of either the reference or treatment condition have missing values for the specific grouping variable.}
-#' \item{"MAR": }{Missing at random. At least n-1 replicates have missing values for the reference/treatment pair for the specific grouping varible.}
+#' \item{"complete": }{No missing values for every replicate of this reference/treatment pair for
+#' the specific grouping variable.}
+#' \item{"MNAR": }{Missing not at random. All replicates of either the reference or treatment
+#' condition have missing values for the specific grouping variable.}
+#' \item{"MAR": }{Missing at random. At least n-1 replicates have missing values for the
+#' reference/treatment pair for the specific grouping varible.}
+#' \item{NA: }{The comparison is not complete enough to fall into any other category. It will not
+#' be imputed if imputation is performed. For statistical significance testing these comparisons
+#' are filtered out after the test and prior to p-value adjustment. This can be prevented by setting
+#' `filter_NA_missingness = FALSE` in the `calculate_diff_abundance()` function.}
 #' }
+#' The type of missingness has an influence on the way values are imputeted if imputation is
+#' performed subsequently using the `impute()` function. How each type of missingness is
+#' specifically imputed can be found in the function description. The type of missingness
+#' assigned to a comparison does not have any influence on the statistical test in the
+#' `calculate_diff_abundance()` function.
 #' @import dplyr
 #' @import tidyr
 #' @importFrom tibble tibble as_tibble
-#' @importFrom stringr str_extract
+#' @importFrom stringr str_extract str_sort
 #' @importFrom rlang .data enquo !! as_name
 #' @importFrom purrr map_df
 #' @importFrom magrittr %>%
@@ -37,30 +57,65 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' assign_missingness(
-#'   data,
-#'   sample = r_file_name,
-#'   condition = r_condition,
-#'   grouping = eg_precursor_id,
-#'   intensity = normalised_intensity_log2,
-#'   retain_columns = c(pg_protein_accessions)
+#' set.seed(123) # Makes example reproducible
+#'
+#' # Create example data
+#' data <- create_synthetic_data(
+#'   n_proteins = 10,
+#'   frac_change = 0.5,
+#'   n_replicates = 4,
+#'   n_conditions = 2,
+#'   method = "effect_random",
+#'   additional_metadata = FALSE
 #' )
-#' }
-assign_missingness <- function(data, sample, condition, grouping, intensity, ref_condition = "all", completeness_MAR = 0.7, completeness_MNAR = 0.20, retain_columns = NULL) {
+#'
+#' head(data, n = 24)
+#'
+#' # Assign missingness information
+#' data_missing <- assign_missingness(
+#'   data,
+#'   sample = sample,
+#'   condition = condition,
+#'   grouping = peptide,
+#'   intensity = peptide_intensity_missing,
+#'   ref_condition = "all",
+#'   retain_columns = c(protein)
+#' )
+#'
+#' head(data_missing, n = 24)
+assign_missingness <- function(data,
+                               sample,
+                               condition,
+                               grouping,
+                               intensity,
+                               ref_condition = "all",
+                               completeness_MAR = 0.7,
+                               completeness_MNAR = 0.20,
+                               retain_columns = NULL) {
   . <- NULL
   if (!(ref_condition %in% unique(dplyr::pull(data, {{ condition }}))) & ref_condition != "all") {
-    stop("The name provided to ref_condition cannot be found in your conditions! Please provide a valid reference condition.")
+    stop(strwrap("The name provided to ref_condition cannot be found in your conditions!
+Please provide a valid reference condition.", prefix = "\n", initial = ""))
   }
 
   if (ref_condition == "all") {
     # creating all pairwise comparisons
     all_conditions <- unique(dplyr::pull(data, {{ condition }}))
 
-    all_combinations <- tibble::as_tibble(t(utils::combn(all_conditions, m = 2))) %>%
+    all_combinations <- tibble::as_tibble(t(utils::combn(all_conditions, m = 2)),
+      .name_repair = ~ make.names(., unique = TRUE)
+    ) %>%
+      dplyr::rename(
+        V1 = .data$X,
+        V2 = .data$X.1
+      ) %>%
       dplyr::mutate(combinations = paste0(.data$V1, "_vs_", .data$V2))
 
-    message('"all" was provided as reference condition. All pairwise comparisons are created from the conditions and assigned their missingness.\n The created comparisons are: \n', paste(all_combinations$combinations, collapse = "\n"))
+    message(
+      strwrap('"all" was provided as reference condition. All pairwise comparisons are created
+from the conditions and assigned their missingness. The created comparisons are:', prefix = "\n", initial = ""), "\n",
+      paste(all_combinations$combinations, collapse = "\n")
+    )
   }
 
   if (ref_condition != "all") {
@@ -90,7 +145,10 @@ assign_missingness <- function(data, sample, condition, grouping, intensity, ref
     tidyr::unnest(.data$comparison)
 
   result <- data_prep %>%
-    dplyr::mutate(type = ifelse({{ condition }} == stringr::str_extract(.data$comparison, pattern = "(?<=_vs_).+"), "control", "treated")) %>%
+    dplyr::mutate(type = ifelse({{ condition }} == stringr::str_extract(.data$comparison, pattern = "(?<=_vs_).+"),
+      "control",
+      "treated"
+    )) %>%
     split(.$comparison) %>%
     purrr::map_df(~ .x %>%
       tidyr::pivot_wider(names_from = .data$type, values_from = .data$n_detect) %>%
@@ -101,11 +159,13 @@ assign_missingness <- function(data, sample, condition, grouping, intensity, ref
         .data$control == .data$n_replicates & .data$treated == .data$n_replicates ~ "complete",
         .data$control <= floor(n_replicates * completeness_MNAR) & .data$treated == .data$n_replicates ~ "MNAR",
         .data$control == .data$n_replicates & .data$treated <= floor(n_replicates * completeness_MNAR) ~ "MNAR",
-        .data$control >= max(floor(.data$n_replicates * completeness_MAR), 1) & .data$treated >= max(floor(.data$n_replicates * completeness_MAR), 1) ~ "MAR"
+        .data$control >= max(floor(.data$n_replicates * completeness_MAR), 1) &
+          .data$treated >= max(floor(.data$n_replicates * completeness_MAR), 1) ~ "MAR"
       ))) %>%
     dplyr::select(-c(.data$control, .data$n_replicates, .data$treated)) %>%
     dplyr::ungroup() %>%
-    dplyr::arrange({{ grouping }})
+    # Arrange by grouping but in a numeric order of the character vector.
+    dplyr::arrange(factor({{ grouping }}, levels = unique(stringr::str_sort({{ grouping }}, numeric = TRUE))))
 
   if (missing(retain_columns)) {
     return(result)
@@ -115,7 +175,8 @@ assign_missingness <- function(data, sample, condition, grouping, intensity, ref
       dplyr::select(!!enquo(retain_columns), colnames(result)[!colnames(result) %in% c("comparison", "missingness")]) %>%
       dplyr::distinct() %>%
       dplyr::right_join(result, by = colnames(result)[!colnames(result) %in% c("comparison", "missingness")]) %>%
-      dplyr::arrange({{ grouping }})
+      # Arrange by grouping but in a numeric order of the character vector.
+      dplyr::arrange(factor({{ grouping }}, levels = unique(stringr::str_sort({{ grouping }}, numeric = TRUE))))
 
     return(join_result)
   }

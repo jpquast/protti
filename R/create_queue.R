@@ -1,45 +1,71 @@
 #' Creates a mass spectrometer queue for Xcalibur
 #'
-#' This function creates a measurement queue for sample acquisition for the software Xcalibur. All possible combinations of the
-#' provided information will be created to make file and sample names.
+#' `r lifecycle::badge("experimental")`
+#' This function creates a measurement queue for sample acquisition for the software Xcalibur.
+#' All possible combinations of the provided information will be created to make file and
+#' sample names.
 #'
-#' @param date Optional, start date of the measurements.
-#' @param instrument Optional, instrument initials.
-#' @param user Optional, user name.
-#' @param measurement_type Optional, the measurement type of the samples (e.g "DIA", "DDA", "library" etc.).
-#' @param experiment_name Optional, name of the experiment.
-#' @param digestion Optional, the digestion types used in this experiment (e.g "LiP" and/or "tryptic control").
-#' @param treatment_type_1 Optional, name of the treatment.
-#' @param treatment_type_2 Optional, name of a second treatment that was combined with the first treatment.
-#' @param treatment_dose_1 Optional, doses used for treatment 1. These can be concentrations or times etc.
-#' @param treatment_dose_2 Optional, doses used for treatment 2. These can be concentrations or times etc.
-#' @param treatment_unit_1 Optional, unit of the doses for treatment 1 (e.g min, mM, etc.).
-#' @param treatment_unit_2 Optional, unit of the doses for treatment 2 (e.g min, mM, etc.).
-#' @param n_replicates Optional, number of replicates used per sample.
-#' @param number_runs Specifies if file names should be numbered from 1:n instead of adding experiment information. Default is FALSE.
-#' @param organism Optional, name of the organism used.
-#' @param exclude_combinations Optional, list of lists that contains vectors treatment types and treatment doses whos combinations should be
-#' excluded from the final queue.
-#' @param inj_vol The volume used for injection in microliter. Will be \code{NA} if not specified. Then it needs to be manually specified before the queue can be used.
-#' @param data_path The file path where the MS raw data should be saved. Backslashes should be escaped by another backslash. Will be \code{NA} if not specified, but needs to be specified later on then.
-#' @param method_path The file path of the MS acquisition method. Backslashes should be escaped by another backslash. Will be \code{NA} if not specified, but needs to be specified later on then.
-#' @param position_row The row positions that can be used for the samples (e.g c("A", "B")). If the number of specified rows and columns does not equal the total number
+#' @param date optional, character value indicating the start date of the measurements.
+#' @param instrument optional, character value indicating the instrument initials.
+#' @param user optional, character value indicating the user name.
+#' @param measurement_type optional, character value indicating the measurement type of the
+#' samples (e.g "DIA", "DDA", "library" etc.).
+#' @param experiment_name optional, character value indicating the name of the experiment.
+#' @param digestion optional, character vector indicating the digestion types used in this
+#' experiment (e.g "LiP" and/or "tryptic control").
+#' @param treatment_type_1 optional, character vector indicating the name of the treatment.
+#' @param treatment_type_2 optional, character vector indicating the name of a second treatment
+#' that was combined with the first treatment.
+#' @param treatment_dose_1 optional, numeric vector indicating the doses used for treatment 1.
+#' These can be concentrations or times etc.
+#' @param treatment_dose_2 optional, numeric vector indicating the doses used for treatment 2.
+#' These can be concentrations or times etc.
+#' @param treatment_unit_1 optional, character vector indicating the unit of the doses for
+#' treatment 1 (e.g min, mM, etc.).
+#' @param treatment_unit_2 optional, character vector indicating the unit of the doses for
+#' treatment 2 (e.g min, mM, etc.).
+#' @param n_replicates optional, a numeric value indicating the number of replicates used per sample.
+#' @param number_runs a logical that specifies if file names should be numbered from 1:n instead of
+#' adding experiment information. Default is FALSE.
+#' @param organism optional, character value indicating the name of the organism used.
+#' @param exclude_combinations optional, list of lists that contains vectors of treatment types and
+#' treatment doses of which combinations should be excluded from the final queue.
+#' @param inj_vol a numeric value indicating the volume used for injection in microliter. Will be
+#' \code{NA} if not specified. Then it needs to be manually specified before the queue can be used.
+#' @param data_path a character value indicating the file path where the MS raw data should be saved.
+#' Backslashes should be escaped by another backslash. Will be \code{NA} if not specified, but
+#' needs to be specified later on then.
+#' @param method_path a character value indicating the file path of the MS acquisition method.
+#' Backslashes should be escaped by another backslash. Will be \code{NA} if not specified, but
+#' needs to be specified later on then.
+#' @param position_row a character vector that contains row positions that can be used for the
+#' samples (e.g c("A", "B")). If the number of specified rows and columns does not equal the total
+#' number of samples, positions will be repeated.
+#' @param position_column a character vector that contains column positions that can be used for the
+#' samples (e.g 8). If the number of specified rows and columns does not equal the total number
 #' of samples, positions will be repeated.
-#' @param position_column The column positions that can be used for the samples (e.g 8). If the number of specified rows and columns does not equal the total number
-#' of samples, positions will be repeated.
-#' @param blank_every_n Optional, specifies in which intervals a blank sample should be inserted.
-#' @param blank_position The plate position of the blank. Will be \code{NA} if not specified, but needs to be specified later on then.
-#' @param blank_method_path The file path of the MS acquisition method of the blank. Backslashes should be escaped by another backslash.
+#' @param blank_every_n optional, numeric value that specifies in which intervals a blank sample
+#' should be inserted.
+#' @param blank_position a character value that specifies the plate position of the blank. Will be
+#' \code{NA} if not specified, but needs to be specified later on then.
+#' @param blank_method_path a character value that specifies the file path of the MS acquisition
+#' method of the blank. Backslashes should be escaped by another backslash. Will be \code{NA} if
+#' not specified, but needs to be specified later on then.
+#' @param blank_inj_vol a numeric value that specifies the injection volume of the blank sample.
 #' Will be \code{NA} if not specified, but needs to be specified later on then.
-#' @param blank_inj_vol Injection volume of the blank sample. Will be \code{NA} if not specified, but needs to be specified later on then.
-#' @param export Logical, specifying if queue should be exported from R and saved as a .csv file. Default is TRUE. Further options for
-#' export can be adjusted with the \code{export_to_queue} and \code{queue_path} arguments.
-#' @param export_to_queue Logical, specifying if the resulting queue should be appended to an already existing queue. If false result will be saved as \code{queue.csv}.
-#' @param queue_path Optional, file path to a queue file to which the generated queue should be appended if \code{export_to_queue = TRUE}.
-#' If not specified queue file can be chosen interactively.
+#' @param export a logical value that specifies if the queue should be exported from R and saved
+#' as a .csv file. Default is TRUE. Further options for export can be adjusted with the
+#' \code{export_to_queue} and \code{queue_path} arguments.
+#' @param export_to_queue a logical value that specifies if the resulting queue should be appended
+#' to an already existing queue. If false result will be saved as \code{queue.csv}.
+#' @param queue_path optional, a character value that specifies the file path to a queue file to
+#' which the generated queue should be appended if \code{export_to_queue = TRUE}. If not specified
+#' queue file can be chosen interactively.
 #'
-#' @return If \code{export_to_queue = FALSE} a file named \code{queue.csv} will be returned that contains the generated queue. If \code{export_to_queue = TRUE}, the resulting
-#' generated queue will be appended to an already existing queue that needs to be specified either interactively or through the argument \code{queue_path}.
+#' @return If \code{export_to_queue = FALSE} a file named \code{queue.csv} will be returned that
+#' contains the generated queue. If \code{export_to_queue = TRUE}, the resulting generated queue
+#' will be appended to an already existing queue that needs to be specified either interactively
+#' or through the argument \code{queue_path}.
 #' @importFrom tidyr crossing unite
 #' @importFrom dplyr mutate select bind_cols
 #' @importFrom data.table fread fwrite
@@ -70,7 +96,7 @@
 #'   )),
 #'   inj_vol = c(2),
 #'   data_path = "D:\\2007_Data",
-#'   method_path = "C:\\Xcalibur\\methods\\user\\DIA_120min_41var_AGC200",
+#'   method_path = "C:\\Xcalibur\\methods\\DIA_120min",
 #'   position_row = c("A", "B", "C", "D", "E", "F"),
 #'   position_column = 8,
 #'   blank_every_n = 4,
@@ -176,7 +202,12 @@ create_queue <-
               TRUE
             )
         )) %>%
-        dplyr::select(-c(.data$t1_null, .data$t2_null, .data$d1_null, .data$d2_null))
+        dplyr::select(-c(
+          .data$t1_null,
+          .data$t2_null,
+          .data$d1_null,
+          .data$d2_null
+        ))
 
       sample_name <- sample_name %>%
         dplyr::mutate(
@@ -207,7 +238,12 @@ create_queue <-
               TRUE
             )
         )) %>%
-        dplyr::select(-c(.data$t1_null, .data$t2_null, .data$d1_null, .data$d2_null))
+        dplyr::select(-c(
+          .data$t1_null,
+          .data$t2_null,
+          .data$d1_null,
+          .data$d2_null
+        ))
     }
 
     if (number_runs == TRUE) {

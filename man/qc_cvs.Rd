@@ -14,33 +14,64 @@ qc_cvs(
 )
 }
 \arguments{
-\item{data}{a data frame containing at least peptide, precursor or protein identifiers, information on conditions and intensity values for each peptide, precursor or protein.}
+\item{data}{a data frame containing at least peptide, precursor or protein identifiers,
+information on conditions and intensity values for each peptide, precursor or protein.}
 
-\item{grouping}{the column in the input data frame containing the grouping variables (e.g. peptides, precursors or proteins).}
+\item{grouping}{a character column in the \code{data} data frame that contains the grouping
+variables (e.g. peptides, precursors or proteins).}
 
-\item{condition}{the column in the data data frame containing condition information (e.g. "treated" and "control").}
+\item{condition}{a column in the \code{data} data frame that contains condition information
+(e.g. "treated" and "control").}
 
-\item{intensity}{the name of the column containing the corresponding raw or untransformed normalised intensity values for each peptide or precursor.}
+\item{intensity}{a numeric column in the \code{data} data frame that contains the corresponding
+raw or untransformed normalised intensity values for each peptide or precursor.}
 
-\item{plot}{logical indicating whether the result should be plotted. Default is TRUE.}
+\item{plot}{a logical value that indicates whether the result should be plotted.}
 
-\item{plot_style}{character vector indicating the plotting style. \code{plot_style = "boxplot"} plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution. \code{plot_style = "violin"} returns a violin plot. Default is \code{plot_style = "density"}.}
+\item{plot_style}{a character value that indicates the plotting style. \code{plot_style = "boxplot"}
+plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution.
+\code{plot_style = "violin"} returns a violin plot. Default is \code{plot_style = "density"}.}
 }
 \value{
-Either the median CVs in % or a plot showing the distribution of the CVs.
+Either a data frame with the median CVs in \% or a plot showing the distribution of the CVs
+is returned.
 }
 \description{
 Calculates and plots the coefficients of variation for the selected grouping.
 }
 \examples{
-\dontrun{
+# Load libraries
+library(dplyr)
+
+set.seed(123) # Makes example reproducible
+
+# Create example data
+data <- create_synthetic_data(
+  n_proteins = 100,
+  frac_change = 0.05,
+  n_replicates = 3,
+  n_conditions = 2,
+  method = "effect_random"
+) \%>\%
+  mutate(intensity_non_log2 = 2^peptide_intensity_missing)
+
+# Calculate coefficients of variation
 qc_cvs(
-  data,
-  grouping = pep_stripped_sequence,
+  data = data,
+  grouping = peptide,
   condition = condition,
-  intensity = fg_quantity,
-  plot = TRUE,
-  plot_style = "density"
+  intensity = intensity_non_log2,
+  plot = FALSE
 )
-}
+
+# Plot coefficients of variation
+# Different plot styles are available
+qc_cvs(
+  data = data,
+  grouping = peptide,
+  condition = condition,
+  intensity = intensity_non_log2,
+  plot = TRUE,
+  plot_style = "violin"
+)
 }

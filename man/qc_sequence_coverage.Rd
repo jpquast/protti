@@ -13,33 +13,46 @@ qc_sequence_coverage(
 )
 }
 \arguments{
-\item{data}{A data frame containing at least the input variables.}
+\item{data}{a data frame that contains at least the input variables.}
 
-\item{protein_identifier}{Column in the data frame containing protein identifiers.}
+\item{protein_identifier}{a character column in the \code{data} data frame that contains protein
+identifiers.}
 
-\item{coverage}{Column in the data frame containing protein coverage in percent. This information can be obtained using
-the \code{\link{sequence_coverage}} function.}
+\item{coverage}{a numeric column in the \code{data} data frame that contains protein coverage
+in percent. This information can be obtained using the \code{\link{sequence_coverage}} function.}
 
-\item{sample}{Column in the data frame containing sample names. Please only provide this argument if you want to
-facet the distribution plot by sample otherwise do not provide this argument.}
+\item{sample}{optional, a character column in the \code{data} data frame that contains sample names.
+Please only provide this argument if you want to facet the distribution plot by sample
+otherwise do not provide this argument.}
 
-\item{interactive}{A logical, if TRUE the plot is interactive (default is TRUE).}
+\item{interactive}{a logical value that specifies whether the plot should be interactive
+(default is FALSE).}
 }
 \value{
-A protein coverage histogram with 5 percent binwidth. The vertical dotted line indicates the median.
+A protein coverage histogram with 5 percent binwidth. The vertical dotted line
+indicates the median.
 }
 \description{
 Plots the distribution of protein coverages in a histogram.
 }
 \examples{
-\dontrun{
+set.seed(123) # Makes example reproducible
+
+# Create example data
+data <- create_synthetic_data(
+  n_proteins = 100,
+  frac_change = 0.05,
+  n_replicates = 3,
+  n_conditions = 2,
+  method = "effect_random"
+)
+
+# Plot sequence coverage
 qc_sequence_coverage(
-  data,
-  protein_identifier = pg_protein_accessions,
+  data = data,
+  protein_identifier = protein,
   coverage = coverage
 )
-}
-
 }
 \seealso{
 \code{\link{sequence_coverage}}

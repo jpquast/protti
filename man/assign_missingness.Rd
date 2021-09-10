@@ -19,50 +19,86 @@ assign_missingness(
 \arguments{
 \item{data}{a data frame containing at least the input variables.}
 
-\item{sample}{The column in the data frame containing the sample name.}
+\item{sample}{a character column in the \code{data} data frame that contains the sample name.}
 
-\item{condition}{The column in the data frame containing the conditions.}
+\item{condition}{a character or numeric column in the \code{data} data frame that contains the
+conditions.}
 
-\item{grouping}{The column in the data frame containing precursor or peptide identifiers.}
+\item{grouping}{a character column in the \code{data} data frame that contains precursor or
+peptide identifiers.}
 
-\item{intensity}{The column in the data frame containing intensity values.}
+\item{intensity}{a numeric column in the \code{data} data frame that contains intensity values.}
 
-\item{ref_condition}{a character vector providing the condition that is used as a reference for missingness determination.
-Instead of providing one reference condition, "all" can be supplied, which will create all pairwise condition pairs. By default \code{ref_condition = "all"}.}
+\item{ref_condition}{a character vector providing the condition that is used as a reference for
+missingness determination. Instead of providing one reference condition, "all" can be supplied,
+which will create all pairwise condition pairs. By default \code{ref_condition = "all"}.}
 
-\item{completeness_MAR}{The minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7.
-It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each
-condition to be considered as MAR. This number is always at least 1.}
+\item{completeness_MAR}{a numeric value that specifies the minimal degree of data completeness to
+be considered as MAR. Value has to be between 0 and 1, default is 0.7. It is multiplied with
+the number of replicates and then adjusted downward. The resulting number is the minimal number
+of observations for each condition to be considered as MAR. This number is always at least 1.}
 
-\item{completeness_MNAR}{The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.20.
-It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one
-condition to be considered as MNAR when the other condition is complete.}
+\item{completeness_MNAR}{a numeric value that specifies the maximal degree of data completeness to
+be considered as MNAR. Value has to be between 0 and 1, default is 0.20. It is multiplied with
+the number of replicates and then adjusted downward. The resulting number is the maximal number
+of observations for one condition to be considered as MNAR when the other condition is complete.}
 
-\item{retain_columns}{A vector indicating if certain columns should be retained from the input data frame. Default is not retaining
-additional columns \code{retain_columns = NULL}. Specific columns can be retained by providing their names (not in quotations marks,
-just like other column names, but in a vector).}
+\item{retain_columns}{a vector that indicates columns that should be retained from the input
+data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
+columns can be retained by providing their names (not in quotations marks, just like other
+column names, but in a vector).}
 }
 \value{
-A data frame that contains the reference condition paired with each treatment condition. The \code{comparison} column contains the comparison
-name for the specific treatment/reference pair. The \code{missingness} column reports the type of missingness.
+A data frame that contains the reference condition paired with each treatment condition.
+The \code{comparison} column contains the comparison name for the specific treatment/reference
+pair. The \code{missingness} column reports the type of missingness.
 \itemize{
-\item{"complete": }{No missing values for every replicate of this reference/treatment pair for the specific grouping variable.}
-\item{"MNAR": }{Missing not at random. All replicates of either the reference or treatment condition have missing values for the specific grouping variable.}
-\item{"MAR": }{Missing at random. At least n-1 replicates have missing values for the reference/treatment pair for the specific grouping varible.}
+\item{"complete": }{No missing values for every replicate of this reference/treatment pair for
+the specific grouping variable.}
+\item{"MNAR": }{Missing not at random. All replicates of either the reference or treatment
+condition have missing values for the specific grouping variable.}
+\item{"MAR": }{Missing at random. At least n-1 replicates have missing values for the
+reference/treatment pair for the specific grouping varible.}
+\item{NA: }{The comparison is not complete enough to fall into any other category. It will not
+be imputed if imputation is performed. For statistical significance testing these comparisons
+are filtered out after the test and prior to p-value adjustment. This can be prevented by setting
+\code{filter_NA_missingness = FALSE} in the \code{calculate_diff_abundance()} function.}
 }
+The type of missingness has an influence on the way values are imputeted if imputation is
+performed subsequently using the \code{impute()} function. How each type of missingness is
+specifically imputed can be found in the function description. The type of missingness
+assigned to a comparison does not have any influence on the statistical test in the
+\code{calculate_diff_abundance()} function.
 }
 \description{
-The type of missingness (missing at random, missing not at random) is assigned based on the comparison of a reference condition and every other condition.
+The type of missingness (missing at random, missing not at random) is assigned based on the
+comparison of a reference condition and every other condition.
 }
 \examples{
-\dontrun{
-assign_missingness(
-  data,
-  sample = r_file_name,
-  condition = r_condition,
-  grouping = eg_precursor_id,
-  intensity = normalised_intensity_log2,
-  retain_columns = c(pg_protein_accessions)
+set.seed(123) # Makes example reproducible
+
+# Create example data
+data <- create_synthetic_data(
+  n_proteins = 10,
+  frac_change = 0.5,
+  n_replicates = 4,
+  n_conditions = 2,
+  method = "effect_random",
+  additional_metadata = FALSE
 )
-}
+
+head(data, n = 24)
+
+# Assign missingness information
+data_missing <- assign_missingness(
+  data,
+  sample = sample,
+  condition = condition,
+  grouping = peptide,
+  intensity = peptide_intensity_missing,
+  ref_condition = "all",
+  retain_columns = c(protein)
+)
+
+head(data_missing, n = 24)
 }

@@ -16,28 +16,32 @@ qc_contaminants(
 )
 }
 \arguments{
-\item{data}{a data frame containing at least the input variables.}
+\item{data}{a data frame that contains at least the input variables.}
 
-\item{sample}{the name of the column containing the sample names.}
+\item{sample}{a character column in the \code{data} data frame that contains the sample names.}
 
-\item{protein}{the name of the column containing protein IDs or protein names.}
+\item{protein}{a character column in the \code{data} data frame that contains protein IDs or
+protein names.}
 
-\item{is_contaminant}{the name of the column containing a logical indicating if the protein is a contaminant.}
+\item{is_contaminant}{a logical column that indicates if the protein is a contaminant.}
 
-\item{intensity}{the name of the column containing the corresponding raw or untransformed normalised intensity values.}
+\item{intensity}{a numeric column in the \code{data} data frame that contains the corresponding
+raw or normalised intensity values (not log2).}
 
-\item{n_contaminants}{numeric, indicating how many contaminants should be displayed individually. The rest is combined to a group called "other". The
-default is 5.}
+\item{n_contaminants}{a numeric value that indicates how many contaminants should be displayed
+individually. The rest is combined to a group called "other". The default is 5.}
 
-\item{plot}{logical, if TRUE a plot is returned. If FALSE a table is returned.}
+\item{plot}{a logical value that indicates if a plot is returned. If FALSE a table is returned.}
 
-\item{interactive}{logical, if TRUE the plot is interactive using plotly.}
+\item{interactive}{a logical value that indicates if the plot is made interactive using the r
+package \code{plotly}.}
 }
 \value{
-A bar plot that displays the percentage of contaminating proteins over all samples. If \code{plot = FALSE} a data frame is returned.
+A bar plot that displays the percentage of contaminating proteins over all samples.
+If \code{plot = FALSE} a data frame is returned.
 }
 \description{
-Calculates the percentage of contaminating proteins as the share of total intensity
+Calculates the percentage of contaminating proteins as the share of total intensity.
 }
 \examples{
 \dontrun{

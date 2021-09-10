@@ -2,9 +2,13 @@
 #'
 #' Fetches all information from the ChEBI database.
 #'
-#' @param relation a logical, if TRUE, ChEBI Ontology data will be returned instead the main compound data. This data can be used to check the relations of ChEBI ID's to eachother.
+#' @param relation a logical value that indicates if ChEBI Ontology data will be returned instead
+#' the main compound data. This data can be used to check the relations of ChEBI ID's to each other.
+#' Default is FALSE.
 #'
-#' @return A data frame that contains all information about each molecule in the ChEBI database. Only "3-star" observations are included in the result. These are entries manually annotated by the ChEBI curator team.
+#' @return A data frame that contains all information about each molecule in the ChEBI database.
+#' Only "3-star" observations are included in the result. These are entries manually annotated
+#' by the ChEBI curator team.
 #' @import dplyr
 #' @importFrom tidyr pivot_wider unnest
 #' @importFrom janitor clean_names
@@ -14,7 +18,9 @@
 #'
 #' @examples
 #' \donttest{
-#' head(fetch_chebi())
+#' chebi <- fetch_chebi()
+#'
+#' head(chebi)
 #' }
 fetch_chebi <- function(relation = FALSE) {
   if (!requireNamespace("httr", quietly = TRUE)) {
@@ -22,8 +28,14 @@ fetch_chebi <- function(relation = FALSE) {
   }
   # Retrieve relational information
   if (relation == TRUE) {
-    chebi_relation_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv", config = httr::config(connecttimeout = 60))
-    chebi_relation <- suppressMessages(httr::content(chebi_relation_result, type = "text/tab-separated-values"))
+    chebi_relation_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv",
+      config = httr::config(connecttimeout = 60)
+    )
+    chebi_relation <- suppressMessages(httr::content(chebi_relation_result,
+      type = "text/tab-separated-values",
+      progress = FALSE,
+      show_col_types = FALSE
+    ))
 
     chebi_relation_clean <- chebi_relation %>%
       dplyr::filter(.data$STATUS == "C") %>%
@@ -36,23 +48,45 @@ fetch_chebi <- function(relation = FALSE) {
   }
 
   # Download compound data
-  chebi_chemical_data_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv", config = httr::config(connecttimeout = 60))
-  chebi_chemical_data <- suppressMessages(httr::content(chebi_chemical_data_result, type = "text/tab-separated-values"))
+  chebi_chemical_data_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv",
+    config = httr::config(connecttimeout = 60)
+  )
+  chebi_chemical_data <- suppressMessages(httr::content(chebi_chemical_data_result,
+    type = "text/tab-separated-values",
+    progress = FALSE,
+    show_col_types = FALSE
+  ))
 
   chebi_compounds_download <- readLines(gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/compounds.tsv.gz")))
-  chebi_compounds <- utils::read.delim(textConnection(chebi_compounds_download), quote = "", stringsAsFactors = FALSE)
+  chebi_compounds <- utils::read.delim(textConnection(chebi_compounds_download),
+    quote = "", stringsAsFactors = FALSE
+  )
 
   chebi_names_download <- readLines(gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/names.tsv.gz")))
-  chebi_names <- utils::read.delim(textConnection(chebi_names_download), quote = "", stringsAsFactors = FALSE)
+  chebi_names <- utils::read.delim(textConnection(chebi_names_download),
+    quote = "", stringsAsFactors = FALSE
+  )
 
-  chebi_accession_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv", config = httr::config(connecttimeout = 60))
-  chebi_accession <- suppressMessages(httr::content(chebi_accession_result, type = "text/tab-separated-values"))
+  chebi_accession_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv",
+    config = httr::config(connecttimeout = 60)
+  )
+  chebi_accession <- suppressMessages(httr::content(chebi_accession_result,
+    type = "text/tab-separated-values",
+    progress = FALSE,
+    show_col_types = FALSE
+  ))
 
   # Create one file with all information after cleaning individual source files
 
   chebi_compounds_clean <- chebi_compounds %>%
     dplyr::filter(.data$STAR == 3) %>%
-    dplyr::select(-c(.data$SOURCE, .data$NAME, .data$STATUS, .data$MODIFIED_ON, .data$CREATED_BY)) %>%
+    dplyr::select(-c(
+      .data$SOURCE,
+      .data$NAME,
+      .data$STATUS,
+      .data$MODIFIED_ON,
+      .data$CREATED_BY
+    )) %>%
     dplyr::na_if("null") %>%
     dplyr::mutate(PARENT_ID = as.numeric(.data$PARENT_ID))
 
@@ -65,8 +99,17 @@ fetch_chebi <- function(relation = FALSE) {
   chebi_chemical_data_clean <- chebi_chemical_data %>%
     dplyr::distinct(.data$COMPOUND_ID, .data$TYPE, .data$CHEMICAL_DATA) %>%
     dplyr::rename(ID = .data$COMPOUND_ID) %>%
-    tidyr::pivot_wider(names_from = .data$TYPE, values_from = .data$CHEMICAL_DATA, values_fn = list) %>%
-    tidyr::unnest(cols = c(.data$FORMULA, .data$MASS, .data$CHARGE, .data$`MONOISOTOPIC MASS`))
+    tidyr::pivot_wider(
+      names_from = .data$TYPE,
+      values_from = .data$CHEMICAL_DATA,
+      values_fn = list
+    ) %>%
+    tidyr::unnest(cols = c(
+      .data$FORMULA,
+      .data$MASS,
+      .data$CHARGE,
+      .data$`MONOISOTOPIC MASS`
+    ))
 
   chebi_compounds_names_clean <- chebi_compounds %>%
     dplyr::filter(.data$STAR == 3) %>%
@@ -95,11 +138,32 @@ fetch_chebi <- function(relation = FALSE) {
 
   parent_info <- chebi %>%
     dplyr::filter(.data$ID %in% parent_ids) %>%
-    dplyr::select(c(.data$ID, .data$NAME, .data$TYPE_NAME, .data$DEFINITION, .data$TYPE_ACCESSION, .data$ACCESSION_NUMBER, .data$FORMULA, .data$MASS, .data$CHARGE, .data$`MONOISOTOPIC MASS`))
+    dplyr::select(c(
+      .data$ID,
+      .data$NAME,
+      .data$TYPE_NAME,
+      .data$DEFINITION,
+      .data$TYPE_ACCESSION,
+      .data$ACCESSION_NUMBER,
+      .data$FORMULA,
+      .data$MASS,
+      .data$CHARGE,
+      .data$`MONOISOTOPIC MASS`
+    ))
 
   parent_complete <- chebi %>%
     dplyr::filter(!is.na(.data$PARENT_ID)) %>%
-    dplyr::select(-c(.data$NAME, .data$TYPE_NAME, .data$DEFINITION, .data$TYPE_ACCESSION, .data$ACCESSION_NUMBER, .data$FORMULA, .data$MASS, .data$CHARGE, .data$`MONOISOTOPIC MASS`)) %>%
+    dplyr::select(-c(
+      .data$NAME,
+      .data$TYPE_NAME,
+      .data$DEFINITION,
+      .data$TYPE_ACCESSION,
+      .data$ACCESSION_NUMBER,
+      .data$FORMULA,
+      .data$MASS,
+      .data$CHARGE,
+      .data$`MONOISOTOPIC MASS`
+    )) %>%
     dplyr::left_join(parent_info, by = c("PARENT_ID" = "ID"))
 
   chebi <- chebi %>%

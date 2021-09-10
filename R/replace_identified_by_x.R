@@ -1,12 +1,14 @@
 #' Replace identified positions in protein sequence by "x"
 #'
-#' Helper function for the calculation of sequence coverage, replaces identified positions with an "x" within the protein sequence.
+#' Helper function for the calculation of sequence coverage, replaces identified positions with an
+#' "x" within the protein sequence.
 #'
-#' @param sequence A character vector that contains the protein sequence.
-#' @param positions_start A vector of start positions of the identified peptides.
-#' @param positions_end A vector of end positions of the identified peptides.
+#' @param sequence a character value that contains the protein sequence.
+#' @param positions_start a numeric vector of start positions of the identified peptides.
+#' @param positions_end a numeric vector of end positions of the identified peptides.
 #'
-#' @return A character vector that contains the modified protein sequence with each identified position replaced by "x".
+#' @return A character vector that contains the modified protein sequence with each identified
+#' position replaced by "x".
 #' @importFrom purrr map2
 #' @importFrom stringr str_sub
 replace_identified_by_x <-
@@ -23,7 +25,9 @@ replace_identified_by_x <-
       function(x, y) {
         times <- y - x + 1
         stringr::str_sub(sequence, start = x, end = y) <- paste(rep("x", times = times), collapse = "")
-        sequence <<- sequence # this does not modify the global environment but only the environment of the parent function (replace_identified_by_x).
+        # this does not modify the global environment but only the
+        # environment of the parent function (replace_identified_by_x).
+        sequence <<- sequence
       }
     )
     result[[length(result)]]

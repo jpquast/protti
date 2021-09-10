@@ -17,27 +17,38 @@ qc_peak_width(
 )
 }
 \arguments{
-\item{data}{A data frame containing at least sample names and protein IDs.}
+\item{data}{a data frame containing at least sample names and protein IDs.}
 
-\item{sample}{The column in the data frame containing the sample names.}
+\item{sample}{a character column in the \code{data} data frame that contains the sample names.}
 
-\item{intensity}{The column in the data frame containing intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.}
+\item{intensity}{a numeric column in the \code{data} data frame that contains intensities. If
+\code{remove_na_intensities = FALSE}, this argument is not required.}
 
-\item{retention_time}{The column in the data frame containing retention times of precursors.}
+\item{retention_time}{a numeric column in the \code{data} data frame that contains retention
+times of precursors.}
 
-\item{peak_width}{The column in the data frame containing peak width information. It is not required if \code{retention_time_start} and \code{retention_time_end} columns are provided.}
+\item{peak_width}{a numeric column in the \code{data} data frame that contains peak width
+information. It is not required if \code{retention_time_start} and \code{retention_time_end}
+columns are provided.}
 
-\item{retention_time_start}{The column in the data frame containing the start time of the precursor elution peak. It is not required if the \code{peak_width} column is provided.}
+\item{retention_time_start}{a numeric column in the \code{data} data frame that contains the
+start time of the precursor elution peak. It is not required if the \code{peak_width} column
+is provided.}
 
-\item{retention_time_end}{The column in the data frame containing the end time of the precursor elution peak. It is not required if the \code{peak_width} column is provided.}
+\item{retention_time_end}{a numeric column in the \code{data} data frame that contains the end
+time of the precursor elution peak. It is not required if the \code{peak_width} column is
+provided.}
 
-\item{remove_na_intensities}{Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
+\item{remove_na_intensities}{a logical value that specifies if sample/grouping combinations
+with intensities that are NA (not quantified IDs) should be dropped from the data frame.
 Default is TRUE since we are usually interested in the peak width of quantifiable data.}
 
-\item{interactive}{A logical indicating whether the plot should be interactive (default is FALSE).}
+\item{interactive}{a logical value that specifies whether the plot should be interactive
+(default is FALSE).}
 }
 \value{
-A line plot displaying one minute binned median precursor elution peak width over retention time for each sample.
+A line plot displaying one minute binned median precursor elution peak width over
+retention time for each sample.
 }
 \description{
 Plots one minute binned median precursor elution peak width over retention time for each sample.
