@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Check missed cleavages — qc_missed_cleavages" />
-<meta property="og:description" content="Calculates the percentage of missed cleavages for each sample (by count or intensity).The default settings remove grouping variables without quantitative information (intensity is NA).
+<meta property="og:description" content="Calculates the percentage of missed cleavages for each sample (by count or intensity). The
+default settings remove grouping variables without quantitative information (intensity is NA).
 These will not be used for the calculation of missed cleavage percentages." />
 
 
@@ -73,7 +74,7 @@ These will not be used for the calculation of missed cleavage percentages." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -139,7 +140,8 @@ These will not be used for the calculation of missed cleavage percentages." />
     </div>
 
     <div class="ref-description">
-    <p>Calculates the percentage of missed cleavages for each sample (by count or intensity).The default settings remove grouping variables without quantitative information (intensity is NA).
+    <p>Calculates the percentage of missed cleavages for each sample (by count or intensity). The
+default settings remove grouping variables without quantitative information (intensity is NA).
 These will not be used for the calculation of missed cleavage percentages.</p>
     </div>
 
@@ -160,61 +162,113 @@ These will not be used for the calculation of missed cleavage percentages.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame containing at least sample names, peptide or precursor identifiers and missed cleavage counts for each peptide or precursor.</p></td>
+      <td><p>a data frame containing at least sample names, peptide or precursor identifiers
+and missed cleavage counts for each peptide or precursor.</p></td>
     </tr>
     <tr>
       <th>sample</th>
-      <td><p>the name of the column in the data data frame containing the sample name.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the sample name.</p></td>
     </tr>
     <tr>
       <th>grouping</th>
-      <td><p>the name of the column in the data data frame containing either precursor or peptide identifiers.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains either precursor or
+peptide identifiers.</p></td>
     </tr>
     <tr>
       <th>missed_cleavages</th>
-      <td><p>the name of the column in the data data frame containing the counts of missed cleavages per peptide or precursor.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains the counts
+of missed cleavages per peptide or precursor.</p></td>
     </tr>
     <tr>
       <th>intensity</th>
-      <td><p>the name of the column containing the corresponding raw or normalised intensity values (not log2) for each peptide or precursor. Required when "intensity" is chosen as the method.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains the corresponding
+raw or normalised intensity values (not log2) for each peptide or precursor. Required when
+"intensity" is chosen as the method.</p></td>
     </tr>
     <tr>
       <th>remove_na_intensities</th>
-      <td><p>Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should
-be dropped from the data frame for analysis of missed cleavages. Default is TRUE since we are usually
-interested in quantifiable peptides. This is only relevant for method = "count".</p></td>
+      <td><p>a logical value that specifies if sample/grouping combinations with
+intensities that are NA (not quantified IDs) should be dropped from the data frame for analysis
+of missed cleavages. Default is TRUE since we are usually interested in quantifiable peptides.
+This is only relevant for method = "count".</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>character vector indicating the method used for evaluation. "count" calculates the percentage of missed cleavages based on counts of the corresponding peptide or precursor, "intensity" calculates the percentage of missed cleavages by intensity of the corresponding peptide or precursor.</p></td>
+      <td><p>a character value that indicates the method used for evaluation. "count"
+calculates the percentage of missed cleavages based on counts of the corresponding peptide or
+precursor, "intensity" calculates the percentage of missed cleavages by intensity of the
+corresponding peptide or precursor.</p></td>
     </tr>
     <tr>
       <th>plot</th>
-      <td><p>A logical indicating whether the result should be plotted.</p></td>
+      <td><p>a logical value that indicates whether the result should be plotted.</p></td>
     </tr>
     <tr>
       <th>interactive</th>
-      <td><p>Argument specifying whether the plot should be interactive (default is FALSE).</p></td>
+      <td><p>a logical value that specifies whether the plot should be interactive
+(default is FALSE).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains the calculated percentage made up by the sum of all peptides or precursors containing the corresponding amount of missed cleavages.</p>
+    <p>A data frame that contains the calculated percentage made up by the sum of all peptides
+or precursors containing the corresponding amount of missed cleavages.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span> <span class='co'># Makes example reproducible</span>
+
+<span class='co'># Create example data</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='create_synthetic_data.html'>create_synthetic_data</a></span><span class='op'>(</span>
+  n_proteins <span class='op'>=</span> <span class='fl'>100</span>,
+  frac_change <span class='op'>=</span> <span class='fl'>0.05</span>,
+  n_replicates <span class='op'>=</span> <span class='fl'>3</span>,
+  n_conditions <span class='op'>=</span> <span class='fl'>2</span>,
+  method <span class='op'>=</span> <span class='st'>"effect_random"</span>
+<span class='op'>)</span>
+
+<span class='co'># Calculate missed cleavage percentages</span>
 <span class='fu'>qc_missed_cleavages</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-  grouping <span class='op'>=</span> <span class='va'>pep_stripped_sequence</span>,
-  missed_cleavages <span class='op'>=</span> <span class='va'>pep_nr_of_missed_cleavages</span>,
-  intensity <span class='op'>=</span> <span class='va'>fg_quantity</span>,
+  data <span class='op'>=</span> <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>sample</span>,
+  grouping <span class='op'>=</span> <span class='va'>peptide</span>,
+  missed_cleavages <span class='op'>=</span> <span class='va'>n_missed_cleavage</span>,
+  intensity <span class='op'>=</span> <span class='va'>peptide_intensity_missing</span>,
+  method <span class='op'>=</span> <span class='st'>"intensity"</span>,
+  plot <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 18 × 3</span>
+#&gt;    sample   n_missed_cleavage mc_percent
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>                  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span> sample_1 0                      76.9 
+#&gt; <span style='color: #BCBCBC;'> 2</span> sample_1 1                      20.8 
+#&gt; <span style='color: #BCBCBC;'> 3</span> sample_1 2                       2.28
+#&gt; <span style='color: #BCBCBC;'> 4</span> sample_2 0                      76.9 
+#&gt; <span style='color: #BCBCBC;'> 5</span> sample_2 1                      20.9 
+#&gt; <span style='color: #BCBCBC;'> 6</span> sample_2 2                       2.16
+#&gt; <span style='color: #BCBCBC;'> 7</span> sample_3 0                      77.3 
+#&gt; <span style='color: #BCBCBC;'> 8</span> sample_3 1                      20.4 
+#&gt; <span style='color: #BCBCBC;'> 9</span> sample_3 2                       2.37
+#&gt; <span style='color: #BCBCBC;'>10</span> sample_4 0                      77.1 
+#&gt; <span style='color: #BCBCBC;'>11</span> sample_4 1                      20.5 
+#&gt; <span style='color: #BCBCBC;'>12</span> sample_4 2                       2.41
+#&gt; <span style='color: #BCBCBC;'>13</span> sample_5 0                      76.9 
+#&gt; <span style='color: #BCBCBC;'>14</span> sample_5 1                      20.9 
+#&gt; <span style='color: #BCBCBC;'>15</span> sample_5 2                       2.19
+#&gt; <span style='color: #BCBCBC;'>16</span> sample_6 0                      77.2 
+#&gt; <span style='color: #BCBCBC;'>17</span> sample_6 1                      20.5 
+#&gt; <span style='color: #BCBCBC;'>18</span> sample_6 2                       2.25</div><div class='input'>
+<span class='co'># Plot missed cleavages</span>
+<span class='fu'>qc_missed_cleavages</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>sample</span>,
+  grouping <span class='op'>=</span> <span class='va'>peptide</span>,
+  missed_cleavages <span class='op'>=</span> <span class='va'>n_missed_cleavage</span>,
+  intensity <span class='op'>=</span> <span class='va'>peptide_intensity_missing</span>,
   method <span class='op'>=</span> <span class='st'>"intensity"</span>,
   plot <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+</div><div class='img'><img src='qc_missed_cleavages-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

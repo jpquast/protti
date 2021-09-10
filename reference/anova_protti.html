@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -148,46 +148,62 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame containing at least the input variables.</p></td>
+      <td><p>a data frame containing at least the input variables.</p></td>
     </tr>
     <tr>
       <th>grouping</th>
-      <td><p>The column in the data frame containing precursor or peptide identifiers.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains precursor or
+peptide identifiers.</p></td>
     </tr>
     <tr>
       <th>condition</th>
-      <td><p>The column in the data frame containing the conditions.</p></td>
+      <td><p>a character or numeric column in the <code>data</code> data frame that contains the
+conditions.</p></td>
     </tr>
     <tr>
       <th>mean_ratio</th>
-      <td><p>The column in the data frame containing mean intensities or mean intensity ratios.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains mean intensities
+or mean intensity ratios.</p></td>
     </tr>
     <tr>
       <th>sd</th>
-      <td><p>The column in the data frame containing the standard deviation corresponding to the mean.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains the standard deviation
+corresponding to the mean.</p></td>
     </tr>
     <tr>
       <th>n</th>
-      <td><p>The column in the data frame containing the number of replicates for which the corresponding mean was calculated.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains the number of replicates
+for which the corresponding mean was calculated.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains the within group error (<code>ms_group</code>) and the between group error (<code>ms_error</code>), f statistic and p-values.</p>
+    <p>a data frame that contains the within group error (<code>ms_group</code>) and the between
+group error (<code>ms_error</code>), f statistic and p-values.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+    <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
+  precursor <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"A"</span>, <span class='st'>"A"</span>, <span class='st'>"A"</span>, <span class='st'>"B"</span>, <span class='st'>"B"</span>, <span class='st'>"B"</span><span class='op'>)</span>,
+  condition <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"C1"</span>, <span class='st'>"C2"</span>, <span class='st'>"C3"</span>, <span class='st'>"C1"</span>, <span class='st'>"C2"</span>, <span class='st'>"C3"</span><span class='op'>)</span>,
+  mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>12</span>, <span class='fl'>20</span>, <span class='fl'>11</span>, <span class='fl'>12</span>, <span class='fl'>8</span><span class='op'>)</span>,
+  sd <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>1</span>, <span class='fl'>1.5</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>4</span><span class='op'>)</span>,
+  n <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>4</span>, <span class='fl'>4</span>, <span class='fl'>4</span>, <span class='fl'>4</span>, <span class='fl'>4</span><span class='op'>)</span>
+<span class='op'>)</span>
+
 <span class='fu'>anova_protti</span><span class='op'>(</span>
   <span class='va'>data</span>,
-  grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-  condition <span class='op'>=</span> <span class='va'>r_condition</span>,
+  grouping <span class='op'>=</span> <span class='va'>precursor</span>,
+  condition <span class='op'>=</span> <span class='va'>condition</span>,
   mean <span class='op'>=</span> <span class='va'>mean</span>,
   sd <span class='op'>=</span> <span class='va'>sd</span>,
   n <span class='op'>=</span> <span class='va'>n</span>
 <span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 × 5</span>
+#&gt;   precursor ms_group ms_error     f      pval
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> A            112       2.42 46.3  0.000<span style='text-decoration: underline;'>018</span>3
+#&gt; <span style='color: #BCBCBC;'>2</span> B             17.3     7     2.48 0.139    </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

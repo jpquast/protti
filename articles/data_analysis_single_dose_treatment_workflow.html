@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
       <h1 data-toc-skip>Single Dose Treatment Data Analysis Workflow</h1>
                         <h4 class="author">Dina Schuster</h4>
             
-            <h4 class="date">2021-06-28</h4>
+            <h4 class="date">2021-09-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/data_analysis_single_dose_treatment_workflow.Rmd"><code>vignettes/data_analysis_single_dose_treatment_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_single_dose_treatment_workflow.Rmd</code></div>
@@ -147,7 +147,7 @@
 </ul>
 </li>
 </ul>
-<p>You can read more about specific functions and how to use them by calling e.g. <code><a href="../reference/median_normalisation.html">?median_normalisation</a></code> (for the <code><a href="../reference/median_normalisation.html">median_normalisation()</a></code> function). Calling <code><a href="https://rdrr.io/r/utils/Question.html">?</a></code> followed by the function name will display the function documentation and give you more detailed information about the function. This can be done for any of the functions included in the package.</p>
+<p>You can read more about specific functions and how to use them by calling e.g. <code><a href="../reference/normalise.html">?normalise</a></code> (for the <code><a href="../reference/normalise.html">normalise()</a></code> function). Calling <code><a href="https://rdrr.io/r/utils/Question.html">?</a></code> followed by the function name will display the function documentation and give you more detailed information about the function. This can be done for any of the functions included in the package.</p>
 <p>This document will give you an overview of data preparation, data analysis, data visualisation and data interpretation functions included in <strong>protti</strong>. It will show you how they can be applied to your data. The examples in this file are run on a <a href="https://www.nature.com/articles/s41467-020-18071-x">published</a> LiP-MS data set. In the experiment a HeLa cell lysate was treated with different amounts of the drug rapamycin and the target of rapamycin (FKBP12) was successfully identified. For this vignette we are using a filtered version of the original data set where we include only the 10 μM treatment concentration and the control (untreated). For simplicity only 50 proteins are included in the data set.</p>
 <p>The data set is produced from the output of <a href="https://biognosys.com/software/spectronaut/">Spectronaut™</a>. However, if you have any other data such as DDA data that was searched with a different search engine you can still apply <strong>protti</strong>’s functions. Just make sure that your data frame contains <a href="https://r4ds.had.co.nz/tidy-data.html">tidy data</a>. That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the <code>pivot_longer()</code> function from the <code>tidyr</code> package. If you are unsure what your input data is supposed to look like, please use the <code><a href="../reference/create_synthetic_data.html">create_synthetic_data()</a></code> function and compare this to your data. You can also take a look at the <a href="https://jpquast.github.io/protti/articles/input_preparation_workflow.html">input preparation vignette</a>, there you will find all the necessary information on how to get your data into the correct format.</p>
 <p>The input data should have a similar structure to this example:</p>
@@ -234,7 +234,7 @@
 <p>First, we remove decoy hits (used for false discovery rate estimation). Our example data set contains a column called <code>eg_is_decoy</code> that consists of logicals indicating whether or not the peptide is a decoy hit. To remove decoys we will use the <code>dplyr</code> function <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code>.</p>
 <p>Next, we log2 transform our intensities, then normalise the data to the median value of all runs. To transform the intensities we use the <code>dplyr</code> function <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> which creates a new column while maintaining the original column.</p>
 <p>Note that we are also using the pipe operator <code><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></code> included in the R package <a href="https://magrittr.tidyverse.org/index.html"><code>magrittr</code></a>. <code><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></code> takes the output of the preceding function and supplies it as the first argument of the following function. Using <code><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></code> makes code easier to read and follow.</p>
-<p>For median normalisation we are using the <strong>protti</strong> function <code><a href="../reference/median_normalisation.html">median_normalisation()</a></code>. The function normalises intensities for each run to the median of all runs. This is only necessary if your search algorithm does not already median normalise your intensities. For the example data we have disabled median normalisation in Spectronaut, therefore we need to median normalise now. The formula for median normalisation is:</p>
+<p>For normalisation we are using the <strong>protti</strong> function <code><a href="../reference/normalise.html">normalise()</a></code>. For this example we will use median normalisation (<code>method = "median"</code>). The function normalises intensities for each run to the median of all runs. This is only necessary if your search algorithm does not already median normalise your intensities. For the example data we have disabled median normalisation in Spectronaut, therefore we need to median normalise now. The formula for median normalisation is:</p>
 <div class="blackbox">
 <p>
 <span class="math display"><span class="math display">\[median ~ normalised ~ intensity  = intensity - median ( run ~ intensity ) + median ( global ~ intensity) \]</span></span>
@@ -247,13 +247,14 @@
 <span class="math display"><span class="math display">\[CV = \frac{standard ~ deviation}{mean} * 100\]</span></span>
 </p>
 </div>
-<p><em>Note: The use of the <code><a href="../reference/filter_cv.html">filter_cv()</a></code> function is optional. It might remove a lot of your data if your experiment was noisy. However, especially in these cases, the function will remove peptides with poor quality and should improve the result.</em></p>
+<p><em>Note: The use of the <code><a href="../reference/filter_cv.html">filter_cv()</a></code> function is optional. It might remove a lot of your data if your experiment was noisy. However, especially in these cases, the function will remove peptides with poor quality and should improve the result. It is very important that if you use this function you should not use the moderated t-test or proDA algorithm on your data for differential abundance estimation and significance testing. This likely will lead to an inflated false positive rate because it alters the distributional assumptions of these tests (<a href="https://www.pnas.org/content/107/21/9546">Bourgon 2010</a>).</em></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_normalised</span> <span class="op">&lt;-</span> <span class="va">rapamycin_10uM</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">eg_is_decoy</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>intensity_log2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log2</a></span><span class="op">(</span><span class="va">fg_quantity</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/median_normalisation.html">median_normalisation</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">r_file_name</span>, 
-                       intensity_log2 <span class="op">=</span> <span class="va">intensity_log2</span><span class="op">)</span>
+  <span class="fu"><a href="../reference/normalise.html">normalise</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">r_file_name</span>, 
+            intensity_log2 <span class="op">=</span> <span class="va">intensity_log2</span>,
+            method <span class="op">=</span> <span class="st">"median"</span><span class="op">)</span>
 
 <span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_normalised</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/filter_cv.html">filter_cv</a></span><span class="op">(</span>grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>, 
@@ -279,7 +280,7 @@
 <p><code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code> returns a new data frame. In order to be able to merge this with our original data frame we have to rename the ID column to match the name of the protein ID column of our original data frame. To do this we use <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/rename.html">rename()</a></code> function.</p>
 <p>To merge the two data frames we use the <code>dplyr</code> function <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join()</a></code>. We match the two data frames by the column “pg_protein_accessions”. By using <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join()</a></code> we retain all rows from our original data frame while adding the columns from the data fame generated with <code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code>.</p>
 <p><em>Note: you can also directly join the UniProt data frame with your data without the need to rename its <code>id</code> column. You can specify in the <code>by</code> argument in <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join()</a></code> that two columns are differently named.</em></p>
-<p>Next, we would like to assign the trypticity of our peptides (i.e. if the peptides are fully-tryptic, semi-tryptic or non-tryptic). In order to do this we first need to define the peptide positions in the protein and find the preceding and following amino acids. To obtain this information we use the <strong>protti</strong> function <code><a href="../reference/find_peptide.html">find_peptide()</a></code>. The output of this function can then be used in the function <code><a href="../reference/peptide_type.html">peptide_type()</a></code> which will add an additional column with the peptide trypticity information. By using the function <code><a href="../reference/sequence_coverage.html">sequence_coverage()</a></code> we add an additional column to the data frame containing information on how much of the protein sequence we identified in our experiment.</p>
+<p>Next, we would like to assign the trypticity of our peptides (i.e. if the peptides are fully-tryptic, semi-tryptic or non-tryptic). In order to do this we first need to define the peptide positions in the protein and find the preceding and following amino acids. To obtain this information we use the <strong>protti</strong> function <code><a href="../reference/find_peptide.html">find_peptide()</a></code>. The output of this function can then be used in the function <code><a href="../reference/assign_peptide_type.html">assign_peptide_type()</a></code> which will add an additional column with the peptide trypticity information. By using the function <code><a href="../reference/calculate_sequence_coverage.html">calculate_sequence_coverage()</a></code> we add an additional column to the data frame containing information on how much of the protein sequence we identified in our experiment.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">uniprot_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">data_filtered_proteotypic</span><span class="op">$</span><span class="va">pg_protein_accessions</span><span class="op">)</span>
 
@@ -306,10 +307,10 @@
             by <span class="op">=</span> <span class="st">"pg_protein_accessions"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/find_peptide.html">find_peptide</a></span><span class="op">(</span>protein_sequence <span class="op">=</span> <span class="va">sequence</span>,
                peptide_sequence <span class="op">=</span> <span class="va">pep_stripped_sequence</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/peptide_type.html">peptide_type</a></span><span class="op">(</span>aa_before <span class="op">=</span> <span class="va">aa_before</span>,
+  <span class="fu"><a href="../reference/assign_peptide_type.html">assign_peptide_type</a></span><span class="op">(</span>aa_before <span class="op">=</span> <span class="va">aa_before</span>,
                last_aa <span class="op">=</span> <span class="va">last_aa</span>, 
                aa_after <span class="op">=</span> <span class="va">aa_after</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/sequence_coverage.html">sequence_coverage</a></span><span class="op">(</span>protein_sequence <span class="op">=</span> <span class="va">sequence</span>,
+  <span class="fu"><a href="../reference/calculate_sequence_coverage.html">calculate_sequence_coverage</a></span><span class="op">(</span>protein_sequence <span class="op">=</span> <span class="va">sequence</span>,
                     peptides <span class="op">=</span> <span class="va">pep_stripped_sequence</span><span class="op">)</span></code></pre></div>
 <p>With the <code><a href="../reference/qc_sequence_coverage.html">qc_sequence_coverage()</a></code> function, you check how sequence coverage is distributed over all proteins in the sample. Usually, the center of the distribution is low due to many proteins with poor coverage. For this small data set with only 40 proteins the sequence coverage is distributed relatively evenly.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -328,8 +329,9 @@
 <h3 class="hasAnchor">
 <a href="#statistical-hypothesis-test" class="anchor"></a>Statistical hypothesis test</h3>
 <p>To test if there is a difference between the peptide abundances in our two conditions (i.e. rapamycin treated and untreated) we use a Welch’s t-test (unpaired). Welch’s t-test is a method for comparing means of two independent sample groups and it does not assume equal variances between groups (as Student’s t-test would).</p>
-<p>Before the statistical hypothesis test we have to define the types of missing values present in our data set. We are going to use the function <code><a href="../reference/assign_missingness.html">assign_missingness()</a></code> which will return a column with information on the types of missingness we have in our data (i.e. complete, missing at random (MAR) or missing not at random (MNAR)). We use the default parameters of this function which assumes that missing values are MAR when the conditions are at least 70 % complete (adjusted downward). Missing values are assumed to be MNAR when less than 25 % of values are present (adjusted_downward) in one condition if the other condition is complete.</p>
-<p>After assigning the types of data missingness we use the function <code><a href="../reference/diff_abundance.html">diff_abundance()</a></code>. In this case by selecting <code>method = t-test</code> the function will perform a Welch’s t-test. There are also options included to perform a moderated t-test based on the R package <code>limma</code> or to detect differential abundances based on the algorithm implemented in the R package <code>proDA</code>. The algorithm used for <code>proDA</code> is based on a probabilistic dropout model which facilitates hypothesis testing without imputation.</p>
+<p>Before the statistical hypothesis test we have to define the types of missing values present in our data set. We are going to use the function <code><a href="../reference/assign_missingness.html">assign_missingness()</a></code> which will return a column with information on the types of missingness we have in our data (i.e. complete, missing at random (MAR) or missing not at random (MNAR)). We use the default parameters of this function which assumes that missing values are MAR when the conditions are at least 70 % complete (adjusted downward). Missing values are assumed to be MNAR when less than 20 % of values are present (adjusted_downward) in one condition if the other condition is complete. If not “complete” all other comparisons are label as <code>NA</code>. If imputation is performed, these are the comparisons that will not be imputed. The type of missingness assigned to a comparison does not have any influence on the statistical test. However, by default (can be changed) comparisons with missingness <code>NA</code> are filtered out prior to p-value adjustment. This means that in addition to imputation the user can use missingness cutoffs also in order to define which comparisons are too incomplete to be trustworthy even if significant.</p>
+<p>After assigning the types of data missingness we use the function <code><a href="../reference/calculate_diff_abundance.html">calculate_diff_abundance()</a></code>. By selecting <code>method = t-test</code> the function will perform a Welch’s t-test. There are also options included to perform a moderated t-test based on the R package <code>limma</code> or to detect differential abundances based on the algorithm implemented in the R package <code>proDA</code>. The algorithm used for <code>proDA</code> is based on a probabilistic dropout model which facilitates hypothesis testing (using a moderated t-test) while eliminating the need for imputation.</p>
+<p>It has been shown that generally moderated t-tests perform much better also in proteomics data, as compared to t-tests (<a href="https://www.sciencedirect.com/science/article/pii/S2212968515000069">Kammers et al. 2015</a>). Therefore, we will use a moderated t-test in this example.</p>
 <p>Please note that in this example we are not imputing missing values. You can, however, do so by using the function <code><a href="../reference/impute.html">impute()</a></code>. This function uses the output of <code><a href="../reference/assign_missingness.html">assign_missingness()</a></code> as its input. You can use two different imputation methods:</p>
 <ul>
 <li>
@@ -337,7 +339,8 @@
 <li>
 <code>method = noise</code> will sample MNAR values from a normal distribution around the mean noise of the complete condition. This requires you to have an additional column with information on the noise, which can be obtained from Spectronaut.</li>
 </ul>
-<p>Both methods impute MAR data using the mean and variance of the condition with the missing data.</p>
+<p>Both methods impute MAR data using the mean and variance of the condition with the missing data. Missingness assigned as <code>NA</code> will not be imputed.</p>
+<p><em>Note: If data is imputed this can lead to invalid inferential conclusions due to underestimating statistical uncertainty or it can cause loss of statistical power (<a href="https://www.biorxiv.org/content/10.1101/661496v1.full.pdf">Ahlmann-Eltze et al. 2020</a>). Therefore, we do not recommend using a moderated t-test or the proDA algorithm after imputation.</em></p>
 <p>Since we are dealing with a LiP-MS data set we perform the statistical analysis on the precursor* level. For protein abundance data you can simply use protein abundances as your intensities and select your protein groups column for the grouping argument. Make sure to retain any columns you need for further data analysis with the <code>retain_columns</code> argument of both functions.</p>
 <p>_*A peptide precursor is the actual molecular unit that was detected on the mass spectrometer. This is a peptide with one specific charge state and its modification(s)._</p>
 <p><em>Note: Although it is not required for the data set analysed in this vignette, analysis of LiP-MS data frequently requires correction of LiP peptide intensities for changes in protein abundance. This can be done using the steps outlined in <a href="https://doi.org/10.1038/nprot.2017.100">Schopper et al. 2017</a>.</em></p>
@@ -351,38 +354,51 @@
     ref_condition <span class="op">=</span> <span class="st">"control"</span>,
     completeness_MAR <span class="op">=</span> <span class="fl">0.7</span>,
     completeness_MNAR <span class="op">=</span> <span class="fl">0.25</span>,
-    retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span>, <span class="va">go_molecular_function</span>, <span class="va">database_string</span>, <span class="va">start</span>, <span class="va">end</span>, <span class="va">length</span>, <span class="va">coverage</span><span class="op">)</span>
+    retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span>, 
+                       <span class="va">go_molecular_function</span>, 
+                       <span class="va">database_string</span>, 
+                       <span class="va">start</span>, 
+                       <span class="va">end</span>, 
+                       <span class="va">length</span>, 
+                       <span class="va">coverage</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/diff_abundance.html">diff_abundance</a></span><span class="op">(</span>
+  <span class="fu"><a href="../reference/calculate_diff_abundance.html">calculate_diff_abundance</a></span><span class="op">(</span>
     sample <span class="op">=</span> <span class="va">r_file_name</span>,
     condition <span class="op">=</span> <span class="va">r_condition</span>,
     grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
     intensity_log2 <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
     missingness <span class="op">=</span> <span class="va">missingness</span>,
     comparison <span class="op">=</span> <span class="va">comparison</span>,
-    method <span class="op">=</span> <span class="st">"t-test"</span>,
-    retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span>, <span class="va">go_molecular_function</span>, <span class="va">database_string</span>, <span class="va">start</span>, <span class="va">end</span>, <span class="va">length</span>, <span class="va">coverage</span><span class="op">)</span>
+    method <span class="op">=</span> <span class="st">"moderated_t-test"</span>,
+    retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span>, 
+                       <span class="va">go_molecular_function</span>, 
+                       <span class="va">database_string</span>, 
+                       <span class="va">start</span>, 
+                       <span class="va">end</span>, 
+                       <span class="va">length</span>, 
+                       <span class="va">coverage</span><span class="op">)</span>
   <span class="op">)</span> </code></pre></div>
 </div>
 <div id="p-value-distribution" class="section level3">
 <h3 class="hasAnchor">
 <a href="#p-value-distribution" class="anchor"></a>p-value distribution</h3>
-<p>The p-value calculated with the t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg (FDR) correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall even distribution with a concentration of values in the significant range. You can check this by using the protti function <code><a href="../reference/plot_pval_distribution.html">plot_pval_distribution()</a></code>.</p>
+<p>The p-value calculated with the moderated t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall uniform distribution. If there is an effect in the data, there will be an increased frequency of low p-values. You can check this by using the protti function <code><a href="../reference/pval_distribution_plot.html">pval_distribution_plot()</a></code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_pval_distribution.html">plot_pval_distribution</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">diff_abundance_data</span>,
+<code class="sourceCode R"><span class="fu"><a href="../reference/pval_distribution_plot.html">pval_distribution_plot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">diff_abundance_data</span>,
                        grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
                        pval <span class="op">=</span> <span class="va">pval</span>
                        <span class="op">)</span></code></pre></div>
 <p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/pval_distribution-1.png" width="576" style="display: block; margin: auto;"></p>
-<p>For this subset of data the distribution of p-values is relatively flat and there is no increase in values in the low p-value range but rather a decrease. This means that the Benjamini-Hochberg algorithm might not be suitable for correcting these p-values. You can pick another algorithm for the correction and supply it to the <code>p_adj_method</code> argument and run <code><a href="../reference/diff_abundance.html">diff_abundance()</a></code> again. The available methods are any methods that can be supplied to the standard R function <code><a href="https://rdrr.io/r/stats/p.adjust.html">p.adjust()</a></code> that is used internally within <code><a href="../reference/diff_abundance.html">diff_abundance()</a></code>. You can also just use this function or any other correction algorithm on your data and overwrite the values in the <code>adj_pval</code> column.</p>
-<p><em>Note: If the p-values do not fulfill the assumption for multiple-testing correction, meaning very few observations are changing significantly, it can happen that only a few significant hits remain after adjusting the p-value. This can be a common occurrence so you should always look at the p-value distribution. This will help you decide whether or not you should use adjusted p-values, not adjusted p-values or if you should adjust them with a specific method.</em></p>
+<p>For this subset of data the distribution of p-values is relatively flat and there is no large increase in values in the low p-value range. This is likely because, for this experiment, only a very small fraction of peptides show changes. If so, it can happen that none or few significant hits remain after adjusting the p-value using the Benjamini-Hochberg correction. It may be useful in this case to assess alternative correction approaches.</p>
+<p>It is recommended to always check the p-value distribution. A histogram that does not have a uniform distribution (i.e. that is not flat) with or without a specific enrichment for very low p-values (due to a treatment induced effect) indicates a failure of the theoretical null distribution, which could have several causes (<a href="https://www.cambridge.org/core/services/aop-cambridge-core/content/view/0BD692B5CFF1C51B73D480B72B0B3A28/9780511761362c6_p89-112_CBO.pdf/theoretical_permutation_and_empirical_null_distributions.pdf">Efron 2010, chapter 6</a>)</p>
 </div>
 <div id="volcano-plot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#volcano-plot" class="anchor"></a>Volcano plot</h3>
-<p>Next we are going to visualise the output of the previously performed hypothesis test to assess the results of our experiment. For this we are going to plot a volcano plot with fold-changes on the x-axis and the adjusted p-value (q-value) or p-value on the y-axis. The output of the previously used <code><a href="../reference/diff_abundance.html">diff_abundance()</a></code> function is ideal to use for the <code><a href="../reference/volcano_protti.html">volcano_protti()</a></code> function as it contains all the information we need: precursor IDs, protein IDs, fold changes (<code>diff</code>) and adjusted p-values (<code>adj_pval</code>). We are going to highlight the peptides of the known target of rapamycin FKBP12 (UniProt ID = P62942) in blue to quickly find the peptides in the plot. You can also make the plot interactive by setting <code>interactive = TRUE</code>. This will help you quickly obtain more information on each point in the plot. We are going to plot the volcano plot with and without adjusted p-values.</p>
+<p>Next we are going to visualise the output of the previously performed hypothesis test to assess the results of our experiment. For this we are going to plot a volcano plot with fold-changes on the x-axis and the p-value on the y-axis. The output of the previously used <code><a href="../reference/calculate_diff_abundance.html">calculate_diff_abundance()</a></code> function is ideal to use for the <code><a href="../reference/volcano_plot.html">volcano_plot()</a></code> function as it contains all the information we need: precursor IDs, protein IDs, fold changes (<code>diff</code>), p-values (<code>pval</code>) and adjusted p-values (<code>adj_pval</code>). We are going to highlight the peptides of the known target of rapamycin FKBP12 (UniProt ID = P62942) in blue to quickly find the peptides in the plot. You can also make the plot interactive by setting <code>interactive = TRUE</code>. This will help you quickly obtain more information on each point in the plot.</p>
+<p>Since adjusted p-values are related to unadjusted p-values often in a complex way, it makes them hard to be interpret if they would be used for the y-axis. To nevertheless use the information of adjusted p-values for the plot, you can provide the column name of the adjusted p-values to the <code>significance_cutoff</code> argument next to the desired cutoff. The function will look for the closest adjusted p-values above and below the set cutoff and take the mean of the corresponding p-value as the cutoff line. If there is no adjusted p-value in the data that is below the set cutoff no line is displayed. This allows you to display volcano plots using p-values while using adjusted p-values for the cutoff criteria.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/volcano_protti.html">volcano_protti</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="fu"><a href="../reference/volcano_plot.html">volcano_plot</a></span><span class="op">(</span>
   data <span class="op">=</span> <span class="va">diff_abundance_data</span>,
   grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
   log2FC <span class="op">=</span> <span class="va">diff</span>,
@@ -393,25 +409,13 @@
   x_axis_label <span class="op">=</span> <span class="st">"log2(fold change) Rapamycin treated vs. untreated"</span>,
   y_axis_label <span class="op">=</span> <span class="st">"-log10(p-value)"</span>,
   title <span class="op">=</span> <span class="st">"Volcano plot (p-value not adjusted)"</span>,
-  significance_cutoff <span class="op">=</span> <span class="fl">0.05</span>
+  significance_cutoff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="st">"adj_pval"</span><span class="op">)</span> 
 <span class="op">)</span></code></pre></div>
 <p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/volcano_plot-1.png" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="fu"><a href="../reference/volcano_protti.html">volcano_protti</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">diff_abundance_data</span>,
-  grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
-  log2FC <span class="op">=</span> <span class="va">diff</span>,
-  significance <span class="op">=</span> <span class="va">adj_pval</span>,
-  method <span class="op">=</span> <span class="st">"target"</span>,
-  target_column <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
-  target <span class="op">=</span> <span class="st">"P62942"</span>,
-  x_axis_label <span class="op">=</span> <span class="st">"log2(fold change) Rapamycin treated vs. untreated"</span>,
-  y_axis_label <span class="op">=</span> <span class="st">"-log10(q-value)"</span>,
-  title <span class="op">=</span> <span class="st">"Volcano plot"</span>,
-  significance_cutoff <span class="op">=</span> <span class="fl">0.05</span>
-<span class="op">)</span></code></pre></div>
-<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/volcano_plot-2.png" width="576" style="display: block; margin: auto;"></p>
+<code class="sourceCode R"><span class="co"># The significance_cutoff argument can also just be used for a </span>
+<span class="co"># regular cutoff line by just providing the cutoff value, e.g.</span>
+<span class="co"># signficiance_cutoff = 0.05</span></code></pre></div>
 </div>
 <div id="barcode-plot" class="section level3">
 <h3 class="hasAnchor">
@@ -437,10 +441,10 @@
 <div id="woods-plot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#woods-plot" class="anchor"></a>Wood’s plot</h3>
-<p>An additional way to plot LiP-MS changes are Woods’ plots. These plots will show the extent of the change along the protein sequence. To produce a Wood’s plot we use the function <code><a href="../reference/woods_plot.html">woods_plot()</a></code> and colour the peptides according to their adjusted p-values. We are highlighting significant q-values (&lt; 0.01) with an asterisk.</p>
+<p>An additional way to plot LiP-MS changes is the Woods’ plot. This plot will show the extent of the precursor fold changes along the protein sequence. The precursors are located on the x-axis based on their start and end positions. The position on the y-axis displays the fold change. The vertical size (y-axis) of the box representing the precurors does not have any meaning.</p>
+<p>To produce a Woods’ plot we use the function <code><a href="../reference/woods_plot.html">woods_plot()</a></code> and colour the peptides according to their adjusted p-values. We are highlighting significant adjusted p-values (&lt; 0.01) with an asterisk. Peptides can also be coloured by another categorical or continous variable. Asterisks can be added for any logical (binary) variable.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">FKBP12</span> <span class="op">&lt;-</span> <span class="va">FKBP12</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">FKBP12</span> <span class="op">&lt;-</span> <span class="va">FKBP12</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">adj_pval</span> <span class="op">&lt;</span> <span class="fl">0.01</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/woods_plot.html">woods_plot</a></span><span class="op">(</span>
@@ -462,12 +466,12 @@
 <div id="peptide-profile-plots" class="section level3">
 <h3 class="hasAnchor">
 <a href="#peptide-profile-plots" class="anchor"></a>Peptide profile plots</h3>
-<p>To see how the individual precursors in our target protein are changing with the treatment we plot profile plots by using the function <code><a href="../reference/plot_peptide_profiles.html">plot_peptide_profiles()</a></code>. This is particularly useful as you can quickly see if your whole protein changes in abundance or only a fraction of precursors/peptides. If you have protein abundance data you can also use the plot to show changes in protein abundance over your treatment condition(s). By selecting multiple targets (as a vector) you can produce the plot for multiple proteins.</p>
+<p>To see how the individual precursors in our target protein are changing with the treatment we plot profile plots by using the function <code><a href="../reference/peptide_profile_plot.html">peptide_profile_plot()</a></code>. This is particularly useful as you can quickly see if your whole protein changes in abundance or only a fraction of precursors/peptides. If you have protein abundance data you can also use the plot to show changes in protein abundance over your treatment condition(s). By selecting multiple targets (as a vector) you can produce the plot for multiple proteins.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">FKBP12_intensity</span> <span class="op">&lt;-</span> <span class="va">data_filtered_uniprot</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span>
 
-<span class="fu"><a href="../reference/plot_peptide_profiles.html">plot_peptide_profiles</a></span><span class="op">(</span>
+<span class="fu"><a href="../reference/peptide_profile_plot.html">peptide_profile_plot</a></span><span class="op">(</span>
   data <span class="op">=</span> <span class="va">FKBP12_intensity</span>,
   sample <span class="op">=</span> <span class="va">r_file_name</span>,
   peptide <span class="op">=</span> <span class="va">eg_precursor_id</span>,
@@ -483,19 +487,21 @@
 <div id="additional-helpful-functions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#additional-helpful-functions" class="anchor"></a>Additional helpful functions</h2>
-<p><strong>protti</strong> includes additional helpful functions that do not make sense to use for this data set but apply to data sets of full size that have global changes. These functions include the <code><a href="../reference/go_enrichment.html">go_enrichment()</a></code>function that helps you check if your hits are enriched for specific gene ontology (GO) terms, the <code><a href="../reference/network_analysis.html">network_analysis()</a></code> function that plots a String network based on information from StringDB for your hits and the <code><a href="../reference/kegg_enrichment.html">kegg_enrichment()</a></code> function which checks for enriched pathways in your hits. Furthermore, you can directly check for enrichment of a self defined treatment with the <code><a href="../reference/treatment_enrichment.html">treatment_enrichment()</a></code> function.</p>
+<p><strong>protti</strong> includes additional helpful functions that do not make sense to use for this data set but apply to data sets of full size that have global changes. These functions include the <code><a href="../reference/calculate_go_enrichment.html">calculate_go_enrichment()</a></code>function that helps you check if your hits are enriched for specific gene ontology (GO) terms, the <code><a href="../reference/analyse_functional_network.html">analyse_functional_network()</a></code> function that plots a String network based on information from StringDB for your hits and the <code><a href="../reference/calculate_kegg_enrichment.html">calculate_kegg_enrichment()</a></code> function which checks for enriched pathways in your hits. Furthermore, you can directly check for enrichment of a self defined treatment with the <code><a href="../reference/calculate_treatment_enrichment.html">calculate_treatment_enrichment()</a></code> function.</p>
 <p>For GO enrichment you would add an additional column to your data frame containing information on whether your hit is significant or not. You can do this by using the <code>dplyr</code> function <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code>. Here we want the column to contain logicals that are either TRUE when the adjusted p-value is below 0.05 and the log2(fold change) is below -1 or above 1 or to be FALSE if this is not the case. We use the <code><a href="https://rdrr.io/r/base/ifelse.html">ifelse()</a></code> function to produce the logicals. Furthermore, we annotate if the hit is true positive by marking peptides of the known rapamycin binding protein FKBP12.</p>
-<p>For the network analysis we filter the previously produced data frame containing the <code>is_significant</code> column for significant hits. This data frame can then be used as an input for <code><a href="../reference/network_analysis.html">network_analysis()</a></code> to check if the proteins can be found in an interaction network based on StringDB information.</p>
-<p>For <code><a href="../reference/kegg_enrichment.html">kegg_enrichment()</a></code> you need to first use the function <code><a href="../reference/fetch_kegg.html">fetch_kegg()</a></code> to obtain the KEGG pathway identifiers for your data set. You can then use <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join()</a></code>to join the output with the previously produced data frame containing a column indicating whether your hits are significant or not.</p>
-<p>If you know all known interactors of your specific treatment you can check for an enrichment of these with the <code><a href="../reference/treatment_enrichment.html">treatment_enrichment()</a></code> function. This is particularly useful if your treatment has an effect on many proteins.</p>
+<p>For the network analysis we filter the previously produced data frame containing the <code>is_significant</code> column for significant hits. This data frame can then be used as an input for <code><a href="../reference/analyse_functional_network.html">analyse_functional_network()</a></code> to check if the proteins can be found in an interaction network based on StringDB information.</p>
+<p>For <code><a href="../reference/calculate_kegg_enrichment.html">calculate_kegg_enrichment()</a></code> you need to first use the function <code><a href="../reference/fetch_kegg.html">fetch_kegg()</a></code> to obtain the KEGG pathway identifiers for your data set. You can then use <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join()</a></code>to join the output with the previously produced data frame containing a column indicating whether your hits are significant or not.</p>
+<p>If you know all known interactors of your specific treatment you can check for an enrichment of these with the <code><a href="../reference/calculate_treatment_enrichment.html">calculate_treatment_enrichment()</a></code> function. This is particularly useful if your treatment has an effect on many proteins.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diff_abundance_significant</span> <span class="op">&lt;-</span> <span class="va">diff_abundance_data</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>is_significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="op">(</span><span class="va">adj_pval</span> <span class="op">&lt;</span> <span class="fl">0.01</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># mark significant peptides</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>binds_treatment <span class="op">=</span> <span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span> <span class="co"># mark true positive hits</span>
+  <span class="co"># mark significant peptides</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>is_significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="op">(</span><span class="va">adj_pval</span> <span class="op">&lt;</span> <span class="fl">0.01</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="co"># mark true positive hits</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>binds_treatment <span class="op">=</span> <span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span> 
 
 <span class="co">### GO enrichment using "molecular function" annotation from UniProt</span>
 
-<span class="fu"><a href="../reference/go_enrichment.html">go_enrichment</a></span><span class="op">(</span>
+<span class="fu"><a href="../reference/calculate_go_enrichment.html">calculate_go_enrichment</a></span><span class="op">(</span>
   data <span class="op">=</span> <span class="va">diff_abundance_significant</span>,
   protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
   is_significant <span class="op">=</span> <span class="va">is_significant</span>,
@@ -507,7 +513,7 @@
 <span class="va">network_input</span> <span class="op">&lt;-</span> <span class="va">diff_abundance_significant</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">is_significant</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="fu"><a href="../reference/network_analysis.html">network_analysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">network_input</span>,
+<span class="fu"><a href="../reference/analyse_functional_network.html">analyse_functional_network</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">network_input</span>,
                  protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
                  string_id <span class="op">=</span> <span class="va">database_string</span>,
                  binds_treatment <span class="op">=</span> <span class="va">binds_treatment</span>,
@@ -515,23 +521,25 @@
 
 <span class="co">### KEGG pathway enrichment</span>
 
-<span class="co"># First you need to load KEGG pathway annotations from the KEGG database for your specific organism of interest.</span>
-<span class="co"># In this case HeLa cells were used, therefore the organism of interest is homo sapiens (hsa)</span>
+<span class="co"># First you need to load KEGG pathway annotations from the KEGG database </span>
+<span class="co"># for your specific organism of interest. In this case HeLa cells were </span>
+<span class="co"># used, therefore the organism of interest is homo sapiens (hsa)</span>
 
 <span class="va">kegg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_kegg.html">fetch_kegg</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"hsa"</span><span class="op">)</span>
 
 <span class="co"># Next we need to annotate our data with KEGG pathway IDs and perform enrichment analysis</span>
 
 <span class="va">diff_abundance_significant</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">kegg</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pg_protein_accessions"</span> <span class="op">=</span> <span class="st">"uniprot_id"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># columns containing proteins IDs are named differently</span>
-  <span class="fu"><a href="../reference/kegg_enrichment.html">kegg_enrichment</a></span><span class="op">(</span>protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
+  <span class="co"># columns containing proteins IDs are named differently</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">kegg</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pg_protein_accessions"</span> <span class="op">=</span> <span class="st">"uniprot_id"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/calculate_kegg_enrichment.html">calculate_kegg_enrichment</a></span><span class="op">(</span>protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
                   is_significant <span class="op">=</span> <span class="va">is_significant</span>,
                   pathway_id <span class="op">=</span> <span class="va">pathway_id</span>,
                   pathway_name <span class="op">=</span> <span class="va">pathway_name</span><span class="op">)</span>
 
 <span class="co">### Treatment enrichment analysis</span>
 
-<span class="fu"><a href="../reference/treatment_enrichment.html">treatment_enrichment</a></span><span class="op">(</span><span class="va">diff_abundance_significant</span>,
+<span class="fu"><a href="../reference/calculate_treatment_enrichment.html">calculate_treatment_enrichment</a></span><span class="op">(</span><span class="va">diff_abundance_significant</span>,
                      protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
                      is_significant <span class="op">=</span> <span class="va">is_significant</span>,
                      binds_treatment <span class="op">=</span> <span class="va">binds_treatment</span>,

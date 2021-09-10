@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -155,44 +155,76 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>a data frame containing at least the input variables.</p></td>
+      <td><p>a data frame that contains at least the input variables.</p></td>
     </tr>
     <tr>
       <th>sample</th>
-      <td><p>the name of the column containing the sample names.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the sample name.</p></td>
     </tr>
     <tr>
       <th>grouping</th>
-      <td><p>the name of the column containing precursor or peptide identifiers.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains either precursor or
+peptide identifiers.</p></td>
     </tr>
     <tr>
       <th>intensity</th>
-      <td><p>the name of the column containing intensity values. The intensity should be ideally log2 transformed, but also non-transformed values can be used.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains intensity values.
+The intensity should be ideally log2 transformed, but also non-transformed values can be used.</p></td>
     </tr>
     <tr>
       <th>plot</th>
-      <td><p>logical, if TRUE a plot is returned. If FALSE a table is returned.</p></td>
+      <td><p>a logical value that indicates whether the result should be plotted.</p></td>
     </tr>
     <tr>
       <th>interactive</th>
-      <td><p>logical, if TRUE the plot is interactive using plotly.</p></td>
+      <td><p>a logical value that specifies whether the plot should be interactive
+(default is FALSE).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A plot that displays median intensity over all samples. If <code>plot = FALSE</code> a data frame containing median intensities is returned.</p>
+    <p>A plot that displays median intensity over all samples. If <code>plot = FALSE</code> a data
+frame containing median intensities is returned.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>qc_median_intensities</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-  grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-  intensity <span class='op'>=</span> <span class='va'>log2_intensity</span>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span> <span class='co'># Makes example reproducible</span>
+
+<span class='co'># Create example data</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='create_synthetic_data.html'>create_synthetic_data</a></span><span class='op'>(</span>
+  n_proteins <span class='op'>=</span> <span class='fl'>100</span>,
+  frac_change <span class='op'>=</span> <span class='fl'>0.05</span>,
+  n_replicates <span class='op'>=</span> <span class='fl'>3</span>,
+  n_conditions <span class='op'>=</span> <span class='fl'>2</span>,
+  method <span class='op'>=</span> <span class='st'>"effect_random"</span>
 <span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+
+<span class='co'># Calculate median intensities</span>
+<span class='fu'>qc_median_intensities</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>sample</span>,
+  grouping <span class='op'>=</span> <span class='va'>peptide</span>,
+  intensity <span class='op'>=</span> <span class='va'>peptide_intensity_missing</span>,
+  plot <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 6 × 2</span>
+#&gt;   sample   median_intensity
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>               <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> sample_1             17.3
+#&gt; <span style='color: #BCBCBC;'>2</span> sample_2             17.3
+#&gt; <span style='color: #BCBCBC;'>3</span> sample_3             17.4
+#&gt; <span style='color: #BCBCBC;'>4</span> sample_4             17.4
+#&gt; <span style='color: #BCBCBC;'>5</span> sample_5             17.4
+#&gt; <span style='color: #BCBCBC;'>6</span> sample_6             17.4</div><div class='input'>
+<span class='co'># Plot median intensities</span>
+<span class='fu'>qc_median_intensities</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>sample</span>,
+  grouping <span class='op'>=</span> <span class='va'>peptide</span>,
+  intensity <span class='op'>=</span> <span class='va'>peptide_intensity_missing</span>,
+  plot <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
+</div><div class='img'><img src='qc_median_intensities-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

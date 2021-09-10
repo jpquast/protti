@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -158,46 +158,57 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame containing at least sample names and protein IDs.</p></td>
+      <td><p>a data frame containing at least sample names and protein IDs.</p></td>
     </tr>
     <tr>
       <th>sample</th>
-      <td><p>The column in the data frame containing the sample names.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the sample names.</p></td>
     </tr>
     <tr>
       <th>intensity</th>
-      <td><p>The column in the data frame containing intensities. If <code>remove_na_intensities = FALSE</code>, this argument is not required.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains intensities. If
+<code>remove_na_intensities = FALSE</code>, this argument is not required.</p></td>
     </tr>
     <tr>
       <th>retention_time</th>
-      <td><p>The column in the data frame containing retention times of precursors.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains retention
+times of precursors.</p></td>
     </tr>
     <tr>
       <th>peak_width</th>
-      <td><p>The column in the data frame containing peak width information. It is not required if <code>retention_time_start</code> and <code>retention_time_end</code> columns are provided.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains peak width
+information. It is not required if <code>retention_time_start</code> and <code>retention_time_end</code>
+columns are provided.</p></td>
     </tr>
     <tr>
       <th>retention_time_start</th>
-      <td><p>The column in the data frame containing the start time of the precursor elution peak. It is not required if the <code>peak_width</code> column is provided.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains the
+start time of the precursor elution peak. It is not required if the <code>peak_width</code> column
+is provided.</p></td>
     </tr>
     <tr>
       <th>retention_time_end</th>
-      <td><p>The column in the data frame containing the end time of the precursor elution peak. It is not required if the <code>peak_width</code> column is provided.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains the end
+time of the precursor elution peak. It is not required if the <code>peak_width</code> column is
+provided.</p></td>
     </tr>
     <tr>
       <th>remove_na_intensities</th>
-      <td><p>Logical specifying if sample/grouping combinations with intensities that are NA (not quantified IDs) should be dropped from the data frame.
+      <td><p>a logical value that specifies if sample/grouping combinations
+with intensities that are NA (not quantified IDs) should be dropped from the data frame.
 Default is TRUE since we are usually interested in the peak width of quantifiable data.</p></td>
     </tr>
     <tr>
       <th>interactive</th>
-      <td><p>A logical indicating whether the plot should be interactive (default is FALSE).</p></td>
+      <td><p>a logical value that specifies whether the plot should be interactive
+(default is FALSE).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A line plot displaying one minute binned median precursor elution peak width over retention time for each sample.</p>
+    <p>A line plot displaying one minute binned median precursor elution peak width over
+retention time for each sample.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>

@@ -40,8 +40,9 @@
 
 
 <meta property="og:title" content="Extract metal-bind protein information from UniProt — extract_metal_binders" />
-<meta property="og:description" content="Information of metal binding proteins is extracted from UniProt data retrieved with fetch_uniprot. ChEBI IDs, potential
-sub-IDs for metal cations, binding site locations in the protein and sub-ID evidence level (based on metal presence as cofactor) are extracted." />
+<meta property="og:description" content="Information of metal binding proteins is extracted from UniProt data retrieved with
+fetch_uniprot. ChEBI IDs, potential sub-IDs for metal cations, binding site locations
+in the protein and sub-ID evidence level (based on metal presence as cofactor) are extracted." />
 
 
 
@@ -73,7 +74,7 @@ sub-IDs for metal cations, binding site locations in the protein and sub-ID evid
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -139,8 +140,9 @@ sub-IDs for metal cations, binding site locations in the protein and sub-ID evid
     </div>
 
     <div class="ref-description">
-    <p>Information of metal binding proteins is extracted from UniProt data retrieved with <code>fetch_uniprot</code>. ChEBI IDs, potential
-sub-IDs for metal cations, binding site locations in the protein and sub-ID evidence level (based on metal presence as cofactor) are extracted.</p>
+    <p>Information of metal binding proteins is extracted from UniProt data retrieved with
+<code>fetch_uniprot</code>. ChEBI IDs, potential sub-IDs for metal cations, binding site locations
+in the protein and sub-ID evidence level (based on metal presence as cofactor) are extracted.</p>
     </div>
 
     <pre class="usage"><span class='fu'>extract_metal_binders</span><span class='op'>(</span>
@@ -158,61 +160,106 @@ sub-IDs for metal cations, binding site locations in the protein and sub-ID evid
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame containing at least the input columns.</p></td>
+      <td><p>a data frame containing at least the input columns.</p></td>
     </tr>
     <tr>
       <th>protein_id</th>
-      <td><p>The name of the column containing protein identifiers.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the protein
+identifiers.</p></td>
     </tr>
     <tr>
       <th>feature_metal_binding</th>
-      <td><p>The name of the column containing feature metal binding information from UniProt.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the
+feature metal binding information from UniProt.</p></td>
     </tr>
     <tr>
       <th>chebi_cofactor</th>
-      <td><p>The name of the column containing ChEBI cofactor information from UniProt.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the ChEBI
+cofactor information from UniProt.</p></td>
     </tr>
     <tr>
       <th>chebi_catalytic_activity</th>
-      <td><p>The name of the column containing ChEBI catalytic activity information from UniProt.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains
+the ChEBI catalytic activity information from UniProt.</p></td>
     </tr>
     <tr>
       <th>chebi_data</th>
-      <td><p>Optional, a data frame that can be manually obtained with <code><a href='fetch_chebi.html'>fetch_chebi()</a></code>. If not provided it will be fetched within the function.
-If the function is run many times it is recommended to provide the data frame to save time.</p></td>
+      <td><p>optional, a data frame that can be manually obtained with <code><a href='fetch_chebi.html'>fetch_chebi()</a></code>.
+If not provided it will be fetched within the function. If the function is run many times it
+is recommended to provide the data frame to save time.</p></td>
     </tr>
     <tr>
       <th>chebi_relation_data</th>
-      <td><p>Optional, a data frame that can be manually obtained with <code><a href='fetch_chebi.html'>fetch_chebi(relation = TRUE)</a></code>. If not provided it will be fetched within the function.
+      <td><p>optional, a data frame that can be manually obtained with
+<code><a href='fetch_chebi.html'>fetch_chebi(relation = TRUE)</a></code>. If not provided it will be fetched within the function.
 If the function is run many times it is recommended to provide the data frame to save time.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame containing information on protein metal binding state. It contains the following types of columns (the naming might vary based on the input):</p><ul>
+    <p>A data frame containing information on protein metal binding state. It contains the
+following types of columns (the naming might vary based on the input):</p><ul>
 <li><p><code>protein_id</code>: UniProt protein identifier.</p></li>
-<li><p><code>source</code>: The source of the information, can be either <code>feature_metal_binding</code>, <code>chebi_cofactor</code> or <code>chebi_catalytic_activity</code>.</p></li>
-<li><p><code>ids</code>: ChEBI ID assigned to protein and binding site based on <code>metal_type</code> column name. These are general IDs that have sub-IDs. Thus, they generally describe the type of metal ion bound to the protein.</p></li>
-<li><p><code>metal_position</code>: Amino acid position within the protein that is involved in metal binding.</p></li>
-<li><p><code>metal_type</code>: Metal name extracted from <code>feature_metal_binding</code> information. This is the name that is used as a search pattern in order to assign a ChEBI ID with the <code>split_metal_name</code> helper function within this function.</p></li>
-<li><p><code>sub_ids</code>: ChEBI ID that is a sub-ID (incoming) of the ID in the <code>ids</code> column. Thus, they more specifically describe the potential nature of the metal ion.</p></li>
+<li><p><code>source</code>: The source of the information, can be either <code>feature_metal_binding</code>,
+<code>chebi_cofactor</code> or <code>chebi_catalytic_activity</code>.</p></li>
+<li><p><code>ids</code>: ChEBI ID assigned to protein and binding site based on <code>metal_type</code>
+column name. These are general IDs that have sub-IDs. Thus, they generally describe the type of
+metal ion bound to the protein.</p></li>
+<li><p><code>metal_position</code>: Amino acid position within the protein that is involved in metal
+binding.</p></li>
+<li><p><code>metal_type</code>: Metal name extracted from <code>feature_metal_binding</code> information.
+This is the name that is used as a search pattern in order to assign a ChEBI ID with the
+<code>split_metal_name</code> helper function within this function.</p></li>
+<li><p><code>sub_ids</code>: ChEBI ID that is a sub-ID (incoming) of the ID in the <code>ids</code> column.
+Thus, they more specifically describe the potential nature of the metal ion.</p></li>
 <li><p><code>main_id_name</code>: Official ChEBI name associated with the ID in the <code>ids</code> column.</p></li>
-<li><p><code>multi_evidence</code>: If there is overlapping information in <code>feature_metal_binding</code> and <code>chebi_cofactor</code> or <code>chebi_catalytic_activity</code>, only <code>feature_metal_binding</code> is retained and multi_evidence is TRUE.</p></li>
-<li><p><code>sub_id_name</code>: Official ChEBI name associated with the ID in the <code>sub_ids</code> column.</p></li>
+<li><p><code>multi_evidence</code>: If there is overlapping information in <code>feature_metal_binding</code>
+and <code>chebi_cofactor</code> or <code>chebi_catalytic_activity</code>, only <code>feature_metal_binding</code>
+is retained and multi_evidence is TRUE.</p></li>
+<li><p><code>sub_id_name</code>: Official ChEBI name associated with the ID in the <code>sub_ids</code>
+column.</p></li>
 </ul>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>extract_metal_binders</span><span class='op'>(</span>
-  <span class='va'>data</span>,
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='co'># Create example data</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fetch_uniprot.html'>fetch_uniprot</a></span><span class='op'>(</span>
+  uniprot_ids <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Q03640"</span>, <span class='st'>"Q03778"</span>, <span class='st'>"P22276"</span><span class='op'>)</span>,
+  columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
+    <span class='st'>"feature(METAL BINDING)"</span>,
+    <span class='st'>"chebi(Cofactor)"</span>,
+    <span class='st'>"chebi(Catalytic activity)"</span>
+  <span class='op'>)</span>
+<span class='op'>)</span>
+
+<span class='co'># Extract metal binding information</span>
+<span class='va'>metal_info</span> <span class='op'>&lt;-</span> <span class='fu'>extract_metal_binders</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>data</span>,
   protein_id <span class='op'>=</span> <span class='va'>id</span>,
   feature_metal_binding <span class='op'>=</span> <span class='va'>feature_metal_binding</span>,
   chebi_cofactor <span class='op'>=</span> <span class='va'>chebi_cofactor</span>,
   chebi_catalytic_activity <span class='op'>=</span> <span class='va'>chebi_catalytic_activity</span>
 <span class='op'>)</span>
-<span class='op'>}</span>
+
+<span class='va'>metal_info</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 54 × 9</span>
+#&gt; <span style='color: #949494;'># Groups:   id [3]</span>
+#&gt;    id     source                ids   metal_position metal_type sub_ids main_id_name
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                 <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       
+#&gt; <span style='color: #BCBCBC;'> 1</span> Q03640 feature_metal_binding 39123           <span style='text-decoration: underline;'>1</span>150 Calcium    39123   calcium cat…
+#&gt; <span style='color: #BCBCBC;'> 2</span> Q03640 feature_metal_binding 39123           <span style='text-decoration: underline;'>1</span>150 Calcium    29108   calcium cat…
+#&gt; <span style='color: #BCBCBC;'> 3</span> Q03640 feature_metal_binding 39123           <span style='text-decoration: underline;'>1</span>150 Calcium    39099   calcium cat…
+#&gt; <span style='color: #BCBCBC;'> 4</span> Q03640 feature_metal_binding 39124           <span style='text-decoration: underline;'>1</span>150 Calcium    39124   calcium ion 
+#&gt; <span style='color: #BCBCBC;'> 5</span> Q03640 feature_metal_binding 39124           <span style='text-decoration: underline;'>1</span>150 Calcium    39123   calcium ion 
+#&gt; <span style='color: #BCBCBC;'> 6</span> Q03640 feature_metal_binding 39124           <span style='text-decoration: underline;'>1</span>150 Calcium    29108   calcium ion 
+#&gt; <span style='color: #BCBCBC;'> 7</span> Q03640 feature_metal_binding 39124           <span style='text-decoration: underline;'>1</span>150 Calcium    39099   calcium ion 
+#&gt; <span style='color: #BCBCBC;'> 8</span> Q03640 feature_metal_binding 39123           <span style='text-decoration: underline;'>1</span>156 Calcium    39123   calcium cat…
+#&gt; <span style='color: #BCBCBC;'> 9</span> Q03640 feature_metal_binding 39123           <span style='text-decoration: underline;'>1</span>156 Calcium    29108   calcium cat…
+#&gt; <span style='color: #BCBCBC;'>10</span> Q03640 feature_metal_binding 39123           <span style='text-decoration: underline;'>1</span>156 Calcium    39099   calcium cat…
+#&gt; <span style='color: #949494;'># … with 44 more rows, and 2 more variables: multi_evidence &lt;lgl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   sub_id_name &lt;chr&gt;</span></div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

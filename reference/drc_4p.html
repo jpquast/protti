@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Dose response curve helper function — drc_4p" />
-<meta property="og:description" content="This function peforms the four-parameter dose response curve fit. It is the helper function for the fit in the fit_drc_4p function." />
+<meta property="og:description" content="This function peforms the four-parameter dose response curve fit. It is the helper function
+for the fit in the fit_drc_4p function." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -138,7 +139,8 @@
     </div>
 
     <div class="ref-description">
-    <p>This function peforms the four-parameter dose response curve fit. It is the helper function for the fit in the <code>fit_drc_4p</code> function.</p>
+    <p>This function peforms the four-parameter dose response curve fit. It is the helper function
+for the fit in the <code>fit_drc_4p</code> function.</p>
     </div>
 
     <pre class="usage"><span class='fu'>drc_4p</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>response</span>, <span class='va'>dose</span>, log_logarithmic <span class='op'>=</span> <span class='cn'>TRUE</span>, pb <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
@@ -148,22 +150,24 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>a data frame that contains at least the dose and response column the model should be fitted to.</p></td>
+      <td><p>a data frame that contains at least the dose and response column the model should
+be fitted to.</p></td>
     </tr>
     <tr>
       <th>response</th>
-      <td><p>the name of the column that contains the response values.</p></td>
+      <td><p>a numeric column that contains the response values.</p></td>
     </tr>
     <tr>
       <th>dose</th>
-      <td><p>the name of the column that contains the dose values.</p></td>
+      <td><p>a numeric column that contains the dose values.</p></td>
     </tr>
     <tr>
       <th>log_logarithmic</th>
-      <td><p>logical indicating if a logarithmic or log-logarithmic model is fitted.
-If response values form a symmetric curve for non-log transformed dose values, a logarithmic model instead
-of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the
-reason this is the default. Log-logarithmic models are symmetric if dose values are log transformed.</p></td>
+      <td><p>a logical value indicating if a logarithmic or log-logarithmic model is
+fitted. If response values form a symmetric curve for non-log transformed dose values, a
+logarithmic model instead of a log-logarithmic model should be used. Usually biological dose
+response data has a log-logarithmic distribution, which is the reason this is the default.
+Log-logarithmic models are symmetric if dose values are log transformed.</p></td>
     </tr>
     <tr>
       <th>pb</th>
@@ -173,7 +177,8 @@ reason this is the default. Log-logarithmic models are symmetric if dose values 
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>drc</code>. If no fit was performed a character vector with content "no_fit".</p>
+    <p>An object of class <code>drc</code>. If no fit was performed a character vector with content
+"no_fit".</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

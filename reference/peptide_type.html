@@ -40,11 +40,8 @@
 
 
 <meta property="og:title" content="Assign peptide type — peptide_type" />
-<meta property="og:description" content="Based on preceding and C-terminal amino acid, the peptide type of a given peptide is assigned. Peptides with preceeding and
-C-terminal lysine or arginine are considered fully-tryptic. If a peptide is located at the N- or C-terminus of a protein and
-fulfills the criterium to be fully-tryptic otherwise, it is also considered as fully-tryptic. Peptides that only fulfill the
-criterium on one terminus are semi-tryptic peptides. Lastly, peptides that are not fulfilling the criteria for both termini are
-non-tryptic peptides." />
+<meta property="og:description" content="
+This function was deprecated due to its name changing to assign_peptide_type()." />
 
 
 
@@ -76,7 +73,7 @@ non-tryptic peptides." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -137,62 +134,19 @@ non-tryptic peptides." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Assign peptide type</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/peptide_type.R'><code>R/peptide_type.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/assign_peptide_type.R'><code>R/assign_peptide_type.R</code></a></small>
     <div class="hidden name"><code>peptide_type.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Based on preceding and C-terminal amino acid, the peptide type of a given peptide is assigned. Peptides with preceeding and
-C-terminal lysine or arginine are considered fully-tryptic. If a peptide is located at the N- or C-terminus of a protein and
-fulfills the criterium to be fully-tryptic otherwise, it is also considered as fully-tryptic. Peptides that only fulfill the
-criterium on one terminus are semi-tryptic peptides. Lastly, peptides that are not fulfilling the criteria for both termini are
-non-tryptic peptides.</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#deprecated'><img src='figures/lifecycle-deprecated.svg' alt='[Deprecated]' /></a>
+This function was deprecated due to its name changing to <code><a href='assign_peptide_type.html'>assign_peptide_type()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>peptide_type</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  aa_before <span class='op'>=</span> <span class='va'>aa_before</span>,
-  last_aa <span class='op'>=</span> <span class='va'>last_aa</span>,
-  aa_after <span class='op'>=</span> <span class='va'>aa_after</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>peptide_type</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>data</th>
-      <td><p>A data frame containing at least information about the preceding and C-terminal amino acids of peptides.</p></td>
-    </tr>
-    <tr>
-      <th>aa_before</th>
-      <td><p>The name of the column containing the preceding amino acid as one letter code.</p></td>
-    </tr>
-    <tr>
-      <th>last_aa</th>
-      <td><p>The name of the column containing the C-terminal amino acid as one letter code.</p></td>
-    </tr>
-    <tr>
-      <th>aa_after</th>
-      <td><p>The name of the column containing the following amino acid as one letter code.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains the input data and an additional column with the peptide type information.</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
-  aa_before <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"K"</span>, <span class='st'>"S"</span>, <span class='st'>"T"</span><span class='op'>)</span>,
-  last_aa <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"R"</span>, <span class='st'>"K"</span>, <span class='st'>"Y"</span><span class='op'>)</span>,
-  aa_after <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"T"</span>, <span class='st'>"R"</span>, <span class='st'>"T"</span><span class='op'>)</span>
-<span class='op'>)</span>
-
-<span class='fu'>peptide_type</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>aa_before</span>, <span class='va'>last_aa</span>, <span class='va'>aa_after</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   aa_before last_aa aa_after      pep_type
-#&gt; 1         K       R        T fully-tryptic
-#&gt; 2         S       K        R  semi-tryptic
-#&gt; 3         T       Y        T   non-tryptic</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

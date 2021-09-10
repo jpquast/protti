@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -157,60 +157,85 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>a data frame containing  sample names, peptide or precursor identifiers, corresponding intensities and a condition column indicating e.g. the treatment.</p></td>
+      <td><p>a data frame that contains sample names, peptide or precursor identifiers,
+corresponding intensities and a condition column indicating e.g. the treatment.</p></td>
     </tr>
     <tr>
       <th>sample</th>
-      <td><p>the column in the data data frame containing the sample name.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the sample name.</p></td>
     </tr>
     <tr>
       <th>grouping</th>
-      <td><p>the column in the data data frame containing either precursor or peptide identifiers.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains either precursor
+or peptide identifiers.</p></td>
     </tr>
     <tr>
       <th>intensity</th>
-      <td><p>the column in the data data frame containing containing the corresponding intensity values for each peptide or precursor.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains the corresponding
+intensity values for each peptide or precursor.</p></td>
     </tr>
     <tr>
       <th>condition</th>
-      <td><p>the column in the data data frame indicating the treatment or condition for each sample.</p></td>
+      <td><p>a column in the <code>data</code> data frame that contains condition information
+(e.g. "treated" and "control").</p></td>
     </tr>
     <tr>
       <th>components</th>
-      <td><p>character vector indicating the two components that should be displayed in the plot. By default these are PC1 and
-PC2. You can provide these using a character vector of the form c("PC1", "PC2").</p></td>
+      <td><p>a character vector indicating the two components that should be displayed in
+the plot. By default these are PC1 and PC2. You can provide these using a character vector of
+the form c("PC1", "PC2").</p></td>
     </tr>
     <tr>
       <th>digestion</th>
-      <td><p>optional column indicating the mode of digestion (limited proteolysis or tryptic digest).</p></td>
+      <td><p>optional, a character column in the <code>data</code> data frame that indicates the
+mode of digestion (limited proteolysis or tryptic digest). Alternatively, any other variable
+by which the data should be split can be provided.</p></td>
     </tr>
     <tr>
       <th>plot_style</th>
-      <td><p>character vector specifying what plot should be returned. If `plot_style = "pca"` is selected the two PCA
-components supplied with the `components` argument are plottet against each other. This is the default. `plot_style = "scree"` returns
-a scree plot that displays the variance explained by each principal component in percent. The scree is useful for checking if any other
-than the default first two components should be plotted.</p></td>
+      <td><p>a character value that specifies what plot should be returned. If
+<code>plot_style = "pca"</code> is selected the two PCA components supplied with the <code>components</code> argument
+are plottet against each other. This is the default. <code>plot_style = "scree"</code> returns a scree
+plot that displays the variance explained by each principal component in percent. The scree is
+useful for checking if any other than the default first two components should be plotted.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A plotted principal component analysis showing PC1 and PC2</p>
+    <p>A principal component analysis plot showing PC1 and PC2. If <code>plot_style = "scree"</code>, a
+scree plot for all dimensions is returned.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span> <span class='co'># Makes example reproducible</span>
+
+<span class='co'># Create example data</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='create_synthetic_data.html'>create_synthetic_data</a></span><span class='op'>(</span>
+  n_proteins <span class='op'>=</span> <span class='fl'>100</span>,
+  frac_change <span class='op'>=</span> <span class='fl'>0.05</span>,
+  n_replicates <span class='op'>=</span> <span class='fl'>3</span>,
+  n_conditions <span class='op'>=</span> <span class='fl'>2</span>,
+<span class='op'>)</span>
+
+<span class='co'># Plot scree plot</span>
 <span class='fu'>qc_pca</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-  grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-  intensity <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
-  condition <span class='op'>=</span> <span class='va'>r_condition</span>,
-  components <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"PC2"</span>, <span class='st'>"PC3"</span><span class='op'>)</span>,
+  data <span class='op'>=</span> <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>sample</span>,
+  grouping <span class='op'>=</span> <span class='va'>peptide</span>,
+  intensity <span class='op'>=</span> <span class='va'>peptide_intensity_missing</span>,
+  condition <span class='op'>=</span> <span class='va'>condition</span>,
   plot_style <span class='op'>=</span> <span class='st'>"scree"</span>
 <span class='op'>)</span>
-<span class='op'>}</span>
-
-</div></pre>
+</div><div class='img'><img src='qc_pca-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># Plot principal components</span>
+<span class='fu'>qc_pca</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>sample</span>,
+  grouping <span class='op'>=</span> <span class='va'>peptide</span>,
+  intensity <span class='op'>=</span> <span class='va'>peptide_intensity_missing</span>,
+  condition <span class='op'>=</span> <span class='va'>condition</span>
+<span class='op'>)</span>
+</div><div class='img'><img src='qc_pca-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -40,8 +40,10 @@
 
 
 <meta property="og:title" content="Creates a mass spectrometer queue for Xcalibur — create_queue" />
-<meta property="og:description" content="This function creates a measurement queue for sample acquisition for the software Xcalibur. All possible combinations of the
-provided information will be created to make file and sample names." />
+<meta property="og:description" content="
+This function creates a measurement queue for sample acquisition for the software Xcalibur.
+All possible combinations of the provided information will be created to make file and
+sample names." />
 
 
 
@@ -73,7 +75,7 @@ provided information will be created to make file and sample names." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -139,8 +141,10 @@ provided information will be created to make file and sample names." />
     </div>
 
     <div class="ref-description">
-    <p>This function creates a measurement queue for sample acquisition for the software Xcalibur. All possible combinations of the
-provided information will be created to make file and sample names.</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#experimental'><img src='figures/lifecycle-experimental.svg' alt='[Experimental]' /></a>
+This function creates a measurement queue for sample acquisition for the software Xcalibur.
+All possible combinations of the provided information will be created to make file and
+sample names.</p>
     </div>
 
     <pre class="usage"><span class='fu'>create_queue</span><span class='op'>(</span>
@@ -179,128 +183,152 @@ provided information will be created to make file and sample names.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>date</th>
-      <td><p>Optional, start date of the measurements.</p></td>
+      <td><p>optional, character value indicating the start date of the measurements.</p></td>
     </tr>
     <tr>
       <th>instrument</th>
-      <td><p>Optional, instrument initials.</p></td>
+      <td><p>optional, character value indicating the instrument initials.</p></td>
     </tr>
     <tr>
       <th>user</th>
-      <td><p>Optional, user name.</p></td>
+      <td><p>optional, character value indicating the user name.</p></td>
     </tr>
     <tr>
       <th>measurement_type</th>
-      <td><p>Optional, the measurement type of the samples (e.g "DIA", "DDA", "library" etc.).</p></td>
+      <td><p>optional, character value indicating the measurement type of the
+samples (e.g "DIA", "DDA", "library" etc.).</p></td>
     </tr>
     <tr>
       <th>experiment_name</th>
-      <td><p>Optional, name of the experiment.</p></td>
+      <td><p>optional, character value indicating the name of the experiment.</p></td>
     </tr>
     <tr>
       <th>digestion</th>
-      <td><p>Optional, the digestion types used in this experiment (e.g "LiP" and/or "tryptic control").</p></td>
+      <td><p>optional, character vector indicating the digestion types used in this
+experiment (e.g "LiP" and/or "tryptic control").</p></td>
     </tr>
     <tr>
       <th>treatment_type_1</th>
-      <td><p>Optional, name of the treatment.</p></td>
+      <td><p>optional, character vector indicating the name of the treatment.</p></td>
     </tr>
     <tr>
       <th>treatment_type_2</th>
-      <td><p>Optional, name of a second treatment that was combined with the first treatment.</p></td>
+      <td><p>optional, character vector indicating the name of a second treatment
+that was combined with the first treatment.</p></td>
     </tr>
     <tr>
       <th>treatment_dose_1</th>
-      <td><p>Optional, doses used for treatment 1. These can be concentrations or times etc.</p></td>
+      <td><p>optional, numeric vector indicating the doses used for treatment 1.
+These can be concentrations or times etc.</p></td>
     </tr>
     <tr>
       <th>treatment_dose_2</th>
-      <td><p>Optional, doses used for treatment 2. These can be concentrations or times etc.</p></td>
+      <td><p>optional, numeric vector indicating the doses used for treatment 2.
+These can be concentrations or times etc.</p></td>
     </tr>
     <tr>
       <th>treatment_unit_1</th>
-      <td><p>Optional, unit of the doses for treatment 1 (e.g min, mM, etc.).</p></td>
+      <td><p>optional, character vector indicating the unit of the doses for
+treatment 1 (e.g min, mM, etc.).</p></td>
     </tr>
     <tr>
       <th>treatment_unit_2</th>
-      <td><p>Optional, unit of the doses for treatment 2 (e.g min, mM, etc.).</p></td>
+      <td><p>optional, character vector indicating the unit of the doses for
+treatment 2 (e.g min, mM, etc.).</p></td>
     </tr>
     <tr>
       <th>n_replicates</th>
-      <td><p>Optional, number of replicates used per sample.</p></td>
+      <td><p>optional, a numeric value indicating the number of replicates used per sample.</p></td>
     </tr>
     <tr>
       <th>number_runs</th>
-      <td><p>Specifies if file names should be numbered from 1:n instead of adding experiment information. Default is FALSE.</p></td>
+      <td><p>a logical that specifies if file names should be numbered from 1:n instead of
+adding experiment information. Default is FALSE.</p></td>
     </tr>
     <tr>
       <th>organism</th>
-      <td><p>Optional, name of the organism used.</p></td>
+      <td><p>optional, character value indicating the name of the organism used.</p></td>
     </tr>
     <tr>
       <th>exclude_combinations</th>
-      <td><p>Optional, list of lists that contains vectors treatment types and treatment doses whos combinations should be
-excluded from the final queue.</p></td>
+      <td><p>optional, list of lists that contains vectors of treatment types and
+treatment doses of which combinations should be excluded from the final queue.</p></td>
     </tr>
     <tr>
       <th>inj_vol</th>
-      <td><p>The volume used for injection in microliter. Will be <code>NA</code> if not specified. Then it needs to be manually specified before the queue can be used.</p></td>
+      <td><p>a numeric value indicating the volume used for injection in microliter. Will be
+<code>NA</code> if not specified. Then it needs to be manually specified before the queue can be used.</p></td>
     </tr>
     <tr>
       <th>data_path</th>
-      <td><p>The file path where the MS raw data should be saved. Backslashes should be escaped by another backslash. Will be <code>NA</code> if not specified, but needs to be specified later on then.</p></td>
+      <td><p>a character value indicating the file path where the MS raw data should be saved.
+Backslashes should be escaped by another backslash. Will be <code>NA</code> if not specified, but
+needs to be specified later on then.</p></td>
     </tr>
     <tr>
       <th>method_path</th>
-      <td><p>The file path of the MS acquisition method. Backslashes should be escaped by another backslash. Will be <code>NA</code> if not specified, but needs to be specified later on then.</p></td>
+      <td><p>a character value indicating the file path of the MS acquisition method.
+Backslashes should be escaped by another backslash. Will be <code>NA</code> if not specified, but
+needs to be specified later on then.</p></td>
     </tr>
     <tr>
       <th>position_row</th>
-      <td><p>The row positions that can be used for the samples (e.g c("A", "B")). If the number of specified rows and columns does not equal the total number
-of samples, positions will be repeated.</p></td>
+      <td><p>a character vector that contains row positions that can be used for the
+samples (e.g c("A", "B")). If the number of specified rows and columns does not equal the total
+number of samples, positions will be repeated.</p></td>
     </tr>
     <tr>
       <th>position_column</th>
-      <td><p>The column positions that can be used for the samples (e.g 8). If the number of specified rows and columns does not equal the total number
+      <td><p>a character vector that contains column positions that can be used for the
+samples (e.g 8). If the number of specified rows and columns does not equal the total number
 of samples, positions will be repeated.</p></td>
     </tr>
     <tr>
       <th>blank_every_n</th>
-      <td><p>Optional, specifies in which intervals a blank sample should be inserted.</p></td>
+      <td><p>optional, numeric value that specifies in which intervals a blank sample
+should be inserted.</p></td>
     </tr>
     <tr>
       <th>blank_position</th>
-      <td><p>The plate position of the blank. Will be <code>NA</code> if not specified, but needs to be specified later on then.</p></td>
+      <td><p>a character value that specifies the plate position of the blank. Will be
+<code>NA</code> if not specified, but needs to be specified later on then.</p></td>
     </tr>
     <tr>
       <th>blank_method_path</th>
-      <td><p>The file path of the MS acquisition method of the blank. Backslashes should be escaped by another backslash.
-Will be <code>NA</code> if not specified, but needs to be specified later on then.</p></td>
+      <td><p>a character value that specifies the file path of the MS acquisition
+method of the blank. Backslashes should be escaped by another backslash. Will be <code>NA</code> if
+not specified, but needs to be specified later on then.</p></td>
     </tr>
     <tr>
       <th>blank_inj_vol</th>
-      <td><p>Injection volume of the blank sample. Will be <code>NA</code> if not specified, but needs to be specified later on then.</p></td>
+      <td><p>a numeric value that specifies the injection volume of the blank sample.
+Will be <code>NA</code> if not specified, but needs to be specified later on then.</p></td>
     </tr>
     <tr>
       <th>export</th>
-      <td><p>Logical, specifying if queue should be exported from R and saved as a .csv file. Default is TRUE. Further options for
-export can be adjusted with the <code>export_to_queue</code> and <code>queue_path</code> arguments.</p></td>
+      <td><p>a logical value that specifies if the queue should be exported from R and saved
+as a .csv file. Default is TRUE. Further options for export can be adjusted with the
+<code>export_to_queue</code> and <code>queue_path</code> arguments.</p></td>
     </tr>
     <tr>
       <th>export_to_queue</th>
-      <td><p>Logical, specifying if the resulting queue should be appended to an already existing queue. If false result will be saved as <code>queue.csv</code>.</p></td>
+      <td><p>a logical value that specifies if the resulting queue should be appended
+to an already existing queue. If false result will be saved as <code>queue.csv</code>.</p></td>
     </tr>
     <tr>
       <th>queue_path</th>
-      <td><p>Optional, file path to a queue file to which the generated queue should be appended if <code>export_to_queue = TRUE</code>.
-If not specified queue file can be chosen interactively.</p></td>
+      <td><p>optional, a character value that specifies the file path to a queue file to
+which the generated queue should be appended if <code>export_to_queue = TRUE</code>. If not specified
+queue file can be chosen interactively.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If <code>export_to_queue = FALSE</code> a file named <code>queue.csv</code> will be returned that contains the generated queue. If <code>export_to_queue = TRUE</code>, the resulting
-generated queue will be appended to an already existing queue that needs to be specified either interactively or through the argument <code>queue_path</code>.</p>
+    <p>If <code>export_to_queue = FALSE</code> a file named <code>queue.csv</code> will be returned that
+contains the generated queue. If <code>export_to_queue = TRUE</code>, the resulting generated queue
+will be appended to an already existing queue that needs to be specified either interactively
+or through the argument <code>queue_path</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>create_queue</span><span class='op'>(</span>
@@ -324,14 +352,14 @@ generated queue will be appended to an already existing queue that needs to be s
   <span class='op'>)</span><span class='op'>)</span>,
   inj_vol <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span>,
   data_path <span class='op'>=</span> <span class='st'>"D:\\2007_Data"</span>,
-  method_path <span class='op'>=</span> <span class='st'>"C:\\Xcalibur\\methods\\user\\DIA_120min_41var_AGC200"</span>,
+  method_path <span class='op'>=</span> <span class='st'>"C:\\Xcalibur\\methods\\DIA_120min"</span>,
   position_row <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"A"</span>, <span class='st'>"B"</span>, <span class='st'>"C"</span>, <span class='st'>"D"</span>, <span class='st'>"E"</span>, <span class='st'>"F"</span><span class='op'>)</span>,
   position_column <span class='op'>=</span> <span class='fl'>8</span>,
   blank_every_n <span class='op'>=</span> <span class='fl'>4</span>,
   blank_position <span class='op'>=</span> <span class='st'>"1-V1"</span>,
   blank_method_path <span class='op'>=</span> <span class='st'>"C:\\Xcalibur\\methods\\blank"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 80 x 21</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 80 × 21</span>
 #&gt;    `Sample Type` `File Name` `Sample ID` Path  `Instrument Met… `Process Method`
 #&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>           
 #&gt; <span style='color: #BCBCBC;'> 1</span> QC            200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              

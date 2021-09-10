@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -148,17 +148,23 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>relation</th>
-      <td><p>a logical, if TRUE, ChEBI Ontology data will be returned instead the main compound data. This data can be used to check the relations of ChEBI ID's to eachother.</p></td>
+      <td><p>a logical value that indicates if ChEBI Ontology data will be returned instead
+the main compound data. This data can be used to check the relations of ChEBI ID's to each other.
+Default is FALSE.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains all information about each molecule in the ChEBI database. Only "3-star" observations are included in the result. These are entries manually annotated by the ChEBI curator team.</p>
+    <p>A data frame that contains all information about each molecule in the ChEBI database.
+Only "3-star" observations are included in the result. These are entries manually annotated
+by the ChEBI curator team.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'>fetch_chebi</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>chebi</span> <span class='op'>&lt;-</span> <span class='fu'>fetch_chebi</span><span class='op'>(</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>chebi</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;   id chebi_accession parent_id                         definition star
 #&gt; 1  1         CHEBI:1     18357 The R-enantiomer of noradrenaline.    3
 #&gt; 2  1         CHEBI:1     18357 The R-enantiomer of noradrenaline.    3

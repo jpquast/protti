@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Assignment of missingness types — assign_missingness" />
-<meta property="og:description" content="The type of missingness (missing at random, missing not at random) is assigned based on the comparison of a reference condition and every other condition." />
+<meta property="og:description" content="The type of missingness (missing at random, missing not at random) is assigned based on the
+comparison of a reference condition and every other condition." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -138,7 +139,8 @@
     </div>
 
     <div class="ref-description">
-    <p>The type of missingness (missing at random, missing not at random) is assigned based on the comparison of a reference condition and every other condition.</p>
+    <p>The type of missingness (missing at random, missing not at random) is assigned based on the
+comparison of a reference condition and every other condition.</p>
     </div>
 
     <pre class="usage"><span class='fu'>assign_missingness</span><span class='op'>(</span>
@@ -162,67 +164,129 @@
     </tr>
     <tr>
       <th>sample</th>
-      <td><p>The column in the data frame containing the sample name.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the sample name.</p></td>
     </tr>
     <tr>
       <th>condition</th>
-      <td><p>The column in the data frame containing the conditions.</p></td>
+      <td><p>a character or numeric column in the <code>data</code> data frame that contains the
+conditions.</p></td>
     </tr>
     <tr>
       <th>grouping</th>
-      <td><p>The column in the data frame containing precursor or peptide identifiers.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains precursor or
+peptide identifiers.</p></td>
     </tr>
     <tr>
       <th>intensity</th>
-      <td><p>The column in the data frame containing intensity values.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains intensity values.</p></td>
     </tr>
     <tr>
       <th>ref_condition</th>
-      <td><p>a character vector providing the condition that is used as a reference for missingness determination.
-Instead of providing one reference condition, "all" can be supplied, which will create all pairwise condition pairs. By default <code>ref_condition = "all"</code>.</p></td>
+      <td><p>a character vector providing the condition that is used as a reference for
+missingness determination. Instead of providing one reference condition, "all" can be supplied,
+which will create all pairwise condition pairs. By default <code>ref_condition = "all"</code>.</p></td>
     </tr>
     <tr>
       <th>completeness_MAR</th>
-      <td><p>The minimal degree of data completeness to be considered as MAR. Value has to be between 0 and 1, default is 0.7.
-It is multiplied with the number of replicates and then adjusted downward. The resulting number is the minimal number of observations for each
-condition to be considered as MAR. This number is always at least 1.</p></td>
+      <td><p>a numeric value that specifies the minimal degree of data completeness to
+be considered as MAR. Value has to be between 0 and 1, default is 0.7. It is multiplied with
+the number of replicates and then adjusted downward. The resulting number is the minimal number
+of observations for each condition to be considered as MAR. This number is always at least 1.</p></td>
     </tr>
     <tr>
       <th>completeness_MNAR</th>
-      <td><p>The maximal degree of data completeness to be considered as MNAR. Value has to be between 0 and 1, default is 0.20.
-It is multiplied with the number of replicates and then adjusted downward. The resulting number is the maximal number of observations for one
-condition to be considered as MNAR when the other condition is complete.</p></td>
+      <td><p>a numeric value that specifies the maximal degree of data completeness to
+be considered as MNAR. Value has to be between 0 and 1, default is 0.20. It is multiplied with
+the number of replicates and then adjusted downward. The resulting number is the maximal number
+of observations for one condition to be considered as MNAR when the other condition is complete.</p></td>
     </tr>
     <tr>
       <th>retain_columns</th>
-      <td><p>A vector indicating if certain columns should be retained from the input data frame. Default is not retaining
-additional columns <code>retain_columns = NULL</code>. Specific columns can be retained by providing their names (not in quotations marks,
-just like other column names, but in a vector).</p></td>
+      <td><p>a vector that indicates columns that should be retained from the input
+data frame. Default is not retaining additional columns <code>retain_columns = NULL</code>. Specific
+columns can be retained by providing their names (not in quotations marks, just like other
+column names, but in a vector).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains the reference condition paired with each treatment condition. The <code>comparison</code> column contains the comparison
-name for the specific treatment/reference pair. The <code>missingness</code> column reports the type of missingness.</p><ul>
-<li><p>"complete": No missing values for every replicate of this reference/treatment pair for the specific grouping variable.</p></li>
-<li><p>"MNAR": Missing not at random. All replicates of either the reference or treatment condition have missing values for the specific grouping variable.</p></li>
-<li><p>"MAR": Missing at random. At least n-1 replicates have missing values for the reference/treatment pair for the specific grouping varible.</p></li>
-</ul>
-
+    <p>A data frame that contains the reference condition paired with each treatment condition.
+The <code>comparison</code> column contains the comparison name for the specific treatment/reference
+pair. The <code>missingness</code> column reports the type of missingness.</p><ul>
+<li><p>"complete": No missing values for every replicate of this reference/treatment pair for
+the specific grouping variable.</p></li>
+<li><p>"MNAR": Missing not at random. All replicates of either the reference or treatment
+condition have missing values for the specific grouping variable.</p></li>
+<li><p>"MAR": Missing at random. At least n-1 replicates have missing values for the
+reference/treatment pair for the specific grouping varible.</p></li>
+<li><p>NA: The comparison is not complete enough to fall into any other category. It will not
+be imputed if imputation is performed. For statistical significance testing these comparisons
+are filtered out after the test and prior to p-value adjustment. This can be prevented by setting
+<code>filter_NA_missingness = FALSE</code> in the <code><a href='calculate_diff_abundance.html'>calculate_diff_abundance()</a></code> function.</p></li>
+</ul><p>The type of missingness has an influence on the way values are imputeted if imputation is
+performed subsequently using the <code><a href='impute.html'>impute()</a></code> function. How each type of missingness is
+specifically imputed can be found in the function description. The type of missingness
+assigned to a comparison does not have any influence on the statistical test in the
+<code><a href='calculate_diff_abundance.html'>calculate_diff_abundance()</a></code> function.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>assign_missingness</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-  condition <span class='op'>=</span> <span class='va'>r_condition</span>,
-  grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-  intensity <span class='op'>=</span> <span class='va'>normalised_intensity_log2</span>,
-  retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>pg_protein_accessions</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span> <span class='co'># Makes example reproducible</span>
+
+<span class='co'># Create example data</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='create_synthetic_data.html'>create_synthetic_data</a></span><span class='op'>(</span>
+  n_proteins <span class='op'>=</span> <span class='fl'>10</span>,
+  frac_change <span class='op'>=</span> <span class='fl'>0.5</span>,
+  n_replicates <span class='op'>=</span> <span class='fl'>4</span>,
+  n_conditions <span class='op'>=</span> <span class='fl'>2</span>,
+  method <span class='op'>=</span> <span class='st'>"effect_random"</span>,
+  additional_metadata <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span>, n <span class='op'>=</span> <span class='fl'>24</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 24 × 8</span>
+#&gt;    protein   peptide     condition   sample   peptide_intensity change change_peptide
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>         
+#&gt; <span style='color: #BCBCBC;'> 1</span> protein_1 peptide_1_1 condition_1 sample_1              16.8 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 2</span> protein_1 peptide_1_1 condition_1 sample_2              17.0 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 3</span> protein_1 peptide_1_1 condition_1 sample_3              17.0 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 4</span> protein_1 peptide_1_1 condition_1 sample_4              17.0 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 5</span> protein_1 peptide_1_1 condition_2 sample_5              15.8 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 6</span> protein_1 peptide_1_1 condition_2 sample_6              15.9 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 7</span> protein_1 peptide_1_1 condition_2 sample_7              16.1 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 8</span> protein_1 peptide_1_1 condition_2 sample_8              15.9 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 9</span> protein_1 peptide_1_2 condition_1 sample_1              12.6 TRUE   FALSE         
+#&gt; <span style='color: #BCBCBC;'>10</span> protein_1 peptide_1_2 condition_1 sample_2              12.7 TRUE   FALSE         
+#&gt; <span style='color: #949494;'># … with 14 more rows, and 1 more variable: peptide_intensity_missing &lt;dbl&gt;</span></div><div class='input'>
+<span class='co'># Assign missingness information</span>
+<span class='va'>data_missing</span> <span class='op'>&lt;-</span> <span class='fu'>assign_missingness</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>sample</span>,
+  condition <span class='op'>=</span> <span class='va'>condition</span>,
+  grouping <span class='op'>=</span> <span class='va'>peptide</span>,
+  intensity <span class='op'>=</span> <span class='va'>peptide_intensity_missing</span>,
+  ref_condition <span class='op'>=</span> <span class='st'>"all"</span>,
+  retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>protein</span><span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>"all" was provided as reference condition. All pairwise comparisons are</span>
+#&gt; <span class='message'>created from the conditions and assigned their missingness. The</span>
+#&gt; <span class='message'>created comparisons are:</span>
+#&gt; <span class='message'>condition_1_vs_condition_2</span></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data_missing</span>, n <span class='op'>=</span> <span class='fl'>24</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 24 × 7</span>
+#&gt;    protein   sample   condition   peptide peptide_intensi… comparison missingness
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>              <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      
+#&gt; <span style='color: #BCBCBC;'> 1</span> protein_1 sample_1 condition_1 peptid…             16.8 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 2</span> protein_1 sample_2 condition_1 peptid…             17.0 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 3</span> protein_1 sample_3 condition_1 peptid…             17.0 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 4</span> protein_1 sample_4 condition_1 peptid…             17.0 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 5</span> protein_1 sample_5 condition_2 peptid…             15.8 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 6</span> protein_1 sample_6 condition_2 peptid…             15.9 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 7</span> protein_1 sample_7 condition_2 peptid…             16.1 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 8</span> protein_1 sample_8 condition_2 peptid…             15.9 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 9</span> protein_1 sample_1 condition_1 peptid…             <span style='color: #BB0000;'>NA</span>   condition… <span style='color: #BB0000;'>NA</span>         
+#&gt; <span style='color: #BCBCBC;'>10</span> protein_1 sample_2 condition_1 peptid…             <span style='color: #BB0000;'>NA</span>   condition… <span style='color: #BB0000;'>NA</span>         
+#&gt; <span style='color: #949494;'># … with 14 more rows</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

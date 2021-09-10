@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Check peptide type percentage share — qc_peptide_type" />
-<meta property="og:description" content="Calculates the percentage share of each peptide types (fully-tryptic, semi-tryptic, non-tryptic) for each sample." />
+<meta property="og:description" content="Calculates the percentage share of each peptide types (fully-tryptic, semi-tryptic,
+non-tryptic) for each sample." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -138,7 +139,8 @@
     </div>
 
     <div class="ref-description">
-    <p>Calculates the percentage share of each peptide types (fully-tryptic, semi-tryptic, non-tryptic) for each sample.</p>
+    <p>Calculates the percentage share of each peptide types (fully-tryptic, semi-tryptic,
+non-tryptic) for each sample.</p>
     </div>
 
     <pre class="usage"><span class='fu'>qc_peptide_type</span><span class='op'>(</span>
@@ -158,61 +160,117 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame containing at least the input columns.</p></td>
+      <td><p>a data frame that contains at least the input columns.</p></td>
     </tr>
     <tr>
       <th>sample</th>
-      <td><p>the name of the column containing the sample names.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the sample names.</p></td>
     </tr>
     <tr>
       <th>peptide</th>
-      <td><p>the name of the column containing the peptide sequence.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the peptide
+sequence.</p></td>
     </tr>
     <tr>
       <th>pep_type</th>
-      <td><p>the name of the column containing the peptide type. Can be obtained using the <code>find_peptide</code> and <code>peptide_type</code> function together.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the peptide
+type. Can be obtained using the <code>find_peptide</code> and <code>assign_peptide_type</code> function
+together.</p></td>
     </tr>
     <tr>
       <th>intensity</th>
-      <td><p>the name of the column containing the corresponding raw or normalised intensity values (not log2) for each peptide or precursor. Required when "intensity" is chosen as the method.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains the corresponding
+raw or normalised intensity values (not log2) for each peptide or precursor. Required when
+"intensity" is chosen as the method.</p></td>
     </tr>
     <tr>
       <th>remove_na_intensities</th>
-      <td><p>Logical specifying if sample/peptide combinations with intensities that are NA (not quantified IDs) should
-be dropped from the data frame for analysis of peptide type distributions. Default is TRUE since we are usually
-interested in the peptide type distribution of quantifiable IDs. This is only relevant for method = "count".</p></td>
+      <td><p>a logical value that specifies if sample/peptide combinations with
+intensities that are NA (not quantified IDs) should be dropped from the data frame for analysis
+of peptide type distributions. Default is TRUE since we are usually interested in the peptide
+type distribution of quantifiable IDs. This is only relevant for method = "count".</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>character vector indicating the method used for evaluation. <code>method = "intensity"</code> calculates the peptide type percentage by intensity, whereas <code>method = "count"</code> calculates the percentage by peptide ID count. Default is <code>method = count</code>.</p></td>
+      <td><p>a character value that indicates the method used for evaluation.
+<code>method = "intensity"</code> calculates the peptide type percentage by intensity, whereas
+<code>method = "count"</code> calculates the percentage by peptide ID count. Default is
+<code>method = count</code>.</p></td>
     </tr>
     <tr>
       <th>plot</th>
-      <td><p>a logical indicating whether the result should be plotted.</p></td>
+      <td><p>a logical value that indicates whether the result should be plotted.</p></td>
     </tr>
     <tr>
       <th>interactive</th>
-      <td><p>a logical indicating whether the plot should be interactive.</p></td>
+      <td><p>a logical value that indicates whether the plot should be interactive.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains the calculated percentage shares of each peptide type per sample. The <code>count</code> column contains the number of peptides with a specific type. The <code>peptide_type_percent</code> column contains the percentage share of a specific peptide type.</p>
+    <p>A data frame that contains the calculated percentage shares of each peptide type per
+sample. The <code>count</code> column contains the number of peptides with a specific type. The
+<code>peptide_type_percent</code> column contains the percentage share of a specific peptide type.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+    <pre class="examples"><div class='input'><span class='co'># Load libraries</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span> <span class='co'># Makes example reproducible</span>
+
+<span class='co'># Create example data</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='create_synthetic_data.html'>create_synthetic_data</a></span><span class='op'>(</span>
+  n_proteins <span class='op'>=</span> <span class='fl'>100</span>,
+  frac_change <span class='op'>=</span> <span class='fl'>0.05</span>,
+  n_replicates <span class='op'>=</span> <span class='fl'>3</span>,
+  n_conditions <span class='op'>=</span> <span class='fl'>2</span>,
+  method <span class='op'>=</span> <span class='st'>"effect_random"</span>
+<span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>intensity_non_log2 <span class='op'>=</span> <span class='fl'>2</span><span class='op'>^</span><span class='va'>peptide_intensity_missing</span><span class='op'>)</span>
+
+<span class='co'># Determine peptide type percentages</span>
 <span class='fu'>qc_peptide_type</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-  peptide <span class='op'>=</span> <span class='va'>pep_stripped_sequence</span>,
+  data <span class='op'>=</span> <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>sample</span>,
+  peptide <span class='op'>=</span> <span class='va'>peptide</span>,
   pep_type <span class='op'>=</span> <span class='va'>pep_type</span>,
-  intensity <span class='op'>=</span> <span class='va'>fg_quantity</span>,
+  intensity <span class='op'>=</span> <span class='va'>intensity_non_log2</span>,
+  method <span class='op'>=</span> <span class='st'>"intensity"</span>,
+  plot <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 18 × 3</span>
+#&gt;    sample   pep_type      peptide_type_percent
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>                        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span> sample_3 semi-tryptic                 55.2 
+#&gt; <span style='color: #BCBCBC;'> 2</span> sample_4 semi-tryptic                 54.3 
+#&gt; <span style='color: #BCBCBC;'> 3</span> sample_5 semi-tryptic                 54.7 
+#&gt; <span style='color: #BCBCBC;'> 4</span> sample_6 semi-tryptic                 55.9 
+#&gt; <span style='color: #BCBCBC;'> 5</span> sample_2 non-tryptic                   6.78
+#&gt; <span style='color: #BCBCBC;'> 6</span> sample_3 non-tryptic                   5.80
+#&gt; <span style='color: #BCBCBC;'> 7</span> sample_4 non-tryptic                   6.85
+#&gt; <span style='color: #BCBCBC;'> 8</span> sample_5 non-tryptic                   5.17
+#&gt; <span style='color: #BCBCBC;'> 9</span> sample_6 non-tryptic                   6.21
+#&gt; <span style='color: #BCBCBC;'>10</span> sample_1 fully-tryptic                38.2 
+#&gt; <span style='color: #BCBCBC;'>11</span> sample_2 fully-tryptic                39.4 
+#&gt; <span style='color: #BCBCBC;'>12</span> sample_3 fully-tryptic                39.0 
+#&gt; <span style='color: #BCBCBC;'>13</span> sample_4 fully-tryptic                38.9 
+#&gt; <span style='color: #BCBCBC;'>14</span> sample_5 fully-tryptic                40.1 
+#&gt; <span style='color: #BCBCBC;'>15</span> sample_6 fully-tryptic                37.9 
+#&gt; <span style='color: #BCBCBC;'>16</span> sample_1 semi-tryptic                 55.2 
+#&gt; <span style='color: #BCBCBC;'>17</span> sample_2 semi-tryptic                 53.8 
+#&gt; <span style='color: #BCBCBC;'>18</span> sample_1 non-tryptic                   6.59</div><div class='input'>
+<span class='co'># Plot peptide type</span>
+<span class='fu'>qc_peptide_type</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>sample</span>,
+  peptide <span class='op'>=</span> <span class='va'>peptide</span>,
+  pep_type <span class='op'>=</span> <span class='va'>pep_type</span>,
+  intensity <span class='op'>=</span> <span class='va'>intensity_non_log2</span>,
   method <span class='op'>=</span> <span class='st'>"intensity"</span>,
   plot <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+</div><div class='img'><img src='qc_peptide_type-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

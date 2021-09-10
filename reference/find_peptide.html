@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Find peptide location — find_peptide" />
-<meta property="og:description" content="The position of the given peptide sequence is searched within the given protein sequence. In addition the last amino acid of the peptide and the amino acid right before are reported." />
+<meta property="og:description" content="The position of the given peptide sequence is searched within the given protein sequence. In
+addition the last amino acid of the peptide and the amino acid right before are reported." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -138,7 +139,8 @@
     </div>
 
     <div class="ref-description">
-    <p>The position of the given peptide sequence is searched within the given protein sequence. In addition the last amino acid of the peptide and the amino acid right before are reported.</p>
+    <p>The position of the given peptide sequence is searched within the given protein sequence. In
+addition the last amino acid of the peptide and the amino acid right before are reported.</p>
     </div>
 
     <pre class="usage"><span class='fu'>find_peptide</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>protein_sequence</span>, <span class='va'>peptide_sequence</span><span class='op'>)</span></pre>
@@ -148,25 +150,38 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame containing at least the protein and peptide sequence.</p></td>
+      <td><p>a data frame that contains at least the protein and peptide sequence.</p></td>
     </tr>
     <tr>
       <th>protein_sequence</th>
-      <td><p>The name of the column containing the protein sequence.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the
+protein sequence.</p></td>
     </tr>
     <tr>
       <th>peptide_sequence</th>
-      <td><p>The name of the column containing the peptide sequence.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the
+peptide sequence.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains the input data and four additional columns with start and end position, the last amino acid and the amino acid before.</p>
+    <p>A data frame that contains the input data and four additional columns with peptide
+start and end position, the last amino acid and the amino acid before the peptide.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>protein_sequence <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"abcdefg"</span><span class='op'>)</span>, peptide_sequence <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"cde"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'>find_peptide</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>protein_sequence</span>, <span class='va'>peptide_sequence</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='co'># Create example data</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
+  protein_sequence <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"abcdefg"</span><span class='op'>)</span>,
+  peptide_sequence <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"cde"</span><span class='op'>)</span>
+<span class='op'>)</span>
+
+<span class='co'># Find peptide</span>
+<span class='fu'>find_peptide</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>data</span>,
+  protein_sequence <span class='op'>=</span> <span class='va'>protein_sequence</span>,
+  peptide_sequence <span class='op'>=</span> <span class='va'>peptide_sequence</span>
+<span class='op'>)</span>
 </div><div class='output co'>#&gt;   protein_sequence peptide_sequence start end aa_before last_aa aa_after
 #&gt; 1          abcdefg              cde     3   5         b       e        f</div></pre>
   </div>

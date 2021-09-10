@@ -40,9 +40,11 @@
 
 
 <meta property="og:title" content="Randomise samples in MS queue — randomise_queue" />
-<meta property="og:description" content="This function randomises the order of samples in an MS queue. QC and Blank samples are left in place. It is also possible
-to randomise only parts of the queue. Before running this make sure to set a specific seed with the set.seed() function.
-This ensures that the randomisation of the result is consistent if the function is run again." />
+<meta property="og:description" content="
+This function randomises the order of samples in an MS queue. QC and Blank samples are left in
+place. It is also possible to randomise only parts of the queue. Before running this make sure
+to set a specific seed with the set.seed() function. This ensures that the randomisation
+of the result is consistent if the function is run again." />
 
 
 
@@ -74,7 +76,7 @@ This ensures that the randomisation of the result is consistent if the function 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -140,9 +142,11 @@ This ensures that the randomisation of the result is consistent if the function 
     </div>
 
     <div class="ref-description">
-    <p>This function randomises the order of samples in an MS queue. QC and Blank samples are left in place. It is also possible
-to randomise only parts of the queue. Before running this make sure to set a specific seed with the <code><a href='https://rdrr.io/r/base/Random.html'>set.seed()</a></code> function.
-This ensures that the randomisation of the result is consistent if the function is run again.</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#experimental'><img src='figures/lifecycle-experimental.svg' alt='[Experimental]' /></a>
+This function randomises the order of samples in an MS queue. QC and Blank samples are left in
+place. It is also possible to randomise only parts of the queue. Before running this make sure
+to set a specific seed with the <code><a href='https://rdrr.io/r/base/Random.html'>set.seed()</a></code> function. This ensures that the randomisation
+of the result is consistent if the function is run again.</p>
     </div>
 
     <pre class="usage"><span class='fu'>randomise_queue</span><span class='op'>(</span>data <span class='op'>=</span> <span class='cn'>NULL</span>, rows <span class='op'>=</span> <span class='cn'>NULL</span>, export <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
@@ -152,27 +156,120 @@ This ensures that the randomisation of the result is consistent if the function 
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>optional, a data frame containing a queue. If not provided a queue file can be chosen interactively.</p></td>
+      <td><p>optional, a data frame that contains a queue. If not provided a queue file can be
+chosen interactively.</p></td>
     </tr>
     <tr>
       <th>rows</th>
-      <td><p>optional, a range of rows in for which samples should be randomized.</p></td>
+      <td><p>optional, a numeric vector that specifies a range of rows in for which samples
+should be randomized.</p></td>
     </tr>
     <tr>
       <th>export</th>
-      <td><p>logical, if TRUE a <code>"randomised_queue.csv"</code> file will be saved in the working directory. If FALSE a data frame will be returned.</p></td>
+      <td><p>a logical value that determines if a <code>"randomised_queue.csv"</code> file will be
+saved in the working directory. If FALSE a data frame will be returned.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If <code>export = TRUE</code> a <code>"randomised_queue.csv"</code> file will be saved in the working directory. If <code>export = FALSE</code> a data frame that contains the randomised queue is returned.</p>
+    <p>If <code>export = TRUE</code> a <code>"randomised_queue.csv"</code> file will be saved in the
+working directory. If <code>export = FALSE</code> a data frame that contains the randomised queue
+is returned.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>randomise_queue</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>data</span>, rows <span class='op'>=</span> <span class='fl'>195</span><span class='op'>:</span><span class='fl'>235</span>, export <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>queue</span> <span class='op'>&lt;-</span> <span class='fu'><a href='create_queue.html'>create_queue</a></span><span class='op'>(</span>
+  date <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"200722"</span><span class='op'>)</span>,
+  instrument <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"EX1"</span><span class='op'>)</span>,
+  user <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"jquast"</span><span class='op'>)</span>,
+  measurement_type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"DIA"</span><span class='op'>)</span>,
+  experiment_name <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"JPQ031"</span><span class='op'>)</span>,
+  digestion <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"LiP"</span>, <span class='st'>"tryptic control"</span><span class='op'>)</span>,
+  treatment_type_1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"EDTA"</span>, <span class='st'>"H2O"</span><span class='op'>)</span>,
+  treatment_type_2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Zeba"</span>, <span class='st'>"unfiltered"</span><span class='op'>)</span>,
+  treatment_dose_1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>30</span>, <span class='fl'>60</span><span class='op'>)</span>,
+  treatment_unit_1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"min"</span><span class='op'>)</span>,
+  n_replicates <span class='op'>=</span> <span class='fl'>4</span>,
+  number_runs <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  organism <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"E. coli"</span><span class='op'>)</span>,
+  exclude_combinations <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+    treatment_type_1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"H2O"</span><span class='op'>)</span>,
+    treatment_type_2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Zeba"</span>, <span class='st'>"unfiltered"</span><span class='op'>)</span>,
+    treatment_dose_1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>30</span><span class='op'>)</span>
+  <span class='op'>)</span><span class='op'>)</span>,
+  inj_vol <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span>,
+  data_path <span class='op'>=</span> <span class='st'>"D:\\2007_Data"</span>,
+  method_path <span class='op'>=</span> <span class='st'>"C:\\Xcalibur\\methods\\DIA_120min"</span>,
+  position_row <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"A"</span>, <span class='st'>"B"</span>, <span class='st'>"C"</span>, <span class='st'>"D"</span>, <span class='st'>"E"</span>, <span class='st'>"F"</span><span class='op'>)</span>,
+  position_column <span class='op'>=</span> <span class='fl'>8</span>,
+  blank_every_n <span class='op'>=</span> <span class='fl'>4</span>,
+  blank_position <span class='op'>=</span> <span class='st'>"1-V1"</span>,
+  blank_method_path <span class='op'>=</span> <span class='st'>"C:\\Xcalibur\\methods\\blank"</span>
+<span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>queue</span>, n <span class='op'>=</span> <span class='fl'>20</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 20 × 21</span>
+#&gt;    `Sample Type` `File Name` `Sample ID` Path  `Instrument Met… `Process Method`
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>           
+#&gt; <span style='color: #BCBCBC;'> 1</span> QC            200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 2</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 3</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 4</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 5</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 6</span> QC            200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 7</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 8</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 9</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>10</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>11</span> QC            200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>12</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>13</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>14</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>15</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>16</span> QC            200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>17</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>18</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>19</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>20</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #949494;'># … with 15 more variables: Calibration File &lt;lgl&gt;, Position &lt;chr&gt;,</span>
+#&gt; <span style='color: #949494;'>#   Inj Vol &lt;dbl&gt;, Level &lt;lgl&gt;, Sample Wt &lt;dbl&gt;, Sample Vol &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   ISTD Amt &lt;dbl&gt;, Dil Factor &lt;dbl&gt;, L1 Study &lt;lgl&gt;, L2 Client &lt;lgl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   L3 Laboratory &lt;lgl&gt;, L4 Company &lt;lgl&gt;, L5 Phone &lt;lgl&gt;, Comment &lt;lgl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   Sample Name &lt;chr&gt;</span></div><div class='input'>
+<span class='va'>randomised_queue</span> <span class='op'>&lt;-</span> <span class='fu'>randomise_queue</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>queue</span>,
+  export <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>randomised_queue</span>, n <span class='op'>=</span> <span class='fl'>20</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 20 × 21</span>
+#&gt;    `Sample Type` `File Name` `Sample ID` Path  `Instrument Met… `Process Method`
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>           
+#&gt; <span style='color: #BCBCBC;'> 1</span> QC            200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 2</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 3</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 4</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 5</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 6</span> QC            200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 7</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 8</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'> 9</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>10</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>11</span> QC            200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>12</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>13</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>14</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>15</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>16</span> QC            200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>17</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>18</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>19</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #BCBCBC;'>20</span> Unknown       200722_EX1…           1 <span style='color: #949494;'>"</span>D:\… <span style='color: #949494;'>"</span>C:\\Xcalibur\\… <span style='color: #BB0000;'>NA</span>              
+#&gt; <span style='color: #949494;'># … with 15 more variables: Calibration File &lt;lgl&gt;, Position &lt;chr&gt;,</span>
+#&gt; <span style='color: #949494;'>#   Inj Vol &lt;dbl&gt;, Level &lt;lgl&gt;, Sample Wt &lt;dbl&gt;, Sample Vol &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   ISTD Amt &lt;dbl&gt;, Dil Factor &lt;dbl&gt;, L1 Study &lt;lgl&gt;, L2 Client &lt;lgl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   L3 Laboratory &lt;lgl&gt;, L4 Company &lt;lgl&gt;, L5 Phone &lt;lgl&gt;, Comment &lt;lgl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   Sample Name &lt;chr&gt;</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

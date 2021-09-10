@@ -40,7 +40,9 @@
 
 
 <meta property="og:title" content="Sampling of values for imputation — calculate_imputation" />
-<meta property="og:description" content="calculate_imputation is a helper function that is used in the impute function. Depending on the type of missingness and method, it samples values from a normal distribution that can be used for the imputation. Note: The input intensities should be log2 transformed." />
+<meta property="og:description" content="calculate_imputation is a helper function that is used in the impute function.
+Depending on the type of missingness and method, it samples values from a normal distribution
+that can be used for the imputation. Note: The input intensities should be log2 transformed." />
 
 
 
@@ -72,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -138,7 +140,9 @@
     </div>
 
     <div class="ref-description">
-    <p><code>calculate_imputation</code> is a helper function that is used in the <code>impute</code> function. Depending on the type of missingness and method, it samples values from a normal distribution that can be used for the imputation. Note: The input intensities should be log2 transformed.</p>
+    <p><code>calculate_imputation</code> is a helper function that is used in the <code>impute</code> function.
+Depending on the type of missingness and method, it samples values from a normal distribution
+that can be used for the imputation. Note: The input intensities should be log2 transformed.</p>
     </div>
 
     <pre class="usage"><span class='fu'>calculate_imputation</span><span class='op'>(</span>
@@ -156,37 +160,49 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>min</th>
-      <td><p>minimal intensity value of the precursor/peptide. Is only required if <code>method = "ludovic"</code> and <code>missingness = "MNAR"</code>.</p></td>
+      <td><p>a numeric value specifying the minimal intensity value of the precursor/peptide.
+Is only required if <code>method = "ludovic"</code> and <code>missingness = "MNAR"</code>.</p></td>
     </tr>
     <tr>
       <th>noise</th>
-      <td><p>noise value for the precursor/peptide. Is only required if <code>method = "noise"</code> and <code>missingness = "MNAR"</code>.</p></td>
+      <td><p>a numeric value specifying a noise value for the precursor/peptide. Is only
+required if <code>method = "noise"</code> and <code>missingness = "MNAR"</code>.</p></td>
     </tr>
     <tr>
       <th>mean</th>
-      <td><p>mean intensity value of the condition with missing values for a given precursor/peptide. Is only required if <code>missingness = "MAR"</code>.</p></td>
+      <td><p>a numeric value specifying the mean intensity value of the condition with missing
+values for a given precursor/peptide. Is only required if <code>missingness = "MAR"</code>.</p></td>
     </tr>
     <tr>
       <th>sd</th>
-      <td><p>mean of the standard deviation of all conditions for a given precursor/peptide.</p></td>
+      <td><p>a numeric value specifying the mean of the standard deviation of all conditions for
+a given precursor/peptide.</p></td>
     </tr>
     <tr>
       <th>missingness</th>
-      <td><p>the missingness type of the data determines how values for imputation are sampled. This can be <code>"MAR"</code> or <code>"MNAR"</code>.</p></td>
+      <td><p>a character value specifying the missingness type of the data determines
+how values for imputation are sampled. This can be <code>"MAR"</code> or <code>"MNAR"</code>.</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>the method to be used for imputation. For <code>method = "ludovic"</code>, MNAR missingness is sampled around a value that is three lower (log2) than the lowest intensity value recorded for the precursor/peptide. For <code>method = "noise"</code>, MNAR missingness is sampled around the noise value for the precursor/peptide.</p></td>
+      <td><p>a character value specifying the method to be used for imputation. For
+<code>method = "ludovic"</code>, MNAR missingness is sampled around a value that is three lower
+(log2) than the lowest intensity value recorded for the precursor/peptide. For
+<code>method = "noise"</code>, MNAR missingness is sampled around the noise value for the
+precursor/peptide.</p></td>
     </tr>
     <tr>
       <th>skip_log2_transform_error</th>
-      <td><p>logical, if FALSE a check is performed to validate that input values are log2 transformed. If input values are &gt; 40 the test is failed and an error is thrown.</p></td>
+      <td><p>a logical value, if FALSE a check is performed to validate that
+input values are log2 transformed. If input values are &gt; 40 the test is failed and an error is
+returned.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A vector of values for the imputation of missing data. The length of the vector depends on the number of replicates.</p>
+    <p>A value sampled from a normal distribution with the input parameters. Method specifics
+are applied to input parameters prior to sampling.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

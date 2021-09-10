@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -161,28 +161,31 @@
     </tr>
     <tr>
       <th>columns</th>
-      <td><p>a character vector of metadata columns that should be imported from UniProt (all possible columns can be found <a href='https://www.uniprot.org/help/uniprotkb_column_names'>here</a>.)</p></td>
+      <td><p>a character vector of metadata columns that should be imported from UniProt (all
+possible columns can be found <a href='https://www.uniprot.org/help/uniprotkb_column_names'>here</a>.)</p></td>
     </tr>
     <tr>
       <th>batchsize</th>
-      <td><p>numeric, specifying the number of proteins processed in a single single query. Default is 200.</p></td>
+      <td><p>a numeric value that specifies the number of proteins processed in a single
+single query. Default is 200.</p></td>
     </tr>
     <tr>
       <th>show_progress</th>
-      <td><p>logical, if true, a progress bar will be shown.</p></td>
+      <td><p>a logical value that determines if a progress bar will be shown. Default
+is TRUE.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains all protein metadata specified in <code>columns</code> for the proteins provided. If an invalid ID
-was provided that contains a valid UniProt ID, the valid portion of the ID is fetched and the invalid input ID is saved in a
-column called <code>input_id</code>.</p>
+    <p>A data frame that contains all protein metadata specified in <code>columns</code> for the
+proteins provided. If an invalid ID was provided that contains a valid UniProt ID, the valid
+portion of the ID is fetched and the invalid input ID is saved in a column called <code>input_id</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='fu'>fetch_uniprot</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"P36578"</span>, <span class='st'>"O43324"</span>, <span class='st'>"Q00796"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 3 x 17</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 3 × 17</span>
 #&gt;   id     protein_names   length sequence  genes database_gene_id database_string
 #&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>          
 #&gt; <span style='color: #BCBCBC;'>1</span> P36578 60S ribosomal …    427 MACARPLI… RPL4… 6124;            9606.ENSP00000…

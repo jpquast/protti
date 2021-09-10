@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -135,6 +135,88 @@
       <small>Source: <a href='https://github.com/jpquast/protti/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="protti-0209000" class="section level1">
+<h1 class="page-header" data-toc-text="0.2.0.9000">
+<a href="#protti-0209000" class="anchor"></a>protti 0.2.0.9000<small> Unreleased </small>
+</h1>
+<div id="new-features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features" class="anchor"></a>New features</h2>
+<ul>
+<li>
+<code><a href="../reference/fetch_pdb.html">fetch_pdb()</a></code> was added. It fetches PDB structure metadata from RCSB.</li>
+<li>
+<code><a href="../reference/fetch_pdb_structure.html">fetch_pdb_structure()</a></code> was added. It fetches atom level data for a PDB structure from RCSB.</li>
+<li>
+<code><a href="../reference/fetch_metal_pdb.html">fetch_metal_pdb()</a></code> was added. It fetches information about protein-metal binding sites from the MetalPDB database.</li>
+<li>
+<code><a href="../reference/find_peptide_in_structure.html">find_peptide_in_structure()</a></code> was added. It returns the positions of a protein region, peptide or amino acid within a protein structure using UniProt positions as input. This is necessary because often amino acid positions in a protein structure vary from their positions in the UniProt protein sequence.</li>
+<li>
+<code><a href="../reference/map_peptides_on_structure.html">map_peptides_on_structure()</a></code> was added. It can map peptides onto PDB structures based on their positions. This is accomplished by replacing the B-factor information in the structure file with values that allow highlighting peptides when the structure is coloured by B-factor.</li>
+<li>
+<code><a href="../reference/create_structure_contact_map.html">create_structure_contact_map()</a></code> was added. It creates a contact map of a subset or of all atom or residue distances in a structure file.</li>
+<li>
+<code><a href="../reference/calculate_aa_scores.html">calculate_aa_scores()</a></code> was added. It calculates a score for each amino acid of a protein based on the product of the -log10(adjusted p-value) and the absolute log2 fold change per peptide.</li>
+<li>
+<code><a href="../reference/woods_plot.html">woods_plot()</a></code> recieved the <code>highlight</code> argument, which allows to highlight peptides in the plot with an asterisk based on a logical column. It also got <code>export</code> and <code>export_name</code> arguments which now makes it possible to directly export plots from the function. The new <code>target</code> argument allows the user to specify one or multiple proteins from their data frame for which a plot should be returned, however the default option is to return plots for all proteins in the provided data frame. Now it is also possible to provide more than 20 proteins at a time while the <code>facet</code> argument is <code>TRUE</code>. For every 20 proteins a new plot is created and all of them are returned together in a list.</li>
+<li>
+<code><a href="../reference/assign_missingness.html">assign_missingness()</a></code> and <code><a href="../reference/calculate_diff_abundance.html">calculate_diff_abundance()</a></code> now also take <code>"all"</code> as input to their <code>ref_condition</code> argument. This will create all pairwise condition pairs. Previously only one reference condition could be provided.</li>
+<li>
+<code><a href="../reference/volcano_plot.html">volcano_plot()</a></code> can now plot unadjusted p-values while the horizontal cutoff line is based on the adjusted p-value. the <code>significance_cutoff</code> argument was modified to also take a second value which specifies the adjusted p-value column name. In that case the y-axis of the plot could display p-values that are provided to the <code>significance</code> argument, while the horizontal cutoff line is on the scale of adjusted p-values transformed to the scale of p-values. The provided vector can be e.g. <code><a href="https://rdrr.io/r/base/c.html">c(0.05, "adj_pval")</a></code>. In that case the function looks for the closest adjusted p-value above and below 0.05 and takes the mean of the corresponding p-values as the cutoff line. If there is no adjusted p-value in the data that is below 0.05 no line is displayed. This allows the user to display volcano plots using p-values while using adjusted p-values for the cutoff criteria. This is often preferred because adjusted p-values are related to unadjusted p-values often in a complex way that makes them hard to be interpret when plotted.</li>
+</ul>
+</div>
+<div id="renamed-functions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#renamed-functions" class="anchor"></a>Renamed functions</h2>
+<p>Multiple functions have been renamed. More function follow the convention that they should be verbs. Other functions are more similar to each other in their naming. The old functions still work but they are deprecated and will be removed in the future. Please use the new versions instead.</p>
+<ul>
+<li>
+<code><a href="../reference/diff_abundance.html">diff_abundance()</a></code> has been renamed to <code><a href="../reference/calculate_diff_abundance.html">calculate_diff_abundance()</a></code>.</li>
+<li>
+<code><a href="../reference/peptide_type.html">peptide_type()</a></code> has been renamed to <code><a href="../reference/assign_peptide_type.html">assign_peptide_type()</a></code>.</li>
+<li>
+<code><a href="../reference/median_normalisation.html">median_normalisation()</a></code> has been renamed to <code><a href="../reference/normalise.html">normalise()</a></code>. The normalisation method is now defined through an argument called <code>method</code>.</li>
+<li>
+<code><a href="../reference/sequence_coverage.html">sequence_coverage()</a></code> has been renamed to <code><a href="../reference/calculate_sequence_coverage.html">calculate_sequence_coverage()</a></code>.</li>
+<li>
+<code><a href="../reference/network_analysis.html">network_analysis()</a></code> has been renamed to <code><a href="../reference/analyse_functional_network.html">analyse_functional_network()</a></code>.</li>
+<li>
+<code><a href="../reference/treatment_enrichment.html">treatment_enrichment()</a></code> has been renamed to <code><a href="../reference/calculate_treatment_enrichment.html">calculate_treatment_enrichment()</a></code>.</li>
+<li>
+<code><a href="../reference/go_enrichment.html">go_enrichment()</a></code> has been renamed to <code><a href="../reference/calculate_go_enrichment.html">calculate_go_enrichment()</a></code>.</li>
+<li>
+<code><a href="../reference/kegg_enrichment.html">kegg_enrichment()</a></code> has been renamed to <code><a href="../reference/calculate_kegg_enrichment.html">calculate_kegg_enrichment()</a></code>.</li>
+<li>
+<code><a href="../reference/volcano_protti.html">volcano_protti()</a></code> has been renamed to <code><a href="../reference/volcano_plot.html">volcano_plot()</a></code>.</li>
+<li>
+<code><a href="../reference/plot_drc_4p.html">plot_drc_4p()</a></code> has been renamed to <code><a href="../reference/drc_4p_plot.html">drc_4p_plot()</a></code>.</li>
+<li>
+<code><a href="../reference/plot_peptide_profiles.html">plot_peptide_profiles()</a></code> has been renamed to <code><a href="../reference/peptide_profile_plot.html">peptide_profile_plot()</a></code>.</li>
+<li>
+<code><a href="../reference/plot_pval_distribution.html">plot_pval_distribution()</a></code> has been renamed to <code><a href="../reference/pval_distribution_plot.html">pval_distribution_plot()</a></code>.</li>
+</ul>
+</div>
+<div id="bug-fixes-and-documentation-updates" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes-and-documentation-updates" class="anchor"></a>Bug fixes and documentation updates</h2>
+<ul>
+<li>
+<code><a href="../reference/calculate_diff_abundance.html">calculate_diff_abundance()</a></code> had a bug that could not correctly deal with condition names containing spaces when a moderated t-test or the proDA algorithm was used. This has been fixed.</li>
+<li>
+<code><a href="../reference/scale_protti.html">scale_protti()</a></code> can now deal with the case that a vector of only equal numbers (e.g. <code><a href="https://rdrr.io/r/base/c.html">c(1, 1, 1)</a></code>) is provided. In this case it always scales all values to 1 for <code>method = "01"</code> and to 0 for <code>method = "center"</code>.</li>
+<li>
+<code><a href="../reference/pval_distribution_plot.html">pval_distribution_plot()</a></code> had a bug centered each bin around values, which meant that the first and last bin were smaller. This has been fixed.</li>
+<li>The <code>header</code> argument was removed from <code><a href="../reference/try_query.html">try_query()</a></code>. It can now be directly supplied to the elipsis (…) of this function depending on which read method is used. For <code>type = "text/tab-separated-values"</code> the argument <code>col_names</code> of the corresponding <code>readr</code> function <code>read_tsv()</code> can be supplied.</li>
+<li>
+<code><a href="../reference/split_metal_name.html">split_metal_name()</a></code> removes more non-metal specific words that lead to false identifications. Also many metal names containing a “-” are now considered. A bug was resolved that did not deal with iron-sulfur cluster information correctly due to a wrong variable name.</li>
+<li>
+<code><a href="../reference/extract_metal_binders.html">extract_metal_binders()</a></code> now also correctly identifies monovalent inorganic cations as metals.</li>
+<li>Improve documentation of “Dose-Response Data Analysis Workflow” vignette. Added code for the creation of the <code>passed_filter</code> example column that is used in functions afterwards.</li>
+<li>Examples for most functions have been added.</li>
+<li>Function documentation and code has been formatted to fit mostly within 100 characters line width.</li>
+</ul>
+</div>
+</div>
     <div id="protti-011" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.1">
 <a href="#protti-011" class="anchor"></a>protti 0.1.1<small> 2021-05-10 </small>

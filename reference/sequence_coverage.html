@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Protein sequence coverage — sequence_coverage" />
-<meta property="og:description" content="Calculate sequence coverage for each identified protein." />
+<meta property="og:description" content="
+This function was deprecated due to its name changing to calculate_sequence_coverage()." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -133,51 +134,19 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Protein sequence coverage</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/sequence_coverage.R'><code>R/sequence_coverage.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/calculate_sequence_coverage.R'><code>R/calculate_sequence_coverage.R</code></a></small>
     <div class="hidden name"><code>sequence_coverage.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculate sequence coverage for each identified protein.</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#deprecated'><img src='figures/lifecycle-deprecated.svg' alt='[Deprecated]' /></a>
+This function was deprecated due to its name changing to <code><a href='calculate_sequence_coverage.html'>calculate_sequence_coverage()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>sequence_coverage</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>protein_sequence</span>, <span class='va'>peptides</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>sequence_coverage</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>data</th>
-      <td><p>A dataframe containing at least the protein sequence and the identified peptides as columns.</p></td>
-    </tr>
-    <tr>
-      <th>protein_sequence</th>
-      <td><p>A column containing protein sequences, can be obtained by using the function <code><a href='fetch_uniprot.html'>fetch_uniprot()</a></code></p></td>
-    </tr>
-    <tr>
-      <th>peptides</th>
-      <td><p>A column containing the identified peptides.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A new column containing the calculated sequence coverages for each identified protein</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
-  protein_sequence <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"abcdefghijklmnop"</span>, <span class='st'>"abcdefghijklmnop"</span><span class='op'>)</span>,
-  pep_stripped_sequence <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"abc"</span>, <span class='st'>"jklmn"</span><span class='op'>)</span>
-<span class='op'>)</span>
-
-<span class='fu'>sequence_coverage</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  protein_sequence <span class='op'>=</span> <span class='va'>protein_sequence</span>,
-  peptides <span class='op'>=</span> <span class='va'>pep_stripped_sequence</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt;   protein_sequence pep_stripped_sequence coverage
-#&gt; 1 abcdefghijklmnop                   abc       50
-#&gt; 2 abcdefghijklmnop                 jklmn       50</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

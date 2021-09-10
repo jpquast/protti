@@ -40,8 +40,9 @@
 
 
 <meta property="og:title" content="Fitting four-parameter dose response curves — fit_drc_4p" />
-<meta property="og:description" content="Function for fitting four-parameter dose response curves for each group (precursor, peptide or protein). In addition it can
-filter data based on completeness, the completeness distribution and statistical testing using ANOVA." />
+<meta property="og:description" content="Function for fitting four-parameter dose response curves for each group (precursor, peptide or
+protein). In addition it can filter data based on completeness, the completeness distribution
+and statistical testing using ANOVA." />
 
 
 
@@ -73,7 +74,7 @@ filter data based on completeness, the completeness distribution and statistical
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -139,8 +140,9 @@ filter data based on completeness, the completeness distribution and statistical
     </div>
 
     <div class="ref-description">
-    <p>Function for fitting four-parameter dose response curves for each group (precursor, peptide or protein). In addition it can
-filter data based on completeness, the completeness distribution and statistical testing using ANOVA.</p>
+    <p>Function for fitting four-parameter dose response curves for each group (precursor, peptide or
+protein). In addition it can filter data based on completeness, the completeness distribution
+and statistical testing using ANOVA.</p>
     </div>
 
     <pre class="usage"><span class='fu'>fit_drc_4p</span><span class='op'>(</span>
@@ -163,119 +165,201 @@ filter data based on completeness, the completeness distribution and statistical
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame containing at least the input variables.</p></td>
+      <td><p>a data frame that contains at least the input variables.</p></td>
     </tr>
     <tr>
       <th>sample</th>
-      <td><p>The name of the column containing the sample names.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the sample names.</p></td>
     </tr>
     <tr>
       <th>grouping</th>
-      <td><p>The name of the column containing precursor, peptide or protein identifiers.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the precursor,
+peptide or protein identifiers.</p></td>
     </tr>
     <tr>
       <th>response</th>
-      <td><p>The name of the column containing response values, eg. log2 transformed intensities.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains the response
+values, e.g. log2 transformed intensities.</p></td>
     </tr>
     <tr>
       <th>dose</th>
-      <td><p>The name of the column containing dose values, eg. the treatment concentrations.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains the dose values, e.g.
+the treatment concentrations.</p></td>
     </tr>
     <tr>
       <th>filter</th>
-      <td><p>A character vector indicating if models should be filtered and if they should be filtered before or after the curve
-fits. Filtering of models can be skipped with <code>filter = "none"</code>. Data can be filtered prior to model fitting with
-<code>filter = "pre"</code>. In that case models will only be fitted for data that passed the filtering step. This will allow for faster
-model fitting since only fewer models will be fit. If you plan on performing an enrichment analysis you have to choose
-<code>filter = "post"</code>. All models will be fit (even the ones that do not pass the filtering criteria). For enrichment analysis
-you should use both good (i.e. models that pass the filtering) and bad (i.e. models that do not pass the filtering) models.
-Therefore, for post-filtering the full list is returned and it will only contain annotations that
-indicate (<code>passed_filter</code>) if the filtering was passed or not. Default is "post". For ANOVA an adjusted p-value of 0.05 is used as a cutoff.</p></td>
+      <td><p>a character value that determines if models should be filtered and if they should
+be filtered before or after the curve fits. Filtering of models can be skipped with
+<code>filter = "none"</code>. Data can be filtered prior to model fitting with <code>filter = "pre"</code>.
+In that case models will only be fitted for data that passed the filtering step. This will
+allow for faster model fitting since only fewer models will be fit. If you plan on performing
+an enrichment analysis you have to choose <code>filter = "post"</code>. All models will be fit (even
+the ones that do not pass the filtering criteria). For enrichment analysis you should use both
+good (i.e. models that pass the filtering) and bad (i.e. models that do not pass the filtering)
+models. Therefore, for post-filtering the full list is returned and it will only contain
+annotations that indicate (<code>passed_filter</code>) if the filtering was passed or not. Default is
+"post". For ANOVA an adjusted p-value of 0.05 is used as a cutoff.</p></td>
     </tr>
     <tr>
       <th>replicate_completeness</th>
-      <td><p>Similar to <code>completenss_MAR</code> of the <code>assign_missingness</code> function this argument sets a
-threshold for the completeness of data. In contrast to <code>assign_missingness</code> it only determines the completeness for one
-condition and not the comparison of two conditions. The threshold is used to calculate a minimal degree of data completeness.
-The value provided to this argument has to be between 0 and 1, default is 0.7. It is multiplied with the number of replicates
-and then adjusted downward. The resulting number is the minimal number of observations that a condition needs to have to be considered
-"complete enough" for the <code>condition_completeness</code> argument.</p></td>
+      <td><p>a numeric value which similar to <code>completenss_MAR</code> of the
+<code>assign_missingness</code> function sets a threshold for the completeness of data. In contrast
+to <code>assign_missingness</code> it only determines the completeness for one condition and not the
+comparison of two conditions. The threshold is used to calculate a minimal degree of data
+completeness. The value provided to this argument has to be between 0 and 1, default is 0.7.
+It is multiplied with the number of replicates and then adjusted downward. The resulting number
+is the minimal number of observations that a condition needs to have to be considered "complete
+enough" for the <code>condition_completeness</code> argument.</p></td>
     </tr>
     <tr>
       <th>condition_completeness</th>
-      <td><p>This argument determines how many conditions need to at least fulfill the "complete enough" criteria
-set with <code>replicate_completeness</code>. The value provided to this argument has to be between 0 and 1, default is 0.5. It is
-multiplied with the number of conditions and then adjusted downward. The resulting number is the minimal number of conditions that
-need to fulfill the <code>replicate_completeness</code> argument for a peptide to pass the filtering.</p></td>
+      <td><p>a numeric value which determines how many conditions need to at
+least fulfill the "complete enough" criteria set with <code>replicate_completeness</code>. The
+value provided to this argument has to be between 0 and 1, default is 0.5. It is multiplied with
+the number of conditions and then adjusted downward. The resulting number is the minimal number
+of conditions that need to fulfill the <code>replicate_completeness</code> argument for a peptide to
+pass the filtering.</p></td>
     </tr>
     <tr>
       <th>correlation_cutoff</th>
-      <td><p>A numeric vector specifying the correlation cutoff used for data filtering.</p></td>
+      <td><p>a numeric vector that specifies the correlation cutoff used for data
+filtering.</p></td>
     </tr>
     <tr>
       <th>log_logarithmic</th>
-      <td><p>logical indicating if a logarithmic or log-logarithmic model is fitted.
-If response values form a symmetric curve for non-log transformed dose values, a logarithmic model instead
-of a log-logarithmic model should be used. Usually biological dose response data has a log-logarithmic distribution, which is the
-reason this is the default. Log-logarithmic models are symmetric if dose values are log transformed.</p></td>
+      <td><p>a logical value that indicates if a logarithmic or log-logarithmic model
+is fitted. If response values form a symmetric curve for non-log transformed dose values, a
+logarithmic model instead of a log-logarithmic model should be used. Usually biological dose
+response data has a log-logarithmic distribution, which is the reason this is the default.
+Log-logarithmic models are symmetric if dose values are log transformed.</p></td>
     </tr>
     <tr>
       <th>include_models</th>
-      <td><p>A logical indicating if model fit objects should be exported. These are usually very large and not necessary for further analysis.</p></td>
+      <td><p>a logical value that indicates if model fit objects should be exported.
+These are usually very large and not necessary for further analysis.</p></td>
     </tr>
     <tr>
       <th>retain_columns</th>
-      <td><p>A vector indicating if certain columns should be retained from the input data frame. Default is not retaining
-additional columns <code>retain_columns = NULL</code>. Specific columns can be retained by providing their names (not in quotations marks,
-just like other column names, but in a vector).</p></td>
+      <td><p>a vector that specifies columns that should be retained from the input
+data frame. Default is not retaining additional columns <code>retain_columns = NULL</code>. Specific
+columns can be retained by providing their names (not in quotations marks, just like other
+column names, but in a vector).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If <code>include_models = FALSE</code> a data frame is returned that contains correlations of predicted to measured values as a measure of the goodness of the curve fit,
-an associated p-value and the four parameters of the model for each group. Furthermore, input data for plots is returned in the columns <code>plot_curve</code> (curve and confidence interval) and <code>plot_points</code> (measured points).
-If \ codeinclude_models = TURE, a list is returned that contains:</p><ul>
+    <p>If <code>include_models = FALSE</code> a data frame is returned that contains correlations
+of predicted to measured values as a measure of the goodness of the curve fit, an associated
+p-value and the four parameters of the model for each group. Furthermore, input data for plots
+is returned in the columns <code>plot_curve</code> (curve and confidence interval) and <code>plot_points</code>
+(measured points). If \ codeinclude_models = TURE, a list is returned that contains:</p><ul>
 <li><p><code>fit_objects</code>: The fit objects of type <code>drc</code> for each group.</p></li>
 <li><p><code>correlations</code>: The correlation data frame described above</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>If data filtering options are selected, data is filtered based on multiple criteria. In general, curves are only fitted
-if there are at least 5 conditions with data points present to ensure that there is potential for a good curve fit. Therefore,
-this is also the case if no filtering option is selected. Furthermore, a completeness cutoff is defined for filtering. By default
-each entity (e.g. precursor) is filtered to contain at least 70<!-- % of total replicates (adjusted downward) for at least 50% of -->
-all conditions (adjusted downward). This can be adjusted with the according arguments. In addition to the completeness cutoff,
-also a significance cutoff is applied. ANOVA is used to compute the statistical significance of the change for each entity.
-The resulting p-value is adjusted using the Benjamini-Hochberg method and a cutoff of q &lt;= 0.05 is applied. Curve fits that have
-a minimal value that is higher than the maximal value are excluded as they were likely wrongly fitted. Curves with a correlation
-below 0.8 are not passing the filtering. If a fit does not fulfill the significance or completeness cutoff, it has a chance to
-still be considered if half of its values (+/-1 value) pass the replicate completeness criteria and half do not pass it. In order
-to fall into this category, the values that fulfill the completeness cutoff and the ones that do not fulfill it need to be
-consecutive, meaning located next to each other based on their concentration values. Furthermore, the values that do not pass
-the completeness cutoff need to be lower in intensity. Lastly, the difference between the two groups is tested for statistical
-significance using a Welch's t-test and a cutoff of p &lt;= 0.1 (we want to mainly discard curves that falsly fit the other criteria
-but that have clearly non-significant differences in mean). This allows curves to be considered that have missing values in
-half of their observations due to a decrease in intensity. It can be thought of as conditions that are missing not
-at random (MNAR). It is often the case that those entities do not have a significant p-value since half of their conditions
-are not considered due to data missingness.</p>
-<p>The final filtered list is ranked based on a score calculated on entities that pass the filter. The score is the negative log10
-of the adjusted ANOVA p-value scaled between 0 and 1 and the correlation scaled between 0 and 1 summed up and divided by 2. Thus,
-the highest score an entity can have is 1 with both the highest correlation and adjusted p-value. The rank is corresponding to
-this score. Please note, that entities with MNAR conditions might have a lower score due to the missing or non-significant ANOVA
-p-value. You should have a look at curves that are TRUE for <code>dose_MNAR</code> in more detail.</p>
+    <p>If data filtering options are selected, data is filtered based on multiple criteria.
+In general, curves are only fitted if there are at least 5 conditions with data points present
+to ensure that there is potential for a good curve fit. Therefore, this is also the case if no
+filtering option is selected. Furthermore, a completeness cutoff is defined for filtering. By
+default each entity (e.g. precursor) is filtered to contain at least 70% of total replicates
+(adjusted downward) for at least 50% of all conditions (adjusted downward). This can be adjusted
+with the according arguments. In addition to the completeness cutoff, also a significance cutoff
+is applied. ANOVA is used to compute the statistical significance of the change for each entity.
+The resulting p-value is adjusted using the Benjamini-Hochberg method and a cutoff of q &lt;= 0.05
+is applied. Curve fits that have a minimal value that is higher than the maximal value are
+excluded as they were likely wrongly fitted. Curves with a correlation below 0.8 are not passing
+the filtering. If a fit does not fulfill the significance or completeness cutoff, it has a chance
+to still be considered if half of its values (+/-1 value) pass the replicate completeness
+criteria and half do not pass it. In order to fall into this category, the values that fulfill t
+he completeness cutoff and the ones that do not fulfill it need to be consecutive, meaning
+located next to each other based on their concentration values. Furthermore, the values that
+do not pass the completeness cutoff need to be lower in intensity. Lastly, the difference
+between the two groups is tested for statistical significance using a Welch's t-test and a
+cutoff of p &lt;= 0.1 (we want to mainly discard curves that falsly fit the other criteria but that
+have clearly non-significant differences in mean). This allows curves to be considered that have
+missing values in half of their observations due to a decrease in intensity. It can be thought
+of as conditions that are missing not at random (MNAR). It is often the case that those entities
+do not have a significant p-value since half of their conditions are not considered due to data
+missingness.</p>
+<p>The final filtered list is ranked based on a score calculated on entities that pass the filter.
+The score is the negative log10 of the adjusted ANOVA p-value scaled between 0 and 1 and the
+correlation scaled between 0 and 1 summed up and divided by 2. Thus, the highest score an
+entity can have is 1 with both the highest correlation and adjusted p-value. The rank is
+corresponding to this score. Please note, that entities with MNAR conditions might have a
+lower score due to the missing or non-significant ANOVA p-value. You should have a look at
+curves that are TRUE for <code>dose_MNAR</code> in more detail.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>fit_drc_4p</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-  grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-  response <span class='op'>=</span> <span class='va'>intensity</span>,
-  dose <span class='op'>=</span> <span class='va'>concentration</span>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='co'># Load libraries</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span> <span class='co'># Makes example reproducible</span>
+
+<span class='co'># Create example data</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='create_synthetic_data.html'>create_synthetic_data</a></span><span class='op'>(</span>
+  n_proteins <span class='op'>=</span> <span class='fl'>2</span>,
+  frac_change <span class='op'>=</span> <span class='fl'>1</span>,
+  n_replicates <span class='op'>=</span> <span class='fl'>3</span>,
+  n_conditions <span class='op'>=</span> <span class='fl'>8</span>,
+  method <span class='op'>=</span> <span class='st'>"dose_response"</span>,
+  concentrations <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>10</span>, <span class='fl'>50</span>, <span class='fl'>100</span>, <span class='fl'>500</span>, <span class='fl'>1000</span>, <span class='fl'>5000</span><span class='op'>)</span>,
+  additional_metadata <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span>
-<span class='op'>}</span>
+
+<span class='co'># Perform dose response curve fit</span>
+<span class='va'>drc_fit</span> <span class='op'>&lt;-</span> <span class='fu'>fit_drc_4p</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>sample</span>,
+  grouping <span class='op'>=</span> <span class='va'>peptide</span>,
+  response <span class='op'>=</span> <span class='va'>peptide_intensity_missing</span>,
+  dose <span class='op'>=</span> <span class='va'>concentration</span>,
+  retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>protein</span>, <span class='va'>change_peptide</span><span class='op'>)</span>
+<span class='op'>)</span>
+
+<span class='fu'><a href='https://pillar.r-lib.org/reference/glimpse.html'>glimpse</a></span><span class='op'>(</span><span class='va'>drc_fit</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Rows: 39
+#&gt; Columns: 19
+#&gt; $ rank              <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> 1, 2, 3, 4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+#&gt; $ protein           <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> "protein_2", "protein_2", "protein_1", "protein_2", …
+#&gt; $ change_peptide    <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span> TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, F…
+#&gt; $ peptide           <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> "peptide_2_1", "peptide_2_3", "peptide_1_1", "peptid…
+#&gt; $ hill_coefficient  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> 2.226694e+00, 3.280387e+00, 1.946307e+00, -3.310549e…
+#&gt; $ min_model         <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> 14.87823, 12.46267, 15.98840, 19.14721, 17.38775, 14…
+#&gt; $ max_model         <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> 19.12933, 16.18910, 17.09802, 19.80934, 17.91039, 15…
+#&gt; $ ec_50             <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> 2.453723e+02, 1.417578e+02, 9.428132e+01, 6.293053e+…
+#&gt; $ correlation       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> 0.9986256, 0.9938863, 0.9668223, 0.9280152, 0.769789…
+#&gt; $ pval              <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> 1.131609e-29, 8.423311e-15, 1.584597e-14, 6.625673e-…
+#&gt; $ plot_curve        <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span> [&lt;tbl_df[100 x 4]&gt;], [&lt;tbl_df[100 x 4]&gt;], [&lt;tbl_df[…
+#&gt; $ plot_points       <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span> [&lt;tbl_df[24 x 2]&gt;], [&lt;tbl_df[16 x 2]&gt;], [&lt;tbl_df[24…
+#&gt; $ enough_conditions <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span> TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE…
+#&gt; $ anova_significant <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span> TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FA…
+#&gt; $ dose_MNAR         <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span> FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALS…
+#&gt; $ passed_filter     <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span> TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, …
+#&gt; $ anova_pval        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> 3.666126e-20, 1.471594e-05, 1.966510e-08, 2.858086e-…
+#&gt; $ anova_adj_pval    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> 1.613095e-18, 1.618753e-04, 4.326322e-07, 4.191860e-…
+#&gt; $ score             <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> 1.00000000, 0.46644068, 0.37320103, 0.05860592, NA, …</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>drc_fit</span>, n <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 × 19</span>
+#&gt;     rank protein   change_peptide peptide   hill_coefficient min_model max_model
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span>     1 protein_2 TRUE           peptide_…        2.23           14.9      19.1
+#&gt; <span style='color: #BCBCBC;'> 2</span>     2 protein_2 TRUE           peptide_…        3.28           12.5      16.2
+#&gt; <span style='color: #BCBCBC;'> 3</span>     3 protein_1 TRUE           peptide_…        1.95           16.0      17.1
+#&gt; <span style='color: #BCBCBC;'> 4</span>     4 protein_2 TRUE           peptide_…       -<span style='color: #BB0000;'>3.31</span>           19.1      19.8
+#&gt; <span style='color: #BCBCBC;'> 5</span>    <span style='color: #BB0000;'>NA</span> protein_1 TRUE           peptide_…       -<span style='color: #BB0000;'>4.79</span>           17.4      17.9
+#&gt; <span style='color: #BCBCBC;'> 6</span>    <span style='color: #BB0000;'>NA</span> protein_1 FALSE          peptide_…        2.74           14.8      15.2
+#&gt; <span style='color: #BCBCBC;'> 7</span>    <span style='color: #BB0000;'>NA</span> protein_1 FALSE          peptide_…       -<span style='color: #BB0000;'>0.011</span><span style='color: #BB0000; text-decoration: underline;'>0</span>         15.3      14.7
+#&gt; <span style='color: #BCBCBC;'> 8</span>    <span style='color: #BB0000;'>NA</span> protein_1 FALSE          peptide_…        3.42           16.8      17.2
+#&gt; <span style='color: #BCBCBC;'> 9</span>    <span style='color: #BB0000;'>NA</span> protein_1 FALSE          peptide_…       -<span style='color: #BB0000;'>0.000</span><span style='color: #BB0000; text-decoration: underline;'>017</span><span style='color: #BB0000;'>4</span>      16.1      15.4
+#&gt; <span style='color: #BCBCBC;'>10</span>    <span style='color: #BB0000;'>NA</span> protein_1 FALSE          peptide_…       -<span style='color: #BB0000;'>1.35</span>           16.2      16.5
+#&gt; <span style='color: #949494;'># … with 12 more variables: ec_50 &lt;dbl&gt;, correlation &lt;dbl&gt;, pval &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   plot_curve &lt;list&gt;, plot_points &lt;list&gt;, enough_conditions &lt;lgl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   anova_significant &lt;lgl&gt;, dose_MNAR &lt;lgl&gt;, passed_filter &lt;lgl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   anova_pval &lt;dbl&gt;, anova_adj_pval &lt;dbl&gt;, score &lt;dbl&gt;</span></div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

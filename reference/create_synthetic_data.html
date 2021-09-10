@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Creates a synthetic limited proteolysis proteomics dataset — create_synthetic_data" />
-<meta property="og:description" content="This function creates a synthetic limited proteolysis proteomics dataset that can be used to test functions while knowing the ground truth." />
+<meta property="og:description" content="This function creates a synthetic limited proteolysis proteomics dataset that can be used to
+test functions while knowing the ground truth." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -138,7 +139,8 @@
     </div>
 
     <div class="ref-description">
-    <p>This function creates a synthetic limited proteolysis proteomics dataset that can be used to test functions while knowing the ground truth.</p>
+    <p>This function creates a synthetic limited proteolysis proteomics dataset that can be used to
+test functions while knowing the ground truth.</p>
     </div>
 
     <pre class="usage"><span class='fu'>create_synthetic_data</span><span class='op'>(</span>
@@ -146,7 +148,7 @@
   <span class='va'>frac_change</span>,
   <span class='va'>n_replicates</span>,
   <span class='va'>n_conditions</span>,
-  method <span class='op'>=</span> <span class='st'>"random_effect"</span>,
+  method <span class='op'>=</span> <span class='st'>"effect_random"</span>,
   concentrations <span class='op'>=</span> <span class='cn'>NULL</span>,
   median_offset_sd <span class='op'>=</span> <span class='fl'>0.05</span>,
   mean_protein_intensity <span class='op'>=</span> <span class='fl'>16.88</span>,
@@ -168,98 +170,112 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>n_proteins</th>
-      <td><p>Numeric, specifies the number of proteins in the synthetic dataset.</p></td>
+      <td><p>a numeric value that specifies the number of proteins in the synthetic dataset.</p></td>
     </tr>
     <tr>
       <th>frac_change</th>
-      <td><p>Numeric, the fraction of proteins that has a peptide changing in abundance. So far only one peptide per protein
-is changing.</p></td>
+      <td><p>a numeric value that specifies the fraction of proteins that has a peptide
+changing in abundance. So far only one peptide per protein is changing.</p></td>
     </tr>
     <tr>
       <th>n_replicates</th>
-      <td><p>Numeric, the number of replicates per condition.</p></td>
+      <td><p>a numeric value that specifies the number of replicates per condition.</p></td>
     </tr>
     <tr>
       <th>n_conditions</th>
-      <td><p>Numeric, the number of conditions.</p></td>
+      <td><p>a numeric value that specifies the number of conditions.</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>Character, specifies the method type for the random sampling of significantly changing peptides. If <code>method = "random_effect"</code>,
-the effect for each condition is randomly sampled and conditions do not depend on each other. If <code>method = "dose_response"</code>,
-the effect is sampled based on a dose response curve and conditions are related to each other depending on the curve shape. In this case
-the concentrations argument needs to be specified.</p></td>
+      <td><p>a character value that specifies the method type for the random sampling of
+significantly changing peptides. If <code>method = "effect_random"</code>, the effect for each
+condition is randomly sampled and conditions do not depend on each other. If
+<code>method = "dose_response"</code>, the effect is sampled based on a dose response curve and
+conditions are related to each other depending on the curve shape. In this case the
+concentrations argument needs to be specified.</p></td>
     </tr>
     <tr>
       <th>concentrations</th>
-      <td><p>Numeric vector of the length of number of conditions, only needs to be specified if <code>method = "dose_response"</code>.
-This allows equal sampling of peptide intensities. It ensures that the same positions of dose response curves are sampled for each peptide
-based on the provided concentrations.</p></td>
+      <td><p>a numeric vector of length equal to the number of conditions, only needs
+to be specified if <code>method = "dose_response"</code>. This allows equal sampling of peptide
+intensities. It ensures that the same positions of dose response curves are sampled for each
+peptide based on the provided concentrations.</p></td>
     </tr>
     <tr>
       <th>median_offset_sd</th>
-      <td><p>Numeric, standard deviation of normal distribution that is used for sampling of inter-sample-differences.
-Default is 0.05.</p></td>
+      <td><p>a numeric value that specifies the standard deviation of normal
+distribution that is used for sampling of inter-sample-differences. Default is 0.05.</p></td>
     </tr>
     <tr>
       <th>mean_protein_intensity</th>
-      <td><p>Numeric, mean of the protein intensity distribution. Default: 16.8.</p></td>
+      <td><p>a numeric value that specifies the mean of the protein intensity
+distribution. Default: 16.8.</p></td>
     </tr>
     <tr>
       <th>sd_protein_intensity</th>
-      <td><p>Numeric, standard deviation of the protein intensity distribution. Default: 1.4.</p></td>
+      <td><p>a numeric value that specifies the standard deviation of the
+protein intensity distribution. Default: 1.4.</p></td>
     </tr>
     <tr>
       <th>mean_n_peptides</th>
-      <td><p>Numeric, mean number of peptides per protein. Default: 12.75.</p></td>
+      <td><p>a numeric value that specifies the mean number of peptides per protein.
+Default: 12.75.</p></td>
     </tr>
     <tr>
       <th>size_n_peptides</th>
-      <td><p>Numeric, dispersion parameter (the shape parameter of the gamma mixing distribution). Can be theoretically calculated
-as <code>mean + mean^2/variance</code>, however, it should be rather obtained by fitting the negative binomial distribution to real data. This
-can be done by using the <code>optim</code> function (see Example section). Default: 0.9.</p></td>
+      <td><p>a numeric value that specifies the dispersion parameter (the shape
+parameter of the gamma mixing distribution). Can be theoretically calculated as
+<code>mean + mean^2/variance</code>, however, it should be rather obtained by fitting the negative
+binomial distribution to real data. This can be done by using the <code>optim</code> function (see
+Example section). Default: 0.9.</p></td>
     </tr>
     <tr>
       <th>mean_sd_peptides</th>
-      <td><p>Numeric, mean of peptide intensity standard deviations within a protein. Default: 1.7.</p></td>
+      <td><p>a numeric value that specifies the mean of peptide intensity standard
+deviations within a protein. Default: 1.7.</p></td>
     </tr>
     <tr>
       <th>sd_sd_peptides</th>
-      <td><p>Numeric, standard deviation of peptide intensity standard deviation within a protein. Default: 0.75.</p></td>
+      <td><p>a numeric value that specifies the standard deviation of peptide intensity
+standard deviation within a protein. Default: 0.75.</p></td>
     </tr>
     <tr>
       <th>mean_log_replicates, sd_log_replicates</th>
-      <td><p>Numeric, <code>meanlog</code> and <code>sdlog</code> value of the log normal
-distribution of replicate standard deviations. Can be obtained by fitting a log normal distribution to the distribution
-of replicate standard deviations from a real dataset. This can be done using
-the <code>optim</code> function (see Example section). Default: -2.2 and 1.05.</p></td>
+      <td><p>a numeric value that specifies the <code>meanlog</code>
+and <code>sdlog</code> of the log normal distribution of replicate standard deviations. Can be
+obtained by fitting a log normal distribution to the distribution of replicate standard
+deviations from a real dataset. This can be done using the <code>optim</code> function (see Example
+section). Default: -2.2 and 1.05.</p></td>
     </tr>
     <tr>
       <th>effect_sd</th>
-      <td><p>Numeric, standard deviation of a normal distribution around <code>mean = 0</code> that is used to sample the effect of
-significantly changeing peptides. Default: 2.</p></td>
+      <td><p>a numeric value that specifies the standard deviation of a normal distribution
+around <code>mean = 0</code> that is used to sample the effect of significantly changeing peptides.
+Default: 2.</p></td>
     </tr>
     <tr>
       <th>dropout_curve_inflection</th>
-      <td><p>Numeric, intensity inflection point of a probabilistic dropout curve that is used to sample intensity
-dependent missing values. This argument determines how many missing values there are in the dataset. Default: 14.</p></td>
+      <td><p>a numeric value that specifies the intensity inflection point
+of a probabilistic dropout curve that is used to sample intensity dependent missing values.
+This argument determines how many missing values there are in the dataset. Default: 14.</p></td>
     </tr>
     <tr>
       <th>dropout_curve_sd</th>
-      <td><p>Numeric, standard deviation of the probabilistic dropout curve. Needs to be negative to sample a droupout towards
-low intensities. Default: -1.2.</p></td>
+      <td><p>a numeric value that specifies the standard deviation of the
+probabilistic dropout curve. Needs to be negative to sample a droupout towards low intensities.
+Default: -1.2.</p></td>
     </tr>
     <tr>
       <th>additional_metadata</th>
-      <td><p>Logical, determines if metadata such as protein coverage, missed cleavages and charge state should be
-sampled and added to the list.</p></td>
+      <td><p>a logical value that determines if metadata such as protein
+coverage, missed cleavages and charge state should be sampled and added to the list.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains complete peptide intensities and peptide intensities with values that were created based on a
-probabilistic dropout curve.</p>
+    <p>A data frame that contains complete peptide intensities and peptide intensities with
+values that were created based on a probabilistic dropout curve.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>create_synthetic_data</span><span class='op'>(</span>
@@ -268,20 +284,20 @@ probabilistic dropout curve.</p>
   n_replicates <span class='op'>=</span> <span class='fl'>3</span>,
   n_conditions <span class='op'>=</span> <span class='fl'>2</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 900 x 14</span>
-#&gt;    protein   peptide   condition  sample  peptide_intensi… change change_peptide
-#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>              <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>         
-#&gt; <span style='color: #BCBCBC;'> 1</span> protein_1 peptide_… condition… sample…            15.4  TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 2</span> protein_1 peptide_… condition… sample…            15.5  TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 3</span> protein_1 peptide_… condition… sample…            15.6  TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 4</span> protein_1 peptide_… condition… sample…            16.6  TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 5</span> protein_1 peptide_… condition… sample…            16.6  TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 6</span> protein_1 peptide_… condition… sample…            16.6  TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 7</span> protein_1 peptide_… condition… sample…            17.7  TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 8</span> protein_1 peptide_… condition… sample…            17.8  TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 9</span> protein_1 peptide_… condition… sample…            17.8  TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'>10</span> protein_1 peptide_… condition… sample…             9.85 TRUE   TRUE          
-#&gt; <span style='color: #949494;'># … with 890 more rows, and 7 more variables: peptide_intensity_missing &lt;dbl&gt;,</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 720 × 14</span>
+#&gt;    protein   peptide     condition   sample   peptide_intensity change change_peptide
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>         
+#&gt; <span style='color: #BCBCBC;'> 1</span> protein_1 peptide_1_1 condition_1 sample_1              20.4 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 2</span> protein_1 peptide_1_1 condition_1 sample_2              20.4 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 3</span> protein_1 peptide_1_1 condition_1 sample_3              20.6 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 4</span> protein_1 peptide_1_1 condition_2 sample_4              17.2 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 5</span> protein_1 peptide_1_1 condition_2 sample_5              17.1 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 6</span> protein_1 peptide_1_1 condition_2 sample_6              17.2 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 7</span> protein_1 peptide_1_2 condition_1 sample_1              18.1 TRUE   FALSE         
+#&gt; <span style='color: #BCBCBC;'> 8</span> protein_1 peptide_1_2 condition_1 sample_2              18.2 TRUE   FALSE         
+#&gt; <span style='color: #BCBCBC;'> 9</span> protein_1 peptide_1_2 condition_1 sample_3              18.2 TRUE   FALSE         
+#&gt; <span style='color: #BCBCBC;'>10</span> protein_1 peptide_1_2 condition_2 sample_4              18.0 TRUE   FALSE         
+#&gt; <span style='color: #949494;'># … with 710 more rows, and 7 more variables: peptide_intensity_missing &lt;dbl&gt;,</span>
 #&gt; <span style='color: #949494;'>#   coverage &lt;dbl&gt;, n_missed_cleavage &lt;int&gt;, charge &lt;dbl&gt;, pep_type &lt;chr&gt;,</span>
 #&gt; <span style='color: #949494;'>#   peak_width &lt;dbl&gt;, retention_time &lt;dbl&gt;</span></div><div class='input'>
 <span class='co'># determination of mean_n_peptides and size_n_peptides parameters based on real data (count)</span>

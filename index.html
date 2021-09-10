@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -130,12 +130,13 @@
 <p><strong>protti</strong> is implemented as an R package.</p>
 <p>You can install the release version from <a href="https://CRAN.R-project.org/package=protti">CRAN</a> using the <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> function.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"protti"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"protti"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>You can install the development version from <a href="https://github.com/jpquast/protti">GitHub</a> using the <a href="https://github.com/r-lib/devtools"><code>devtools</code></a> package by copying the following commands into R:</p>
 <p>Note: If you do not have <code>devtools</code> installed make sure to do so by removing the comment sign (#).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jpquast/protti"</span><span class="op">)</span></code></pre></div>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jpquast/protti"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p>The <code>dependencies = TRUE</code> argument in both <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> and <code>devtools::install_github()</code> also installs suggested packages that are required for some functions to work. If this argument is not included functions that use a package that is not installed by default will throw an error and prompt the user to install the missing package. If you happen to run into problems during the installation of <strong>protti</strong> we recommend removing this argument and installing packages manually if they are needed for a certain function.</p>
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
@@ -181,11 +182,12 @@
                               frac_change <span class="op">=</span> <span class="fl">0.05</span>,
                               n_replicates <span class="op">=</span> <span class="fl">4</span>,
                               n_conditions <span class="op">=</span> <span class="fl">2</span>,
-                              method <span class="op">=</span> <span class="st">"random_effect"</span>,
+                              method <span class="op">=</span> <span class="st">"effect_random"</span>,
                               additional_metadata <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
-<span class="co"># The method "random_effect" as opposed to "dose-response" just randomly samples the change of significantly </span>
-<span class="co"># changing peptides for each condition. They do not follow any trend and can go in any direction.</span></code></pre></div>
+<span class="co"># The method "effect_random" as opposed to "dose-response" just randomly samples </span>
+<span class="co"># the extend of the change of significantly changing peptides for each condition. </span>
+<span class="co"># They do not follow any trend and can go in any direction.</span></code></pre></div>
 </div>
 <div id="clean-and-normalise-data" class="section level4">
 <h4 class="hasAnchor">
@@ -201,17 +203,19 @@
 </ul>
 <p>On your own data you can easily achieve this with <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> function. Our synthetic data does not require any filtering at this step.</p>
 <p>Due to the fact that variances increase with increasing raw intensities, statistical tests would have a bias towards lower-intensity peptides or proteins. Therefore you should log2 transform your data to correct for this mean-variance relationship. We do not need to do this for the synthetic data as it is already log2 transformed. For your own data just use <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> together with <code><a href="https://rdrr.io/r/base/Log.html">log2()</a></code>.</p>
-<p>In addition to filtering and log2 transformation it is also advised to median normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. <strong>protti</strong> provides the <code><a href="reference/median_normalisation.html">median_normalisation()</a></code> function for this purpose. This function generates an additional column called <code>normalised_intensity_log2</code> that contains the normalised intensities.</p>
-<p>Note: If your search tool already normalised your data you should not normalise it another time.</p>
+<p>In addition to filtering and log2 transformation it is also advised to normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. <strong>protti</strong> provides the <code><a href="reference/normalise.html">normalise()</a></code> function for this purpose. For this example we will use median normalisation (<code>method = "median"</code>). This function generates an additional column called <code>normalised_intensity_log2</code> that contains the normalised intensities.</p>
+<p><em>Note: If your search tool already normalised your data you should not normalise it another time.</em></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">normalised_data</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="reference/median_normalisation.html">median_normalisation</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">sample</span>,
-                       intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="reference/normalise.html">normalise</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">sample</span>,
+            intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,
+            method <span class="op">=</span> <span class="st">"median"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="assign-missingness" class="section level4">
 <h4 class="hasAnchor">
 <a href="#assign-missingness" class="anchor"></a>Assign Missingness</h4>
-<p>The next step is to deal with missing data points. You could choose to impute missing data in a later step, but this is only recommended if only a small proportion of your data is missing. In order to calculate statistical significance of differentially abundant peptides or proteins we would like to have a minimum number of observations per condition. The <strong>protti</strong> function <code><a href="reference/assign_missingness.html">assign_missingness()</a></code> checks for each treatment-to-reference condition if this number is satisfied and assigns a missingness type to each comparison as follows. If a certain condition has all replicates while the other one has less than 20% (adjusted downward) of total possible replicates, the case is considered to be “missing not at random” (<code>MNAR</code>). In order to be labeled “missing at random” (<code>MAR</code>) 70% (adjusted downward) of total replicates need to be present in both conditions. Comparisons that have too few observations are labeled <code>NA</code>. If you performed an experiment with 4 replicates that means that both conditions need to contain at least 2 observations. You can read the exact details in the documentation of this function and also adjust the thresholds if you want to be more or less conservative with how many data points to retain.</p>
+<p>The next step is to deal with missing data points. You could choose to impute missing data in a later step, but this is only recommended if only a small proportion of your data is missing. In order to calculate statistical significance of differentially abundant peptides or proteins we would like to have at least a minimum number of observations per condition. The <strong>protti</strong> function <code><a href="reference/assign_missingness.html">assign_missingness()</a></code> checks for each treatment-to-reference condition if the defined minimum number of observations is satisfied and assigns a missingness type to each comparison as follows.</p>
+<p>If a certain condition has all replicates while the other one has less than 20% (adjusted downward) of total possible replicates, the case is considered to be “missing not at random” (<code>MNAR</code>). In order to be labeled “missing at random” (<code>MAR</code>) 70% (adjusted downward) of total replicates need to be present in both conditions. If you performed an experiment with 4 replicates that means that both conditions need to contain at least 2 observations. Comparisons that have too few observations are labeled <code>NA</code>. These will not be imputed if imputation is performed later on using the <code><a href="reference/impute.html">impute()</a></code> function. You can read the exact details in the documentation of this function and also adjust the thresholds if you want to be more or less conservative with how many data points to retain.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_missing</span> <span class="op">&lt;-</span> <span class="va">normalised_data</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="reference/assign_missingness.html">assign_missingness</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">sample</span>,
@@ -221,37 +225,38 @@
                      ref_condition <span class="op">=</span> <span class="st">"condition_1"</span>,
                      retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span><span class="op">)</span>
 
-<span class="co"># Next to the columns it generates, assign_missingness only contains the columns you provide as input in its output. </span>
-<span class="co"># If you want to retain additional columns you can provide them in the retain_columns argument.</span></code></pre></div>
-<p>Note: Instead of “peptide” in the <code>grouping</code> argument you can provide protein IDs in case you are working with protein abundance data. However, then intensities should be protein intensities and not peptide intensities.</p>
+<span class="co"># Next to the columns it generates, assign_missingness only contains the columns </span>
+<span class="co"># you provide as input in its output. If you want to retain additional columns you </span>
+<span class="co"># can provide them in the retain_columns argument.</span></code></pre></div>
+<p><em>Note: Instead of “peptide” in the <code>grouping</code> argument you can provide protein IDs in case you are working with protein abundance data. However, then intensities should be protein intensities and not peptide intensities.</em></p>
 </div>
 <div id="calculate-differential-abundance-and-significance" class="section level4">
 <h4 class="hasAnchor">
 <a href="#calculate-differential-abundance-and-significance" class="anchor"></a>Calculate Differential Abundance and Significance</h4>
-<p>For the calculation of abundance changes and the associated significances <strong>protti</strong> provides the function <code><a href="reference/diff_abundance.html">diff_abundance()</a></code>. You can choose between different statistical methods. For this example we will chose a Welch’s t-test. Obtained p-values are adjusted for multiple testing using the Benjamini-Hochberg method (<a href="http://www.math.tau.ac.il/~ybenja/MyPapers/benjamini_hochberg1995.pdf">Benjamini &amp; Hochberg 1995</a>).</p>
+<p>For the calculation of abundance changes and the associated significances <strong>protti</strong> provides the function <code><a href="reference/calculate_diff_abundance.html">calculate_diff_abundance()</a></code>. You can choose between different statistical methods. For this example we will chose a moderated t-test.</p>
+<p>The type of missingness assigned to a comparison does not have any influence on the statistical test. However, by default (can be changed) comparisons with missingness <code>NA</code> are filtered out prior to p-value adjustment. This means that in addition to imputation, the user can use missingness cutoffs also in order to define which comparisons are too incomplete to be trustworthy even if significant.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">data_missing</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="reference/diff_abundance.html">diff_abundance</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">sample</span>,
-                 condition <span class="op">=</span> <span class="va">condition</span>,
-                 grouping <span class="op">=</span> <span class="va">peptide</span>,
-                 intensity_log2 <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
-                 missingness <span class="op">=</span> <span class="va">missingness</span>,
-                 comparison <span class="op">=</span> <span class="va">comparison</span>,
-                 filter_NA_missingness <span class="op">=</span> <span class="cn">TRUE</span>,
-                 method <span class="op">=</span> <span class="st">"t-test"</span>,
-                 retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>Next we can use a Volcano plot to visualize significantly changing peptides with the function <code><a href="reference/volcano_protti.html">volcano_protti()</a></code>. You can choose to create an interactive plot with the <code>interactive</code> argument. Please note that this is not recommended for large datasets.</p>
+  <span class="fu"><a href="reference/calculate_diff_abundance.html">calculate_diff_abundance</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">sample</span>,
+                           condition <span class="op">=</span> <span class="va">condition</span>,
+                           grouping <span class="op">=</span> <span class="va">peptide</span>,
+                           intensity_log2 <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
+                           missingness <span class="op">=</span> <span class="va">missingness</span>,
+                           comparison <span class="op">=</span> <span class="va">comparison</span>,
+                           filter_NA_missingness <span class="op">=</span> <span class="cn">TRUE</span>,
+                           method <span class="op">=</span> <span class="st">"moderated_t-test"</span>,
+                           retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>Next we can use a Volcano plot to visualize significantly changing peptides with the function <code><a href="reference/volcano_plot.html">volcano_plot()</a></code>. You can choose to create an interactive plot with the <code>interactive</code> argument. Please note that this is not recommended for large datasets.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="reference/volcano_protti.html">volcano_protti</a></span><span class="op">(</span>grouping <span class="op">=</span> <span class="va">peptide</span>,
+  <span class="fu"><a href="reference/volcano_plot.html">volcano_plot</a></span><span class="op">(</span>grouping <span class="op">=</span> <span class="va">peptide</span>,
                  log2FC <span class="op">=</span> <span class="va">diff</span>,
-                 significance <span class="op">=</span> <span class="va">adj_pval</span>,
+                 significance <span class="op">=</span> <span class="va">pval</span>,
                  method <span class="op">=</span> <span class="st">"target"</span>,
                  target_column <span class="op">=</span> <span class="va">change_peptide</span>,
                  target <span class="op">=</span> <span class="cn">TRUE</span>,
                  legend_label <span class="op">=</span> <span class="st">"Ground Truth"</span>,
-                 significance_cutoff <span class="op">=</span> <span class="fl">0.05</span>,
-                 interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+                 significance_cutoff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="st">"adj_pval"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-volcano-1.png" width="100%"></p>
 </div>
 </div>

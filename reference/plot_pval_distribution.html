@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Plot histogram of p-value distribution — plot_pval_distribution" />
-<meta property="og:description" content="Plots the distribution of p-values derived from any statistical test as a histogram." />
+<meta property="og:description" content="
+This function was deprecated due to its name changing to pval_distribution_plot()." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -133,47 +134,19 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Plot histogram of p-value distribution</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/plot_pval_distribution.R'><code>R/plot_pval_distribution.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/pval_distribution_plot.R'><code>R/pval_distribution_plot.R</code></a></small>
     <div class="hidden name"><code>plot_pval_distribution.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plots the distribution of p-values derived from any statistical test as a histogram.</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#deprecated'><img src='figures/lifecycle-deprecated.svg' alt='[Deprecated]' /></a>
+This function was deprecated due to its name changing to <code><a href='pval_distribution_plot.html'>pval_distribution_plot()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_pval_distribution</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>grouping</span>, <span class='va'>pval</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_pval_distribution</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>data</th>
-      <td><p>a data frame containing at least grouping identifiers (precursor, peptide or protein) and p-values derived from any
-statistical test.</p></td>
-    </tr>
-    <tr>
-      <th>grouping</th>
-      <td><p>the column in the data frame containing either precursor, peptide or protein identifiers.</p></td>
-    </tr>
-    <tr>
-      <th>pval</th>
-      <td><p>the column in the data frame containing p-values.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A histogram or boxplot that shows the intensity distribution over all samples or by sample.</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>plot_pval_distribution</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-  pval <span class='op'>=</span> <span class='va'>pval</span>
-<span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

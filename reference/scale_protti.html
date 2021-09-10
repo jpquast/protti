@@ -40,7 +40,10 @@
 
 
 <meta property="og:title" content="Scaling a vector — scale_protti" />
-<meta property="og:description" content="scale_protti is used to scale a numeric vector either between 0 and 1 or around a centered value using the standard deviation." />
+<meta property="og:description" content="scale_protti is used to scale a numeric vector either between 0 and 1 or around a
+centered value using the standard deviation. If a vector containing only one value or
+repeatedly the same value is provided, 1 is returned as the scaled value for method = &quot;01&quot;
+and 0 is returned for metod = &quot;center&quot;." />
 
 
 
@@ -72,7 +75,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -138,7 +141,10 @@
     </div>
 
     <div class="ref-description">
-    <p><code>scale_protti</code> is used to scale a numeric vector either between 0 and 1 or around a centered value using the standard deviation.</p>
+    <p><code>scale_protti</code> is used to scale a numeric vector either between 0 and 1 or around a
+centered value using the standard deviation. If a vector containing only one value or
+repeatedly the same value is provided, 1 is returned as the scaled value for <code>method = "01"</code>
+and 0 is returned for <code>metod = "center"</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>scale_protti</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>method</span><span class='op'>)</span></pre>
@@ -152,7 +158,10 @@
     </tr>
     <tr>
       <th>method</th>
-      <td><p>the method to be used for scaling. "01" scales the vector between 0 and 1. "center" scales the vector equal to <code><a href='https://rdrr.io/r/base/scale.html'>base::scale</a></code> around a center. This is done by subtracting the mean from every value and then deviding them by the standard deviation.</p></td>
+      <td><p>a character value that specifies the method to be used for scaling. "01" scales
+the vector between 0 and 1. "center" scales the vector equal to <code><a href='https://rdrr.io/r/base/scale.html'>base::scale</a></code> around a
+center. This is done by subtracting the mean from every value and then deviding them by the
+standard deviation.</p></td>
     </tr>
     </table>
 

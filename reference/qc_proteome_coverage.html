@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Proteome coverage per sample and total — qc_proteome_coverage" />
-<meta property="og:description" content="Calculates the proteome coverage for each samples and for all samples combined. In other words the fraction of detected proteins to all proteins in the proteome is calculated." />
+<meta property="og:description" content="Calculates the proteome coverage for each samples and for all samples combined. In other words t
+he fraction of detected proteins to all proteins in the proteome is calculated." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -138,7 +139,8 @@
     </div>
 
     <div class="ref-description">
-    <p>Calculates the proteome coverage for each samples and for all samples combined. In other words the fraction of detected proteins to all proteins in the proteome is calculated.</p>
+    <p>Calculates the proteome coverage for each samples and for all samples combined. In other words t
+he fraction of detected proteins to all proteins in the proteome is calculated.</p>
     </div>
 
     <pre class="usage"><span class='fu'>qc_proteome_coverage</span><span class='op'>(</span>
@@ -155,43 +157,75 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame containing at least sample names and protein ID's.</p></td>
+      <td><p>a data frame that contains at least sample names and protein ID's.</p></td>
     </tr>
     <tr>
       <th>sample</th>
-      <td><p>The column in the data data frame containing the sample name.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the sample name.</p></td>
     </tr>
     <tr>
       <th>protein_id</th>
-      <td><p>The column in the data data frame containing protein identifiers such as UniProt accessions.</p></td>
+      <td><p>a character or numeric column in the <code>data</code> data frame that contains
+protein identifiers such as UniProt accessions.</p></td>
     </tr>
     <tr>
       <th>organism_id</th>
-      <td><p>The NCBI taxonomy identifier (TaxId) of the organism used. Human: 9606, S. cerevisiae: 559292, E. coli: 83333.</p></td>
+      <td><p>a numeric value that specifies a NCBI taxonomy identifier (TaxId) of the
+organism used. Human: 9606, S. cerevisiae: 559292, E. coli: 83333.</p></td>
     </tr>
     <tr>
       <th>plot</th>
-      <td><p>A logical indicating whether the result should be plotted (default is TRUE).</p></td>
+      <td><p>a logical value that specifies whether the result should be plotted.</p></td>
     </tr>
     <tr>
       <th>interactive</th>
-      <td><p>A logical indicating whether the plot should be interactive (default is FALSE).</p></td>
+      <td><p>a logical value that indicates whether the plot should be interactive
+(default is FALSE).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A bar plot showing the percentage of of the proteome detected and undetected in total and for each sample. If <code>plot = FALSE</code> a data frame containing the numbers is returned.</p>
+    <p>A bar plot showing the percentage of of the proteome detected and undetected in total
+and for each sample. If <code>plot = FALSE</code> a data frame containing the numbers is returned.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>qc_proteome_coverage</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-  protein_id <span class='op'>=</span> <span class='va'>pg_protein_accession</span>,
-  organism_id <span class='op'>=</span> <span class='fl'>9606</span>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='co'># Create example data</span>
+<span class='va'>proteome</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>id <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4518</span><span class='op'>)</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
+  sample <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='st'>"A"</span>, <span class='fl'>101</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='st'>"B"</span>, <span class='fl'>1000</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='st'>"C"</span>, <span class='fl'>1000</span><span class='op'>)</span><span class='op'>)</span>,
+  protein_id <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>proteome</span><span class='op'>$</span><span class='va'>id</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>]</span>, <span class='va'>proteome</span><span class='op'>$</span><span class='va'>id</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>1000</span><span class='op'>]</span>, <span class='va'>proteome</span><span class='op'>$</span><span class='va'>id</span><span class='op'>[</span><span class='fl'>1000</span><span class='op'>:</span><span class='fl'>2000</span><span class='op'>]</span><span class='op'>)</span>
 <span class='op'>)</span>
-<span class='op'>}</span>
+
+<span class='co'># Calculate proteome coverage</span>
+<span class='fu'>qc_proteome_coverage</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>sample</span>,
+  protein_id <span class='op'>=</span> <span class='va'>protein_id</span>,
+  organism_id <span class='op'>=</span> <span class='fl'>83333</span>,
+  plot <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 8 × 3</span>
+#&gt;   sample type                percentage
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>                    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> A      proteins_detected         2.21
+#&gt; <span style='color: #BCBCBC;'>2</span> A      proteins_undetected      97.8 
+#&gt; <span style='color: #BCBCBC;'>3</span> B      proteins_detected        22.1 
+#&gt; <span style='color: #BCBCBC;'>4</span> B      proteins_undetected      77.9 
+#&gt; <span style='color: #BCBCBC;'>5</span> C      proteins_detected        22.1 
+#&gt; <span style='color: #BCBCBC;'>6</span> C      proteins_undetected      77.9 
+#&gt; <span style='color: #BCBCBC;'>7</span> Total  proteins_detected        44.3 
+#&gt; <span style='color: #BCBCBC;'>8</span> Total  proteins_undetected      55.7 </div><div class='input'>
+<span class='co'># Plot proteome coverage</span>
+<span class='fu'>qc_proteome_coverage</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>data</span>,
+  sample <span class='op'>=</span> <span class='va'>sample</span>,
+  protein_id <span class='op'>=</span> <span class='va'>protein_id</span>,
+  organism_id <span class='op'>=</span> <span class='fl'>83333</span>,
+  plot <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
+</div><div class='img'><img src='qc_proteome_coverage-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

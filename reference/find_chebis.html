@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Find ChEBI IDs for name patterns — find_chebis" />
-<meta property="og:description" content="A list of ChEBI IDs that contain a specific name pattern is returned." />
+<meta property="og:description" content="Search for chebi IDs that match a specific name pattern. A list of corresponding ChEBI IDs is
+returned." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -138,7 +139,8 @@
     </div>
 
     <div class="ref-description">
-    <p>A list of ChEBI IDs that contain a specific name pattern is returned.</p>
+    <p>Search for chebi IDs that match a specific name pattern. A list of corresponding ChEBI IDs is
+returned.</p>
     </div>
 
     <pre class="usage"><span class='fu'>find_chebis</span><span class='op'>(</span><span class='va'>chebi_data</span>, <span class='va'>pattern</span><span class='op'>)</span></pre>
@@ -148,20 +150,24 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>chebi_data</th>
-      <td><p>A data frame that contains at least information on ChEBI IDs (id) and their names (name).
-This data frame can be obtained by calling <code><a href='fetch_chebi.html'>fetch_chebi()</a></code>. Ideally this should be subsetted to only contain molecules of a specific type e.g. metals.
-This can be achieved by calling <code>find_all_subs</code> with a general ID such as "25213" (Metal cation) and then subset the complete ChEBI database to only include the returned sub-IDs.
-Using a subsetted database ensures better search results. This is a helper function for other functions.</p></td>
+      <td><p>a data frame that contains at least information on ChEBI IDs (id) and their
+names (name). This data frame can be obtained by calling <code><a href='fetch_chebi.html'>fetch_chebi()</a></code>. Ideally this
+should be subsetted to only contain molecules of a specific type e.g. metals. This can be
+achieved by calling <code>find_all_subs</code> with a general ID such as "25213" (Metal cation) and
+then subset the complete ChEBI database to only include the returned sub-IDs. Using a subsetted
+database ensures better search results. This is a helper function for other functions.</p></td>
     </tr>
     <tr>
       <th>pattern</th>
-      <td><p>A character vector that contains names or name patterns of molecules. Name patterns can be for example obtained with the <code>split_metal_name</code> function.</p></td>
+      <td><p>a character vector that contains names or name patterns of molecules. Name
+patterns can be for example obtained with the <code>split_metal_name</code> function.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of character vectors containing ChEBI IDs that have a name matching the supplied pattern.</p>
+    <p>A list of character vectors containing ChEBI IDs that have a name matching the supplied
+pattern. It contains one element per pattern.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

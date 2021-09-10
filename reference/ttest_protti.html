@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -148,38 +148,41 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mean1</th>
-      <td><p>Vector containing the means of group1.</p></td>
+      <td><p>a numeric vector that contains the means of group1.</p></td>
     </tr>
     <tr>
       <th>mean2</th>
-      <td><p>Vector containing the means of group2.</p></td>
+      <td><p>a numeric vector that contains the means of group2.</p></td>
     </tr>
     <tr>
       <th>sd1</th>
-      <td><p>Vector containing the standard deviations of group1.</p></td>
+      <td><p>a numeric vector that contains the standard deviations of group1.</p></td>
     </tr>
     <tr>
       <th>sd2</th>
-      <td><p>Vector containing the standard deviations of group2.</p></td>
+      <td><p>a numeric vector that contains the standard deviations of group2.</p></td>
     </tr>
     <tr>
       <th>n1</th>
-      <td><p>Vector containing the number of replicates used for the calculation of each mean and standard deviation of group1.</p></td>
+      <td><p>a numeric vector that contains the number of replicates used for the calculation of
+each mean and standard deviation of group1.</p></td>
     </tr>
     <tr>
       <th>n2</th>
-      <td><p>Vector containing the number of replicates used for the calculation of each mean and standard deviation of group2.</p></td>
+      <td><p>a numeric vector that contains the number of replicates used for the calculation of
+each mean and standard deviation of group2.</p></td>
     </tr>
     <tr>
       <th>log_values</th>
-      <td><p>Logical indicating if values are log transformed. This determines how fold changes are calculated.
-Default is <code>log_values = TRUE</code>.</p></td>
+      <td><p>a logical value that indicates if values are log transformed. This determines
+how fold changes are calculated. Default is <code>log_values = TRUE</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains the calculated differences of means, standard error, t statistic and p-values.</p>
+    <p>A data frame that contains the calculated differences of means, standard error, t
+statistic and p-values.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>ttest_protti</span><span class='op'>(</span>

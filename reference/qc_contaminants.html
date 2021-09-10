@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Percentage of contaminants per sample — qc_contaminants" />
-<meta property="og:description" content="Calculates the percentage of contaminating proteins as the share of total intensity" />
+<meta property="og:description" content="Calculates the percentage of contaminating proteins as the share of total intensity." />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -138,7 +138,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Calculates the percentage of contaminating proteins as the share of total intensity</p>
+    <p>Calculates the percentage of contaminating proteins as the share of total intensity.</p>
     </div>
 
     <pre class="usage"><span class='fu'>qc_contaminants</span><span class='op'>(</span>
@@ -157,42 +157,46 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>a data frame containing at least the input variables.</p></td>
+      <td><p>a data frame that contains at least the input variables.</p></td>
     </tr>
     <tr>
       <th>sample</th>
-      <td><p>the name of the column containing the sample names.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the sample names.</p></td>
     </tr>
     <tr>
       <th>protein</th>
-      <td><p>the name of the column containing protein IDs or protein names.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains protein IDs or
+protein names.</p></td>
     </tr>
     <tr>
       <th>is_contaminant</th>
-      <td><p>the name of the column containing a logical indicating if the protein is a contaminant.</p></td>
+      <td><p>a logical column that indicates if the protein is a contaminant.</p></td>
     </tr>
     <tr>
       <th>intensity</th>
-      <td><p>the name of the column containing the corresponding raw or untransformed normalised intensity values.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains the corresponding
+raw or normalised intensity values (not log2).</p></td>
     </tr>
     <tr>
       <th>n_contaminants</th>
-      <td><p>numeric, indicating how many contaminants should be displayed individually. The rest is combined to a group called "other". The
-default is 5.</p></td>
+      <td><p>a numeric value that indicates how many contaminants should be displayed
+individually. The rest is combined to a group called "other". The default is 5.</p></td>
     </tr>
     <tr>
       <th>plot</th>
-      <td><p>logical, if TRUE a plot is returned. If FALSE a table is returned.</p></td>
+      <td><p>a logical value that indicates if a plot is returned. If FALSE a table is returned.</p></td>
     </tr>
     <tr>
       <th>interactive</th>
-      <td><p>logical, if TRUE the plot is interactive using plotly.</p></td>
+      <td><p>a logical value that indicates if the plot is made interactive using the r
+package <code>plotly</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A bar plot that displays the percentage of contaminating proteins over all samples. If <code>plot = FALSE</code> a data frame is returned.</p>
+    <p>A bar plot that displays the percentage of contaminating proteins over all samples.
+If <code>plot = FALSE</code> a data frame is returned.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>

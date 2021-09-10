@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Imputation of missing values — impute" />
-<meta property="og:description" content="impute is calculating imputation values for missing data depending on the selected method." />
+<meta property="og:description" content="impute is calculating imputation values for missing data depending on the selected
+method." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -138,19 +139,20 @@
     </div>
 
     <div class="ref-description">
-    <p><code>impute</code> is calculating imputation values for missing data depending on the selected method.</p>
+    <p><code>impute</code> is calculating imputation values for missing data depending on the selected
+method.</p>
     </div>
 
     <pre class="usage"><span class='fu'>impute</span><span class='op'>(</span>
   <span class='va'>data</span>,
   <span class='va'>sample</span>,
   <span class='va'>grouping</span>,
-  <span class='va'>intensity</span>,
+  <span class='va'>intensity_log2</span>,
   <span class='va'>condition</span>,
-  <span class='va'>comparison</span>,
-  <span class='va'>missingness</span>,
+  comparison <span class='op'>=</span> <span class='va'>comparison</span>,
+  missingness <span class='op'>=</span> <span class='va'>missingness</span>,
   noise <span class='op'>=</span> <span class='cn'>NULL</span>,
-  <span class='va'>method</span>,
+  method <span class='op'>=</span> <span class='st'>"ludovic"</span>,
   skip_log2_transform_error <span class='op'>=</span> <span class='cn'>FALSE</span>,
   retain_columns <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
@@ -160,81 +162,167 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>a dataframe that is ideally the output from the <code>assign_missingness</code> function. It should containing at least the
-input variables. For each "reference_vs_treatment" comparison, there should be the pair of the reference and treatment condition.
-That means the reference condition should be doublicated once for every treatment.</p></td>
+      <td><p>a data frame that is ideally the output from the <code>assign_missingness</code> function.
+It should containing at least the input variables. For each "reference_vs_treatment" comparison,
+there should be the pair of the reference and treatment condition. That means the reference
+condition should be doublicated once for every treatment.</p></td>
     </tr>
     <tr>
       <th>sample</th>
-      <td><p>the name of the column containing the sample names.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the sample names.</p></td>
     </tr>
     <tr>
       <th>grouping</th>
-      <td><p>the name of the column containing precursor or peptide identifiers.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the precursor or
+peptide identifiers.</p></td>
     </tr>
     <tr>
-      <th>intensity</th>
-      <td><p>the name of the column containing intensity values. Note: The input intensities should be log2 transformed.</p></td>
+      <th>intensity_log2</th>
+      <td><p>a numeric column in the <code>data</code> data frame that contains the intensity
+values.</p></td>
     </tr>
     <tr>
       <th>condition</th>
-      <td><p>the name of the column containing the conditions.</p></td>
+      <td><p>a character or numeric column in the <code>data</code> data frame that contains the
+the conditions.</p></td>
     </tr>
     <tr>
       <th>comparison</th>
-      <td><p>the name of the column containing the comparisons of treatment/reference pairs. This is an output of the
-<code>assign_missingnes</code> function.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the the
+comparisons of treatment/reference pairs. This is an output of the <code>assign_missingnes</code>
+function.</p></td>
     </tr>
     <tr>
       <th>missingness</th>
-      <td><p>the name of the column that contains the missingness type of the data determines how values for imputation are sampled.
-This should at least contain <code>"MAR"</code> or <code>"MNAR"</code>.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains the
+missingness type of the data determines how values for imputation are sampled. This should at
+least contain <code>"MAR"</code> or <code>"MNAR"</code>. Missingness assigned as <code>NA</code> will not be imputed.</p></td>
     </tr>
     <tr>
       <th>noise</th>
-      <td><p>the name of the column that contains the noise value for the precursor/peptide. Is only required if <code>method = "noise"</code>.
-Note: Noise values need to be log2 transformed.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains the noise value for
+the precursor/peptide. Is only required if <code>method = "noise"</code>. Note: Noise values need to
+be log2 transformed.</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>the method to be used for imputation. For <code>method = "ludovic"</code>, MNAR missingness is sampled from a normal distribution
-around a value that is three lower (log2) than the lowest intensity value recorded for the precursor/peptide and that has a spread of
-the mean standard deviation for the precursor/peptide. For <code>method = "noise"</code>, MNAR missingness is sampled from a normal distribution
-around the mean noise for the precursor/peptide and that has a spread of the mean standard deviation (from each condition) for the precursor/peptide.</p></td>
+      <td><p>a character value that specifies the method to be used for imputation. For
+<code>method = "ludovic"</code>, MNAR missingness is sampled from a normal distribution around a
+value that is three lower (log2) than the lowest intensity value recorded for the
+precursor/peptide and that has a spread of the mean standard deviation for the
+precursor/peptide. For <code>method = "noise"</code>, MNAR missingness is sampled from a normal
+distribution around the mean noise for the precursor/peptide and that has a spread of the
+mean standard deviation (from each condition) for the precursor/peptide. Both methods impute
+MAR data using the mean and variance of the condition with the missing data.</p></td>
     </tr>
     <tr>
       <th>skip_log2_transform_error</th>
-      <td><p>logical, if FALSE a check is performed to validate that input values are log2 transformed. If input
-values are &gt; 40 the test is failed and an error is thrown.</p></td>
+      <td><p>a logical value that determines if a check is performed to
+validate that input values are log2 transformed. If input values are &gt; 40 the test is failed
+and an error is returned.</p></td>
     </tr>
     <tr>
       <th>retain_columns</th>
-      <td><p>A vector indicating if certain columns should be retained from the input data frame. Default is not retaining
-additional columns <code>retain_columns = NULL</code>. Specific columns can be retained by providing their names (not in quotations marks,
-just like other column names, but in a vector).</p></td>
+      <td><p>a vector that indicates columns that should be retained from the input
+data frame. Default is not retaining additional columns <code>retain_columns = NULL</code>. Specific
+columns can be retained by providing their names (not in quotations marks, just like other
+column names, but in a vector).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame that contains an <code>imputed_intensity</code> and <code>imputed</code> column in addition to the required input columns.
-The <code>imputed</code> column indicates if a value was imputed. The <code>imputed_intensity</code> column contains imputed intensity values
-for previously missing intensities.</p>
+    <p>A data frame that contains an <code>imputed_intensity</code> and <code>imputed</code> column in
+addition to the required input columns. The <code>imputed</code> column indicates if a value was
+imputed. The <code>imputed_intensity</code> column contains imputed intensity values for previously
+missing intensities.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>impute</span><span class='op'>(</span>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span> <span class='co'># Makes example reproducible</span>
+
+<span class='co'># Create example data</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='create_synthetic_data.html'>create_synthetic_data</a></span><span class='op'>(</span>
+  n_proteins <span class='op'>=</span> <span class='fl'>10</span>,
+  frac_change <span class='op'>=</span> <span class='fl'>0.5</span>,
+  n_replicates <span class='op'>=</span> <span class='fl'>4</span>,
+  n_conditions <span class='op'>=</span> <span class='fl'>2</span>,
+  method <span class='op'>=</span> <span class='st'>"effect_random"</span>,
+  additional_metadata <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span>, n <span class='op'>=</span> <span class='fl'>24</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 24 × 8</span>
+#&gt;    protein   peptide     condition   sample   peptide_intensity change change_peptide
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>         
+#&gt; <span style='color: #BCBCBC;'> 1</span> protein_1 peptide_1_1 condition_1 sample_1              16.8 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 2</span> protein_1 peptide_1_1 condition_1 sample_2              17.0 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 3</span> protein_1 peptide_1_1 condition_1 sample_3              17.0 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 4</span> protein_1 peptide_1_1 condition_1 sample_4              17.0 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 5</span> protein_1 peptide_1_1 condition_2 sample_5              15.8 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 6</span> protein_1 peptide_1_1 condition_2 sample_6              15.9 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 7</span> protein_1 peptide_1_1 condition_2 sample_7              16.1 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 8</span> protein_1 peptide_1_1 condition_2 sample_8              15.9 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 9</span> protein_1 peptide_1_2 condition_1 sample_1              12.6 TRUE   FALSE         
+#&gt; <span style='color: #BCBCBC;'>10</span> protein_1 peptide_1_2 condition_1 sample_2              12.7 TRUE   FALSE         
+#&gt; <span style='color: #949494;'># … with 14 more rows, and 1 more variable: peptide_intensity_missing &lt;dbl&gt;</span></div><div class='input'>
+<span class='co'># Assign missingness information</span>
+<span class='va'>data_missing</span> <span class='op'>&lt;-</span> <span class='fu'><a href='assign_missingness.html'>assign_missingness</a></span><span class='op'>(</span>
   <span class='va'>data</span>,
-  sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-  grouping <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-  intensity <span class='op'>=</span> <span class='va'>intensity_log2</span>,
-  condition <span class='op'>=</span> <span class='va'>r_condition</span>,
+  sample <span class='op'>=</span> <span class='va'>sample</span>,
+  condition <span class='op'>=</span> <span class='va'>condition</span>,
+  grouping <span class='op'>=</span> <span class='va'>peptide</span>,
+  intensity <span class='op'>=</span> <span class='va'>peptide_intensity_missing</span>,
+  ref_condition <span class='op'>=</span> <span class='st'>"all"</span>,
+  retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>protein</span>, <span class='va'>peptide_intensity</span><span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>"all" was provided as reference condition. All pairwise comparisons are</span>
+#&gt; <span class='message'>created from the conditions and assigned their missingness. The</span>
+#&gt; <span class='message'>created comparisons are:</span>
+#&gt; <span class='message'>condition_1_vs_condition_2</span></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data_missing</span>, n <span class='op'>=</span> <span class='fl'>24</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 24 × 8</span>
+#&gt;    protein   peptide_intensi… sample condition peptide peptide_intensi… comparison
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>              <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     
+#&gt; <span style='color: #BCBCBC;'> 1</span> protein_1             16.8 sampl… conditio… peptid…             16.8 condition…
+#&gt; <span style='color: #BCBCBC;'> 2</span> protein_1             17.0 sampl… conditio… peptid…             17.0 condition…
+#&gt; <span style='color: #BCBCBC;'> 3</span> protein_1             17.0 sampl… conditio… peptid…             17.0 condition…
+#&gt; <span style='color: #BCBCBC;'> 4</span> protein_1             17.0 sampl… conditio… peptid…             17.0 condition…
+#&gt; <span style='color: #BCBCBC;'> 5</span> protein_1             15.8 sampl… conditio… peptid…             15.8 condition…
+#&gt; <span style='color: #BCBCBC;'> 6</span> protein_1             15.9 sampl… conditio… peptid…             15.9 condition…
+#&gt; <span style='color: #BCBCBC;'> 7</span> protein_1             16.1 sampl… conditio… peptid…             16.1 condition…
+#&gt; <span style='color: #BCBCBC;'> 8</span> protein_1             15.9 sampl… conditio… peptid…             15.9 condition…
+#&gt; <span style='color: #BCBCBC;'> 9</span> protein_1             12.6 sampl… conditio… peptid…             <span style='color: #BB0000;'>NA</span>   condition…
+#&gt; <span style='color: #BCBCBC;'>10</span> protein_1             12.7 sampl… conditio… peptid…             <span style='color: #BB0000;'>NA</span>   condition…
+#&gt; <span style='color: #949494;'># … with 14 more rows, and 1 more variable: missingness &lt;chr&gt;</span></div><div class='input'>
+<span class='co'># Perform imputation</span>
+<span class='va'>data_imputed</span> <span class='op'>&lt;-</span> <span class='fu'>impute</span><span class='op'>(</span>
+  <span class='va'>data_missing</span>,
+  sample <span class='op'>=</span> <span class='va'>sample</span>,
+  grouping <span class='op'>=</span> <span class='va'>peptide</span>,
+  intensity_log2 <span class='op'>=</span> <span class='va'>peptide_intensity_missing</span>,
+  condition <span class='op'>=</span> <span class='va'>condition</span>,
   comparison <span class='op'>=</span> <span class='va'>comparison</span>,
   missingness <span class='op'>=</span> <span class='va'>missingness</span>,
-  method <span class='op'>=</span> <span class='st'>"ludovic"</span>
+  method <span class='op'>=</span> <span class='st'>"ludovic"</span>,
+  retain_columns <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>protein</span>, <span class='va'>peptide_intensity</span><span class='op'>)</span>
 <span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data_imputed</span>, n <span class='op'>=</span> <span class='fl'>24</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 24 × 10</span>
+#&gt;    protein   peptide_intensi… sample condition peptide peptide_intensi… comparison
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>              <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     
+#&gt; <span style='color: #BCBCBC;'> 1</span> protein_1             16.8 sampl… conditio… peptid…             16.8 condition…
+#&gt; <span style='color: #BCBCBC;'> 2</span> protein_1             17.0 sampl… conditio… peptid…             17.0 condition…
+#&gt; <span style='color: #BCBCBC;'> 3</span> protein_1             17.0 sampl… conditio… peptid…             17.0 condition…
+#&gt; <span style='color: #BCBCBC;'> 4</span> protein_1             17.0 sampl… conditio… peptid…             17.0 condition…
+#&gt; <span style='color: #BCBCBC;'> 5</span> protein_1             15.8 sampl… conditio… peptid…             15.8 condition…
+#&gt; <span style='color: #BCBCBC;'> 6</span> protein_1             15.9 sampl… conditio… peptid…             15.9 condition…
+#&gt; <span style='color: #BCBCBC;'> 7</span> protein_1             16.1 sampl… conditio… peptid…             16.1 condition…
+#&gt; <span style='color: #BCBCBC;'> 8</span> protein_1             15.9 sampl… conditio… peptid…             15.9 condition…
+#&gt; <span style='color: #BCBCBC;'> 9</span> protein_1             12.6 sampl… conditio… peptid…             <span style='color: #BB0000;'>NA</span>   condition…
+#&gt; <span style='color: #BCBCBC;'>10</span> protein_1             12.7 sampl… conditio… peptid…             <span style='color: #BB0000;'>NA</span>   condition…
+#&gt; <span style='color: #949494;'># … with 14 more rows, and 3 more variables: missingness &lt;chr&gt;,</span>
+#&gt; <span style='color: #949494;'>#   imputed_intensity &lt;dbl&gt;, imputed &lt;lgl&gt;</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

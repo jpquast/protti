@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
       <h1 data-toc-skip>Input Preparation Workflow</h1>
                         <h4 class="author">Dina Schuster</h4>
             
-            <h4 class="date">2021-06-28</h4>
+            <h4 class="date">2021-09-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/input_preparation_workflow.Rmd"><code>vignettes/input_preparation_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>input_preparation_workflow.Rmd</code></div>
@@ -226,12 +226,15 @@
 <span class="va">evidence</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"yourpath/evidence.txt"</span><span class="op">)</span>
 
 <span class="va">evidence_proteotypic</span> <span class="op">&lt;-</span> <span class="va">evidence</span> <span class="op">%&gt;%</span>
+  <span class="co"># adds new column with logicals that are TRUE if the peptide can be assigned </span>
+  <span class="co"># to only one protein and FALSE if it can be assigned to multiple</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>is_proteotypic <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span>
     string <span class="op">=</span> <span class="va">proteins</span>,
     pattern <span class="op">=</span> <span class="st">";"</span>,
     negate <span class="op">=</span> <span class="cn">TRUE</span>
-  <span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span><span class="co"># adds new column with logicals that are TRUE if the peptide can be assigned to only one protein and FALSE if it can be assigned to multiple</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>is_contaminant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">potential_contaminant</span> <span class="op">==</span> <span class="st">"+"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="co"># adds new column with logicals indicating if peptide is coming from a potential contaminant</span>
+  <span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="co"># adds new column with logicals indicating if peptide is coming from a potential contaminant</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>is_contaminant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">potential_contaminant</span> <span class="op">==</span> <span class="st">"+"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> 
 
 <span class="co"># Make an annotation data frame and merge it with your data frame to obtain conditions</span>
 <span class="co"># We are annotating sample 1-3 as controls and samples 4-6 as treated conditions</span>
@@ -268,7 +271,11 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># To read in your own data you can use read_protti()</span>
 <span class="va">protein_groups</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"yourpath/proteinGroups.txt"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>is_potential_contaminant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">potential_contaminant</span> <span class="op">==</span> <span class="st">"+"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="co"># adds new column with logicals indicating if protein is a potential contaminant, you can filter these out later on. You should also consider filtering out proteins that were "only identified by site" and reverse hits, as well as proteins with only one identified peptide</span>
+  <span class="co"># adds new column with logicals indicating if protein is a potential contaminant, </span>
+  <span class="co"># you can filter these out later on. You should also consider filtering out proteins </span>
+  <span class="co"># that were "only identified by site" and reverse hits, as well as proteins with only </span>
+  <span class="co"># one identified peptide</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>is_potential_contaminant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">potential_contaminant</span> <span class="op">==</span> <span class="st">"+"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> 
 
 <span class="co"># Change wide format to long format and create new columns called `r_file_name`and `intensity`</span>
 <span class="va">protein_groups_long</span> <span class="op">&lt;-</span> <span class="va">protein_groups</span> <span class="op">%&gt;%</span>
@@ -325,14 +332,17 @@
 <span class="va">skyline_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"yourpath/skyline.csv"</span><span class="op">)</span>
 
 <span class="va">skyline_data_int</span> <span class="op">&lt;-</span> <span class="va">skyline_data</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>precursor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">peptide_sequence</span>, <span class="st">"_"</span>, <span class="va">charge</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># create a column with precursor information</span>
+  <span class="co"># create a column with precursor information</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>precursor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">peptide_sequence</span>, <span class="st">"_"</span>, <span class="va">charge</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">replicate_name</span>, <span class="va">precursor</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>sum_intensity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">area</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># making a new column containing the summed up intensities of all transitions of one precursor</span>
+  <span class="co"># making a new column containing the summed up intensities of all transitions of one precursor</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>sum_intensity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">area</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">product_mz</span>, <span class="va">area</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># removing the columns we don't need</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># removing duplicated rows from the data frame</span>
 
 <span class="co"># Add annotation</span>
-<span class="va">replicate_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="co"># make sure that the names are the same name as in your report</span>
+<span class="co"># make sure that the names are the same name as in your report</span>
+<span class="va">replicate_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> 
   <span class="st">"sample_1"</span>, 
   <span class="st">"sample_2"</span>,
   <span class="st">"sample_3"</span>,
@@ -405,7 +415,8 @@
     names_to <span class="op">=</span> <span class="st">"file_name"</span>,
     values_to <span class="op">=</span> <span class="st">"intensity"</span>
   <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>precursor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">sequence</span>, <span class="va">modifications</span><span class="op">)</span><span class="op">)</span> <span class="co"># combine peptide sequence and modifications to make a precursor column</span>
+  <span class="co"># combine peptide sequence and modifications to make a precursor column</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>precursor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">sequence</span>, <span class="va">modifications</span><span class="op">)</span><span class="op">)</span> 
 
 <span class="co"># Make annotation data frame</span>
 <span class="va">file_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="co"># make sure that the names are the same name as in your report</span>

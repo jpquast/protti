@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
       <h1 data-toc-skip>Dose-Response Data Analysis Workflow</h1>
                         <h4 class="author">Jan-Philipp Quast</h4>
             
-            <h4 class="date">2021-06-28</h4>
+            <h4 class="date">2021-09-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/data_analysis_dose_response_workflow.Rmd"><code>vignettes/data_analysis_dose_response_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_dose_response_workflow.Rmd</code></div>
@@ -145,7 +145,7 @@ text-align: justify}
 <a href="#cleaning-data" class="anchor"></a>Cleaning data</h2>
 <p>After loading data into R we would like to clean it up to remove rows that are problematic for our analysis. The <code>rapamycin_dose_response</code> data is based on a report from <a href="https://biognosys.com/software/spectronaut/">Spectronaut™</a>. It includes convenient columns that label peptides as being decoys (<code>eg_is_decoy</code>). Other software reports might have similar columns that should be checked. <a href="https://www.maxquant.org/">MaxQuant</a> for example includes information on contaminating proteins that you should remove prior to data analysis. In this case we would like to remove any peptides left in the report that are decoys (used for false discovery rate estimation). It is a good practice to just run this even though decoys are usually already filtered out.</p>
 <p>Due to the fact that with increasing raw intensities (<code>fg_quantity</code>) also variances increase, statistical tests would have a bias towards lower intense peptides or proteins. Therefore you should log2 transform your data to correct for this mean-variance relationship. We do this by using <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> together with <code><a href="https://rdrr.io/r/base/Log.html">log2()</a></code>.</p>
-<p>In addition to filtering and log2 transformation it is also advised to median normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. <strong>protti</strong> provides the <code><a href="../reference/median_normalisation.html">median_normalisation()</a></code> function for this purpose. This function generates an additional column called <code>normalised_intensity_log2</code> that contains the normalised intensities.</p>
+<p>In addition to filtering and log2 transformation it is also advised to normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. <strong>protti</strong> provides the <code><a href="../reference/normalise.html">normalise()</a></code> function for this purpose. For this example we will use median normalisation (<code>method = "median"</code>). This function generates an additional column called <code>normalised_intensity_log2</code> that contains the normalised intensities.</p>
 <p><em>Note: If your search tool already normalised your data you should not normalise it again.</em></p>
 <p>In addition to the removal of decoys we also remove any non-proteotypic peptides (<code>pep_is_proteotypic</code>) from our analysis. This is specific for the analysis of LiP-MS data. If a peptide is non-proteotypic it is part of two or more proteins. If we detect a change in non-proteotypic peptides it is not possible to clearly assign which of the proteins it is coming from.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -153,8 +153,9 @@ text-align: justify}
 <span class="va">data_normalised</span> <span class="op">&lt;-</span> <span class="va">rapamycin_dose_response</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">eg_is_decoy</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>intensity_log2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log2</a></span><span class="op">(</span><span class="va">fg_quantity</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/median_normalisation.html">median_normalisation</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">r_file_name</span>,
-                       intensity_log2 <span class="op">=</span> <span class="va">intensity_log2</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/normalise.html">normalise</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">r_file_name</span>,
+            intensity_log2 <span class="op">=</span> <span class="va">intensity_log2</span>,
+            method <span class="op">=</span> <span class="st">"median"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">pep_is_proteotypic</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>It is also useful to check the intensity distribution of all precursors with the <strong>protti</strong> function <code><a href="../reference/qc_intensity_distribution.html">qc_intensity_distribution()</a></code>. Usually, the distribution of intensities is a skewed normal distribution of values missing on the left flank. This is due to the detection limit of the mass spectrometer. The probability of not observing a value gets higher with decreasing intensities.</p>
 <p>For experiments measured in data independent acquisition (DIA) mode, it is good to filter out very low intensity values that are not part of the distribution. These values are likely false assignments of peaks. If you look closely you can see a small peak around 0 corresponding to these values. In the case of our distribution we could chose a cutoff at a log2 intensity of 5, which corresponds to a raw intensity of 32.</p>
@@ -204,12 +205,14 @@ text-align: justify}
              response <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
              dose <span class="op">=</span> <span class="va">r_condition</span>,
              filter <span class="op">=</span> <span class="st">"post"</span>, 
-             retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span><span class="op">)</span><span class="op">)</span> <span class="co"># make sure to retain columns that you need later but that are not part of the function</span></code></pre></div>
+             retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span><span class="op">)</span><span class="op">)</span> 
+
+<span class="co"># make sure to retain columns that you need later but that are not part of the function</span></code></pre></div>
 <p>If you have to fit many models this function may take about an hour or longer. If you have the computational resources you can speed this up by using <code><a href="../reference/parallel_fit_drc_4p.html">parallel_fit_drc_4p()</a></code>, a parallelised version of this function.</p>
 <p><em>Note: Keep in mind that by spreading the model fitting over multiple cores, more memory than usual is needed. Furthermore, using the maximal number of available cores may not be the most efficient, because it takes time to copy the data to and from each core - this process will not be performed in parallel. Therefore, it is advised that the run time on each core is at least as long as the time to set up (data transfer, environment preparation etc.) all cores.</em></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># setup of cores. Make sure you have the future package installed</span>
-<span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/future/man/multiprocess.html">multiprocess</a></span>, workers <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+<span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html">plan</a></span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va"><a href="https://future.futureverse.org/reference/multiprocess.html">multiprocess</a></span>, workers <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 
 <span class="co"># fit models in parallel</span>
 <span class="va">parallel_fit</span> <span class="op">&lt;-</span> <span class="va">data_normalised</span> <span class="op">%&gt;%</span> 
@@ -221,7 +224,7 @@ text-align: justify}
                       n_cores <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 
 <span class="co"># remove workers again after you are done</span>
-<span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/future/man/sequential.html">sequential</a></span><span class="op">)</span></code></pre></div>
+<span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html">plan</a></span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va"><a href="https://future.futureverse.org/reference/sequential.html">sequential</a></span><span class="op">)</span></code></pre></div>
 <p>If we examine all precursors based on their rank (calculated from correlation and ANOVA q-value), we can see that as expected most of them are FKBP12 (P62942) peptides. One benefit of analysing LiP-MS data on the precursor level (rather than peptide level) is that multiple lines of evidence for a change in the specific peptide can be used (we have data for each different charge and modification state). Therefore, it is always good to check if there are other precursors of a good scoring peptide that do not show any regulation at all. This would mean that the reason for the observed response is not based on a biological effect.</p>
 <table class="table">
 <caption>All hits</caption>
@@ -439,11 +442,11 @@ text-align: justify}
 <div id="model-fit-plotting" class="section level2">
 <h2 class="hasAnchor">
 <a href="#model-fit-plotting" class="anchor"></a>Model fit plotting</h2>
-<p>After model fitting, you can easily visualise model fits by plotting them with the <code><a href="../reference/plot_drc_4p.html">plot_drc_4p()</a></code> function. You can provide one or more precursor IDs to the <code>targets</code> argument or just return plots for all precursors with <code>targets = "all"</code>. Make sure that the number of plots is reasonable to return within R. You can also directly export your plots by setting <code>export = TRUE</code>.</p>
+<p>After model fitting, you can easily visualise model fits by plotting them with the <code><a href="../reference/drc_4p_plot.html">drc_4p_plot()</a></code> function. You can provide one or more precursor IDs to the <code>targets</code> argument or just return plots for all precursors with <code>targets = "all"</code>. Make sure that the number of plots is reasonable to return within R. You can also directly export your plots by setting <code>export = TRUE</code>.</p>
 <p>Note: The output of <code><a href="../reference/fit_drc_4p.html">fit_drc_4p()</a></code> includes two columns with data frames containing the model and original data points required for the plot. These data frames contain the original names for <code>dose</code> and <code>response</code> that you provided to <code><a href="../reference/fit_drc_4p.html">fit_drc_4p()</a></code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Model plotting</span>
-<span class="fu"><a href="../reference/plot_drc_4p.html">plot_drc_4p</a></span><span class="op">(</span><span class="va">fit</span>,
+<span class="fu"><a href="../reference/drc_4p_plot.html">drc_4p_plot</a></span><span class="op">(</span><span class="va">fit</span>,
             grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
             dose <span class="op">=</span> <span class="va">r_condition</span>,
             response <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
@@ -457,13 +460,14 @@ text-align: justify}
 <h1 class="hasAnchor">
 <a href="#further-analysis" class="anchor"></a>Further analysis</h1>
 <p>After models are fit, you can have a deeper look into the hits you obtained. <strong>protti</strong> provides several functions that help you to identify patterns in your data.</p>
-<p>You can test your data set for gene ontology (GO) term enrichment (<code><a href="../reference/go_enrichment.html">go_enrichment()</a></code>). Alternatively, pathway annotations provided in the KEGG database can be used to test for pathway enrichments (<code><a href="../reference/kegg_enrichment.html">kegg_enrichment()</a></code>).</p>
-<p>If you know which proteins bind or interact with your specific treatment, you can provide your own list of true positive hits and check if these are enriched in your significant hits by using <strong>protti</strong>’s <code><a href="../reference/treatment_enrichment.html">treatment_enrichment()</a></code> function. For our LiP-MS experiment using rapamycin we are probing direct interaction with proteins in contrast to functional effects. The only protein that rapamycin is known to bind to is FKBP12 and testing the significance of enrichment for a single or even a few proteins is not appropriate. However, testing for enrichment is especially useful if your treatment affects many proteins, since it can help you to reduce the complexity of your result.</p>
-<p>The <a href="https://academic.oup.com/nar/article/47/D1/D607/5198476">STRING</a> database provides a good resource for the analysis of protein interaction networks. It is often very useful to check for interactions within your significant hits. For LiP-MS data this sometimes explains why proteins that do not directly interact with your treatment are still significantly affected. With <code><a href="../reference/network_analysis.html">network_analysis()</a></code>, <strong>protti</strong> provides a useful wrapper around some <a href="http://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html"><code>STRINGdb</code></a> package functions.</p>
+<p>You can test your data set for gene ontology (GO) term enrichment (<code><a href="../reference/calculate_go_enrichment.html">calculate_go_enrichment()</a></code>). Alternatively, pathway annotations provided in the KEGG database can be used to test for pathway enrichments (<code><a href="../reference/calculate_kegg_enrichment.html">calculate_kegg_enrichment()</a></code>).</p>
+<p>If you know which proteins bind or interact with your specific treatment, you can provide your own list of true positive hits and check if these are enriched in your significant hits by using <strong>protti</strong>’s <code><a href="../reference/calculate_treatment_enrichment.html">calculate_treatment_enrichment()</a></code> function. For our LiP-MS experiment using rapamycin we are probing direct interaction with proteins in contrast to functional effects. The only protein that rapamycin is known to bind to is FKBP12 and testing the significance of enrichment for a single or even a few proteins is not appropriate. However, testing for enrichment is especially useful if your treatment affects many proteins, since it can help you to reduce the complexity of your result.</p>
+<p>The <a href="https://academic.oup.com/nar/article/47/D1/D607/5198476">STRING</a> database provides a good resource for the analysis of protein interaction networks. It is often very useful to check for interactions within your significant hits. For LiP-MS data this sometimes explains why proteins that do not directly interact with your treatment are still significantly affected. With <code><a href="../reference/analyse_functional_network.html">analyse_functional_network()</a></code>, <strong>protti</strong> provides a useful wrapper around some <a href="http://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html"><code>STRINGdb</code></a> package functions.</p>
 <div id="annotation-of-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#annotation-of-data" class="anchor"></a>Annotation of data</h2>
 <p><strong>protti</strong> has several functions for fetching database information. One commonly used database in the proteomics community is UniProt. By providing the <code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code> function with a character vector of your protein IDs, you can fetch additional information about the proteins. These include names, IDs from other databases, gene ontology annotations, information about the active metabolite and metal binding sites, protein length and sequence. You can freely select which information you are most interested in by providing it to the <code>columns</code> arguments of the <code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code> function based on the information they <a href="https://www.uniprot.org/help/uniprotkb_column_names">provide</a> for download.</p>
+<p>Furthermore, we will add a <code>passed_filter</code> column to the data that contains TRUE or FALSE information based on if a precursor passed the filtering criterion defined in the <code><a href="../reference/fit_drc_4p.html">fit_drc_4p()</a></code> function. This is the case if the peptide was assigned a rank.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># fetching of UniProt information</span>
 <span class="va">unis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">pg_protein_accessions</span><span class="op">)</span>
@@ -471,8 +475,12 @@ text-align: justify}
 
 <span class="co"># annotation of fit data based on information from UniProt</span>
 <span class="va">fit_annotated</span> <span class="op">&lt;-</span> <span class="va">fit</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">uniprot</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pg_protein_accessions"</span> <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># columns containing proteins IDs are named differently</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>binds_treatment <span class="op">=</span> <span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span> <span class="co"># create new column with prior knowledge about binding partners of treatment</span></code></pre></div>
+  <span class="co"># columns containing proteins IDs are named differently</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">uniprot</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pg_protein_accessions"</span> <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="co"># mark peptides that pass the filtering</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>passed_filter <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">rank</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="co"># create new column with prior knowledge about binding partners of treatment</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>binds_treatment <span class="op">=</span> <span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span> </code></pre></div>
 </div>
 <div id="enrichment-and-network-analysis" class="section level2">
 <h2 class="hasAnchor">
@@ -482,30 +490,32 @@ text-align: justify}
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">### GO enrichment using "molecular function" annotation from UniProt</span>
 
-<span class="fu"><a href="../reference/go_enrichment.html">go_enrichment</a></span><span class="op">(</span><span class="va">fit_annotated</span>,
+<span class="fu"><a href="../reference/calculate_go_enrichment.html">calculate_go_enrichment</a></span><span class="op">(</span><span class="va">fit_annotated</span>,
               protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
               is_significant <span class="op">=</span> <span class="va">passed_filter</span>,
               go_annotations_uniprot <span class="op">=</span> <span class="va">go_molecular_function</span><span class="op">)</span> <span class="co"># column obtained from UniProt</span>
 
 <span class="co">### KEGG pathway enrichment</span>
 
-<span class="co"># First you need to load KEGG pathway annotations from the KEGG database for your specific organism of interest.</span>
-<span class="co"># In this case HeLa cells were used, therefore the organism of interest is homo sapiens (hsa)</span>
+<span class="co"># First you need to load KEGG pathway annotations from the KEGG database </span>
+<span class="co"># for your specific organism of interest. In this case HeLa cells were </span>
+<span class="co"># used, therefore the organism of interest is homo sapiens (hsa)</span>
 
 <span class="va">kegg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_kegg.html">fetch_kegg</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"hsa"</span><span class="op">)</span>
 
 <span class="co"># Next we need to annotate our data with KEGG pathway IDs and perform enrichment analysis</span>
 
 <span class="va">fit</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">kegg</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pg_protein_accessions"</span> <span class="op">=</span> <span class="st">"uniprot_id"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># columns containing proteins IDs are named differently</span>
-  <span class="fu"><a href="../reference/kegg_enrichment.html">kegg_enrichment</a></span><span class="op">(</span>protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
+  <span class="co"># columns containing proteins IDs are named differently</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">kegg</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pg_protein_accessions"</span> <span class="op">=</span> <span class="st">"uniprot_id"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/calculate_kegg_enrichment.html">calculate_kegg_enrichment</a></span><span class="op">(</span>protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
                   is_significant <span class="op">=</span> <span class="va">passed_filter</span>,
                   pathway_id <span class="op">=</span> <span class="va">pathway_id</span>, <span class="co"># column name from kegg data frame</span>
                   pathway_name <span class="op">=</span> <span class="va">pathway_name</span><span class="op">)</span> <span class="co"># column name from kegg data frame</span>
 
 <span class="co">### Treatment enrichment analysis</span>
 
-<span class="fu"><a href="../reference/treatment_enrichment.html">treatment_enrichment</a></span><span class="op">(</span><span class="va">fit_annotated</span>,
+<span class="fu"><a href="../reference/calculate_treatment_enrichment.html">calculate_treatment_enrichment</a></span><span class="op">(</span><span class="va">fit_annotated</span>,
                      protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
                      is_significant <span class="op">=</span> <span class="va">passed_filter</span>,
                      binds_treatment <span class="op">=</span> <span class="va">binds_treatment</span>,
@@ -515,9 +525,10 @@ text-align: justify}
 
 <span class="va">fit_annotated</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">passed_filter</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># only analyse hits that were significant</span>
-  <span class="fu"><a href="../reference/network_analysis.html">network_analysis</a></span><span class="op">(</span>protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
+  <span class="fu"><a href="../reference/analyse_functional_network.html">analyse_functional_network</a></span><span class="op">(</span>protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
                    string_id <span class="op">=</span> <span class="va">database_string</span>, <span class="co"># column from UniProt containing STRING IDs</span>
-                   organism_id <span class="op">=</span> <span class="fl">9606</span>, <span class="co"># tax ID can be found in function documentation or STRING website</span>
+                   organism_id <span class="op">=</span> <span class="fl">9606</span>, 
+                   <span class="co"># tax ID can be found in function documentation or STRING database</span>
                    binds_treatment <span class="op">=</span> <span class="va">binds_treatment</span>,
                    plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -154,45 +154,58 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A data frame containing at least the input variables.</p></td>
+      <td><p>a data frame that contains at least the input variables.</p></td>
     </tr>
     <tr>
       <th>protein_identifier</th>
-      <td><p>Column in the data frame containing protein identifiers.</p></td>
+      <td><p>a character column in the <code>data</code> data frame that contains protein
+identifiers.</p></td>
     </tr>
     <tr>
       <th>coverage</th>
-      <td><p>Column in the data frame containing protein coverage in percent. This information can be obtained using
-the <code><a href='sequence_coverage.html'>sequence_coverage</a></code> function.</p></td>
+      <td><p>a numeric column in the <code>data</code> data frame that contains protein coverage
+in percent. This information can be obtained using the <code><a href='sequence_coverage.html'>sequence_coverage</a></code> function.</p></td>
     </tr>
     <tr>
       <th>sample</th>
-      <td><p>Column in the data frame containing sample names. Please only provide this argument if you want to
-facet the distribution plot by sample otherwise do not provide this argument.</p></td>
+      <td><p>optional, a character column in the <code>data</code> data frame that contains sample names.
+Please only provide this argument if you want to facet the distribution plot by sample
+otherwise do not provide this argument.</p></td>
     </tr>
     <tr>
       <th>interactive</th>
-      <td><p>A logical, if TRUE the plot is interactive (default is TRUE).</p></td>
+      <td><p>a logical value that specifies whether the plot should be interactive
+(default is FALSE).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A protein coverage histogram with 5 percent binwidth. The vertical dotted line indicates the median.</p>
+    <p>A protein coverage histogram with 5 percent binwidth. The vertical dotted line
+indicates the median.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='sequence_coverage.html'>sequence_coverage</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span> <span class='co'># Makes example reproducible</span>
+
+<span class='co'># Create example data</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='create_synthetic_data.html'>create_synthetic_data</a></span><span class='op'>(</span>
+  n_proteins <span class='op'>=</span> <span class='fl'>100</span>,
+  frac_change <span class='op'>=</span> <span class='fl'>0.05</span>,
+  n_replicates <span class='op'>=</span> <span class='fl'>3</span>,
+  n_conditions <span class='op'>=</span> <span class='fl'>2</span>,
+  method <span class='op'>=</span> <span class='st'>"effect_random"</span>
+<span class='op'>)</span>
+
+<span class='co'># Plot sequence coverage</span>
 <span class='fu'>qc_sequence_coverage</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  protein_identifier <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>,
+  data <span class='op'>=</span> <span class='va'>data</span>,
+  protein_identifier <span class='op'>=</span> <span class='va'>protein</span>,
   coverage <span class='op'>=</span> <span class='va'>coverage</span>
 <span class='op'>)</span>
-<span class='op'>}</span>
-
-</div></pre>
+</div><div class='img'><img src='qc_sequence_coverage-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

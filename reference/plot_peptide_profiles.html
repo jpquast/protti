@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Peptide abundance profile plot — plot_peptide_profiles" />
-<meta property="og:description" content="Creates a plot of peptide abundances across samples. This is helpful to investigate effects of peptide and protein abundance changes
-in different samples and conditions." />
+<meta property="og:description" content="
+This function was deprecated due to its name changing to peptide_profile_plot()." />
 
 
 
@@ -73,7 +73,7 @@ in different samples and conditions." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -134,94 +134,19 @@ in different samples and conditions." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Peptide abundance profile plot</h1>
-    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/plot_peptide_profiles.R'><code>R/plot_peptide_profiles.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/jpquast/protti/blob/master/R/peptide_profile_plot.R'><code>R/peptide_profile_plot.R</code></a></small>
     <div class="hidden name"><code>plot_peptide_profiles.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Creates a plot of peptide abundances across samples. This is helpful to investigate effects of peptide and protein abundance changes
-in different samples and conditions.</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#deprecated'><img src='figures/lifecycle-deprecated.svg' alt='[Deprecated]' /></a>
+This function was deprecated due to its name changing to <code><a href='peptide_profile_plot.html'>peptide_profile_plot()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_peptide_profiles</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  <span class='va'>sample</span>,
-  <span class='va'>peptide</span>,
-  <span class='va'>intensity_log2</span>,
-  <span class='va'>grouping</span>,
-  <span class='va'>targets</span>,
-  protein_abundance_plot <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  interactive <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  export <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  export_name <span class='op'>=</span> <span class='st'>"peptide_profile_plots"</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_peptide_profiles</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>data</th>
-      <td><p>Data frame containing at least the input variables.</p></td>
-    </tr>
-    <tr>
-      <th>sample</th>
-      <td><p>Column in the data frame containing sample names.</p></td>
-    </tr>
-    <tr>
-      <th>peptide</th>
-      <td><p>Column in the data frame containing peptide or precursor names.</p></td>
-    </tr>
-    <tr>
-      <th>intensity_log2</th>
-      <td><p>Column in the data frame containing log2 transformed intensities.</p></td>
-    </tr>
-    <tr>
-      <th>grouping</th>
-      <td><p>Column in the data frame containing groups by which the data should be split. This can be for example protein IDs.</p></td>
-    </tr>
-    <tr>
-      <th>targets</th>
-      <td><p>Character vector specifying elements of the grouping column which should be plotted. This can also be
-<code>"all"</code> if plots for all groups should be created. Depending on the number of elements in your grouping column this can be many
-plots.</p></td>
-    </tr>
-    <tr>
-      <th>protein_abundance_plot</th>
-      <td><p>Logical, if the input for this plot comes directly from <code>calculate_protein_abundance</code> this argument
-can be set to <code>TRUE</code>. This displays all peptides in gray, while the protein abundance is displayed in green.</p></td>
-    </tr>
-    <tr>
-      <th>interactive</th>
-      <td><p>A logical indicating whether the plot should be interactive (default is FALSE). If this is TRUE only one target can
-be supplied to the function. Interactive plots cannot be exported either.</p></td>
-    </tr>
-    <tr>
-      <th>export</th>
-      <td><p>A logical indicating if plots should be exported as PDF. The output directory will be the current working directory. The
-name of the file can be chosen using the <code>export_name</code> argument.</p></td>
-    </tr>
-    <tr>
-      <th>export_name</th>
-      <td><p>A character vector providing the name of the exported file if <code>export = TRUE</code>.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of peptide profile plots.</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>plot_peptide_profiles</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  sample <span class='op'>=</span> <span class='va'>r_file_name</span>,
-  peptide <span class='op'>=</span> <span class='va'>eg_precursor_id</span>,
-  intensity_log2 <span class='op'>=</span> <span class='va'>log2_intensity</span>,
-  grouping <span class='op'>=</span> <span class='va'>pg_protein_accessions</span>,
-  targets <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"P03421"</span><span class='op'>)</span>
-<span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
