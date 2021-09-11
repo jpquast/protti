@@ -295,7 +295,7 @@ ptsi_pgk_peptide_structure_positions %>%
    end_in_pdb = auth_seq_id_end,
    map_value = map_value,
    file_format = ".cif",
-   export_location = "~/Desktop"
+   export_location = tempdir()
  )
 ```
 
@@ -379,7 +379,7 @@ map_peptides_on_structure(
    end_in_pdb = residue,
    map_value = amino_acid_score,
    file_format = ".cif",
-   export_location = "~/Desktop"
+   export_location = tempdir()
  )
 ```
 
