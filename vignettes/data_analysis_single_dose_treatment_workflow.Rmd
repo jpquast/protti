@@ -305,8 +305,6 @@ volcano_plot(
   target_column = pg_protein_accessions,
   target = "P62942",
   x_axis_label = "log2(fold change) Rapamycin treated vs. untreated",
-  y_axis_label = "-log10(p-value)",
-  title = "Volcano plot (p-value not adjusted)",
   significance_cutoff = c(0.05, "adj_pval") 
 )
 

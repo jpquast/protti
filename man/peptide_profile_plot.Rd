@@ -47,7 +47,7 @@ plots cannot be exported either.}
 directory will be the current working directory. The name of the file can be chosen using the
 \code{export_name} argument.}
 
-\item{export_name}{Aacharacter vector that provides the name of the exported file if
+\item{export_name}{A character vector that provides the name of the exported file if
 \code{export = TRUE}.}
 }
 \value{
