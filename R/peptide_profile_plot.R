@@ -40,7 +40,7 @@ plot_peptide_profiles <- function(...) {
 #' @param export a logical value that indicates if plots should be exported as PDF. The output
 #' directory will be the current working directory. The name of the file can be chosen using the
 #' \code{export_name} argument.
-#' @param export_name Aacharacter vector that provides the name of the exported file if
+#' @param export_name A character vector that provides the name of the exported file if
 #' \code{export = TRUE}.
 #'
 #' @return A list of peptide profile plots.

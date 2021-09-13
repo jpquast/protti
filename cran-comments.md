@@ -17,29 +17,11 @@ This submission introduces new features and fixes a few bugs.
 > checking CRAN incoming feasibility ... NOTE
   Maintainer: 'Jan-Philipp Quast <quast@imsb.biol.ethz.ch>'
   
-Found the following (possibly) invalid URLs:
-  URL: https://metalpdb.cerm.unifi.it
-    From: man/fetch_metal_pdb.Rd
-    Status: Error
-    Message: SSL certificate problem: unable to get local issuer certificate
-  URL: https://metalpdb.cerm.unifi.it/api_help
-    From: man/fetch_metal_pdb.Rd
-    Status: Error
-    Message: SSL certificate problem: unable to get local issuer certificate
-  URL: https://metalpdb.cerm.unifi.it/perGeometry
-    From: man/fetch_metal_pdb.Rd
-    Status: Error
-    Message: SSL certificate problem: unable to get local issuer certificate
-    
-I get these notes. I can access the URL through the browser. I assume this is an issue specific to this database. If this is a problem with CRAN I can always remove the links, less convenient for the user but possible.
-    
-  URL: https://www.maxquant.org/
-    From: inst/doc/data_analysis_dose_response_workflow.html
-          inst/doc/input_preparation_workflow.html
-          inst/doc/quality_control_workflow.html
-    Status: Error
-    Message: SSL certificate problem: certificate has expired
-
-I would assume they will renew their certificate soon since it is the main website this widely used software is distributed through. Again if it is a problem with CRAN I can remove the link for now.
+  URL: https://www.thermofisher.com/de/de/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/multi-omics-data-analysis/proteome-discoverer-software.html (moved to https://www.thermofisher.com/at/en/home/industrial/mass-spectrometry/liquid-chromatography-mass-spectrometry-lc-ms/lc-ms-software/multi-omics-data-analysis/proteome-discoverer-software.html)
+     From: inst/doc/input_preparation_workflow.html
+     Status: 301
+     Message: Moved Permanently
+     
+* This note only comes up when links are checked on servers outside of Germany. This is due to the website redirecting to the local version. Since the CRAN linux test server is in Austria it returns this note. I mentioned this problem before to Uwe Ligges and it was accepted subsequently. 
 
 
