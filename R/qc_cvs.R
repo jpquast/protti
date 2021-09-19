@@ -145,7 +145,7 @@ The function does not handle log2 transformed data.",
             fill = "Condition"
           ) +
           ggplot2::scale_y_continuous(limits = c(0, 200)) +
-          ggplot2::scale_fill_manual(values = protti_colours) +
+          ggplot2::scale_fill_manual(values = c("grey", protti_colours)) +
           ggplot2::theme_bw() +
           ggplot2::theme(
             plot.title = ggplot2::element_text(size = 20),
@@ -179,7 +179,7 @@ The function does not handle log2 transformed data.",
             linetype = "dashed",
             show.legend = FALSE
           ) +
-          ggplot2::scale_color_manual(values = protti_colours) +
+          ggplot2::scale_color_manual(values =  c("grey", protti_colours)) +
           ggplot2::theme_bw() +
           ggplot2::theme(
             plot.title = ggplot2::element_text(size = 20),
@@ -204,7 +204,7 @@ The function does not handle log2 transformed data.",
             fill = "Condition"
           ) +
           ggplot2::scale_y_continuous(limits = c(0, 200)) +
-          ggplot2::scale_fill_manual(values = protti_colours) +
+          ggplot2::scale_fill_manual(values =  c("grey", protti_colours)) +
           ggplot2::theme_bw() +
           ggplot2::theme(
             plot.title = ggplot2::element_text(size = 20),
