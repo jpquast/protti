@@ -83,10 +83,14 @@ or set remove_na_intensities to FALSE",
           prefix = "\n", initial = ""
         ))
       }
-
+      if (!missing(condition)) {
       data <- data %>%
         tidyr::drop_na({{ intensity }}) %>%
         dplyr::mutate({{ condition }} := as.character({{ condition }}))
+      }else{
+        data <- data %>%
+          tidyr::drop_na({{ intensity }})
+      }
     }
 
     result <- data %>%
