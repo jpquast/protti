@@ -213,7 +213,7 @@ qc_sequence_coverage(
 
 ### Statistical hypothesis test
 
-To test if there is a difference between the peptide abundances in our two conditions (i.e. rapamycin treated and untreated) we use a Welch's t-test (unpaired). Welch's t-test is a method for comparing means of two independent sample groups and it does not assume equal variances between groups (as Student's t-test would).
+To test if there is a difference between the peptide abundances in our two conditions (i.e. rapamycin treated and untreated) we use a moderated t-test based on the `limma` R package.
 
 Before the statistical hypothesis test we have to define the types of missing values present in our data set. We are going to use the function `assign_missingness()` which will return a column with information on the types of missingness we have in our data (i.e. complete, missing at random (MAR) or missing not at random (MNAR)). We use the default parameters of this function which assumes that missing values are MAR when the conditions are at least 70 % complete (adjusted downward). Missing values are assumed to be MNAR when less than 20 % of values are present (adjusted_downward) in one condition if the other condition is complete. If not "complete" all other comparisons are label as `NA`. If imputation is performed, these are the comparisons that will not be imputed. The type of missingness assigned to a comparison does not have any influence on the statistical test. However, by default (can be changed) comparisons with missingness `NA` are filtered out prior to p-value adjustment. This means that in addition to imputation the user can use missingness cutoffs also in order to define which comparisons are too incomplete to be trustworthy even if significant.
 
