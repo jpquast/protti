@@ -51,6 +51,9 @@
 #' returned for all atom distances or the minimum residue distances. Minimum residue distances are
 #' smaller in size. If atom distances are not strictly needed it is recommended to set this
 #' argument to TRUE. The default is TRUE.
+#' @param compare_only_provided a logical value that specifies if the contact map should be created 
+#' for only the provided regions or the provided regions compared to the whole structure. Default
+#' is FALSE.
 #' @param show_progress a logical value that specifies if a progress bar will be shown (default
 #' is TRUE).
 #' @param export a logical value that indicates if contact maps should be exported as ".csv". The
@@ -110,6 +113,7 @@ create_structure_contact_map <- function(data,
                                          distance_cutoff = 10,
                                          pdb_model_number_selection = c(0, 1),
                                          return_min_residue_distance = TRUE,
+                                         compare_only_provided = FALSE,
                                          show_progress = TRUE,
                                          export = FALSE,
                                          export_location = NULL,
@@ -461,7 +465,7 @@ Please always provide a chain ID for your start and end positions.",
         pb$tick()
       }
       .x %>%
-        dplyr::filter(should_be_retained) %>%
+        dplyr::filter(.data$should_be_retained) %>%
         dplyr::distinct(.data$label_id)
     })
 
@@ -485,9 +489,14 @@ Please always provide a chain ID for your start and end positions.",
       if (show_progress == TRUE) {
         pb$tick()
       }
+      if (compare_only_provided){
+        .y <- .y %>%
+          dplyr::filter(.data$should_be_retained)
+      }
 
       current_structure <- .y %>%
         dplyr::select(-c(.data$x, .data$y, .data$z, .data$should_be_retained, .data$retain_pattern))
+
 
       current_structure_minimum <- .y %>%
         dplyr::distinct(.data$label_id, .data$x, .data$y, .data$z)

@@ -13,6 +13,7 @@ create_structure_contact_map(
   distance_cutoff = 10,
   pdb_model_number_selection = c(0, 1),
   return_min_residue_distance = TRUE,
+  compare_only_provided = FALSE,
   show_progress = TRUE,
   export = FALSE,
   export_location = NULL,
@@ -72,6 +73,10 @@ selected for contact map calculations. For AlphaFold predictions the model numbe
 returned for all atom distances or the minimum residue distances. Minimum residue distances are
 smaller in size. If atom distances are not strictly needed it is recommended to set this
 argument to TRUE. The default is TRUE.}
+
+\item{compare_only_provided}{a logical value that specifies if the contact map should be created
+for only the provided regions or the provided regions compared to the whole structure. Default
+is FALSE.}
 
 \item{show_progress}{a logical value that specifies if a progress bar will be shown (default
 is TRUE).}
