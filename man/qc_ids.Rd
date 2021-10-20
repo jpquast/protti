@@ -25,7 +25,7 @@ qc_ids(
 peptide identifiers.}
 
 \item{intensity}{a character column in the \code{data} data frame that contains raw or log2
-transformed intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.}
+transformed intensities. If \code{remove_na_intensities = FALSE}, this argument is optional.}
 
 \item{remove_na_intensities}{a logical value that specifies if sample/grouping combinations with
 intensities that are NA (not quantified IDs) should be dropped from the data frame. Default is
