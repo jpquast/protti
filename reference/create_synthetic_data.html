@@ -73,7 +73,7 @@ test functions while knowing the ground truth." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9000</span>
       </span>
     </div>
 
@@ -284,20 +284,20 @@ values that were created based on a probabilistic dropout curve.</p>
   n_replicates <span class='op'>=</span> <span class='fl'>3</span>,
   n_conditions <span class='op'>=</span> <span class='fl'>2</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 720 × 14</span>
-#&gt;    protein   peptide     condition   sample   peptide_intensity change change_peptide
-#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>         
-#&gt; <span style='color: #BCBCBC;'> 1</span> protein_1 peptide_1_1 condition_1 sample_1              20.4 TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 2</span> protein_1 peptide_1_1 condition_1 sample_2              20.4 TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 3</span> protein_1 peptide_1_1 condition_1 sample_3              20.6 TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 4</span> protein_1 peptide_1_1 condition_2 sample_4              17.2 TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 5</span> protein_1 peptide_1_1 condition_2 sample_5              17.1 TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 6</span> protein_1 peptide_1_1 condition_2 sample_6              17.2 TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 7</span> protein_1 peptide_1_2 condition_1 sample_1              18.1 TRUE   FALSE         
-#&gt; <span style='color: #BCBCBC;'> 8</span> protein_1 peptide_1_2 condition_1 sample_2              18.2 TRUE   FALSE         
-#&gt; <span style='color: #BCBCBC;'> 9</span> protein_1 peptide_1_2 condition_1 sample_3              18.2 TRUE   FALSE         
-#&gt; <span style='color: #BCBCBC;'>10</span> protein_1 peptide_1_2 condition_2 sample_4              18.0 TRUE   FALSE         
-#&gt; <span style='color: #949494;'># … with 710 more rows, and 7 more variables: peptide_intensity_missing &lt;dbl&gt;,</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 756 × 14</span>
+#&gt;    protein   peptide     condition sample peptide_intensi… change change_peptide
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>         
+#&gt; <span style='color: #BCBCBC;'> 1</span> protein_1 peptide_1_1 conditio… sampl…             16.0 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 2</span> protein_1 peptide_1_1 conditio… sampl…             16.0 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 3</span> protein_1 peptide_1_1 conditio… sampl…             16.0 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 4</span> protein_1 peptide_1_1 conditio… sampl…             18.3 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 5</span> protein_1 peptide_1_1 conditio… sampl…             18.2 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 6</span> protein_1 peptide_1_1 conditio… sampl…             18.3 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 7</span> protein_1 peptide_1_2 conditio… sampl…             16.3 TRUE   FALSE         
+#&gt; <span style='color: #BCBCBC;'> 8</span> protein_1 peptide_1_2 conditio… sampl…             16.4 TRUE   FALSE         
+#&gt; <span style='color: #BCBCBC;'> 9</span> protein_1 peptide_1_2 conditio… sampl…             16.4 TRUE   FALSE         
+#&gt; <span style='color: #BCBCBC;'>10</span> protein_1 peptide_1_2 conditio… sampl…             16.4 TRUE   FALSE         
+#&gt; <span style='color: #949494;'># … with 746 more rows, and 7 more variables: peptide_intensity_missing &lt;dbl&gt;,</span>
 #&gt; <span style='color: #949494;'>#   coverage &lt;dbl&gt;, n_missed_cleavage &lt;int&gt;, charge &lt;dbl&gt;, pep_type &lt;chr&gt;,</span>
 #&gt; <span style='color: #949494;'>#   peak_width &lt;dbl&gt;, retention_time &lt;dbl&gt;</span></div><div class='input'>
 <span class='co'># determination of mean_n_peptides and size_n_peptides parameters based on real data (count)</span>

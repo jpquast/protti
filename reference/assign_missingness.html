@@ -73,7 +73,7 @@ comparison of a reference condition and every other condition." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9000</span>
       </span>
     </div>
 
@@ -245,18 +245,18 @@ assigned to a comparison does not have any influence on the statistical test in 
 
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data</span>, n <span class='op'>=</span> <span class='fl'>24</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 24 × 8</span>
-#&gt;    protein   peptide     condition   sample   peptide_intensity change change_peptide
-#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>         
-#&gt; <span style='color: #BCBCBC;'> 1</span> protein_1 peptide_1_1 condition_1 sample_1              16.8 TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 2</span> protein_1 peptide_1_1 condition_1 sample_2              17.0 TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 3</span> protein_1 peptide_1_1 condition_1 sample_3              17.0 TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 4</span> protein_1 peptide_1_1 condition_1 sample_4              17.0 TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 5</span> protein_1 peptide_1_1 condition_2 sample_5              15.8 TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 6</span> protein_1 peptide_1_1 condition_2 sample_6              15.9 TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 7</span> protein_1 peptide_1_1 condition_2 sample_7              16.1 TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 8</span> protein_1 peptide_1_1 condition_2 sample_8              15.9 TRUE   TRUE          
-#&gt; <span style='color: #BCBCBC;'> 9</span> protein_1 peptide_1_2 condition_1 sample_1              12.6 TRUE   FALSE         
-#&gt; <span style='color: #BCBCBC;'>10</span> protein_1 peptide_1_2 condition_1 sample_2              12.7 TRUE   FALSE         
+#&gt;    protein   peptide     condition sample peptide_intensi… change change_peptide
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>         
+#&gt; <span style='color: #BCBCBC;'> 1</span> protein_1 peptide_1_1 conditio… sampl…             16.8 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 2</span> protein_1 peptide_1_1 conditio… sampl…             17.0 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 3</span> protein_1 peptide_1_1 conditio… sampl…             17.0 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 4</span> protein_1 peptide_1_1 conditio… sampl…             17.0 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 5</span> protein_1 peptide_1_1 conditio… sampl…             15.8 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 6</span> protein_1 peptide_1_1 conditio… sampl…             15.9 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 7</span> protein_1 peptide_1_1 conditio… sampl…             16.1 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 8</span> protein_1 peptide_1_1 conditio… sampl…             15.9 TRUE   TRUE          
+#&gt; <span style='color: #BCBCBC;'> 9</span> protein_1 peptide_1_2 conditio… sampl…             12.6 TRUE   FALSE         
+#&gt; <span style='color: #BCBCBC;'>10</span> protein_1 peptide_1_2 conditio… sampl…             12.7 TRUE   FALSE         
 #&gt; <span style='color: #949494;'># … with 14 more rows, and 1 more variable: peptide_intensity_missing &lt;dbl&gt;</span></div><div class='input'>
 <span class='co'># Assign missingness information</span>
 <span class='va'>data_missing</span> <span class='op'>&lt;-</span> <span class='fu'>assign_missingness</span><span class='op'>(</span>
@@ -274,18 +274,18 @@ assigned to a comparison does not have any influence on the statistical test in 
 #&gt; <span class='message'>condition_1_vs_condition_2</span></div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>data_missing</span>, n <span class='op'>=</span> <span class='fl'>24</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 24 × 7</span>
-#&gt;    protein   sample   condition   peptide peptide_intensi… comparison missingness
-#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>              <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      
-#&gt; <span style='color: #BCBCBC;'> 1</span> protein_1 sample_1 condition_1 peptid…             16.8 condition… complete   
-#&gt; <span style='color: #BCBCBC;'> 2</span> protein_1 sample_2 condition_1 peptid…             17.0 condition… complete   
-#&gt; <span style='color: #BCBCBC;'> 3</span> protein_1 sample_3 condition_1 peptid…             17.0 condition… complete   
-#&gt; <span style='color: #BCBCBC;'> 4</span> protein_1 sample_4 condition_1 peptid…             17.0 condition… complete   
-#&gt; <span style='color: #BCBCBC;'> 5</span> protein_1 sample_5 condition_2 peptid…             15.8 condition… complete   
-#&gt; <span style='color: #BCBCBC;'> 6</span> protein_1 sample_6 condition_2 peptid…             15.9 condition… complete   
-#&gt; <span style='color: #BCBCBC;'> 7</span> protein_1 sample_7 condition_2 peptid…             16.1 condition… complete   
-#&gt; <span style='color: #BCBCBC;'> 8</span> protein_1 sample_8 condition_2 peptid…             15.9 condition… complete   
-#&gt; <span style='color: #BCBCBC;'> 9</span> protein_1 sample_1 condition_1 peptid…             <span style='color: #BB0000;'>NA</span>   condition… <span style='color: #BB0000;'>NA</span>         
-#&gt; <span style='color: #BCBCBC;'>10</span> protein_1 sample_2 condition_1 peptid…             <span style='color: #BB0000;'>NA</span>   condition… <span style='color: #BB0000;'>NA</span>         
+#&gt;    protein   sample   condition  peptide peptide_intensi… comparison missingness
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>              <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      
+#&gt; <span style='color: #BCBCBC;'> 1</span> protein_1 sample_1 condition… peptid…             16.8 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 2</span> protein_1 sample_2 condition… peptid…             17.0 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 3</span> protein_1 sample_3 condition… peptid…             17.0 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 4</span> protein_1 sample_4 condition… peptid…             17.0 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 5</span> protein_1 sample_5 condition… peptid…             15.8 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 6</span> protein_1 sample_6 condition… peptid…             15.9 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 7</span> protein_1 sample_7 condition… peptid…             16.1 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 8</span> protein_1 sample_8 condition… peptid…             15.9 condition… complete   
+#&gt; <span style='color: #BCBCBC;'> 9</span> protein_1 sample_1 condition… peptid…             <span style='color: #BB0000;'>NA</span>   condition… <span style='color: #BB0000;'>NA</span>         
+#&gt; <span style='color: #BCBCBC;'>10</span> protein_1 sample_2 condition… peptid…             <span style='color: #BB0000;'>NA</span>   condition… <span style='color: #BB0000;'>NA</span>         
 #&gt; <span style='color: #949494;'># … with 14 more rows</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

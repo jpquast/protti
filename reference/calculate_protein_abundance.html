@@ -73,7 +73,7 @@ three peptides are considered for quantification." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9000</span>
       </span>
     </div>
 
@@ -248,22 +248,22 @@ with <code>qc_protein_abundance</code> and can be filtered to only include prote
 
 <span class='va'>data</span>
 </div><div class='output co'>#&gt;    sample protein_id precursor peptide intensity
-#&gt; 1      S1         P1        A1       A  14.44600
-#&gt; 2      S1         P1        A2       A  14.22198
-#&gt; 3      S1         P1        B1       B  17.42079
-#&gt; 4      S1         P1        B2       B  15.46983
-#&gt; 5      S1         P1        C1       C  12.13064
-#&gt; 6      S1         P1        D1       D  13.15656
-#&gt; 7      S2         P1        A1       A  20.45790
-#&gt; 8      S2         P1        A2       A  19.84879
-#&gt; 9      S2         P1        B1       B  21.91756
-#&gt; 10     S2         P1        B2       B  19.31334
-#&gt; 11     S2         P1        C1       C  19.86415
-#&gt; 12     S2         P1        D1       D  20.92364
-#&gt; 13     S1         P2        E1       E  15.61400
-#&gt; 14     S1         P2        F1       F  17.27711
-#&gt; 15     S2         P2        E1       E  14.45846
-#&gt; 16     S2         P2        F1       F  14.20492</div><div class='input'>
+#&gt; 1      S1         P1        A1       A  14.22198
+#&gt; 2      S1         P1        A2       A  17.42079
+#&gt; 3      S1         P1        B1       B  15.46983
+#&gt; 4      S1         P1        B2       B  12.13064
+#&gt; 5      S1         P1        C1       C  13.15656
+#&gt; 6      S1         P1        D1       D  13.91581
+#&gt; 7      S2         P1        A1       A  19.84879
+#&gt; 8      S2         P1        A2       A  21.91756
+#&gt; 9      S2         P1        B1       B  19.31334
+#&gt; 10     S2         P1        B2       B  19.86415
+#&gt; 11     S2         P1        C1       C  20.92364
+#&gt; 12     S2         P1        D1       D  21.61400
+#&gt; 13     S1         P2        E1       E  17.27711
+#&gt; 14     S1         P2        F1       F  14.72923
+#&gt; 15     S2         P2        E1       E  14.20492
+#&gt; 16     S2         P2        F1       F  13.51658</div><div class='input'>
 <span class='co'># Calculate protein abundances</span>
 <span class='va'>protein_abundance</span> <span class='op'>&lt;-</span> <span class='fu'>calculate_protein_abundance</span><span class='op'>(</span>
   <span class='va'>data</span>,
@@ -280,8 +280,8 @@ with <code>qc_protein_abundance</code> and can be filtered to only include prote
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 × 3</span>
 #&gt;   sample intensity protein_id
 #&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     
-#&gt; <span style='color: #BCBCBC;'>1</span> S1          14.5 P1        
-#&gt; <span style='color: #BCBCBC;'>2</span> S2          20.3 P1        </div><div class='input'>
+#&gt; <span style='color: #BCBCBC;'>1</span> S1          14.2 P1        
+#&gt; <span style='color: #BCBCBC;'>2</span> S2          20.8 P1        </div><div class='input'>
 <span class='co'># Calculate protein abundances and retain precursor</span>
 <span class='co'># abundances that can be used in a peptide profile plot</span>
 <span class='va'>complete_abundances</span> <span class='op'>&lt;-</span> <span class='fu'>calculate_protein_abundance</span><span class='op'>(</span>
@@ -299,20 +299,20 @@ with <code>qc_protein_abundance</code> and can be filtered to only include prote
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 14 × 4</span>
 #&gt;    precursor         sample intensity protein_id
 #&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     
-#&gt; <span style='color: #BCBCBC;'> 1</span> protein_intensity S1          14.5 P1        
-#&gt; <span style='color: #BCBCBC;'> 2</span> protein_intensity S2          20.3 P1        
-#&gt; <span style='color: #BCBCBC;'> 3</span> A1                S1          14.4 P1        
-#&gt; <span style='color: #BCBCBC;'> 4</span> A1                S2          20.5 P1        
-#&gt; <span style='color: #BCBCBC;'> 5</span> A2                S1          14.2 P1        
-#&gt; <span style='color: #BCBCBC;'> 6</span> A2                S2          19.8 P1        
-#&gt; <span style='color: #BCBCBC;'> 7</span> B1                S1          17.4 P1        
-#&gt; <span style='color: #BCBCBC;'> 8</span> B1                S2          21.9 P1        
-#&gt; <span style='color: #BCBCBC;'> 9</span> B2                S1          15.5 P1        
-#&gt; <span style='color: #BCBCBC;'>10</span> B2                S2          19.3 P1        
-#&gt; <span style='color: #BCBCBC;'>11</span> C1                S1          12.1 P1        
-#&gt; <span style='color: #BCBCBC;'>12</span> C1                S2          19.9 P1        
-#&gt; <span style='color: #BCBCBC;'>13</span> D1                S1          13.2 P1        
-#&gt; <span style='color: #BCBCBC;'>14</span> D1                S2          20.9 P1        </div></pre>
+#&gt; <span style='color: #BCBCBC;'> 1</span> protein_intensity S1          14.2 P1        
+#&gt; <span style='color: #BCBCBC;'> 2</span> protein_intensity S2          20.8 P1        
+#&gt; <span style='color: #BCBCBC;'> 3</span> A1                S1          14.2 P1        
+#&gt; <span style='color: #BCBCBC;'> 4</span> A1                S2          19.8 P1        
+#&gt; <span style='color: #BCBCBC;'> 5</span> A2                S1          17.4 P1        
+#&gt; <span style='color: #BCBCBC;'> 6</span> A2                S2          21.9 P1        
+#&gt; <span style='color: #BCBCBC;'> 7</span> B1                S1          15.5 P1        
+#&gt; <span style='color: #BCBCBC;'> 8</span> B1                S2          19.3 P1        
+#&gt; <span style='color: #BCBCBC;'> 9</span> B2                S1          12.1 P1        
+#&gt; <span style='color: #BCBCBC;'>10</span> B2                S2          19.9 P1        
+#&gt; <span style='color: #BCBCBC;'>11</span> C1                S1          13.2 P1        
+#&gt; <span style='color: #BCBCBC;'>12</span> C1                S2          20.9 P1        
+#&gt; <span style='color: #BCBCBC;'>13</span> D1                S1          13.9 P1        
+#&gt; <span style='color: #BCBCBC;'>14</span> D1                S2          21.6 P1        </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

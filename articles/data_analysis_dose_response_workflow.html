@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9000</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
       <h1 data-toc-skip>Dose-Response Data Analysis Workflow</h1>
                         <h4 class="author">Jan-Philipp Quast</h4>
             
-            <h4 class="date">2021-09-13</h4>
+            <h4 class="date">2021-10-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/data_analysis_dose_response_workflow.Rmd"><code>vignettes/data_analysis_dose_response_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_dose_response_workflow.Rmd</code></div>
@@ -212,7 +212,7 @@ text-align: justify}
 <p><em>Note: Keep in mind that by spreading the model fitting over multiple cores, more memory than usual is needed. Furthermore, using the maximal number of available cores may not be the most efficient, because it takes time to copy the data to and from each core - this process will not be performed in parallel. Therefore, it is advised that the run time on each core is at least as long as the time to set up (data transfer, environment preparation etc.) all cores.</em></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># setup of cores. Make sure you have the future package installed</span>
-<span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html">plan</a></span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va"><a href="https://future.futureverse.org/reference/multiprocess.html">multiprocess</a></span>, workers <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+<span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html">plan</a></span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va"><a href="https://future.futureverse.org/reference/multisession.html">multisession</a></span>, workers <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 
 <span class="co"># fit models in parallel</span>
 <span class="va">parallel_fit</span> <span class="op">&lt;-</span> <span class="va">data_normalised</span> <span class="op">%&gt;%</span> 

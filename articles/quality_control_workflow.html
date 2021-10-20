@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9000</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
       <h1 data-toc-skip>Qualtiy Control (QC) Workflow</h1>
                         <h4 class="author">Dina Schuster</h4>
             
-            <h4 class="date">2021-09-13</h4>
+            <h4 class="date">2021-10-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/quality_control_workflow.Rmd"><code>vignettes/quality_control_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>quality_control_workflow.Rmd</code></div>
@@ -235,6 +235,7 @@ text-align: justify}
 <span class="co">#&gt;   &lt;chr&gt;           &lt;dbl&gt;              &lt;dbl&gt;</span>
 <span class="co">#&gt; 1 condition_2      6.06               7.49</span>
 <span class="co">#&gt; 2 condition_1      6.07               7.49</span>
+
 <span class="fu"><a href="../reference/qc_cvs.html">qc_cvs</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,
        grouping <span class="op">=</span> <span class="va">peptide</span>,
        condition <span class="op">=</span> <span class="va">condition</span>,
@@ -264,6 +265,7 @@ text-align: justify}
 <span class="co">#&gt; 4 condition_2 sample_6    98</span>
 <span class="co">#&gt; 5 condition_1 sample_2    99</span>
 <span class="co">#&gt; 6 condition_1 sample_1    98</span>
+
 <span class="fu"><a href="../reference/qc_ids.html">qc_ids</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,
        sample <span class="op">=</span> <span class="va">sample</span>,
        grouping <span class="op">=</span> <span class="va">protein</span>,
@@ -297,7 +299,8 @@ text-align: justify}
                 interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_peptide_type-1.png" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/qc_peptide_type.html">qc_peptide_type</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,
+<code class="sourceCode R">
+<span class="fu"><a href="../reference/qc_peptide_type.html">qc_peptide_type</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,
                 sample <span class="op">=</span> <span class="va">sample</span>, 
                 peptide <span class="op">=</span> <span class="va">peptide</span>, 
                 pep_type <span class="op">=</span> <span class="va">pep_type</span>, 
@@ -312,14 +315,16 @@ text-align: justify}
 <p>The function <code><a href="../reference/qc_intensity_distribution.html">qc_intensity_distribution()</a></code> plots all precursor, peptide or protein intensities for each sample as a boxplot if method “boxplot” is selected. This is helpful for quick assessment of any major sample losses or measurement issues.</p>
 <p>Rrun intensities can also be assessed by plotting the median run intensities as a line plot. This helps you quickly assess if there are any trends in your data. The function to use for this analysis is <code><a href="../reference/qc_median_intensities.html">qc_median_intensities()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/qc_intensity_distribution.html">qc_intensity_distribution</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,
+<code class="sourceCode R">
+<span class="fu"><a href="../reference/qc_intensity_distribution.html">qc_intensity_distribution</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,
                           sample <span class="op">=</span> <span class="va">sample</span>,
                           grouping <span class="op">=</span> <span class="va">peptide</span>,
                           intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,
                           plot_style <span class="op">=</span> <span class="st">"boxplot"</span><span class="op">)</span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_intensity_distribution_boxplot-1.png" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/qc_median_intensities.html">qc_median_intensities</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,
+<code class="sourceCode R">
+<span class="fu"><a href="../reference/qc_median_intensities.html">qc_median_intensities</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,
                       sample <span class="op">=</span> <span class="va">sample</span>,
                       grouping <span class="op">=</span> <span class="va">peptide</span>,
                       intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span><span class="op">)</span></code></pre></div>
@@ -429,7 +434,8 @@ text-align: justify}
 <span class="op">)</span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_pca-1.png" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/qc_pca.html">qc_pca</a></span><span class="op">(</span>
+<code class="sourceCode R">
+<span class="fu"><a href="../reference/qc_pca.html">qc_pca</a></span><span class="op">(</span>
   data <span class="op">=</span> <span class="va">data</span>,
   sample <span class="op">=</span> <span class="va">sample</span>,
   grouping <span class="op">=</span> <span class="va">peptide</span>,

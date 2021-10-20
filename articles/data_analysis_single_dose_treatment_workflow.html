@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9000</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
       <h1 data-toc-skip>Single Dose Treatment Data Analysis Workflow</h1>
                         <h4 class="author">Dina Schuster</h4>
             
-            <h4 class="date">2021-09-13</h4>
+            <h4 class="date">2021-10-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/data_analysis_single_dose_treatment_workflow.Rmd"><code>vignettes/data_analysis_single_dose_treatment_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_single_dose_treatment_workflow.Rmd</code></div>
@@ -328,7 +328,7 @@
 <div id="statistical-hypothesis-test" class="section level3">
 <h3 class="hasAnchor">
 <a href="#statistical-hypothesis-test" class="anchor"></a>Statistical hypothesis test</h3>
-<p>To test if there is a difference between the peptide abundances in our two conditions (i.e. rapamycin treated and untreated) we use a Welch’s t-test (unpaired). Welch’s t-test is a method for comparing means of two independent sample groups and it does not assume equal variances between groups (as Student’s t-test would).</p>
+<p>To test if there is a difference between the peptide abundances in our two conditions (i.e. rapamycin treated and untreated) we use a moderated t-test based on the <code>limma</code> R package.</p>
 <p>Before the statistical hypothesis test we have to define the types of missing values present in our data set. We are going to use the function <code><a href="../reference/assign_missingness.html">assign_missingness()</a></code> which will return a column with information on the types of missingness we have in our data (i.e. complete, missing at random (MAR) or missing not at random (MNAR)). We use the default parameters of this function which assumes that missing values are MAR when the conditions are at least 70 % complete (adjusted downward). Missing values are assumed to be MNAR when less than 20 % of values are present (adjusted_downward) in one condition if the other condition is complete. If not “complete” all other comparisons are label as <code>NA</code>. If imputation is performed, these are the comparisons that will not be imputed. The type of missingness assigned to a comparison does not have any influence on the statistical test. However, by default (can be changed) comparisons with missingness <code>NA</code> are filtered out prior to p-value adjustment. This means that in addition to imputation the user can use missingness cutoffs also in order to define which comparisons are too incomplete to be trustworthy even if significant.</p>
 <p>After assigning the types of data missingness we use the function <code><a href="../reference/calculate_diff_abundance.html">calculate_diff_abundance()</a></code>. By selecting <code>method = t-test</code> the function will perform a Welch’s t-test. There are also options included to perform a moderated t-test based on the R package <code>limma</code> or to detect differential abundances based on the algorithm implemented in the R package <code>proDA</code>. The algorithm used for <code>proDA</code> is based on a probabilistic dropout model which facilitates hypothesis testing (using a moderated t-test) while eliminating the need for imputation.</p>
 <p>It has been shown that generally moderated t-tests perform much better also in proteomics data, as compared to t-tests (<a href="https://www.sciencedirect.com/science/article/pii/S2212968515000069">Kammers et al. 2015</a>). Therefore, we will use a moderated t-test in this example.</p>
@@ -382,15 +382,16 @@
 <div id="p-value-distribution" class="section level3">
 <h3 class="hasAnchor">
 <a href="#p-value-distribution" class="anchor"></a>p-value distribution</h3>
-<p>The p-value calculated with the moderated t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall uniform distribution. If there is an effect in the data, there will be an increased frequency of low p-values. You can check this by using the protti function <code><a href="../reference/pval_distribution_plot.html">pval_distribution_plot()</a></code>.</p>
+<p>The p-value calculated with the moderated t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall uniform distribution. If there is an effect in the data, there will be an increased frequency of low p-values. You can check this by using the protti function <code><a href="../reference/pval_distribution_plot.html">pval_distribution_plot()</a></code>. This also helps you assess whether your p-value distribution fulfills the assumptions for your selected FDR control. The <a href="https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/10.1002/pmic.201500189">cp4p</a> R package is another great way to check the assumptions underlying FDR control in quantitative experiments.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/pval_distribution_plot.html">pval_distribution_plot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">diff_abundance_data</span>,
                        grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
                        pval <span class="op">=</span> <span class="va">pval</span>
                        <span class="op">)</span></code></pre></div>
 <p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/pval_distribution-1.png" width="576" style="display: block; margin: auto;"></p>
-<p>For this subset of data the distribution of p-values is relatively flat and there is no large increase in values in the low p-value range. This is likely because, for this experiment, only a very small fraction of peptides show changes. If so, it can happen that none or few significant hits remain after adjusting the p-value using the Benjamini-Hochberg correction. It may be useful in this case to assess alternative correction approaches.</p>
-<p>It is recommended to always check the p-value distribution. A histogram that does not have a uniform distribution (i.e. that is not flat) with or without a specific enrichment for very low p-values (due to a treatment induced effect) indicates a failure of the theoretical null distribution, which could have several causes (<a href="https://www.cambridge.org/core/services/aop-cambridge-core/content/view/0BD692B5CFF1C51B73D480B72B0B3A28/9780511761362c6_p89-112_CBO.pdf/theoretical_permutation_and_empirical_null_distributions.pdf">Efron 2010, chapter 6</a>)</p>
+<p>For this subset of data the distribution of p-values is relatively flat and there is no large increase in values in the low p-value range (the distribution is uniform when a lot of your hypotheses are null). This is likely because, for this experiment, only a very small fraction of peptides show changes.</p>
+<p>It is recommended to always check the (non-adjusted) p-value distribution. A histogram that does not have a uniform distribution with or without a specific enrichment for very low p-values (due to a treatment induced effect) indicates a failure of the theoretical null distribution, which could have several causes (<a href="https://www.cambridge.org/core/services/aop-cambridge-core/content/view/0BD692B5CFF1C51B73D480B72B0B3A28/9780511761362c6_p89-112_CBO.pdf/theoretical_permutation_and_empirical_null_distributions.pdf">Efron 2010, chapter 6</a>).</p>
+<p>You can read more about p-value distributions <a href="http://varianceexplained.org/statistics/interpreting-pvalue-histogram/">here</a>.</p>
 </div>
 <div id="volcano-plot" class="section level3">
 <h3 class="hasAnchor">
@@ -411,7 +412,8 @@
 <span class="op">)</span></code></pre></div>
 <p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/volcano_plot-1.png" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># The significance_cutoff argument can also just be used for a </span>
+<code class="sourceCode R">
+<span class="co"># The significance_cutoff argument can also just be used for a </span>
 <span class="co"># regular cutoff line by just providing the cutoff value, e.g.</span>
 <span class="co"># signficiance_cutoff = 0.05</span></code></pre></div>
 </div>
@@ -442,7 +444,8 @@
 <p>An additional way to plot LiP-MS changes is the Woods’ plot. This plot will show the extent of the precursor fold changes along the protein sequence. The precursors are located on the x-axis based on their start and end positions. The position on the y-axis displays the fold change. The vertical size (y-axis) of the box representing the precurors does not have any meaning.</p>
 <p>To produce a Woods’ plot we use the function <code><a href="../reference/woods_plot.html">woods_plot()</a></code> and colour the peptides according to their adjusted p-values. We are highlighting significant adjusted p-values (&lt; 0.01) with an asterisk. Peptides can also be coloured by another categorical or continous variable. Asterisks can be added for any logical (binary) variable.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">FKBP12</span> <span class="op">&lt;-</span> <span class="va">FKBP12</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R">
+<span class="va">FKBP12</span> <span class="op">&lt;-</span> <span class="va">FKBP12</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">adj_pval</span> <span class="op">&lt;</span> <span class="fl">0.01</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/woods_plot.html">woods_plot</a></span><span class="op">(</span>
