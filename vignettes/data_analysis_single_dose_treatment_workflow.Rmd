@@ -274,7 +274,7 @@ diff_abundance_data <- data_filtered_uniprot %>%
 
 ### p-value distribution
 
-The p-value calculated with the moderated t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall uniform distribution. If there is an effect in the data, there will be an increased frequency of low p-values. You can check this by using the protti function `pval_distribution_plot()`. This also helps you assess whether your p-value distribution fulfills the requirements for FDR control. The [cp4p](https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/10.1002/pmic.201500189) R package is another great way to check if requirements for FDR control are fulfilled.
+The p-value calculated with the moderated t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall uniform distribution. If there is an effect in the data, there will be an increased frequency of low p-values. You can check this by using the protti function `pval_distribution_plot()`. This also helps you assess whether your p-value distribution fulfills the assumptions for your selected FDR control. The [cp4p](https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/10.1002/pmic.201500189) R package is another great way to check the assumptions underlying FDR control in quantitative experiments.
 
 ```{r pval_distribution, eval = test_protti, message = FALSE, warning = FALSE, fig.align= "center", fig.width = 6, fig.height = 5}
 pval_distribution_plot(data = diff_abundance_data,
@@ -288,7 +288,6 @@ For this subset of data the distribution of p-values is relatively flat and ther
 It is recommended to always check the (non-adjusted) p-value distribution. A histogram that does not have a uniform distribution with or without a specific enrichment for very low p-values (due to a treatment induced effect) indicates a failure of the theoretical null distribution, which could have several causes ([Efron 2010, chapter 6](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/0BD692B5CFF1C51B73D480B72B0B3A28/9780511761362c6_p89-112_CBO.pdf/theoretical_permutation_and_empirical_null_distributions.pdf)).
 
 You can read more about p-value distributions [here](http://varianceexplained.org/statistics/interpreting-pvalue-histogram/).
-
 
 ### Volcano plot
 
