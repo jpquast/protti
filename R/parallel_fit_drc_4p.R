@@ -2,7 +2,7 @@
 #'
 #' This function is a wrapper around \code{fit_drc_4p} that allows the use of all system cores for
 #' model fitting. It should only be used on systems that have enough memory available. Workers can
-#' either be set up manually before running the function with \code{future::plan(multiprocess)} or
+#' either be set up manually before running the function with \code{future::plan(multisession)} or
 #' automatically by the function (maximum number of workers is 12 in this case). If workers are set
 #' up manually the number of cores should be provided to \code{n_cores}. Worker can be terminated
 #' after completion with \code{future::plan(sequential)}. It is not possible to export the
@@ -175,7 +175,8 @@ fitting. Use "post" or use the fit_drc_4p function.',
     terminate <- TRUE
     n_cores <- parallel::detectCores()
     n_cores <- ifelse(n_cores > 12, 12, n_cores)
-    future::plan(future::multiprocess, workers = n_cores)
+    oplan <- future::plan(future::multisession, workers = n_cores)
+    on.exit(future::plan(oplan), add = TRUE)
     message("DONE", appendLF = TRUE)
   }
 

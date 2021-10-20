@@ -1,3 +1,10 @@
+# protti 0.2.0.9000
+
+## Bug fixes and documentation updates
+
+* Fixed a bug in `qc_ids()`, which caused an error when the optional `condition` argument was not provided. Also fixed a bug that did not take the state of the `remove_na_intensities` argument into account.
+* Small documentation updates in the "Dose-Response Data Analysis Workflow" vignette in which we correct statements about multiple testing correction and p-value distributions.
+
 # protti 0.2.0
 
 ## New features

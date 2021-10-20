@@ -166,7 +166,7 @@ _Note: Keep in mind that by spreading the model fitting over multiple cores, mor
 
 ```{r parallel_model_fit, eval = FALSE}
 # setup of cores. Make sure you have the future package installed
-future::plan(future::multiprocess, workers = 3)
+future::plan(future::multisession, workers = 3)
 
 # fit models in parallel
 parallel_fit <- data_normalised %>% 
