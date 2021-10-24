@@ -127,7 +127,7 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
       if ("tbl" %in% class(query)) {
         query %>%
           dplyr::filter(stringr::str_detect(X1,
-            pattern = "^ATOM|^HETATM"
+            pattern = "^ATOM |^HETATM "
           )) %>%
           dplyr::mutate(X2 = stringr::str_replace_all(X1,
             pattern = "\\s+",

@@ -14,8 +14,15 @@
 #' provided in multiple rows. If chains are provided for one structure but not for another, the
 #' rows should contain NAs. Furthermore, specific residue positions can be provided in start and
 #' end columns if the selection should be further reduced. It is not recommended to create full
-#' contact maps for more than a few structures due to time and memory reasons. If contact maps are
-#' created only for small regions it is possible to create multiple maps at once.
+#' contact maps for more than a few structures due to time and memory limitations. If contact maps are
+#' created only for small regions it is possible to create multiple maps at once. By default distances
+#' of regions provided in this data frame to the complete structure are computed. If distances of regions
+#' from this data frame to another specific subset of regions should be computed, the second subset
+#' of regions can be provided through the optional \code{data2} argument.
+#' @param data2 optional, a data frame that contains a subset of regions for which distances to regions
+#' provided in the \code{data} data frame should be computed. If regions from the \code{data} data
+#' frame should be compared to the whole structure, data2 does not need to be provided.
+#' This data frame should have the same structure and column names as the \code{data} data frame.
 #' @param id a character column in the \code{data} data frame that contains PDB or UniProt IDs for
 #' structures or AlphaFold predictions of which contact maps should be created. If a structure not
 #' downloaded directly from PDB is provided (i.e. a locally stored structure file) to the
@@ -51,9 +58,6 @@
 #' returned for all atom distances or the minimum residue distances. Minimum residue distances are
 #' smaller in size. If atom distances are not strictly needed it is recommended to set this
 #' argument to TRUE. The default is TRUE.
-#' @param compare_only_provided a logical value that specifies if the contact map should be created 
-#' for only the provided regions or the provided regions compared to the whole structure. Default
-#' is FALSE.
 #' @param show_progress a logical value that specifies if a progress bar will be shown (default
 #' is TRUE).
 #' @param export a logical value that indicates if contact maps should be exported as ".csv". The
@@ -106,6 +110,7 @@
 #' contact_maps
 #' }
 create_structure_contact_map <- function(data,
+                                         data2 = NULL,
                                          id,
                                          chain = NULL,
                                          start_in_pdb = NULL,
@@ -113,82 +118,114 @@ create_structure_contact_map <- function(data,
                                          distance_cutoff = 10,
                                          pdb_model_number_selection = c(0, 1),
                                          return_min_residue_distance = TRUE,
-                                         compare_only_provided = FALSE,
                                          show_progress = TRUE,
                                          export = FALSE,
                                          export_location = NULL,
                                          structure_file = NULL) {
-  ids <- unique(dplyr::pull(data, {{ id }}))
+  data2_missing <- missing(data2) # define this for maps that cannot use the missing function within.
+
+  # if data2 was provided make sure that only IDs that overlap are retained
+  if (!missing(data2)) {
+    data <- data %>%
+      dplyr::filter({{ id }} %in% unique(dplyr::pull(data2, {{ id }})))
+
+    data2 <- data2 %>%
+      dplyr::filter({{ id }} %in% unique(dplyr::pull(data, {{ id }})))
+  }
+
+  # put data in a list to be able to iterate over it in case data2 is provided
+  data_list <- list(data = data)
+
+  if (!missing(data2)) {
+    data_list[["data2"]] <- data2
+  }
 
   # assign all protein IDs to be chain A since AlphaFold only contains one chain which is always A.
   if (!missing(chain)) {
-    data <- data %>%
-      dplyr::mutate({{ chain }} := ifelse(
-        stringr::str_detect({{ id }},
-          pattern = "^([OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2})$"
-        ),
-        "A",
-        {{ chain }}
-      ))
+    data_list <- data_list %>%
+      purrr::map(.f = ~ {
+        .x %>%
+          dplyr::mutate({{ chain }} := ifelse(
+            stringr::str_detect({{ id }},
+              pattern = "^([OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2})$"
+            ),
+            "A",
+            {{ chain }}
+          ))
+      })
   }
 
-  if (ifelse(!missing(start_in_pdb) & (missing(chain) || all(is.na(dplyr::pull(data, {{ chain }})))),
-    any(!is.na(dplyr::pull(data, {{ start_in_pdb }}))),
-    FALSE
-  ) |
-    ifelse(!missing(start_in_pdb) & !missing(chain),
-      any(!is.na(dplyr::pull(data, {{ start_in_pdb }})[is.na(dplyr::pull(data, {{ chain }}))])),
+  # make sure that there is always a chain associated with start and end positions
+  for (i in 1:length(data_list)) {
+    if (ifelse(!missing(start_in_pdb) & (missing(chain) || all(is.na(dplyr::pull(data_list[[i]], {{ chain }})))),
+      any(!is.na(dplyr::pull(data_list[[i]], {{ start_in_pdb }}))),
       FALSE
-    )) {
-    stop(strwrap("The data contains start and end positions whithout specified chain IDs.
-Please always provide a chain ID for your start and end positions.",
-      prefix = "\n", initial = ""
-    ))
+    ) |
+      ifelse(!missing(start_in_pdb) & !missing(chain),
+        any(!is.na(dplyr::pull(data_list[[i]], {{ start_in_pdb }})[is.na(dplyr::pull(data_list[[i]], {{ chain }}))])),
+        FALSE
+      )) {
+      stop(strwrap(paste0("\"", names(data_list)[i], "\" contains start and end positions whithout specified chain IDs.
+Please always provide a chain ID for your start and end positions."),
+        prefix = "\n", initial = ""
+      ))
+    }
   }
 
   # create individual data retain patterns depending on which information was provided to the function.
-  if (missing(chain) || all(is.na(dplyr::pull(data, {{ chain }})))) {
-    data_retain_pattern <- data %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(retain_pattern = {{ id }}) %>%
-      dplyr::pull(.data$retain_pattern) %>%
-      unique()
-  } else {
-    if (missing(start_in_pdb) || all(is.na(dplyr::pull(data, {{ chain }})))) {
-      data_retain_pattern <- data %>%
+
+  retain_pattern_list <- list()
+  data_retain_pattern1 <- c()
+  data_retain_pattern2 <- c()
+
+  for (i in 1:length(data_list)) {
+    data_retain_pattern_name <- paste0("data_retain_pattern", i)
+
+    if (missing(chain) || all(is.na(dplyr::pull(data_list[[i]], {{ chain }})))) {
+      assign(data_retain_pattern_name, data_list[[i]] %>%
         dplyr::ungroup() %>%
-        dplyr::mutate(retain_pattern = stringr::str_replace_all(
-          paste({{ id }}, {{ chain }}, sep = "_"),
-          pattern = "_NA",
-          replacement = ""
-        )) %>%
+        dplyr::mutate(retain_pattern = {{ id }}) %>%
         dplyr::pull(.data$retain_pattern) %>%
-        unique()
+        unique())
     } else {
-      data_retain_pattern <- data %>%
-        dplyr::ungroup() %>%
-        dplyr::mutate(
-          start = {{ start_in_pdb }},
-          end = {{ end_in_pdb }}
-        ) %>%
-        # do this so start and end position can be the same column.
-        dplyr::distinct({{ id }}, {{ chain }}, .data$start, .data$end) %>%
-        group_by({{ id }}, {{ chain }}, .data$start, .data$end) %>%
-        dplyr::mutate(residue = ifelse(!is.na(.data$start),
-          list(seq(.data$start, .data$end)),
-          list(NA)
-        )) %>%
-        dplyr::ungroup() %>%
-        tidyr::unnest(.data$residue) %>%
-        dplyr::mutate(retain_pattern = stringr::str_replace_all(
-          paste({{ id }}, {{ chain }}, .data$residue, sep = "_"),
-          pattern = "_NA",
-          replacement = ""
-        )) %>%
-        dplyr::pull(.data$retain_pattern) %>%
-        unique()
+      if (missing(start_in_pdb) || all(is.na(dplyr::pull(data_list[[i]], {{ start_in_pdb }})))) {
+        assign(data_retain_pattern_name, data_list[[i]] %>%
+          dplyr::ungroup() %>%
+          dplyr::mutate(retain_pattern = stringr::str_replace_all(
+            paste({{ id }}, {{ chain }}, sep = "_"),
+            pattern = "_NA",
+            replacement = ""
+          )) %>%
+          dplyr::pull(.data$retain_pattern) %>%
+          unique())
+      } else {
+        assign(data_retain_pattern_name, data_list[[i]] %>%
+          dplyr::ungroup() %>%
+          dplyr::mutate(
+            start = {{ start_in_pdb }},
+            end = {{ end_in_pdb }}
+          ) %>%
+          # do this so start and end position can be the same column.
+          dplyr::distinct({{ id }}, {{ chain }}, .data$start, .data$end) %>%
+          group_by({{ id }}, {{ chain }}, .data$start, .data$end) %>%
+          dplyr::mutate(residue = ifelse(!is.na(.data$start),
+            list(seq(.data$start, .data$end)),
+            list(NA)
+          )) %>%
+          dplyr::ungroup() %>%
+          tidyr::unnest(.data$residue) %>%
+          dplyr::mutate(retain_pattern = stringr::str_replace_all(
+            paste({{ id }}, {{ chain }}, .data$residue, sep = "_"),
+            pattern = "_NA",
+            replacement = ""
+          )) %>%
+          dplyr::pull(.data$retain_pattern) %>%
+          unique())
+      }
     }
   }
+
+  # load structures
 
   if (!missing(structure_file)) {
     file_format <- stringr::str_sub(structure_file, start = -4, end = -1)
@@ -272,8 +309,19 @@ Please always provide a chain ID for your start and end positions.",
         )) %>%
         dplyr::mutate(should_be_retained = stringr::str_detect(
           .data$retain_pattern,
-          pattern = paste(paste0(data_retain_pattern, "(?=$|_)"), collapse = "|")
+          pattern = paste(paste0(data_retain_pattern1, "(?=$|_)"), collapse = "|")
         ))
+
+      if (data2_missing) {
+        structure <- structure %>%
+          dplyr::mutate(should_be_retained2 = TRUE)
+      } else {
+        structure <- structure %>%
+          dplyr::mutate(should_be_retained2 = stringr::str_detect(
+            .data$retain_pattern,
+            pattern = paste(paste0(data_retain_pattern2, "(?=$|_)"), collapse = "|")
+          ))
+      }
     }
     # load .pdb file if provided
     if (file_format == ".pdb") {
@@ -333,8 +381,19 @@ Please always provide a chain ID for your start and end positions.",
         )) %>%
         dplyr::mutate(should_be_retained = stringr::str_detect(
           .data$retain_pattern,
-          pattern = paste(paste0(data_retain_pattern, "(?=$|_)"), collapse = "|")
+          pattern = paste(paste0(data_retain_pattern1, "(?=$|_)"), collapse = "|")
         ))
+
+      if (data2_missing) {
+        structure <- structure %>%
+          dplyr::mutate(should_be_retained2 = TRUE)
+      } else {
+        structure <- structure %>%
+          dplyr::mutate(should_be_retained2 = stringr::str_detect(
+            .data$retain_pattern,
+            pattern = paste(paste0(data_retain_pattern2, "(?=$|_)"), collapse = "|")
+          ))
+      }
     }
 
     structures <- list(structure)
@@ -351,8 +410,10 @@ Please always provide a chain ID for your start and end positions.",
       return(invisible(NULL))
     }
 
-    # make ID vectors
+    # extract all unique IDs from the data df. This is later used to retrieve the structures/predictions
+    ids <- unique(dplyr::pull(data, {{ id }}))
 
+    # make ID vectors
     pdb_ids <- ids[nchar(ids) == 4]
     uniprot_ids <- ids[nchar(ids) != 4]
 
@@ -377,7 +438,7 @@ Please always provide a chain ID for your start and end positions.",
           if (show_progress == TRUE) {
             pb$tick()
           }
-          .x %>%
+          structures <- .x %>%
             dplyr::filter(.data$pdb_model_number %in% pdb_model_number_selection) %>%
             dplyr::select(
               .data$label_id,
@@ -399,11 +460,23 @@ Please always provide a chain ID for your start and end positions.",
             )) %>%
             dplyr::mutate(should_be_retained = stringr::str_detect(
               .data$retain_pattern,
-              pattern = paste(paste0(data_retain_pattern, "(?=$|_)"), collapse = "|")
+              pattern = paste(paste0(data_retain_pattern1, "(?=$|_)"), collapse = "|")
             )) %>%
             dplyr::rename(id = .data$pdb_id)
+
+          if (data2_missing) {
+            structures %>%
+              dplyr::mutate(should_be_retained2 = TRUE)
+          } else {
+            structures %>%
+              dplyr::mutate(should_be_retained2 = stringr::str_detect(
+                .data$retain_pattern,
+                pattern = paste(paste0(data_retain_pattern2, "(?=$|_)"), collapse = "|")
+              ))
+          }
         })
     }
+
     if (length(uniprot_ids) != 0) {
       if (show_progress == TRUE) {
         pb <- progress::progress_bar$new(
@@ -421,7 +494,7 @@ Please always provide a chain ID for your start and end positions.",
           if (show_progress == TRUE) {
             pb$tick()
           }
-          .x %>%
+          predictions <- .x %>%
             dplyr::select(
               .data$label_id,
               .data$x,
@@ -444,9 +517,20 @@ Please always provide a chain ID for your start and end positions.",
             )) %>%
             dplyr::mutate(should_be_retained = stringr::str_detect(
               .data$retain_pattern,
-              pattern = paste(paste0(data_retain_pattern, "(?=$|_)"), collapse = "|")
+              pattern = paste(paste0(data_retain_pattern1, "(?=$|_)"), collapse = "|")
             )) %>%
             dplyr::rename(id = .data$uniprot_id)
+
+          if (data2_missing) {
+            predictions %>%
+              dplyr::mutate(should_be_retained2 = TRUE)
+          } else {
+            predictions %>%
+              dplyr::mutate(should_be_retained2 = stringr::str_detect(
+                .data$retain_pattern,
+                pattern = paste(paste0(data_retain_pattern2, "(?=$|_)"), collapse = "|")
+              ))
+          }
         })
     }
     structures <- c(pdb_structures, alphafold_structures)
@@ -489,16 +573,21 @@ Please always provide a chain ID for your start and end positions.",
       if (show_progress == TRUE) {
         pb$tick()
       }
-      if (compare_only_provided){
-        .y <- .y %>%
-          dplyr::filter(.data$should_be_retained)
-      }
 
-      current_structure <- .y %>%
-        dplyr::select(-c(.data$x, .data$y, .data$z, .data$should_be_retained, .data$retain_pattern))
+      current_structure1 <- .y %>%
+        dplyr::filter(.data$should_be_retained) %>%
+        dplyr::select(-c(.data$x, .data$y, .data$z, .data$should_be_retained, .data$should_be_retained2, .data$retain_pattern))
 
+      current_structure2 <- .y %>%
+        dplyr::filter(.data$should_be_retained2) %>%
+        dplyr::select(-c(.data$x, .data$y, .data$z, .data$should_be_retained, .data$should_be_retained2, .data$retain_pattern))
 
-      current_structure_minimum <- .y %>%
+      current_structure_minimum1 <- .y %>%
+        dplyr::filter(.data$should_be_retained) %>%
+        dplyr::distinct(.data$label_id, .data$x, .data$y, .data$z)
+
+      current_structure_minimum2 <- .y %>%
+        dplyr::filter(.data$should_be_retained2) %>%
         dplyr::distinct(.data$label_id, .data$x, .data$y, .data$z)
 
       current_protein <- .y %>%
@@ -519,14 +608,14 @@ Please always provide a chain ID for your start and end positions.",
             pb$tick()
           }
 
-          tidyr::crossing(var1 = .x, var2 = current_structure_minimum$label_id) %>%
-            dplyr::left_join(current_structure_minimum, by = c("var1" = "label_id")) %>%
-            dplyr::left_join(current_structure_minimum, by = c("var2" = "label_id")) %>%
+          tidyr::crossing(var1 = .x, var2 = current_structure_minimum2$label_id) %>%
+            dplyr::left_join(current_structure_minimum1, by = c("var1" = "label_id")) %>%
+            dplyr::left_join(current_structure_minimum2, by = c("var2" = "label_id")) %>%
             dplyr::mutate(distance = sqrt((.data$x.x - .data$x.y)^2 + (.data$y.x - .data$y.y)^2 + (.data$z.x - .data$z.y)^2)) %>%
             dplyr::select(.data$var1, .data$var2, .data$distance) %>%
             dplyr::filter(.data$distance <= distance_cutoff) %>%
-            dplyr::left_join(current_structure %>% dplyr::select(-.data$id), by = c("var1" = "label_id")) %>%
-            dplyr::left_join(current_structure, by = c("var2" = "label_id"), suffix = c("_var1", "_var2"))
+            dplyr::left_join(current_structure1 %>% dplyr::select(-.data$id), by = c("var1" = "label_id")) %>%
+            dplyr::left_join(current_structure2, by = c("var2" = "label_id"), suffix = c("_var1", "_var2"))
         }
       )
     }
@@ -551,7 +640,7 @@ Please always provide a chain ID for your start and end positions.",
           .data$auth_seq_id_var2,
           .data$auth_asym_id_var2
         ) %>%
-        dplyr::mutate(min_distance_residue = min(.data$distance)) %>%
+        dplyr::mutate(min_distance_residue = suppressWarnings(min(.data$distance))) %>%
         dplyr::ungroup() %>%
         dplyr::rename(
           label_id_var1 = .data$var1,
