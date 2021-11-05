@@ -9,8 +9,7 @@ create_structure_contact_map(
   data2 = NULL,
   id,
   chain = NULL,
-  start_in_pdb = NULL,
-  end_in_pdb = NULL,
+  auth_seq_id = NULL,
   distance_cutoff = 10,
   pdb_model_number_selection = c(0, 1),
   return_min_residue_distance = TRUE,
@@ -27,8 +26,8 @@ distances are calculated. Additionally, a chain column can be present in the dat
 the name can be provided to the \code{chain} argument. If chains are provided, only distances
 of this chain relative to the rest of the structure are calculated. Multiple chains can be
 provided in multiple rows. If chains are provided for one structure but not for another, the
-rows should contain NAs. Furthermore, specific residue positions can be provided in start and
-end columns if the selection should be further reduced. It is not recommended to create full
+rows should contain NAs. Furthermore, specific residue positions can be provided in the \code{auth_seq_id}
+column if the selection should be further reduced. It is not recommended to create full
 contact maps for more than a few structures due to time and memory limitations. If contact maps are
 created only for small regions it is possible to create multiple maps at once. By default distances
 of regions provided in this data frame to the complete structure are computed. If distances of regions
@@ -49,21 +48,15 @@ downloaded directly from PDB is provided (i.e. a locally stored structure file) 
 identifiers for the structure file. Identifiers defined by the structure author should be used.
 Distances will be only calculated between the provided chains and the rest of the structure.}
 
-\item{start_in_pdb}{optional, a numeric column in the \code{data} data frame that contains
-start positions of regions which for distances should be calculated. This needs to be always
-provided in combination with a corresponding end position in \code{end_in_pdb} and chain in
-\code{chain}. The position should match the positioning defined by the structure author. For
+\item{auth_seq_id}{optional, a character (or numeric) column in the \code{data} data frame
+that contains semicolon separated positions of regions for which distances should be calculated.
+This always needs to be provided in combination with a corresponding chain in \code{chain}.
+The position should match the positioning defined by the structure author. For
 PDB structures this information can be obtained from the \code{find_peptide_in_structure}
-function. The corresponding column in the output is called \code{auth_seq_id_start}. If an
-AlphaFold prediction is provided, UniProt positions should be used.}
-
-\item{end_in_pdb}{optional, a numeric column in the \code{data} data frame that contains end
-positions of regions which for distances should be calculated. This needs to be always provided
-in combination with a corresponding start position in \code{start_in_pdb} and chain in
-\code{chain}. The position should match the positioning defined by the structure author. For
-PDB structures this information can be obtained from the \code{find_peptide_in_structure}
-function. The corresponding column in the output is called \code{auth_seq_id_end}. If an
-AlphaFold prediction is provided, UniProt positions should be used.}
+function. The corresponding column in the output is called \code{auth_seq_id}. If an
+AlphaFold prediction is provided, UniProt positions should be used. If signal positions
+and not stretches of amino acids are provided, the column can be numeric and does not need
+to contain the semicolon separator.}
 
 \item{distance_cutoff}{a numeric value specifying the distance cutoff in Angstrom. All values
 for pairwise comparisons are calculated but only values smaller than this cutoff will be
@@ -117,8 +110,7 @@ need to open the structure in programs such as PyMOL or ChimeraX.
 data <- data.frame(
   pdb_id = c("6NPF", "1C14", "3NIR"),
   chain = c("A", "A", NA),
-  start = c(1, NA, NA),
-  end = c(10, NA, NA)
+  auth_seq_id = c("1;2;3;4;5;6;7", NA, NA)
 )
 
 # Create contact map
@@ -126,8 +118,7 @@ contact_maps <- create_structure_contact_map(
   data = data,
   id = pdb_id,
   chain = chain,
-  start_in_pdb = start,
-  end_in_pdb = end,
+  auth_seq_id = auth_seq_id,
   return_min_residue_distance = TRUE
 )
 

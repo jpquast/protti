@@ -54,7 +54,7 @@ numbering corresponds to the UniProt amino acid positions.}
 \item{y: }{The y coordinate of the atom.}
 \item{z: }{The z coordinate of the atom.}
 \item{prediction_score: }{Contains the prediction score for each residue.}
-\item{auth_seq_id: }{Same as \code{label_seq_id}.}
+\item{auth_seq_id: }{Same as \code{label_seq_id}. But of type character.}
 \item{auth_comp_id: }{Same as \code{label_comp_id}.}
 \item{auth_asym_id: }{Same as \code{label_asym_id}.}
 \item{uniprot_id: }{The UniProt identifier of the predicted protein.}

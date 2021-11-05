@@ -47,7 +47,7 @@
 #' of structures.}
 #' \item{auth_seq_id: }{An alternative residue identifier (\code{label_seq_id}) provided by the
 #' author of the structure in order to match the identification used in the publication that
-#' describes the structure.}
+#' describes the structure. This does not need to be numeric and is therefore of type character.}
 #' \item{auth_comp_id: }{An alternative chemical identifier (\code{label_comp_id}) provided by the
 #' author of the structure in order to match the identification used in the publication that
 #' describes the structure.}
@@ -175,7 +175,7 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
             z = as.numeric(.data$z),
             site_occupancy = as.numeric(.data$site_occupancy),
             b_iso_or_equivalent = as.numeric(.data$b_iso_or_equivalent),
-            auth_seq_id = as.numeric(.data$auth_seq_id),
+            auth_seq_id = .data$auth_seq_id,
             pdb_model_number = as.numeric(.data$pdb_model_number),
             pdb_id = .y
           )

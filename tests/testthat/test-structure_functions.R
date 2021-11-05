@@ -20,7 +20,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("find_peptide_in_structure works", {
     expect_is(positions_structure, "data.frame")
     expect_equal(nrow(positions_structure), 312)
-    expect_equal(ncol(positions_structure), 16)
+    expect_equal(ncol(positions_structure), 17)
   })
 
   positions_structure_filter <- positions_structure %>%
@@ -32,8 +32,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       uniprot_id = uniprot_id,
       pdb_id = pdb_ids,
       chain = auth_asym_id,
-      start_in_pdb = auth_seq_id_start,
-      end_in_pdb = auth_seq_id_end,
+      auth_seq_id = auth_seq_id,
       map_value = map_value,
       file_format = ".cif",
       export_location = tempdir()
@@ -61,8 +60,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       uniprot_id = uniprot_id,
       pdb_id = pdb_ids,
       chain = auth_asym_id,
-      start_in_pdb = auth_seq_id_start,
-      end_in_pdb = auth_seq_id_end,
+      auth_seq_id = auth_seq_id,
       map_value = map_value,
       file_format = ".pdb",
       export_location = tempdir()
@@ -88,15 +86,13 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     data_input <- tibble::tibble(
       pdb_id = c("6NPF", "1C14"),
       chain = c("A", "A"),
-      start = c(1, NA),
-      end = c(10, NA)
+      auth_seq_id = c("1;2;3;4;5;6;7;8;9;10", NA),
     )
     contact_maps <- create_structure_contact_map(
       data = data_input,
       id = pdb_id,
       chain = chain,
-      start_in_pdb = start,
-      end_in_pdb = end,
+      auth_seq_id = auth_seq_id,
       return_min_residue_distance = TRUE
     )
 

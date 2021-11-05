@@ -39,7 +39,7 @@
 #' \item{y: }{The y coordinate of the atom.}
 #' \item{z: }{The z coordinate of the atom.}
 #' \item{prediction_score: }{Contains the prediction score for each residue.}
-#' \item{auth_seq_id: }{Same as \code{label_seq_id}.}
+#' \item{auth_seq_id: }{Same as \code{label_seq_id}. But of type character.}
 #' \item{auth_comp_id: }{Same as \code{label_comp_id}.}
 #' \item{auth_asym_id: }{Same as \code{label_asym_id}.}
 #' \item{uniprot_id: }{The UniProt identifier of the predicted protein.}
@@ -232,7 +232,7 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
             y = as.numeric(.data$y),
             z = as.numeric(.data$z),
             prediction_score = as.numeric(.data$prediction_score),
-            auth_seq_id = as.numeric(.data$auth_seq_id)
+            auth_seq_id = .data$auth_seq_id
           ) %>%
           dplyr::mutate(score_quality = dplyr::case_when(
             .data$prediction_score > 90 ~ "very_good",
@@ -342,7 +342,7 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
               y = as.numeric(.data$y),
               z = as.numeric(.data$z),
               prediction_score = as.numeric(.data$prediction_score),
-              auth_seq_id = as.numeric(.data$auth_seq_id)
+              auth_seq_id = .data$auth_seq_id
             ) %>%
             dplyr::mutate(score_quality = dplyr::case_when(
               .data$prediction_score > 90 ~ "very_good",

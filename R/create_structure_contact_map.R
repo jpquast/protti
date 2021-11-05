@@ -12,8 +12,8 @@
 #' the name can be provided to the \code{chain} argument. If chains are provided, only distances
 #' of this chain relative to the rest of the structure are calculated. Multiple chains can be
 #' provided in multiple rows. If chains are provided for one structure but not for another, the
-#' rows should contain NAs. Furthermore, specific residue positions can be provided in start and
-#' end columns if the selection should be further reduced. It is not recommended to create full
+#' rows should contain NAs. Furthermore, specific residue positions can be provided in the \code{auth_seq_id} 
+#' column if the selection should be further reduced. It is not recommended to create full
 #' contact maps for more than a few structures due to time and memory limitations. If contact maps are
 #' created only for small regions it is possible to create multiple maps at once. By default distances
 #' of regions provided in this data frame to the complete structure are computed. If distances of regions
@@ -30,20 +30,15 @@
 #' @param chain optional, a character column in the \code{data} data frame that contains chain
 #' identifiers for the structure file. Identifiers defined by the structure author should be used.
 #' Distances will be only calculated between the provided chains and the rest of the structure.
-#' @param start_in_pdb optional, a numeric column in the \code{data} data frame that contains
-#' start positions of regions which for distances should be calculated. This needs to be always
-#' provided in combination with a corresponding end position in \code{end_in_pdb} and chain in
-#' \code{chain}. The position should match the positioning defined by the structure author. For
+#' @param auth_seq_id optional, a character (or numeric) column in the \code{data} data frame 
+#' that contains semicolon separated positions of regions for which distances should be calculated.
+#' This always needs to be provided in combination with a corresponding chain in \code{chain}.
+#' The position should match the positioning defined by the structure author. For
 #' PDB structures this information can be obtained from the \code{find_peptide_in_structure}
-#' function. The corresponding column in the output is called \code{auth_seq_id_start}. If an
-#' AlphaFold prediction is provided, UniProt positions should be used.
-#' @param end_in_pdb optional, a numeric column in the \code{data} data frame that contains end
-#' positions of regions which for distances should be calculated. This needs to be always provided
-#' in combination with a corresponding start position in \code{start_in_pdb} and chain in
-#' \code{chain}. The position should match the positioning defined by the structure author. For
-#' PDB structures this information can be obtained from the \code{find_peptide_in_structure}
-#' function. The corresponding column in the output is called \code{auth_seq_id_end}. If an
-#' AlphaFold prediction is provided, UniProt positions should be used.
+#' function. The corresponding column in the output is called \code{auth_seq_id}. If an
+#' AlphaFold prediction is provided, UniProt positions should be used. If signal positions
+#' and not stretches of amino acids are provided, the column can be numeric and does not need
+#' to contain the semicolon separator.
 #' @param distance_cutoff a numeric value specifying the distance cutoff in Angstrom. All values
 #' for pairwise comparisons are calculated but only values smaller than this cutoff will be
 #' returned in the output. If a cutoff of e.g. 5 is selected then only residues with a distance of
@@ -80,7 +75,7 @@
 #' @import progress
 #' @importFrom purrr map2 map map_dfr
 #' @importFrom readr read_tsv write_csv
-#' @importFrom stringr str_replace_all str_sub str_detect str_extract str_replace
+#' @importFrom stringr str_replace_all str_sub str_detect str_extract str_replace str_split
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
 #' @export
@@ -91,8 +86,7 @@
 #' data <- data.frame(
 #'   pdb_id = c("6NPF", "1C14", "3NIR"),
 #'   chain = c("A", "A", NA),
-#'   start = c(1, NA, NA),
-#'   end = c(10, NA, NA)
+#'   auth_seq_id = c("1;2;3;4;5;6;7", NA, NA)
 #' )
 #'
 #' # Create contact map
@@ -100,8 +94,7 @@
 #'   data = data,
 #'   id = pdb_id,
 #'   chain = chain,
-#'   start_in_pdb = start,
-#'   end_in_pdb = end,
+#'   auth_seq_id = auth_seq_id,
 #'   return_min_residue_distance = TRUE
 #' )
 #'
@@ -113,8 +106,7 @@ create_structure_contact_map <- function(data,
                                          data2 = NULL,
                                          id,
                                          chain = NULL,
-                                         start_in_pdb = NULL,
-                                         end_in_pdb = NULL,
+                                         auth_seq_id = NULL,
                                          distance_cutoff = 10,
                                          pdb_model_number_selection = c(0, 1),
                                          return_min_residue_distance = TRUE,
@@ -157,12 +149,12 @@ create_structure_contact_map <- function(data,
 
   # make sure that there is always a chain associated with start and end positions
   for (i in 1:length(data_list)) {
-    if (ifelse(!missing(start_in_pdb) & (missing(chain) || all(is.na(dplyr::pull(data_list[[i]], {{ chain }})))),
-      any(!is.na(dplyr::pull(data_list[[i]], {{ start_in_pdb }}))),
+    if (ifelse(!missing(auth_seq_id) & (missing(chain) || all(is.na(dplyr::pull(data_list[[i]], {{ chain }})))),
+      any(!is.na(dplyr::pull(data_list[[i]], {{ auth_seq_id }}))),
       FALSE
     ) |
-      ifelse(!missing(start_in_pdb) & !missing(chain),
-        any(!is.na(dplyr::pull(data_list[[i]], {{ start_in_pdb }})[is.na(dplyr::pull(data_list[[i]], {{ chain }}))])),
+      ifelse(!missing(auth_seq_id) & !missing(chain),
+        any(!is.na(dplyr::pull(data_list[[i]], {{ auth_seq_id }})[is.na(dplyr::pull(data_list[[i]], {{ chain }}))])),
         FALSE
       )) {
       stop(strwrap(paste0("\"", names(data_list)[i], "\" contains start and end positions whithout specified chain IDs.
@@ -188,7 +180,7 @@ Please always provide a chain ID for your start and end positions."),
         dplyr::pull(.data$retain_pattern) %>%
         unique())
     } else {
-      if (missing(start_in_pdb) || all(is.na(dplyr::pull(data_list[[i]], {{ start_in_pdb }})))) {
+      if (missing(auth_seq_id) || all(is.na(dplyr::pull(data_list[[i]], {{ auth_seq_id }})))) {
         assign(data_retain_pattern_name, data_list[[i]] %>%
           dplyr::ungroup() %>%
           dplyr::mutate(retain_pattern = stringr::str_replace_all(
@@ -201,15 +193,10 @@ Please always provide a chain ID for your start and end positions."),
       } else {
         assign(data_retain_pattern_name, data_list[[i]] %>%
           dplyr::ungroup() %>%
-          dplyr::mutate(
-            start = {{ start_in_pdb }},
-            end = {{ end_in_pdb }}
-          ) %>%
-          # do this so start and end position can be the same column.
-          dplyr::distinct({{ id }}, {{ chain }}, .data$start, .data$end) %>%
-          group_by({{ id }}, {{ chain }}, .data$start, .data$end) %>%
-          dplyr::mutate(residue = ifelse(!is.na(.data$start),
-            list(seq(.data$start, .data$end)),
+          dplyr::distinct({{ id }}, {{ chain }}, {{ auth_seq_id }}) %>%
+          group_by({{ id }}, {{ chain }}, {{ auth_seq_id }}) %>%
+          dplyr::mutate(residue = ifelse(!is.na({{ auth_seq_id }}),
+            stringr::str_split({{ auth_seq_id }}, pattern = ";"),
             list(NA)
           )) %>%
           dplyr::ungroup() %>%
@@ -284,7 +271,7 @@ Please always provide a chain ID for your start and end positions."),
           y = as.numeric(.data$y),
           z = as.numeric(.data$z),
           b_iso_or_equivalent = as.numeric(.data$b_iso_or_equivalent),
-          auth_seq_id = as.numeric(.data$auth_seq_id),
+          auth_seq_id = .data$auth_seq_id,
           pdb_model_number = as.numeric(.data$pdb_model_number),
           id = "my_structure"
         ) %>%
@@ -350,11 +337,11 @@ Please always provide a chain ID for your start and end positions."),
             pattern = "\\s+",
             replacement = ""
           ),
-          auth_seq_id = as.numeric(stringr::str_replace_all(
+          auth_seq_id = stringr::str_replace_all(
             suppressWarnings(as.numeric(stringr::str_sub(.data$X1, start = 23, end = 26))),
             pattern = "\\s+",
             replacement = ""
-          )),
+          ),
           x = as.numeric(stringr::str_replace_all(
             stringr::str_sub(.data$X1, start = 31, end = 38),
             pattern = "\\s+",

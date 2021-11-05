@@ -33,7 +33,7 @@
 #' \item{auth_asym_id: }{Chain identifier provided by the author of the structure in order to
 #' match the identification used in the publication that describes the structure.}
 #' \item{label_asym_id: }{Chain identifier following the standardised convention for mmCIF files.}
-#' \item{peptide_sequence_in_pdb: }{The sequence of the peptide mapped to the structure. If the
+#' \item{peptide_seq_in_pdb: }{The sequence of the peptide mapped to the structure. If the
 #' peptide only maps partially, then only the part of the sequence that maps on the structure is
 #' returned.}
 #' \item{fit_type: }{The fit type is either "partial" or "fully" and it indicates if the complete
@@ -44,10 +44,16 @@
 #' following the standardised convention for mmCIF files.}
 #' \item{auth_seq_id_start: }{Contains the first residue position of the peptide in the structure
 #' based on the alternative residue identifier provided by the author of the structure in order
-#' to match the identification used in the publication that describes the structure.}
+#' to match the identification used in the publication that describes the structure. This does 
+#' not need to be numeric and is therefore of type character.}
 #' \item{auth_seq_id_end: }{Contains the last residue position of the peptide in the structure
 #' based on the alternative residue identifier provided by the author of the structure in order
-#' to match the identification used in the publication that describes the structure.}
+#' to match the identification used in the publication that describes the structure. This does 
+#' not need to be numeric and is therefore of type character.}
+#' \item{auth_seq_id: }{Contains all positions (separated by ";") of the peptide in the structure
+#' based on the alternative residue identifier provided by the author of the structure in order
+#' to match the identification used in the publication that describes the structure. This does 
+#' not need to be numeric and is therefore of type character.}
 #' \item{n_peptides: }{The number of peptides from one protein that were searched for within the
 #' current structure.}
 #' \item{n_peptides_in_structure: }{The number of peptides from one protein that were found within
@@ -55,7 +61,7 @@
 #' }
 #' @import dplyr
 #' @import tidyr
-#' @importFrom stringr str_sub
+#' @importFrom stringr str_sub str_split
 #' @importFrom magrittr %>%
 #' @importFrom rlang as_name enquo .data
 #' @export
@@ -101,7 +107,7 @@ find_peptide_in_structure <- function(peptide_data,
 
     uniprot_info <- fetch_uniprot(unis, columns = c("database(PDB)"))
 
-    # Make sure to only execute the code below if there aren't any
+    # Make sure to only execute the code below if there are
     # PDB structures to be extracted and fetched.
     if (!all(is.na(uniprot_info$database_pdb))) {
       pdb_id_mapping <- uniprot_info %>%
@@ -132,11 +138,18 @@ find_peptide_in_structure <- function(peptide_data,
         fit_type = NA,
         label_seq_id_start = {{ start }},
         label_seq_id_end = {{ end }},
-        auth_seq_id_start = {{ start }},
-        auth_seq_id_end = {{ end }},
+        auth_seq_id_start = as.character({{ start }}),
+        auth_seq_id_end = as.character({{ end }}),
         n_peptides = NA,
         n_peptides_in_structure = NA
-      )
+      ) %>% 
+      dplyr::group_by({{ peptide }}, .data$auth_seq_id_start, .data$auth_seq_id_end) %>% 
+      dplyr::mutate(auth_seq_id = ifelse(!is.na(.data$label_seq_id_start) &
+                                           !is.na(.data$label_seq_id_end),
+                                         list(as.character(seq(.data$label_seq_id_start, .data$label_seq_id_end))),
+                                         list(NA))) %>% 
+      dplyr::mutate(auth_seq_id = paste0(.data$auth_seq_id[[1]], collapse = ";")) %>% 
+      dplyr::ungroup()
   } else {
     result <- pdb_data %>%
       dplyr::distinct(
@@ -209,7 +222,7 @@ find_peptide_in_structure <- function(peptide_data,
           .data$label_seq_id_start
         )
       ) %>%
-      dplyr::mutate(peptide_sequence_in_pdb = stringr::str_sub(
+      dplyr::mutate(peptide_seq_in_pdb = stringr::str_sub(
         .data$pdb_sequence,
         start = .data$label_seq_id_start,
         end = .data$label_seq_id_end
@@ -218,13 +231,18 @@ find_peptide_in_structure <- function(peptide_data,
         label_seq_id_start = ifelse(.data$peptide_in_pdb, .data$label_seq_id_start, Inf),
         label_seq_id_end = ifelse(.data$peptide_in_pdb, .data$label_seq_id_end, Inf),
         fit_type = ifelse(.data$peptide_in_pdb, .data$fit_type, NA),
-        peptide_sequence_in_pdb = ifelse(.data$peptide_in_pdb, .data$peptide_sequence_in_pdb, NA)
+        peptide_seq_in_pdb = ifelse(.data$peptide_in_pdb, .data$peptide_seq_in_pdb, NA)
       ) %>%
+      dplyr::mutate(auth_seq_id_vector = stringr::str_split(.data$auth_seq_id, pattern = ";")) %>% 
       dplyr::rowwise() %>%
       dplyr::mutate(
-        auth_seq_id_start = suppressWarnings(as.numeric(.data$auth_seq_id[.data$label_seq_id_start])),
-        auth_seq_id_end = suppressWarnings(as.numeric(.data$auth_seq_id[.data$label_seq_id_end]))
+        auth_seq_id_start = suppressWarnings(.data$auth_seq_id_vector[.data$label_seq_id_start]),
+        auth_seq_id_end = suppressWarnings(.data$auth_seq_id_vector[.data$label_seq_id_end])
       ) %>%
+      dplyr::mutate(auth_seq_id = ifelse(.data$label_seq_id_start != Inf &
+                                                .data$label_seq_id_end != Inf, 
+                                              paste0(.data$auth_seq_id_vector[seq(.data$label_seq_id_start, .data$label_seq_id_end)], collapse = ";"),
+                                              NA)) %>% 
       dplyr::ungroup() %>%
       dplyr::mutate(
         label_seq_id_start = ifelse(.data$label_seq_id_start != Inf, .data$label_seq_id_start, NA),
@@ -236,7 +254,7 @@ find_peptide_in_structure <- function(peptide_data,
         .data$auth_asym_id,
         .data$label_asym_id,
         {{ peptide }},
-        .data$peptide_sequence_in_pdb,
+        .data$peptide_seq_in_pdb,
         .data$fit_type,
         {{ start }},
         {{ end }},
@@ -244,6 +262,7 @@ find_peptide_in_structure <- function(peptide_data,
         .data$label_seq_id_end,
         .data$auth_seq_id_start,
         .data$auth_seq_id_end,
+        .data$auth_seq_id,
         .data$n_peptides,
         .data$n_peptides_in_structure
       )
@@ -257,19 +276,31 @@ find_peptide_in_structure <- function(peptide_data,
 
   # All proteins with no structures or not mapped peptides
   missing_result <- peptide_data_prep %>%
-    filter(!{{ uniprot_id }} %in% unique(dplyr::pull(good_result, {{ uniprot_id }})))
-
+    filter(!{{ uniprot_id }} %in% unique(dplyr::pull(good_result, {{ uniprot_id }}))) 
+  
+  if(nrow(missing_result) > 0){
+    # only run the code below if the data frame contains data, otherwise it would generate
+    # an error.
+  missing_result <- missing_result %>%
+    # Make structure positions equal to start and end positions if no structure is
+    # available so this can be used for predictions
+    dplyr::mutate(
+      label_seq_id_start = {{ start }},
+      label_seq_id_end = {{ end }},
+      auth_seq_id_start = as.character({{ start }}),
+      auth_seq_id_end = as.character({{ end }})
+    ) %>% 
+    dplyr::group_by({{ peptide }}, .data$auth_seq_id_start, .data$auth_seq_id_end) %>% 
+    dplyr::mutate(auth_seq_id = ifelse(!is.na(.data$label_seq_id_start) &
+                                         !is.na(.data$label_seq_id_end),
+                                       list(as.character(seq(.data$label_seq_id_start, .data$label_seq_id_end))),
+                                       list(NA))) %>% 
+    dplyr::mutate(auth_seq_id = paste0(.data$auth_seq_id[[1]], collapse = ";")) %>% 
+    dplyr::ungroup()
+  }
   # Add back info that does not have any structures matching the peptides
   output <- result %>%
     dplyr::bind_rows(missing_result) %>%
-    dplyr::mutate(
-      label_seq_id_start = ifelse(is.na(.data$pdb_ids), {{ start }}, .data$label_seq_id_start),
-      label_seq_id_end = ifelse(is.na(.data$pdb_ids), {{ end }}, .data$label_seq_id_end),
-      auth_seq_id_start = ifelse(is.na(.data$pdb_ids), {{ start }}, .data$auth_seq_id_start),
-      auth_seq_id_end = ifelse(is.na(.data$pdb_ids), {{ end }}, .data$auth_seq_id_end)
-    ) %>%
-    # Make structure positions equal to start and end positions if no structure is
-    # available so this can be used for predictions
     dplyr::distinct()
 
   if (!missing(retain_columns)) {
@@ -278,12 +309,13 @@ find_peptide_in_structure <- function(peptide_data,
         "pdb_ids",
         "auth_asym_id",
         "label_asym_id",
-        "peptide_sequence_in_pdb",
+        "peptide_seq_in_pdb",
         "fit_type",
         "label_seq_id_start",
         "label_seq_id_end",
         "auth_seq_id_start",
         "auth_seq_id_end",
+        "auth_seq_id",
         "n_peptides",
         "n_peptides_in_structure"
       )]) %>%
@@ -292,12 +324,13 @@ find_peptide_in_structure <- function(peptide_data,
         "pdb_ids",
         "auth_asym_id",
         "label_asym_id",
-        "peptide_sequence_in_pdb",
+        "peptide_seq_in_pdb",
         "fit_type",
         "label_seq_id_start",
         "label_seq_id_end",
         "auth_seq_id_start",
         "auth_seq_id_end",
+        "auth_seq_id",
         "n_peptides",
         "n_peptides_in_structure"
       )])

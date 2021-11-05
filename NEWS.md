@@ -1,9 +1,16 @@
 # protti 0.2.0.9000
 
+## New features
+
+* `create_structure_contact_map()` now takes an optional `data2` argument in which a second data frame of positions and structures can be provided. The positions in this data frame are used for distance calculations relative to the positions provided in the `data` argument. This helps to reduce the size of the map since only comparisons of interest are compared. If a selection provided through the `data` argument should be compared to the whole structure the `data2` argument should not be provided, which is the previous default setting. 
+* `parallel_create_structure_contact_map()` can create structure contact maps using parallel processing. It is also recommended for sequential processing if a large number of contact maps should be created. The non-parallel function should not be used if more than 50 maps should be created at the same time. In order to reduce contact maps to domains or even only peptides, a search pattern is created that selects only relevant regions. This pattern is shared over all maps and would become too large if too maps are created at once. 
+* The "combined" condition in the plot of the `qc_cvs()` function now has a grey colour. This ensures that the other colours for each condition match the colours of other quality control plots.
+
 ## Bug fixes and documentation updates
 
 * Fixed a bug in `qc_ids()`, which caused an error when the optional `condition` argument was not provided. Also fixed a bug that did not take the state of the `remove_na_intensities` argument into account.
 * Small documentation updates in the "Dose-Response Data Analysis Workflow" vignette in which we correct statements about multiple testing correction and p-value distributions.
+* The `auth_seq_id` variable in structure files was handled as a numeric variable even though it sometimes can be character. This was fixed in all functions using it. These include: `fetch_pdb_structure()`, `fetch_alphafold_prediction()` (output is now numeric), `fetch_pdb()` (provides the `auth_seq_id` column not as a list vector but as character vector with semicolons as separators), `find_peptide_in_structure()` (now uses the new `auth_seq_id` format and returns the character vector of all positions of each peptide as `auth_seq_id` in additon to `auth_seq_id_start` and `auth_seq_id_end`), `create_structure_contact_map()`, `map_peptides_on_structure()` (now take the new `auth_seq_id` column instead of start and end positions as input).
 
 # protti 0.2.0
 
