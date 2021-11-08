@@ -107,7 +107,6 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
     .y = names(batches),
     .f = ~ {
       # query information from database
-      if (!is.null(batches)) {
         query <- try_query(.x,
           type = "text/tab-separated-values",
           col_names = FALSE,
@@ -115,14 +114,11 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
           show_col_types = FALSE,
           progress = FALSE
         )
-      }
-      if (show_progress == TRUE & "tbl" %in% class(query)) {
+
+      if (show_progress == TRUE) {
         pb$tick()
       }
-      # if previous batch had a connection problem change batches to NULL, which breaks the mapping.
-      if (!"tbl" %in% class(query)) {
-        batches <<- NULL
-      }
+        
       # only proceed with data if it was correctly retrieved
       if ("tbl" %in% class(query)) {
         query %>%
@@ -179,9 +175,30 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
             pdb_model_number = as.numeric(.data$pdb_model_number),
             pdb_id = .y
           )
+      } else {
+        query
       }
     }
   )
+  
+  # catch any IDs that have not been fetched correctly
+  error_list <- query_result %>% 
+    purrr::keep(.p = ~ is.character(.x))
+  
+  error_table <- tibble::tibble(id = names(error_list),
+                                error = unlist(error_list)) %>% 
+    dplyr::distinct()
+  
+  if(nrow(error_table) != 0){
+    message("The following IDs have not be retrieved correctly.")
+    message(paste0(capture.output(error_table), collapse = "\n"))
+  }
+  
+  # only keep data in output
+  
+  query_result <- query_result %>% 
+    purrr::keep(.p = ~ !is.character(.x))
+  
   if (return_data_frame == FALSE) {
     return(query_result)
   } else {
