@@ -467,7 +467,7 @@ map_peptides_on_structure <- function(peptide_data,
         .y = names(query_result),
         .f = ~ {
           result <- .x %>%
-            dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM|^HETATM"), .data$X1, NA)) %>%
+            dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d"), .data$X1, NA)) %>%
             dplyr::rowwise() %>%
             dplyr::mutate(
               # extract b-factor values based on positions
@@ -525,7 +525,7 @@ map_peptides_on_structure <- function(peptide_data,
         .y = names(query_result),
         .f = ~ {
           result <- .x %>%
-            dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM|^HETATM"), .data$X1, NA)) %>%
+            dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d"), .data$X1, NA)) %>%
             dplyr::mutate(
               chain = stringr::str_sub(.data$atoms, start = 22, end = 22),
               residue = suppressWarnings(stringr::str_trim(stringr::str_sub(.data$atoms, start = 23, end = 26)))
@@ -613,7 +613,7 @@ for the mapping. Make sure to provide a chain identifier if a mapping should be 
 
     if (file_format == ".cif") {
       pdb_file %>%
-        dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM|^HETATM"), .data$X1, NA)) %>%
+        dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d"), .data$X1, NA)) %>%
         dplyr::rowwise() %>%
         dplyr::mutate(
           # extract b-factor values based on positions
@@ -649,7 +649,7 @@ for the mapping. Make sure to provide a chain identifier if a mapping should be 
 
     if (file_format == ".pdb") {
       pdb_file %>%
-        dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM|^HETATM"), .data$X1, NA)) %>%
+        dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d"), .data$X1, NA)) %>%
         dplyr::mutate(
           chain = stringr::str_sub(.data$atoms, start = 22, end = 22),
           residue = suppressWarnings(stringr::str_trim(stringr::str_sub(.data$atoms, start = 23, end = 26)))

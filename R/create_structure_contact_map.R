@@ -228,7 +228,7 @@ Please always provide a chain ID for your start and end positions."),
     # load .cif file if provided
     if (file_format == ".cif") {
       structure <- structure_file %>%
-        dplyr::filter(stringr::str_detect(.data$X1, pattern = "^ATOM|^HETATM")) %>%
+        dplyr::filter(stringr::str_detect(.data$X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d")) %>%
         dplyr::mutate(X2 = stringr::str_replace_all(.data$X1, pattern = "\\s+", replacement = " ")) %>%
         tidyr::separate(.data$X2,
           sep = " ",
@@ -313,7 +313,7 @@ Please always provide a chain ID for your start and end positions."),
     # load .pdb file if provided
     if (file_format == ".pdb") {
       structure <- structure_file %>%
-        dplyr::filter(stringr::str_detect(.data$X1, pattern = "^ATOM|^HETATM|^MODEL")) %>%
+        dplyr::filter(stringr::str_detect(.data$X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d|^MODEL")) %>%
         dplyr::mutate(pdb_model_number = as.numeric(ifelse(stringr::str_detect(.data$X1, pattern = "^MODEL"),
           stringr::str_extract(.data$X1, pattern = "\\d+"),
           NA

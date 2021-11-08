@@ -179,7 +179,7 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
           pb$tick()
         }
         readr::read_tsv(.x, col_names = FALSE, quote = "", show_col_types = FALSE, progress = FALSE) %>%
-          dplyr::filter(stringr::str_detect(X1, pattern = "^ATOM|^HETATM")) %>%
+          dplyr::filter(stringr::str_detect(X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d")) %>%
           dplyr::mutate(X2 = stringr::str_replace_all(X1, pattern = "\\s+", replacement = " ")) %>%
           tidyr::separate(X2,
             sep = " ",
@@ -289,7 +289,7 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
         # only proceed with data if it was correctly retrieved
         if ("tbl" %in% class(query)) {
           query %>%
-            dplyr::filter(stringr::str_detect(X1, pattern = "^ATOM|^HETATM")) %>%
+            dplyr::filter(stringr::str_detect(X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d")) %>%
             dplyr::mutate(X2 = stringr::str_replace_all(X1, pattern = "\\s+", replacement = " ")) %>%
             tidyr::separate(X2,
               sep = " ",
