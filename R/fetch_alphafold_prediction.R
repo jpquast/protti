@@ -56,6 +56,7 @@
 #' @importFrom stringr str_replace_all str_detect
 #' @importFrom curl has_internet
 #' @importFrom magrittr %>%
+#' @importFrom utils capture.output
 #' @export
 #'
 #' @examples
@@ -364,7 +365,7 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
   
   if(nrow(error_table) != 0){
     message("The following IDs have not be retrieved correctly.")
-    message(paste0(capture.output(error_table), collapse = "\n"))
+    message(paste0(utils::capture.output(error_table), collapse = "\n"))
   }
 
   # only keep data in output

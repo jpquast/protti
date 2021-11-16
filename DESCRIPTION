@@ -48,7 +48,6 @@ Suggests:
     dendextend,
     pheatmap, 
     heatmaply,
-    viridis,
     iq,
     furrr, 
     future, 

@@ -227,6 +227,11 @@ map_peptides_on_structure <- function(peptide_data,
         dplyr::distinct({{ pdb_id }}, {{ uniprot_id }}) %>%
         dplyr::group_by({{ pdb_id }}) %>%
         dplyr::mutate(name = paste({{ uniprot_id }}, collapse = "_")) %>%
+        dplyr::mutate(name = ifelse(nchar(.data$name) >= 240, 
+                                    paste0(stringr::str_count(.data$name, pattern = "_") + 1, "_proteins"),
+                                    .data$name
+                                    )
+        ) %>% 
         dplyr::ungroup() %>%
         dplyr::mutate(name = paste0({{ pdb_id }}, "_", .data$name)) %>%
         dplyr::select(-{{ uniprot_id }}) %>%
