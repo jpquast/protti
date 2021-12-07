@@ -618,7 +618,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
         dplyr::distinct({{ sample }}, {{ condition }}) %>%
         dplyr::arrange({{ sample }})
 
-      proDA_design <- stringr::str_replace_all(dplyr::pull(proDA_map, {{ condition }}), pattern = " ", replacement = "_")
+      proDA_design <- paste0("x", stringr::str_replace_all(dplyr::pull(proDA_map, {{ condition }}), pattern = " ", replacement = "_"))
 
       message("DONE", appendLF = TRUE)
       message("[3/5] Fitting proDA model (can take a few minutes) ... ", appendLF = FALSE)
@@ -649,6 +649,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
 
       names <- unique(dplyr::pull(data, {{ comparison }}))
       comparisons <- paste0(
+        "x",
         stringr::str_extract(
           stringr::str_replace_all(
             unique(dplyr::pull(
@@ -659,7 +660,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
             replacement = "_"
           ),
           pattern = ".+(?=_vs_)"
-        ), " - ",
+        ), " - x",
         stringr::str_extract(
           stringr::str_replace_all(
             unique(dplyr::pull(
