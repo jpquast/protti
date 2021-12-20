@@ -102,7 +102,9 @@ Creates a contact map of a subset or of all atom or residue distances in a struc
 AlphaFold prediction file. Contact maps are a useful tool for the identification of protein
 regions that are in close proximity in the folded protein. Additionally, regions that are
 interacting closely with a small molecule or metal ion can be easily identified without the
-need to open the structure in programs such as PyMOL or ChimeraX.
+need to open the structure in programs such as PyMOL or ChimeraX. For large datasets (more
+than 40 contact maps) it is recommended to use the \code{parallel_create_structure_contact_map()}
+function instead, regardless of if maps should be created in parallel or sequential.
 }
 \examples{
 \donttest{

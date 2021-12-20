@@ -54,7 +54,7 @@ This always needs to be provided in combination with a corresponding chain in \c
 The position should match the positioning defined by the structure author. For
 PDB structures this information can be obtained from the \code{find_peptide_in_structure}
 function. The corresponding column in the output is called \code{auth_seq_id}. If an
-AlphaFold prediction is provided, UniProt positions should be used. If singal positions
+AlphaFold prediction is provided, UniProt positions should be used. If single positions
 and not stretches of amino acids are provided, the column can be numeric and does not need
 to contain the semicolon separator.}
 

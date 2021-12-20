@@ -274,13 +274,13 @@ find_peptide_in_structure <- function(peptide_data,
   good_result <- result %>%
     dplyr::filter(.data$n_peptides_in_structure > 0)
 
-  # All proteins with no structures or not mapped peptides
+  # All proteins with no structures or no mapped peptides
   missing_result <- peptide_data_prep %>%
     filter(!{{ uniprot_id }} %in% unique(dplyr::pull(good_result, {{ uniprot_id }}))) 
   
   if(nrow(missing_result) > 0){
-    # only run the code below if the data frame contains data, otherwise it would generate
-    # an error.
+    # only run the code below if the missing_result data frame contains data, otherwise 
+    # the function would return an error.
   missing_result <- missing_result %>%
     # Make structure positions equal to start and end positions if no structure is
     # available so this can be used for predictions
