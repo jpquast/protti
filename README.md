@@ -64,13 +64,18 @@ main areas of application are:
     proteomics (e.g. UniProt) and load any data that interests you
     directly into R.
 
-The package has been peer-reviewed and was published in *Bioinformatics
-Advances*:
+### Citation
+
+The protti package has been peer-reviewed and was published in
+*Bioinformatics Advances*:
 
 Jan-Philipp Quast, Dina Schuster, Paola Picotti. protti: an R package
 for comprehensive data analysis of peptide- and protein-centric
-bottom-up proteomics data. *Bioinformatics Advances*, (2021), vbab041,
-<https://doi.org/10.1093/bioadv/vbab041>
+bottom-up proteomics data. *Bioinformatics Advances*, Volume 2, Issue 1,
+2022, vbab041, <https://doi.org/10.1093/bioadv/vbab041>
+
+Please make sure to cite this publication if you used protti for your
+data analysis.
 
 ## Installation
 
