@@ -28,6 +28,7 @@
 #' @importFrom tidyr pivot_wider
 #' @importFrom rlang .data as_name
 #' @importFrom magrittr %>%
+#' @importFrom grDevices colorRampPalette
 #' @export
 #'
 #' @examples
@@ -61,6 +62,8 @@ qc_sample_correlation <- function(data,
                                   interactive = FALSE) {
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
+  viridis_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+  utils::data("viridis_colours", envir = environment()) # then overwrite it with real data
 
   correlation <- data %>%
     dplyr::distinct({{ sample }}, {{ grouping }}, {{ intensity_log2 }}) %>%
@@ -94,9 +97,12 @@ qc_sample_correlation <- function(data,
     names(digest_colours) <- digest
   }
   if (!missing(run_order)) {
+    colfunc <- grDevices::colorRampPalette(c("#0D0887", "#2E0595", "#46039F", "#5C01A6", "#7201A8", "#8707A6", "#9A169F", 
+                                  "#AC2694", "#BC3587", "#CA457A", "#D6556D", "#E26561", "#EB7655", "#F48849", 
+                                  "#FA9B3D", "#FDAF31", "#FDC527", "#F9DC24", "#F0F921"))
     run_ord <- unique(dplyr::pull(annotation, {{ run_order }}))
     n_run_ord <- length(run_ord)
-    run_ord_colours <- protti_colours[(n_digest + n_conditions + 1):(n_run_ord + n_digest + n_conditions)]
+    run_ord_colours <- colfunc(n_run_ord)
     names(run_ord_colours) <- run_ord
   }
   annotation_colours <- list(
@@ -142,7 +148,6 @@ qc_sample_correlation <- function(data,
     dependency_test <- c(
       dendextend = !requireNamespace("dendextend", quietly = TRUE),
       pheatmap = !requireNamespace("pheatmap", quietly = TRUE),
-      viridis = !requireNamespace("viridis", quietly = TRUE),
       seriation = !requireNamespace("seriation", quietly = TRUE)
     )
     if (any(dependency_test)) {
@@ -179,7 +184,7 @@ qc_sample_correlation <- function(data,
         annotation = annotation,
         annotation_colors = annotation_colours,
         main = "Correlation based hierachical clustering of samples",
-        color = viridis::viridis(100)
+        color = viridis_colours
       )
     return(heatmap_static)
   }

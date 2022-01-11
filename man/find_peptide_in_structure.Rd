@@ -48,7 +48,7 @@ additional columns:
 \item{auth_asym_id: }{Chain identifier provided by the author of the structure in order to
 match the identification used in the publication that describes the structure.}
 \item{label_asym_id: }{Chain identifier following the standardised convention for mmCIF files.}
-\item{peptide_sequence_in_pdb: }{The sequence of the peptide mapped to the structure. If the
+\item{peptide_seq_in_pdb: }{The sequence of the peptide mapped to the structure. If the
 peptide only maps partially, then only the part of the sequence that maps on the structure is
 returned.}
 \item{fit_type: }{The fit type is either "partial" or "fully" and it indicates if the complete
@@ -59,10 +59,16 @@ following the standardised convention for mmCIF files.}
 following the standardised convention for mmCIF files.}
 \item{auth_seq_id_start: }{Contains the first residue position of the peptide in the structure
 based on the alternative residue identifier provided by the author of the structure in order
-to match the identification used in the publication that describes the structure.}
+to match the identification used in the publication that describes the structure. This does
+not need to be numeric and is therefore of type character.}
 \item{auth_seq_id_end: }{Contains the last residue position of the peptide in the structure
 based on the alternative residue identifier provided by the author of the structure in order
-to match the identification used in the publication that describes the structure.}
+to match the identification used in the publication that describes the structure. This does
+not need to be numeric and is therefore of type character.}
+\item{auth_seq_id: }{Contains all positions (separated by ";") of the peptide in the structure
+based on the alternative residue identifier provided by the author of the structure in order
+to match the identification used in the publication that describes the structure. This does
+not need to be numeric and is therefore of type character.}
 \item{n_peptides: }{The number of peptides from one protein that were searched for within the
 current structure.}
 \item{n_peptides_in_structure: }{The number of peptides from one protein that were found within

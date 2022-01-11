@@ -7,7 +7,7 @@
 
 [![R-CMD-check](https://github.com/jpquast/protti/workflows/R-CMD-check/badge.svg)](https://github.com/jpquast/protti/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](https://codecov.io/gh/jpquast/protti?branch=master)
+coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jpquast/protti?branch=master)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/protti)](https://CRAN.R-project.org/package=protti)
 <!-- badges: end -->
@@ -63,6 +63,19 @@ main areas of application are:
 -   **Databases**: You can easily access several databases relevant for
     proteomics (e.g. UniProt) and load any data that interests you
     directly into R.
+
+### Citation
+
+The protti package has been peer-reviewed and was published in
+*Bioinformatics Advances*:
+
+Jan-Philipp Quast, Dina Schuster, Paola Picotti. protti: an R package
+for comprehensive data analysis of peptide- and protein-centric
+bottom-up proteomics data. *Bioinformatics Advances*, Volume 2, Issue 1,
+2022, vbab041, <https://doi.org/10.1093/bioadv/vbab041>
+
+Please make sure to cite this publication if you used protti for your
+data analysis.
 
 ## Installation
 

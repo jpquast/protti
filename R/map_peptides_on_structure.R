@@ -9,12 +9,12 @@
 #'
 #' @param peptide_data a data frame that contains the input columns to this function. If structure
 #' or prediction files should be fetched automatically, please provide column names to the following
-#' arguments: **uniprot_id**, **pdb_id**, **chain**, **start_in_pdb**, **end_in_pdb**,
+#' arguments: **uniprot_id**, **pdb_id**, **chain**, **auth_seq_id**,
 #' **map_value**. If no PDB structure for a protein is available the \code{pdb_id} and \code{chain}
 #' column should contain NA at these positions. If a structure or prediction file is provided in the
 #' \code{structure_file} argument, this data frame should only contain information associated with
 #' the provided structure. In case of a user provided structure, column names should be provided to
-#' the following arguments: **uniprot_id**, **chain**, **start_in_pdb**, **end_in_pdb**, **map_value**.
+#' the following arguments: **uniprot_id**, **chain**, **auth_seq_id**, **map_value**.
 #' @param uniprot_id a character column in the \code{peptide_data} data frame that contains UniProt
 #' identifiers for a corresponding peptide, protein region or amino acid.
 #' @param pdb_id a character column in the \code{peptide_data} data frame that contains PDB
@@ -30,20 +30,13 @@
 #' the author defined chain definitions for both ".cif" and ".pdb" files. When the output of the
 #' \code{find_peptide_in_structure} function is used as the input for this function, this
 #' corresponds to the \code{auth_asym_id} column.
-#' @param start_in_pdb a numeric column in the \code{peptide_data} data frame that contains start
-#' positions for peptides, protein regions or amino acids in the corresponding PDB structure or
-#' AlphaFold prediction. This information can be obtained from the \code{find_peptide_in_structure}
-#' function. The corresponding column in the output is called \code{auth_seq_id_start}. If amino
-#' acid positions should be used, start and end positions are the same and the same column can be
-#' provided to both \code{start_in_pdb} and \code{end_in_pdb}. In case of AlphaFold predictions,
-#' UniProt positions should be used.
-#' @param end_in_pdb a numeric column in the \code{peptide_data} data frame that contains end
-#' positions for peptides, protein regions or amino acids in the corresponding PDB structure or
-#' AlphaFold prediction. This information can be obtained from the \code{find_peptide_in_structure}
-#' function. The corresponding column in the output is called \code{auth_seq_id_end}. If amino
-#' acid positions should be used, start and end positions are the same and the same column can
-#' be provided to both \code{start_in_pdb} and \code{end_in_pdb}. In case of AlphaFold
-#' predictions, UniProt positions should be used.
+#' @param auth_seq_id optional, a character (or numeric) column in the \code{peptide_data} data frame 
+#' that contains semicolon separated positions of peptides, protein regions or amino acids in the 
+#' corresponding PDB structure or AlphaFold prediction. This information can be obtained from the 
+#' \code{find_peptide_in_structure} function. The corresponding column in the output is called 
+#' \code{auth_seq_id}. In case of AlphaFold predictions, UniProt positions should be used. If 
+#' signal positions and not stretches of amino acids are provided, the column can be numeric and 
+#' does not need to contain the semicolon separator.
 #' @param map_value a numeric column in the \code{peptide_data} data frame that contains a value
 #' associated with each peptide, protein region or amino acid. If one start to end position pair 
 #' has multiple different map values, the maximum will be used. This value will be displayed as a
@@ -127,8 +120,7 @@
 #'   uniprot_id = uniprot_id,
 #'   pdb_id = pdb_ids,
 #'   chain = auth_asym_id,
-#'   start_in_pdb = auth_seq_id_start,
-#'   end_in_pdb = auth_seq_id_end,
+#'   auth_seq_id = auth_seq_id,
 #'   map_value = map_value,
 #'   file_format = ".pdb",
 #'   export_location = getwd()
@@ -142,8 +134,7 @@ map_peptides_on_structure <- function(peptide_data,
                                       uniprot_id,
                                       pdb_id,
                                       chain,
-                                      start_in_pdb,
-                                      end_in_pdb,
+                                      auth_seq_id,
                                       map_value,
                                       file_format = ".cif",
                                       scale_per_structure = TRUE,
@@ -174,15 +165,10 @@ map_peptides_on_structure <- function(peptide_data,
 
     peptide_data_filter <- peptide_data %>%
       dplyr::ungroup() %>%
-      tidyr::drop_na({{ start_in_pdb }}) %>%
+      tidyr::drop_na({{ auth_seq_id }}) %>%
       # remove observations that do not have any position
       # information because they did not fit a protein.
-      dplyr::mutate(
-        start = {{ start_in_pdb }},
-        end = {{ end_in_pdb }}
-      ) %>%
-      # do this so start and end position can be the same column.
-      dplyr::group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, .data$start, .data$end) %>% 
+      dplyr::group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, {{ auth_seq_id }}) %>% 
       dplyr::mutate({{ map_value}} := max({{ map_value }}, na.rm = TRUE)) %>% 
       # This makes sure that there is only one value per peptide.
       # It will always take the maximum value.
@@ -191,8 +177,7 @@ map_peptides_on_structure <- function(peptide_data,
         {{ uniprot_id }},
         {{ pdb_id }},
         {{ chain }},
-        .data$start,
-        .data$end,
+        {{ auth_seq_id }},
         {{ map_value }}
       ) %>%
       dplyr::mutate(scaling_info = ifelse(rep(scale_per_structure, dplyr::n()), 
@@ -206,14 +191,14 @@ map_peptides_on_structure <- function(peptide_data,
         digits = 2
       )) %>%
       # Scale values between 50 and 100
-      group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, .data$start, .data$end) %>%
-      dplyr::mutate(residue = list(seq(.data$start, .data$end))) %>%
+      group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, {{ auth_seq_id }}) %>%
+      dplyr::mutate(residue = stringr::str_split({{ auth_seq_id }}, pattern = ";")) %>%
       dplyr::ungroup() %>%
       tidyr::unnest(.data$residue) %>%
       dplyr::group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, .data$residue) %>%
       dplyr::mutate({{ map_value }} := max({{ map_value }})) %>%
       dplyr::ungroup() %>%
-      dplyr::select(-c(.data$start, .data$end, .data$scaling_info)) %>% 
+      dplyr::select(-c({{ auth_seq_id }}, .data$scaling_info)) %>% 
       dplyr::distinct() %>%
       dplyr::mutate(
         id = ifelse(is.na({{ pdb_id }}), {{ uniprot_id }}, {{ pdb_id }}),
@@ -242,6 +227,11 @@ map_peptides_on_structure <- function(peptide_data,
         dplyr::distinct({{ pdb_id }}, {{ uniprot_id }}) %>%
         dplyr::group_by({{ pdb_id }}) %>%
         dplyr::mutate(name = paste({{ uniprot_id }}, collapse = "_")) %>%
+        dplyr::mutate(name = ifelse(nchar(.data$name) >= 240, 
+                                    paste0(stringr::str_count(.data$name, pattern = "_") + 1, "_proteins"),
+                                    .data$name
+                                    )
+        ) %>% 
         dplyr::ungroup() %>%
         dplyr::mutate(name = paste0({{ pdb_id }}, "_", .data$name)) %>%
         dplyr::select(-{{ uniprot_id }}) %>%
@@ -482,13 +472,13 @@ map_peptides_on_structure <- function(peptide_data,
         .y = names(query_result),
         .f = ~ {
           result <- .x %>%
-            dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM|^HETATM"), .data$X1, NA)) %>%
+            dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d"), .data$X1, NA)) %>%
             dplyr::rowwise() %>%
             dplyr::mutate(
               # extract b-factor values based on positions
               b_factor = stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+[:space:]+")[[1]][15],
               chain = stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][19],
-              residue = suppressWarnings(as.numeric(stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][17]))
+              residue = suppressWarnings(stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][17])
             ) %>%
             dplyr::ungroup() %>%
             dplyr::mutate(id = stringr::str_extract(.y, pattern = "^[\\d[:alpha:]]+")) %>%
@@ -540,10 +530,10 @@ map_peptides_on_structure <- function(peptide_data,
         .y = names(query_result),
         .f = ~ {
           result <- .x %>%
-            dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM|^HETATM"), .data$X1, NA)) %>%
+            dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d"), .data$X1, NA)) %>%
             dplyr::mutate(
               chain = stringr::str_sub(.data$atoms, start = 22, end = 22),
-              residue = suppressWarnings(as.numeric(stringr::str_sub(.data$atoms, start = 23, end = 26)))
+              residue = suppressWarnings(stringr::str_trim(stringr::str_sub(.data$atoms, start = 23, end = 26)))
             ) %>%
             dplyr::mutate(id = stringr::str_extract(.y, pattern = "^[\\d[:alpha:]]+")) %>%
             dplyr::left_join(peptide_data_filter, by = c(
@@ -597,17 +587,16 @@ map_peptides_on_structure <- function(peptide_data,
 
     peptide_data_filter <- peptide_data %>%
       dplyr::ungroup() %>%
-      dplyr::mutate(
-        start = {{ start_in_pdb }},
-        end = {{ end_in_pdb }}
-      ) %>%
-      dplyr::distinct({{ uniprot_id }}, {{ chain }}, .data$start, .data$end, {{ map_value }}) %>%
+      dplyr::distinct({{ uniprot_id }}, {{ chain }}, {{ auth_seq_id }}, {{ map_value }}) %>%
       dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01") * 50 + 50, digits = 2)) %>%
       # Scale values between 50 and 100
-      group_by({{ chain }}, .data$start, .data$end) %>%
-      dplyr::mutate(residue = list(seq(.data$start, .data$end))) %>%
+      group_by({{ chain }}, {{ auth_seq_id }}) %>%
+      dplyr::mutate(residue = ifelse(!is.na({{ auth_seq_id }}),
+                                     stringr::str_split({{ auth_seq_id }}, pattern = ";"),
+                                     list(NA)
+      )) %>%
       dplyr::ungroup() %>%
-      tidyr::unnest(.data$residue) %>%
+      tidyr::unnest(.data$residue) %>% 
       dplyr::group_by({{ chain }}, .data$residue) %>%
       dplyr::mutate({{ map_value }} := max({{ map_value }})) %>%
       dplyr::ungroup() %>%
@@ -629,13 +618,13 @@ for the mapping. Make sure to provide a chain identifier if a mapping should be 
 
     if (file_format == ".cif") {
       pdb_file %>%
-        dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM|^HETATM"), .data$X1, NA)) %>%
+        dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d"), .data$X1, NA)) %>%
         dplyr::rowwise() %>%
         dplyr::mutate(
           # extract b-factor values based on positions
           b_factor = stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+[:space:]+")[[1]][15],
           chain = stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][19],
-          residue = suppressWarnings(as.numeric(stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][17]))
+          residue = suppressWarnings(stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][17])
         ) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(b_factor = stringr::str_replace(.data$b_factor, pattern = "\\.", replacement = "\\\\\\.")) %>%
@@ -665,10 +654,10 @@ for the mapping. Make sure to provide a chain identifier if a mapping should be 
 
     if (file_format == ".pdb") {
       pdb_file %>%
-        dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM|^HETATM"), .data$X1, NA)) %>%
+        dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d"), .data$X1, NA)) %>%
         dplyr::mutate(
           chain = stringr::str_sub(.data$atoms, start = 22, end = 22),
-          residue = suppressWarnings(as.numeric(stringr::str_sub(.data$atoms, start = 23, end = 26)))
+          residue = suppressWarnings(stringr::str_trim(stringr::str_sub(.data$atoms, start = 23, end = 26)))
         ) %>%
         dplyr::left_join(peptide_data_filter, by = c(
           "chain" = rlang::as_name(rlang::enquo(chain)),

@@ -26,8 +26,8 @@ try_query <-
     }
 
     if (!curl::has_internet()) {
-      message("No internet connection.")
-      return(invisible(NULL))
+      if (!silent) message("No internet connection.")
+      return(invisible("No internet connection"))
     }
 
     query_result <- NULL
@@ -47,13 +47,13 @@ try_query <-
     }
 
     if (class(query_result) != "response") {
-      message(query_result)
-      return(invisible(NULL))
+      if (!silent) message(query_result)
+      return(invisible(query_result))
     }
 
     if (httr::http_error(query_result)) {
-      httr::message_for_status(query_result)
-      return(invisible(NULL))
+      if (!silent) httr::message_for_status(query_result)
+      return(invisible(httr::http_status(query_result)$message))
     }
 
     result <- suppressMessages(httr::content(query_result, type = type, encoding = "UTF-8", ...))
