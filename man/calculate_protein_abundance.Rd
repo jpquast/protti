@@ -60,6 +60,7 @@ Determines relative protein abundances from ion quantification. Only proteins wi
 three peptides are considered for quantification.
 }
 \examples{
+\donttest{
 # Create example data
 data <- data.frame(
   sample = c(
@@ -118,4 +119,5 @@ complete_abundances <- calculate_protein_abundance(
 )
 
 complete_abundances
+}
 }

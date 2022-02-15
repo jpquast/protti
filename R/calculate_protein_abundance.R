@@ -42,6 +42,7 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # Create example data
 #' data <- data.frame(
 #'   sample = c(
@@ -100,6 +101,7 @@
 #' )
 #'
 #' complete_abundances
+#' }
 calculate_protein_abundance <- function(data,
                                         sample,
                                         protein_id,

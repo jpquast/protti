@@ -1,3 +1,10 @@
+# protti 0.2.2
+
+## Bug fixes 
+
+* All tests and examples that are run on CRAN servers are only for functions that use packages `protti` depends on and not also packages it suggests.
+* `fetch_metal_pdb()` now gives more informative feedback regarding the reasons resources were not fetched correctly.
+
 # protti 0.2.1
 
 ## New features

@@ -5,7 +5,7 @@
 #'
 #' @param data a data frame that contains at least sample names, grouping identifiers (precursor,
 #' peptide or protein) and log2 transformed intensities for each grouping identifier.
-#' @param sample an optional character or factor column in the \code{data} data frame that contains the 
+#' @param sample an optional character or factor column in the \code{data} data frame that contains the
 #' sample name. If the sample column is of type factor, the ordering is based on the factor
 #' levels. NOTE: If the overall distribution should be returned please do not provide the name of the
 #' sample column.

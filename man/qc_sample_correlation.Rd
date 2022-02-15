@@ -52,6 +52,7 @@ leaf ordering.
 A correlation heatmap is created that uses hirachical clustering to determine sample similarity.
 }
 \examples{
+\donttest{
 set.seed(123) # Makes example reproducible
 
 # Create example data
@@ -71,4 +72,5 @@ qc_sample_correlation(
   intensity_log2 = peptide_intensity_missing,
   condition = condition
 )
+}
 }

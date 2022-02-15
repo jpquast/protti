@@ -6,7 +6,7 @@
 #' @source Dina's imagination.
 "protti_colours"
 
-#' Viridis colour scheme 
+#' Viridis colour scheme
 #'
 #' A colour scheme by the viridis colour scheme from the viridis R package.
 #'

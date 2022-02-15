@@ -147,44 +147,44 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       dplyr::filter(peptide == "peptide_1_4")
     expect_false(is.na(arranged_data$imputed_intensity[4]))
   })
+
+  protein_abundance <- calculate_protein_abundance(
+    data = missing_data,
+    sample = sample,
+    protein_id = protein,
+    precursor = peptide,
+    peptide = peptide,
+    intensity_log2 = normalised_intensity_log2,
+    method = "iq",
+    retain_columns = condition
+  )
+  protein_abundance_all <- calculate_protein_abundance(
+    data = missing_data,
+    sample = sample,
+    protein_id = protein,
+    precursor = peptide,
+    peptide = peptide,
+    intensity_log2 = normalised_intensity_log2,
+    method = "sum",
+    for_plot = TRUE
+  )
+
+  test_that("calculate_protein_abundance works", {
+    arranged_data <- protein_abundance %>%
+      dplyr::filter(protein == "protein_1")
+    expect_is(protein_abundance, "data.frame")
+    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(16.78, 16.94, 16.85, 16.81, 16.83, 16.82))
+    expect_equal(nrow(protein_abundance), 288)
+    expect_equal(ncol(protein_abundance), 4)
+
+    arranged_data <- protein_abundance_all %>%
+      dplyr::filter(protein == "protein_1" & peptide == "protein_intensity")
+    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(20.87, 20.97, 20.96, 20.81, 20.81, 20.86))
+    expect_is(protein_abundance_all, "data.frame")
+    expect_equal(nrow(protein_abundance_all), 4032)
+    expect_equal(ncol(protein_abundance_all), 4)
+  })
 }
-
-protein_abundance <- calculate_protein_abundance(
-  data = missing_data,
-  sample = sample,
-  protein_id = protein,
-  precursor = peptide,
-  peptide = peptide,
-  intensity_log2 = normalised_intensity_log2,
-  method = "iq",
-  retain_columns = condition
-)
-protein_abundance_all <- calculate_protein_abundance(
-  data = missing_data,
-  sample = sample,
-  protein_id = protein,
-  precursor = peptide,
-  peptide = peptide,
-  intensity_log2 = normalised_intensity_log2,
-  method = "sum",
-  for_plot = TRUE
-)
-
-test_that("calculate_protein_abundance works", {
-  arranged_data <- protein_abundance %>%
-    dplyr::filter(protein == "protein_1")
-  expect_is(protein_abundance, "data.frame")
-  expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(16.78, 16.94, 16.85, 16.81, 16.83, 16.82))
-  expect_equal(nrow(protein_abundance), 288)
-  expect_equal(ncol(protein_abundance), 4)
-
-  arranged_data <- protein_abundance_all %>%
-    dplyr::filter(protein == "protein_1" & peptide == "protein_intensity")
-  expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(20.87, 20.97, 20.96, 20.81, 20.81, 20.86))
-  expect_is(protein_abundance_all, "data.frame")
-  expect_equal(nrow(protein_abundance_all), 4032)
-  expect_equal(ncol(protein_abundance_all), 4)
-})
 
 if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("deprecated plot_peptide_profiles works", {
@@ -220,37 +220,39 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   })
 }
 
-test_that("peptide_profile_plot works", {
-  # not testing split_all = TRUE. Also not testing protein_abundance_plot = FALSE.
-  p <- peptide_profile_plot(
-    data = protein_abundance_all,
-    sample = sample,
-    peptide = peptide,
-    intensity_log2 = normalised_intensity_log2,
-    grouping = protein,
-    targets = c("protein_1", "protein_2"),
-    protein_abundance_plot = TRUE
-  )
-  expect_is(p, "list")
-  expect_is(p[[1]], "ggplot")
-  expect_error(print(p[[1]]), NA)
-
-  if (Sys.getenv("TEST_PROTTI") == "true") {
-    p_peptides <- peptide_profile_plot(
-      data = missing_data,
+if (Sys.getenv("TEST_PROTTI") == "true") {
+  test_that("peptide_profile_plot works", {
+    # not testing split_all = TRUE. Also not testing protein_abundance_plot = FALSE.
+    p <- peptide_profile_plot(
+      data = protein_abundance_all,
       sample = sample,
       peptide = peptide,
       intensity_log2 = normalised_intensity_log2,
       grouping = protein,
-      targets = c("protein_12"),
-      protein_abundance_plot = FALSE
+      targets = c("protein_1", "protein_2"),
+      protein_abundance_plot = TRUE
     )
+    expect_is(p, "list")
+    expect_is(p[[1]], "ggplot")
+    expect_error(print(p[[1]]), NA)
 
-    expect_is(p_peptides, "list")
-    expect_is(p_peptides[[1]], "ggplot")
-    expect_error(print(p_peptides[[1]]), NA)
-  }
-})
+    if (Sys.getenv("TEST_PROTTI") == "true") {
+      p_peptides <- peptide_profile_plot(
+        data = missing_data,
+        sample = sample,
+        peptide = peptide,
+        intensity_log2 = normalised_intensity_log2,
+        grouping = protein,
+        targets = c("protein_12"),
+        protein_abundance_plot = FALSE
+      )
+
+      expect_is(p_peptides, "list")
+      expect_is(p_peptides[[1]], "ggplot")
+      expect_error(print(p_peptides[[1]]), NA)
+    }
+  })
+}
 
 diff <- calculate_diff_abundance(
   data = missing_data,
@@ -560,24 +562,26 @@ test_that("volcano_plot works", {
   expect_error(print(p_target), NA)
 })
 
-drc_fit <- fit_drc_4p(
-  data = normalised_data_drc,
-  sample = sample,
-  grouping = peptide,
-  response = normalised_intensity_log2,
-  dose = concentration,
-  log_logarithmic = TRUE,
-  retain_columns = c(protein)
-)
+if (Sys.getenv("TEST_PROTTI") == "true") {
+  drc_fit <- fit_drc_4p(
+    data = normalised_data_drc,
+    sample = sample,
+    grouping = peptide,
+    response = normalised_intensity_log2,
+    dose = concentration,
+    log_logarithmic = TRUE,
+    retain_columns = c(protein)
+  )
 
-test_that("fit_drc_4p works", {
-  # did not test the argument include_models = TRUE
-  expect_is(drc_fit, "data.frame")
-  expect_equal(nrow(drc_fit), 282)
-  expect_equal(ncol(drc_fit), 18)
-  expect_equal(round(max(drc_fit$correlation, na.rm = TRUE), digits = 3), 0.876)
-  expect_equal(round(min(drc_fit$anova_pval, na.rm = TRUE), digits = 6), 0.007297)
-})
+  test_that("fit_drc_4p works", {
+    # did not test the argument include_models = TRUE
+    expect_is(drc_fit, "data.frame")
+    expect_equal(nrow(drc_fit), 282)
+    expect_equal(ncol(drc_fit), 18)
+    expect_equal(round(max(drc_fit$correlation, na.rm = TRUE), digits = 3), 0.876)
+    expect_equal(round(min(drc_fit$anova_pval, na.rm = TRUE), digits = 6), 0.007297)
+  })
+}
 
 if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("deprecated plot_drc_4p works", {
@@ -611,33 +615,34 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_warning(expect_error(print(p_facet), NA))
   })
 }
+if (Sys.getenv("TEST_PROTTI") == "true") {
+  test_that("drc_4p_plot works", {
+    p <- drc_4p_plot(
+      data = drc_fit,
+      grouping = peptide,
+      response = normalised_intensity_log2,
+      dose = concentration,
+      targets = c("peptide_1_2"),
+      unit = "uM",
+      y_axis_name = "test y-Axis"
+    )
 
-test_that("drc_4p_plot works", {
-  p <- drc_4p_plot(
-    data = drc_fit,
-    grouping = peptide,
-    response = normalised_intensity_log2,
-    dose = concentration,
-    targets = c("peptide_1_2"),
-    unit = "uM",
-    y_axis_name = "test y-Axis"
-  )
+    expect_is(p, "ggplot")
+    expect_warning(print(p), NA)
 
-  expect_is(p, "ggplot")
-  expect_warning(print(p), NA)
+    p_facet <- drc_4p_plot(
+      data = drc_fit,
+      grouping = peptide,
+      response = normalised_intensity_log2,
+      dose = concentration,
+      targets = c("peptide_1_2", "peptide_1_1"),
+      unit = "uM"
+    )
 
-  p_facet <- drc_4p_plot(
-    data = drc_fit,
-    grouping = peptide,
-    response = normalised_intensity_log2,
-    dose = concentration,
-    targets = c("peptide_1_2", "peptide_1_1"),
-    unit = "uM"
-  )
-
-  expect_is(p_facet, "list")
-  expect_warning(expect_error(print(p_facet), NA))
-})
+    expect_is(p_facet, "list")
+    expect_warning(expect_error(print(p_facet), NA))
+  })
+}
 
 test_that("filter_cv works", {
   normalised_data_filtered <- normalised_data %>%

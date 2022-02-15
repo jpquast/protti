@@ -462,9 +462,9 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       pdb_sequence = .data$pdbx_seq_one_letter_code_can,
       auth_seq_id = .data$auth_to_entity_poly_seq_mapping
     ) %>%
-    dplyr::rowwise() %>% 
+    dplyr::rowwise() %>%
     # make character string out of list column
-    dplyr::mutate(auth_seq_id = paste0(.data$auth_seq_id, collapse = ";")) %>% 
+    dplyr::mutate(auth_seq_id = paste0(.data$auth_seq_id, collapse = ";")) %>%
     dplyr::select(
       .data$pdb_ids,
       .data$auth_asym_id,

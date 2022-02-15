@@ -72,6 +72,7 @@
 #' @import progress
 #' @import purrr
 #' @import tidyr
+#' @importFrom stringr str_detect
 #' @importFrom curl has_internet
 #' @importFrom magrittr %>%
 #' @export
@@ -190,8 +191,9 @@ fetch_metal_pdb <- function(id_type = "uniprot",
   }
 
   url <- "http://metalpdb.cerm.unifi.it/api?query="
+  names(id_value) <- id_value
 
-  content <- purrr::map_dfr(
+  query_result <- purrr::map(
     .x = id_value,
     .f = function(x) {
       query_url <- paste0(
@@ -209,20 +211,56 @@ fetch_metal_pdb <- function(id_type = "uniprot",
         donors,
         columns
       )
-      if (!is.null(id_value)) {
-        query <- try_query(query_url, type = "application/json", simplifyDataFrame = TRUE)
-      }
+      query <- try_query(query_url, type = "application/json", simplifyDataFrame = TRUE)
 
-      if (show_progress == TRUE & class(query) %in% c("data.frame", "list")) {
+      if (show_progress == TRUE) {
         pb$tick()
-      }
-      # if previous ID had a connection problem change IDs to NULL, which breaks the mapping.
-      if (!class(query) %in% c("data.frame", "list")) {
-        id_value <<- NULL
       }
       query
     }
   )
+
+  # catch any IDs that have not been fetched correctly
+  error_list <- query_result %>%
+    purrr::map(.f = ~ {
+      if (length(.x) == 0) {
+        paste("Not found in database")
+      } else {
+        .x
+      }
+    }) %>%
+    purrr::keep(.p = ~ is.character(.x))
+
+  error_table <- tibble::tibble(
+    id = names(error_list),
+    error = unlist(error_list)
+  ) %>%
+    dplyr::distinct()
+
+  if (nrow(error_table) == length(id_value) && str_detect(error_table$error, pattern = "502")) {
+    message("502 Bad Gateway. The server cannot be reached right now. Try again later!")
+    return(invisible(NULL))
+  }
+
+  if (nrow(error_table) != 0) {
+    message("The following IDs have not be retrieved correctly.")
+    message(paste0(utils::capture.output(error_table), collapse = "\n"))
+  }
+
+  # only keep data in output
+
+  content <- query_result %>%
+    purrr::map(.f = ~ {
+      if (length(.x) == 0) {
+        paste("Not found in database")
+      } else {
+        .x
+      }
+    }) %>%
+    purrr::keep(.p = ~ !is.character(.x)) %>%
+    purrr::map_dfr(
+      .f = ~.x
+    )
 
   if (nrow(content) == 0) {
     return(content)
