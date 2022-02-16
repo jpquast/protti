@@ -304,7 +304,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     } +
     ggplot2::geom_col(col = "black", size = 1.5) +
     {
-      if (label == TRUE) {
+      if (label == TRUE & nrow(plot_input) > 0) {
         geom_text(
           data = plot_input,
           aes(label = paste0(.data$n_significant_proteins_in_process, 
