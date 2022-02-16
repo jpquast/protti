@@ -128,7 +128,7 @@ diff <- calculate_diff_abundance(
   intensity_log2 = peptide_intensity_missing,
   missingness = missingness,
   comparison = comparison,
-  method = "moderated_t-test",
+  method = "t-test",
   retain_columns = c(protein, change_peptide)
 )
 

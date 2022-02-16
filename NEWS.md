@@ -1,9 +1,16 @@
 # protti 0.2.2
 
+## New features
+
+* `calculate_go_enrichment()` now has the argument `label`. If `TRUE` labels are added to the plot that specify how many proteins from the specific GO term are among the significant hits. This new argument is by default `TRUE`. 
+* The version of STRINGdb that should be used for network analysis can now be provided through the `version` argument in the `analyse_functional_network()` function.
+
 ## Bug fixes 
 
 * All tests and examples that are run on CRAN servers are only for functions that use packages `protti` depends on and not also packages it suggests.
 * `fetch_metal_pdb()` now gives more informative feedback regarding the reasons resources were not fetched correctly.
+* Fixed a bug in `qc_proteome_coverage` that flipped the "Detected" and "Not detected" labels.
+* When the `highlight` argument of the `woods_plot()` function was used huge plots were generated when more than 20 proteins were provided to the function. This is fixed and was due to a wrong variable used in a loop.
 
 # protti 0.2.1
 
