@@ -4,9 +4,9 @@
 #' AlphaFold prediction file. Contact maps are a useful tool for the identification of protein
 #' regions that are in close proximity in the folded protein. Additionally, regions that are
 #' interacting closely with a small molecule or metal ion can be easily identified without the
-#' need to open the structure in programs such as PyMOL or ChimeraX. For large datasets (more 
-#' than 40 contact maps) it is recommended to use the `parallel_create_structure_contact_map()` 
-#' function instead, regardless of if maps should be created in parallel or sequential. 
+#' need to open the structure in programs such as PyMOL or ChimeraX. For large datasets (more
+#' than 40 contact maps) it is recommended to use the `parallel_create_structure_contact_map()`
+#' function instead, regardless of if maps should be created in parallel or sequential.
 #'
 #' @param data a data frame containing at least a column with PDB ID information of which the name
 #' can be provided to the \code{id} argument. If only this column is provided, all atom or residue
@@ -14,7 +14,7 @@
 #' the name can be provided to the \code{chain} argument. If chains are provided, only distances
 #' of this chain relative to the rest of the structure are calculated. Multiple chains can be
 #' provided in multiple rows. If chains are provided for one structure but not for another, the
-#' rows should contain NAs. Furthermore, specific residue positions can be provided in the \code{auth_seq_id} 
+#' rows should contain NAs. Furthermore, specific residue positions can be provided in the \code{auth_seq_id}
 #' column if the selection should be further reduced. It is not recommended to create full
 #' contact maps for more than a few structures due to time and memory limitations. If contact maps are
 #' created only for small regions it is possible to create multiple maps at once. By default distances
@@ -32,7 +32,7 @@
 #' @param chain optional, a character column in the \code{data} data frame that contains chain
 #' identifiers for the structure file. Identifiers defined by the structure author should be used.
 #' Distances will be only calculated between the provided chains and the rest of the structure.
-#' @param auth_seq_id optional, a character (or numeric) column in the \code{data} data frame 
+#' @param auth_seq_id optional, a character (or numeric) column in the \code{data} data frame
 #' that contains semicolon separated positions of regions for which distances should be calculated.
 #' This always needs to be provided in combination with a corresponding chain in \code{chain}.
 #' The position should match the positioning defined by the structure author. For

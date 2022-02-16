@@ -47,7 +47,9 @@ go_enrichment <- function(...) {
 #' @param go_data Optional, a data frame that can be obtained with \code{fetch_go}. If you provide
 #' data not obtained with \code{fetch_go} make sure column names for protein ID (db_id) and GO ID
 #' (go_id) are the same as for data obtained with \code{fetch_go}.
-#' @param plot a logical value indicating whether the result should be plotted or returned as a table.
+#' @param plot a logical argument indicating whether the result should be plotted or returned as a table.
+#' @param label a logical argument indicating whether labels should be added to the plot. 
+#' Default is TRUE.
 #' @param plot_cutoff a character value indicating if the plot should contain the top 10 most
 #' significant proteins (p-value or adjusted p-value), or if a significance cutoff should be used
 #' to determine the number of GO terms in the plot. This information should be provided with the
@@ -126,6 +128,7 @@ calculate_go_enrichment <- function(data,
                                     organism_id = NULL,
                                     go_data = NULL,
                                     plot = TRUE,
+                                    label = TRUE,
                                     plot_cutoff = "adj_pval top10") {
   # to avoid note about no global variable binding. Usually this can be avoided with
   # .data$ but not in nesting in complete function.
@@ -300,6 +303,21 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       }
     } +
     ggplot2::geom_col(col = "black", size = 1.5) +
+    {
+      if (label == TRUE & nrow(plot_input) > 0) {
+        geom_text(
+          data = plot_input,
+          aes(label = paste0(.data$n_significant_proteins_in_process, 
+                             "/", 
+                             .data$n_detected_proteins_in_process, 
+                             "(", 
+                             round(.data$n_significant_proteins_in_process/.data$n_detected_proteins_in_process*100, digits = 1),
+                             "%)"),
+              y = .data$neg_log_sig - 0.1,
+              hjust = 1 )
+        )
+      }
+    } +
     ggplot2::scale_fill_manual(values = c(Down = "#56B4E9", Up = "#E76145")) +
     ggplot2::scale_y_continuous(breaks = seq(0, 100, 1)) +
     ggplot2::coord_flip() +

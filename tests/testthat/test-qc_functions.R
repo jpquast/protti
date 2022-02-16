@@ -115,17 +115,19 @@ test_that("qc_pca works", {
   }
 })
 
-test_that("qc_sample_correlation works", {
-  p <- qc_sample_correlation(data = data, sample = sample, grouping = peptide, intensity_log2 = peptide_intensity_missing, condition = condition, interactive = FALSE)
-  expect_is(p, "pheatmap")
-  expect_error(print(p), NA)
+if (Sys.getenv("TEST_PROTTI") == "true") {
+  test_that("qc_sample_correlation works", {
+    p <- qc_sample_correlation(data = data, sample = sample, grouping = peptide, intensity_log2 = peptide_intensity_missing, condition = condition, interactive = FALSE)
+    expect_is(p, "pheatmap")
+    expect_error(print(p), NA)
 
-  if (Sys.getenv("TEST_PROTTI") == "true") {
-    p_interactive <- qc_sample_correlation(data = data, sample = sample, grouping = peptide, intensity_log2 = peptide_intensity_missing, condition = condition, interactive = TRUE)
-    expect_is(p_interactive, "plotly")
-    expect_error(print(p_interactive), NA)
-  }
-})
+    if (Sys.getenv("TEST_PROTTI") == "true") {
+      p_interactive <- qc_sample_correlation(data = data, sample = sample, grouping = peptide, intensity_log2 = peptide_intensity_missing, condition = condition, interactive = TRUE)
+      expect_is(p_interactive, "plotly")
+      expect_error(print(p_interactive), NA)
+    }
+  })
+}
 
 if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("qc_proteome_coverage works", {

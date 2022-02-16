@@ -383,15 +383,15 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_gt(nrow(network), 100)
 
     rlang::with_options(lifecycle_verbosity = "warning", {
-    expect_warning(expect_error(network_analysis(
-      data = input,
-      protein_id = id,
-      string_id = database_string,
-      organism_id = 511145,
-      score_threshold = 900,
-      binds_treatment = is_known,
-      plot = TRUE
-    ), NA))
+      expect_warning(expect_error(network_analysis(
+        data = input,
+        protein_id = id,
+        string_id = database_string,
+        organism_id = 511145,
+        score_threshold = 900,
+        binds_treatment = is_known,
+        plot = TRUE
+      ), NA))
     })
   })
 

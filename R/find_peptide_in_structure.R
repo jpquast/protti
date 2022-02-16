@@ -44,15 +44,15 @@
 #' following the standardised convention for mmCIF files.}
 #' \item{auth_seq_id_start: }{Contains the first residue position of the peptide in the structure
 #' based on the alternative residue identifier provided by the author of the structure in order
-#' to match the identification used in the publication that describes the structure. This does 
+#' to match the identification used in the publication that describes the structure. This does
 #' not need to be numeric and is therefore of type character.}
 #' \item{auth_seq_id_end: }{Contains the last residue position of the peptide in the structure
 #' based on the alternative residue identifier provided by the author of the structure in order
-#' to match the identification used in the publication that describes the structure. This does 
+#' to match the identification used in the publication that describes the structure. This does
 #' not need to be numeric and is therefore of type character.}
 #' \item{auth_seq_id: }{Contains all positions (separated by ";") of the peptide in the structure
 #' based on the alternative residue identifier provided by the author of the structure in order
-#' to match the identification used in the publication that describes the structure. This does 
+#' to match the identification used in the publication that describes the structure. This does
 #' not need to be numeric and is therefore of type character.}
 #' \item{n_peptides: }{The number of peptides from one protein that were searched for within the
 #' current structure.}
@@ -142,13 +142,14 @@ find_peptide_in_structure <- function(peptide_data,
         auth_seq_id_end = as.character({{ end }}),
         n_peptides = NA,
         n_peptides_in_structure = NA
-      ) %>% 
-      dplyr::group_by({{ peptide }}, .data$auth_seq_id_start, .data$auth_seq_id_end) %>% 
+      ) %>%
+      dplyr::group_by({{ peptide }}, .data$auth_seq_id_start, .data$auth_seq_id_end) %>%
       dplyr::mutate(auth_seq_id = ifelse(!is.na(.data$label_seq_id_start) &
-                                           !is.na(.data$label_seq_id_end),
-                                         list(as.character(seq(.data$label_seq_id_start, .data$label_seq_id_end))),
-                                         list(NA))) %>% 
-      dplyr::mutate(auth_seq_id = paste0(.data$auth_seq_id[[1]], collapse = ";")) %>% 
+        !is.na(.data$label_seq_id_end),
+      list(as.character(seq(.data$label_seq_id_start, .data$label_seq_id_end))),
+      list(NA)
+      )) %>%
+      dplyr::mutate(auth_seq_id = paste0(.data$auth_seq_id[[1]], collapse = ";")) %>%
       dplyr::ungroup()
   } else {
     result <- pdb_data %>%
@@ -233,16 +234,17 @@ find_peptide_in_structure <- function(peptide_data,
         fit_type = ifelse(.data$peptide_in_pdb, .data$fit_type, NA),
         peptide_seq_in_pdb = ifelse(.data$peptide_in_pdb, .data$peptide_seq_in_pdb, NA)
       ) %>%
-      dplyr::mutate(auth_seq_id_vector = stringr::str_split(.data$auth_seq_id, pattern = ";")) %>% 
+      dplyr::mutate(auth_seq_id_vector = stringr::str_split(.data$auth_seq_id, pattern = ";")) %>%
       dplyr::rowwise() %>%
       dplyr::mutate(
         auth_seq_id_start = suppressWarnings(.data$auth_seq_id_vector[.data$label_seq_id_start]),
         auth_seq_id_end = suppressWarnings(.data$auth_seq_id_vector[.data$label_seq_id_end])
       ) %>%
       dplyr::mutate(auth_seq_id = ifelse(.data$label_seq_id_start != Inf &
-                                                .data$label_seq_id_end != Inf, 
-                                              paste0(.data$auth_seq_id_vector[seq(.data$label_seq_id_start, .data$label_seq_id_end)], collapse = ";"),
-                                              NA)) %>% 
+        .data$label_seq_id_end != Inf,
+      paste0(.data$auth_seq_id_vector[seq(.data$label_seq_id_start, .data$label_seq_id_end)], collapse = ";"),
+      NA
+      )) %>%
       dplyr::ungroup() %>%
       dplyr::mutate(
         label_seq_id_start = ifelse(.data$label_seq_id_start != Inf, .data$label_seq_id_start, NA),
@@ -276,27 +278,28 @@ find_peptide_in_structure <- function(peptide_data,
 
   # All proteins with no structures or no mapped peptides
   missing_result <- peptide_data_prep %>%
-    filter(!{{ uniprot_id }} %in% unique(dplyr::pull(good_result, {{ uniprot_id }}))) 
-  
-  if(nrow(missing_result) > 0){
-    # only run the code below if the missing_result data frame contains data, otherwise 
+    filter(!{{ uniprot_id }} %in% unique(dplyr::pull(good_result, {{ uniprot_id }})))
+
+  if (nrow(missing_result) > 0) {
+    # only run the code below if the missing_result data frame contains data, otherwise
     # the function would return an error.
-  missing_result <- missing_result %>%
-    # Make structure positions equal to start and end positions if no structure is
-    # available so this can be used for predictions
-    dplyr::mutate(
-      label_seq_id_start = {{ start }},
-      label_seq_id_end = {{ end }},
-      auth_seq_id_start = as.character({{ start }}),
-      auth_seq_id_end = as.character({{ end }})
-    ) %>% 
-    dplyr::group_by({{ peptide }}, .data$auth_seq_id_start, .data$auth_seq_id_end) %>% 
-    dplyr::mutate(auth_seq_id = ifelse(!is.na(.data$label_seq_id_start) &
-                                         !is.na(.data$label_seq_id_end),
-                                       list(as.character(seq(.data$label_seq_id_start, .data$label_seq_id_end))),
-                                       list(NA))) %>% 
-    dplyr::mutate(auth_seq_id = paste0(.data$auth_seq_id[[1]], collapse = ";")) %>% 
-    dplyr::ungroup()
+    missing_result <- missing_result %>%
+      # Make structure positions equal to start and end positions if no structure is
+      # available so this can be used for predictions
+      dplyr::mutate(
+        label_seq_id_start = {{ start }},
+        label_seq_id_end = {{ end }},
+        auth_seq_id_start = as.character({{ start }}),
+        auth_seq_id_end = as.character({{ end }})
+      ) %>%
+      dplyr::group_by({{ peptide }}, .data$auth_seq_id_start, .data$auth_seq_id_end) %>%
+      dplyr::mutate(auth_seq_id = ifelse(!is.na(.data$label_seq_id_start) &
+        !is.na(.data$label_seq_id_end),
+      list(as.character(seq(.data$label_seq_id_start, .data$label_seq_id_end))),
+      list(NA)
+      )) %>%
+      dplyr::mutate(auth_seq_id = paste0(.data$auth_seq_id[[1]], collapse = ";")) %>%
+      dplyr::ungroup()
   }
   # Add back info that does not have any structures matching the peptides
   output <- result %>%

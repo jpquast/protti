@@ -8,7 +8,7 @@
 #' Workers can either be set up manually before running the function with
 #' `future::plan(multisession)` or automatically by the function (maximum number of workers
 #' is 12 in this case). If workers are set up manually the `processing_type` argument should
-#' be set to "parallel manual". In this case workers can be terminated after completion with 
+#' be set to "parallel manual". In this case workers can be terminated after completion with
 #' `future::plan(sequential)`.
 #'
 #' @param data a data frame containing at least a column with PDB ID information of which the name
@@ -17,7 +17,7 @@
 #' the name can be provided to the \code{chain} argument. If chains are provided, only distances
 #' of this chain relative to the rest of the structure are calculated. Multiple chains can be
 #' provided in multiple rows. If chains are provided for one structure but not for another, the
-#' rows should contain NAs. Furthermore, specific residue positions can be provided in the \code{auth_seq_id} 
+#' rows should contain NAs. Furthermore, specific residue positions can be provided in the \code{auth_seq_id}
 #' column if the selection should be further reduced. It is not recommended to create full
 #' contact maps for more than a few structures due to time and memory limitations. If contact maps are
 #' created only for small regions it is possible to create multiple maps at once. By default distances
@@ -35,7 +35,7 @@
 #' @param chain optional, a character column in the \code{data} data frame that contains chain
 #' identifiers for the structure file. Identifiers defined by the structure author should be used.
 #' Distances will be only calculated between the provided chains and the rest of the structure.
-#' @param auth_seq_id optional, a character (or numeric) column in the \code{data} data frame 
+#' @param auth_seq_id optional, a character (or numeric) column in the \code{data} data frame
 #' that contains semicolon separated positions of regions for which distances should be calculated.
 #' This always needs to be provided in combination with a corresponding chain in \code{chain}.
 #' The position should match the positioning defined by the structure author. For

@@ -50,16 +50,16 @@ calculate_aa_scores <- function(data,
   output <- data %>%
     dplyr::ungroup() %>%
     dplyr::distinct({{ protein }}, {{ diff }}, {{ adj_pval }}, {{ start_position }}, {{ end_position }}) %>%
-    tidyr::drop_na({{ diff }}, {{ adj_pval }}) %>% 
+    tidyr::drop_na({{ diff }}, {{ adj_pval }}) %>%
     dplyr::mutate(score = -log10({{ adj_pval }}) * abs({{ diff }})) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(residue = list(seq({{ start_position }}, {{ end_position }}))) %>%
     tidyr::unnest(.data$residue) %>%
     dplyr::group_by({{ protein }}, .data$residue) %>%
     dplyr::mutate(amino_acid_score = mean(.data$score)) %>%
-    dplyr::distinct({{ protein }}, .data$residue, .data$amino_acid_score) 
-  
-  
+    dplyr::distinct({{ protein }}, .data$residue, .data$amino_acid_score)
+
+
   if (!missing(retain_columns)) {
     output <- data %>%
       dplyr::select(!!enquo(retain_columns), colnames(output)[!colnames(output) %in% c(
@@ -72,6 +72,6 @@ calculate_aa_scores <- function(data,
         "amino_acid_score"
       )])
   }
-  
+
   output
 }

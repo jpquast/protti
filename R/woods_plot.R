@@ -162,7 +162,7 @@ woods_plot <- function(data,
       {
         if (!highlight_missing) {
           ggplot2::geom_point(
-            data = dplyr::filter(data, {{ highlight }} == TRUE),
+            data = dplyr::filter(x, {{ highlight }} == TRUE),
             ggplot2::aes(
               x = (({{ start_position }} + {{ end_position }}) / 2),
               y = ({{ fold_change }} - 0.3)

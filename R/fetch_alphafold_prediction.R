@@ -272,18 +272,18 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
       .x = batches,
       .f = ~ {
         # query information from database
-          query <- try_query(.x,
-            type = "text/tab-separated-values",
-            col_names = FALSE,
-            quote = "",
-            show_col_types = FALSE,
-            progress = FALSE
-          )
-          
-          if (show_progress == TRUE) {
+        query <- try_query(.x,
+          type = "text/tab-separated-values",
+          col_names = FALSE,
+          quote = "",
+          show_col_types = FALSE,
+          progress = FALSE
+        )
+
+        if (show_progress == TRUE) {
           pb$tick()
-          }
-          
+        }
+
         # only proceed with data if it was correctly retrieved
         if ("tbl" %in% class(query)) {
           query %>%
@@ -354,25 +354,27 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
       }
     )
   }
-  
+
   # catch any IDs that have not been fetched correctly
-  error_list <- query_result %>% 
+  error_list <- query_result %>%
     purrr::keep(.p = ~ is.character(.x))
-  
-  error_table <- tibble::tibble(id = names(error_list),
-                                error = unlist(error_list)) %>% 
+
+  error_table <- tibble::tibble(
+    id = names(error_list),
+    error = unlist(error_list)
+  ) %>%
     dplyr::distinct()
-  
-  if(nrow(error_table) != 0){
+
+  if (nrow(error_table) != 0) {
     message("The following IDs have not be retrieved correctly.")
     message(paste0(utils::capture.output(error_table), collapse = "\n"))
   }
 
   # only keep data in output
-  
-  query_result <- query_result %>% 
+
+  query_result <- query_result %>%
     purrr::keep(.p = ~ !is.character(.x))
-  
+
   if (return_data_frame == FALSE) {
     return(query_result)
   } else {

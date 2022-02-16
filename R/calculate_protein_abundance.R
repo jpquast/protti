@@ -15,11 +15,7 @@
 #' transformed precursor intensities.
 #' @param method a character value specifying with which method protein quantities should be
 #' calculated. Possible options include \code{"sum"}, which takes the sum of all precursor
-#' intensities as the protein abundance. Another option is \code{"iq"}, which performs protein
-#' quantification based on a maximal peptide ratio extraction algorithm that is adapted from the
-#' MaxLFQ algorithm of the MaxQuant software. Functions from the
-#' \href{https://academic.oup.com/bioinformatics/article/36/8/2611/5697917}{\code{iq}} package are
-#' used. Default is \code{"iq"}.
+#' intensities as the protein abundance. 
 #' @param for_plot a logical value indicating whether the result should be only protein intensities
 #' or protein intensities together with precursor intensities that can be used for plotting using
 #' \code{qc_protein_abundance}. Default is \code{FALSE}.
@@ -42,6 +38,7 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # Create example data
 #' data <- data.frame(
 #'   sample = c(
@@ -80,7 +77,7 @@
 #'   precursor = precursor,
 #'   peptide = peptide,
 #'   intensity_log2 = intensity,
-#'   method = "iq",
+#'   method = "sum",
 #'   for_plot = FALSE
 #' )
 #'
@@ -95,18 +92,19 @@
 #'   precursor = precursor,
 #'   peptide = peptide,
 #'   intensity_log2 = intensity,
-#'   method = "iq",
+#'   method = "sum",
 #'   for_plot = TRUE
 #' )
 #'
 #' complete_abundances
+#' }
 calculate_protein_abundance <- function(data,
                                         sample,
                                         protein_id,
                                         precursor,
                                         peptide,
                                         intensity_log2,
-                                        method = "iq",
+                                        method = "sum",
                                         for_plot = FALSE,
                                         retain_columns = NULL) {
   . <- NULL
@@ -145,63 +143,64 @@ calculate_protein_abundance <- function(data,
     }
   }
   if (method == "iq") {
-    if (!requireNamespace("iq", quietly = TRUE)) {
-      stop("Package \"iq\" is needed for this function to work. Please install it.", call. = FALSE)
-    }
-    pb <- progress::progress_bar$new(
-      total = length(unique(dplyr::pull(input, {{ protein_id }}))),
-      format = "Preparing data [:bar] :current/:total (:percent) :eta"
-    )
-
-    input <- input %>%
-      dplyr::distinct({{ sample }}, {{ protein_id }}, {{ precursor }}, {{ intensity_log2 }}) %>%
-      tidyr::complete(!!rlang::ensym(sample), nesting(!!rlang::ensym(precursor), !!rlang::ensym(protein_id))) %>%
-      split(dplyr::pull(., {{ protein_id }})) %>%
-      purrr::map(.f = ~ {
-        pb$tick()
-        .x %>%
-          dplyr::select(-{{ protein_id }}) %>%
-          tidyr::pivot_wider(names_from = {{ sample }}, values_from = {{ intensity_log2 }}) %>%
-          tibble::column_to_rownames(rlang::as_name(rlang::enquo(precursor))) %>%
-          as.matrix()
-      })
-
-    pb <- progress::progress_bar$new(
-      total = length(input),
-      format = "Applying maximal peptide ratio extraction algorithm [:bar] :current/:total (:percent) :eta"
-    )
-
-    combined <- input %>%
-      purrr::map2_df(
-        .y = names(.),
-        .f = ~ {
-          pb$tick()
-          iq::maxLFQ(.x) %>%
-            purrr::pluck("estimate") %>%
-            matrix(
-              ncol = ncol(.x),
-              nrow = 1,
-              dimnames = list("protein_intensity", colnames(.x))
-            ) %>%
-            rbind(.x) %>%
-            tibble::as_tibble(rownames = NA) %>%
-            tibble::rownames_to_column(var = rlang::as_name(rlang::enquo(precursor))) %>%
-            tidyr::pivot_longer(-{{ precursor }},
-              names_to = rlang::as_name(rlang::enquo(sample)),
-              values_to = rlang::as_name(rlang::enquo(intensity_log2))
-            ) %>%
-            dplyr::mutate({{ protein_id }} := .y)
-        }
-      ) %>%
-      tidyr::drop_na()
-
-    if (missing(retain_columns) & for_plot == TRUE) {
-      return(combined)
-    }
-
-    result <- combined %>%
-      dplyr::filter({{ precursor }} == "protein_intensity") %>%
-      dplyr::select(-{{ precursor }})
+    # if (!requireNamespace("iq", quietly = TRUE)) {
+    #   stop("Package \"iq\" is needed for this function to work. Please install it.", call. = FALSE)
+    # }
+    # pb <- progress::progress_bar$new(
+    #   total = length(unique(dplyr::pull(input, {{ protein_id }}))),
+    #   format = "Preparing data [:bar] :current/:total (:percent) :eta"
+    # )
+    # 
+    # input <- input %>%
+    #   dplyr::distinct({{ sample }}, {{ protein_id }}, {{ precursor }}, {{ intensity_log2 }}) %>%
+    #   tidyr::complete(!!rlang::ensym(sample), nesting(!!rlang::ensym(precursor), !!rlang::ensym(protein_id))) %>%
+    #   split(dplyr::pull(., {{ protein_id }})) %>%
+    #   purrr::map(.f = ~ {
+    #     pb$tick()
+    #     .x %>%
+    #       dplyr::select(-{{ protein_id }}) %>%
+    #       tidyr::pivot_wider(names_from = {{ sample }}, values_from = {{ intensity_log2 }}) %>%
+    #       tibble::column_to_rownames(rlang::as_name(rlang::enquo(precursor))) %>%
+    #       as.matrix()
+    #   })
+    # 
+    # pb <- progress::progress_bar$new(
+    #   total = length(input),
+    #   format = "Applying maximal peptide ratio extraction algorithm [:bar] :current/:total (:percent) :eta"
+    # )
+    # 
+    # combined <- input %>%
+    #   purrr::map2_df(
+    #     .y = names(.),
+    #     .f = ~ {
+    #       pb$tick()
+    #       iq::maxLFQ(.x) %>%
+    #         purrr::pluck("estimate") %>%
+    #         matrix(
+    #           ncol = ncol(.x),
+    #           nrow = 1,
+    #           dimnames = list("protein_intensity", colnames(.x))
+    #         ) %>%
+    #         rbind(.x) %>%
+    #         tibble::as_tibble(rownames = NA) %>%
+    #         tibble::rownames_to_column(var = rlang::as_name(rlang::enquo(precursor))) %>%
+    #         tidyr::pivot_longer(-{{ precursor }},
+    #           names_to = rlang::as_name(rlang::enquo(sample)),
+    #           values_to = rlang::as_name(rlang::enquo(intensity_log2))
+    #         ) %>%
+    #         dplyr::mutate({{ protein_id }} := .y)
+    #     }
+    #   ) %>%
+    #   tidyr::drop_na()
+    # 
+    # if (missing(retain_columns) & for_plot == TRUE) {
+    #   return(combined)
+    # }
+    # 
+    # result <- combined %>%
+    #   dplyr::filter({{ precursor }} == "protein_intensity") %>%
+    #   dplyr::select(-{{ precursor }})
+    return(message("The iq package is currently not available. It will be readded to protti once it is back on CRAN."))
   }
 
   if (!missing(retain_columns) & for_plot == FALSE) {

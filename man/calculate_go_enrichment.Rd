@@ -13,6 +13,7 @@ calculate_go_enrichment(
   organism_id = NULL,
   go_data = NULL,
   plot = TRUE,
+  label = TRUE,
   plot_cutoff = "adj_pval top10"
 )
 }
@@ -47,7 +48,10 @@ or in \code{go_data}.}
 data not obtained with \code{fetch_go} make sure column names for protein ID (db_id) and GO ID
 (go_id) are the same as for data obtained with \code{fetch_go}.}
 
-\item{plot}{a logical value indicating whether the result should be plotted or returned as a table.}
+\item{plot}{a logical argument indicating whether the result should be plotted or returned as a table.}
+
+\item{label}{a logical argument indicating whether labels should be added to the plot.
+Default is TRUE.}
 
 \item{plot_cutoff}{a character value indicating if the plot should contain the top 10 most
 significant proteins (p-value or adjusted p-value), or if a significance cutoff should be used
