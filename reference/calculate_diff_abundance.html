@@ -18,7 +18,7 @@ with protein, peptide or precursor data. Different methods for statistical testi
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
       </span>
     </div>
 
@@ -251,18 +251,18 @@ abundances. <code>avg_abundance</code> contains average abundances for treatment
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">diff</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 10</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    protein   change_peptide comparison    peptide  missingness    pval std_error</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> protein_5 TRUE           condition_1_… peptide… complete    9.38<span style="color: #949494;">e</span><span style="color: #BB0000;">-9</span>   0.055<span style="text-decoration: underline;">7</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> protein_3 TRUE           condition_1_… peptide… complete    7.01<span style="color: #949494;">e</span><span style="color: #BB0000;">-7</span>   0.091<span style="text-decoration: underline;">9</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> protein_1 TRUE           condition_1_… peptide… complete    6.01<span style="color: #949494;">e</span><span style="color: #BB0000;">-6</span>   0.067<span style="text-decoration: underline;">0</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> protein_1 FALSE          condition_1_… peptide… MAR         5.12<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>   0.008<span style="text-decoration: underline;">09</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> protein_4 TRUE           condition_1_… peptide… MAR         6.66<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>   0.308  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> protein_2 FALSE          condition_1_… peptide… complete    7.77<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>   0.275  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> protein_9 FALSE          condition_1_… peptide… MAR         1.89<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>   0.486  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> protein_3 FALSE          condition_1_… peptide… complete    2.23<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>   0.075<span style="text-decoration: underline;">2</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> protein_1 FALSE          condition_1_… peptide… MAR         2.23<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>   0.046<span style="text-decoration: underline;">6</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> protein_3 FALSE          condition_1_… peptide… complete    2.71<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>   0.084<span style="text-decoration: underline;">3</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    protein   change_peptide comparison     peptide missingness    pval std_error</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> protein_5 TRUE           condition_1_v… peptid… complete    9.38<span style="color: #949494;">e</span><span style="color: #BB0000;">-9</span>   0.055<span style="text-decoration: underline;">7</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> protein_3 TRUE           condition_1_v… peptid… complete    7.01<span style="color: #949494;">e</span><span style="color: #BB0000;">-7</span>   0.091<span style="text-decoration: underline;">9</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> protein_1 TRUE           condition_1_v… peptid… complete    6.01<span style="color: #949494;">e</span><span style="color: #BB0000;">-6</span>   0.067<span style="text-decoration: underline;">0</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> protein_1 FALSE          condition_1_v… peptid… MAR         5.12<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>   0.008<span style="text-decoration: underline;">09</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> protein_4 TRUE           condition_1_v… peptid… MAR         6.66<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>   0.308  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> protein_2 FALSE          condition_1_v… peptid… complete    7.77<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>   0.275  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> protein_9 FALSE          condition_1_v… peptid… MAR         1.89<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>   0.486  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> protein_3 FALSE          condition_1_v… peptid… complete    2.23<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>   0.075<span style="text-decoration: underline;">2</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> protein_1 FALSE          condition_1_v… peptid… MAR         2.23<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>   0.046<span style="text-decoration: underline;">6</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> protein_3 FALSE          condition_1_v… peptid… complete    2.71<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>   0.084<span style="text-decoration: underline;">3</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 3 more variables: diff &lt;dbl&gt;, adj_pval &lt;dbl&gt;, n_obs &lt;int&gt;</span></span>
 </code></pre></div>
     </div>
@@ -278,7 +278,7 @@ abundances. <code>avg_abundance</code> contains average abundances for treatment
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer></div>

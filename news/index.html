@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
       </span>
     </div>
 
@@ -67,7 +67,25 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.2.1" id="protti-021">protti 0.2.1<a class="anchor" aria-label="anchor" href="#protti-021"></a></h2>
+<h2 class="page-header" data-toc-text="0.2.2" id="protti-022">protti 0.2.2<a class="anchor" aria-label="anchor" href="#protti-022"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-2-2">New features<a class="anchor" aria-label="anchor" href="#new-features-0-2-2"></a></h3>
+<ul><li>
+<code><a href="../reference/calculate_go_enrichment.html">calculate_go_enrichment()</a></code> now has the argument <code>label</code>. If <code>TRUE</code> labels are added to the plot that specify how many proteins from the specific GO term are among the significant hits. This new argument is by default <code>TRUE</code>.</li>
+<li>The version of STRINGdb that should be used for network analysis can now be provided through the <code>version</code> argument in the <code><a href="../reference/analyse_functional_network.html">analyse_functional_network()</a></code> function.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-2-2">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-2"></a></h3>
+<ul><li>All tests and examples that are run on CRAN servers are only for functions that use packages <code>protti</code> depends on and not also packages it suggests.</li>
+<li>Removed the functionalities relying on the <code>iq</code> package from <code>protti</code> for now since <code>iq</code> is currently not available on CRAN. Once it is available again we will add the functionalities back.</li>
+<li>
+<code><a href="../reference/fetch_metal_pdb.html">fetch_metal_pdb()</a></code> now gives more informative feedback regarding the reasons resources were not fetched correctly.</li>
+<li>Fixed a bug in <code>qc_proteome_coverage</code> that flipped the “Detected” and “Not detected” labels.</li>
+<li>When the <code>highlight</code> argument of the <code><a href="../reference/woods_plot.html">woods_plot()</a></code> function was used huge plots were generated when more than 20 proteins were provided to the function. This is fixed and was due to a wrong variable used in a loop.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.2.1" id="protti-021">protti 0.2.1<small>2022-01-11</small><a class="anchor" aria-label="anchor" href="#protti-021"></a></h2>
 <div class="section level3">
 <h3 id="new-features-0-2-1">New features<a class="anchor" aria-label="anchor" href="#new-features-0-2-1"></a></h3>
 <ul><li>
@@ -185,7 +203,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer></div>

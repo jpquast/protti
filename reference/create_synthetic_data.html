@@ -18,7 +18,7 @@ test functions while knowing the ground truth."><!-- mathjax --><script src="htt
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
       </span>
     </div>
 
@@ -180,20 +180,20 @@ values that were created based on a probabilistic dropout curve.</p>
 <span class="r-in">  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span>
 <span class="r-in">  n_conditions <span class="op">=</span> <span class="fl">2</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 756 × 14</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 924 × 14</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    protein   peptide     condition sample peptide_intensi… change change_peptide</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> protein_1 peptide_1_1 conditio… sampl…             16.9 TRUE   TRUE          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> protein_1 peptide_1_1 conditio… sampl…             16.6 TRUE   TRUE          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> protein_1 peptide_1_1 conditio… sampl…             17.2 TRUE   TRUE          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> protein_1 peptide_1_1 conditio… sampl…             18.0 TRUE   TRUE          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> protein_1 peptide_1_1 conditio… sampl…             17.7 TRUE   TRUE          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> protein_1 peptide_1_1 conditio… sampl…             17.5 TRUE   TRUE          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> protein_1 peptide_1_2 conditio… sampl…             18.0 TRUE   FALSE         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> protein_1 peptide_1_2 conditio… sampl…             18.2 TRUE   FALSE         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> protein_1 peptide_1_2 conditio… sampl…             17.9 TRUE   FALSE         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> protein_1 peptide_1_2 conditio… sampl…             17.7 TRUE   FALSE         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 746 more rows, and 7 more variables: peptide_intensity_missing &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> protein_1 peptide_1_1 conditio… sampl…             17.5 TRUE   TRUE          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> protein_1 peptide_1_1 conditio… sampl…             17.1 TRUE   TRUE          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> protein_1 peptide_1_1 conditio… sampl…             17.6 TRUE   TRUE          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> protein_1 peptide_1_1 conditio… sampl…             15.9 TRUE   TRUE          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> protein_1 peptide_1_1 conditio… sampl…             16.5 TRUE   TRUE          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> protein_1 peptide_1_1 conditio… sampl…             16.6 TRUE   TRUE          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> protein_1 peptide_1_2 conditio… sampl…             20.4 TRUE   FALSE         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> protein_1 peptide_1_2 conditio… sampl…             20.7 TRUE   FALSE         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> protein_1 peptide_1_2 conditio… sampl…             20.1 TRUE   FALSE         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> protein_1 peptide_1_2 conditio… sampl…             20.3 TRUE   FALSE         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 914 more rows, and 7 more variables: peptide_intensity_missing &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   coverage &lt;dbl&gt;, n_missed_cleavage &lt;int&gt;, charge &lt;dbl&gt;, pep_type &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   peak_width &lt;dbl&gt;, retention_time &lt;dbl&gt;</span></span>
 <span class="r-in"></span>
@@ -266,7 +266,7 @@ values that were created based on a probabilistic dropout curve.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer></div>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
       </span>
     </div>
 
@@ -205,22 +205,12 @@ is returned.</p>
 <span class="r-in">  intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
 <span class="r-in">  missingness <span class="op">=</span> <span class="va">missingness</span>,</span>
 <span class="r-in">  comparison <span class="op">=</span> <span class="va">comparison</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"moderated_t-test"</span>,</span>
+<span class="r-in">  method <span class="op">=</span> <span class="st">"t-test"</span>,</span>
 <span class="r-in">  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [1/7] Creating moderated t-test input data ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [1/2] Create input for t-tests ... </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> DONE</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2/7] Defining moderated t-test design ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [3/7] Fitting lmFit model ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [4/7] Construct matrix of custom contrasts ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [5/7] Compute contrasts from linear model fit ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [6/7] Compute empirical Bayes statistics ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [7/7] Create result table ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2/2] Calculate t-tests ... </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> DONE</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">volcano_plot</span><span class="op">(</span></span>
@@ -249,7 +239,7 @@ is returned.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer></div>

@@ -21,7 +21,7 @@ of the result is consistent if the function is run again."><!-- mathjax --><scri
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
       </span>
     </div>
 
@@ -135,7 +135,7 @@ is returned.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">queue</span>, n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 20 × 21</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    `Sample Type` `File Name` `Sample ID` Path  `Instrument Met… `Process Method`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    `Sample Type` `File Name` `Sample ID` Path  `Instrument Me…` `Process Method`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>           </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> QC            200722_EX1…           1 <span style="color: #949494;">"</span>D:\… <span style="color: #949494;">"</span>C:\\Xcalibur\\… <span style="color: #BB0000;">NA</span>              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Unknown       200722_EX1…           1 <span style="color: #949494;">"</span>D:\… <span style="color: #949494;">"</span>C:\\Xcalibur\\… <span style="color: #BB0000;">NA</span>              </span>
@@ -157,11 +157,11 @@ is returned.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span> Unknown       200722_EX1…           1 <span style="color: #949494;">"</span>D:\… <span style="color: #949494;">"</span>C:\\Xcalibur\\… <span style="color: #BB0000;">NA</span>              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span> Unknown       200722_EX1…           1 <span style="color: #949494;">"</span>D:\… <span style="color: #949494;">"</span>C:\\Xcalibur\\… <span style="color: #BB0000;">NA</span>              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">20</span> Unknown       200722_EX1…           1 <span style="color: #949494;">"</span>D:\… <span style="color: #949494;">"</span>C:\\Xcalibur\\… <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 15 more variables: Calibration File &lt;lgl&gt;, Position &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Inj Vol &lt;dbl&gt;, Level &lt;lgl&gt;, Sample Wt &lt;dbl&gt;, Sample Vol &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ISTD Amt &lt;dbl&gt;, Dil Factor &lt;dbl&gt;, L1 Study &lt;lgl&gt;, L2 Client &lt;lgl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   L3 Laboratory &lt;lgl&gt;, L4 Company &lt;lgl&gt;, L5 Phone &lt;lgl&gt;, Comment &lt;lgl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Sample Name &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 15 more variables: `Calibration File` &lt;lgl&gt;, Position &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   `Inj Vol` &lt;dbl&gt;, Level &lt;lgl&gt;, `Sample Wt` &lt;dbl&gt;, `Sample Vol` &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   `ISTD Amt` &lt;dbl&gt;, `Dil Factor` &lt;dbl&gt;, `L1 Study` &lt;lgl&gt;, `L2 Client` &lt;lgl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   `L3 Laboratory` &lt;lgl&gt;, `L4 Company` &lt;lgl&gt;, `L5 Phone` &lt;lgl&gt;, Comment &lt;lgl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   `Sample Name` &lt;chr&gt;</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">randomised_queue</span> <span class="op">&lt;-</span> <span class="fu">randomise_queue</span><span class="op">(</span></span>
 <span class="r-in">  data <span class="op">=</span> <span class="va">queue</span>,</span>
@@ -170,7 +170,7 @@ is returned.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">randomised_queue</span>, n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 20 × 21</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    `Sample Type` `File Name` `Sample ID` Path  `Instrument Met… `Process Method`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    `Sample Type` `File Name` `Sample ID` Path  `Instrument Me…` `Process Method`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>           </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> QC            200722_EX1…           1 <span style="color: #949494;">"</span>D:\… <span style="color: #949494;">"</span>C:\\Xcalibur\\… <span style="color: #BB0000;">NA</span>              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Unknown       200722_EX1…           1 <span style="color: #949494;">"</span>D:\… <span style="color: #949494;">"</span>C:\\Xcalibur\\… <span style="color: #BB0000;">NA</span>              </span>
@@ -192,11 +192,11 @@ is returned.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span> Unknown       200722_EX1…           1 <span style="color: #949494;">"</span>D:\… <span style="color: #949494;">"</span>C:\\Xcalibur\\… <span style="color: #BB0000;">NA</span>              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span> Unknown       200722_EX1…           1 <span style="color: #949494;">"</span>D:\… <span style="color: #949494;">"</span>C:\\Xcalibur\\… <span style="color: #BB0000;">NA</span>              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">20</span> Unknown       200722_EX1…           1 <span style="color: #949494;">"</span>D:\… <span style="color: #949494;">"</span>C:\\Xcalibur\\… <span style="color: #BB0000;">NA</span>              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 15 more variables: Calibration File &lt;lgl&gt;, Position &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Inj Vol &lt;dbl&gt;, Level &lt;lgl&gt;, Sample Wt &lt;dbl&gt;, Sample Vol &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ISTD Amt &lt;dbl&gt;, Dil Factor &lt;dbl&gt;, L1 Study &lt;lgl&gt;, L2 Client &lt;lgl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   L3 Laboratory &lt;lgl&gt;, L4 Company &lt;lgl&gt;, L5 Phone &lt;lgl&gt;, Comment &lt;lgl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Sample Name &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 15 more variables: `Calibration File` &lt;lgl&gt;, Position &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   `Inj Vol` &lt;dbl&gt;, Level &lt;lgl&gt;, `Sample Wt` &lt;dbl&gt;, `Sample Vol` &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   `ISTD Amt` &lt;dbl&gt;, `Dil Factor` &lt;dbl&gt;, `L1 Study` &lt;lgl&gt;, `L2 Client` &lt;lgl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   `L3 Laboratory` &lt;lgl&gt;, `L4 Company` &lt;lgl&gt;, `L5 Phone` &lt;lgl&gt;, Comment &lt;lgl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   `Sample Name` &lt;chr&gt;</span></span>
 </code></pre></div>
     </div>
   </div>
@@ -211,7 +211,7 @@ is returned.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer></div>
