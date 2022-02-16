@@ -8,6 +8,7 @@
 ## Bug fixes 
 
 * All tests and examples that are run on CRAN servers are only for functions that use packages `protti` depends on and not also packages it suggests.
+* Removed the functionalities relying on the `iq` package from `protti` for now since `iq` is currently not available on CRAN. Once it is available again we will add the functionalities back.
 * `fetch_metal_pdb()` now gives more informative feedback regarding the reasons resources were not fetched correctly.
 * Fixed a bug in `qc_proteome_coverage` that flipped the "Detected" and "Not detected" labels.
 * When the `highlight` argument of the `woods_plot()` function was used huge plots were generated when more than 20 proteins were provided to the function. This is fixed and was due to a wrong variable used in a loop.

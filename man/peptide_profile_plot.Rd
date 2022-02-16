@@ -58,6 +58,7 @@ Creates a plot of peptide abundances across samples. This is helpful to investig
 peptide and protein abundance changes in different samples and conditions.
 }
 \examples{
+\donttest{
 # Create example data
 data <- data.frame(
   sample = c(
@@ -95,7 +96,7 @@ complete_abundances <- calculate_protein_abundance(
   precursor = precursor,
   peptide = peptide,
   intensity_log2 = intensity,
-  method = "iq",
+  method = "sum",
   for_plot = TRUE
 )
 
@@ -111,4 +112,5 @@ peptide_profile_plot(
   targets = c("P1"),
   protein_abundance_plot = TRUE
 )
+}
 }
