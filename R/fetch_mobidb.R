@@ -27,7 +27,8 @@
 #' }
 fetch_mobidb <- function(organism_id, protein_ids) {
   if (!requireNamespace("httr", quietly = TRUE)) {
-    stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
+    message("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
+    return(invisible(NULL))
   }
   . <- NULL
 

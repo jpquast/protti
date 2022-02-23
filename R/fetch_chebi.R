@@ -24,7 +24,8 @@
 #' }
 fetch_chebi <- function(relation = FALSE) {
   if (!requireNamespace("httr", quietly = TRUE)) {
-    stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
+    message("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
+    return(invisible(NULL))
   }
   # Retrieve relational information
   if (relation == TRUE) {

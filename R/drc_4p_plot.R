@@ -89,6 +89,7 @@ plot_drc_4p <- function(...) {
 #' str(drc_fit)
 #'
 #' # Plot dose response curves
+#' if(!is.null(drc_fit)){
 #' drc_4p_plot(
 #'   data = drc_fit,
 #'   grouping = peptide,
@@ -97,6 +98,7 @@ plot_drc_4p <- function(...) {
 #'   targets = c("peptide_2_1", "peptide_2_3"),
 #'   unit = "pM"
 #' )
+#' }
 #' }
 drc_4p_plot <- function(data,
                         grouping,

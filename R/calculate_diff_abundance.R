@@ -411,7 +411,8 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
 
     if (method == "moderated_t-test") {
       if (!requireNamespace("limma", quietly = TRUE)) {
-        stop("Package \"limma\" is needed for this function to work. Please install it.", call. = FALSE)
+        message("Package \"limma\" is needed for this function to work. Please install it.", call. = FALSE)
+        return(invisible(NULL))
       }
 
       conditions_no_ref <- unique(pull(data, {{ condition }}))[!unique(pull(data, {{ condition }})) %in% ref_condition]
@@ -600,7 +601,8 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
 
     if (method == "proDA") {
       if (!requireNamespace("proDA", quietly = TRUE)) {
-        stop("Package \"proDA\" is needed for this function to work. Please install it.", call. = FALSE)
+        message("Package \"proDA\" is needed for this function to work. Please install it.", call. = FALSE)
+        return(invisible(NULL))
       }
       message("[1/5] Creating proDA input data ... ", appendLF = FALSE)
 
