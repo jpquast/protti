@@ -144,7 +144,8 @@ calculate_protein_abundance <- function(data,
   }
   if (method == "iq") {
     # if (!requireNamespace("iq", quietly = TRUE)) {
-    #   stop("Package \"iq\" is needed for this function to work. Please install it.", call. = FALSE)
+    #   message("Package \"iq\" is needed for this function to work. Please install it.", call. = FALSE)
+    #   return(invisible(NULL))
     # }
     # pb <- progress::progress_bar$new(
     #   total = length(unique(dplyr::pull(input, {{ protein_id }}))),

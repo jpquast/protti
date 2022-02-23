@@ -46,7 +46,8 @@
 #' }
 fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
   if (!requireNamespace("httr", quietly = TRUE)) {
-    stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
+    message("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
+    return(invisible(NULL))
   }
 
   if (!curl::has_internet()) {

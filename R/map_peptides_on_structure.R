@@ -155,7 +155,8 @@ map_peptides_on_structure <- function(peptide_data,
   # What to do if no structure file was provided:
   if (missing(structure_file)) {
     if (!requireNamespace("httr", quietly = TRUE)) {
-      stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
+      message("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
+      return(invisible(NULL))
     }
 
     if (!curl::has_internet()) {

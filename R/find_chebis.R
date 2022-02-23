@@ -21,7 +21,8 @@
 #' @importFrom rlang .data
 find_chebis <- function(chebi_data, pattern) {
   if (!requireNamespace("stringi", quietly = TRUE)) {
-    stop("Package \"stringi\" is needed for this function to work. Please install it.", call. = FALSE)
+    message("Package \"stringi\" is needed for this function to work. Please install it.", call. = FALSE)
+    return(invisible(NULL))
   }
   data <- chebi_data %>%
     dplyr::distinct(.data$id, .data$name)

@@ -1,13 +1,9 @@
 ## Submission 
 
-This submission fixes some issues that were raised by Prof. Brian Ripley:
-
-"Packages in Suggests should be used conditionally: see 'Writing R Extensions'.
-This needs to be corrected even if the missing package(s) become available.
-It can be tested by checking with _R_CHECK_DEPENDS_ONLY_=true."
-
-We tested the package using the suggested environmental variable and fixed all examples 
+We tested the package using the suggested environmental variable (_R_CHECK_DEPENDS_ONLY_=true in addition to --run-donttest) and fixed all examples 
 and tests that caused problems.
+
+There is one Note regarding misspelled words in the DESCRIPTION file. Those words are not misspelled.
 
 ## Test environments
 * macOS-latest (on GitHub actions), R 4.1.2
@@ -21,5 +17,5 @@ and tests that caused problems.
 
 ## R CMD check results
 
-0 errors ✓ | 0 warnings ✓ | 0 notes ✓
+0 errors ✓ | 0 warnings ✓ | 1 notes ✓
 

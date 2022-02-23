@@ -22,7 +22,8 @@
 try_query <-
   function(url, max_tries = 5, silent = TRUE, type = "text/tab-separated-values", ...) {
     if (!requireNamespace("httr", quietly = TRUE)) {
-      stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
+      message("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
+      return(invisible(NULL))
     }
 
     if (!curl::has_internet()) {

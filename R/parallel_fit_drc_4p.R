@@ -148,17 +148,19 @@ parallel_fit_drc_4p <- function(data,
   if (any(dependency_test)) {
     dependency_name <- names(dependency_test[dependency_test == TRUE])
     if (length(dependency_name) == 1) {
-      stop("Package \"",
+      message("Package \"",
         paste(dependency_name),
         "\" is needed for this function to work. Please install it.",
         call. = FALSE
       )
+      return(invisible(NULL))
     } else {
-      stop("Packages \"",
+      message("Packages \"",
         paste(dependency_name, collapse = "\" and \""),
         "\" are needed for this function to work. Please install them.",
         call. = FALSE
       )
+      return(invisible(NULL))
     }
   }
   if (filter == "pre") {
