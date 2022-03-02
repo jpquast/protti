@@ -3,6 +3,39 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `calculate_diff_abundance()`.
 #'
+#' @return A data frame that contains differential abundances (\code{diff}), p-values (\code{pval})
+#' and adjusted p-values (\code{adj_pval}) for each protein, peptide or precursor (depending on
+#' the \code{grouping} variable) and the associated treatment/reference pair. Depending on the
+#' method the data frame contains additional columns:
+#' \itemize{
+#' \item{"t-test": }{The \code{std_error} column contains the standard error of the differential
+#' abundances. \code{n_obs} contains the number of observations for the specific protein, peptide
+#' or precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
+#' \item{"t-test_mean_sd": }{Columns labeled as control refer to the second condition of the
+#' comparison pairs. Treated refers to the first condition. \code{mean_control} and \code{mean_treated}
+#' columns contain the means for the reference and treatment condition, respectively. \code{sd_control}
+#' and \code{sd_treated} columns contain the standard deviations for the reference and treatment
+#' condition, respectively. \code{n_control} and \code{n_treated} columns contain the numbers of
+#' samples for the reference and treatment condition, respectively. The \code{std_error} column
+#' contains the standard error of the differential abundances. \code{t_statistic} contains the
+#' t_statistic for the t-test.}
+#' \item{"moderated_t-test": }{\code{CI_2.5} and \code{CI_97.5} contain the 2.5% and 97.5%
+#' confidence interval borders for differential abundances. \code{avg_abundance} contains average
+#' abundances for treatment/reference pairs (mean of the two group means). \code{t_statistic}
+#' contains the t_statistic for the t-test. \code{B} The B-statistic is the log-odds that the
+#' protein, peptide or precursor (depending on \code{grouping}) has a differential abundance
+#' between the two groups. Suppose B=1.5. The odds of differential abundance is exp(1.5)=4.48, i.e,
+#' about four and a half to one. The probability that there is a differential abundance is
+#' 4.48/(1+4.48)=0.82, i.e., the probability is about 82% that this group is differentially
+#' abundant. A B-statistic of zero corresponds to a 50-50 chance that the group is differentially
+#' abundant.\code{n_obs} contains the number of observations for the specific protein, peptide or
+#' precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
+#' \item{"proDA": }{The \code{std_error} column contains the standard error of the differential
+#' abundances. \code{avg_abundance} contains average abundances for treatment/reference pairs
+#' (mean of the two group means). \code{t_statistic} contains the t_statistic for the t-test.
+#' \code{n_obs} contains the number of observations for the specific protein, peptide or precursor
+#' (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
+#' }
 #' @keywords internal
 #' @export
 diff_abundance <-

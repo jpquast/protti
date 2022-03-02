@@ -248,10 +248,6 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
     unlink(paste0(tempdir(), "/alphafold"), recursive = TRUE)
     unlink(paste0(tempdir(), "/alphafold.tar"))
   } else {
-    if (!requireNamespace("httr", quietly = TRUE)) {
-      message("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
-      return(invisible(NULL))
-    }
     # remove NAs from UniProt IDs
     uniprot_ids <- uniprot_ids[!is.na(uniprot_ids)]
 

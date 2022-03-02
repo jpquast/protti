@@ -3,6 +3,10 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `calculate_go_enrichment()`.
 #'
+#' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or
+#' depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individually with the
+#' \code{plot_cutoff} argument. Bars are colored according to the direction of the enrichment. If
+#' \code{plot = FALSE}, a data frame is returned. P-values are adjusted with Benjamini-Hochberg.
 #' @keywords internal
 #' @export
 go_enrichment <- function(...) {
@@ -48,7 +52,7 @@ go_enrichment <- function(...) {
 #' data not obtained with \code{fetch_go} make sure column names for protein ID (db_id) and GO ID
 #' (go_id) are the same as for data obtained with \code{fetch_go}.
 #' @param plot a logical argument indicating whether the result should be plotted or returned as a table.
-#' @param label a logical argument indicating whether labels should be added to the plot. 
+#' @param label a logical argument indicating whether labels should be added to the plot.
 #' Default is TRUE.
 #' @param plot_cutoff a character value indicating if the plot should contain the top 10 most
 #' significant proteins (p-value or adjusted p-value), or if a significance cutoff should be used
@@ -307,14 +311,18 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       if (label == TRUE & nrow(plot_input) > 0) {
         geom_text(
           data = plot_input,
-          aes(label = paste0(.data$n_significant_proteins_in_process, 
-                             "/", 
-                             .data$n_detected_proteins_in_process, 
-                             "(", 
-                             round(.data$n_significant_proteins_in_process/.data$n_detected_proteins_in_process*100, digits = 1),
-                             "%)"),
-              y = .data$neg_log_sig - 0.1,
-              hjust = 1 )
+          aes(
+            label = paste0(
+              .data$n_significant_proteins_in_process,
+              "/",
+              .data$n_detected_proteins_in_process,
+              "(",
+              round(.data$n_significant_proteins_in_process / .data$n_detected_proteins_in_process * 100, digits = 1),
+              "%)"
+            ),
+            y = .data$neg_log_sig - 0.1,
+            hjust = 1
+          )
         )
       }
     } +

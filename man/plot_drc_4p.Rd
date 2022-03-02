@@ -6,6 +6,11 @@
 \usage{
 plot_drc_4p(...)
 }
+\value{
+If \code{targets = "all"} a list containing plots for every unique identifier in the
+\code{grouping} variable is created. Otherwise a plot for the specified targets is created with
+maximally 20 facets.
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 This function was deprecated due to its name changing to \code{drc_4p_plot()}.

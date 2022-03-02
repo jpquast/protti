@@ -36,7 +36,15 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#'
+#' data <- data.frame(
+#'   r_file_name = c(rep("sample_1", 10), rep("sample2", 10)),
+#'   fg_quantity = c(rep(2000, 20)),
+#'   eg_mean_apex_rt = c(rep(c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 2)),
+#'   eg_start_rt = c(0.5, 1, 3, 4, 5, 6, 7, 7.5, 8, 9, 1, 2, 2, 3, 4, 5, 5, 8, 9, 9),
+#'   eg_end_rt = c(1.5, 2, 3.1, 4.5, 5.8, 6.6, 8, 8, 8.4, 
+#'   9.1, 3, 2.2, 4, 3.4, 4.5, 5.5, 5.6, 8.3, 10, 12)
+#' )
 #' qc_peak_width(
 #'   data,
 #'   sample = r_file_name,
@@ -45,7 +53,6 @@
 #'   retention_time_start = eg_start_rt,
 #'   retention_time_end = eg_end_rt
 #' )
-#' }
 qc_peak_width <- function(data,
                           sample,
                           intensity,

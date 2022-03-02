@@ -6,6 +6,10 @@
 \usage{
 peptide_type(...)
 }
+\value{
+A data frame that contains the input data and an additional column with the peptide
+type information.
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 This function was deprecated due to its name changing to \code{assign_peptide_type()}.

@@ -31,6 +31,7 @@
 #' @import progress
 #' @import purrr
 #' @import tidyr
+#' @importFrom httr modify_url
 #' @importFrom stringr str_replace_all
 #' @importFrom curl has_internet
 #' @importFrom utils URLencode
@@ -45,11 +46,6 @@
 #' head(pdb)
 #' }
 fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
-  if (!requireNamespace("httr", quietly = TRUE)) {
-    message("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
-    return(invisible(NULL))
-  }
-
   if (!curl::has_internet()) {
     message("No internet connection.")
     return(invisible(NULL))

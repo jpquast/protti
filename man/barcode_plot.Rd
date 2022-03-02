@@ -50,7 +50,16 @@ Plots a "barcode plot" - a vertical line for each identified peptide. Peptides c
 abundance can be displayed.
 }
 \examples{
-\dontrun{
+
+data <- data.frame(
+  start = c(5, 40, 55, 130, 181, 195),
+  end = c(11, 51, 60, 145, 187, 200),
+  length = rep(200, 6),
+  pg_protein_accessions = rep("Protein 1", 6),
+  diff = c(1, 2, 5, 2, 1, 1),
+  pval = c(0.1, 0.01, 0.01, 0.2, 0.2, 0.01)
+)
+
 barcode_plot(
   data,
   start_position = start,
@@ -59,5 +68,4 @@ barcode_plot(
   facet = pg_protein_accessions,
   cutoffs = c(diff = 2, pval = 0.05)
 )
-}
 }

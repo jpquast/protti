@@ -3,6 +3,7 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `peptide_profile_plot()`.
 #'
+#' @return A list of peptide profile plots.
 #' @keywords internal
 #' @export
 plot_peptide_profiles <- function(...) {

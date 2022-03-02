@@ -3,6 +3,9 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `volcano_plot()`.
 #'
+#' @return Depending on the method used a volcano plot with either highlighted targets
+#' (\code{method = "target"}) or highlighted significant proteins (\code{method = "significant"})
+#' is returned.
 #' @keywords internal
 #' @export
 volcano_protti <- function(...) {

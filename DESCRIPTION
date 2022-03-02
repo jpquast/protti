@@ -38,7 +38,8 @@ Imports:
     grDevices,
     curl,
     readr,
-    lifecycle
+    lifecycle,
+    httr
 RoxygenNote: 7.1.2
 Suggests: 
     testthat,
@@ -55,7 +56,6 @@ Suggests:
     parallel,
     seriation,
     drc,
-    httr,
     igraph,
     stringi, 
     STRINGdb

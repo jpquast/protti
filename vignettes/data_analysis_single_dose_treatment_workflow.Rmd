@@ -122,7 +122,7 @@ The CVs are calculated within the function according to the formula:
 $$CV = \frac{standard ~ deviation}{mean} * 100$$
 ```
   
-_Note: The use of the `filter_cv()` function is optional. It might remove a lot of your data if your experiment was noisy. However, especially in these cases, the function will remove peptides with poor quality and should improve the result. It is very important that if you use this function you should not use the moderated t-test or proDA algorithm on your data for differential abundance estimation and significance testing. This likely will lead to an inflated false positive rate because it alters the distributional assumptions of these tests ([Bourgon 2010](https://www.pnas.org/content/107/21/9546))._
+_Note: The use of the `filter_cv()` function is optional. It might remove a lot of your data if your experiment was noisy. However, especially in these cases, the function will remove peptides with poor quality and should improve the result. It is very important that if you use this function you should not use the moderated t-test or proDA algorithm on your data for differential abundance estimation and significance testing. This likely will lead to an inflated false positive rate because it alters the distributional assumptions of these tests ([Bourgon 2010](https://www.pnas.org/doi/10.1073/pnas.0914005107))._
 
 ```{r median_normalisation_filtering, eval = test_protti, message = FALSE, warning = FALSE}
 data_normalised <- rapamycin_10uM %>%

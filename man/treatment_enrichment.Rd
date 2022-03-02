@@ -6,6 +6,12 @@
 \usage{
 treatment_enrichment(...)
 }
+\value{
+A bar plot displaying the percentage of all detect proteins and all significant proteins
+that bind to the treatment. A Fisher's exact test is performed to calculate the significance of
+the enrichment in significant proteins compared to all proteins. The result is reported as a
+p-value. If \code{plot = FALSE} a contingency table in long format is returned.
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 This function was deprecated due to its name changing to \code{calculate_treatment_enrichment()}.

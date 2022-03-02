@@ -3,6 +3,9 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `calculate_kegg_enrichment()`.
 #'
+#' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched pathways.
+#' Bars are coloured according to the direction of the enrichment. If \code{plot = FALSE}, a data
+#' frame is returned.
 #' @keywords internal
 #' @export
 kegg_enrichment <- function(...) {
