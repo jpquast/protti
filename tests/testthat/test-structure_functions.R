@@ -80,13 +80,30 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       dplyr::distinct(b_factor, residue, chain)
 
     expect_equal(file_pdb_6UU2_P0A8T7$b_factor, c("     0", "   100"))
+    
+    # .cif structure file provided
+    positions_structure_filter_provided <- positions_structure_filter %>% 
+      filter(pdb_ids %in% c("2EL9"))
+    
+    map_peptides_on_structure(
+      peptide_data = positions_structure_filter_provided,
+      uniprot_id = uniprot_id,
+      pdb_id = pdb_ids,
+      chain = auth_asym_id,
+      auth_seq_id = auth_seq_id,
+      map_value = map_value,
+      structure_file = paste0(tempdir(), "/2EL9_P60906.cif"),
+      export_location = tempdir()
+    )
+    
+    expect_gt(file.info(paste0(tempdir(), "/modified_2EL9_P60906.cif"))$size, 1000000)
   })
 
   test_that("create_structure_contact_map works", {
     data_input <- tibble::tibble(
-      pdb_id = c("6NPF", "1C14"),
-      chain = c("A", "A"),
-      auth_seq_id = c("1;2;3;4;5;6;7;8;9;10", NA),
+      pdb_id = c("6NPF", "1C14", "P62942"),
+      chain = c("A", "A", NA),
+      auth_seq_id = c("1;2;3;4;5;6;7;8;9;10", NA, "1;2;3;4"),
     )
     contact_maps <- create_structure_contact_map(
       data = data_input,
@@ -97,9 +114,33 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     )
 
     expect_is(contact_maps, "list")
-    expect_equal(length(contact_maps), 2)
+    expect_equal(length(contact_maps), 3)
     expect_equal(ncol(contact_maps[["6NPF"]]), 14)
     expect_equal(nrow(contact_maps[["6NPF"]]), 504)
     expect_equal(nrow(contact_maps[["1C14"]]), 18553)
+    expect_equal(ncol(contact_maps[["P62942"]]), 18)
+    expect_equal(nrow(contact_maps[["P62942"]]), 111)
+    
+    # .cif structure file provided
+    
+    data_input_provided <- tibble::tibble(
+      pdb_id = c("my_structure"),
+      chain = c("A"),
+      auth_seq_id = c("1;2;3;4;5;6;7;8;9;10"),
+    )
+    
+    contact_maps_provided <- create_structure_contact_map(
+      data = data_input_provided,
+      id = pdb_id,
+      chain = chain,
+      auth_seq_id = auth_seq_id,
+      return_min_residue_distance = TRUE,
+      structure_file = paste0(tempdir(), "/2EL9_P60906.cif")
+    )
+    expect_is(contact_maps_provided, "list")
+    expect_equal(length(contact_maps_provided), 1)
+    expect_equal(ncol(contact_maps_provided[["2EL9_P60906"]]), 14)
+    expect_equal(nrow(contact_maps_provided[["2EL9_P60906"]]), 346)
+    
   })
 }
