@@ -53,7 +53,7 @@ halo of proteins that bind the treatment.}
 \value{
 A network plot displaying interactions of the provided proteins. If
 \code{binds_treatment} was provided halos around the proteins show which proteins interact with
-the treatment. If \code{plot = FALSE} a table with interaction information is returned.
+the treatment. If \code{plot = FALSE} a data frame with interaction information is returned.
 }
 \description{
 The STRING database provides a resource for known and predicted protein-protein interactions.

@@ -4,6 +4,8 @@
 #' This function was deprecated due to its name changing to `normalise()`.
 #' The normalisation method in the new function needs to be provided as an argument.
 #'
+#' @return A data frame with a column called \code{normalised_intensity_log2} containing the
+#' normalised intensity values.
 #' @keywords internal
 #' @export
 median_normalisation <- function(...) {

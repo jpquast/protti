@@ -3,6 +3,8 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `assign_peptide_type()`.
 #'
+#' @return A data frame that contains the input data and an additional column with the peptide
+#' type information.
 #' @keywords internal
 #' @export
 peptide_type <- function(...) {

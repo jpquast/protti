@@ -6,6 +6,11 @@
 \usage{
 kegg_enrichment(...)
 }
+\value{
+A bar plot displaying negative log10 adjusted p-values for the top 10 enriched pathways.
+Bars are coloured according to the direction of the enrichment. If \code{plot = FALSE}, a data
+frame is returned.
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 This function was deprecated due to its name changing to \code{calculate_kegg_enrichment()}.

@@ -10,6 +10,7 @@
 #' Only "3-star" observations are included in the result. These are entries manually annotated
 #' by the ChEBI curator team.
 #' @import dplyr
+#' @importFrom httr GET config content
 #' @importFrom tidyr pivot_wider unnest
 #' @importFrom janitor clean_names
 #' @importFrom magrittr %>%
@@ -23,10 +24,6 @@
 #' head(chebi)
 #' }
 fetch_chebi <- function(relation = FALSE) {
-  if (!requireNamespace("httr", quietly = TRUE)) {
-    message("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
-    return(invisible(NULL))
-  }
   # Retrieve relational information
   if (relation == TRUE) {
     chebi_relation_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv",

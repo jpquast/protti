@@ -4,6 +4,7 @@
 
 * `calculate_go_enrichment()` now has the argument `label`. If `TRUE` labels are added to the plot that specify how many proteins from the specific GO term are among the significant hits. This new argument is by default `TRUE`. 
 * The version of STRINGdb that should be used for network analysis can now be provided through the `version` argument in the `analyse_functional_network()` function.
+* Examples were added to some additional functions.
 
 ## Bug fixes 
 

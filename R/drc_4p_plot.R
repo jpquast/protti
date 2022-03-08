@@ -3,6 +3,9 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `drc_4p_plot()`.
 #'
+#' @return If \code{targets = "all"} a list containing plots for every unique identifier in the
+#' \code{grouping} variable is created. Otherwise a plot for the specified targets is created with
+#' maximally 20 facets.
 #' @keywords internal
 #' @export
 plot_drc_4p <- function(...) {
@@ -89,15 +92,15 @@ plot_drc_4p <- function(...) {
 #' str(drc_fit)
 #'
 #' # Plot dose response curves
-#' if(!is.null(drc_fit)){
-#' drc_4p_plot(
-#'   data = drc_fit,
-#'   grouping = peptide,
-#'   response = peptide_intensity_missing,
-#'   dose = concentration,
-#'   targets = c("peptide_2_1", "peptide_2_3"),
-#'   unit = "pM"
-#' )
+#' if (!is.null(drc_fit)) {
+#'   drc_4p_plot(
+#'     data = drc_fit,
+#'     grouping = peptide,
+#'     response = peptide_intensity_missing,
+#'     dose = concentration,
+#'     targets = c("peptide_2_1", "peptide_2_3"),
+#'     unit = "pM"
+#'   )
 #' }
 #' }
 drc_4p_plot <- function(data,

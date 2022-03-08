@@ -3,6 +3,9 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `analyse_functional_network()`.
 #'
+#' @return A network plot displaying interactions of the provided proteins. If
+#' \code{binds_treatment} was provided halos around the proteins show which proteins interact with
+#' the treatment. If \code{plot = FALSE} a data frame with interaction information is returned.
 #' @keywords internal
 #' @export
 network_analysis <-
@@ -51,7 +54,7 @@ network_analysis <-
 #'
 #' @return A network plot displaying interactions of the provided proteins. If
 #' \code{binds_treatment} was provided halos around the proteins show which proteins interact with
-#' the treatment. If \code{plot = FALSE} a table with interaction information is returned.
+#' the treatment. If \code{plot = FALSE} a data frame with interaction information is returned.
 #'
 #' @importFrom dplyr distinct pull mutate filter rename
 #' @importFrom rlang .data ensym !! as_name enquo

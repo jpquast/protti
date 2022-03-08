@@ -98,11 +98,6 @@ fetch_metal_pdb <- function(id_type = "uniprot",
                             donors = NULL,
                             columns = NULL,
                             show_progress = TRUE) {
-  if (!requireNamespace("httr", quietly = TRUE)) {
-    message("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
-    return(invisible(NULL))
-  }
-
   if (!curl::has_internet()) {
     message("No internet connection.")
     return(invisible(NULL))

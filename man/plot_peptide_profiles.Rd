@@ -6,6 +6,9 @@
 \usage{
 plot_peptide_profiles(...)
 }
+\value{
+A list of peptide profile plots.
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 This function was deprecated due to its name changing to \code{peptide_profile_plot()}.

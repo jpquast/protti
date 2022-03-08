@@ -18,7 +18,7 @@ level of the content of this column}
 \item{pval}{a numeric column in the \code{data} data frame that contains p-values.}
 }
 \value{
-A histogram that shows the p-value distribution.
+A histogram plot that shows the p-value distribution.
 }
 \description{
 Plots the distribution of p-values derived from any statistical test as a histogram.

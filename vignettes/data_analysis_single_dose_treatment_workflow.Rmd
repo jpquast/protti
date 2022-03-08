@@ -122,7 +122,7 @@ The CVs are calculated within the function according to the formula:
 $$CV = \frac{standard ~ deviation}{mean} * 100$$
 ```
   
-_Note: The use of the `filter_cv()` function is optional. It might remove a lot of your data if your experiment was noisy. However, especially in these cases, the function will remove peptides with poor quality and should improve the result. It is very important that if you use this function you should not use the moderated t-test or proDA algorithm on your data for differential abundance estimation and significance testing. This likely will lead to an inflated false positive rate because it alters the distributional assumptions of these tests ([Bourgon 2010](https://www.pnas.org/content/107/21/9546))._
+_Note: The use of the `filter_cv()` function is optional. It might remove a lot of your data if your experiment was noisy. However, especially in these cases, the function will remove peptides with poor quality and should improve the result. It is very important that if you use this function you should not use the moderated t-test or proDA algorithm on your data for differential abundance estimation and significance testing. This likely will lead to an inflated false positive rate because it alters the distributional assumptions of these tests ([Bourgon 2010](https://pubmed.ncbi.nlm.nih.gov/20460310/))._
 
 ```{r median_normalisation_filtering, eval = test_protti, message = FALSE, warning = FALSE}
 data_normalised <- rapamycin_10uM %>%
@@ -274,7 +274,7 @@ diff_abundance_data <- data_filtered_uniprot %>%
 
 ### p-value distribution
 
-The p-value calculated with the moderated t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall uniform distribution. If there is an effect in the data, there will be an increased frequency of low p-values. You can check this by using the protti function `pval_distribution_plot()`. This also helps you assess whether your p-value distribution fulfills the assumptions for your selected FDR control. The [cp4p](https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/10.1002/pmic.201500189) R package is another great way to check the assumptions underlying FDR control in quantitative experiments.
+The p-value calculated with the moderated t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall uniform distribution. If there is an effect in the data, there will be an increased frequency of low p-values. You can check this by using the protti function `pval_distribution_plot()`. This also helps you assess whether your p-value distribution fulfills the assumptions for your selected FDR control. The [cp4p](https://CRAN.R-project.org/package=cp4p) R package is another great way to check the assumptions underlying FDR control in quantitative experiments.
 
 ```{r pval_distribution, eval = test_protti, message = FALSE, warning = FALSE, fig.align= "center", fig.width = 6, fig.height = 5}
 pval_distribution_plot(data = diff_abundance_data,

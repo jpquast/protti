@@ -15,7 +15,7 @@
 #' transformed precursor intensities.
 #' @param method a character value specifying with which method protein quantities should be
 #' calculated. Possible options include \code{"sum"}, which takes the sum of all precursor
-#' intensities as the protein abundance. 
+#' intensities as the protein abundance.
 #' @param for_plot a logical value indicating whether the result should be only protein intensities
 #' or protein intensities together with precursor intensities that can be used for plotting using
 #' \code{qc_protein_abundance}. Default is \code{FALSE}.
@@ -151,7 +151,7 @@ calculate_protein_abundance <- function(data,
     #   total = length(unique(dplyr::pull(input, {{ protein_id }}))),
     #   format = "Preparing data [:bar] :current/:total (:percent) :eta"
     # )
-    # 
+    #
     # input <- input %>%
     #   dplyr::distinct({{ sample }}, {{ protein_id }}, {{ precursor }}, {{ intensity_log2 }}) %>%
     #   tidyr::complete(!!rlang::ensym(sample), nesting(!!rlang::ensym(precursor), !!rlang::ensym(protein_id))) %>%
@@ -164,12 +164,12 @@ calculate_protein_abundance <- function(data,
     #       tibble::column_to_rownames(rlang::as_name(rlang::enquo(precursor))) %>%
     #       as.matrix()
     #   })
-    # 
+    #
     # pb <- progress::progress_bar$new(
     #   total = length(input),
     #   format = "Applying maximal peptide ratio extraction algorithm [:bar] :current/:total (:percent) :eta"
     # )
-    # 
+    #
     # combined <- input %>%
     #   purrr::map2_df(
     #     .y = names(.),
@@ -193,11 +193,11 @@ calculate_protein_abundance <- function(data,
     #     }
     #   ) %>%
     #   tidyr::drop_na()
-    # 
+    #
     # if (missing(retain_columns) & for_plot == TRUE) {
     #   return(combined)
     # }
-    # 
+    #
     # result <- combined %>%
     #   dplyr::filter({{ precursor }} == "protein_intensity") %>%
     #   dplyr::select(-{{ precursor }})

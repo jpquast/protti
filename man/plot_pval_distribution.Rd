@@ -6,6 +6,9 @@
 \usage{
 plot_pval_distribution(...)
 }
+\value{
+A histogram plot that shows the p-value distribution.
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 This function was deprecated due to its name changing to \code{pval_distribution_plot()}.

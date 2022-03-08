@@ -3,6 +3,7 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `pval_distribution_plot()`.
 #'
+#' @return A histogram plot that shows the p-value distribution.
 #' @keywords internal
 #' @export
 plot_pval_distribution <- function(...) {
@@ -27,7 +28,7 @@ plot_pval_distribution <- function(...) {
 #' level of the content of this column
 #' @param pval a numeric column in the \code{data} data frame that contains p-values.
 #'
-#' @return A histogram that shows the p-value distribution.
+#' @return A histogram plot that shows the p-value distribution.
 #' @import ggplot2
 #' @importFrom magrittr %>%
 #' @importFrom dplyr distinct

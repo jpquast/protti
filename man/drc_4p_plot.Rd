@@ -95,15 +95,15 @@ drc_fit <- fit_drc_4p(
 str(drc_fit)
 
 # Plot dose response curves
-if(!is.null(drc_fit)){
-drc_4p_plot(
-  data = drc_fit,
-  grouping = peptide,
-  response = peptide_intensity_missing,
-  dose = concentration,
-  targets = c("peptide_2_1", "peptide_2_3"),
-  unit = "pM"
-)
+if (!is.null(drc_fit)) {
+  drc_4p_plot(
+    data = drc_fit,
+    grouping = peptide,
+    response = peptide_intensity_missing,
+    dose = concentration,
+    targets = c("peptide_2_1", "peptide_2_3"),
+    unit = "pM"
+  )
 }
 }
 }
