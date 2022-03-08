@@ -43,7 +43,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -90,7 +90,7 @@
       <h1 data-toc-skip>Single Dose Treatment Data Analysis Workflow</h1>
                         <h4 data-toc-skip class="author">Dina Schuster</h4>
             
-            <h4 data-toc-skip class="date">2022-02-23</h4>
+            <h4 data-toc-skip class="date">2022-03-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/HEAD/vignettes/data_analysis_single_dose_treatment_workflow.Rmd" class="external-link"><code>vignettes/data_analysis_single_dose_treatment_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_single_dose_treatment_workflow.Rmd</code></div>
@@ -243,7 +243,7 @@
 <span class="math display"><span class="math display">\[CV = \frac{standard ~ deviation}{mean} * 100\]</span></span>
 </p>
 </div>
-<p><em>Note: The use of the <code><a href="../reference/filter_cv.html">filter_cv()</a></code> function is optional. It might remove a lot of your data if your experiment was noisy. However, especially in these cases, the function will remove peptides with poor quality and should improve the result. It is very important that if you use this function you should not use the moderated t-test or proDA algorithm on your data for differential abundance estimation and significance testing. This likely will lead to an inflated false positive rate because it alters the distributional assumptions of these tests (<a href="https://www.pnas.org/content/107/21/9546" class="external-link">Bourgon 2010</a>).</em></p>
+<p><em>Note: The use of the <code><a href="../reference/filter_cv.html">filter_cv()</a></code> function is optional. It might remove a lot of your data if your experiment was noisy. However, especially in these cases, the function will remove peptides with poor quality and should improve the result. It is very important that if you use this function you should not use the moderated t-test or proDA algorithm on your data for differential abundance estimation and significance testing. This likely will lead to an inflated false positive rate because it alters the distributional assumptions of these tests (<a href="https://pubmed.ncbi.nlm.nih.gov/20460310/" class="external-link">Bourgon 2010</a>).</em></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_normalised</span> <span class="op">&lt;-</span> <span class="va">rapamycin_10uM</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">eg_is_decoy</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
@@ -378,7 +378,7 @@
 <div class="section level4">
 <h4 id="p-value-distribution">p-value distribution<a class="anchor" aria-label="anchor" href="#p-value-distribution"></a>
 </h4>
-<p>The p-value calculated with the moderated t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall uniform distribution. If there is an effect in the data, there will be an increased frequency of low p-values. You can check this by using the protti function <code><a href="../reference/pval_distribution_plot.html">pval_distribution_plot()</a></code>. This also helps you assess whether your p-value distribution fulfills the assumptions for your selected FDR control. The <a href="https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/10.1002/pmic.201500189" class="external-link">cp4p</a> R package is another great way to check the assumptions underlying FDR control in quantitative experiments.</p>
+<p>The p-value calculated with the moderated t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall uniform distribution. If there is an effect in the data, there will be an increased frequency of low p-values. You can check this by using the protti function <code><a href="../reference/pval_distribution_plot.html">pval_distribution_plot()</a></code>. This also helps you assess whether your p-value distribution fulfills the assumptions for your selected FDR control. The <a href="https://CRAN.R-project.org/package=cp4p" class="external-link">cp4p</a> R package is another great way to check the assumptions underlying FDR control in quantitative experiments.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/pval_distribution_plot.html">pval_distribution_plot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">diff_abundance_data</span>,
                        grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,

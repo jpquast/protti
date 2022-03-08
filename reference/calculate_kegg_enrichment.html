@@ -28,7 +28,7 @@ significance of enrichment."><!-- mathjax --><script src="https://cdnjs.cloudfla
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -169,16 +169,16 @@ frame is returned.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 10</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    pathway_id    pathway_name    pval adj_pval n_detected_prot… n_detected_prot…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> path:eco02030 Bacterial ch… 0.021<span style="text-decoration: underline;">0</span>    0.917             <span style="text-decoration: underline;">1</span>600               20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> path:eco00520 Amino sugar … 0.022<span style="text-decoration: underline;">7</span>    0.917             <span style="text-decoration: underline;">1</span>600               47</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> path:eco00740 Riboflavin m… 0.023<span style="text-decoration: underline;">1</span>    0.917             <span style="text-decoration: underline;">1</span>600               16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> path:eco01250 Biosynthesis… 0.032<span style="text-decoration: underline;">7</span>    0.917             <span style="text-decoration: underline;">1</span>600               44</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> path:eco00590 Arachidonic … 0.037<span style="text-decoration: underline;">6</span>    0.917             <span style="text-decoration: underline;">1</span>600                2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> path:eco01230 Biosynthesis… 0.050<span style="text-decoration: underline;">1</span>    1                 <span style="text-decoration: underline;">1</span>600              117</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> path:eco03010 Ribosome      0.088<span style="text-decoration: underline;">9</span>    1                 <span style="text-decoration: underline;">1</span>600               56</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> path:eco00460 Cyanoamino a… 0.138     1                 <span style="text-decoration: underline;">1</span>600                7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> path:eco00310 Lysine degra… 0.139     1                 <span style="text-decoration: underline;">1</span>600               18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> path:eco00670 One carbon p… 0.149     1                 <span style="text-decoration: underline;">1</span>600               13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> path:eco02030 Bacterial ch… 0.021<span style="text-decoration: underline;">0</span>        1             <span style="text-decoration: underline;">1</span>601               20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> path:eco00520 Amino sugar … 0.022<span style="text-decoration: underline;">7</span>        1             <span style="text-decoration: underline;">1</span>601               47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> path:eco00590 Arachidonic … 0.037<span style="text-decoration: underline;">5</span>        1             <span style="text-decoration: underline;">1</span>601                2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> path:eco00071 Fatty acid d… 0.090<span style="text-decoration: underline;">4</span>        1             <span style="text-decoration: underline;">1</span>601               15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> path:eco00480 Glutathione … 0.114         1             <span style="text-decoration: underline;">1</span>601               24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> path:eco01250 Biosynthesis… 0.117         1             <span style="text-decoration: underline;">1</span>601               44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> path:eco01230 Biosynthesis… 0.144         1             <span style="text-decoration: underline;">1</span>601              117</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> path:eco00541 O-Antigen nu… 0.156         1             <span style="text-decoration: underline;">1</span>601               21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> path:eco00650 Butanoate me… 0.193         1             <span style="text-decoration: underline;">1</span>601               35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> path:eco00565 Ether lipid … 0.194         1             <span style="text-decoration: underline;">1</span>601                1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 4 more variables: n_significant_proteins &lt;int&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_significant_proteins_in_pathway &lt;int&gt;, n_proteins_expected &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   direction &lt;chr&gt;</span></span>

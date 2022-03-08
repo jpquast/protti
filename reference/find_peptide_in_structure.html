@@ -31,7 +31,7 @@ peptide is present in a PDB structure."><!-- mathjax --><script src="https://cdn
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -181,18 +181,18 @@ the current structure.</p></li>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">peptide_in_structure</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 16</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    uniprot_id pdb_ids auth_asym_id label_asym_id peptide_sequence               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> P0A8T7     2AUK    A            A             SGIVSFGKETKGKRRLVITPVDGSDPYEEM…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> P0A8T7     2AUK    A            A             NVFEGERVER                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> P0A8T7     2AUK    B            B             SGIVSFGKETKGKRRLVITPVDGSDPYEEM…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> P0A8T7     2AUK    B            B             NVFEGERVER                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> P0A8T7     2AUK    C            C             SGIVSFGKETKGKRRLVITPVDGSDPYEEM…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> P0A8T7     2AUK    C            C             NVFEGERVER                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> P0A8T7     2AUK    D            D             SGIVSFGKETKGKRRLVITPVDGSDPYEEM…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> P0A8T7     2AUK    D            D             NVFEGERVER                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> P0A8T7     2AUK    E            E             SGIVSFGKETKGKRRLVITPVDGSDPYEEM…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> P0A8T7     2AUK    E            E             NVFEGERVER                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    uniprot_id pdb_ids auth_asym_id label_asym_id peptide_sequence</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> P60906     1HTT    A            A             AIGEVTDVVEKE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> P60906     1HTT    B            B             AIGEVTDVVEKE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> P60906     1HTT    C            C             AIGEVTDVVEKE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> P60906     1HTT    D            D             AIGEVTDVVEKE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> P60906     1KMM    A            A             AIGEVTDVVEKE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> P60906     1KMM    B            B             AIGEVTDVVEKE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> P60906     1KMM    C            C             AIGEVTDVVEKE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> P60906     1KMM    D            D             AIGEVTDVVEKE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> P60906     1KMN    A            A             AIGEVTDVVEKE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> P60906     1KMN    B            B             AIGEVTDVVEKE    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 11 more variables: peptide_seq_in_pdb &lt;chr&gt;, fit_type &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   start &lt;dbl&gt;, end &lt;dbl&gt;, label_seq_id_start &lt;dbl&gt;, label_seq_id_end &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   auth_seq_id_start &lt;chr&gt;, auth_seq_id_end &lt;chr&gt;, auth_seq_id &lt;chr&gt;,</span></span>

@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -125,7 +125,15 @@ retention time for each sample.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span class="r-in">  r_file_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"sample_1"</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"sample2"</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">  fg_quantity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2000</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">  eg_mean_apex_rt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">8</span>, <span class="fl">9</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
+<span class="r-in">  eg_start_rt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">7.5</span>, <span class="fl">8</span>, <span class="fl">9</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">8</span>, <span class="fl">9</span>, <span class="fl">9</span><span class="op">)</span>,</span>
+<span class="r-in">  eg_end_rt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">2</span>, <span class="fl">3.1</span>, <span class="fl">4.5</span>, <span class="fl">5.8</span>, <span class="fl">6.6</span>, <span class="fl">8</span>, <span class="fl">8</span>, <span class="fl">8.4</span>, </span>
+<span class="r-in">  <span class="fl">9.1</span>, <span class="fl">3</span>, <span class="fl">2.2</span>, <span class="fl">4</span>, <span class="fl">3.4</span>, <span class="fl">4.5</span>, <span class="fl">5.5</span>, <span class="fl">5.6</span>, <span class="fl">8.3</span>, <span class="fl">10</span>, <span class="fl">12</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">)</span></span>
 <span class="r-in"><span class="fu">qc_peak_width</span><span class="op">(</span></span>
 <span class="r-in">  <span class="va">data</span>,</span>
 <span class="r-in">  sample <span class="op">=</span> <span class="va">r_file_name</span>,</span>
@@ -134,7 +142,7 @@ retention time for each sample.</p>
 <span class="r-in">  retention_time_start <span class="op">=</span> <span class="va">eg_start_rt</span>,</span>
 <span class="r-in">  retention_time_end <span class="op">=</span> <span class="va">eg_end_rt</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-plt img"><img src="qc_peak_width-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </div>
