@@ -81,6 +81,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(af_prediction), 15)
   })
   
+  if (.Platform$OS.type != "windows") {
   test_that("fetch_alphafold_prediction organism fetching works", {
     af_prediction_organism <- fetch_alphafold_prediction(organism_name = "Helicobacter pylori", return_data_frame = FALSE)
     expect_is(af_prediction_organism, "list")
@@ -88,6 +89,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(af_prediction_organism[["O24860"]]), 15)
     expect_equal(nrow(af_prediction_organism[["O24860"]]), 746)
   })
+  }
 
   test_that("fetch_metal_pdb works", {
     metal_pdb <- fetch_metal_pdb(id_type = "pdb", id_value = c("1g54"), metal = "Zn")
