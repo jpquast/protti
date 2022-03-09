@@ -428,4 +428,23 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       plot = TRUE
     ), NA)
   })
+  
+  test_that("fetch_eco works", {
+    eco <- fetch_eco()
+    expect_is(eco, "data.frame")
+    expect_gt(nrow(eco), 2300)
+    expect_equal(ncol(eco), 10)
+    
+    eco_relation <- fetch_eco(return_relation = TRUE)
+    expect_is(eco_relation, "data.frame")
+    expect_gt(nrow(eco_relation), 3200)
+    expect_equal(ncol(eco_relation), 3)
+    
+    eco_history <- fetch_eco(return_history = TRUE)
+    expect_is(eco_history, "data.frame")
+    expect_gt(nrow(eco_history), 15500)
+    expect_equal(ncol(eco_history), 5)
+    
+    expect_error(fetch_eco(return_relation = TRUE, return_history = TRUE))
+  })
 }

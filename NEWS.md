@@ -1,3 +1,13 @@
+# protti 0.2.2.9000
+
+## New features
+
+* `fetch_eco` was added. It fetches evidence & conclusion ontology information from the EBI database.
+
+## Additional changes
+
+* Improved test coverage for a few functions.
+
 # protti 0.2.2
 
 ## New features
