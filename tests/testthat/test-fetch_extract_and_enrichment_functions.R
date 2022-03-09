@@ -80,6 +80,14 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(nrow(af_prediction), 7310)
     expect_equal(ncol(af_prediction), 15)
   })
+  
+  test_that("fetch_alphafold_prediction organism fetching works", {
+    af_prediction_organism <- fetch_alphafold_prediction(organism_name = "Helicobacter pylori", return_data_frame = FALSE)
+    expect_is(af_prediction_organism, "list")
+    expect_equal(length(af_prediction_organism), 1538)
+    expect_equal(ncol(af_prediction_organism[["O24860"]]), 15)
+    expect_equal(nrow(af_prediction_organism[["O24860"]]), 746)
+  })
 
   test_that("fetch_metal_pdb works", {
     metal_pdb <- fetch_metal_pdb(id_type = "pdb", id_value = c("1g54"), metal = "Zn")
@@ -89,12 +97,12 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   })
 
   test_that("extract_metal_binders works", {
-    data_uniprot <- fetch_uniprot(c("Q03640", "Q03778", "P22276"))
+    data_uniprot <- fetch_uniprot(c("Q03640", "Q03778", "P22276", "P25889"))
     metal_info <- extract_metal_binders(data = data_uniprot, chebi_data = database, chebi_relation_data = relations)
 
     expect_is(metal_info, "data.frame")
     expect_equal(ncol(metal_info), 9)
-    expect_gt(nrow(metal_info), 40)
+    expect_gt(nrow(metal_info), 110)
   })
 
   test_that("deprecated kegg_enrichment works", {
