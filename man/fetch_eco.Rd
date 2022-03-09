@@ -28,7 +28,27 @@ If either \code{return_relation} or \code{return_history} is set to \code{TRUE},
 returned instead of the usual output.
 }
 \description{
-Fetches all evidence & conclusion ontology (ECO) information from the EBI database.
+Fetches all evidence & conclusion ontology (ECO) information from the EBI database. The ECO project is
+maintained through a public \href{https://github.com/evidenceontology/evidenceontology}{GitHub repository}.
+}
+\details{
+According to the GitHub repository ECO is defined as follows:
+
+"The Evidence & Conclusion Ontology (ECO) describes types of scientific evidence within the
+biological research domain that arise from laboratory experiments, computational methods,
+literature curation, or other means. Researchers use evidence to support conclusions
+that arise out of scientific research. Documenting evidence during scientific research
+is essential, because evidence gives us a sense of why we believe what we think we know.
+Conclusions are asserted as statements about things that are believed to be true, for
+example that a protein has a particular function (i.e. a protein functional annotation) or
+that a disease is associated with a particular gene variant (i.e. a phenotype-gene association).
+A systematic and structured (i.e. ontological) classification of evidence allows us to store,
+retreive, share, and compare data associated with that evidence using computers, which are
+essential to navigating the ever-growing (in size and complexity) corpus of scientific
+information."
+
+More information can be found in their
+\href{https://academic.oup.com/nar/article/47/D1/D1186/5165344?login=true}{publication}.
 }
 \examples{
 \donttest{
