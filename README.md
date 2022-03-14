@@ -10,6 +10,7 @@
 coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jpquast/protti?branch=master)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/protti)](https://CRAN.R-project.org/package=protti)
+[![DOI:10.1093/bioadv/vbab041](http://img.shields.io/badge/DOI-10.1093/bioadv/vbab041-5680C1.svg)](https://doi.org/10.1093/bioadv/vbab041)
 <!-- badges: end -->
 
 ## Overview
