@@ -82,10 +82,12 @@ extract_metal_binders <-
            chebi_data = NULL,
            chebi_relation_data = NULL) {
     if (!requireNamespace("igraph", quietly = TRUE)) {
-      stop("Package \"igraph\" is needed for this function to work. Please install it.", call. = FALSE)
+      message("Package \"igraph\" is needed for this function to work. Please install it.", call. = FALSE)
+      return(invisible(NULL))
     }
     if (!requireNamespace("stringi", quietly = TRUE)) {
-      stop("Package \"stringi\" is needed for this function to work. Please install it.", call. = FALSE)
+      message("Package \"stringi\" is needed for this function to work. Please install it.", call. = FALSE)
+      return(invisible(NULL))
     }
     # Download chebi database if not provided
     if (is.null(chebi_data)) {

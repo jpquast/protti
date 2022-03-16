@@ -31,6 +31,7 @@
 #' @import progress
 #' @import purrr
 #' @import tidyr
+#' @importFrom httr modify_url
 #' @importFrom stringr str_replace_all
 #' @importFrom curl has_internet
 #' @importFrom utils URLencode
@@ -45,10 +46,6 @@
 #' head(pdb)
 #' }
 fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
-  if (!requireNamespace("httr", quietly = TRUE)) {
-    stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
-  }
-
   if (!curl::has_internet()) {
     message("No internet connection.")
     return(invisible(NULL))
@@ -462,6 +459,9 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       pdb_sequence = .data$pdbx_seq_one_letter_code_can,
       auth_seq_id = .data$auth_to_entity_poly_seq_mapping
     ) %>%
+    dplyr::rowwise() %>%
+    # make character string out of list column
+    dplyr::mutate(auth_seq_id = paste0(.data$auth_seq_id, collapse = ";")) %>%
     dplyr::select(
       .data$pdb_ids,
       .data$auth_asym_id,

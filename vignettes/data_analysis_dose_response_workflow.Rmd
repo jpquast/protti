@@ -70,7 +70,7 @@ utils::data("rapamycin_dose_response")
 
 ## Cleaning data
 
-After loading data into R we would like to clean it up to remove rows that are problematic for our analysis. The `rapamycin_dose_response` data is based on a report from [Spectronaut™](https://biognosys.com/software/spectronaut/). It includes convenient columns that label peptides as being decoys (`eg_is_decoy`). Other software reports might have similar columns that should be checked. [MaxQuant](https://www.maxquant.org/) for example includes information on contaminating proteins that you should remove prior to data analysis. In this case we would like to remove any peptides left in the report that are decoys (used for false discovery rate estimation). It is a good practice to just run this even though decoys are usually already filtered out. 
+After loading data into R we would like to clean it up to remove rows that are problematic for our analysis. The `rapamycin_dose_response` data is based on a report from [Spectronaut™](https://biognosys.com/software/spectronaut/). It includes convenient columns that label peptides as being decoys (`eg_is_decoy`). Other software reports might have similar columns that should be checked. MaxQuant for example includes information on contaminating proteins that you should remove prior to data analysis. In this case we would like to remove any peptides left in the report that are decoys (used for false discovery rate estimation). It is a good practice to just run this even though decoys are usually already filtered out. 
 
 Due to the fact that with increasing raw intensities (`fg_quantity`) also variances increase, statistical tests would have a bias towards lower intense peptides or proteins. Therefore you should log2 transform your data to correct for this mean-variance relationship. We do this by using `dplyr`’s `mutate()` together with `log2()`.
 
@@ -166,7 +166,7 @@ _Note: Keep in mind that by spreading the model fitting over multiple cores, mor
 
 ```{r parallel_model_fit, eval = FALSE}
 # setup of cores. Make sure you have the future package installed
-future::plan(future::multiprocess, workers = 3)
+future::plan(future::multisession, workers = 3)
 
 # fit models in parallel
 parallel_fit <- data_normalised %>% 

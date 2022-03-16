@@ -3,6 +3,9 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `volcano_plot()`.
 #'
+#' @return Depending on the method used a volcano plot with either highlighted targets
+#' (\code{method = "target"}) or highlighted significant proteins (\code{method = "significant"})
+#' is returned.
 #' @keywords internal
 #' @export
 volcano_protti <- function(...) {
@@ -24,7 +27,7 @@ volcano_protti <- function(...) {
 #' @param log2FC a character column in the \code{data} data frame that contains the log2
 #' transfromed fold changes between two conditions.
 #' @param significance a character column in the \code{data} data frame that contains the p-value
-#' or adjusted p-value for the corresponding fold changes. The values in this column will be 
+#' or adjusted p-value for the corresponding fold changes. The values in this column will be
 #' transformed using the -log10 and displayed on the y-axis of the plot.
 #' @param method a character value that specifies the method used for the plot.
 #' \code{method = "target"} highlights your protein, proteins or any other entities of interest
@@ -49,20 +52,20 @@ volcano_protti <- function(...) {
 #' @param legend_label optional, a character value that specifies the legend label. Default is
 #' "Target".
 #' @param log2FC_cutoff optional, a numeric value that specifies the log2 transformed fold change
-#' cutoff used for the vertical lines, which can be used to assess the significance of changes. 
+#' cutoff used for the vertical lines, which can be used to assess the significance of changes.
 #' Default value is 1.
-#' @param significance_cutoff optional, a character vector that specifies the p-value cutoff used 
-#' for the horizontal cutoff line, which can be used to assess the significance of changes. The 
-#' vector can consist solely of one element, which is the cutoff value. In that case the cutoff 
-#' will be applied directly to the plot. Alternatively, a second element can be provided to the 
-#' vector that specifies a column in the \code{data} data frame which contains e.g. adjusted 
-#' p-values. In that case the y-axis of the plot could display p-values that are provided to the 
-#' \code{significance} argument, while the horizontal cutoff line is on the scale of adjusted 
-#' p-values transformed to the scale of p-values. The provided vector can be e.g. 
-#' \code{c(0.05, "adj_pval")}. In that case the function looks for the closest adjusted p-value 
-#' above and below 0.05 and takes the mean of the corresponding p-values as the cutoff line. If 
-#' there is no adjusted p-value in the data that is below 0.05 no line is displayed. This allows 
-#' the user to display volcano plots using p-values while using adjusted p-values for the cutoff 
+#' @param significance_cutoff optional, a character vector that specifies the p-value cutoff used
+#' for the horizontal cutoff line, which can be used to assess the significance of changes. The
+#' vector can consist solely of one element, which is the cutoff value. In that case the cutoff
+#' will be applied directly to the plot. Alternatively, a second element can be provided to the
+#' vector that specifies a column in the \code{data} data frame which contains e.g. adjusted
+#' p-values. In that case the y-axis of the plot could display p-values that are provided to the
+#' \code{significance} argument, while the horizontal cutoff line is on the scale of adjusted
+#' p-values transformed to the scale of p-values. The provided vector can be e.g.
+#' \code{c(0.05, "adj_pval")}. In that case the function looks for the closest adjusted p-value
+#' above and below 0.05 and takes the mean of the corresponding p-values as the cutoff line. If
+#' there is no adjusted p-value in the data that is below 0.05 no line is displayed. This allows
+#' the user to display volcano plots using p-values while using adjusted p-values for the cutoff
 #' criteria. This is often preferred because adjusted p-values are related to unadjusted p-values
 #' often in a complex way that makes them hard to be interpret when plotted. Default is \code{c(0.01)}.
 #' @param interactive a logical value that specifies whether the plot should be interactive
@@ -114,7 +117,7 @@ volcano_protti <- function(...) {
 #'   intensity_log2 = peptide_intensity_missing,
 #'   missingness = missingness,
 #'   comparison = comparison,
-#'   method = "moderated_t-test",
+#'   method = "t-test",
 #'   retain_columns = c(protein, change_peptide)
 #' )
 #'
@@ -139,7 +142,7 @@ volcano_plot <- function(data,
                          facet_by = NULL,
                          title = "Volcano plot",
                          x_axis_label = "log2(fold change)",
-                         y_axis_label = "-log10(q-value)",
+                         y_axis_label = "-log10(p-value)",
                          legend_label = "Target",
                          log2FC_cutoff = 1,
                          significance_cutoff = 0.01,
@@ -149,34 +152,36 @@ volcano_plot <- function(data,
 
   data <- data %>%
     tidyr::drop_na({{ log2FC }}, {{ significance }})
-  
+
   # check if significance_cutoff has a second element specifiying the column
   # the cutoff should be based on.
-  if (length(significance_cutoff) > 1){
+  if (length(significance_cutoff) > 1) {
     adjusted_significance <- significance_cutoff[2]
 
-    data <- data %>% 
-      dplyr::mutate(centered_cutoff = !!rlang::ensym(adjusted_significance) - as.numeric(significance_cutoff[1]),
-                    positive = .data$centered_cutoff > 0) %>% 
-      dplyr::group_by(.data$positive, {{ facet_by }}) %>% 
-      dplyr::mutate(is_closest_to_cutoff = abs(.data$centered_cutoff) == min(abs(.data$centered_cutoff))) %>% 
+    data <- data %>%
+      dplyr::mutate(
+        centered_cutoff = !!rlang::ensym(adjusted_significance) - as.numeric(significance_cutoff[1]),
+        positive = .data$centered_cutoff > 0
+      ) %>%
+      dplyr::group_by(.data$positive, {{ facet_by }}) %>%
+      dplyr::mutate(is_closest_to_cutoff = abs(.data$centered_cutoff) == min(abs(.data$centered_cutoff))) %>%
       dplyr::group_by(.data$is_closest_to_cutoff, {{ facet_by }}) %>%
-      dplyr::mutate(mean_adjusted_cutoff = mean({{ significance }})) %>% 
-      dplyr::ungroup() %>% 
-      dplyr::group_by({{ facet_by }}) %>% 
-      dplyr::mutate(mean_adjusted_cutoff = max(ifelse(.data$is_closest_to_cutoff, .data$mean_adjusted_cutoff, NA), na.rm = TRUE)) %>% 
-      dplyr::mutate(mean_adjusted_cutoff = ifelse(all(.data$positive), NA, .data$mean_adjusted_cutoff)) 
+      dplyr::mutate(mean_adjusted_cutoff = mean({{ significance }})) %>%
+      dplyr::ungroup() %>%
+      dplyr::group_by({{ facet_by }}) %>%
+      dplyr::mutate(mean_adjusted_cutoff = max(ifelse(.data$is_closest_to_cutoff, .data$mean_adjusted_cutoff, NA), na.rm = TRUE)) %>%
+      dplyr::mutate(mean_adjusted_cutoff = ifelse(all(.data$positive), NA, .data$mean_adjusted_cutoff))
   } else {
-    # just use the regular cutoff if no second element for corrected 
+    # just use the regular cutoff if no second element for corrected
     # adjustment was provided.
-    data <- data %>% 
-      dplyr::mutate(mean_adjusted_cutoff = as.numeric(significance_cutoff[1])) 
+    data <- data %>%
+      dplyr::mutate(mean_adjusted_cutoff = as.numeric(significance_cutoff[1]))
   }
-  
+
   # create variable that contains cutoff line information
-  cutoff_line <- data %>% 
-    dplyr::mutate(mean_adjusted_cutoff = -log10(.data$mean_adjusted_cutoff)) %>% 
-    dplyr::distinct({{ facet_by }}, .data$mean_adjusted_cutoff) %>% 
+  cutoff_line <- data %>%
+    dplyr::mutate(mean_adjusted_cutoff = -log10(.data$mean_adjusted_cutoff)) %>%
+    dplyr::distinct({{ facet_by }}, .data$mean_adjusted_cutoff) %>%
     tidyr::drop_na(.data$mean_adjusted_cutoff)
 
   if (method == "target") {

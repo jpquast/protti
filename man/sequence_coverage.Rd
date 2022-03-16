@@ -6,6 +6,10 @@
 \usage{
 sequence_coverage(...)
 }
+\value{
+A new column in the \code{data} data frame containing the calculated sequence coverage
+for each identified protein
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 This function was deprecated due to its name changing to \code{calculate_sequence_coverage()}.

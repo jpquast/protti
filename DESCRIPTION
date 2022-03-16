@@ -1,15 +1,17 @@
 Package: protti
 Title: Bottom-Up Proteomics and LiP-MS Quality Control and Data Analysis Tools
-Version: 0.2.0
+Version: 0.2.2.9000
 Authors@R: 
     c(person(given = "Jan-Philipp",
            family = "Quast",
            role = c("aut", "cre"),
-           email = "quast@imsb.biol.ethz.ch"),
+           email = "quast@imsb.biol.ethz.ch",
+           comment = c(ORCID = "0000-0003-2713-778X")),
 	person(given = "Dina",
            family = "Schuster",
            role = c("aut"),
-           email = "dschuster@ethz.ch"),
+           email = "dschuster@ethz.ch",
+           comment = c(ORCID = "0000-0001-6611-8237")),
 	person(given = "ETH Zurich",
            role = c("cph", "fnd")))
 Description: Useful functions and workflows for proteomics quality control and data analysis of both limited proteolysis-coupled mass spectrometry (LiP-MS) (Feng et. al. (2014) <doi:10.1038/nbt.2999>) and regular bottom-up proteomics experiments. Data generated with search tools such as 'Spectronaut', 'MaxQuant' and 'Proteome Discover' can be easily used due to flexibility of functions.
@@ -36,8 +38,9 @@ Imports:
     grDevices,
     curl,
     readr,
-    lifecycle
-RoxygenNote: 7.1.1
+    lifecycle,
+    httr
+RoxygenNote: 7.1.2
 Suggests: 
     testthat,
     covr,
@@ -48,14 +51,11 @@ Suggests:
     dendextend,
     pheatmap, 
     heatmaply,
-    viridis,
-    iq,
     furrr, 
     future, 
     parallel,
     seriation,
     drc,
-    httr,
     igraph,
     stringi, 
     STRINGdb

@@ -17,17 +17,14 @@
 #' @param ... other parameters supplied to the parsing function used by httr::content.
 #'
 #' @importFrom curl has_internet
+#' @importFrom httr GET timeout http_error message_for_status http_status content
 #'
 #' @return A data frame that contains the table from the url.
 try_query <-
   function(url, max_tries = 5, silent = TRUE, type = "text/tab-separated-values", ...) {
-    if (!requireNamespace("httr", quietly = TRUE)) {
-      stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
-    }
-
     if (!curl::has_internet()) {
-      message("No internet connection.")
-      return(invisible(NULL))
+      if (!silent) message("No internet connection.")
+      return(invisible("No internet connection"))
     }
 
     query_result <- NULL
@@ -47,13 +44,13 @@ try_query <-
     }
 
     if (class(query_result) != "response") {
-      message(query_result)
-      return(invisible(NULL))
+      if (!silent) message(query_result)
+      return(invisible(query_result))
     }
 
     if (httr::http_error(query_result)) {
-      httr::message_for_status(query_result)
-      return(invisible(NULL))
+      if (!silent) httr::message_for_status(query_result)
+      return(invisible(httr::http_status(query_result)$message))
     }
 
     result <- suppressMessages(httr::content(query_result, type = type, encoding = "UTF-8", ...))

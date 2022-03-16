@@ -12,6 +12,7 @@
 #' protein provided. The \code{feature} column contains information on the source of this
 #' annotation. More information on the source can be found
 #' \href{https://mobidb.bio.unipd.it/about/mobidb}{here}.
+#' @importFrom httr GET config content
 #' @importFrom rlang .data
 #' @importFrom dplyr filter mutate
 #' @importFrom tidyr unnest separate
@@ -26,9 +27,6 @@
 #' )
 #' }
 fetch_mobidb <- function(organism_id, protein_ids) {
-  if (!requireNamespace("httr", quietly = TRUE)) {
-    stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
-  }
   . <- NULL
 
   organism_id <- match.arg(organism_id, c("9606", "559292", "83333", "10090", "9913", "7227"))

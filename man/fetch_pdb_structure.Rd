@@ -53,7 +53,7 @@ assignment normally found in chemical diagrams. It is currently only assigned in
 of structures.}
 \item{auth_seq_id: }{An alternative residue identifier (\code{label_seq_id}) provided by the
 author of the structure in order to match the identification used in the publication that
-describes the structure.}
+describes the structure. This does not need to be numeric and is therefore of type character.}
 \item{auth_comp_id: }{An alternative chemical identifier (\code{label_comp_id}) provided by the
 author of the structure in order to match the identification used in the publication that
 describes the structure.}

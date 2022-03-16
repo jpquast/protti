@@ -1,3 +1,48 @@
+# protti 0.2.2.9000
+
+## New features
+
+* `fetch_eco` was added. It fetches evidence & conclusion ontology information from the EBI database.
+
+## Additional changes
+
+* Improved test coverage for a few functions.
+
+# protti 0.2.2
+
+## New features
+
+* `calculate_go_enrichment()` now has the argument `label`. If `TRUE` labels are added to the plot that specify how many proteins from the specific GO term are among the significant hits. This new argument is by default `TRUE`. 
+* The version of STRINGdb that should be used for network analysis can now be provided through the `version` argument in the `analyse_functional_network()` function.
+* Examples were added to some additional functions.
+
+## Bug fixes 
+
+* All tests and examples that are run on CRAN servers are only for functions that use packages `protti` depends on and not also packages it suggests.
+* Removed the functionalities relying on the `iq` package from `protti` for now since `iq` is currently not available on CRAN. Once it is available again we will add the functionalities back.
+* `fetch_metal_pdb()` now gives more informative feedback regarding the reasons resources were not fetched correctly.
+* Fixed a bug in `qc_proteome_coverage` that flipped the "Detected" and "Not detected" labels.
+* When the `highlight` argument of the `woods_plot()` function was used huge plots were generated when more than 20 proteins were provided to the function. This is fixed and was due to a wrong variable used in a loop.
+
+# protti 0.2.1
+
+## New features
+
+* `create_structure_contact_map()` now takes an optional `data2` argument in which a second data frame of positions and structures can be provided. The positions in this data frame are used for distance calculations relative to the positions provided in the `data` argument. This helps to reduce the size of the map since only comparisons of interest are made. If a selection provided through the `data` argument should be compared to the whole structure the `data2` argument should not be provided, which is the previous default setting. 
+* `parallel_create_structure_contact_map()` can create structure contact maps using parallel processing. It is also recommended for sequential processing if a large number of contact maps should be created. The non-parallel function should not be used if more than 50 maps should be created at the same time. In order to reduce contact maps to domains or even only peptides, a search pattern is created that selects only relevant regions. This pattern is shared over all maps and would become too large if too maps are created at once. 
+* The "combined" condition in the plot of the `qc_cvs()` function now has a grey colour. This ensures that the other colours for each condition match the colours of other quality control plots.
+* The `run_order` argument of `qc_sample_correlation()` now has a gradient colour scheme that is easier to interpret than distinct colours. The colours are inspired by the "plasma" colour scheme of the viridis package.
+* If the sample column provided to `qc_intensity_distribution()` is of type factor instead of character the provided factor levels are used for sample ordering in the plot. This allows for custom sample ordering. If you want this functionality in other functions, please let us know in an issue on GitHub.
+
+## Bug fixes and documentation updates
+
+* Fixed a bug in `qc_ids()`, which caused an error when the optional `condition` argument was not provided. Also fixed a bug that did not take the state of the `remove_na_intensities` argument into account.
+* Small documentation updates in the "Dose-Response Data Analysis Workflow" vignette in which we correct statements about multiple testing correction and p-value distributions.
+* The `auth_seq_id` variable in structure files was handled as a numeric variable even though it sometimes can be character. This was fixed in all functions using it. These include: `fetch_pdb_structure()`, `fetch_alphafold_prediction()` (output is now numeric), `fetch_pdb()` (provides the `auth_seq_id` column not as a list vector but as character vector with semicolons as separators), `find_peptide_in_structure()` (now uses the new `auth_seq_id` format and returns the character vector of all positions of each peptide as `auth_seq_id` in additon to `auth_seq_id_start` and `auth_seq_id_end`), `create_structure_contact_map()`, `map_peptides_on_structure()` (now take the new `auth_seq_id` column instead of start and end positions as input).
+* Fixed a bug in `map_peptides_on_structure()`, which caused an error when file names larger than 256 characters were generated. This was the case if the number of proteins that are part of one structure is very large (e.g. ribosome). If the number of proteins is too large to fit into a normal length file name, they are abbreviated as for example "51_proteins".
+* `fetch_alphafold_prediction()` and `fetch_pdb_structure()` now return more informative messages if individual IDs have not been retrieved correctly (e.g. internet connection problem or outdated ID).
+* When "proDA" was selected as method in `calculate_diff_abundance()`, comparison names starting with numbers were not supported. This has been fixed. There are no more restrictions for condition names.
+
 # protti 0.2.0
 
 ## New features

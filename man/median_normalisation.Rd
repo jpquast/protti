@@ -6,6 +6,10 @@
 \usage{
 median_normalisation(...)
 }
+\value{
+A data frame with a column called \code{normalised_intensity_log2} containing the
+normalised intensity values.
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 This function was deprecated due to its name changing to \code{normalise()}.

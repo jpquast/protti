@@ -3,6 +3,9 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `analyse_functional_network()`.
 #'
+#' @return A network plot displaying interactions of the provided proteins. If
+#' \code{binds_treatment} was provided halos around the proteins show which proteins interact with
+#' the treatment. If \code{plot = FALSE} a data frame with interaction information is returned.
 #' @keywords internal
 #' @export
 network_analysis <-
@@ -36,6 +39,8 @@ network_analysis <-
 #' obtained from
 #' \href{https://string-db.org/cgi/input?sessionId=bpvps5GS2As6&input_page_show_search=on}{here}.
 #' H. sapiens: 9606, S. cerevisiae: 4932, E. coli: 511145.
+#' @param version a character value that specifies the version of STRINGdb to be used.
+#' Default is 11.5.
 #' @param score_threshold a numeric value specifying the interaction score that based on
 #' \href{https://string-db.org/cgi/info?sessionId=bBP5N4cIf0PA&footer_active_subpage=scores}{STRING}
 #' has to be between 0 and 1000. A score closer to 1000 is related to a higher confidence for the
@@ -49,7 +54,7 @@ network_analysis <-
 #'
 #' @return A network plot displaying interactions of the provided proteins. If
 #' \code{binds_treatment} was provided halos around the proteins show which proteins interact with
-#' the treatment. If \code{plot = FALSE} a table with interaction information is returned.
+#' the treatment. If \code{plot = FALSE} a data frame with interaction information is returned.
 #'
 #' @importFrom dplyr distinct pull mutate filter rename
 #' @importFrom rlang .data ensym !! as_name enquo
@@ -104,14 +109,16 @@ analyse_functional_network <- function(data,
                                        protein_id,
                                        string_id,
                                        organism_id,
+                                       version = "11.5",
                                        score_threshold = 900,
                                        binds_treatment = NULL,
                                        halo_color = NULL,
                                        plot = TRUE) {
   if (!requireNamespace("STRINGdb", quietly = TRUE)) {
-    stop(strwrap("Package \"STRINGdb\" is needed for this function to work. Please install it.",
+    message(strwrap("Package \"STRINGdb\" is needed for this function to work. Please install it.",
       prefix = "\n", initial = ""
     ), call. = FALSE)
+    return(invisible(NULL))
   }
 
   STRINGdb <- get("STRINGdb", envir = loadNamespace("STRINGdb"))
@@ -125,7 +132,7 @@ does not match the number of rows in your data.", prefix = "\n", initial = ""))
   }
 
   string_db <- STRINGdb$new(
-    version = "11",
+    version = version,
     species = organism_id, # Check on String database to get the right code (E.coli K12: 511145)
     score_threshold = score_threshold, # Cutoff score to consider something an interaction
     input_directory = ""

@@ -9,6 +9,7 @@ analyse_functional_network(
   protein_id,
   string_id,
   organism_id,
+  version = "11.5",
   score_threshold = 900,
   binds_treatment = NULL,
   halo_color = NULL,
@@ -32,6 +33,9 @@ obtained from
 \href{https://string-db.org/cgi/input?sessionId=bpvps5GS2As6&input_page_show_search=on}{here}.
 H. sapiens: 9606, S. cerevisiae: 4932, E. coli: 511145.}
 
+\item{version}{a character value that specifies the version of STRINGdb to be used.
+Default is 11.5.}
+
 \item{score_threshold}{a numeric value specifying the interaction score that based on
 \href{https://string-db.org/cgi/info?sessionId=bBP5N4cIf0PA&footer_active_subpage=scores}{STRING}
 has to be between 0 and 1000. A score closer to 1000 is related to a higher confidence for the
@@ -49,7 +53,7 @@ halo of proteins that bind the treatment.}
 \value{
 A network plot displaying interactions of the provided proteins. If
 \code{binds_treatment} was provided halos around the proteins show which proteins interact with
-the treatment. If \code{plot = FALSE} a table with interaction information is returned.
+the treatment. If \code{plot = FALSE} a data frame with interaction information is returned.
 }
 \description{
 The STRING database provides a resource for known and predicted protein-protein interactions.

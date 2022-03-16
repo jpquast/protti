@@ -3,6 +3,8 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `calculate_sequence_coverage()`.
 #'
+#' @return A new column in the \code{data} data frame containing the calculated sequence coverage
+#' for each identified protein
 #' @keywords internal
 #' @export
 sequence_coverage <- function(...) {

@@ -29,7 +29,14 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#'
+#' data <- data.frame(
+#'   pg_protein_accessions = c(rep("protein_1", 10)),
+#'   diff = c(2, -3, 1, 2, 3, -3, 5, 1, -0.5, 2),
+#'   adj_pval = c(0.001, 0.01, 0.2, 0.05, 0.002, 0.5, 0.4, 0.7, 0.001, 0.02),
+#'   start = c(1, 3, 5, 10, 15, 25, 28, 30, 41, 51),
+#'   end = c(6, 8, 10, 16, 23, 35, 35, 35, 48, 55)
+#' )
 #' calculate_aa_scores(
 #'   data,
 #'   protein = pg_protein_accessions,
@@ -38,8 +45,6 @@
 #'   start_position = start,
 #'   end_position = end
 #' )
-#' }
-#'
 calculate_aa_scores <- function(data,
                                 protein,
                                 diff = diff,
@@ -50,16 +55,16 @@ calculate_aa_scores <- function(data,
   output <- data %>%
     dplyr::ungroup() %>%
     dplyr::distinct({{ protein }}, {{ diff }}, {{ adj_pval }}, {{ start_position }}, {{ end_position }}) %>%
-    tidyr::drop_na({{ diff }}, {{ adj_pval }}) %>% 
+    tidyr::drop_na({{ diff }}, {{ adj_pval }}) %>%
     dplyr::mutate(score = -log10({{ adj_pval }}) * abs({{ diff }})) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(residue = list(seq({{ start_position }}, {{ end_position }}))) %>%
     tidyr::unnest(.data$residue) %>%
     dplyr::group_by({{ protein }}, .data$residue) %>%
     dplyr::mutate(amino_acid_score = mean(.data$score)) %>%
-    dplyr::distinct({{ protein }}, .data$residue, .data$amino_acid_score) 
-  
-  
+    dplyr::distinct({{ protein }}, .data$residue, .data$amino_acid_score)
+
+
   if (!missing(retain_columns)) {
     output <- data %>%
       dplyr::select(!!enquo(retain_columns), colnames(output)[!colnames(output) %in% c(
@@ -72,6 +77,6 @@ calculate_aa_scores <- function(data,
         "amino_acid_score"
       )])
   }
-  
+
   output
 }

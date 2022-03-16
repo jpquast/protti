@@ -93,7 +93,7 @@ qc_proteome_coverage <- function(data,
     ggplot2::scale_fill_manual(
       values = c("proteins_detected" = "#5680C1", "proteins_undetected" = "#B96DAD"),
       name = "Proteins",
-      labels = c("Not detected", "Detected")
+      labels = c("Detected", "Not detected")
     ) +
     ggplot2::geom_text(
       data = proteome_coverage %>% dplyr::filter(.data$percentage > 5),

@@ -24,9 +24,6 @@ fetch_uniprot_proteome <-
   function(organism_id,
            columns = c("id"),
            reviewed = TRUE) {
-    if (!requireNamespace("httr", quietly = TRUE)) {
-      stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
-    }
     if (length(organism_id) == 0) {
       stop("No valid organism ID found.")
     }

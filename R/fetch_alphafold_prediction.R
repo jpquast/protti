@@ -39,7 +39,7 @@
 #' \item{y: }{The y coordinate of the atom.}
 #' \item{z: }{The z coordinate of the atom.}
 #' \item{prediction_score: }{Contains the prediction score for each residue.}
-#' \item{auth_seq_id: }{Same as \code{label_seq_id}.}
+#' \item{auth_seq_id: }{Same as \code{label_seq_id}. But of type character.}
 #' \item{auth_comp_id: }{Same as \code{label_comp_id}.}
 #' \item{auth_asym_id: }{Same as \code{label_asym_id}.}
 #' \item{uniprot_id: }{The UniProt identifier of the predicted protein.}
@@ -50,11 +50,13 @@
 #' @import progress
 #' @import purrr
 #' @import tidyr
+#' @importFrom tibble tibble
 #' @importFrom utils download.file untar
 #' @importFrom readr read_tsv
 #' @importFrom stringr str_replace_all str_detect
 #' @importFrom curl has_internet
 #' @importFrom magrittr %>%
+#' @importFrom utils capture.output
 #' @export
 #'
 #' @examples
@@ -103,7 +105,39 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
       "Schizosaccharomyces pombe",
       "Staphylococcus aureus",
       "Trypanosoma cruzi",
-      "Zea mays"
+      "Zea mays",
+      "Ajellomyces capsulatus",
+      "Brugia malayi",
+      "Campylobacter jejuni",
+      "Cladophialophora carrionii", 
+      "Dracunculus medinensis",
+      "Enterococcus faecium",
+      "Fonsecaea pedrosoi",
+      "Haemophilus influenzae",
+      "Helicobacter pylori",
+      "Klebsiella pneumoniae",
+      "Leishmania infantum", 
+      "Madurella mycetomatis",
+      "Mycobacterium leprae",
+      "Mycobacterium tuberculosis",
+      "Mycobacterium ulcerans",
+      "Neisseria gonorrhoeae",
+      "Nocardia brasiliensis", 
+      "Onchocerca volvulus",
+      "Paracoccidioides lutzii",
+      "Plasmodium falciparum",
+      "Pseudomonas aeruginosa",
+      "Salmonella typhimurium", 
+      "Schistosoma mansoni",
+      "Shigella dysenteriae", 
+      "Sporothrix schenckii",
+      "Staphylococcus aureus",
+      "Streptococcus pneumoniae",
+      "Strongyloides stercoralis",
+      "Trichuris trichiura", 
+      "Trypanosoma brucei",
+      "Trypanosoma cruzi",
+      "Wuchereria bancrofti"
     ))
 
     organism_file <- switch(organism_name,
@@ -127,10 +161,42 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
       "Schizosaccharomyces pombe" = "UP000002485_284812_SCHPO.tar",
       "Staphylococcus aureus" = "UP000008816_93061_STAA8.tar",
       "Trypanosoma cruzi" = "UP000002296_353153_TRYCC.tar",
-      "Zea mays" = "UP000007305_4577_MAIZE.tar"
+      "Zea mays" = "UP000007305_4577_MAIZE.tar",
+      "Ajellomyces capsulatus" = "UP000001631_447093_AJECG_v2.tar",
+      "Brugia malayi" = "UP000006672_6279_BRUMA_v2.tar",
+      "Campylobacter jejuni" = "UP000000799_192222_CAMJE_v2.tar",
+      "Cladophialophora carrionii" = "UP000094526_86049_9EURO1_v2.tar", 
+      "Dracunculus medinensis" = "UP000274756_318479_DRAME_v2.tar",
+      "Enterococcus faecium" = "UP000325664_1352_ENTFC_v2.tar",
+      "Fonsecaea pedrosoi" = "UP000053029_1442368_9EURO2_v2.tar",
+      "Haemophilus influenzae" = "UP000000579_71421_HAEIN_v2.tar",
+      "Helicobacter pylori" = "UP000000429_85962_HELPY_v2.tar",
+      "Klebsiella pneumoniae" = "UP000007841_1125630_KLEPH_v2.tar",
+      "Leishmania infantum" = "UP000008153_5671_LEIIN_v2.tar", 
+      "Madurella mycetomatis" = "UP000078237_100816_9PEZI1_v2.tar",
+      "Mycobacterium leprae" = "UP000000806_272631_MYCLE_v2.tar",
+      "Mycobacterium tuberculosis" = "UP000001584_83332_MYCTU_v2.tar",
+      "Mycobacterium ulcerans" = "UP000020681_1299332_MYCUL_v2.tar",
+      "Neisseria gonorrhoeae" = "UP000000535_242231_NEIG1_v2.tar",
+      "Nocardia brasiliensis" = "UP000006304_1133849_9NOCA1_v2.tar", 
+      "Onchocerca volvulus" = "UP000024404_6282_ONCVO_v2.tar",
+      "Paracoccidioides lutzii" = "UP000002059_502779_PARBA_v2.tar",
+      "Plasmodium falciparum" = "UP000001450_36329_PLAF7_v2.tar",
+      "Pseudomonas aeruginosa" = "UP000002438_208964_PSEAE_v2.tar",
+      "Salmonella typhimurium" = "UP000001014_99287_SALTY_v2.tar", 
+      "Schistosoma mansoni" = "UP000008854_6183_SCHMA_v2.tar",
+      "Shigella dysenteriae" = "UP000002716_300267_SHIDS_v2.tar", 
+      "Sporothrix schenckii" = "UP000018087_1391915_SPOS1_v2.tar",
+      "Staphylococcus aureus" = "UP000008816_93061_STAA8_v2.tar",
+      "Streptococcus pneumoniae" = "UP000000586_171101_STRR6_v2.tar",
+      "Strongyloides stercoralis" = "UP000035681_6248_STRER_v2.tar",
+      "Trichuris trichiura" = "UP000030665_36087_TRITR_v2.tar", 
+      "Trypanosoma brucei" = "UP000008524_185431_TRYB2_v2.tar",
+      "Trypanosoma cruzi" = "UP000002296_353153_TRYCC_v2.tar",
+      "Wuchereria bancrofti" = "UP000270924_6293_WUCBA_v2.tar"
     )
 
-    url <- paste0("https://ftp.ebi.ac.uk/pub/databases/alphafold/", organism_file)
+    url <- paste0("https://ftp.ebi.ac.uk/pub/databases/alphafold/latest/", organism_file)
 
     # set new longer timeout and reset to standard once function exits.
     old <- options(timeout = timeout)
@@ -179,7 +245,7 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
           pb$tick()
         }
         readr::read_tsv(.x, col_names = FALSE, quote = "", show_col_types = FALSE, progress = FALSE) %>%
-          dplyr::filter(stringr::str_detect(X1, pattern = "^ATOM|^HETATM")) %>%
+          dplyr::filter(stringr::str_detect(X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d")) %>%
           dplyr::mutate(X2 = stringr::str_replace_all(X1, pattern = "\\s+", replacement = " ")) %>%
           tidyr::separate(X2,
             sep = " ",
@@ -232,7 +298,7 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
             y = as.numeric(.data$y),
             z = as.numeric(.data$z),
             prediction_score = as.numeric(.data$prediction_score),
-            auth_seq_id = as.numeric(.data$auth_seq_id)
+            auth_seq_id = .data$auth_seq_id
           ) %>%
           dplyr::mutate(score_quality = dplyr::case_when(
             .data$prediction_score > 90 ~ "very_good",
@@ -246,9 +312,6 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
     unlink(paste0(tempdir(), "/alphafold"), recursive = TRUE)
     unlink(paste0(tempdir(), "/alphafold.tar"))
   } else {
-    if (!requireNamespace("httr", quietly = TRUE)) {
-      stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
-    }
     # remove NAs from UniProt IDs
     uniprot_ids <- uniprot_ids[!is.na(uniprot_ids)]
 
@@ -270,26 +333,22 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
       .x = batches,
       .f = ~ {
         # query information from database
-        if (!is.null(batches)) {
-          query <- try_query(.x,
-            type = "text/tab-separated-values",
-            col_names = FALSE,
-            quote = "",
-            show_col_types = FALSE,
-            progress = FALSE
-          )
-        }
-        if (show_progress == TRUE & "tbl" %in% class(query)) {
+        query <- try_query(.x,
+          type = "text/tab-separated-values",
+          col_names = FALSE,
+          quote = "",
+          show_col_types = FALSE,
+          progress = FALSE
+        )
+
+        if (show_progress == TRUE) {
           pb$tick()
         }
-        # if previous batch had a connection problem change batches to NULL, which breaks the mapping.
-        if (!"tbl" %in% class(query)) {
-          batches <<- NULL
-        }
+
         # only proceed with data if it was correctly retrieved
         if ("tbl" %in% class(query)) {
           query %>%
-            dplyr::filter(stringr::str_detect(X1, pattern = "^ATOM|^HETATM")) %>%
+            dplyr::filter(stringr::str_detect(X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d")) %>%
             dplyr::mutate(X2 = stringr::str_replace_all(X1, pattern = "\\s+", replacement = " ")) %>%
             tidyr::separate(X2,
               sep = " ",
@@ -342,7 +401,7 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
               y = as.numeric(.data$y),
               z = as.numeric(.data$z),
               prediction_score = as.numeric(.data$prediction_score),
-              auth_seq_id = as.numeric(.data$auth_seq_id)
+              auth_seq_id = .data$auth_seq_id
             ) %>%
             dplyr::mutate(score_quality = dplyr::case_when(
               .data$prediction_score > 90 ~ "very_good",
@@ -350,10 +409,32 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
               .data$prediction_score > 50 ~ "low",
               .data$prediction_score <= 50 ~ "very_low"
             ))
+        } else {
+          query
         }
       }
     )
   }
+
+  # catch any IDs that have not been fetched correctly
+  error_list <- query_result %>%
+    purrr::keep(.p = ~ is.character(.x))
+
+  error_table <- tibble::tibble(
+    id = names(error_list),
+    error = unlist(error_list)
+  ) %>%
+    dplyr::distinct()
+
+  if (nrow(error_table) != 0) {
+    message("The following IDs have not be retrieved correctly.")
+    message(paste0(utils::capture.output(error_table), collapse = "\n"))
+  }
+
+  # only keep data in output
+
+  query_result <- query_result %>%
+    purrr::keep(.p = ~ !is.character(.x))
 
   if (return_data_frame == FALSE) {
     return(query_result)

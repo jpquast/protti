@@ -6,6 +6,12 @@
 \usage{
 go_enrichment(...)
 }
+\value{
+A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or
+depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individually with the
+\code{plot_cutoff} argument. Bars are colored according to the direction of the enrichment. If
+\code{plot = FALSE}, a data frame is returned. P-values are adjusted with Benjamini-Hochberg.
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 This function was deprecated due to its name changing to \code{calculate_go_enrichment()}.

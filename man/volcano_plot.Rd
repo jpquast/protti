@@ -15,7 +15,7 @@ volcano_plot(
   facet_by = NULL,
   title = "Volcano plot",
   x_axis_label = "log2(fold change)",
-  y_axis_label = "-log10(q-value)",
+  y_axis_label = "-log10(p-value)",
   legend_label = "Target",
   log2FC_cutoff = 1,
   significance_cutoff = 0.01,
@@ -128,7 +128,7 @@ diff <- calculate_diff_abundance(
   intensity_log2 = peptide_intensity_missing,
   missingness = missingness,
   comparison = comparison,
-  method = "moderated_t-test",
+  method = "t-test",
   retain_columns = c(protein, change_peptide)
 )
 

@@ -6,6 +6,11 @@
 \usage{
 volcano_protti(...)
 }
+\value{
+Depending on the method used a volcano plot with either highlighted targets
+(\code{method = "target"}) or highlighted significant proteins (\code{method = "significant"})
+is returned.
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 This function was deprecated due to its name changing to \code{volcano_plot()}.

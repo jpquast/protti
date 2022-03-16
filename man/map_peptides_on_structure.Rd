@@ -9,8 +9,7 @@ map_peptides_on_structure(
   uniprot_id,
   pdb_id,
   chain,
-  start_in_pdb,
-  end_in_pdb,
+  auth_seq_id,
   map_value,
   file_format = ".cif",
   scale_per_structure = TRUE,
@@ -22,12 +21,12 @@ map_peptides_on_structure(
 \arguments{
 \item{peptide_data}{a data frame that contains the input columns to this function. If structure
 or prediction files should be fetched automatically, please provide column names to the following
-arguments: \strong{uniprot_id}, \strong{pdb_id}, \strong{chain}, \strong{start_in_pdb}, \strong{end_in_pdb},
+arguments: \strong{uniprot_id}, \strong{pdb_id}, \strong{chain}, \strong{auth_seq_id},
 \strong{map_value}. If no PDB structure for a protein is available the \code{pdb_id} and \code{chain}
 column should contain NA at these positions. If a structure or prediction file is provided in the
 \code{structure_file} argument, this data frame should only contain information associated with
 the provided structure. In case of a user provided structure, column names should be provided to
-the following arguments: \strong{uniprot_id}, \strong{chain}, \strong{start_in_pdb}, \strong{end_in_pdb}, \strong{map_value}.}
+the following arguments: \strong{uniprot_id}, \strong{chain}, \strong{auth_seq_id}, \strong{map_value}.}
 
 \item{uniprot_id}{a character column in the \code{peptide_data} data frame that contains UniProt
 identifiers for a corresponding peptide, protein region or amino acid.}
@@ -47,21 +46,13 @@ the author defined chain definitions for both ".cif" and ".pdb" files. When the 
 \code{find_peptide_in_structure} function is used as the input for this function, this
 corresponds to the \code{auth_asym_id} column.}
 
-\item{start_in_pdb}{a numeric column in the \code{peptide_data} data frame that contains start
-positions for peptides, protein regions or amino acids in the corresponding PDB structure or
-AlphaFold prediction. This information can be obtained from the \code{find_peptide_in_structure}
-function. The corresponding column in the output is called \code{auth_seq_id_start}. If amino
-acid positions should be used, start and end positions are the same and the same column can be
-provided to both \code{start_in_pdb} and \code{end_in_pdb}. In case of AlphaFold predictions,
-UniProt positions should be used.}
-
-\item{end_in_pdb}{a numeric column in the \code{peptide_data} data frame that contains end
-positions for peptides, protein regions or amino acids in the corresponding PDB structure or
-AlphaFold prediction. This information can be obtained from the \code{find_peptide_in_structure}
-function. The corresponding column in the output is called \code{auth_seq_id_end}. If amino
-acid positions should be used, start and end positions are the same and the same column can
-be provided to both \code{start_in_pdb} and \code{end_in_pdb}. In case of AlphaFold
-predictions, UniProt positions should be used.}
+\item{auth_seq_id}{optional, a character (or numeric) column in the \code{peptide_data} data frame
+that contains semicolon separated positions of peptides, protein regions or amino acids in the
+corresponding PDB structure or AlphaFold prediction. This information can be obtained from the
+\code{find_peptide_in_structure} function. The corresponding column in the output is called
+\code{auth_seq_id}. In case of AlphaFold predictions, UniProt positions should be used. If
+signal positions and not stretches of amino acids are provided, the column can be numeric and
+does not need to contain the semicolon separator.}
 
 \item{map_value}{a numeric column in the \code{peptide_data} data frame that contains a value
 associated with each peptide, protein region or amino acid. If one start to end position pair
@@ -151,8 +142,7 @@ map_peptides_on_structure(
   uniprot_id = uniprot_id,
   pdb_id = pdb_ids,
   chain = auth_asym_id,
-  start_in_pdb = auth_seq_id_start,
-  end_in_pdb = auth_seq_id_end,
+  auth_seq_id = auth_seq_id,
   map_value = map_value,
   file_format = ".pdb",
   export_location = getwd()

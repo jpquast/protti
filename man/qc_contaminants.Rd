@@ -44,7 +44,13 @@ If \code{plot = FALSE} a data frame is returned.
 Calculates the percentage of contaminating proteins as the share of total intensity.
 }
 \examples{
-\dontrun{
+data <- data.frame(
+  sample = c(rep("sample_1", 10), rep("sample_2", 10)),
+  leading_razor_protein = c(rep(c("P1", "P1", "P1", "P2", "P2", "P2", "P2", "P3", "P3", "P3"), 2)),
+  potential_contaminant = c(rep(c(rep(TRUE, 7), rep(FALSE, 3)), 2)),
+  intensity = c(rep(1, 2), rep(4, 4), rep(6, 4), rep(2, 3), rep(3, 5), rep(4, 2))
+)
+
 qc_contaminants(
   data,
   sample = sample,
@@ -52,5 +58,4 @@ qc_contaminants(
   is_contaminant = potential_contaminant,
   intensity = intensity
 )
-}
 }

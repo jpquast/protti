@@ -9,7 +9,7 @@
 #' @param grouping a character column in the \code{data} data frame that contains either precursor or
 #' peptide identifiers.
 #' @param intensity a character column in the \code{data} data frame that contains raw or log2
-#' transformed intensities. If \code{remove_na_intensities = FALSE}, this argument is not required.
+#' transformed intensities. If \code{remove_na_intensities = FALSE}, this argument is optional.
 #' @param remove_na_intensities a logical value that specifies if sample/grouping combinations with
 #' intensities that are NA (not quantified IDs) should be dropped from the data frame. Default is
 #' TRUE since we are usually interested in the number of quantifiable IDs.
@@ -83,9 +83,11 @@ or set remove_na_intensities to FALSE",
           prefix = "\n", initial = ""
         ))
       }
-
       data <- data %>%
-        tidyr::drop_na({{ intensity }}) %>%
+        tidyr::drop_na({{ intensity }})
+    }
+    if (!missing(condition)) {
+      data <- data %>%
         dplyr::mutate({{ condition }} := as.character({{ condition }}))
     }
 

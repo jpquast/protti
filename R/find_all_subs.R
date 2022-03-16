@@ -19,7 +19,8 @@
 #' @importFrom purrr map
 find_all_subs <- function(data, ids, types = "is_a") {
   if (!requireNamespace("igraph", quietly = TRUE)) {
-    stop("Package \"igraph\" is needed for this function to work. Please install it.", call. = FALSE)
+    message("Package \"igraph\" is needed for this function to work. Please install it.", call. = FALSE)
+    return(invisible(NULL))
   }
   if (ifelse(length(types) == 1, types == "all", FALSE)) {
     data <- data %>%

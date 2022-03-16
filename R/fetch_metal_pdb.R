@@ -1,8 +1,8 @@
 #' Fetch structural information about protein-metal binding from MetalPDB
 #'
 #' Fetches information about protein-metal binding sites from the
-#' \href{https://metalpdb.cerm.unifi.it/}{MetalPDB} database. A complete list of different search
-#' queries possible can be found \href{https://metalpdb.cerm.unifi.it/api_help/}{here}.
+#' MetalPDB database. A complete list of different possible search
+#' queries can be found on their website.
 #'
 #' @param id_type a character value that specifies the type of the IDs provided to \code{id_value}.
 #' Default is "uniprot". Possible options include: "uniprot", "pdb", "ec_number", "molecule" and
@@ -30,13 +30,13 @@
 #' information should be retrieved. The ligand can be specified as e.g. "His".
 #' @param geometry optional, a character value that specifies a metal site geometry for which
 #' information should be retrieved. The geometry can be specified here based on the three letter
-#' code for geometries provided on \href{https://metalpdb.cerm.unifi.it/perGeometry/}{MetalPDB}.
+#' code for geometries provided on their website.
 #' @param coordination optional, a character value that specifies a coordination number for which
 #' information should be retrieved. The number can be specified as e.g. "3".
 #' @param donors optional, a character value that specifies a metal ligand atom for which
 #' information should be retrieved. The atom can be specified as e.g. "S" for sulfur.
 #' @param columns optional, a character vector that specifies specific columns that should be
-#' retrieved based on the MetalPDB \href{https://metalpdb.cerm.unifi.it/api_help/}{website}. If
+#' retrieved based on the MetalPDB website. If
 #' nothing is supplied here, all possible columns will be retrieved.
 #' @param show_progress logical, if true, a progress bar will be shown. Default is TRUE.
 #'
@@ -72,6 +72,7 @@
 #' @import progress
 #' @import purrr
 #' @import tidyr
+#' @importFrom stringr str_detect
 #' @importFrom curl has_internet
 #' @importFrom magrittr %>%
 #' @export
@@ -97,10 +98,6 @@ fetch_metal_pdb <- function(id_type = "uniprot",
                             donors = NULL,
                             columns = NULL,
                             show_progress = TRUE) {
-  if (!requireNamespace("httr", quietly = TRUE)) {
-    stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
-  }
-
   if (!curl::has_internet()) {
     message("No internet connection.")
     return(invisible(NULL))
@@ -190,8 +187,9 @@ fetch_metal_pdb <- function(id_type = "uniprot",
   }
 
   url <- "http://metalpdb.cerm.unifi.it/api?query="
+  names(id_value) <- id_value
 
-  content <- purrr::map_dfr(
+  query_result <- purrr::map(
     .x = id_value,
     .f = function(x) {
       query_url <- paste0(
@@ -209,20 +207,56 @@ fetch_metal_pdb <- function(id_type = "uniprot",
         donors,
         columns
       )
-      if (!is.null(id_value)) {
-        query <- try_query(query_url, type = "application/json", simplifyDataFrame = TRUE)
-      }
+      query <- try_query(query_url, type = "application/json", simplifyDataFrame = TRUE)
 
-      if (show_progress == TRUE & class(query) %in% c("data.frame", "list")) {
+      if (show_progress == TRUE) {
         pb$tick()
-      }
-      # if previous ID had a connection problem change IDs to NULL, which breaks the mapping.
-      if (!class(query) %in% c("data.frame", "list")) {
-        id_value <<- NULL
       }
       query
     }
   )
+
+  # catch any IDs that have not been fetched correctly
+  error_list <- query_result %>%
+    purrr::map(.f = ~ {
+      if (length(.x) == 0) {
+        paste("Not found in database")
+      } else {
+        .x
+      }
+    }) %>%
+    purrr::keep(.p = ~ is.character(.x))
+
+  error_table <- tibble::tibble(
+    id = names(error_list),
+    error = unlist(error_list)
+  ) %>%
+    dplyr::distinct()
+
+  if (nrow(error_table) == length(id_value) && str_detect(error_table$error, pattern = "502")) {
+    message("502 Bad Gateway. The server cannot be reached right now. Try again later!")
+    return(invisible(NULL))
+  }
+
+  if (nrow(error_table) != 0) {
+    message("The following IDs have not be retrieved correctly.")
+    message(paste0(utils::capture.output(error_table), collapse = "\n"))
+  }
+
+  # only keep data in output
+
+  content <- query_result %>%
+    purrr::map(.f = ~ {
+      if (length(.x) == 0) {
+        paste("Not found in database")
+      } else {
+        .x
+      }
+    }) %>%
+    purrr::keep(.p = ~ !is.character(.x)) %>%
+    purrr::map_dfr(
+      .f = ~.x
+    )
 
   if (nrow(content) == 0) {
     return(content)

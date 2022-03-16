@@ -47,7 +47,7 @@
 #' of structures.}
 #' \item{auth_seq_id: }{An alternative residue identifier (\code{label_seq_id}) provided by the
 #' author of the structure in order to match the identification used in the publication that
-#' describes the structure.}
+#' describes the structure. This does not need to be numeric and is therefore of type character.}
 #' \item{auth_comp_id: }{An alternative chemical identifier (\code{label_comp_id}) provided by the
 #' author of the structure in order to match the identification used in the publication that
 #' describes the structure.}
@@ -65,6 +65,7 @@
 #' @importFrom stringr str_replace_all str_detect
 #' @importFrom curl has_internet
 #' @importFrom magrittr %>%
+#' @importFrom utils capture.output
 #' @export
 #'
 #' @examples
@@ -77,10 +78,6 @@
 #' head(pdb_structure, n = 10)
 #' }
 fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progress = TRUE) {
-  if (!requireNamespace("httr", quietly = TRUE)) {
-    stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
-  }
-
   if (!curl::has_internet()) {
     message("No internet connection.")
     return(invisible(NULL))
@@ -107,27 +104,23 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
     .y = names(batches),
     .f = ~ {
       # query information from database
-      if (!is.null(batches)) {
-        query <- try_query(.x,
-          type = "text/tab-separated-values",
-          col_names = FALSE,
-          quote = "",
-          show_col_types = FALSE,
-          progress = FALSE
-        )
-      }
-      if (show_progress == TRUE & "tbl" %in% class(query)) {
+      query <- try_query(.x,
+        type = "text/tab-separated-values",
+        col_names = FALSE,
+        quote = "",
+        show_col_types = FALSE,
+        progress = FALSE
+      )
+
+      if (show_progress == TRUE) {
         pb$tick()
       }
-      # if previous batch had a connection problem change batches to NULL, which breaks the mapping.
-      if (!"tbl" %in% class(query)) {
-        batches <<- NULL
-      }
+
       # only proceed with data if it was correctly retrieved
       if ("tbl" %in% class(query)) {
         query %>%
           dplyr::filter(stringr::str_detect(X1,
-            pattern = "^ATOM|^HETATM"
+            pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d"
           )) %>%
           dplyr::mutate(X2 = stringr::str_replace_all(X1,
             pattern = "\\s+",
@@ -175,13 +168,35 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
             z = as.numeric(.data$z),
             site_occupancy = as.numeric(.data$site_occupancy),
             b_iso_or_equivalent = as.numeric(.data$b_iso_or_equivalent),
-            auth_seq_id = as.numeric(.data$auth_seq_id),
+            auth_seq_id = .data$auth_seq_id,
             pdb_model_number = as.numeric(.data$pdb_model_number),
             pdb_id = .y
           )
+      } else {
+        query
       }
     }
   )
+
+  # catch any IDs that have not been fetched correctly
+  error_list <- query_result %>%
+    purrr::keep(.p = ~ is.character(.x))
+
+  error_table <- tibble::tibble(
+    id = names(error_list),
+    error = unlist(error_list)
+  ) %>%
+    dplyr::distinct()
+
+  if (nrow(error_table) != 0) {
+    message("The following IDs have not be retrieved correctly.")
+    message(paste0(utils::capture.output(error_table), collapse = "\n"))
+  }
+
+  # only keep data in output
+
+  query_result <- query_result %>%
+    purrr::keep(.p = ~ !is.character(.x))
 
   if (return_data_frame == FALSE) {
     return(query_result)

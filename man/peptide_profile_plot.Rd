@@ -47,7 +47,7 @@ plots cannot be exported either.}
 directory will be the current working directory. The name of the file can be chosen using the
 \code{export_name} argument.}
 
-\item{export_name}{Aacharacter vector that provides the name of the exported file if
+\item{export_name}{A character vector that provides the name of the exported file if
 \code{export = TRUE}.}
 }
 \value{
@@ -58,6 +58,7 @@ Creates a plot of peptide abundances across samples. This is helpful to investig
 peptide and protein abundance changes in different samples and conditions.
 }
 \examples{
+\donttest{
 # Create example data
 data <- data.frame(
   sample = c(
@@ -95,7 +96,7 @@ complete_abundances <- calculate_protein_abundance(
   precursor = precursor,
   peptide = peptide,
   intensity_log2 = intensity,
-  method = "iq",
+  method = "sum",
   for_plot = TRUE
 )
 
@@ -111,4 +112,5 @@ peptide_profile_plot(
   targets = c("P1"),
   protein_abundance_plot = TRUE
 )
+}
 }

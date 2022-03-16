@@ -22,9 +22,6 @@
 #' head(kegg)
 #' }
 fetch_kegg <- function(species) {
-  if (!requireNamespace("httr", quietly = TRUE)) {
-    stop("Package \"httr\" is needed for this function to work. Please install it.", call. = FALSE)
-  }
   if (!curl::has_internet()) {
     message("No internet connection.")
     return(invisible(NULL))

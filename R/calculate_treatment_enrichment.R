@@ -3,6 +3,10 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `calculate_treatment_enrichment()`.
 #'
+#' @return A bar plot displaying the percentage of all detect proteins and all significant proteins
+#' that bind to the treatment. A Fisher's exact test is performed to calculate the significance of
+#' the enrichment in significant proteins compared to all proteins. The result is reported as a
+#' p-value. If \code{plot = FALSE} a contingency table in long format is returned.
 #' @keywords internal
 #' @export
 treatment_enrichment <- function(...) {

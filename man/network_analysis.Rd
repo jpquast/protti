@@ -6,6 +6,11 @@
 \usage{
 network_analysis(...)
 }
+\value{
+A network plot displaying interactions of the provided proteins. If
+\code{binds_treatment} was provided halos around the proteins show which proteins interact with
+the treatment. If \code{plot = FALSE} a data frame with interaction information is returned.
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 This function was deprecated due to its name changing to \code{analyse_functional_network()}.

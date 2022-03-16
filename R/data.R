@@ -6,6 +6,14 @@
 #' @source Dina's imagination.
 "protti_colours"
 
+#' Viridis colour scheme
+#'
+#' A colour scheme by the viridis colour scheme from the viridis R package.
+#'
+#' @format A vector containing 256 colours
+#' @source viridis R package
+"viridis_colours"
+
 #' Rapamycin 10 uM example data
 #'
 #' Rapamycin example data used for the vignette about binary control/treated data. The data was
