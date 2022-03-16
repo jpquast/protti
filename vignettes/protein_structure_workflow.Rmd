@@ -211,8 +211,7 @@ contact_map <- create_structure_contact_map(
   data = significant_peptides,
   id = pdb_ids,
   chain = auth_asym_id,
-  start_in_pdb = auth_seq_id_start,
-  end_in_pdb = auth_seq_id_end,
+  auth_seq_id = auth_seq_id,
   distance_cutoff = 10,
   pdb_model_number_selection = c(0, 1),
   return_min_residue_distance = TRUE
@@ -291,15 +290,33 @@ ptsi_pgk_peptide_structure_positions %>%
    uniprot_id = pg_protein_accessions,
    pdb_id = pdb_ids,
    chain = auth_asym_id,
-   start_in_pdb = auth_seq_id_start,
-   end_in_pdb = auth_seq_id_end,
+   auth_seq_id = auth_seq_id,
    map_value = map_value,
-   file_format = ".cif",
-   export_location = tempdir()
+   file_format = ".pdb" # exporting this as a pdb file now but r3dmol can also read cif, change back to cif if necessary
  )
 ```
 
 The function does not return anything in the R environment. Structures are directly saved in the desired format. To visualise coloured regions in your peptides you should open the file in either PyMOL or ChimeraX. There you have the option to colour structures by B-factor.
+
+### Structure mapping in R using r3dmol
+
+```{r 3d_structure_mapping, echo=TRUE, warning=FALSE}
+library(r3dmol) # add to suggests?
+
+r3dmol() %>%
+  m_add_model(data = "1ZMR_P0A799.pdb", format = "pdb") %>% # now uses the exported structure from the directory - change this
+  m_set_style(style = m_style_cartoon(
+    colorfunc = "
+        function(atom) {
+          if (atom.b == 50) {return 'grey'};
+          if (atom.b == 100) {return 'blue'};
+          if (atom.b == 0) {return 'white'};
+          return 'white';
+        }"
+  )) %>%
+  m_zoom_to()
+
+```
 
 ### Pymol
 
@@ -367,7 +384,8 @@ amino_acid_score <- calculate_aa_scores(
   start_position = start,
   end_position = end,
   retain_columns = c(pdb_ids, auth_asym_id)
-)
+) %>% 
+  mutate(auth_seq_id = residue)
 
 # Map the score on structure
 map_peptides_on_structure(
@@ -375,12 +393,31 @@ map_peptides_on_structure(
    uniprot_id = pg_protein_accessions,
    pdb_id = pdb_ids,
    chain = auth_asym_id,
-   start_in_pdb = residue,
-   end_in_pdb = residue,
+   auth_seq_id = auth_seq_id,
    map_value = amino_acid_score,
-   file_format = ".cif",
-   export_location = tempdir()
+   file_format = ".pdb"
  )
+```
+```{r score_3d_structure_mapping, echo=TRUE, warning=FALSE}
+
+make_colours <- function(x, start = "blue", low = "green", mid = "yellow", high = "orange", end = "red") {
+  colorfun <- colorRampPalette(c(start, low, mid, high, end))
+  
+  paste0('"', paste(colorfun(x), collapse = '", "'), '"')
+}
+
+
+r3dmol() %>%
+  m_add_model(data = "1ZMR_P0A799_2.pdb", format = "pdb") %>%  # now uses the exported structure from the directory - change this
+  m_set_style(style = m_style_cartoon(
+    colorfunc = paste0("
+        function(atom) {
+          const color = [", make_colours(120, "blue", "green", "yellow", "orange", "red"),"]
+          return color[Math.round(atom.b)]
+        }")
+  )) %>%
+  m_zoom_to()
+
 ```
 
 While the previous method of displaying only significantly changing peptides that have a minimum fold change is useful for the identification of regions that change the most, it is not robust to false positive peptides. The score on the other hand will only be high if an amino acid is consistently part of significant and differentially abundant peptides. The problem of the score is that it is hard and visually even impossible to interpret what a certain score means. This is due to the fact that the same score can be caused by two completely different scenarios. On the one hand an amino acid might be associated with peptides that have a low but highly significant change. On the other hand it can be associated with peptides that have a strong but less significant change. Both scenarios could yield the same amino acid score. Therefore, the score should not be misinterpreted as describing the extend of the change but should rather be seen as a probability that a certain amino acid is really structurally affected.
