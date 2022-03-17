@@ -312,19 +312,19 @@ To visualise coloured regions in your proteins you should open the file in eithe
 # Load the r3dmol package
 library(r3dmol) 
 
+# Create structure
 r3dmol() %>%
   m_add_model(data = paste0(tempdir(), "/1ZMR_P0A799.pdb"), format = "pdb") %>% 
   m_set_style(style = m_style_cartoon(
     colorfunc = "
         function(atom) {
-          if (atom.b == 50) {return 'green'};
-          if (atom.b == 100) {return 'red'};
+          if (atom.b == 50) {return '#90EE90'};
+          if (atom.b == 100) {return '#FF7276'};
           if (atom.b == 0) {return 'white'};
           return 'white';
         }"
   )) %>%
   m_zoom_to()
-
 ```
 
 ### PyMOL
@@ -396,8 +396,7 @@ amino_acid_score <- calculate_aa_scores(
   start_position = start,
   end_position = end,
   retain_columns = c(pdb_ids, auth_asym_id)
-) %>% 
-  mutate(auth_seq_id = residue)
+)
 
 # Map the score on structure
 map_peptides_on_structure(
@@ -405,38 +404,36 @@ map_peptides_on_structure(
    uniprot_id = pg_protein_accessions,
    pdb_id = pdb_ids,
    chain = auth_asym_id,
-   auth_seq_id = auth_seq_id,
+   auth_seq_id = residue,
    map_value = amino_acid_score,
    file_format = ".pdb",
    export_location = tempdir()
  )
 ```
 
+While the previous method of displaying only significantly changing peptides that have a minimum fold change is useful for the identification of regions that change the most, it is not robust to false positive peptides. The score on the other hand will only be high if an amino acid is consistently part of significant and differentially abundant peptides. The problem of the score is that it is hard and visually even impossible to interpret what a certain score means. This is due to the fact that the same score can be caused by two completely different scenarios. On the one hand an amino acid might be associated with peptides that have a low fold change but are highly significant. On the other hand it can be associated with peptides that have a high fold change but are of low significance. Both scenarios could yield the same amino acid score. Therefore, the score should not be misinterpreted as describing the extent of the change but should rather be seen as a probability that a certain amino acid is really structurally affected.
+
 ```{r score_3d_structure_mapping, eval = test_protti, echo=TRUE, warning=FALSE}
+# create a color gradient with 101 colors
+color_gradient <- paste0('"', 
+                         paste(colorRampPalette(c("white", "#90EE90", "#FF7276"))(101), 
+                               collapse = '", "'), 
+                         '"')
 
-make_colours <- function(x, start = "blue", low = "green", mid = "yellow", high = "orange", end = "red") {
-  colorfun <- colorRampPalette(c(start, low, mid, high, end))
-  
-  paste0('"', paste(colorfun(x), collapse = '", "'), '"')
-}
-
-
+# create structure
 r3dmol() %>%
-  m_add_model(data = paste0(tempdir(), "/1ZMR_P0A799.pdb"), format = "pdb") %>%
+  m_add_model(data = paste0(tempdir(), "/2HWG_P08839.pdb"), format = "pdb") %>%
   m_set_style(style = m_style_cartoon(
     colorfunc = paste0("
         function(atom) {
-          const color = [", make_colours(120, "blue", "green", "yellow", "orange", "red"),"]
+          const color = [", color_gradient,"]
           return color[Math.round(atom.b)]
         }")
   )) %>%
   m_zoom_to()
-
 ```
 
-While the previous method of displaying only significantly changing peptides that have a minimum fold change is useful for the identification of regions that change the most, it is not robust to false positive peptides. The score on the other hand will only be high if an amino acid is consistently part of significant and differentially abundant peptides. The problem of the score is that it is hard and visually even impossible to interpret what a certain score means. This is due to the fact that the same score can be caused by two completely different scenarios. On the one hand an amino acid might be associated with peptides that have a low fold change but are highly significant. On the other hand it can be associated with peptides that have a high fold change but are of low significance. Both scenarios could yield the same amino acid score. Therefore, the score should not be misinterpreted as describing the extent of the change but should rather be seen as a probability that a certain amino acid is really structurally affected.
-
-Applying the score to both structures definitely refines the region most robustly affected by the treatment. For ptsI it seems that a region of amino acids directly in the active center are consistently affected. In addition we see a small region bellow, which was previously not seen due to its low fold changes that did not meet the cutoff. The score tells us that this region is indeed consistently affected and that there is likely a structural change occurring even though the fold change of peptides is rather low (based on looking at the tables). The region in the binding interface previously indicated with a black arrow is now not highlighted anymore, indicating that this was likely a false positive hit and that other peptides in the same region do not exhibit a strong and significant response.
+Applying the score to both structures definitely refines the region most robustly affected by the treatment. For ptsI it seems that a region of amino acids directly in the active center are consistently affected. In addition we see a small region below, which was previously not seen due to its low fold changes that did not meet the cutoff. The score tells us that this region is indeed consistently affected and that there is likely a structural change occurring even though the fold change of peptides is rather low (based on looking at the tables). The region in the binding interface previously indicated with a black arrow is now not highlighted anymore, indicating that this was likely a false positive hit and that other peptides in the same region do not exhibit a strong and significant response.
 
 ```{r peptide_map_2hwg_score, eval = test_protti, echo = FALSE, fig.align = "center", fig.cap = "**ptsI (2HWG) with mapped amino acid scores.**"}
 knitr::include_graphics("figures/peptide_map_2hwg_score.png")

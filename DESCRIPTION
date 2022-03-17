@@ -46,6 +46,8 @@ Suggests:
     covr,
     knitr,
     rmarkdown,
+    shiny,
+    r3dmol,
     proDA,
     limma,
     dendextend,
@@ -58,8 +60,7 @@ Suggests:
     drc,
     igraph,
     stringi, 
-    STRINGdb,
-    r3dmol
+    STRINGdb
 Depends: 
     R (>= 4.0)
 URL: https://github.com/jpquast/protti, https://jpquast.github.io/protti/
