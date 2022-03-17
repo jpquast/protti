@@ -58,7 +58,8 @@ Suggests:
     drc,
     igraph,
     stringi, 
-    STRINGdb
+    STRINGdb,
+    r3dmol
 Depends: 
     R (>= 4.0)
 URL: https://github.com/jpquast/protti, https://jpquast.github.io/protti/

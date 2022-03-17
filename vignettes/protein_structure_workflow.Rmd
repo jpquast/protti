@@ -24,11 +24,11 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-This vignette will take you through all important tools **protti** provides for structural data analysis. These include functions that allow you to fetch information about structures both on a general and on the atom level. Additionally, distances between atoms can be extracted from structures using structure contact maps. Lastly, B-factors* of structures can be manipulated to contain custom values, which gives you the ability to colour regions on structures as well as to apply continuous values associated with each amino acid as a colour gradient using biomolecular visualisation software such as PyMOL or ChimeraX. 
+This vignette will take you through all important tools **protti** provides for structural data analysis. These include functions that allow you to fetch information about protein structures both on an experimental as well as structural level. Additionally, structure contact maps can be created from distances between atoms. Lastly, B-factors* of structures can be manipulated to contain custom values. This gives you the ability to colour regions on structures as well as to apply continuous values associated with each amino acid as a colour gradient using biomolecular visualisation software such as PyMOL or ChimeraX or the R package `r3dmol`. 
 
-_*B-factors or temperature factors are used in structural biology to describe the atomic displacement in the structure. In low resolution structures they might correspond to the flexibility of regions, while in high resolution structures it should not be used to infer information regarding flexibility._
+_*B-factors or temperature factors are used in structural biology to describe the atomic displacement in the structure. In low resolution structures they might correspond to the flexibility of regions, while in high resolution structures they should not be used to infer information regarding flexibility._
 
-In structural proteomics, protein strucural changes can be determined using methods such as limited proteolysis coupled to mass spectrometry ([LiP-MS](https://www.nature.com/articles/nbt.2999)), cross-linking mass spectrometry ([XL-MS](https://pubs.acs.org/doi/10.1021/acs.analchem.7b04431)) and hydrogen/deuterium exchange mass spectrometry ([HDX-MS](https://pubs.rsc.org/en/content/articlelanding/2011/CS/C0CS00113A)). In case of LiP-MS, structural changes can be identified with peptide or precursor* centric proteomics in the form of peptide fold changes. Relating this information to positions within the 3D space of a protein can be very helpful for inferring potential functional roles of those structural changes. If structural changes occur close to the active site of an enzyme, kinetics might be affected, if they occur at a protein-protein binding interface, the corresponding protein complex might have dissociated or associated. 
+In structural proteomics, protein structural changes can be determined using methods such as limited proteolysis coupled to mass spectrometry ([LiP-MS](https://www.nature.com/articles/nbt.2999)), cross-linking mass spectrometry ([XL-MS](https://pubs.acs.org/doi/10.1021/acs.analchem.7b04431)) and hydrogen/deuterium exchange mass spectrometry ([HDX-MS](https://pubs.rsc.org/en/content/articlelanding/2011/CS/C0CS00113A)). In case of LiP-MS, structural changes can be identified with peptide or precursor* centric proteomics in the form of peptide or precursor fold changes. Relating this information to positions within the 3D space of a protein can be very helpful for inferring potential functional roles of those structural changes. If structural changes occur close to the active site of an enzyme, kinetics might be affected, if they occur at a protein-protein binding interface, the corresponding protein complex might have dissociated or associated. 
 
 _*A peptide precursor is the actual molecular unit that was detected on the mass spectrometer. This is a peptide with one specific charge state and its modification(s)._
 
@@ -36,7 +36,7 @@ _*A peptide precursor is the actual molecular unit that was detected on the mass
 
 The world wide Protein Data Bank (wwPDB) manages and archives information about the 3D structure of proteins. Its information can be accessed through several sites such as the Research Collaboratory for Structural Bioinformatics ([RCSB](https://www.rcsb.org)). 
 
-If working with structure files it is important to keep a few things in mind such that mistakes can be avoided. One thing to consider is that structure files come in two mainly used formats, namely the PDB file format (.pdb) and the mmCIF file format (.cif). The PDB file format is the legacy file format of the Protein Data Bank, which has been replaced with the newer mmCIF file format that stores data on biological macromolecules. All structures available in the Protein Data Bank, contain a mmCIF file, while not all contain a PDB file. Mainly large protein complexes only contain mmCIF files. 
+When working with structure files it is important to keep a few things in mind such that mistakes can be avoided. One thing to consider is that structure files come in two mainly used formats, namely the PDB file format (.pdb) and the mmCIF file format (.cif). The PDB file format is the legacy file format of the Protein Data Bank, which has been replaced with the newer mmCIF file format that stores data on biological macromolecules. All structures available in the Protein Data Bank are available as a mmCIF file, while not all are available as a PDB file. Mainly large protein complexes only contain mmCIF files. 
 
 The way both files store data and relate to each other can be quite complex. There are several resources explaining their [relation](https://mmcif.wwpdb.org/docs/pdb_to_pdbx_correspondences.html) and their [content](https://mmcif.wwpdb.org/docs/pubs/AUTHOR_ch4o5.pdf). The most important thing to know about these files for you as a user of **protti** is the fact that there are different naming conventions for elements of the structure. 
 
@@ -44,13 +44,13 @@ PDB files solely use the naming provided by the author of the structure in order
 
 mmCIF files use both the naming provided by the author and a naming following the standardised conventions for mmCIF files. Columns containing standardised information start with the prefix "`label_`". 
 
-_**Additional information:** The differences between author provided and standardised labeling may vary a lot depending on the structure and can be quite confusing. An example taken from the [documentation](https://mmcif.wwpdb.org/docs/pubs/AUTHOR_ch4o5.pdf) of mmCIF files describes the relationship between author provided and standardised residue IDs as follows. The `label_seq_id` (standardised residue ID) column is required to be a sequential list of positive integers, while the `auth_seq_id` (author residue ID) is not necessarily a number and the values do not have to be positive. The author may assign values to `auth_seq_id` in any desired way. For instance, the values may be used to relate this structure to a numbering scheme in a homologous structure, including sequence gaps or insertion codes. Alternatively, a scheme may be used for a truncated polymer that maintains the numbering scheme of the full length polymer. In all cases, the scheme used here must match the scheme used in the publication that describes the structure._
+_**Additional information:** The differences between author provided and standardised labeling may vary a lot depending on the structure and can be quite confusing. An example taken from the [documentation](https://mmcif.wwpdb.org/docs/pubs/AUTHOR_ch4o5.pdf) of mmCIF files describes the relationship between author provided and standardised residue IDs as follows: The `label_seq_id` (standardised residue ID) column is required to be a sequential list of positive integers, while the `auth_seq_id` (author residue ID) is not necessarily a number and the values do not have to be positive. The author may assign values to `auth_seq_id` in any desired way. For instance, the values may be used to relate this structure to a numbering scheme in a homologous structure, including sequence gaps or insertion codes. Alternatively, a scheme may be used for a truncated polymer that maintains the numbering scheme of the full length polymer. In all cases, the scheme used here must match the scheme used in the publication that describes the structure._
 
-For the use of the functions in **protti** it is important to know that these two different conventions exist. **All functions usually take the author provided information as inputs.** This has the reason that even though the PDB file format is a legacy format, many people still mainly use this format. With the `find_peptide_in_structure()` function we provide a convenient way for you to find both the standardised and the author provided residue numberings for a peptide, protein region or amino acid, starting with their UniProt start and end position. 
+For the use of the functions in **protti** it is important to know that these two different conventions exist. **All functions usually take the author provided information as inputs.** This has the reason that even though the PDB file format is a legacy format, many people still mainly use this format. With the `find_peptide_in_structure()` function we provide a convenient way for you to find both the standardised and the author provided residue numberings for a peptide, protein region or amino acid, returning their UniProt start and end position. In addition, we return the full stretch of residue annotations for the author provided information in the column `auth_seq_id` since they are not necessarily consecutive as previously mentioned.
 
 # Getting started
 
-Before starting the structural analysis of your data you need to load **protti** and additional packages used for the analysis. As described on the [main page](https://jpquast.github.io/protti/index.html) of **protti**, the [tidyverse](https://www.tidyverse.org) package collection works well together with the rest of the package, by design. You can load packages after you installed them with the `library()` function.
+Before starting the structural analysis of your data you need to load **protti** and additional packages used for the analysis. As described on the [main page](https://jpquast.github.io/protti/index.html) of **protti**, the [tidyverse](https://www.tidyverse.org) package collection works well together with the rest of the package, by design. You can load packages with the `library()` function.
 
 ```{r load_packages, eval = test_protti, warning = FALSE, message = FALSE}
 # Load packages
@@ -68,7 +68,7 @@ The functions used in this analysis can also be used in a different context than
 
 ## Loading data
 
-For this vignette we use a subset of two proteins from separate LiP-MS experiments that contain peptides significantly changing in abundance due to a structural change. We combined these two proteins into one data set to showcase that multiple proteins and structures can be analysed at once. The data was obtained from the paper "Dynamic 3D proteomes reveal protein functional alterations at high resolution in situ" ([Cappelletti 2021](https://www.cell.com/cell/pdf/S0092-8674(20)31691-3.pdf)). Both experiments were conducted on purified _E. coli_ proteins spiked into _E. coli_ lysates. The first protein is phosphoglycerate kinase 1 (pgk) and it was treated with 25mM 3-phosphoglyceric acid (3PG). The second protein is phosphoenolpyruvate-protein phosphotransferase (ptsI) and it was treated with 25mM fructose 1,6-bisphosphatase (FBP). 
+For this vignette we use a subset of two proteins from separate LiP-MS experiments that contain peptides significantly changing in abundance due to a structural change. We combined these two proteins into one data set to showcase that multiple proteins and structures can be analysed at once. The data was obtained from the paper "Dynamic 3D proteomes reveal protein functional alterations at high resolution in situ" ([Cappelletti 2021](https://www.cell.com/cell/pdf/S0092-8674(20)31691-3.pdf)). Both experiments were conducted on purified _E. coli_ proteins spiked into _E. coli_ lysates. The first protein is phosphoglycerate kinase 1 (pgk) which was treated with 25 mM 3-phosphoglyceric acid (3PG). The second protein is phosphoenolpyruvate-protein phosphotransferase (ptsI) which was treated with 25 mM fructose 1,6-bisphosphatase (FBP). 
 
 Based in structural changes observed in these proteins the authors conclude that FBP binds to the active site of ptsI and acts as a competitive inhibitor, which is confirmed by an activity assay. The structural change in pgk caused by 3PG is likely representative of substrate occupancy and correlates with metabolic flux changes.
 
@@ -105,9 +105,9 @@ ptsi_pgk_annotated <- ptsi_pgk %>%
 
 # Fetching structural information 
 
-First of all you can access strucural information with **protti** in order to see if there are protein structures available for your protein, how they were acquired and if they fit your quality requirements. 
+You can access strucural information with **protti** in order to see if there are protein structures available for your protein, how they were acquired and if they fit your quality requirements. 
 
-In the previous step we already retrieved information about the availability of protein structures for your protein of interest using the `fetch_uniprot()` function. The column `database_pdb` contains PDB identifiers if there is a structure available. Since the identifiers are pasted together into one string we need to separate them into individual identifiers to provide them to the `fetch_pdb()` function. This can be archieved through a combination of the `stringr` function `str_split()` and the `tidyr` function `unnest()`.
+In the previous step we already retrieved information about the availability of protein structures for your protein of interest using the `fetch_uniprot()` function. The column `database_pdb` contains PDB identifiers if there is a structure available. Since the identifiers are pasted together into one string we need to separate them into individual identifiers to provide them to the `fetch_pdb()` function. This can be achieved through a combination of the `stringr` function `str_split()` and the `tidyr` function `unnest()`.
 
 ```{r extract_pdb_info, eval = test_protti, warning = FALSE}
 # Extract PDB IDs from UniProt information
@@ -123,9 +123,9 @@ ptsi_pgk_pdb_information <- fetch_pdb(pdb_ids = unique(ptsi_pgk_pdb_ids$pdb_id))
 
 The result of `fetch_pdb()` contains a multitude of information. These include for example the experimental method that was used to determine the structure (`experimental_method` and `structure_method`). Depending on the method, there are columns specific to them. For example the column `ph_crystallisation` contains information about the pH of the solution used for crystallisation if X-ray crystallography was used as a method, while the column `ph_nmr` contains equivalent information if the method was NMR. A structure resolution (`resolution_combined`) is for example only included if available, which is not the case for NMR structures.
 
-Generally the molecular information about the structure is divided into "polymer" and "nonpolymer". While nonpolymer information is about binding partners such as metal-ions, metabolites, drugs or other small molecules, the polymer information is about the protein or polynucleotide. 
+Generally, the molecular information about the structure is divided into "polymer" and "nonpolymer". While nonpolymer information concerns binding partners such as metal-ions, metabolites, drugs or other small molecules, the polymer information concerns the protein or polynucleotide. 
 
-As an example lets say you want to consider only those structures for analysis that are determined by X-ray crystallography and that have a resolution of below 3 Angstrom. In addition you want only the one structure that contains the longest sequence stretch for each of our proteins, which means that only the structure with the maximum `length` should be selected. You can achieve this the following way.
+You could for example only consider structures for your analysis that were determined by X-ray crystallography and that have a resolution of below 3 Å. In addition, you could select only the one structure that contains the longest sequence stretch for each of our proteins (the structure with the maximum `length`). This can be achieved in the following way:
 
 ```{r filter_structures, eval = test_protti, warning = FALSE}
 filtered_structures <- ptsi_pgk_pdb_information %>% 
@@ -136,13 +136,13 @@ filtered_structures <- ptsi_pgk_pdb_information %>%
   ungroup()
 ```
 
-Generally, you can use the information retrieved by `fetch_pdb()` in any way that you see fit for your specific research question. However, you should note that by using very strict filtering criteria you might completely filter out some of the proteins that actually have structural information. This could be because their structures do not have a high enough resolution or they are not solved using the method of your choice. Also filtering by length should be done with care since for some proteins there might not be any full length structure but two structures of different domains that would make up the whole structural information if used in combination.
+Generally, you can use the information retrieved by `fetch_pdb()` in any way that you see fit for your specific research question. However, you should note that by using very strict filtering criteria you might remove some of the proteins that actually have structural information. This could be because their structures do not have a high enough resolution or they are not solved using the method of your choice. Filtering by length should also be done with care since for some proteins there might not be any full length structure but two structures of different domains that would make up the whole structural information if used in combination.
 
 ## Fetching atomic structural information
 
-In addition to the general structural information that can be retrieved with `fetch_pdb()` you can also access atom level information for each structure using the `fetch_pdb_structure()` function. This information is mainly useful for applications that rely on the coordinates of each atom in the structure. We will later demonstrate a use of this in the `create_structure_contact_map()` function. Furthermore, `fetch_pdb_structure()` retrieves B-factors for each atom.
+In addition to the general structural information that can be retrieved with `fetch_pdb()` you can also access atom level information for each structure using the `fetch_pdb_structure()` function. This information is mainly useful for applications that rely on the coordinates of each atom in the structure. Later in this vignette we will demonstrate how this can be used in the `create_structure_contact_map()` function. Furthermore, `fetch_pdb_structure()` retrieves B-factors for each atom.
 
-Similar to `fetch_pdb()` you provide PDB identifiers as input to `fetch_pdb_structure()`. In the example below we provide the two PDB IDs that were left after the filtering from the previous step was applied to the data. If not too many structures (~<20) are fetched at once it is possible to combine all information in a data frame by setting the `return_data_frame` argument to `TRUE`. This is by default `FALSE`, which will return a list instead with each element representing one structure.
+Similar to `fetch_pdb()` PDB identifiers are provided as input to `fetch_pdb_structure()`. In the example below we provide the two PDB IDs that were left after the filtering from the previous step was applied to the data. If not too many structures (~<20) are fetched at once it is possible to combine all information in a data frame by setting the `return_data_frame` argument to `TRUE`. This is by default `FALSE`, which will return a list instead with each element representing one structure.
 
 ```{r fetch_pdb_structure, eval = test_protti, warning = FALSE}
 # Input PDB IDs
@@ -155,7 +155,7 @@ ptsi_pgk_structure_information <- fetch_pdb_structure(pdb_ids = pdb_ids,
 
 ## Fetching atomic structure prediction information from AlphaFold
 
-If a protein does not have any available structure you can alternatively fetch protein structure predictions from [AlphaFold](https://www.nature.com/articles/s41586-021-03819-2) using the `fetch_alphafold_prediction()` function. The function works similar to `fetch_pdb_structure()` but it takes UniProt identifiers instead of PDB identifiers as input. Furthermore, there is the option to fetch all predictions for on organism as a whole. The B-factor information in AlphaFold predictions represents the quality score of the atom position prediction.
+If a protein does not have any available structure you can alternatively fetch protein structure predictions from [AlphaFold](https://www.nature.com/articles/s41586-021-03819-2) using the `fetch_alphafold_prediction()` function. The function works similar to `fetch_pdb_structure()` but it takes UniProt identifiers instead of PDB identifiers as input. Furthermore, there is the option to fetch all predictions for an organism as a whole. The B-factor information in AlphaFold predictions represents the quality score of the atom position prediction.
 
 It is of course also possible to retrieve structure prediction information for proteins that have a known protein structure. In the example below we will retrieve prediction information for our two proteins ptsi (P08839) and pgk (P0A799). The output column `score_quality` annotates the score from the `prediction_score` column based on the official AlphaFold score quality annotations and cutoffs.
 
@@ -170,13 +170,13 @@ ptsi_pgk_prediction_information <- fetch_alphafold_prediction(uniprot_ids = unip
 
 # Generation of structural contact maps
 
-A very useful structural analysis function provided by **protti** is `create_structure_contact_map()`, which uses atom level structural information to calculate distances between atoms or amino acid residues. The generated contact map can be used in order to assess which regions are in close proximity to each other. Furthermore, you can use this function to identify all atoms that are in a certain proximity to a ligand or other small molecule. Additionally, protein-protein interfaces can be easily identified in structures that contain protein complexes. 
+A very useful structural analysis function provided by **protti** is `create_structure_contact_map()`, which uses atom level structural information to calculate distances between atoms or amino acid residues. The generated contact map can be used in order to visually assess which regions are in close proximity to each other. Furthermore, you can use this function to identify all atoms that are in a certain proximity to a ligand or other small molecule. Additionally, protein-protein interfaces can be easily identified in structures that contain protein complexes. 
 
 As mentioned in the introduction it is important to find start and end positions of e.g. peptides in a specific structure file based on the UniProt positions. How UniProt and structure positions relate to each other can be extracted from data fetched through `fetch_pdb()`. We provide the convenient `find_peptide_in_structure()` function to actually perform the conversion of UniProt positions to structure specific positions. It either internally uses `fetch_pdb()` to obtain the necessary information or it takes the previously fetched output from `fetch_pdb()` as an input to its `pdb_data` argument. In the latter case it is then also possible to first filter the data to only perform the mapping on relevant structures, which will also speed up the process. 
 
 _Note: If AlphaFold predictions are used for the contact map this step can be skipped and UniProt positions can be used directly since the AlphaFold prediction numbering is based on those._
 
-In the following we are going to identify structure specific peptide start and end positions for our annotated example data (`ptsi_pgk_annotated`). By providing the previously created `filtered_structures` data frame as the input to the `pdb_data` argument, we will only determine start and end positions of our peptides in regards to the structures contained in the filtered data.
+In the following we are going to identify structure specific peptide start and end positions for our annotated example data (`ptsi_pgk_annotated`). By providing the previously created `filtered_structures` data frame as the input to the `pdb_data` argument, we will only determine the positions of our peptides with regards to the structures contained in the filtered data.
 
 ```{r find_peptide, eval = test_protti, warning = FALSE}
 ptsi_pgk_peptide_structure_positions <- find_peptide_in_structure(
@@ -189,11 +189,13 @@ ptsi_pgk_peptide_structure_positions <- find_peptide_in_structure(
    retain_columns = c(eg_precursor_id, diff, adj_pval))
 ```
 
-_Note: The `peptide` argument in this function does not necessarily need the peptide sequence but can also take any other unique peptide identifier. This is the case because peptides are not matched to the structure sequence by their sequence but are identified based on their start and end positions in the protein._
+_Note: The `peptide` argument in this function does not necessarily require the peptide sequence but can also take any other unique peptide identifier as input. This is possible because peptides are not matched to the structure sequence by their sequence but are identified based on their start and end positions in the protein._
 
-Before we calculate the structure contact map we are going to filter our input data to only contain significant peptides. Those are the peptides that meet our cutoff criteria for the fold change (log2(2)) and adjusted p-values (0.01). The contact map will give us an insight into regions that are in close proximity to our significant peptides. Like this we will for example be able to identify if some of our significant peptides are in close proximity to each other.
+Before we calculate the structure contact map we are going to filter our input data to only contain significant peptides. Those are the peptides that meet our cutoff criteria for the fold change (log2(2)) and adjusted p-values (0.01). The contact map will give us an insight into regions that are in close proximity to our significant peptides. In this way we will be able to assess whether significant peptides are in close proximity to each other.
 
 As mentioned previously, there are multiple conventions for positions in structure files. For the `create_structure_contact_map()` function it is important to provide the author defined positions and chain names which are marked with the `auth` prefix. The `distance_cutoff` argument is set to 10 Angstrom and will only keep distances below that value, which will reduce the size of our output. Since contact maps can easily reach a size of several hundred megabytes (per map!) it is advisable to only keep the information strictly required. Another argument that is by default set to `TRUE` is `return_min_residue_distance`. This will return a contact map that contains minimal residue distances instead of atom distances, based on which the map is calculated initially. 
+
+By default contact maps are always created for the provided selection with regards to the whole structure. If you provide an additional data frame to the `data2` argument it is possile to compare your selection provided to the `data` argument to this other subsection. This will reduce the size of contact maps if only a subset of distances should be calculated.
 
 _Note: You can also create contact maps for AlphaFold predictions. In that case you can provide the UniProt ID to the `id` argument._
 
@@ -218,7 +220,7 @@ contact_map <- create_structure_contact_map(
 )
 
 # This is a helper function for the plot.
-# It alows the display of integers on the axis.
+# It allows the display of integers on the axis.
 integer_breaks <- function(n = 5, ...) {
   fxn <- function(x) {
     breaks <- floor(pretty(x, n, ...))
@@ -231,7 +233,7 @@ integer_breaks <- function(n = 5, ...) {
 # Plot structure contact maps
 # 1ZMR
 contact_map[["1ZMR"]] %>% # Extract data frame from list
-  mutate(chain_combinations = paste0(label_asym_id_var1, "_", label_asym_id_var2)) %>% 
+  mutate(chain_combinations = paste0("chain_", label_asym_id_var1, "_vs_chain_", label_asym_id_var2)) %>% 
   ggplot(aes(x = label_seq_id_var1, y = label_seq_id_var2, fill = min_distance_residue)) +
   geom_tile() +
   scale_y_continuous(breaks = integer_breaks()) +
@@ -242,7 +244,7 @@ contact_map[["1ZMR"]] %>% # Extract data frame from list
   
 # 2HWG
 contact_map[["2HWG"]] %>% # Extract data frame from list
-  mutate(chain_combinations = paste0(label_asym_id_var1, "_", label_asym_id_var2)) %>% 
+  mutate(chain_combinations = paste0("chain_", label_asym_id_var1, "_vs_chain_", label_asym_id_var2)) %>% 
   ggplot(aes(x = label_seq_id_var1, y = label_seq_id_var2, fill = min_distance_residue)) +
   geom_tile() +
   scale_y_continuous(breaks = integer_breaks()) +
@@ -251,7 +253,7 @@ contact_map[["2HWG"]] %>% # Extract data frame from list
   facet_wrap(~chain_combinations, scale = "free") +
   theme_bw()
 ```
-The contact map for each structure provided as input will be saved as a separate element of a list, which is returned as the output of the `create_structure_contact_map()` function. These elements can be easily accessed using two square brackets (`[[]]`) right behind the name of the list the maps are stored in. The brackets should either contain the name of the element or the index. You can also access each element in the list in a loop using the `map()` function from the `purrr` package.
+The contact map for each structure provided as input will be saved as a separate element of a list, which is returned as the output of the `create_structure_contact_map()` function. These elements can be easily accessed using two square brackets (`[[]]`) right behind the name of the list. The brackets should either contain the name of the element or the index. You can also access each element in the list in a loop using the `map()` function from the `purrr` package.
 
 Contact maps can be plotted using the `ggplot2` package if they are not too large. Contact maps are based on positions of atoms or residues in the structure. While atom IDs are unique, residues are only unique within a certain chain. That means residue position 1 is likely present in each of the chains. To correctly display contact map plots for residues they should be faceted by the unique combinations of chains. If e.g. the x-axis displays residues from chain A and the y-axis residues of chain B this should be displayed in one specific facet. 
 
@@ -259,15 +261,15 @@ _Note: For the plot we actually recommend using the data base defined chain and 
 
 The two contact maps that were generated based on significant peptides reveal some interesting information about the positioning of the peptides. 
 
-The "1ZMR" structure contains only one protein chain (A). In the contact map of significant peptides that are all located in chain A in relation to all other residues in chain A we can see that even though some of the peptides are quite far apart in the sequence some are within 10 Angstrom distance in 3D space. Chain B and chain D are a calcium atom respectively. In case of chain B the atom is actually in close proximity to one of the significant peptides. Chain E stores information about water molecules in the structure. The contact map is not very informative in this case since the y-axis residue does not indicate any specific relationship of the water molecules to each other. The more interesting measure here would be to look at the actual distances of the molecules to the peptide. If there are not water molecules in close proximity then this might indicate that the peptide is not surface exposed. 
+The "1ZMR" structure contains only one protein chain (A). In the contact map of significant peptides that are all located in chain A in relation to all other residues in chain A we can see that even though some of the peptides are quite far apart in the sequence some are within 10 Angstrom distance in 3D space. Chain B and chain D are a calcium atom respectively. In case of chain B the atom is actually in close proximity to one of the significant peptides. Chain E stores information about water molecules in the structure. The contact map is not very informative in this case since the y-axis residue does not indicate any specific relationship of the water molecules with each other. Here it would be interesting to look at the distances of the water molecules to the peptide. If there are no water molecules in close proximity this might indicate that the peptide is not surface exposed.
 
-The "2HWG" structure contains two protein chains (A and B). Within each protein the significant peptides seem to be in close proximitiy to each other. In this case we can also observe that the peptide located around residue 555 is in close proximity to the other protein chain, which indicates that it might be located within a protein-protein interaction interface. Chain C and E contain a magnesium ion that seems to be in the proximity of two peptides. Chain D and F contain an oxalate ion which is known to inhibit ptsI. The oxalate ion is in very close close proximity to to the same peptide that is close to the magnesium ion. This is likely the case because the oxalate ion and magnesium ion are located in the same site. Chain H and G are containing waters.
+The "2HWG" structure contains two protein chains (A and B). Within each protein the significant peptides seem to be in close proximitiy to each other. In this case we can also observe that the peptide located around residue 555 is in close proximity to the other protein chain, which indicates that it might be located within a protein-protein interaction interface. Chain C and E contain a magnesium ion that seems to be in the proximity of two peptides. Chain D and F contain an oxalate ion which is known to inhibit ptsI. The oxalate ion is in very close proximity to to the same peptide that is close to the magnesium ion. This is likely the case because the oxalate ion and magnesium ion are located in the same site. Chain H and G contain water molecules.
 
 # Mapping of amino acids, peptides or regions on protein structures and predictions
 
-Contact maps provide quantitative information about the distances of residues to each other. We can use these to perform further high throughput analysis. In contrast to the rather complex contact map plots it is more easier to look at the actual protein structures and the respective peptide positions to get a better overview of the locations of peptides to each other and in relation to interesting sites. While this analysis is more subjective, it can make certain relationships in the data more clear.
+Contact maps provide quantitative information about the distances of residues to each other. We can use these to perform further high throughput analysis. In contrast to the rather complex contact map plots it is easier to look at the actual protein structures and the respective peptide positions to get a better overview of the proximity of peptides to each other and in relation to interesting sites. While this analysis is more subjective, it can make certain relationships in the data more obvious.
 
-For the mapping of peptides, protein regions or amino acids on PDB structures or AlphaFold predictions, we provide the `map_peptide_on_structure()` function. Mapping is accomplished based on the replacement of B-factor information in the structure file with peptide specific values. When the structure is coloured by B-factor in PyMOL or ChimeraX, peptides will get highlighted. This function can on the one hand just display categorical information such as if the peptide is significant, present or undetected. On the other hand continuous information can be displayed such as a score associated with each individual amino acid.
+For the mapping of peptides, protein regions or amino acids on PDB structures or AlphaFold predictions, we provide the `map_peptide_on_structure()` function. Mapping is accomplished based on the replacement of B-factor information in the structure file with peptide specific values. When the structure is coloured by B-factor in PyMOL or ChimeraX, peptides will get highlighted. This function can on the one hand just display categorical information such as if the peptide is significant, present or undetected. On the other hand, continuous information can be displayed such as a score associated with each individual amino acid.
 
 The mapping is performed based on positions and not peptide sequence matching. If you want to perform the mapping onto a PDB structure, you should run the `find_peptide_in_structure()` beforehand to obtain structure specific positions. If you want to map onto an AlphaFold prediction it is not necessary to carry out this step. However, the output of the `find_peptide_in_structure()` function will contain all necessary information to perform also AlphaFold predictions in case there is no available structure file. 
 
@@ -277,7 +279,7 @@ _Note: If you perform mapping onto an AlphaFold prediction the content of the `p
 
 _Note: If you want to map peptides to an unpublished or simply downloaded structure that you have the .pdb or .cif file of, you can provide the path to that structure to the `structure_file` argument. In this case you do not need to provide the `pdb_id` argument. It is very important that your input data frame `peptide_data` only contains information for the protein in the provided structure file and not for other unrelated proteins, otherwise mapping is not performed correctly._
 
-You provide information on colouring through the `map_value` argument. This should contain a numeric column. In the below example we insert the number 100 into this column if a peptide is significantly changing based on our previous cutoff criteria and the value 0 if it is not but was detected in the experiment. In this case you could simply insert any two numbers. However, the first number that colours your positive hits should be higher. The function will internally scale these values between 50 and 100. In this case 0 would become 50 and 100 stays 100. All regions of the structure that were not covered by any of you peptides receive the final value 0. This allows us to distinguish between covered (50-100) and non-covered (0) regions as well as covered non-signficiant (50) and significant regions (100). When peptides are coloured with a continuous score later in this vignette this is especially helpful. 
+You provide information on colouring through the `map_value` argument. This should contain a numeric column. In the below example we insert the number 100 into this column if a peptide is significantly changing based on our previous cutoff criteria and the value 0 if it is not but was detected in the experiment. In this case you could simply insert any two numbers. However, the first number that colours your positive hits should be higher. The function will internally scale these values between 50 and 100. In this case 0 would become 50 and 100 stays 100. All regions of the structure that were not covered by any of you peptides receive the final value 0. This allows us to distinguish between covered (50-100) and non-covered (0) regions as well as covered non-signficiant (50) and significant regions (100). This is especially helpful if peptides are coloured according to a continuous score (see later in this vignette).
 
 Lastly, we can specify an export location to indicate a place where the structure file should be saved. In this example the location is specified as a temporary file directory using the `tempdir()` function. You should change that location to any more accessible place. If you leave the argument empty, structures will be automatically saved in your working directory.
 
@@ -292,24 +294,31 @@ ptsi_pgk_peptide_structure_positions %>%
    chain = auth_asym_id,
    auth_seq_id = auth_seq_id,
    map_value = map_value,
-   file_format = ".pdb" # exporting this as a pdb file now but r3dmol can also read cif, change back to cif if necessary
+   file_format = ".pdb", 
+   export_location = tempdir() # change to a location of your choice
  )
 ```
 
-The function does not return anything in the R environment. Structures are directly saved in the desired format. To visualise coloured regions in your peptides you should open the file in either PyMOL or ChimeraX. There you have the option to colour structures by B-factor.
+The function does not return anything in the R environment. Structures are directly saved in the desired format. The files contain the name of the structure and separated by "_" the name of all UniProt IDs present in the structure file.
+
+To visualise coloured regions in your proteins you should open the file in either PyMOL or ChimeraX. There you have the option to colour structures by B-factor. Alternatively, we present an option within R using the `r3dmol` package to interactively display structures with the help of htmlwidgets.
 
 ### Structure mapping in R using r3dmol
 
-```{r 3d_structure_mapping, echo=TRUE, warning=FALSE}
-library(r3dmol) # add to suggests?
+```{r 3d_structure_mapping, eval = test_protti, echo=TRUE, warning=FALSE}
+# Install the r3dmol package if it is not installed
+# install.packages("r3dmol")
+
+# Load the r3dmol package
+library(r3dmol) 
 
 r3dmol() %>%
-  m_add_model(data = "1ZMR_P0A799.pdb", format = "pdb") %>% # now uses the exported structure from the directory - change this
+  m_add_model(data = paste0(tempdir(), "/1ZMR_P0A799.pdb"), format = "pdb") %>% 
   m_set_style(style = m_style_cartoon(
     colorfunc = "
         function(atom) {
-          if (atom.b == 50) {return 'grey'};
-          if (atom.b == 100) {return 'blue'};
+          if (atom.b == 50) {return 'green'};
+          if (atom.b == 100) {return 'red'};
           if (atom.b == 0) {return 'white'};
           return 'white';
         }"
@@ -318,7 +327,7 @@ r3dmol() %>%
 
 ```
 
-### Pymol
+### PyMOL
 
 The following command colours structures by B-factor. You can specify a gradient with predefined or custom colours separating them by underscores. The gradient can also contain more than 3 different colour steps. The minimum and maximum values of the gradient should also be specified. These are based on the previously mentioned scaling. In the below gradient all non-covered regions will be gray. Covered by non-significant regions will be "palegreen" and signficiant regions will be "deepsalmon".
 
@@ -327,6 +336,8 @@ spectrum b, gray70_palegreen_deepsalmon, minimum = 0, maximum = 100
 ```
 
 Custom colours can be defined with the following command and subsequently used in the command above.
+
+_Note: Custom names should not contain underscores since this confuses PyMOL when the gradient function is used._
 
 ```
 set_color cpink, [235, 52, 189]
@@ -347,7 +358,7 @@ If you only want to colour proteins by B-factors while leaving other entities su
 color byattribute bfactor protein palette darkgrey:darkseagreen:salmon
 ```
 
-### Result
+## Result
 
 The below figures are the results of performing the colouring steps on the two structures of ptsI and pgk with significantly changing peptides highlighted in red. Areas in gray were not covered by any detected peptides.
 
@@ -361,18 +372,19 @@ knitr::include_graphics("figures/peptide_map_2hwg.png")
 knitr::include_graphics("figures/interaction_2hwg.png")
 ```
 
-Mapping of significantly changing peptides onto the pgk structure reveals that most of the protein seems to be structurally affected by the treatment with 3-phosphoglyceric acid (3PG). Based on UniProt annotations and the similarity of the protein to its homologous in other organisms, the 3PG binding site is located on the left site indicated with a black arrow. All residues involved in the interaction with 3PG are not part of a significantly changing peptide. Due to the compact size of the protein and the even distribution of significant pepties it is hard to draw any conclusions about potential structural effects of the treatment.
+Mapping of significantly changing peptides onto the pgk structure reveals that most of the protein seems to be structurally affected by the treatment with 3-phosphoglyceric acid (3PG). Based on UniProt annotations and the similarity of the protein to its homologues in other organisms, the 3PG binding site is located on the left side indicated with a black arrow. None of the residues involved in the interaction with 3PG are found in a significantly changing peptide. Due to the compact size of the protein and the even distribution of significant peptides it is hard to draw any conclusions about potential structural effects of the treatment.
 
 ```{r peptide_map_1zmr, eval = test_protti, echo = FALSE, fig.align = "center", fig.cap = "**pgk (1ZMR) with mapped significantly changing peptides.**"}
 knitr::include_graphics("figures/peptide_map_1zmr.png")
 ```
+
 ## Mapping of amino acid scores
 
-In order to narrow down and prioritize structurally affected protein regions we have developed the amino acid scoring function `calculate_aa_scores()`. For each amino acid position in the protein the function calculates the average product of the -log10(adjusted p-value) and the absolute log2(fold change) per peptide covering the amino acid position. In other words the information from all peptides in a specific region is integrated, which strengthens the confidence in a structural change being true due to it averaging out false positive peptides. One downside of this approach is that it relies on very good coverage of the protein since otherwise false positive peptides solely covering a specific region are not distinguishable from real hits and they can recieve very high scores. In our example we are lucky that both proteins have a very high coverage.
+In order to narrow down and prioritize structurally affected protein regions we have developed the amino acid scoring function `calculate_aa_scores()`. For each amino acid position in the protein the function calculates the average product of the -log10(adjusted p-value) and the absolute log2(fold change) per peptide covering the amino acid position. In other words the information from all peptides in a specific region is integrated, which strengthens the confidence in a structural change being true due to it averaging out false positive peptides. One downside of this approach is that it relies on very good coverage of the protein since otherwise false positive peptides solely covering a specific region are not distinguishable from real hits and they can receive very high scores. In our example we are lucky that both proteins have a very high coverage.
 
-The `map_peptides_on_structure()` function is capable of mapping a continuous value to a structure. In this case that values are again scaled between 50 and 100. In this case it is possible that values fall in between 50 and 100 which are displayed as a colour gradient step in between the colour in the middle of the gradient (50) and the colour at the end of the gradient (100). 
+The `map_peptides_on_structure()` function is capable of mapping a continuous value to a structure. In this case values are again scaled between 50 and 100. It is likely that values fall in between 50 and 100 which are displayed as a colour gradient step in between the colour in the middle of the gradient (50) and the colour at the end of the gradient (100). 
 
-_Note: If multiple structures are mapped at the same time, by default each structure scales its map values between 50 and 100 based on its minimum and maximum score. It is however possible to use one scale for all structures that are mapped with the `scale_per_structure` argument of the `map_peptides_on_structure()` function. In this case only one of the structures (the one containing the highest score) will have the 100 value and all other structures a value lower than that as their maximum value depending on their highest score. This means that the scale of colours between both structures is comparable._
+_Note: If multiple structures are mapped at the same time, by default each structure scales its map values between 50 and 100 based on its minimum and maximum score. It is also possible to use one scale for all structures that are mapped if the `scale_per_structure` argument of the `map_peptides_on_structure()` function is set to `FALSE`. In this case only one of the structures (the one containing the highest score) will have the 100 value. The highest score of other structures will be lower than 100. This means that the scale of colours between both structures is comparable._
 
 ```{r calculate_and_map_scores, eval = test_protti, echo = FALSE, fig.align = "center", out.width = "100%"}
 # Calculate the amino acid score
@@ -395,10 +407,12 @@ map_peptides_on_structure(
    chain = auth_asym_id,
    auth_seq_id = auth_seq_id,
    map_value = amino_acid_score,
-   file_format = ".pdb"
+   file_format = ".pdb",
+   export_location = tempdir()
  )
 ```
-```{r score_3d_structure_mapping, echo=TRUE, warning=FALSE}
+
+```{r score_3d_structure_mapping, eval = test_protti, echo=TRUE, warning=FALSE}
 
 make_colours <- function(x, start = "blue", low = "green", mid = "yellow", high = "orange", end = "red") {
   colorfun <- colorRampPalette(c(start, low, mid, high, end))
@@ -408,7 +422,7 @@ make_colours <- function(x, start = "blue", low = "green", mid = "yellow", high 
 
 
 r3dmol() %>%
-  m_add_model(data = "1ZMR_P0A799_2.pdb", format = "pdb") %>%  # now uses the exported structure from the directory - change this
+  m_add_model(data = paste0(tempdir(), "/1ZMR_P0A799.pdb"), format = "pdb") %>%
   m_set_style(style = m_style_cartoon(
     colorfunc = paste0("
         function(atom) {
@@ -420,7 +434,7 @@ r3dmol() %>%
 
 ```
 
-While the previous method of displaying only significantly changing peptides that have a minimum fold change is useful for the identification of regions that change the most, it is not robust to false positive peptides. The score on the other hand will only be high if an amino acid is consistently part of significant and differentially abundant peptides. The problem of the score is that it is hard and visually even impossible to interpret what a certain score means. This is due to the fact that the same score can be caused by two completely different scenarios. On the one hand an amino acid might be associated with peptides that have a low but highly significant change. On the other hand it can be associated with peptides that have a strong but less significant change. Both scenarios could yield the same amino acid score. Therefore, the score should not be misinterpreted as describing the extend of the change but should rather be seen as a probability that a certain amino acid is really structurally affected.
+While the previous method of displaying only significantly changing peptides that have a minimum fold change is useful for the identification of regions that change the most, it is not robust to false positive peptides. The score on the other hand will only be high if an amino acid is consistently part of significant and differentially abundant peptides. The problem of the score is that it is hard and visually even impossible to interpret what a certain score means. This is due to the fact that the same score can be caused by two completely different scenarios. On the one hand an amino acid might be associated with peptides that have a low but highly significant change. On the other hand it can be associated with peptides that have a strong but less significant change. Both scenarios could yield the same amino acid score. Therefore, the score should not be misinterpreted as describing the extent of the change but should rather be seen as a probability that a certain amino acid is really structurally affected.
 
 Applying the score to both structures definitely refines the region most robustly affected by the treatment. For ptsI it seems that a region of amino acids directly in the active center are consistently affected. In addition we see a small region bellow that, which was previously not seen due to it not having strong fold changes. The score tells us that this region is indeed consistently affected and that there is likely a structural change occurring even though the fold change of peptides is rather low (based on looking at the tables). The region in the binding interface previously indicated with a black arrow is now not highlighted anymore indicating that this was likely a false positive hit and that other peptides in the same region do not exhibit a strong and significant response.
 
