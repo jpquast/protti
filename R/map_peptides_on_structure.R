@@ -188,10 +188,10 @@ map_peptides_on_structure <- function(peptide_data,
       )) %>%
       # Scale values between 50 and 100
       group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, {{ auth_seq_id }}) %>%
-      dplyr::mutate(residue = stringr::str_split({{ auth_seq_id }}, pattern = ";")) %>%
+      dplyr::mutate(residue_internal = stringr::str_split({{ auth_seq_id }}, pattern = ";")) %>%
       dplyr::ungroup() %>%
-      tidyr::unnest(.data$residue) %>%
-      dplyr::group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, .data$residue) %>%
+      tidyr::unnest(.data$residue_internal) %>%
+      dplyr::group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, .data$residue_internal) %>%
       dplyr::mutate({{ map_value }} := max({{ map_value }})) %>%
       dplyr::ungroup() %>%
       dplyr::select(-c({{ auth_seq_id }}, .data$scaling_info)) %>% 
@@ -474,7 +474,7 @@ map_peptides_on_structure <- function(peptide_data,
               # extract b-factor values based on positions
               b_factor = stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+[:space:]+")[[1]][15],
               chain = stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][19],
-              residue = suppressWarnings(stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][17])
+              residue_internal = suppressWarnings(stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][17])
             ) %>%
             dplyr::ungroup() %>%
             dplyr::mutate(id = stringr::str_extract(.y, pattern = "^[\\d[:alpha:]]+")) %>%
@@ -482,7 +482,7 @@ map_peptides_on_structure <- function(peptide_data,
             dplyr::left_join(peptide_data_filter, by = c(
               "id",
               "chain" = rlang::as_name(rlang::enquo(chain)),
-              "residue"
+              "residue_internal"
             )) %>%
             dplyr::mutate({{ map_value }} := ifelse(!is.na(.data$b_factor) & is.na({{ map_value }}),
               0,
@@ -529,15 +529,15 @@ map_peptides_on_structure <- function(peptide_data,
             dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d"), .data$X1, NA)) %>%
             dplyr::mutate(
               chain = stringr::str_sub(.data$atoms, start = 22, end = 22),
-              residue = suppressWarnings(stringr::str_trim(stringr::str_sub(.data$atoms, start = 23, end = 26)))
+              residue_internal = suppressWarnings(stringr::str_trim(stringr::str_sub(.data$atoms, start = 23, end = 26)))
             ) %>%
             dplyr::mutate(id = stringr::str_extract(.y, pattern = "^[\\d[:alpha:]]+")) %>%
             dplyr::left_join(peptide_data_filter, by = c(
               "id",
               "chain" = rlang::as_name(rlang::enquo(chain)),
-              "residue"
+              "residue_internal"
             )) %>%
-            dplyr::mutate({{ map_value }} := ifelse(!is.na(.data$residue) & is.na({{ map_value }}), 0, {{ map_value }})) %>%
+            dplyr::mutate({{ map_value }} := ifelse(!is.na(.data$residue_internal) & is.na({{ map_value }}), 0, {{ map_value }})) %>%
             dplyr::mutate({{ map_value }} := format(as.character({{ map_value }}), width = 6, justify = "right")) %>%
             dplyr::mutate({{ map_value }} := ifelse(str_detect({{ map_value }}, pattern = "NA"), NA, {{ map_value }})) %>%
             dplyr::mutate(atoms_mod = `str_sub<-`(.data$atoms, 61, 66, value = {{ map_value }})) %>%
@@ -587,13 +587,13 @@ map_peptides_on_structure <- function(peptide_data,
       dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01") * 50 + 50, digits = 2)) %>%
       # Scale values between 50 and 100
       group_by({{ chain }}, {{ auth_seq_id }}) %>%
-      dplyr::mutate(residue = ifelse(!is.na({{ auth_seq_id }}),
+      dplyr::mutate(residue_internal = ifelse(!is.na({{ auth_seq_id }}),
                                      stringr::str_split({{ auth_seq_id }}, pattern = ";"),
                                      list(NA)
       )) %>%
       dplyr::ungroup() %>%
-      tidyr::unnest(.data$residue) %>% 
-      dplyr::group_by({{ chain }}, .data$residue) %>%
+      tidyr::unnest(.data$residue_internal) %>% 
+      dplyr::group_by({{ chain }}, .data$residue_internal) %>%
       dplyr::mutate({{ map_value }} := max({{ map_value }})) %>%
       dplyr::ungroup() %>%
       dplyr::distinct()
@@ -620,13 +620,13 @@ for the mapping. Make sure to provide a chain identifier if a mapping should be 
           # extract b-factor values based on positions
           b_factor = stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+[:space:]+")[[1]][15],
           chain = stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][19],
-          residue = suppressWarnings(stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][17])
+          residue_internal = suppressWarnings(stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][17])
         ) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(b_factor = stringr::str_replace(.data$b_factor, pattern = "\\.", replacement = "\\\\\\.")) %>%
         dplyr::left_join(peptide_data_filter, by = c(
           "chain" = rlang::as_name(rlang::enquo(chain)),
-          "residue"
+          "residue_internal"
         )) %>%
         dplyr::mutate({{ map_value }} := ifelse(!is.na(.data$b_factor) & is.na({{ map_value }}), 0, {{ map_value }})) %>%
         dplyr::mutate({{ map_value }} := format(as.character({{ map_value }}), width = length_replacement + 1)) %>%
@@ -653,13 +653,13 @@ for the mapping. Make sure to provide a chain identifier if a mapping should be 
         dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM\\s+\\d|^HETATM\\s+\\d"), .data$X1, NA)) %>%
         dplyr::mutate(
           chain = stringr::str_sub(.data$atoms, start = 22, end = 22),
-          residue = suppressWarnings(stringr::str_trim(stringr::str_sub(.data$atoms, start = 23, end = 26)))
+          residue_internal = suppressWarnings(stringr::str_trim(stringr::str_sub(.data$atoms, start = 23, end = 26)))
         ) %>%
         dplyr::left_join(peptide_data_filter, by = c(
           "chain" = rlang::as_name(rlang::enquo(chain)),
-          "residue"
+          "residue_internal"
         )) %>%
-        dplyr::mutate({{ map_value }} := ifelse(!is.na(.data$residue) & is.na({{ map_value }}), 0, {{ map_value }})) %>%
+        dplyr::mutate({{ map_value }} := ifelse(!is.na(.data$residue_internal) & is.na({{ map_value }}), 0, {{ map_value }})) %>%
         dplyr::mutate({{ map_value }} := format(as.character({{ map_value }}), width = 6, justify = "right")) %>%
         dplyr::mutate({{ map_value }} := ifelse(str_detect({{ map_value }}, pattern = "NA"), NA, {{ map_value }})) %>%
         dplyr::mutate(atoms_mod = `str_sub<-`(.data$atoms, 61, 66, value = {{ map_value }})) %>%
