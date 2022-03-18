@@ -145,6 +145,8 @@ functions, you can have a look at the package vignettes. These include:
     Workflow](https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html)
 -   [Dose-Response Data Analysis
     Workflow](https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html)
+-   [Protein Structure Analysis
+    Workflow](https://jpquast.github.io/protti/articles/protein_structure_analysis_workflow.html)
 
 ### Data analysis
 
