@@ -3,7 +3,7 @@
 ## New features
 
 * `fetch_eco` was added. It fetches evidence & conclusion ontology information from the EBI database.
-* The "Protein Structure Analysis Workflow" vignette was added. It contains an example workflow for the analysis of structural differential proteomics data.
+* The "Protein Structure Analysis Workflow" vignette was added. It contains an example workflow for the analysis of structural proteomics data.
 
 ## Bug fixes
 
