@@ -46,6 +46,8 @@ Suggests:
     covr,
     knitr,
     rmarkdown,
+    shiny,
+    r3dmol,
     proDA,
     limma,
     dendextend,

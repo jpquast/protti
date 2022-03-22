@@ -3,6 +3,11 @@
 ## New features
 
 * `fetch_eco` was added. It fetches evidence & conclusion ontology information from the EBI database.
+* The "Protein Structure Analysis Workflow" vignette was added. It contains an example workflow for the analysis of structural proteomics data.
+
+## Bug fixes
+
+* Fixed a bug in `map_peptides_on_structure()` that caused an error if the column provided to the `auth_seq_id` argument was called "residue".
 
 ## Additional changes
 
