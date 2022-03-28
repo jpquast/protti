@@ -8,6 +8,7 @@
 ## Bug fixes
 
 * Fixed a bug in `map_peptides_on_structure()` that caused an error if the column provided to the `auth_seq_id` argument was called "residue".
+* Fixed a bug in `volcano_plot()` that did not calculate the horizontal cutoff line correctly if there were multiple significance values that have the same adjusted significance value. Now it correctly uses the two p-values closest to the cutoff for the line position calculation. In addition, points were not correctly displayed if no horizontal cutoff line was created due to no significant values. Now all values are displayed correctly.
 
 ## Additional changes
 

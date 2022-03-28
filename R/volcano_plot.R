@@ -43,6 +43,9 @@ volcano_protti <- function(...) {
 #' for a logical column.
 #' @param facet_by optional, a character column that contains information by which the data should
 #' be faceted into multiple plots.
+#' @param facet_scales a character value that specifies if the scales should be "free", "fixed",
+#' "free_x" or "free_y", if a faceted plot is created. These inputs are directly supplied to the
+#' `scales` argument of `ggplot2::facet_wrap()`.
 #' @param title optional, a character value that specifies the title of the volcano plot. Default
 #' is "Volcano plot".
 #' @param x_axis_label optional, a character value that specifies the x-axis label. Default is
@@ -140,6 +143,7 @@ volcano_plot <- function(data,
                          target_column = NULL,
                          target = NULL,
                          facet_by = NULL,
+                         facet_scales = "fixed",
                          title = "Volcano plot",
                          x_axis_label = "log2(fold change)",
                          y_axis_label = "-log10(p-value)",
@@ -165,6 +169,9 @@ volcano_plot <- function(data,
       ) %>%
       dplyr::group_by(.data$positive, {{ facet_by }}) %>%
       dplyr::mutate(is_closest_to_cutoff = abs(.data$centered_cutoff) == min(abs(.data$centered_cutoff))) %>%
+      dplyr::mutate(is_closest_to_cutoff = dplyr::case_when(.data$positive == FALSE & .data$is_closest_to_cutoff == TRUE ~ max({{ significance }}) == {{ significance }},
+                                            .data$positive == TRUE & .data$is_closest_to_cutoff == TRUE ~ min({{ significance }}) == {{ significance }})) %>% 
+      # is_closest_to_cutoff is corrected for the case that there are multiple values that are the same
       dplyr::group_by(.data$is_closest_to_cutoff, {{ facet_by }}) %>%
       dplyr::mutate(mean_adjusted_cutoff = mean({{ significance }})) %>%
       dplyr::ungroup() %>%
@@ -221,7 +228,7 @@ volcano_plot <- function(data,
       {
         if (!missing(facet_by)) {
           ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet_by)),
-            scales = "free"
+            scales = facet_scales
           )
         }
       } +
@@ -254,8 +261,10 @@ volcano_plot <- function(data,
   }
   if (method == "significant") {
     plot <- data %>%
-      dplyr::filter(!((({{ log2FC }} > log2FC_cutoff) & ({{ significance }} < .data$mean_adjusted_cutoff)) |
-        (({{ log2FC }} < -log2FC_cutoff) & ({{ significance }} < .data$mean_adjusted_cutoff)))) %>%
+      dplyr::filter(!((abs({{ log2FC }}) > log2FC_cutoff) & 
+                               ifelse(is.na({{ significance }} < .data$mean_adjusted_cutoff), 
+                                      FALSE, 
+                                      ({{ significance }} < .data$mean_adjusted_cutoff)))) %>%
       ggplot2::ggplot(aes(
         label1 = {{ target_column }},
         label2 = {{ grouping }}
@@ -267,8 +276,7 @@ volcano_plot <- function(data,
       colour = "grey60"
       ) +
       geom_point(
-        data = dplyr::filter(data, (({{ log2FC }} > log2FC_cutoff) & ({{ significance }} < .data$mean_adjusted_cutoff)) |
-          (({{ log2FC }} < -log2FC_cutoff) & ({{ significance }} < .data$mean_adjusted_cutoff))),
+        data = dplyr::filter(data, (abs({{ log2FC }}) > log2FC_cutoff) & ({{ significance }} < .data$mean_adjusted_cutoff)),
         aes(
           x = {{ log2FC }},
           y = -log10({{ significance }})
@@ -287,7 +295,7 @@ volcano_plot <- function(data,
       {
         if (!missing(facet_by)) {
           ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet_by)),
-            scales = "free"
+            scales = facet_scales
           )
         }
       } +

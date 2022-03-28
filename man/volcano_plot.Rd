@@ -13,6 +13,7 @@ volcano_plot(
   target_column = NULL,
   target = NULL,
   facet_by = NULL,
+  facet_scales = "fixed",
   title = "Volcano plot",
   x_axis_label = "log2(fold change)",
   y_axis_label = "-log10(p-value)",
@@ -52,6 +53,10 @@ for a logical column.}
 
 \item{facet_by}{optional, a character column that contains information by which the data should
 be faceted into multiple plots.}
+
+\item{facet_scales}{a character value that specifies if the scales should be "free", "fixed",
+"free_x" or "free_y", if a faceted plot is created. These inputs are directly supplied to the
+\code{scales} argument of \code{ggplot2::facet_wrap()}.}
 
 \item{title}{optional, a character value that specifies the title of the volcano plot. Default
 is "Volcano plot".}
