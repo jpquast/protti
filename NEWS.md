@@ -6,6 +6,7 @@
 * The "Protein Structure Analysis Workflow" vignette was added. It contains an example workflow for the analysis of structural proteomics data.
 * `qc_proteome_coverage()` now has the `reviewed` argument that specifies if only reviewed entries in UniProt should be considered as the proteome. The default is `TRUE` and stays the same as previously.
 * `volcano_plot()` now has the `facet_scales` argument that specifies if the scales should be "free" or "fixed" when a faceted plot is created. The arguments that can be provided are the same that can be provided to the `scales` argument of `ggplot2::facet_wrap()`. The new default is now `"fixed"`.
+* `pval_distribution_plot()` now has the optional `facet_by` variable that allows faceting of the plot.
 
 ## Bug fixes
 
