@@ -26,11 +26,11 @@ knitr::opts_chunk$set(
 
 This vignette will take you through all important tools **protti** provides for structural data analysis. These include functions that allow you to fetch information about protein structures both on an experimental as well as structural level. Additionally, structure contact maps can be created from distances between atoms. Lastly, B-factors* of structures can be manipulated to contain custom values. This gives you the ability to colour regions on structures as well as to apply continuous values associated with each amino acid as a colour gradient using biomolecular visualisation software such as PyMOL or ChimeraX or the R package `r3dmol`. 
 
-_\\*B-factors or temperature factors are used in structural biology to describe the atomic displacement in the structure. In low resolution structures they might correspond to the flexibility of regions, while in high resolution structures they should not be used to infer information regarding flexibility._
+_\*B-factors or temperature factors are used in structural biology to describe the atomic displacement in the structure. In low resolution structures they might correspond to the flexibility of regions, while in high resolution structures they should not be used to infer information regarding flexibility._
 
 In structural proteomics, protein structural changes can be determined using methods such as limited proteolysis coupled to mass spectrometry ([LiP-MS](https://www.nature.com/articles/nbt.2999)), cross-linking mass spectrometry ([XL-MS](https://pubs.acs.org/doi/10.1021/acs.analchem.7b04431)) and hydrogen/deuterium exchange mass spectrometry ([HDX-MS](https://pubs.rsc.org/en/content/articlelanding/2011/CS/C0CS00113A)). In case of LiP-MS, structural changes can be identified with peptide or precursor* centric proteomics in the form of peptide or precursor fold changes. Relating this information to positions within the 3D space of a protein can be very helpful to infer potential functional roles of those structural changes. If structural changes occur close to the active site of an enzyme, kinetics might be affected, if they occur at a protein-protein binding interface, the corresponding protein complex might have dissociated or assembled. 
 
-_*Peptide precursors are the different charge states of a peptide (+/- modifications) and the actual molecular unit that is detected in the mass spectrometer._
+_\*Peptide precursors are the different charge states of a peptide (+/- modifications) and the actual molecular unit that is detected in the mass spectrometer._
 
 ## Structural data
 
