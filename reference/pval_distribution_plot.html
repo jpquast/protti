@@ -75,7 +75,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">pval_distribution_plot</span><span class="op">(</span><span class="va">data</span>, <span class="va">grouping</span>, <span class="va">pval</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">pval_distribution_plot</span><span class="op">(</span><span class="va">data</span>, <span class="va">grouping</span>, <span class="va">pval</span>, facet_by <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -87,9 +87,12 @@ protein) and p-values derived from any statistical test.</p></dd>
 <dd><p>a character column in the <code>data</code> data frame that contains either precursor,
 peptide or protein identifiers. For each entry in this column there should be one unique p-value.
 That means the statistical test that created the p-value should have been performed on the
-level of the content of this column</p></dd>
+level of the content of this column.</p></dd>
 <dt>pval</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains p-values.</p></dd>
+<dt>facet_by</dt>
+<dd><p>optional, a character column that contains information by which the data should
+be faceted into multiple plots.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>

@@ -82,6 +82,7 @@ he fraction of detected proteins to all proteins in the proteome is calculated.<
   <span class="va">sample</span>,
   <span class="va">protein_id</span>,
   <span class="va">organism_id</span>,
+  reviewed <span class="op">=</span> <span class="cn">TRUE</span>,
   plot <span class="op">=</span> <span class="cn">TRUE</span>,
   interactive <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
@@ -99,6 +100,9 @@ protein identifiers such as UniProt accessions.</p></dd>
 <dt>organism_id</dt>
 <dd><p>a numeric value that specifies a NCBI taxonomy identifier (TaxId) of the
 organism used. Human: 9606, S. cerevisiae: 559292, E. coli: 83333.</p></dd>
+<dt>reviewed</dt>
+<dd><p>a logical value that determines if only reviewed protein entries will be considered
+as the full proteome. Default is TRUE.</p></dd>
 <dt>plot</dt>
 <dd><p>a logical value that specifies whether the result should be plotted.</p></dd>
 <dt>interactive</dt>

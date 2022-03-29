@@ -84,6 +84,7 @@
   target_column <span class="op">=</span> <span class="cn">NULL</span>,
   target <span class="op">=</span> <span class="cn">NULL</span>,
   facet_by <span class="op">=</span> <span class="cn">NULL</span>,
+  facet_scales <span class="op">=</span> <span class="st">"fixed"</span>,
   title <span class="op">=</span> <span class="st">"Volcano plot"</span>,
   x_axis_label <span class="op">=</span> <span class="st">"log2(fold change)"</span>,
   y_axis_label <span class="op">=</span> <span class="st">"-log10(p-value)"</span>,
@@ -126,6 +127,10 @@ for a logical column.</p></dd>
 <dt>facet_by</dt>
 <dd><p>optional, a character column that contains information by which the data should
 be faceted into multiple plots.</p></dd>
+<dt>facet_scales</dt>
+<dd><p>a character value that specifies if the scales should be "free", "fixed",
+"free_x" or "free_y", if a faceted plot is created. These inputs are directly supplied to the
+<code>scales</code> argument of <code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">ggplot2::facet_wrap()</a></code>.</p></dd>
 <dt>title</dt>
 <dd><p>optional, a character value that specifies the title of the volcano plot. Default
 is "Volcano plot".</p></dd>
