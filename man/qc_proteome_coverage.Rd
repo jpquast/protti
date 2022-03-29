@@ -9,6 +9,7 @@ qc_proteome_coverage(
   sample,
   protein_id,
   organism_id,
+  reviewed = TRUE,
   plot = TRUE,
   interactive = FALSE
 )
@@ -23,6 +24,9 @@ protein identifiers such as UniProt accessions.}
 
 \item{organism_id}{a numeric value that specifies a NCBI taxonomy identifier (TaxId) of the
 organism used. Human: 9606, S. cerevisiae: 559292, E. coli: 83333.}
+
+\item{reviewed}{a logical value that determines if only reviewed protein entries will be considered
+as the full proteome. Default is TRUE.}
 
 \item{plot}{a logical value that specifies whether the result should be plotted.}
 

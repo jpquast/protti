@@ -9,6 +9,8 @@
 #' protein identifiers such as UniProt accessions.
 #' @param organism_id a numeric value that specifies a NCBI taxonomy identifier (TaxId) of the
 #' organism used. Human: 9606, S. cerevisiae: 559292, E. coli: 83333.
+#' @param reviewed a logical value that determines if only reviewed protein entries will be considered
+#' as the full proteome. Default is TRUE.
 #' @param plot a logical value that specifies whether the result should be plotted.
 #' @param interactive a logical value that indicates whether the plot should be interactive
 #' (default is FALSE).
@@ -55,13 +57,14 @@ qc_proteome_coverage <- function(data,
                                  sample,
                                  protein_id,
                                  organism_id,
+                                 reviewed = TRUE,
                                  plot = TRUE,
                                  interactive = FALSE) {
   proteins_total <- data %>%
     dplyr::summarize(proteins_detected = dplyr::n_distinct(!!ensym(protein_id)), .groups = "drop") %>%
     dplyr::mutate({{ sample }} := "Total")
 
-  proteome <- fetch_uniprot_proteome({{ organism_id }}) %>%
+  proteome <- fetch_uniprot_proteome({{ organism_id }}, reviewed = reviewed) %>%
     dplyr::summarize(proteins_proteome = dplyr::n_distinct(.data$id), .groups = "drop")
 
   proteome_coverage <- data %>%

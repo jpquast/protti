@@ -25,8 +25,10 @@ plot_pval_distribution <- function(...) {
 #' @param grouping a character column in the \code{data} data frame that contains either precursor,
 #' peptide or protein identifiers. For each entry in this column there should be one unique p-value.
 #' That means the statistical test that created the p-value should have been performed on the
-#' level of the content of this column
+#' level of the content of this column.
 #' @param pval a numeric column in the \code{data} data frame that contains p-values.
+#' @param facet_by optional, a character column that contains information by which the data should
+#' be faceted into multiple plots.
 #'
 #' @return A histogram plot that shows the p-value distribution.
 #' @import ggplot2
@@ -50,9 +52,9 @@ plot_pval_distribution <- function(...) {
 #'   grouping = peptide,
 #'   pval = pval
 #' )
-pval_distribution_plot <- function(data, grouping, pval) {
+pval_distribution_plot <- function(data, grouping, pval, facet_by = NULL) {
   input <- data %>%
-    dplyr::distinct({{ grouping }}, {{ pval }}) %>%
+    dplyr::distinct({{ grouping }}, {{ pval }}, {{facet_by}}) %>%
     tidyr::drop_na()
 
   plot <- input %>%
@@ -65,6 +67,13 @@ pval_distribution_plot <- function(data, grouping, pval) {
       size = 1
     ) +
     ggplot2::labs(title = "P-Value Distribution", x = "P-Value", y = "Frequency") +
+    {
+      if (!missing(facet_by)) {
+        ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet_by)),
+                            scales = "fixed"
+        )
+      }
+    } +
     ggplot2::theme_bw() +
     ggplot2::theme(
       plot.title = ggplot2::element_text(size = 20),
