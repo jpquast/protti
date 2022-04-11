@@ -54,7 +54,7 @@ plot_pval_distribution <- function(...) {
 #' )
 pval_distribution_plot <- function(data, grouping, pval, facet_by = NULL) {
   input <- data %>%
-    dplyr::distinct({{ grouping }}, {{ pval }}, {{facet_by}}) %>%
+    dplyr::distinct({{ grouping }}, {{ pval }}, {{ facet_by }}) %>%
     tidyr::drop_na()
 
   plot <- input %>%
@@ -70,7 +70,7 @@ pval_distribution_plot <- function(data, grouping, pval, facet_by = NULL) {
     {
       if (!missing(facet_by)) {
         ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet_by)),
-                            scales = "fixed"
+          scales = "fixed"
         )
       }
     } +

@@ -47,8 +47,9 @@ fetch_uniprot_proteome <-
         collapsed_columns
       ))
     result <- try_query(query_url, progress = FALSE, show_col_types = FALSE)
-    if (is.null(result)) {
-      return(result)
+    # result can either be a data.frame or it is a character string with the error message
+    if (!methods::is(result, "data.frame")) {
+      return(invisible(result))
     }
     colnames(result) <- column_names
     result

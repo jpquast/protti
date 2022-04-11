@@ -1,6 +1,6 @@
 Package: protti
 Title: Bottom-Up Proteomics and LiP-MS Quality Control and Data Analysis Tools
-Version: 0.2.2.9000
+Version: 0.3.0
 Authors@R: 
     c(person(given = "Jan-Philipp",
            family = "Quast",
@@ -39,7 +39,8 @@ Imports:
     curl,
     readr,
     lifecycle,
-    httr
+    httr,
+    methods
 RoxygenNote: 7.1.2
 Suggests: 
     testthat,

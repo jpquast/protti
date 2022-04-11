@@ -2,8 +2,8 @@
 
 ## New features
 
-* `fetch_eco` was added. It fetches evidence & conclusion ontology information from the EBI database.
 * The "Protein Structure Analysis Workflow" vignette was added. It contains an example workflow for the analysis of structural proteomics data.
+* `fetch_eco` was added. It fetches evidence & conclusion ontology information from the EBI database.
 * `qc_proteome_coverage()` now has the `reviewed` argument that specifies if only reviewed entries in UniProt should be considered as the proteome. The default is `TRUE` and stays the same as previously.
 * `volcano_plot()` now has the `facet_scales` argument that specifies if the scales should be "free" or "fixed" when a faceted plot is created. The arguments that can be provided are the same that can be provided to the `scales` argument of `ggplot2::facet_wrap()`. The new default is now `"fixed"`.
 * `pval_distribution_plot()` now has the optional `facet_by` variable that allows faceting of the plot.
@@ -12,6 +12,7 @@
 
 * Fixed a bug in `map_peptides_on_structure()` that caused an error if the column provided to the `auth_seq_id` argument was called "residue".
 * Fixed a bug in `volcano_plot()` that did not calculate the horizontal cutoff line correctly if there were multiple significance values that have the same adjusted significance value. Now it correctly uses the two p-values closest to the cutoff for the line position calculation. In addition, points were not correctly displayed if no horizontal cutoff line was created due to no significant values. Now all values are displayed correctly.
+* Fixed a bug related to fetch functions not failing gracefully. The problem was that the internal `try_query()` function now returns errors as a character string if it encounters one. Functions using `try_query()` however, still expected `NULL` if there was an error. Also adjusted additional fetch functions that do not use `try_query()` to fail gracefully and to return informative messages upon encountering errors.
 
 ## Additional changes
 

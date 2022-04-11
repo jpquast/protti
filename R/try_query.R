@@ -22,6 +22,7 @@
 #' @return A data frame that contains the table from the url.
 try_query <-
   function(url, max_tries = 5, silent = TRUE, type = "text/tab-separated-values", ...) {
+    # Check if there is an internet connection first
     if (!curl::has_internet()) {
       if (!silent) message("No internet connection.")
       return(invisible("No internet connection"))
@@ -41,6 +42,12 @@ try_query <-
       if (class(query_result) != "response") {
         Sys.sleep(3)
       }
+    }
+
+    # Check again if there is an internet connection, if not then the correct error is returned
+    if (!curl::has_internet()) {
+      if (!silent) message("No internet connection.")
+      return(invisible("No internet connection"))
     }
 
     if (class(query_result) != "response") {

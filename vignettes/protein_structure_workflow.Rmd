@@ -14,7 +14,8 @@ text-align: justify}
 </style>
 
 ```{r, include = FALSE}
-test_protti <- identical(Sys.getenv("TEST_PROTTI"), "true")
+build_vignette_on_cran <- identical(Sys.getenv("BUILD_VIGNETTE"), "true")
+test_protti <- identical(Sys.getenv("TEST_PROTTI"), "true") & build_vignette_on_cran
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -23,6 +24,15 @@ knitr::opts_chunk$set(
 ```
 
 # Introduction
+
+```{r CRAN_comment, message=FALSE, warning=FALSE, echo=FALSE}
+if (build_vignette_on_cran == FALSE){
+  print("!!! IMPORTANT !!!")
+  print("This Vignette has not been build completely on CRAN due to size limitations.")
+  print("Please check the correct version here: ")
+  print("https://jpquast.github.io/protti/articles/protein_structure_workflow.html")
+}
+```
 
 This vignette will take you through all important tools **protti** provides for structural data analysis. These include functions that allow you to fetch information about protein structures both on an experimental as well as structural level. Additionally, structure contact maps can be created from distances between atoms. Lastly, B-factors* of structures can be manipulated to contain custom values. This gives you the ability to colour regions on structures as well as to apply continuous values associated with each amino acid as a colour gradient using biomolecular visualisation software such as PyMOL or ChimeraX or the R package `r3dmol`. 
 

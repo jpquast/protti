@@ -164,35 +164,62 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
 
   # query information from database
 
-  query_result <- purrr::map_dfr(batches, function(x) {
+  query_result <- purrr::map(batches, function(x) {
     pdb_ids <- paste0(x, collapse = '", "')
     full_query <- stringr::str_replace_all(query, pattern = "pdb_ids", replacement = pdb_ids)
     url_encode_query <- utils::URLencode(full_query) %>%
       stringr::str_replace_all(pattern = "\\[", replacement = "%5B") %>%
       stringr::str_replace_all(pattern = "\\]", replacement = "%5D")
-    # only try to fetch more batches if previous cycle did not encounter a connection problem.
-    if (!is.null(batches)) {
-      query <- try_query(httr::modify_url("https://data.rcsb.org/graphql",
-        query = url_encode_query
-      ),
-      type = "application/json",
-      simplifyDataFrame = TRUE
-      )
-    }
-    if (show_progress == TRUE & "list" %in% class(query)) {
+
+    query <- try_query(httr::modify_url("https://data.rcsb.org/graphql",
+      query = url_encode_query
+    ),
+    type = "application/json",
+    simplifyDataFrame = TRUE
+    )
+
+    if (show_progress == TRUE) {
       pb$tick()
-    }
-    # if previous batch had a connection problem change batches to NULL, which breaks the mapping.
-    if (!"list" %in% class(query)) {
-      batches <<- NULL
     }
     # only proceed with data if it was correctly retrieved
     if ("list" %in% class(query)) {
-      query %>%
+      query <- query %>%
         purrr::flatten() %>%
         as.data.frame(stringsAsFactors = FALSE)
     }
+    query
   })
+
+  # catch any IDs that have not been fetched correctly
+  error_list <- query_result %>%
+    purrr::keep(.p = ~ is.character(.x))
+
+  if (length(error_list) != 0) {
+    error_table <- tibble::tibble(
+      id = paste0("IDs: ", as.numeric(names(error_list)) * batchsize - batchsize + 1, " to ", as.numeric(names(error_list)) * batchsize),
+      error = unlist(error_list)
+    ) %>%
+      dplyr::distinct()
+
+    message("The following IDs have not been retrieved correctly.")
+    message(paste0(utils::capture.output(error_table), collapse = "\n"))
+  }
+
+  # only keep data in output
+
+  query_result <- query_result %>%
+    purrr::keep(.p = ~ !is.character(.x))
+
+  if (length(query_result) == 0) {
+    message("No valid information could be retrieved!")
+    return(invisible(NULL))
+  }
+
+  query_result <- purrr::map_dfr(
+    .x = query_result,
+    .f = ~.x
+  ) %>%
+    distinct() # make sure entries are unique otherwise there will be problems with unnesting
 
   # process information from database
 

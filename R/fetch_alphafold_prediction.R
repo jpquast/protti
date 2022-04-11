@@ -109,32 +109,32 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
       "Ajellomyces capsulatus",
       "Brugia malayi",
       "Campylobacter jejuni",
-      "Cladophialophora carrionii", 
+      "Cladophialophora carrionii",
       "Dracunculus medinensis",
       "Enterococcus faecium",
       "Fonsecaea pedrosoi",
       "Haemophilus influenzae",
       "Helicobacter pylori",
       "Klebsiella pneumoniae",
-      "Leishmania infantum", 
+      "Leishmania infantum",
       "Madurella mycetomatis",
       "Mycobacterium leprae",
       "Mycobacterium tuberculosis",
       "Mycobacterium ulcerans",
       "Neisseria gonorrhoeae",
-      "Nocardia brasiliensis", 
+      "Nocardia brasiliensis",
       "Onchocerca volvulus",
       "Paracoccidioides lutzii",
       "Plasmodium falciparum",
       "Pseudomonas aeruginosa",
-      "Salmonella typhimurium", 
+      "Salmonella typhimurium",
       "Schistosoma mansoni",
-      "Shigella dysenteriae", 
+      "Shigella dysenteriae",
       "Sporothrix schenckii",
       "Staphylococcus aureus",
       "Streptococcus pneumoniae",
       "Strongyloides stercoralis",
-      "Trichuris trichiura", 
+      "Trichuris trichiura",
       "Trypanosoma brucei",
       "Trypanosoma cruzi",
       "Wuchereria bancrofti"
@@ -165,32 +165,32 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
       "Ajellomyces capsulatus" = "UP000001631_447093_AJECG_v2.tar",
       "Brugia malayi" = "UP000006672_6279_BRUMA_v2.tar",
       "Campylobacter jejuni" = "UP000000799_192222_CAMJE_v2.tar",
-      "Cladophialophora carrionii" = "UP000094526_86049_9EURO1_v2.tar", 
+      "Cladophialophora carrionii" = "UP000094526_86049_9EURO1_v2.tar",
       "Dracunculus medinensis" = "UP000274756_318479_DRAME_v2.tar",
       "Enterococcus faecium" = "UP000325664_1352_ENTFC_v2.tar",
       "Fonsecaea pedrosoi" = "UP000053029_1442368_9EURO2_v2.tar",
       "Haemophilus influenzae" = "UP000000579_71421_HAEIN_v2.tar",
       "Helicobacter pylori" = "UP000000429_85962_HELPY_v2.tar",
       "Klebsiella pneumoniae" = "UP000007841_1125630_KLEPH_v2.tar",
-      "Leishmania infantum" = "UP000008153_5671_LEIIN_v2.tar", 
+      "Leishmania infantum" = "UP000008153_5671_LEIIN_v2.tar",
       "Madurella mycetomatis" = "UP000078237_100816_9PEZI1_v2.tar",
       "Mycobacterium leprae" = "UP000000806_272631_MYCLE_v2.tar",
       "Mycobacterium tuberculosis" = "UP000001584_83332_MYCTU_v2.tar",
       "Mycobacterium ulcerans" = "UP000020681_1299332_MYCUL_v2.tar",
       "Neisseria gonorrhoeae" = "UP000000535_242231_NEIG1_v2.tar",
-      "Nocardia brasiliensis" = "UP000006304_1133849_9NOCA1_v2.tar", 
+      "Nocardia brasiliensis" = "UP000006304_1133849_9NOCA1_v2.tar",
       "Onchocerca volvulus" = "UP000024404_6282_ONCVO_v2.tar",
       "Paracoccidioides lutzii" = "UP000002059_502779_PARBA_v2.tar",
       "Plasmodium falciparum" = "UP000001450_36329_PLAF7_v2.tar",
       "Pseudomonas aeruginosa" = "UP000002438_208964_PSEAE_v2.tar",
-      "Salmonella typhimurium" = "UP000001014_99287_SALTY_v2.tar", 
+      "Salmonella typhimurium" = "UP000001014_99287_SALTY_v2.tar",
       "Schistosoma mansoni" = "UP000008854_6183_SCHMA_v2.tar",
-      "Shigella dysenteriae" = "UP000002716_300267_SHIDS_v2.tar", 
+      "Shigella dysenteriae" = "UP000002716_300267_SHIDS_v2.tar",
       "Sporothrix schenckii" = "UP000018087_1391915_SPOS1_v2.tar",
       "Staphylococcus aureus" = "UP000008816_93061_STAA8_v2.tar",
       "Streptococcus pneumoniae" = "UP000000586_171101_STRR6_v2.tar",
       "Strongyloides stercoralis" = "UP000035681_6248_STRER_v2.tar",
-      "Trichuris trichiura" = "UP000030665_36087_TRITR_v2.tar", 
+      "Trichuris trichiura" = "UP000030665_36087_TRITR_v2.tar",
       "Trypanosoma brucei" = "UP000008524_185431_TRYB2_v2.tar",
       "Trypanosoma cruzi" = "UP000002296_353153_TRYCC_v2.tar",
       "Wuchereria bancrofti" = "UP000270924_6293_WUCBA_v2.tar"
@@ -420,14 +420,14 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
   error_list <- query_result %>%
     purrr::keep(.p = ~ is.character(.x))
 
-  error_table <- tibble::tibble(
-    id = names(error_list),
-    error = unlist(error_list)
-  ) %>%
-    dplyr::distinct()
+  if (length(error_list) != 0) {
+    error_table <- tibble::tibble(
+      id = names(error_list),
+      error = unlist(error_list)
+    ) %>%
+      dplyr::distinct()
 
-  if (nrow(error_table) != 0) {
-    message("The following IDs have not be retrieved correctly.")
+    message("The following IDs have not been retrieved correctly.")
     message(paste0(utils::capture.output(error_table), collapse = "\n"))
   }
 
@@ -435,6 +435,11 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
 
   query_result <- query_result %>%
     purrr::keep(.p = ~ !is.character(.x))
+
+  if (length(query_result) == 0) {
+    message("No valid information could be retrieved!")
+    return(invisible(NULL))
+  }
 
   if (return_data_frame == FALSE) {
     return(query_result)
