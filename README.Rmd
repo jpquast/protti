@@ -84,7 +84,7 @@ For more in detail workflow suggestions and demonstrations of various functions,
 * [Quality Control Workflow](https://jpquast.github.io/protti/articles/quality_control_workflow.html)
 * [Single Dose Treatment Data Analysis Workflow](https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html)
 * [Dose-Response Data Analysis Workflow](https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html)
-* [Protein Structure Analysis Workflow](https://jpquast.github.io/protti/articles/protein_structure_analysis_workflow.html)
+* [Protein Structure Analysis Workflow](https://jpquast.github.io/protti/articles/protein_structure_workflow.html)
 
 ### Data analysis
 
