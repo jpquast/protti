@@ -99,28 +99,51 @@ They were fetched and the original input ID can be found in the "input_id" colum
       pb <- progress::progress_bar$new(total = length(batches))
     }
     # fetch all batches
-    result <- purrr::map_df(batches, function(x) {
+    result <- purrr::map(batches, function(x) {
       id_query <- paste(paste0("id:", x), collapse = "+or+")
       query_url <- utils::URLencode(paste0(
         url, id_query, "&format=tab&columns=",
         collapsed_columns
       ))
-      # only try to fetch more batches if previous cycle did not encounter a connection problem.
-      if (!is.null(batches)) {
-        query <- try_query(query_url, progress = FALSE, show_col_types = FALSE)
-      }
-      if (show_progress == TRUE & "tbl" %in% class(query)) {
+
+      query <- try_query(query_url, progress = FALSE, show_col_types = FALSE)
+
+      if (show_progress == TRUE) {
         pb$tick()
       }
-      # if previous batch had a connection problem change batches to NULL, which breaks the mapping.
-      if (!"tbl" %in% class(query)) {
-        batches <<- NULL
-      }
+
       query
     })
+
+    # catch any IDs that have not been fetched correctly
+    error_list <- result %>%
+      purrr::keep(.p = ~ is.character(.x))
+
+    if (length(error_list) != 0) {
+      error_table <- tibble::tibble(
+        id = paste0("IDs: ", as.numeric(names(error_list)) * batchsize - batchsize + 1, " to ", as.numeric(names(error_list)) * batchsize),
+        error = unlist(error_list)
+      ) %>%
+        dplyr::distinct()
+
+      message("The following IDs have not been retrieved correctly.")
+      message(paste0(utils::capture.output(error_table), collapse = "\n"))
+    }
+
+    # only keep data in output and transform to data.frame
+    result <- result %>%
+      purrr::keep(.p = ~ !is.character(.x))
+
     if (length(result) == 0) {
+      message("No valid information was retrieved!")
       return(invisible(NULL))
     }
+
+    result <- result %>%
+      purrr::map_dfr(
+        .f = ~.x
+      )
+
     colnames(result) <- column_names
 
     # rescue cases in which the used ID is an old ID. The information is
@@ -151,9 +174,10 @@ They were fetched and the original input ID can be found in the "input_id" colum
     ))
 
     new_result <- try_query(new_query_url, progress = FALSE, show_col_types = FALSE)
-    # Ff a problem occurs at this step NULL is returned.
-    if (is.null(new_result)) {
-      return(new_result)
+    # If a problem occurs at this step NULL is returned.
+    if (!methods::is(new_result, "data.frame")) {
+      message(new_result)
+      return(invisible(NULL))
     }
     colnames(new_result) <- column_names
 

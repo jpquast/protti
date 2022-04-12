@@ -227,25 +227,25 @@ fetch_metal_pdb <- function(id_type = "uniprot",
     }) %>%
     purrr::keep(.p = ~ is.character(.x))
 
-  error_table <- tibble::tibble(
-    id = names(error_list),
-    error = unlist(error_list)
-  ) %>%
-    dplyr::distinct()
+  if (length(error_list) != 0) {
+    error_table <- tibble::tibble(
+      id = names(error_list),
+      error = unlist(error_list)
+    ) %>%
+      dplyr::distinct()
 
-  if (nrow(error_table) == length(id_value) && str_detect(error_table$error, pattern = "502")) {
-    message("502 Bad Gateway. The server cannot be reached right now. Try again later!")
-    return(invisible(NULL))
-  }
+    if (nrow(error_table) == length(id_value) && str_detect(error_table$error, pattern = "502")) {
+      message("502 Bad Gateway. The server cannot be reached right now. Try again later!")
+      return(invisible(NULL))
+    }
 
-  if (nrow(error_table) != 0) {
-    message("The following IDs have not be retrieved correctly.")
+    message("The following IDs have not been retrieved correctly.")
     message(paste0(utils::capture.output(error_table), collapse = "\n"))
   }
 
-  # only keep data in output
+  # only keep data in output and transform to data.frame
 
-  content <- query_result %>%
+  query_result <- query_result %>%
     purrr::map(.f = ~ {
       if (length(.x) == 0) {
         paste("Not found in database")
@@ -253,7 +253,14 @@ fetch_metal_pdb <- function(id_type = "uniprot",
         .x
       }
     }) %>%
-    purrr::keep(.p = ~ !is.character(.x)) %>%
+    purrr::keep(.p = ~ !is.character(.x))
+
+  if (length(query_result) == 0) {
+    message("No valid information was retrieved!")
+    return(invisible(NULL))
+  }
+
+  content <- query_result %>%
     purrr::map_dfr(
       .f = ~.x
     )

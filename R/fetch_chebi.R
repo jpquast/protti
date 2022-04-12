@@ -24,11 +24,34 @@
 #' head(chebi)
 #' }
 fetch_chebi <- function(relation = FALSE) {
+  if (!curl::has_internet()) {
+    message("No internet connection.")
+    return(invisible(NULL))
+  }
   # Retrieve relational information
   if (relation == TRUE) {
-    chebi_relation_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv",
-      config = httr::config(connecttimeout = 60)
+    chebi_relation_result <- tryCatch(httr::GET(
+      "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv",
+      httr::timeout(60)
+    ),
+    error = function(e) conditionMessage(e),
+    warning = function(w) conditionMessage(w)
     )
+    # Check again if there is an internet connection
+    if (!curl::has_internet()) {
+      message("No internet connection.")
+    }
+    # check if response is error
+    if (!methods::is(chebi_relation_result, "response")) {
+      message(chebi_relation_result)
+      return(invisible(NULL))
+    }
+
+    if (httr::http_error(chebi_relation_result)) {
+      httr::message_for_status(chebi_relation_result)
+      return(invisible(NULL))
+    }
+
     chebi_relation <- suppressMessages(httr::content(chebi_relation_result,
       type = "text/tab-separated-values",
       progress = FALSE,
@@ -46,28 +69,76 @@ fetch_chebi <- function(relation = FALSE) {
   }
 
   # Download compound data
-  chebi_chemical_data_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv",
-    config = httr::config(connecttimeout = 60)
+  chebi_chemical_data_result <- tryCatch(httr::GET(
+    "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv",
+    httr::timeout(60)
+  ),
+  error = function(e) conditionMessage(e),
+  warning = function(w) conditionMessage(w)
   )
+
+  # check if response is error
+  if (!methods::is(chebi_chemical_data_result, "response")) {
+    message(chebi_chemical_data_result)
+    return(invisible(NULL))
+  }
+
+  if (httr::http_error(chebi_chemical_data_result)) {
+    httr::message_for_status(chebi_chemical_data_result)
+    return(invisible(NULL))
+  }
+
   chebi_chemical_data <- suppressMessages(httr::content(chebi_chemical_data_result,
     type = "text/tab-separated-values",
     progress = FALSE,
     show_col_types = FALSE
   ))
 
-  chebi_compounds_download <- readLines(gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/compounds.tsv.gz")))
+  chebi_compounds_download <- tryCatch(readLines(con <- gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/compounds.tsv.gz", method = "libcurl"))),
+    error = function(e) conditionMessage(e),
+    warning = function(w) conditionMessage(w)
+  )
+  close(con)
   chebi_compounds <- utils::read.delim(textConnection(chebi_compounds_download),
     quote = "", stringsAsFactors = FALSE
-  )
+  ) 
+  if (nrow(chebi_compounds) == 1) {
+    message(chebi_compounds$V1)
+    return(invisible(NULL))
+  }
 
-  chebi_names_download <- readLines(gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/names.tsv.gz")))
+  chebi_names_download <- tryCatch(readLines(con <- gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/names.tsv.gz", method = "libcurl"))),
+    error = function(e) conditionMessage(e),
+    warning = function(w) conditionMessage(w)
+  )
+  close(con)
   chebi_names <- utils::read.delim(textConnection(chebi_names_download),
     quote = "", stringsAsFactors = FALSE
   )
+  if (nrow(chebi_names) == 1) {
+    message(chebi_names$V1)
+    return(invisible(NULL))
+  }
 
-  chebi_accession_result <- httr::GET("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv",
-    config = httr::config(connecttimeout = 60)
+  chebi_accession_result <- tryCatch(httr::GET(
+    "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv",
+    httr::timeout(60)
+  ),
+  error = function(e) conditionMessage(e),
+  warning = function(w) conditionMessage(w)
   )
+
+  # check if response is error
+  if (!methods::is(chebi_accession_result, "response")) {
+    message(chebi_accession_result)
+    return(invisible(NULL))
+  }
+
+  if (httr::http_error(chebi_accession_result)) {
+    httr::message_for_status(chebi_accession_result)
+    return(invisible(NULL))
+  }
+
   chebi_accession <- suppressMessages(httr::content(chebi_accession_result,
     type = "text/tab-separated-values",
     progress = FALSE,

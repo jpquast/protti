@@ -27,6 +27,10 @@
 #' )
 #' }
 fetch_mobidb <- function(organism_id, protein_ids) {
+  if (!curl::has_internet()) {
+    message("No internet connection.")
+    return(invisible(NULL))
+  }
   . <- NULL
 
   organism_id <- match.arg(organism_id, c("9606", "559292", "83333", "10090", "9913", "7227"))
@@ -38,7 +42,21 @@ fetch_mobidb <- function(organism_id, protein_ids) {
     ",derived-missing_residues-th_90,derived-mobile_residues-th_90,acc,name&format=tsv"
   )
 
-  query_result <- httr::GET(query, config = httr::config(connecttimeout = 60))
+  query_result <- tryCatch(httr::GET(query, httr::timeout(60)),
+    error = function(e) conditionMessage(e),
+    warning = function(w) conditionMessage(w)
+  )
+
+  # check if response is error
+  if (!methods::is(query_result, "response")) {
+    message(query_result)
+    return(invisible(NULL))
+  }
+
+  if (httr::http_error(query_result)) {
+    httr::message_for_status(query_result)
+    return(invisible(NULL))
+  }
 
   mobidb <- suppressMessages(httr::content(query_result,
     type = "text/tab-separated-values",
@@ -48,7 +66,21 @@ fetch_mobidb <- function(organism_id, protein_ids) {
   i <- 0
   while (("ERROR: operation exceeded time limit" %in% mobidb$acc) & i < 4) {
     message("Attempt to download data timed out. Trying again")
-    query_result <- httr::GET(query, config = httr::config(connecttimeout = 60))
+    query_result <- tryCatch(httr::GET(query, httr::timeout(60)),
+      error = function(e) conditionMessage(e),
+      warning = function(w) conditionMessage(w)
+    )
+
+    # check if response is error
+    if (!methods::is(query_result, "response")) {
+      message(query_result)
+      return(invisible(NULL))
+    }
+
+    if (httr::http_error(query_result)) {
+      httr::message_for_status(query_result)
+      return(invisible(NULL))
+    }
 
     mobidb <- suppressMessages(httr::content(query_result,
       type = "text/tab-separated-values",
@@ -61,7 +93,8 @@ fetch_mobidb <- function(organism_id, protein_ids) {
   }
 
   if ("ERROR: operation exceeded time limit" %in% mobidb$acc) {
-    stop("Query operation exceeded server time limit. /n Try running it again later.")
+    message("Query operation exceeded server time limit. /n Try running it again later.")
+    return(invisible(NULL))
   }
 
   result <- mobidb %>%

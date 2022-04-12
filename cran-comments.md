@@ -1,35 +1,43 @@
 ## Submission 
 
-The issues for which the package was archived have been fixed: We tested the package using the suggested environmental variable (_R_CHECK_DEPENDS_ONLY_=true in addition to --run-donttest) and fixed all examples 
-and tests that caused problems.
+* We fixed the following issue raised by Prof. Brian Ripley. It was a simple bug in some of the fetch functions that has been fixed.
 
-We also addressed the comments from Gregor Seyer:
+"Dear maintainer,
 
-"Please add \value to .Rd files regarding exported methods and explain the functions results in the documentation. Please write about the structure of the output (class) and also what the output means. (If a function does not return a value, please document that too, e.g. \value{No return value, called for side effects} or similar)
-Missing Rd-tags in up to 12 .Rd files, e.g.:
-    diff_abundance.Rd: \value
-    go_enrichment.Rd: \value
-    kegg_enrichment.Rd: \value
-    median_normalisation.Rd: \value
-    network_analysis.Rd: \value
-    peptide_type.Rd: \value
-    ..."
-    
-* The value field has been added to these .Rd files.
+The donntest error showing is
 
-"\dontrun{} should only be used if the example really cannot be executed (e.g. because of missing additional software, missing API keys, ...) by the user. That's why wrapping examples in \dontrun{} adds the comment ("# Not run:") as a warning for the user.
-Does not seem necessary.
+checking examples with --run-donttest ... [101s/574s] ERROR
+Running examples in ‘protti-Ex.R’ failed
+The error most likely occurred in:
 
-Please unwrap the examples if they are executable in < 5 sec, or replace \dontrun{} with \donttest{}."
+> ### Name: fetch_uniprot_proteome
+> ### Title: Fetch proteome data from UniProt
+> ### Aliases: fetch_uniprot_proteome
+>
+> ### ** Examples
+>
+> ## No test:
+> head(fetch_uniprot_proteome(9606))
+Error in `colnames<-`(`*tmp*`, value = column_names) :
+attempt to set 'colnames' on an object with less than two dimensions
+Calls: head -> fetch_uniprot_proteome -> colnames<-
+Execution halted
 
-* We removed the \dontrun{} wrapper from as much functions as possible and wrote working examples. 
+Please correct before 2022-04-24 to safely retain your package on CRAN.
 
-There is one Note regarding misspelled words in the DESCRIPTION file. Those words are not misspelled.
+It seems we need to remind you of the CRAN policy:
+
+'Packages which use Internet resources should fail gracefully with an informative message
+if the resource is not available or has changed (and not give a check warning nor error).'
+
+This needs correction whether or not the resource recovers.
+
+The CRAN Team"
 
 ## Test environments
-* macOS-latest (on GitHub actions), R 4.1.2
-* windows-latest (on GitHub actions), R 4.1.2
-* ubuntu-20.04 (on GitHub actions), R 4.1.2
+* macOS-latest (on GitHub actions), R 4.1.3
+* windows-latest (on GitHub actions), R 4.1.3
+* ubuntu-20.04 (on GitHub actions), R 4.1.3
 * ubuntu-20.04 (on GitHub actions), r-devel
 * windows-ix86+x86_64 (win-builder), r-devel
 * fedora-clang-devel (R-hub), r-devel
@@ -38,5 +46,5 @@ There is one Note regarding misspelled words in the DESCRIPTION file. Those word
 
 ## R CMD check results
 
-0 errors ✓ | 0 warnings ✓ | 1 notes ✓
+0 errors ✓ | 0 warnings ✓ | 0 notes ✓
 

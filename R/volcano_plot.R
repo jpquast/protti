@@ -169,8 +169,10 @@ volcano_plot <- function(data,
       ) %>%
       dplyr::group_by(.data$positive, {{ facet_by }}) %>%
       dplyr::mutate(is_closest_to_cutoff = abs(.data$centered_cutoff) == min(abs(.data$centered_cutoff))) %>%
-      dplyr::mutate(is_closest_to_cutoff = dplyr::case_when(.data$positive == FALSE & .data$is_closest_to_cutoff == TRUE ~ max({{ significance }}) == {{ significance }},
-                                            .data$positive == TRUE & .data$is_closest_to_cutoff == TRUE ~ min({{ significance }}) == {{ significance }})) %>% 
+      dplyr::mutate(is_closest_to_cutoff = dplyr::case_when(
+        .data$positive == FALSE & .data$is_closest_to_cutoff == TRUE ~ max({{ significance }}) == {{ significance }},
+        .data$positive == TRUE & .data$is_closest_to_cutoff == TRUE ~ min({{ significance }}) == {{ significance }}
+      )) %>%
       # is_closest_to_cutoff is corrected for the case that there are multiple values that are the same
       dplyr::group_by(.data$is_closest_to_cutoff, {{ facet_by }}) %>%
       dplyr::mutate(mean_adjusted_cutoff = mean({{ significance }})) %>%
@@ -261,10 +263,11 @@ volcano_plot <- function(data,
   }
   if (method == "significant") {
     plot <- data %>%
-      dplyr::filter(!((abs({{ log2FC }}) > log2FC_cutoff) & 
-                               ifelse(is.na({{ significance }} < .data$mean_adjusted_cutoff), 
-                                      FALSE, 
-                                      ({{ significance }} < .data$mean_adjusted_cutoff)))) %>%
+      dplyr::filter(!((abs({{ log2FC }}) > log2FC_cutoff) &
+        ifelse(is.na({{ significance }} < .data$mean_adjusted_cutoff),
+          FALSE,
+          ({{ significance }} < .data$mean_adjusted_cutoff)
+        ))) %>%
       ggplot2::ggplot(aes(
         label1 = {{ target_column }},
         label2 = {{ grouping }}

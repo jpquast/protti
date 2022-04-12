@@ -3,7 +3,7 @@ context("test-structure_functions")
 if (Sys.getenv("TEST_PROTTI") == "true") {
   peptide_data <- tibble::tibble(
     uniprot_id = c("P0A8T7", "P0A8T7", "P60906", "P37648"),
-    peptide_sequence = c("SGIVSFGKETKGKRRLVITPVDGSDPYEEMIPKWRQLNV", "NVFEGERVER","AIGEVTDVVEKE", "AIGEVTDVVEKE"),
+    peptide_sequence = c("SGIVSFGKETKGKRRLVITPVDGSDPYEEMIPKWRQLNV", "NVFEGERVER", "AIGEVTDVVEKE", "AIGEVTDVVEKE"),
     start = c(1160, 1197, 55, 55),
     end = c(1198, 1206, 66, 66),
     map_value = c(70, 100, 100, 100)
@@ -41,7 +41,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_gt(file.info(paste0(tempdir(), "/6UU2_P0A8T7.cif"))$size, 5000000)
     expect_gt(file.info(paste0(tempdir(), "/2EL9_P60906.cif"))$size, 1000000)
     expect_gt(file.info(paste0(tempdir(), "/P37648_AlphaFold.cif"))$size, 400000)
-    
+
 
     file_cif_6UU2_P0A8T7 <- readr::read_tsv(paste0(tempdir(), "/6UU2_P0A8T7.cif"), col_names = FALSE, show_col_types = FALSE, progress = FALSE) %>%
       dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM|^HETATM"), .data$X1, NA)) %>%
@@ -83,11 +83,11 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       dplyr::distinct(b_factor, residue, chain)
 
     expect_equal(file_pdb_6UU2_P0A8T7$b_factor, c("     0", "   100"))
-    
+
     # .cif structure file provided
-    positions_structure_filter_provided <- positions_structure_filter %>% 
+    positions_structure_filter_provided <- positions_structure_filter %>%
       filter(pdb_ids %in% c("2EL9"))
-    
+
     map_peptides_on_structure(
       peptide_data = positions_structure_filter_provided,
       uniprot_id = uniprot_id,
@@ -98,9 +98,9 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       structure_file = paste0(tempdir(), "/2EL9_P60906.cif"),
       export_location = tempdir()
     )
-    
+
     expect_gt(file.info(paste0(tempdir(), "/modified_2EL9_P60906.cif"))$size, 1000000)
-    
+
     # .pdb structure file provided
     map_peptides_on_structure(
       peptide_data = positions_structure_filter_provided,
@@ -112,7 +112,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       structure_file = paste0(tempdir(), "/2EL9_P60906.pdb"),
       export_location = tempdir()
     )
-    
+
     expect_gt(file.info(paste0(tempdir(), "/modified_2EL9_P60906.pdb"))$size, 1000000)
   })
 
@@ -137,15 +137,15 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(nrow(contact_maps[["1C14"]]), 18553)
     expect_equal(ncol(contact_maps[["P62942"]]), 18)
     expect_equal(nrow(contact_maps[["P62942"]]), 111)
-    
+
     # .cif structure file provided
-    
+
     data_input_provided <- tibble::tibble(
       pdb_id = c("my_structure"),
       chain = c("A"),
       auth_seq_id = c("1;2;3;4;5;6;7;8;9;10"),
     )
-    
+
     contact_maps_provided <- create_structure_contact_map(
       data = data_input_provided,
       id = pdb_id,
@@ -158,9 +158,9 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(length(contact_maps_provided), 1)
     expect_equal(ncol(contact_maps_provided[["2EL9_P60906"]]), 14)
     expect_equal(nrow(contact_maps_provided[["2EL9_P60906"]]), 346)
-    
+
     # .pdb structure file provided
-    
+
     contact_maps_provided_pdb <- create_structure_contact_map(
       data = data_input_provided,
       id = pdb_id,

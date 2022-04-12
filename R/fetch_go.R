@@ -17,6 +17,11 @@
 #' head(go)
 #' }
 fetch_go <- function(organism_id) {
+  if (!curl::has_internet()) {
+    message("No internet connection.")
+    return(invisible(NULL))
+  }
+
   organism_id <- match.arg(organism_id, c("9606", "559292", "83333"))
 
   organism_url <- switch(organism_id,
@@ -24,13 +29,20 @@ fetch_go <- function(organism_id) {
     "559292" = "http://current.geneontology.org/annotations/sgd.gaf.gz",
     "83333" = "http://current.geneontology.org/annotations/ecocyc.gaf.gz"
   )
-  go_download <- readLines(gzcon(url(organism_url)))
+  go_download <- tryCatch(readLines(gzcon(url(organism_url))),
+    error = function(e) conditionMessage(e),
+    warning = function(w) conditionMessage(w)
+  )
   go <- utils::read.delim(textConnection(go_download),
     quote = "",
     stringsAsFactors = FALSE,
     comment.char = "!",
     header = FALSE
   )
+  if (nrow(go) == 1) {
+    message(go$V1)
+    return(invisible(NULL))
+  }
   colnames(go) <- c(
     "db", "db_id", "symbol", "qualifier", "go_id", "db_reference",
     "evidence", "with_from", "ontology", "name", "synonyme",
