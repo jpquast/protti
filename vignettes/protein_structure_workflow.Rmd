@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 ```{r CRAN_comment, message=FALSE, warning=FALSE, echo=FALSE}
 if (build_vignette_on_cran == FALSE){
   print("!!! IMPORTANT !!!")
-  print("This Vignette has not been build completely on CRAN due to size limitations.")
+  print("This Vignette has not been built completely on CRAN due to size limitations.")
   print("Please check the correct version here: ")
   print("https://jpquast.github.io/protti/articles/protein_structure_workflow.html")
 }
