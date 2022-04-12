@@ -94,22 +94,24 @@ fetch_chebi <- function(relation = FALSE) {
     show_col_types = FALSE
   ))
 
-  chebi_compounds_download <- tryCatch(readLines(gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/compounds.tsv.gz"))),
+  chebi_compounds_download <- tryCatch(readLines(con <- gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/compounds.tsv.gz", method = "libcurl"))),
     error = function(e) conditionMessage(e),
     warning = function(w) conditionMessage(w)
   )
+  close(con)
   chebi_compounds <- utils::read.delim(textConnection(chebi_compounds_download),
     quote = "", stringsAsFactors = FALSE
-  )
+  ) 
   if (nrow(chebi_compounds) == 1) {
     message(chebi_compounds$V1)
     return(invisible(NULL))
   }
 
-  chebi_names_download <- tryCatch(readLines(gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/names.tsv.gz"))),
+  chebi_names_download <- tryCatch(readLines(con <- gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/names.tsv.gz", method = "libcurl"))),
     error = function(e) conditionMessage(e),
     warning = function(w) conditionMessage(w)
   )
+  close(con)
   chebi_names <- utils::read.delim(textConnection(chebi_names_download),
     quote = "", stringsAsFactors = FALSE
   )
