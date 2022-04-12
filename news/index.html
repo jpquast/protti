@@ -70,12 +70,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.2.2.9000" id="protti-0229000">protti 0.2.2.9000<a class="anchor" aria-label="anchor" href="#protti-0229000"></a></h2>
+<h2 class="page-header" data-toc-text="0.3.0" id="protti-030">protti 0.3.0<a class="anchor" aria-label="anchor" href="#protti-030"></a></h2>
 <div class="section level3">
-<h3 id="new-features-0-2-2-9000">New features<a class="anchor" aria-label="anchor" href="#new-features-0-2-2-9000"></a></h3>
+<h3 id="new-features-0-3-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-3-0"></a></h3>
 <ul><li>The “Protein Structure Analysis Workflow” vignette was added. It contains an example workflow for the analysis of structural proteomics data.</li>
 <li>
-<code>fetch_eco</code> was added. It fetches evidence &amp; conclusion ontology information from the EBI database.</li>
+<code><a href="../reference/fetch_eco.html">fetch_eco()</a></code> was added. It fetches evidence &amp; conclusion ontology information from the EBI database.</li>
 <li>
 <code><a href="../reference/qc_proteome_coverage.html">qc_proteome_coverage()</a></code> now has the <code>reviewed</code> argument that specifies if only reviewed entries in UniProt should be considered as the proteome. The default is <code>TRUE</code> and stays the same as previously.</li>
 <li>
@@ -84,13 +84,13 @@
 <code><a href="../reference/pval_distribution_plot.html">pval_distribution_plot()</a></code> now has the optional <code>facet_by</code> variable that allows faceting of the plot.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-0-2-2-9000">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-2-9000"></a></h3>
+<h3 id="bug-fixes-0-3-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-0"></a></h3>
 <ul><li>Fixed a bug in <code><a href="../reference/map_peptides_on_structure.html">map_peptides_on_structure()</a></code> that caused an error if the column provided to the <code>auth_seq_id</code> argument was called “residue”.</li>
 <li>Fixed a bug in <code><a href="../reference/volcano_plot.html">volcano_plot()</a></code> that did not calculate the horizontal cutoff line correctly if there were multiple significance values that have the same adjusted significance value. Now it correctly uses the two p-values closest to the cutoff for the line position calculation. In addition, points were not correctly displayed if no horizontal cutoff line was created due to no significant values. Now all values are displayed correctly.</li>
 <li>Fixed a bug related to fetch functions not failing gracefully. The problem was that the internal <code><a href="../reference/try_query.html">try_query()</a></code> function now returns errors as a character string if it encounters one. Functions using <code><a href="../reference/try_query.html">try_query()</a></code> however, still expected <code>NULL</code> if there was an error. Also adjusted additional fetch functions that do not use <code><a href="../reference/try_query.html">try_query()</a></code> to fail gracefully and to return informative messages upon encountering errors.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="additional-changes-0-2-2-9000">Additional changes<a class="anchor" aria-label="anchor" href="#additional-changes-0-2-2-9000"></a></h3>
+<h3 id="additional-changes-0-3-0">Additional changes<a class="anchor" aria-label="anchor" href="#additional-changes-0-3-0"></a></h3>
 <ul><li>Improved test coverage for a few functions.</li>
 </ul></div>
 </div>
