@@ -398,6 +398,8 @@ knitr::include_graphics("figures/peptide_map_1zmr.png")
 
 In order to narrow down and prioritize structurally affected protein regions, we have developed the amino acid scoring function `calculate_aa_scores()`. For each amino acid position in the protein the function calculates the average product of the -log10(adjusted p-value) and the absolute log2(fold change) per peptide, covering the amino acid position. In other words, the information of all the peptides in a specific region is integrated, which strengthens the confidence of a structural change being true since false positive peptides are averaged out. One downside of this approach is that it relies on very good sequence coverage since otherwise false positive peptides with high scores that solely cover a specific region are not distinguishable from real hits. In our example we are lucky that both proteins have a very high coverage.
 
+To map the amino acid scores, the amino acid positions within the protein structure need to be correctly assigned first using `find_peptide_in_structure()`, with the `residue` column as input for `peptide`, the `start` and the `end` position. This step is required after the amino acid score calculation, since `calculate_aa_score()` needs a numeric input for start and end positions, and therefore, `auth_seq_id` (a character column) cannot be used as an input.
+
 The `map_peptides_on_structure()` function is capable of mapping continuous values to a structure. In this case values are again scaled between 50 and 100. It is likely that values fall in between 50 and 100 which is displayed as a colour gradient step in between the colour in the middle of the gradient (50) and the colour at the end of the gradient (100). 
 
 **Important: If you run this Vignette locally, make sure to save the structures generated next in a different folder than the previous ones. Otherwise the last structures will be overwritten.**
@@ -416,13 +418,23 @@ amino_acid_score <- calculate_aa_scores(
   retain_columns = c(pdb_ids, auth_asym_id)
 )
 
+# Find amino acid positions in the structure
+ptsi_pgk_amino_acid_structure_positions <- find_peptide_in_structure(
+   peptide_data = amino_acid_score,
+   peptide = residue,
+   start = residue,
+   end = residue,
+   uniprot_id = pg_protein_accessions,
+   pdb_data = filtered_structures,
+   retain_columns = c(amino_acid_score))
+
 # Map the score on structure
 map_peptides_on_structure(
-  peptide_data = amino_acid_score,
+  peptide_data = ptsi_pgk_amino_acid_structure_positions,
    uniprot_id = pg_protein_accessions,
    pdb_id = pdb_ids,
    chain = auth_asym_id,
-   auth_seq_id = residue,
+   auth_seq_id = auth_seq_id,
    map_value = amino_acid_score,
    file_format = ".pdb",
    export_location = tempdir()
