@@ -220,7 +220,18 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
     .f = ~.x
   ) %>%
     distinct() # make sure entries are unique otherwise there will be problems with unnesting
+  
+  if(nrow(query_result) == 0){
+    stop("None of the provided IDs could be retrieved!")
+  }
 
+  queried_ids <- unique(query_result$entries.rcsb_id)
+  not_retrieved <- setdiff(stringr::str_to_lower(pdb_ids), stringr::str_to_lower(queried_ids))
+  if(length(not_retrieved) > 0){
+    message("The following IDs have not been retrieved:")
+    message(paste0(utils::capture.output(not_retrieved), collapse = "\n"))
+  }
+  
   # process information from database
 
   query_result_clean <- query_result %>%
@@ -377,22 +388,114 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       .data$entity_poly,
       .data$rcsb_polymer_entity_container_identifiers,
       .data$rcsb_entity_source_organism
-    )) %>%
-    tidyr::unnest(c(.data$uniprots, .data$rcsb_polymer_entity_align)) %>%
-    dplyr::bind_cols(
-      uniprot_container_identifiers = .$rcsb_uniprot_container_identifiers,
-      uniprot_protein = .$rcsb_uniprot_protein
-    ) %>%
-    dplyr::select(-c(.data$rcsb_uniprot_container_identifiers, .data$rcsb_uniprot_protein)) %>%
-    tidyr::unnest(c(.data$aligned_regions)) %>%
-    dplyr::bind_cols(.$name) %>%
-    dplyr::select(-c(.data$name, .data$entry_id)) %>%
-    dplyr::rename(name_protein = .data$value) %>%
-    tidyr::unnest(c(.data$auth_asym_ids, .data$polymer_entity_instances)) %>%
-    dplyr::bind_cols(
-      rcsb_polymer_entity_instance_container_identifiers = .$rcsb_polymer_entity_instance_container_identifiers
-    ) %>%
-    dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers))
+    )) 
+  
+  # Deal with cases in which uniprot information of some entries is available but not for others
+  polymer_entities_no_uniprots <- polymer_entities %>% 
+    dplyr::rowwise() %>% 
+    dplyr::mutate(no_uniprots = is.null(unlist(.data$uniprots))) %>% 
+    dplyr::ungroup() %>% 
+    dplyr::filter(.data$no_uniprots) %>% 
+    dplyr::select(-c(.data$uniprots, .data$no_uniprots)) 
+
+  if(nrow(polymer_entities_no_uniprots) > 0){
+    polymer_entities <- polymer_entities %>% 
+      tidyr::unnest(c(.data$uniprots)) %>% 
+      dplyr::bind_rows(polymer_entities_no_uniprots)
+  } else {
+    polymer_entities <- polymer_entities %>% 
+      tidyr::unnest(c(.data$uniprots)) 
+  }
+
+  # Deal with cases in which polymer entity alignment information of some entries is available but not for others
+  polymer_entities_no_rcsb_polymer_entity_align <- polymer_entities %>% 
+    dplyr::rowwise() %>% 
+    dplyr::mutate(no_rcsb_polymer_entity_align = is.null(unlist(.data$rcsb_polymer_entity_align))) %>% 
+    dplyr::ungroup() %>% 
+    dplyr::filter(.data$no_rcsb_polymer_entity_align) %>% 
+    dplyr::select(-c(.data$rcsb_polymer_entity_align, .data$no_rcsb_polymer_entity_align))
+  
+  if(nrow(polymer_entities_no_rcsb_polymer_entity_align) > 0){
+    polymer_entities <- polymer_entities %>% 
+      tidyr::unnest(c(.data$rcsb_polymer_entity_align)) %>% 
+      dplyr::bind_rows(polymer_entities_no_rcsb_polymer_entity_align)
+  } else {
+    polymer_entities <- polymer_entities %>% 
+      tidyr::unnest(c(.data$rcsb_polymer_entity_align))
+  }
+
+  # some proteins do not contain UniProt information therefore data needs to be extracted differently
+  if ("rcsb_uniprot_container_identifiers" %in% colnames(polymer_entities)) {
+    polymer_entities <- polymer_entities %>% 
+      dplyr::bind_cols(
+        uniprot_container_identifiers = .$rcsb_uniprot_container_identifiers,
+        uniprot_protein = .$rcsb_uniprot_protein
+      ) %>% 
+      dplyr::select(-c(.data$rcsb_uniprot_container_identifiers, .data$rcsb_uniprot_protein))
+  } else {
+    polymer_entities <- polymer_entities %>% 
+      dplyr::select(-c(.data$uniprots)) %>% 
+      dplyr::mutate(uniprot_id = NA,
+                    name = data.frame(value = NA))
+  }
+
+  # The alignment can also be missing independent of the UniProt information
+  if ("aligned_regions" %in% colnames(polymer_entities)) {
+    # if there are entries that do not have aligned regions these need to be processed separately to not lose them to an unnest
+    polymer_entities_no_aligned_regions <- polymer_entities %>% 
+      dplyr::rowwise() %>% 
+      dplyr::mutate(no_aligned_regions = is.null(unlist(.data$aligned_regions))) %>% 
+      dplyr::ungroup() %>% 
+      dplyr::filter(.data$no_aligned_regions) 
+    
+    polymer_entities <- polymer_entities  %>%
+      tidyr::unnest(c(.data$aligned_regions)) %>%
+      dplyr::bind_cols(.$name) %>%
+      dplyr::select(-c(.data$name, .data$entry_id)) %>%
+      dplyr::rename(name_protein = .data$value) %>%
+      tidyr::unnest(c(.data$auth_asym_ids, .data$polymer_entity_instances)) %>%
+      dplyr::bind_cols(
+        rcsb_polymer_entity_instance_container_identifiers = .$rcsb_polymer_entity_instance_container_identifiers
+      ) %>%
+      dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers))
+    
+    if(nrow(polymer_entities_no_aligned_regions) > 0) {
+      polymer_entities_no_aligned_regions <- polymer_entities_no_aligned_regions %>% 
+        dplyr::select(-c(.data$aligned_regions, .data$no_aligned_regions)) %>% 
+        dplyr::bind_cols(.$name) %>%
+        dplyr::select(-c(.data$name, .data$entry_id)) %>%
+        dplyr::rename(name_protein = .data$value) %>% 
+        tidyr::unnest(c(.data$auth_asym_ids, .data$polymer_entity_instances)) %>%
+        dplyr::bind_cols(
+          rcsb_polymer_entity_instance_container_identifiers = .$rcsb_polymer_entity_instance_container_identifiers
+        ) %>%
+        dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers)) %>% 
+        dplyr::mutate(entity_beg_seq_id = NA,
+                      ref_beg_seq_id = NA,
+                      length = NA)
+      
+      # Join columns back into main data.frame
+      polymer_entities <- polymer_entities %>% 
+        dplyr::bind_rows(polymer_entities_no_aligned_regions)
+    }
+  } else {
+    polymer_entities <- polymer_entities %>% 
+      dplyr::select(-c(.data$rcsb_polymer_entity_align)) %>% 
+      dplyr::bind_cols(.$name) %>%
+      dplyr::select(-c(.data$name, .data$entry_id)) %>%
+      dplyr::rename(name_protein = .data$value) %>% 
+      tidyr::unnest(c(.data$auth_asym_ids, .data$polymer_entity_instances)) %>%
+      dplyr::bind_cols(
+        rcsb_polymer_entity_instance_container_identifiers = .$rcsb_polymer_entity_instance_container_identifiers
+      ) %>%
+      dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers)) %>% 
+      dplyr::mutate(entity_beg_seq_id = NA,
+                    ref_beg_seq_id = NA,
+                    length = NA,
+                    reference_database_accession = NA,
+                    reference_database_isoform = NA,
+                    reference_database_name = NA)
+  }
 
   entity_instance_info <- polymer_entities %>%
     dplyr::distinct(
@@ -489,6 +592,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
     dplyr::rowwise() %>%
     # make character string out of list column
     dplyr::mutate(auth_seq_id = paste0(.data$auth_seq_id, collapse = ";")) %>%
+    dplyr::ungroup() %>% 
     dplyr::select(
       .data$pdb_ids,
       .data$auth_asym_id,
