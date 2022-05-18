@@ -148,16 +148,16 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_false(is.na(arranged_data$imputed_intensity[4]))
   })
 
-  # protein_abundance <- calculate_protein_abundance(
-  #   data = missing_data,
-  #   sample = sample,
-  #   protein_id = protein,
-  #   precursor = peptide,
-  #   peptide = peptide,
-  #   intensity_log2 = normalised_intensity_log2,
-  #   method = "iq",
-  #   retain_columns = condition
-  # )
+  protein_abundance <- calculate_protein_abundance(
+    data = missing_data,
+    sample = sample,
+    protein_id = protein,
+    precursor = peptide,
+    peptide = peptide,
+    intensity_log2 = normalised_intensity_log2,
+    method = "iq",
+    retain_columns = condition
+  )
   protein_abundance_all <- calculate_protein_abundance(
     data = missing_data,
     sample = sample,
@@ -170,12 +170,12 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   )
 
   test_that("calculate_protein_abundance works", {
-    # arranged_data <- protein_abundance %>%
-    #   dplyr::filter(protein == "protein_1")
-    # expect_is(protein_abundance, "data.frame")
-    # expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(16.78, 16.94, 16.85, 16.81, 16.83, 16.82))
-    # expect_equal(nrow(protein_abundance), 288)
-    # expect_equal(ncol(protein_abundance), 4)
+    arranged_data <- protein_abundance %>%
+      dplyr::filter(protein == "protein_1")
+    expect_is(protein_abundance, "data.frame")
+    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(16.78, 16.94, 16.85, 16.81, 16.83, 16.82))
+    expect_equal(nrow(protein_abundance), 288)
+    expect_equal(ncol(protein_abundance), 4)
 
     arranged_data <- protein_abundance_all %>%
       dplyr::filter(protein == "protein_1" & peptide == "protein_intensity")
@@ -189,7 +189,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("deprecated plot_peptide_profiles works", {
     # not testing split_all = TRUE. Also not testing protein_abundance_plot = FALSE.
-    p <- plot_peptide_profiles(
+    expect_warning(p <- plot_peptide_profiles(
       data = protein_abundance_all,
       sample = sample,
       peptide = peptide,
@@ -197,7 +197,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       grouping = protein,
       targets = c("protein_1", "protein_2"),
       protein_abundance_plot = TRUE
-    )
+    ))
     expect_is(p, "list")
     expect_is(p[[1]], "ggplot")
     expect_error(print(p[[1]]), NA)

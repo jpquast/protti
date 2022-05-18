@@ -1,3 +1,9 @@
+# protti 0.3.1
+
+## New features
+
+* Reintroduced the functionalities relying on the `iq` package to `protti`. `calculate_protein_abundance()` now has the method `"iq"` again as an option.
+
 # protti 0.3.0
 
 ## New features
