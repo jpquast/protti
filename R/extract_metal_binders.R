@@ -13,6 +13,8 @@
 #' cofactor information from UniProt.
 #' @param chebi_catalytic_activity a character column in the \code{data} data frame that contains
 #' the ChEBI catalytic activity information from UniProt.
+#' @param comment_cofactor a character cholumn in the \code{data} data frame that contains
+#' the comment cofactor information from UniProt.
 #' @param chebi_data optional, a data frame that can be manually obtained with \code{fetch_chebi()}.
 #' If not provided it will be fetched within the function. If the function is run many times it
 #' is recommended to provide the data frame to save time.
@@ -24,28 +26,33 @@
 #' following types of columns (the naming might vary based on the input):
 #' \itemize{
 #' \item{\code{protein_id}: }{UniProt protein identifier.}
-#' \item{\code{source}: }{The source of the information, can be either \code{feature_metal_binding},
-#' \code{chebi_cofactor} or \code{chebi_catalytic_activity}.}
-#' \item{\code{ids}: }{ChEBI ID assigned to protein and binding site based on \code{metal_type}
-#' column name. These are general IDs that have sub-IDs. Thus, they generally describe the type of
-#' metal ion bound to the protein.}
-#' \item{\code{metal_position}: }{Amino acid position within the protein that is involved in metal
-#' binding.}
 #' \item{\code{metal_type}: }{Metal name extracted from \code{feature_metal_binding} information.
 #' This is the name that is used as a search pattern in order to assign a ChEBI ID with the
 #' \code{split_metal_name} helper function within this function.}
+#' \item{\code{metal_position}: }{Amino acid position within the protein that is involved in metal
+#' binding.}
+#' \item{\code{metal_id}: }{This is a unique identifier for the metal of a protein. If the protein
+#' binds only one metal this will be 1. If the protein e.g. binds 2 magnesium ions, one will have 
+#' the ID 1, while the other has the ID 2.}
+#' \item{\code{ids}: }{ChEBI ID assigned to protein and binding site based on \code{metal_type}
+#' column name. These are general IDs that have sub-IDs. Thus, they generally describe the type of
+#' metal ion bound to the protein.}
+#' \item{\code{main_id_name}: }{Official ChEBI name associated with the ID in the \code{ids} column.}
 #' \item{\code{sub_ids}: }{ChEBI ID that is a sub-ID (incoming) of the ID in the \code{ids} column.
 #' Thus, they more specifically describe the potential nature of the metal ion.}
-#' \item{\code{main_id_name}: }{Official ChEBI name associated with the ID in the \code{ids} column.}
-#' \item{\code{multi_evidence}: }{If there is overlapping information in \code{feature_metal_binding}
-#' and \code{chebi_cofactor} or \code{chebi_catalytic_activity}, only \code{feature_metal_binding}
-#' is retained and multi_evidence is TRUE.}
 #' \item{\code{sub_id_name}: }{Official ChEBI name associated with the ID in the \code{sub_ids}
 #' column.}
+#' \item{\code{source}: }{The source of the information, can be either \code{feature_metal_binding},
+#' \code{chebi_cofactor}, \code{comment_cofactor} or \code{chebi_catalytic_activity}.}
+#' \item{\code{evidence}: }{Evidence level of this annotation. This is usually an evidence & conclusion 
+#' ontology ID (ECO ID). Sometimes a publication ID is included.}
+#' \item{\code{note}: }{A note specifying the annotation further. Can for example specify how many
+#' metals are bound per protein.}
 #' }
 #' @import dplyr
 #' @import tidyr
 #' @import purrr
+#' @import stringr
 #' @importFrom rlang .data as_name enquo
 #' @importFrom magrittr %>%
 #' @export
@@ -58,7 +65,8 @@
 #'   columns = c(
 #'     "feature(METAL BINDING)",
 #'     "chebi(Cofactor)",
-#'     "chebi(Catalytic activity)"
+#'     "chebi(Catalytic activity)",
+#'     "comment(COFACTOR)"
 #'   )
 #' )
 #'
@@ -68,7 +76,8 @@
 #'   protein_id = id,
 #'   feature_metal_binding = feature_metal_binding,
 #'   chebi_cofactor = chebi_cofactor,
-#'   chebi_catalytic_activity = chebi_catalytic_activity
+#'   chebi_catalytic_activity = chebi_catalytic_activity,
+#'   comment_cofactor = comment_cofactor
 #' )
 #'
 #' metal_info
@@ -79,6 +88,7 @@ extract_metal_binders <-
            feature_metal_binding = feature_metal_binding,
            chebi_cofactor = chebi_cofactor,
            chebi_catalytic_activity = chebi_catalytic_activity,
+           comment_cofactor = comment_cofactor,
            chebi_data = NULL,
            chebi_relation_data = NULL) {
     if (!requireNamespace("igraph", quietly = TRUE)) {
@@ -138,7 +148,8 @@ extract_metal_binders <-
         {{ protein_id }},
         {{ feature_metal_binding }},
         {{ chebi_cofactor }},
-        {{ chebi_catalytic_activity }}
+        {{ chebi_catalytic_activity }},
+        {{ comment_cofactor }}
       ) %>%
       tidyr::pivot_longer(-{{ protein_id }},
         names_to = "source",
@@ -158,9 +169,35 @@ extract_metal_binders <-
       ) %>%
       dplyr::select(-.data$feature_metal_binding_sep) %>%
       tidyr::unnest(.data$ids) %>%
+      # split information if there are mutliple cofactor entries
+      # this ensures that notes are still associated with the right entries
+      dplyr::mutate(ids = ifelse(source == rlang::as_name(rlang::enquo(comment_cofactor)),
+                                       stringr::str_extract_all(
+                                         .data$ids,
+                                         pattern = "(?<=COFACTOR:).+?(?=COFACTOR|$)"),
+                                       .data$ids)) %>% 
+      tidyr::unnest(.data$ids) %>% 
+      # extract notes from comment_cofactor
+      dplyr::mutate(note = ifelse(source == rlang::as_name(rlang::enquo(comment_cofactor)), 
+                                  stringr::str_extract(
+                                    .data$ids,
+                                    pattern = "(?<=Note\\=).+?(?=;)"
+                                  ),
+                                  NA_character_)) %>% 
+      tidyr::unnest(.data$note) %>% 
+      dplyr::mutate(ids = ifelse(source == rlang::as_name(rlang::enquo(comment_cofactor)), 
+                                                  stringr::str_extract_all(
+        .data$ids,
+        pattern = "(?<=Name\\=).+?(?=Name|Note|COFACTOR|$)"
+      ),
+      .data$ids)) %>% 
+      tidyr::unnest(.data$ids) %>%
+      # extract evidence from feature_metal_binding and comment_cofactor
+      dplyr::mutate(evidence = stringr::str_extract(.data$ids, pattern = regex('(?<=evidence=).+(?=;|$)', ignore_case = TRUE))) %>% 
+      dplyr::mutate(evidence = str_remove_all(.data$evidence, pattern = '"|;|\\{|\\}')) %>% 
       dplyr::mutate(cofactor = stringr::str_extract_all(
         .data$ids,
-        pattern = "(?<=\\[CHEBI:).+?(?=\\])"
+        pattern = "(?<=CHEBI:)\\d+"
       )) %>%
       dplyr::mutate(
         ids = ifelse(
@@ -171,15 +208,22 @@ extract_metal_binders <-
       ) %>%
       dplyr::select(-.data$cofactor) %>%
       tidyr::unnest(.data$ids) %>%
-      dplyr::mutate(metal_position = ifelse(source == "feature_metal_binding",
+        # extract metal positions from feature_metal_binding
+      dplyr::mutate(metal_position = ifelse(source == rlang::as_name(rlang::enquo(feature_metal_binding)),
         as.numeric(stringr::str_extract(.data$ids, pattern = "\\d+")),
         NA
       )) %>%
+        # extract the metal type from the "note" section of feature_metal_binding
       dplyr::mutate(metal_type = stringr::str_extract(
         .data$ids,
         pattern = "(?<=note=\\\").+?(?=\\\"|\\;)"
       )) %>%
+        # extract the metal ID from feature_metal_binding e.g. if there are mutliple metals per protein
+      dplyr::mutate(metal_id = stringr::str_extract(.data$metal_type, pattern = "\\d$")) %>% 
+      dplyr::mutate(metal_id = ifelse(is.na(.data$metal_id) & source == rlang::as_name(rlang::enquo(feature_metal_binding)), 1, .data$metal_id)) %>% 
+       # clean up the metal type
       dplyr::mutate(metal_type = stringr::str_remove_all(.data$metal_type, pattern = "\\s\\d$")) %>%
+      # create a pattern of the metal name to look for matching ChEBI IDs
       dplyr::mutate(pattern = split_metal_name(.data$metal_type)) %>%
       dplyr::mutate(chebi_ids = find_chebis(chebi_metal, .data$pattern)) %>%
       dplyr::mutate(
@@ -194,34 +238,58 @@ extract_metal_binders <-
       dplyr::mutate(is_metal = .data$ids %in% as.character(metal_cation) |
         .data$ids %in% as.character(iron_sulfur_cluster)) %>%
       dplyr::filter(.data$is_metal == TRUE) %>%
+      # look for ChEBI sub IDs. Those are IDs that have the ID in the ids column as a parent
       dplyr::mutate(sub_ids = find_all_subs(chebi_relation, ids = .data$ids, types = "is_a")) %>%
+      # find out which rows are NULL and dont have any sub IDs
       dplyr::mutate(null = purrr::map(.data$sub_ids, ~ is.null(.))) %>%
       dplyr::mutate(sub_ids = ifelse((source == rlang::as_name(rlang::enquo(chebi_cofactor)) |
-        source == rlang::as_name(rlang::enquo(chebi_catalytic_activity))) &
+        source == rlang::as_name(rlang::enquo(chebi_catalytic_activity)) | 
+          source == rlang::as_name(rlang::enquo(comment_cofactor))) &
         .data$null == TRUE, as.integer(.data$ids), .data$sub_ids)) %>%
       dplyr::select(-.data$null) %>%
       # unnest removes all NULL values in sub_ids. This might cause some IDs without sub IDs to get lost.
+      # there should however be none where this is the case.
       tidyr::unnest(.data$sub_ids) %>%
       dplyr::left_join(chebi_names, by = c("ids" = "id")) %>%
       dplyr::rename(main_id_name = .data$name) %>%
       dplyr::distinct() %>%
-      dplyr::group_by({{ protein_id }}, .data$metal_type) %>%
-      dplyr::mutate(n_position = dplyr::n_distinct(.data$metal_position, na.rm = TRUE)) %>%
-      dplyr::group_by({{ protein_id }}, .data$sub_ids) %>%
-      dplyr::mutate(n_ids = dplyr::n()) %>%
-      dplyr::mutate(chebi_cofactor_id = ifelse((source == "chebi_cofactor" |
-        source == "chebi_catalytic_activity") &
-        .data$ids == .data$sub_ids,
-      .data$ids,
-      NA
-      )) %>%
-      dplyr::group_by({{ protein_id }}) %>%
-      dplyr::mutate(multi_evidence = ifelse(.data$sub_ids %in% .data$chebi_cofactor_id, TRUE, FALSE)) %>%
-      dplyr::filter(!(.data$n_position == 0 & .data$n_ids > 1)) %>%
-      dplyr::select(-c(.data$is_metal, .data$n_position, .data$n_ids, .data$chebi_cofactor_id)) %>%
+      # combined chebi_cofactor and comment_cofactor information as much as possible
+      dplyr::mutate(is_chebi_cofactor_comment_cofactor = ifelse(.data$source == rlang::as_name(rlang::enquo(chebi_cofactor)) | 
+                                                                .data$source == rlang::as_name(rlang::enquo(comment_cofactor)),
+                                                                TRUE,
+                                                                FALSE)) %>% 
+      dplyr::group_by({{ protein_id }}, .data$sub_ids, .data$is_chebi_cofactor_comment_cofactor) %>% 
+      dplyr::mutate(n_id = dplyr::n()) %>% 
+      dplyr::mutate(source = ifelse(.data$n_id == 2 & 
+                                    .data$is_chebi_cofactor_comment_cofactor,
+                                    paste0(rlang::as_name(rlang::enquo(chebi_cofactor)), " & ", rlang::as_name(rlang::enquo(comment_cofactor))),
+                                    .data$source)) %>% 
+      dplyr::group_by({{ protein_id }}, .data$sub_ids, .data$source) %>% 
+      dplyr::mutate(evidence_all_na = all(is.na(.data$evidence))) %>% 
+      dplyr::mutate(note_all_na = all(is.na(.data$note))) %>% 
+      dplyr::distinct() %>% 
+      dplyr::filter(!(.data$source == paste0(rlang::as_name(rlang::enquo(chebi_cofactor)), " & ", rlang::as_name(rlang::enquo(comment_cofactor))) & 
+                        dplyr::case_when(.data$evidence_all_na == TRUE & .data$note_all_na == TRUE ~ FALSE,
+                                         .data$evidence_all_na == FALSE & .data$note_all_na == TRUE ~ is.na(.data$evidence),
+                                         .data$evidence_all_na == TRUE & .data$note_all_na == FALSE ~ is.na(.data$note),
+                                         .data$evidence_all_na == FALSE & .data$note_all_na == FALSE ~ is.na(.data$evidence) & is.na(.data$note)
+                               ))) %>% 
+      dplyr::ungroup() %>% 
+      dplyr::select(-c(.data$n_id, .data$evidence_all_na, .data$note_all_na, .data$is_chebi_cofactor_comment_cofactor, .data$is_metal)) %>% 
       dplyr::mutate(sub_ids = as.character(.data$sub_ids)) %>%
       dplyr::left_join(chebi_names, by = c("sub_ids" = "id")) %>%
-      dplyr::rename(sub_id_name = .data$name)
+      dplyr::rename(sub_id_name = .data$name) %>% 
+      dplyr::select({{ protein_id }}, 
+                    .data$metal_type, 
+                    .data$metal_position, 
+                    .data$metal_id, 
+                    .data$ids, 
+                    .data$main_id_name, 
+                    .data$sub_ids, 
+                    .data$sub_id_name, 
+                    .data$source, 
+                    .data$evidence, 
+                    .data$note)
 
     result
   }
