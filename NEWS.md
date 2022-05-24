@@ -3,6 +3,7 @@
 ## New features
 
 * Reintroduced the functionalities relying on the `iq` package to `protti`. `calculate_protein_abundance()` now has the method `"iq"` again as an option.
+* `fetch_pdb()` now also retrieves information on engineered mutations, non-standard monomers, secondary structure and binding interfaces of ligands.
 
 # protti 0.3.0
 
