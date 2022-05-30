@@ -4,13 +4,13 @@
 \alias{fetch_pdb}
 \title{Fetch structure information from RCSB}
 \usage{
-fetch_pdb(pdb_ids, batchsize = 200, show_progress = TRUE)
+fetch_pdb(pdb_ids, batchsize = 100, show_progress = TRUE)
 }
 \arguments{
 \item{pdb_ids}{a character vector of PDB identifiers.}
 
 \item{batchsize}{a numeric value that specifies the number of structures to be processed in a
-single query. Default is 2000.}
+single query. Default is 100.}
 
 \item{show_progress}{a logical value that indicates if a progress bar will be shown. Default is
 TRUE.}
@@ -33,6 +33,20 @@ match the identification used in the publication that describes the structure. T
 vector has the same length as the \code{pdb_sequence} and each position is the identifier for
 the matching amino acid position in \code{pdb_sequence}. The contained values are not
 necessarily numbers and the values do not have to be positive.}
+\item{modified_monomer: }{Is composed of first the composition ID of the modification, followed
+by the \code{label_seq_id} position. In parenthesis are the parent monomer identifiers as
+they appear in the sequence.}
+\item{ligand_*: }{Any column starting with the \code{ligand_*} prefix contains information about
+the position, identity and donors for ligand binding sites. If there are multiple entities of
+ligands they are separated by "|". Specific donor level information is separated by ";".}
+\item{secondar_structure: }{Contains information about helix and sheet secondary structure elements.
+Individual regions are separated by ";".}
+\item{unmodeled_structure: }{Contains information about unmodeled or partially modeled regions in
+the model. Individual regions are separated by ";".}
+\item{auth_seq_id_original: }{In some cases the sequence positions do not match the number of residues
+in the sequence either because positions are missing or duplicated. This always coincides with modified
+residues, however does not always occur when there is a modified residue in the sequence. This column
+contains the original \code{auth_seq_id} information that does not have these positions corrected.}
 }
 }
 \description{

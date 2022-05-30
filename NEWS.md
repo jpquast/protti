@@ -4,6 +4,16 @@
 
 * Reintroduced the functionalities relying on the `iq` package to `protti`. `calculate_protein_abundance()` now has the method `"iq"` again as an option.
 * `fetch_pdb()` now also retrieves information on engineered mutations, non-standard monomers, secondary structure and binding interfaces of ligands.
+* `extract_metal_binders()` now takes additional columns as input to provide an even better summary of metal binding sites. Now the `comment_cofactor` and `go_molecular_function` columns that are retrieved with the `fetch_uniprot()` function have to be provided. 
+
+## Bug fixes
+
+* Fixed the `auth_seq_id` column that is part of the output of the `fetch_pdb()` function. It previously was possible that it contained duplicated or missing positions. This could be identified by comparing the number of positions within the `auth_seq_id` column and the number of residues in the deposited `pdb_sequence`. Positions are now correct. The original output can be found in the `auth_seq_id_original` column.
+
+## Additional changes
+
+* `fetch_uniprot()` by default now retrieves the `comment(COFACTOR)` column.
+* The default batchsize of `fetch_pdb()` was set to 100 from 200. This was done since more information is retrieved now, which slows to function down and is slightly improved when batch sizes are smaller.
 
 # protti 0.3.0
 

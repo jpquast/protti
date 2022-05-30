@@ -45,6 +45,7 @@ fetch_uniprot <-
              "feature(METAL BINDING)",
              "chebi(Cofactor)",
              "chebi(Catalytic activity)",
+             "comment(COFACTOR)",
              "database(PDB)"
            ),
            batchsize = 200,

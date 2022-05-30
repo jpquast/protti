@@ -7,7 +7,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_warning(uniprot <- fetch_uniprot(unis))
     expect_is(uniprot, "data.frame")
     expect_equal(nrow(uniprot), 9)
-    expect_equal(ncol(uniprot), 18)
+    expect_equal(ncol(uniprot), 19)
   })
 
   proteome <- fetch_uniprot_proteome(organism_id = "83333", columns = c("id", "go(molecular function)", "database(String)"))
@@ -64,7 +64,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     pdb <- fetch_pdb(pdb_ids)
     expect_is(pdb, "data.frame")
     expect_equal(nrow(pdb), 36)
-    expect_equal(ncol(pdb), 32)
+    expect_equal(ncol(pdb), 46)
   })
 
   test_that("fetch_pdb_structure works", {
@@ -100,10 +100,14 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
   test_that("extract_metal_binders works", {
     data_uniprot <- fetch_uniprot(c("Q03640", "Q03778", "P22276", "P25889"))
-    metal_info <- extract_metal_binders(data = data_uniprot, chebi_data = database, chebi_relation_data = relations)
+    metal_info <- extract_metal_binders(data = data_uniprot, 
+                                        chebi_data = database, 
+                                        chebi_relation_data = relations, 
+                                        comment_cofactor = comment_cofactor, 
+                                        go_molecular_function = go_molecular_function)
 
     expect_is(metal_info, "data.frame")
-    expect_equal(ncol(metal_info), 9)
+    expect_equal(ncol(metal_info), 13)
     expect_gt(nrow(metal_info), 110)
   })
 

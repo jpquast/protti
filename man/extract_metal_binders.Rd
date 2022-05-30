@@ -11,6 +11,7 @@ extract_metal_binders(
   chebi_cofactor = chebi_cofactor,
   chebi_catalytic_activity = chebi_catalytic_activity,
   comment_cofactor = comment_cofactor,
+  go_molecular_function = go_molecular_function,
   chebi_data = NULL,
   chebi_relation_data = NULL
 )
@@ -32,6 +33,9 @@ the ChEBI catalytic activity information from UniProt.}
 
 \item{comment_cofactor}{a character cholumn in the \code{data} data frame that contains
 the comment cofactor information from UniProt.}
+
+\item{go_molecular_function}{a character column in the \code{data} data frame that contains
+the gene ontology "molecular function" column information from UniProt.}
 
 \item{chebi_data}{optional, a data frame that can be manually obtained with \code{fetch_chebi()}.
 If not provided it will be fetched within the function. If the function is run many times it
@@ -84,7 +88,8 @@ data <- fetch_uniprot(
     "feature(METAL BINDING)",
     "chebi(Cofactor)",
     "chebi(Catalytic activity)",
-    "comment(COFACTOR)"
+    "comment(COFACTOR)",
+    "go(molecular function)"
   )
 )
 
@@ -95,7 +100,8 @@ metal_info <- extract_metal_binders(
   feature_metal_binding = feature_metal_binding,
   chebi_cofactor = chebi_cofactor,
   chebi_catalytic_activity = chebi_catalytic_activity,
-  comment_cofactor = comment_cofactor
+  comment_cofactor = comment_cofactor,
+  go_molecular_function = go_molecular_function
 )
 
 metal_info

@@ -10,7 +10,7 @@ fetch_uniprot(
     "database(String)", "go(molecular function)", "go(biological process)",
     "go(cellular compartment)", "interactor", "feature(ACTIVE SITE)",
     "feature(BINDING SITE)", "feature(METAL BINDING)", "chebi(Cofactor)",
-    "chebi(Catalytic activity)", "database(PDB)"),
+    "chebi(Catalytic activity)", "comment(COFACTOR)", "database(PDB)"),
   batchsize = 200,
   show_progress = TRUE
 )

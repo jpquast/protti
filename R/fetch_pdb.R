@@ -5,7 +5,7 @@
 #'
 #' @param pdb_ids a character vector of PDB identifiers.
 #' @param batchsize a numeric value that specifies the number of structures to be processed in a
-#' single query. Default is 2000.
+#' single query. Default is 100.
 #' @param show_progress a logical value that indicates if a progress bar will be shown. Default is
 #' TRUE.
 #'
@@ -26,11 +26,26 @@
 #' vector has the same length as the \code{pdb_sequence} and each position is the identifier for
 #' the matching amino acid position in \code{pdb_sequence}. The contained values are not
 #' necessarily numbers and the values do not have to be positive.}
+#' \item{modified_monomer: }{Is composed of first the composition ID of the modification, followed
+#' by the \code{label_seq_id} position. In parenthesis are the parent monomer identifiers as
+#' they appear in the sequence.}
+#' \item{ligand_*: }{Any column starting with the \code{ligand_*} prefix contains information about
+#' the position, identity and donors for ligand binding sites. If there are multiple entities of
+#' ligands they are separated by "|". Specific donor level information is separated by ";".}
+#' \item{secondar_structure: }{Contains information about helix and sheet secondary structure elements.
+#' Individual regions are separated by ";".}
+#' \item{unmodeled_structure: }{Contains information about unmodeled or partially modeled regions in
+#' the model. Individual regions are separated by ";".}
+#' \item{auth_seq_id_original: }{In some cases the sequence positions do not match the number of residues
+#' in the sequence either because positions are missing or duplicated. This always coincides with modified
+#' residues, however does not always occur when there is a modified residue in the sequence. This column
+#' contains the original \code{auth_seq_id} information that does not have these positions corrected.}
 #' }
 #' @import dplyr
 #' @import progress
 #' @import purrr
 #' @import tidyr
+#' @importFrom R.utils insert
 #' @importFrom httr modify_url
 #' @importFrom stringr str_replace_all
 #' @importFrom curl has_internet
@@ -45,7 +60,7 @@
 #'
 #' head(pdb)
 #' }
-fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
+fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   if (!curl::has_internet()) {
     message("No internet connection.")
     return(invisible(NULL))
@@ -116,6 +131,15 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       		auth_to_entity_poly_seq_mapping
     		}
       }
+      rcsb_polymer_entity_feature {
+      type
+      name
+        feature_positions {
+          beg_comp_id
+          beg_seq_id
+          end_seq_id
+        }
+      }
       entity_poly {
         pdbx_seq_one_letter_code
         pdbx_seq_one_letter_code_can
@@ -185,7 +209,8 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
   # split pdb_ids into batches
   batches <- split(pdb_ids, ceiling(seq_along(pdb_ids) / batchsize))
   if (show_progress == TRUE) {
-    pb <- progress::progress_bar$new(total = length(batches))
+    pb <- progress::progress_bar$new(total = length(batches),
+                                     format = "[1/6] Fetching PDB entries [:bar] (:percent) :eta")
   }
 
   # query information from database
@@ -246,20 +271,24 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
     .f = ~.x
   ) %>%
     distinct() # make sure entries are unique otherwise there will be problems with unnesting
-  
-  if(nrow(query_result) == 0){
+
+  if (nrow(query_result) == 0) {
     stop("None of the provided IDs could be retrieved!")
   }
 
   queried_ids <- unique(query_result$entries.rcsb_id)
   not_retrieved <- setdiff(stringr::str_to_lower(pdb_ids), stringr::str_to_lower(queried_ids))
-  if(length(not_retrieved) > 0){
+  if (length(not_retrieved) > 0) {
     message("The following IDs have not been retrieved:")
     message(paste0(utils::capture.output(not_retrieved), collapse = "\n"))
   }
-  
-  # process information from database
 
+  # process information from database
+  if (show_progress == TRUE) {
+  message("[2/6] Extract experimental conditions ... ", appendLF = FALSE)
+  start_time <- Sys.time()
+  }
+  
   query_result_clean <- query_result %>%
     dplyr::bind_cols(
       pdb_ids = .$entries.rcsb_id,
@@ -403,6 +432,13 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       affinity_value = .data$value
     )
 
+  if (show_progress == TRUE) {
+  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+  message("[3/6] Extracting polymer information: ")
+  message("-> 1/6 UniProt IDs ... ", appendLF = FALSE)
+  start_time <- Sys.time()
+  }
+  
   polymer_entities <- query_result_clean %>%
     dplyr::select(.data$pdb_ids, .data$entries.polymer_entities) %>%
     tidyr::unnest(.data$entries.polymer_entities) %>%
@@ -414,73 +450,82 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       .data$entity_poly,
       .data$rcsb_polymer_entity_container_identifiers,
       .data$rcsb_entity_source_organism
-    )) %>% 
-    tidyr::unnest(.data$rcsb_polymer_entity) %>% 
-    dplyr::rowwise() %>% 
+    )) %>%
+    tidyr::unnest(.data$rcsb_polymer_entity) %>%
+    dplyr::rowwise() %>%
     dplyr::mutate(rcsb_non_std_monomers = ifelse(!is.null(unlist(.data$rcsb_non_std_monomers)),
-                                                 paste0(.data$rcsb_non_std_monomers, collapse = ";"),
-                                                 NA)) %>% 
+      paste0(.data$rcsb_non_std_monomers, collapse = ";"),
+      NA
+    )) %>%
     dplyr::ungroup()
 
   # Deal with cases in which uniprot information of some entries is available but not for others
-  polymer_entities_no_uniprots <- polymer_entities %>% 
-    dplyr::rowwise() %>% 
-    dplyr::mutate(no_uniprots = is.null(unlist(.data$uniprots))) %>% 
-    dplyr::ungroup() %>% 
-    dplyr::filter(.data$no_uniprots) %>% 
-    dplyr::select(-c(.data$uniprots, .data$no_uniprots)) 
+  polymer_entities_no_uniprots <- polymer_entities %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(no_uniprots = is.null(unlist(.data$uniprots))) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(.data$no_uniprots) %>%
+    dplyr::select(-c(.data$uniprots, .data$no_uniprots))
 
-  if(nrow(polymer_entities_no_uniprots) > 0){
-    polymer_entities <- polymer_entities %>% 
-      tidyr::unnest(c(.data$uniprots)) %>% 
+  if (nrow(polymer_entities_no_uniprots) > 0) {
+    polymer_entities <- polymer_entities %>%
+      tidyr::unnest(c(.data$uniprots)) %>%
       dplyr::bind_rows(polymer_entities_no_uniprots)
   } else {
-    polymer_entities <- polymer_entities %>% 
-      tidyr::unnest(c(.data$uniprots)) 
+    polymer_entities <- polymer_entities %>%
+      tidyr::unnest(c(.data$uniprots))
   }
-
-  # Deal with cases in which polymer entity alignment information of some entries is available but not for others
-  polymer_entities_no_rcsb_polymer_entity_align <- polymer_entities %>% 
-    dplyr::rowwise() %>% 
-    dplyr::mutate(no_rcsb_polymer_entity_align = is.null(unlist(.data$rcsb_polymer_entity_align))) %>% 
-    dplyr::ungroup() %>% 
-    dplyr::filter(.data$no_rcsb_polymer_entity_align) %>% 
-    dplyr::select(-c(.data$rcsb_polymer_entity_align, .data$no_rcsb_polymer_entity_align))
   
-  if(nrow(polymer_entities_no_rcsb_polymer_entity_align) > 0){
-    polymer_entities <- polymer_entities %>% 
-      tidyr::unnest(c(.data$rcsb_polymer_entity_align)) %>% 
+  if (show_progress == TRUE) {
+  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+  message("-> 2/6 UniProt alignment ... ", appendLF = FALSE)
+  start_time <- Sys.time()
+  }
+  
+  # Deal with cases in which polymer entity alignment information of some entries is available but not for others
+  polymer_entities_no_rcsb_polymer_entity_align <- polymer_entities %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(no_rcsb_polymer_entity_align = is.null(unlist(.data$rcsb_polymer_entity_align))) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(.data$no_rcsb_polymer_entity_align) %>%
+    dplyr::select(-c(.data$rcsb_polymer_entity_align, .data$no_rcsb_polymer_entity_align))
+
+  if (nrow(polymer_entities_no_rcsb_polymer_entity_align) > 0) {
+    polymer_entities <- polymer_entities %>%
+      tidyr::unnest(c(.data$rcsb_polymer_entity_align)) %>%
       dplyr::bind_rows(polymer_entities_no_rcsb_polymer_entity_align)
   } else {
-    polymer_entities <- polymer_entities %>% 
+    polymer_entities <- polymer_entities %>%
       tidyr::unnest(c(.data$rcsb_polymer_entity_align))
   }
 
   # some proteins do not contain UniProt information therefore data needs to be extracted differently
   if ("rcsb_uniprot_container_identifiers" %in% colnames(polymer_entities)) {
-    polymer_entities <- polymer_entities %>% 
+    polymer_entities <- polymer_entities %>%
       dplyr::bind_cols(
         uniprot_container_identifiers = .$rcsb_uniprot_container_identifiers,
         uniprot_protein = .$rcsb_uniprot_protein
-      ) %>% 
+      ) %>%
       dplyr::select(-c(.data$rcsb_uniprot_container_identifiers, .data$rcsb_uniprot_protein))
   } else {
-    polymer_entities <- polymer_entities %>% 
-      dplyr::select(-c(.data$uniprots)) %>% 
-      dplyr::mutate(uniprot_id = NA,
-                    name = data.frame(value = NA))
+    polymer_entities <- polymer_entities %>%
+      dplyr::select(-c(.data$uniprots)) %>%
+      dplyr::mutate(
+        uniprot_id = NA,
+        name = data.frame(value = NA)
+      )
   }
 
   # The alignment can also be missing independent of the UniProt information
   if ("aligned_regions" %in% colnames(polymer_entities)) {
     # if there are entries that do not have aligned regions these need to be processed separately to not lose them to an unnest
-    polymer_entities_no_aligned_regions <- polymer_entities %>% 
-      dplyr::rowwise() %>% 
-      dplyr::mutate(no_aligned_regions = is.null(unlist(.data$aligned_regions))) %>% 
-      dplyr::ungroup() %>% 
-      dplyr::filter(.data$no_aligned_regions) 
-    
-    polymer_entities <- polymer_entities  %>%
+    polymer_entities_no_aligned_regions <- polymer_entities %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(no_aligned_regions = is.null(unlist(.data$aligned_regions))) %>%
+      dplyr::ungroup() %>%
+      dplyr::filter(.data$no_aligned_regions)
+
+    polymer_entities <- polymer_entities %>%
       tidyr::unnest(c(.data$aligned_regions)) %>%
       dplyr::bind_cols(.$name) %>%
       dplyr::select(-c(.data$name, .data$entry_id)) %>%
@@ -490,147 +535,269 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
         rcsb_polymer_entity_instance_container_identifiers = .$rcsb_polymer_entity_instance_container_identifiers
       ) %>%
       dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers))
-    
-    if(nrow(polymer_entities_no_aligned_regions) > 0) {
-      polymer_entities_no_aligned_regions <- polymer_entities_no_aligned_regions %>% 
-        dplyr::select(-c(.data$aligned_regions, .data$no_aligned_regions)) %>% 
+
+    if (nrow(polymer_entities_no_aligned_regions) > 0) {
+      polymer_entities_no_aligned_regions <- polymer_entities_no_aligned_regions %>%
+        dplyr::select(-c(.data$aligned_regions, .data$no_aligned_regions)) %>%
         dplyr::bind_cols(.$name) %>%
         dplyr::select(-c(.data$name, .data$entry_id)) %>%
-        dplyr::rename(name_protein = .data$value) %>% 
+        dplyr::rename(name_protein = .data$value) %>%
         tidyr::unnest(c(.data$auth_asym_ids, .data$polymer_entity_instances)) %>%
         dplyr::bind_cols(
           rcsb_polymer_entity_instance_container_identifiers = .$rcsb_polymer_entity_instance_container_identifiers
         ) %>%
-        dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers)) %>% 
-        dplyr::mutate(entity_beg_seq_id = NA,
-                      ref_beg_seq_id = NA,
-                      length = NA)
-      
+        dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers)) %>%
+        dplyr::mutate(
+          entity_beg_seq_id = NA,
+          ref_beg_seq_id = NA,
+          length = NA
+        )
+
       # Join columns back into main data.frame
-      polymer_entities <- polymer_entities %>% 
+      polymer_entities <- polymer_entities %>%
         dplyr::bind_rows(polymer_entities_no_aligned_regions)
     }
   } else {
-    polymer_entities <- polymer_entities %>% 
-      dplyr::select(-c(.data$rcsb_polymer_entity_align)) %>% 
+    polymer_entities <- polymer_entities %>%
+      dplyr::select(-c(.data$rcsb_polymer_entity_align)) %>%
       dplyr::bind_cols(.$name) %>%
       dplyr::select(-c(.data$name, .data$entry_id)) %>%
-      dplyr::rename(name_protein = .data$value) %>% 
+      dplyr::rename(name_protein = .data$value) %>%
       tidyr::unnest(c(.data$auth_asym_ids, .data$polymer_entity_instances)) %>%
       dplyr::bind_cols(
         rcsb_polymer_entity_instance_container_identifiers = .$rcsb_polymer_entity_instance_container_identifiers
       ) %>%
-      dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers)) %>% 
-      dplyr::mutate(entity_beg_seq_id = NA,
-                    ref_beg_seq_id = NA,
-                    length = NA,
-                    reference_database_accession = NA,
-                    reference_database_isoform = NA,
-                    reference_database_name = NA)
+      dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers)) %>%
+      dplyr::mutate(
+        entity_beg_seq_id = NA,
+        ref_beg_seq_id = NA,
+        length = NA,
+        reference_database_accession = NA,
+        reference_database_isoform = NA,
+        reference_database_name = NA
+      )
+  }
+
+  # Extract ligand information
+  if (show_progress == TRUE) {
+  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+  message("-> 3/6 Ligand binding sites ... ", appendLF = FALSE)
+  start_time <- Sys.time()
   }
   
-  # Extract ligand information
-  
-  polymer_entities_no_ligands <- polymer_entities %>% 
-    dplyr::rowwise() %>% 
-    dplyr::mutate(no_ligands = is.null(unlist(.data$rcsb_ligand_neighbors))) %>% 
+  polymer_entities_no_ligands <- polymer_entities %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(no_ligands = is.null(unlist(.data$rcsb_ligand_neighbors))) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(.data$no_ligands) %>%
+    dplyr::select(-c(.data$rcsb_ligand_neighbors, .data$no_ligands)) %>%
+    dplyr::mutate(
+      atom_id = as.character(NA),
+      auth_seq_id = as.integer(NA),
+      comp_id = as.character(NA),
+      ligand_asym_id = as.character(NA),
+      ligand_atom_id = as.character(NA),
+      ligand_comp_id = as.character(NA),
+      ligand_entity_id = as.character(NA),
+      ligand_is_bound = as.character(NA),
+      seq_id = as.integer(NA)
+    )
+
+  polymer_entities <- polymer_entities %>%
+    tidyr::unnest(c(.data$rcsb_ligand_neighbors)) %>%
+    dplyr::bind_rows(polymer_entities_no_ligands) %>%
+    dplyr::mutate(ligand_is_bound = ifelse(.data$ligand_is_bound == "Y", "TRUE", "FALSE")) %>%
+    dplyr::group_by(.data$pdb_ids, .data$auth_asym_id, .data$ligand_entity_id) %>%
+    dplyr::mutate(dplyr::across(
+      .cols = c(
+        .data$atom_id,
+        .data$auth_seq_id,
+        .data$comp_id,
+        .data$ligand_asym_id,
+        .data$ligand_atom_id,
+        .data$ligand_comp_id,
+        .data$ligand_is_bound,
+        .data$seq_id
+      ),
+      .fns = ~ paste0(.x, collapse = ";")
+    )) %>%
+    dplyr::distinct() %>%
+    dplyr::group_by(.data$pdb_ids, .data$auth_asym_id) %>%
+    dplyr::mutate(dplyr::across(
+      .cols = c(
+        .data$atom_id,
+        .data$auth_seq_id,
+        .data$comp_id,
+        .data$ligand_asym_id,
+        .data$ligand_atom_id,
+        .data$ligand_comp_id,
+        .data$ligand_entity_id,
+        .data$ligand_is_bound,
+        .data$seq_id
+      ),
+      .fns = ~ paste0(.x, collapse = "|")
+    )) %>%
+    dplyr::distinct() %>%
+    dplyr::mutate(dplyr::across(
+      .cols = c(
+        .data$atom_id,
+        .data$auth_seq_id,
+        .data$comp_id,
+        .data$ligand_asym_id,
+        .data$ligand_atom_id,
+        .data$ligand_comp_id,
+        .data$ligand_entity_id,
+        .data$ligand_is_bound,
+        .data$seq_id
+      ),
+      .fns = ~ ifelse(str_detect(.data$atom_id, pattern = "NA"), NA, .x)
+    )) %>%
     dplyr::ungroup() %>% 
-    dplyr::filter(.data$no_ligands) %>% 
-    dplyr::select(-c(.data$rcsb_ligand_neighbors, .data$no_ligands)) %>% 
-    dplyr::mutate(atom_id = as.character(NA),
-           auth_seq_id = as.integer(NA),
-           comp_id = as.character(NA),
-           ligand_asym_id = as.character(NA),
-           ligand_atom_id = as.character(NA),
-           ligand_comp_id = as.character(NA),
-           ligand_entity_id = as.character(NA),
-           ligand_is_bound = as.character(NA),
-           seq_id = as.integer(NA))
+    dplyr::rename(
+      ligand_donor_atom_id = .data$atom_id,
+      ligand_donor_auth_seq_id = .data$auth_seq_id,
+      ligand_donor_id = .data$comp_id,
+      ligand_id = .data$ligand_comp_id,
+      ligand_label_asym_id = .data$ligand_asym_id,
+      ligand_bond_is_covalent_or_coordinating = .data$ligand_is_bound,
+      ligand_donor_label_seq_id = .data$seq_id
+    ) 
+
+  if ("rcsb_ligand_neighbors" %in% colnames(polymer_entities)) {
+    # if none of the retrieved entries contains any ligands then this column needs to be removed manually
+    polymer_entities <- polymer_entities %>%
+      select(-.data$rcsb_ligand_neighbors)
+  }
+  # extract modified monomer information
+
+  if (show_progress == TRUE) {
+  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+  message("-> 4/6 Modified monomers ... ", appendLF = FALSE)
+  start_time <- Sys.time()
+  }
   
-    polymer_entities <- polymer_entities %>% 
-      tidyr::unnest(c(.data$rcsb_ligand_neighbors)) %>% 
-      dplyr::bind_rows(polymer_entities_no_ligands) %>% 
-      dplyr::mutate(ligand_is_bound = ifelse(.data$ligand_is_bound == "Y", "TRUE", "FALSE")) %>% 
-      dplyr::group_by(.data$pdb_ids, .data$auth_asym_id, .data$ligand_entity_id) %>% 
-      dplyr::mutate(dplyr::across(.cols = c(.data$atom_id,
-                                            .data$auth_seq_id,
-                                            .data$comp_id,
-                                            .data$ligand_asym_id,
-                                            .data$ligand_atom_id,
-                                            .data$ligand_comp_id,
-                                            .data$ligand_is_bound,
-                                            .data$seq_id),
-                           .fns = ~paste0(.x, collapse = ";"))) %>% 
-      dplyr::distinct() %>% 
-      dplyr::group_by(.data$pdb_ids, .data$auth_asym_id) %>%
-      dplyr::mutate(dplyr::across(.cols = c(.data$atom_id,
-                                            .data$auth_seq_id,
-                                            .data$comp_id,
-                                            .data$ligand_asym_id,
-                                            .data$ligand_atom_id,
-                                            .data$ligand_comp_id,
-                                            .data$ligand_entity_id,
-                                            .data$ligand_is_bound,
-                                            .data$seq_id),
-                           .fns = ~paste0(.x, collapse = "|"))) %>% 
-      dplyr::distinct() %>% 
-      dplyr::mutate(dplyr::across(.cols = c(.data$atom_id,
-                                            .data$auth_seq_id,
-                                            .data$comp_id,
-                                            .data$ligand_asym_id,
-                                            .data$ligand_atom_id,
-                                            .data$ligand_comp_id,
-                                            .data$ligand_entity_id,
-                                            .data$ligand_is_bound,
-                                            .data$seq_id),
-                                  .fns = ~ifelse(str_detect(.data$atom_id, pattern = "NA"), NA, .x))) %>% 
-      dplyr::rename(ligand_donor_atom_id = .data$atom_id,
-                    ligand_donor_auth_seq_id = .data$auth_seq_id,
-                    ligand_donor_id = .data$comp_id,
-                    ligand_id = .data$ligand_comp_id,
-                    ligand_label_asym_id = .data$ligand_asym_id,
-                    ligand_bond_is_covalent_or_coordinating = .data$ligand_is_bound,
-                    ligand_donor_label_seq_id = .data$seq_id) %>% 
-      ungroup()
-    
-    if("rcsb_ligand_neighbors" %in% colnames(polymer_entities)) {
-      # if none of the retrieved entries contains any ligands then this column needs to be removed manually
-      polymer_entities <- polymer_entities %>% 
-        select(-.data$rcsb_ligand_neighbors)
-    }
-    
-    # extract secondary structure information
-    
-    rcsb_polymer_instance_feature_data <- polymer_entities %>% 
-      dplyr::select(.data$pdb_ids, .data$auth_asym_id, .data$rcsb_polymer_instance_feature) %>% 
-      tidyr::unnest(.data$rcsb_polymer_instance_feature) %>% 
-      tidyr::unnest(.data$feature_positions)
-    
-    secondary_structures <- rcsb_polymer_instance_feature_data %>% 
-      dplyr::filter(.data$name %in% c("helix", "sheet")) %>% 
-      dplyr::group_by(.data$pdb_ids, .data$auth_asym_id) %>% 
-      dplyr::mutate(from_to = paste0(.data$name, ":", .data$beg_seq_id, "-", .data$end_seq_id)) %>% 
-      dplyr::mutate(secondary_structure = paste0(.data$from_to, collapse = ";")) %>% 
-      dplyr::ungroup() %>% 
-      dplyr::distinct(.data$secondary_structure, .data$pdb_ids, .data$auth_asym_id)
-    
-    # extract info about unmodeled residues
-    
-    unmodeled_residues <- rcsb_polymer_instance_feature_data %>% 
-      dplyr::filter(.data$name %in% c("partially modeled residue", "unmodeled residue")) %>% 
-      dplyr::group_by(.data$pdb_ids, .data$auth_asym_id) %>% 
-      dplyr::mutate(from_to = paste0(.data$name, ":", .data$beg_seq_id, "-", .data$end_seq_id)) %>% 
-      dplyr::mutate(unmodeled_structure = paste0(.data$from_to, collapse = ";")) %>% 
-      dplyr::ungroup() %>% 
-      dplyr::distinct(.data$unmodeled_structure, .data$pdb_ids, .data$auth_asym_id)
-    
-    # join secondary structure and unmodeled info
-    
-    polymer_entities <- polymer_entities %>% 
-      left_join(secondary_structures, by = c("pdb_ids", "auth_asym_id")) %>% 
-      left_join(unmodeled_residues, by = c("pdb_ids", "auth_asym_id")) %>% 
-      select(-.data$rcsb_polymer_instance_feature)
-    
+  rcsb_polymer_entity_feature <- polymer_entities %>%
+    dplyr::select(.data$pdb_ids, .data$auth_asym_id, .data$rcsb_polymer_entity_feature) %>%
+    tidyr::unnest(.data$rcsb_polymer_entity_feature) %>%
+    tidyr::unnest(.data$feature_positions)
+
+  modified_monomer <- rcsb_polymer_entity_feature %>%
+    dplyr::filter(.data$type %in% c("modified_monomer")) %>%
+    dplyr::group_by(.data$pdb_ids, .data$auth_asym_id) %>%
+    dplyr::mutate(residue = paste0(
+      .data$beg_comp_id,
+      ":",
+      .data$beg_seq_id,
+      "(",
+      stringr::str_replace(.data$name, pattern = "Parent monomer ", replacement = ""),
+      ")"
+    )) %>%
+    dplyr::mutate(modified_monomer = paste0(.data$residue, collapse = ";")) %>%
+    dplyr::ungroup() %>%
+    dplyr::distinct(.data$modified_monomer, .data$pdb_ids, .data$auth_asym_id)
+
+  # extract secondary structure information
+  if (show_progress == TRUE) {
+  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+  message("-> 5/6 Secondary structure ... ", appendLF = FALSE)
+  start_time <- Sys.time()
+  }
+  
+  rcsb_polymer_instance_feature_data <- polymer_entities %>%
+    dplyr::select(.data$pdb_ids, .data$auth_asym_id, .data$rcsb_polymer_instance_feature) %>%
+    tidyr::unnest(.data$rcsb_polymer_instance_feature) %>%
+    tidyr::unnest(.data$feature_positions)
+
+  secondary_structures <- rcsb_polymer_instance_feature_data %>%
+    dplyr::filter(.data$name %in% c("helix", "sheet")) %>%
+    dplyr::group_by(.data$pdb_ids, .data$auth_asym_id) %>%
+    dplyr::mutate(from_to = paste0(.data$name, ":", .data$beg_seq_id, "-", .data$end_seq_id)) %>%
+    dplyr::mutate(secondary_structure = paste0(.data$from_to, collapse = ";")) %>%
+    dplyr::ungroup() %>%
+    dplyr::distinct(.data$secondary_structure, .data$pdb_ids, .data$auth_asym_id)
+
+  # extract info about unmodeled residues
+  if (show_progress == TRUE) {
+  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+  message("-> 6/6 Unmodeled residues ... ", appendLF = FALSE)
+  start_time <- Sys.time()
+  }
+  
+  unmodeled_residues <- rcsb_polymer_instance_feature_data %>%
+    dplyr::filter(.data$name %in% c("partially modeled residue", "unmodeled residue")) %>%
+    dplyr::group_by(.data$pdb_ids, .data$auth_asym_id) %>%
+    dplyr::mutate(from_to = paste0(.data$name, ":", .data$beg_seq_id, "-", .data$end_seq_id)) %>%
+    dplyr::mutate(unmodeled_structure = paste0(.data$from_to, collapse = ";")) %>%
+    dplyr::ungroup() %>%
+    dplyr::distinct(.data$unmodeled_structure, .data$pdb_ids, .data$auth_asym_id)
+
+  # join secondary structure, unmodeled info and modified monomer
+
+  polymer_entities <- polymer_entities %>%
+    left_join(modified_monomer, by = c("pdb_ids", "auth_asym_id")) %>%
+    left_join(secondary_structures, by = c("pdb_ids", "auth_asym_id")) %>%
+    left_join(unmodeled_residues, by = c("pdb_ids", "auth_asym_id")) %>%
+    select(-c(.data$rcsb_polymer_instance_feature, .data$rcsb_polymer_entity_feature))
+
+  # Modify auth_seq_id positions that are either duplicated or missing.
+  # Missing or duplicated entries are identified by comparing the length of auth_seq_id to the length of the sequence.
+  if (show_progress == TRUE) {
+  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+  message("[4/6] Correct author sequence positions for some PDB IDs ... ", appendLF = FALSE)
+  start_time <- Sys.time()
+  }
+  
+  fix_auth_seq_positions <- polymer_entities %>% 
+    dplyr::rowwise() %>%
+    dplyr::filter(length(unlist(.data$auth_to_entity_poly_seq_mapping)) != nchar(.data$pdbx_seq_one_letter_code_can))
+  
+  # Remove duplicated positions
+  polymer_entities_seq_id_duplications <- fix_auth_seq_positions %>%
+    dplyr::filter(length(unlist(.data$auth_to_entity_poly_seq_mapping)) > nchar(.data$pdbx_seq_one_letter_code_can)) %>%
+    dplyr::mutate(auth_seq_id = list(unique(unlist(.data$auth_to_entity_poly_seq_mapping)))) %>%
+    dplyr::ungroup()
+
+  # Add missing positions
+  polymer_entities_seq_id_missing <- fix_auth_seq_positions %>%
+    dplyr::filter(length(unlist(.data$auth_to_entity_poly_seq_mapping)) < nchar(.data$pdbx_seq_one_letter_code_can)) 
+  
+  if (nrow(polymer_entities_seq_id_missing) > 0){ # do not run the code below if the data frame is empty, this causes error
+    polymer_entities_seq_id_missing <- polymer_entities_seq_id_missing %>%
+      dplyr::mutate(auth_seq_id_pdb_numeric = list(stringr::str_replace(.data$auth_to_entity_poly_seq_mapping, pattern = "[:alpha:]", replacement = ""))) %>%
+      dplyr::mutate(non_consecutive = list(as.numeric(.data$auth_seq_id_pdb_numeric)[c(diff(as.numeric(.data$auth_seq_id_pdb_numeric)) > 1)])) %>%
+      dplyr::mutate(n_missing = list(diff(as.numeric(.data$auth_seq_id_pdb_numeric))[which(diff(as.numeric(.data$auth_seq_id_pdb_numeric)) > 1)] - 1)) %>%
+      dplyr::mutate(replacement_values_addition = list(purrr::map(
+        .x = .data$n_missing,
+        .f = ~ 1:.x
+      ))) %>%
+      dplyr::mutate(replacement_positions = list(rep(which(.data$auth_seq_id_pdb_numeric %in% as.character(.data$non_consecutive)) + 1, .data$n_missing))) %>%
+      dplyr::mutate(auth_seq_id = list(R.utils::insert(.data$auth_to_entity_poly_seq_mapping,
+        .data$replacement_positions,
+        values = as.character(rep(.data$non_consecutive, .data$n_missing) + unlist(.data$replacement_values_addition))
+      ))) %>%
+      dplyr::ungroup() %>%
+      dplyr::select(-c(.data$auth_seq_id_pdb_numeric, .data$non_consecutive, .data$n_missing, .data$replacement_values_addition, .data$replacement_positions))
+  }
+  # Join corrected entries back
+  polymer_entities <- polymer_entities %>%
+    dplyr::rowwise() %>%
+    dplyr::filter(length(unlist(.data$auth_to_entity_poly_seq_mapping)) == nchar(.data$pdbx_seq_one_letter_code_can) |
+                    is.null(.data$auth_to_entity_poly_seq_mapping) |
+                    is.na(.data$pdbx_seq_one_letter_code_can)) %>% 
+    dplyr::ungroup() %>%
+    dplyr::mutate(auth_seq_id = .data$auth_to_entity_poly_seq_mapping) %>%
+    dplyr::bind_rows(polymer_entities_seq_id_duplications) %>%
+    dplyr::bind_rows(polymer_entities_seq_id_missing)
+  
+  if (show_progress == TRUE) {
+  if(nrow(fix_auth_seq_positions) > 0) {
+    message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    message("Corrected entries: ", paste0(unique(fix_auth_seq_positions$pdb_ids), collapse = ", "))
+  } else {
+    message("None to correct", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+  }
+  }
+  
   entity_instance_info <- polymer_entities %>%
     dplyr::distinct(
       .data$asym_id,
@@ -660,6 +827,11 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       .data$auth_to_entity_poly_seq_mapping
     )) %>%
     distinct()
+  
+  if (show_progress == TRUE) {
+  message("[5/6] Extract non-polymer information ... ", appendLF = FALSE)
+  start_time <- Sys.time()
+  }
 
   if (!all(is.na(query_result_clean$entries.nonpolymer_entities))) {
     nonpolymer_entities <- query_result_clean %>%
@@ -707,6 +879,12 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       .data$entries.exptl_crystal_grow,
       .data$resolution_combined
     ))
+  
+  if (show_progress == TRUE) {
+  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+  message("[6/6] Combine information ... ", appendLF = FALSE)
+  start_time <- Sys.time()
+  }
 
   combined <- polymer_entities %>%
     dplyr::full_join(nonpolymer_entities, by = c("pdb_ids", "auth_asym_ids")) %>%
@@ -721,14 +899,27 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       auth_asym_id = .data$auth_asym_ids,
       label_asym_id = .data$asym_id,
       pdb_sequence = .data$pdbx_seq_one_letter_code_can,
-      auth_seq_id = .data$auth_to_entity_poly_seq_mapping,
+      auth_seq_id_original = .data$auth_to_entity_poly_seq_mapping,
       engineered_mutation = .data$pdbx_mutation,
       non_std_monomer = .data$rcsb_non_std_monomers
     ) %>%
     dplyr::rowwise() %>%
     # make character string out of list column
-    dplyr::mutate(auth_seq_id = paste0(.data$auth_seq_id, collapse = ";")) %>%
-    dplyr::ungroup() %>% 
+    dplyr::mutate(
+      auth_seq_id = paste0(.data$auth_seq_id, collapse = ";"),
+      auth_seq_id_original = paste0(.data$auth_seq_id_original, collapse = ";")
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      auth_seq_id = ifelse(.data$auth_seq_id == "",
+        NA,
+        .data$auth_seq_id
+      ),
+      auth_seq_id_original = ifelse(.data$auth_seq_id_original == "",
+        NA,
+        .data$auth_seq_id_original
+      )
+    ) %>%
     dplyr::select(
       .data$pdb_ids,
       .data$auth_asym_id,
@@ -741,8 +932,9 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       .data$length,
       .data$pdb_sequence,
       .data$auth_seq_id,
+      .data$auth_seq_id_original,
       .data$engineered_mutation,
-      .data$non_std_monomer,
+      .data$modified_monomer,
       .data$ligand_donor_atom_id,
       .data$ligand_donor_auth_seq_id,
       .data$ligand_donor_label_seq_id,
@@ -776,6 +968,10 @@ fetch_pdb <- function(pdb_ids, batchsize = 200, show_progress = TRUE) {
       .data$method_nmr,
       .data$resolution_combined
     )
+  
+  if (show_progress == TRUE) {
+  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+  }
 
   combined
 }

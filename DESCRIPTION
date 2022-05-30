@@ -40,7 +40,8 @@ Imports:
     readr,
     lifecycle,
     httr,
-    methods
+    methods,
+    R.utils
 RoxygenNote: 7.1.2
 Suggests: 
     testthat,
