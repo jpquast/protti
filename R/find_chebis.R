@@ -19,6 +19,7 @@
 #' @importFrom purrr map
 #' @importFrom stringr str_detect regex
 #' @importFrom rlang .data
+#' @importFrom stats na.omit
 find_chebis <- function(chebi_data, pattern) {
   if (!requireNamespace("stringi", quietly = TRUE)) {
     message("Package \"stringi\" is needed for this function to work. Please install it.", call. = FALSE)

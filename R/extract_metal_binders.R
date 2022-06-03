@@ -55,6 +55,8 @@
 #' @import tidyr
 #' @import purrr
 #' @import stringr
+#' @importFrom stats na.omit
+#' @importFrom stringi stri_trans_totitle stri_opts_brkiter
 #' @importFrom rlang .data as_name enquo
 #' @importFrom magrittr %>%
 #' @export
@@ -150,7 +152,9 @@ extract_metal_binders <-
     # Extract go_molecular_function information separately
     # metal_pattern_go might not be complete, if something is added also add to the renaming below.
     ion_pattern_go <- " ion | cation "
-    metal_pattern_go <- "ferric|copper|iron|zinc|magnesium|calcium|cobalamin|heme|molybdopterin|nickel"
+    special_name_pattern <- "ferric iron|ferrous iron|ferric|ferrous|cupric|cuprous" # also used below
+    metal_pattern_go <- paste0(special_name_pattern, "|copper|iron|zinc|magnesium|calcium|cobalamin|heme|molybdopterin|nickel")
+    iron_sulfur_pattern_go <- "4 iron, 4 sulfur cluster|2 iron, 2 sulfur cluster|3 iron, 4 sulfur cluster|iron-sulfur cluster binding"
     source_go <-  rlang::as_name(rlang::enquo(go_molecular_function)) # can't be used directly in mutate
     
     go_data <- data %>% 
@@ -159,21 +163,40 @@ extract_metal_binders <-
       tidyr::drop_na({{ go_molecular_function }}) %>% 
       dplyr::mutate({{ go_molecular_function }} := stringr::str_split({{ go_molecular_function }}, pattern = "; ")) %>% 
       tidyr::unnest({{ go_molecular_function }}) %>% 
-      dplyr::filter(stringr::str_detect({{ go_molecular_function }}, pattern = paste0(ion_pattern_go, "|", metal_pattern_go)) & 
+      dplyr::filter(stringr::str_detect({{ go_molecular_function }}, pattern = paste0(ion_pattern_go, "|", metal_pattern_go, "|", iron_sulfur_pattern_go)) & 
                       !stringr::str_detect({{ go_molecular_function }}, pattern = "phosphate ion|chloride ion|organic cation")) %>% 
       dplyr::mutate(metal_type = stringr::str_extract({{ go_molecular_function }}, pattern = paste0("[:alpha:]+(?= ion)|", metal_pattern_go))) %>% 
-      dplyr::mutate(metal_type = dplyr::case_when(.data$metal_type == "cobalamin" ~ "cobalt",
-                               .data$metal_type == "heme" | .data$metal_type == "ferric" ~ "iron",
-                               .data$metal_type == "molybdopterin" | .data$metal_type == "molybdate" ~ "molybdenum",
-                               .data$metal_type == "cupric" | .data$metal_type == "cuprous" ~ "copper",
-                               .data$metal_type == "gated" | 
-                                 .data$metal_type == "coupled" | 
-                                 .data$metal_type == "mechanosensitive" | 
-                                 .data$metal_type == "type" | 
-                                 .data$metal_type == "sensing" ~ NA_character_,
-                               TRUE ~ .data$metal_type)) %>% 
+      dplyr::mutate(iron_sulfur_type = stringr::str_extract({{ go_molecular_function }}, pattern = iron_sulfur_pattern_go)) %>% 
+      dplyr::mutate(metal_type = stringr::str_split(ifelse(!is.na(.data$iron_sulfur_type), 
+                                                  paste0(.data$metal_type, ";", .data$iron_sulfur_type), 
+                                                  .data$metal_type), pattern = ";")) %>% 
+      tidyr::unnest(.data$metal_type) %>%
+      dplyr::select(-.data$iron_sulfur_type) %>% 
       dplyr::mutate(source = source_go,
-                    metal_type = stringr::str_to_title(.data$metal_type)) 
+                    metal_type = stringi::stri_trans_totitle(.data$metal_type,
+                                                             opts_brkiter = stringi::stri_opts_brkiter(type = "sentence"))) %>%
+      dplyr::mutate(metal_type = dplyr::case_when(.data$metal_type == "Metal" ~ "A metal cation",
+                                                  # could also be "Iron-sulfur (Fe-S)" but feature_metal_binding also only contains Iron-sulfur
+                                                  .data$metal_type == "Iron-sulfur cluster binding" ~ "Iron-sulfur", 
+                                                  .data$metal_type == "4 iron, 4 sulfur cluster" ~ "Iron-sulfur (4Fe-4S)",
+                                                  .data$metal_type == "2 iron, 2 sulfur cluster" ~ "Iron-sulfur (2Fe-2S)",
+                                                  .data$metal_type == "3 iron, 4 sulfur cluster" ~ "Iron-sulfur (3Fe-4S)",
+                                                  .data$metal_type == "Cobalamin" ~ "Cobalt",
+                                                  .data$metal_type == "Ferric iron" | .data$metal_type == "Ferric" ~ "Ferric ion",
+                                                  .data$metal_type == "Ferrous iron" | .data$metal_type == "Ferrous" ~ "Ferrous ion",
+                                                  .data$metal_type == "Heme" ~ "Iron",
+                                                  .data$metal_type == "Molybdopterin" | .data$metal_type == "Molybdate" ~ "Molybdenum",
+                                                  .data$metal_type == "Cupric" ~ "Cupric ion",
+                                                  .data$metal_type == "Cuprous" ~ "Cuprous ion",
+                                                  .data$metal_type == "Gated" |
+                                                  .data$metal_type == "Coupled" |
+                                                  .data$metal_type == "Mechanosensitive" |
+                                                  .data$metal_type == "Type" |
+                                                  .data$metal_type == "Sensing" ~ NA_character_,
+                                                  TRUE ~ .data$metal_type)) %>% 
+      dplyr::group_by(.data$id) %>% 
+      # remove A metal cation in case that there are more specific GO terms
+      dplyr::filter(!(dplyr::n() > 1 & .data$metal_type == "A metal cation" & length(unique(stats::na.omit(.data$metal_type))) > 1))
 
     # Extract metal binding information
     result <- data %>%
@@ -276,13 +299,22 @@ extract_metal_binders <-
       dplyr::mutate(sub_ids = find_all_subs(chebi_relation, ids = .data$ids, types = "is_a")) %>%
       # find out which rows are NULL and dont have any sub IDs
       dplyr::mutate(null = purrr::map(.data$sub_ids, ~ is.null(.))) %>%
+      # Do not include go terms and feature_metal_binding in transfer of IDs to subIDs to clean up. 
+      # But keep specific metal_types for GO and feature to prevent them from being lost.
       dplyr::mutate(sub_ids = ifelse(((source == rlang::as_name(rlang::enquo(chebi_cofactor)) |
         source == rlang::as_name(rlang::enquo(chebi_catalytic_activity)) | 
           source == rlang::as_name(rlang::enquo(comment_cofactor))) &
-        .data$null == TRUE) | is.na(.data$ids), as.integer(.data$ids), .data$sub_ids)) %>%
+        .data$null == TRUE) | 
+          is.na(.data$ids) |
+          (source == source_go &
+          str_detect(.data$metal_type, pattern = " ion$")) |
+            (source == rlang::as_name(rlang::enquo(feature_metal_binding)) &
+               str_detect(.data$metal_type, pattern = "\\+\\)")), 
+        as.integer(.data$ids), 
+        .data$sub_ids)) %>%
       dplyr::select(-.data$null) %>%
-      # unnest removes all NULL values in sub_ids. This might cause some IDs without sub IDs to get lost.
-      # there should however be none where this is the case.
+      # unnest removes all NULL values in sub_ids. This might cause some IDs without sub IDs to get lost. 
+      # some are saved with: c("Ferrous ion", "Ferric ion", "Cupric ion", "Cuprous ion") but there could be more
       tidyr::unnest(.data$sub_ids) %>%
       dplyr::left_join(chebi_names, by = c("ids" = "id")) %>%
       dplyr::rename(main_id_name = .data$name) %>%
@@ -333,6 +365,17 @@ extract_metal_binders <-
       dplyr::left_join(chebi_names, by = c("sub_ids" = "id")) %>%
       dplyr::rename(sub_id_name = .data$name) %>% 
       dplyr::mutate(n_sources = stringr::str_count(.data$source, pattern = "&") + 1) %>% 
+      # remove any rows that are part of a group with chebi IDs but that do not contain any chebi IDs themselves
+      dplyr::mutate(is_iron_cation = stringr::str_detect(.data$main_id_name, pattern = "iron cation")) %>% # to not remove Iron IDs from FeS clusters
+      dplyr::group_by(.data$id, .data$metal_type, .data$is_iron_cation) %>% 
+      dplyr::mutate(any_chebi = any(stringr::str_detect(.data$source, pattern = "chebi"))) %>% 
+      dplyr::ungroup() %>% 
+      dplyr::filter(ifelse(.data$any_chebi,
+                     (stringr::str_detect(.data$source, pattern = "chebi") |
+                         # If GO contains specific iron and copper related patterns do not filter out.
+                         # This is to prevent accidental removal of specific information about the bound metal
+                         stringr::str_detect({{go_molecular_function}}, pattern = special_name_pattern)),
+                     TRUE)) %>% 
       dplyr::select({{ protein_id }}, 
                     .data$metal_type, 
                     .data$metal_position, 

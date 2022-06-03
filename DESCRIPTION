@@ -41,7 +41,8 @@ Imports:
     lifecycle,
     httr,
     methods,
-    R.utils
+    R.utils,
+    stats
 RoxygenNote: 7.1.2
 Suggests: 
     testthat,
