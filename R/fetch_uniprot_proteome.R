@@ -2,7 +2,7 @@
 #'
 #' Fetches proteome data from UniProt for the provided organism ID.
 #'
-#' @param organism_id a numeric value that specifies the NCBI taxonomy identifier (TaxId) for and
+#' @param organism_id a numeric value that specifies the NCBI taxonomy identifier (TaxId) for an
 #' organism.
 #' @param columns a character vector of metadata columns that should be imported from UniProt (all
 #' possible columns can be found here: https://www.uniprot.org/help/uniprotkb_column_names).

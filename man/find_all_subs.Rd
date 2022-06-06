@@ -4,7 +4,7 @@
 \alias{find_all_subs}
 \title{Find all ChEBI sub IDs of an ID}
 \usage{
-find_all_subs(data, ids, types = "is_a")
+find_all_subs(data, ids, types = "is_a", exclude_parent_id = FALSE)
 }
 \arguments{
 \item{data}{a data frame that contains relational information on ChEBI IDs (id), their sub
@@ -17,6 +17,9 @@ IDs (incoming) and their relationship (type). This data frame can be obtained by
 for the search. It is possible to use "all" relationships. The default type is "is_a". A list of
 possible relationships can be found
 \href{https://docs.google.com/document/d/1_w-DwBdCCOh1gMeeP6yqGzcnkpbHYOa3AGSODe5epcg/edit#heading=h.hnsqoqu978s5}{here}.}
+
+\item{exclude_parent_id}{a logical value that specifies if the parent ID should be included in
+the returned list.}
 }
 \value{
 A list of double vectors containing the provided ID and all of its sub IDs. It

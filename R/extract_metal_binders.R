@@ -56,7 +56,6 @@
 #' @import purrr
 #' @import stringr
 #' @importFrom stats na.omit
-#' @importFrom stringi stri_trans_totitle stri_opts_brkiter
 #' @importFrom rlang .data as_name enquo
 #' @importFrom magrittr %>%
 #' @export

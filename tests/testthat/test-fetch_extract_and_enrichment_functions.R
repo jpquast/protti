@@ -461,4 +461,26 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
     expect_error(fetch_eco(return_relation = TRUE, return_history = TRUE))
   })
+  
+  test_that("fetch_quickgo works", {
+    annotations <- fetch_quickgo(type = "annotations", id = c("P63328","Q4FFP4"), ontology = "molecular_function")
+    expect_is(annotations, "data.frame")
+    expect_equal(nrow(annotations), 69)
+    expect_equal(ncol(annotations), 15)
+    
+    terms <- fetch_quickgo(type = "terms")
+    expect_is(terms, "data.frame")
+    expect_equal(nrow(terms), 47857)
+    expect_equal(ncol(terms), 13)
+
+    slims <- fetch_quickgo(type = "slims", go_id_slims = c("GO:0046872", "GO:0051540"))
+    expect_is(slims, "data.frame")
+    expect_equal(nrow(slims), 43)
+    expect_equal(ncol(slims), 2)
+    
+    expect_warning(fetch_quickgo(type = "annotations", 
+                               id = c("P63328","Q4FFP4"), 
+                               ontology = "molecular_function", 
+                               go_id_slims = c("GO:0046872", "GO:0051540")))
+  })
 }

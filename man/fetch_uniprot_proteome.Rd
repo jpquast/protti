@@ -7,7 +7,7 @@
 fetch_uniprot_proteome(organism_id, columns = c("id"), reviewed = TRUE)
 }
 \arguments{
-\item{organism_id}{a numeric value that specifies the NCBI taxonomy identifier (TaxId) for and
+\item{organism_id}{a numeric value that specifies the NCBI taxonomy identifier (TaxId) for an
 organism.}
 
 \item{columns}{a character vector of metadata columns that should be imported from UniProt (all

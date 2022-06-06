@@ -64,3 +64,35 @@
 #' resolution in situ. Cell. 2021 Jan 21;184(2):545-559.e22. doi: 10.1016/j.cell.2020.12.021.
 #' Epub 2020 Dec 23. PMID: 33357446; PMCID: PMC7836100.
 "ptsi_pgk"
+
+#' List of metals 
+#'
+#' A list of all metals and metalloids in the periodic table.
+#'
+#' @format A data.frame containing the columns \code{atomic_number}, \code{symbol}, \code{name},
+#' \code{type}.
+#' @source https://en.wikipedia.org/wiki/Metal and https://en.wikipedia.org/wiki/Metalloid
+"metal_list"
+
+#' List of metal-related ChEBI IDs in UniProt
+#'
+#' A list that contains all ChEBI IDs that appear in UniProt and that contain either a metal atom
+#' in their formula or that do not have a formula but the ChEBI term is related to metals.
+#' This was last updated on the 22/06/03.
+#'
+#' @format A data.frame containing information retrieved from ChEBI using `fetch_chebi()`, filtered
+#' using symbols in the `metal_list` and manual annotation of metal related ChEBI IDs that do not 
+#' contain a formula.
+#' @source UniProt (comment(COFACTOR), comment(CATALYTIC ACTIVITY)) and ChEBI
+"metal_chebi_uniprot"
+
+#' List of manual annotations of feature metal binding sites
+#'
+#' A list that contains all feature metal binding site names that appear in UniProt. These sites
+#' have been manually annotated with ChEBI IDs that match the name.
+#' This was last updated on the 22/06/03.
+#'
+#' @format A data.frame containing cleaned up feature metal binding sites and manual annotations with 
+#' ChEBI IDs.
+#' @source UniProt feature(METAL BINDING)) and ChEBI
+"fmb_annotation_uniprot"

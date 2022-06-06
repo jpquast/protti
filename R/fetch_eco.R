@@ -1,6 +1,6 @@
 #' Fetch evidence & conclusion ontology
 #'
-#' Fetches all evidence & conclusion ontology (ECO) information from the EBI database. The ECO project is
+#' Fetches all evidence & conclusion ontology (ECO) information from the QuickGO EBI database. The ECO project is
 #' maintained through a public \href{https://github.com/evidenceontology/evidenceontology}{GitHub repository}.
 #'
 #' According to the GitHub repository ECO is defined as follows:

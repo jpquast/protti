@@ -5,6 +5,7 @@
 * Reintroduced the functionalities relying on the `iq` package to `protti`. `calculate_protein_abundance()` now has the method `"iq"` again as an option.
 * `fetch_pdb()` now also retrieves information on engineered mutations, non-standard monomers, secondary structure and binding interfaces of ligands.
 * `extract_metal_binders()` now takes additional columns as input to provide an even better summary of metal binding sites. Now the `comment_cofactor` and `go_molecular_function` columns that are retrieved with the `fetch_uniprot()` function have to be provided. 
+* `fetch_quickgo()` was added. It fetches gene ontology (GO) information from the QuickGO EBI database. The retrieved information can either be GO annotations for provided UniProt IDs or Taxon identifiers, a list of all go terms or a slims subset of GO IDs that can be generated based on provided GO IDs.
 
 ## Bug fixes
 
@@ -14,6 +15,7 @@
 
 * `fetch_uniprot()` by default now retrieves the `comment(COFACTOR)` column.
 * The default batchsize of `fetch_pdb()` was set to 100 from 200. This was done since more information is retrieved now, which slows to function down and is slightly improved when batch sizes are smaller.
+* `try_query()` now only retries to retrieve information once if the returned message was "Timeout was reached". In addition, a `timeout` and `accept` argument have been added.
 
 # protti 0.3.0
 

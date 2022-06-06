@@ -14,27 +14,44 @@
 #' all options that can be supplied to httr::content, these include e.g.
 #' "text/tab-separated-values", "application/json" and "txt/csv". Default is "text/tab-separated-values".
 #' Default is "tab-separated-values".
+#' @param timeout a numeric value that specifies the maximum request time. Default is 30 seconds.
+#' @param accept a character value that specifies the type of data that should be sent by the API if 
+#' it uses content negotiation. The default is NULL and it should only be set for APIs that use 
+#' content negotiation.
 #' @param ... other parameters supplied to the parsing function used by httr::content.
 #'
 #' @importFrom curl has_internet
-#' @importFrom httr GET timeout http_error message_for_status http_status content
+#' @importFrom httr GET timeout http_error message_for_status http_status content accept
 #'
 #' @return A data frame that contains the table from the url.
 try_query <-
-  function(url, max_tries = 5, silent = TRUE, type = "text/tab-separated-values", ...) {
+  function(url, max_tries = 5, silent = TRUE, type = "text/tab-separated-values", timeout = 30, accept = NULL, ...) {
     # Check if there is an internet connection first
     if (!curl::has_internet()) {
       if (!silent) message("No internet connection.")
       return(invisible("No internet connection"))
     }
 
-    query_result <- NULL
+    query_result <- "empty"
     try_n <- 0
-    while (class(query_result) != "response" & try_n < max_tries) {
-      query_result <- tryCatch(httr::GET(url, httr::timeout(30)),
-        error = function(e) conditionMessage(e),
-        warning = function(w) conditionMessage(w)
-      )
+    while (class(query_result) != "response" & 
+           try_n < max_tries & 
+           !ifelse(is(query_result, "character"),
+                   stringr::str_detect(query_result, pattern = "Timeout was reached"),
+                   FALSE)) { # this ifelse stops requery if the timeout is too low.
+      if(!missing(accept)){
+        # with accept set
+        query_result <- tryCatch(httr::GET(url, httr::accept(accept), httr::timeout(timeout)),
+          error = function(e) conditionMessage(e),
+          warning = function(w) conditionMessage(w)
+        )
+      } else {
+        # without accept set (the usual case)
+        query_result <- tryCatch(httr::GET(url, httr::timeout(timeout)),
+                                 error = function(e) conditionMessage(e),
+                                 warning = function(w) conditionMessage(w)
+        )
+      }
       try_n <- try_n + 1
       if (!silent & class(query_result) != "response") {
         message(paste0(try_n, ". try failed!"))
@@ -60,6 +77,12 @@ try_query <-
       return(invisible(httr::http_status(query_result)$message))
     }
 
+    # Record readr progress variable to set back later
+    readr_show_progress <- getOption("readr.show_progress")
+    on.exit(options(readr.show_progress = readr_show_progress))
+    # Change variable to not show progress if readr is used
+    options(readr.show_progress = FALSE)
+    
     result <- suppressMessages(httr::content(query_result, type = type, encoding = "UTF-8", ...))
 
     return(result)
