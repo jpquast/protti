@@ -96,3 +96,16 @@
 #' ChEBI IDs.
 #' @source UniProt feature(METAL BINDING)) and ChEBI
 "fmb_annotation_uniprot"
+
+#' Molecular function gene ontology metal subset
+#'
+#' A subset of molecular function gene ontology terms related to metals that was created 
+#' using the slimming process provided by the QuickGO EBI database. 
+#' This was last updated on the 22/06/07.
+#'
+#' @format A data.frame containing a slim subset of molecular function gene ontology terms
+#' that are related to metal binding. The `slims_from_id` column contains all IDs relevant 
+#' in this subset while the `slims_to_ids` column contains the starting IDs. If ChEBI IDs
+#' have been annotated manually this is indicated in the `database` column.
+#' @source QuickGO and ChEBI
+"metal_go_slim_subset"
