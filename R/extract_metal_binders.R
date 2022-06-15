@@ -88,15 +88,12 @@
 #' metal_info
 #' }
 extract_metal_binders <-
-  function(data,
-           protein_id = id,
-           feature_metal_binding = feature_metal_binding,
-           chebi_cofactor = chebi_cofactor,
-           chebi_catalytic_activity = chebi_catalytic_activity,
-           comment_cofactor = comment_cofactor,
-           go_molecular_function = go_molecular_function,
-           chebi_data = NULL,
-           chebi_relation_data = NULL) {
+  function(data_uniprot,
+           data_quickgo,
+           data_chebi = NULL,
+           data_chebi_relation = NULL,
+           show_progress = TRUE) {
+    # Check if required R packages are installed
     if (!requireNamespace("igraph", quietly = TRUE)) {
       message("Package \"igraph\" is needed for this function to work. Please install it.", call. = FALSE)
       return(invisible(NULL))
@@ -105,290 +102,298 @@ extract_metal_binders <-
       message("Package \"stringi\" is needed for this function to work. Please install it.", call. = FALSE)
       return(invisible(NULL))
     }
-    # Download chebi database if not provided
-    if (is.null(chebi_data)) {
-      chebi <- fetch_chebi()
-    } else {
-      chebi <- chebi_data
+    # Check if provided data has the right format
+    # data_uniprot
+    if(!("feature_metal_binding" %in% colnames(data_uniprot) &
+         "comment_cofactor" %in% colnames(data_uniprot) & 
+         "comment_catalytic_activity" %in% colnames(data_uniprot))){
+      stop('Please include at least the columns "feature_metal_binding", "comment_cofactor" and "comment_catalytic_activity" in "data_uniprot"!')
     }
+    # data_quickgo
+    if(!("gene_product_db" %in% colnames(data_quickgo) &
+         "gene_product_id" %in% colnames(data_quickgo) &
+         "go_name" %in% colnames(data_quickgo) & 
+         "go_term" %in% colnames(data_quickgo) &
+         "go_aspect" %in% colnames(data_quickgo) &
+         "eco_id" %in% colnames(data_quickgo) &
+         "go_evidence_code" %in% colnames(data_quickgo) &
+         "reference" %in% colnames(data_quickgo) &
+         "with_from" %in% colnames(data_quickgo))){
+      stop('Please include at least the columns "gene_product_db", "gene_product_id", "go_name", "go_term", "go_aspect", "go_evidence_code", "reference" and "with_from" in "data_quickgo"!')
+    }
+    # Download ChEBI database if not provided
+    if (missing(data_chebi)) {
+      if (show_progress == TRUE) {
+        message("Downloading ChEBI information ... ", appendLF = FALSE)
+        start_time <- Sys.time()
+      }
+      
+      data_chebi <- fetch_chebi()
+      
+      if (show_progress == TRUE) {
+      message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+      }
+    } 
     # Download chebi relation dataset if not provided
-    if (is.null(chebi_relation_data)) {
-      chebi_relation <- fetch_chebi(relation = TRUE)
-    } else {
-      chebi_relation <- chebi_relation_data
+    if (missing(data_chebi_relation)) {
+      if (show_progress == TRUE) {
+        message("Downloading ChEBI relational information ... ", appendLF = FALSE)
+        start_time <- Sys.time()
+      }
+      
+      data_chebi_relation <- fetch_chebi(relation = TRUE)
+      
+      if (show_progress == TRUE) {
+        message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+      }
+    } 
+    
+    # Prepare ChEBI dataframe for annotation
+    data_chebi_filtered <- data_chebi %>% 
+      dplyr::filter(.data$type_name == "STANDARD") %>% 
+      dplyr::mutate(chebi_id = as.character(.data$id)) %>% 
+      dplyr::distinct(chebi_id, definition, name, formula, mass, charge) 
+    
+    # Retrieve ECO information
+    if (show_progress == TRUE) {
+      message("Retrieving ECO information from QuickGO ... ", appendLF = FALSE)
+      start_time <- Sys.time()
     }
-    # Subset chebi data to sub IDs of "metal cation" and "iron sulfur cluster"
-    metal_cation <-
-      find_all_subs(chebi_relation, ids = "25213", types = "is_a")[[1]]
-    inorganic_monovalent_cation <- find_all_subs(chebi_relation, ids = "60242", types = "is_a")[[1]]
-    inorganic_metal_cation <- inorganic_monovalent_cation[!inorganic_monovalent_cation %in%
-      c("29234", "29233", "29120", "28938", "24636", "15378")]
-    # first is metal ions, second is monovalent inorganic cations. non-metals are excluded
-    metal_cation <- c(metal_cation, inorganic_metal_cation)
-    iron_sulfur_cluster <-
-      find_all_subs(chebi_relation, ids = "30408", types = "is_a")[[1]]
-
-    chebi_metal <- chebi %>%
-      dplyr::filter(id %in% metal_cation)
-
-    chebi_iron_sulfur <- chebi %>%
-      dplyr::filter(id %in% iron_sulfur_cluster) %>%
-      dplyr::mutate(name = stringr::str_replace_all(
-        .data$name,
-        pattern = stringr::regex("iron", ignore_case = TRUE),
-        replacement = ""
-      ))
-
-    chebi_metal <- chebi_metal %>%
-      dplyr::bind_rows(chebi_iron_sulfur)
-
-    # Extract chebi standard id name pairs
-    chebi_names <- chebi %>%
-      dplyr::filter(.data$type_name == "STANDARD") %>%
-      dplyr::distinct(.data$id, .data$name) %>%
-      dplyr::mutate(id = as.character(.data$id))
     
-    # Extract go_molecular_function information separately
-    # metal_pattern_go might not be complete, if something is added also add to the renaming below.
-    ion_pattern_go <- " ion | cation "
-    special_name_pattern <- "ferric iron|ferrous iron|ferric|ferrous|cupric|cuprous" # also used below
-    metal_pattern_go <- paste0(special_name_pattern, "|copper|iron|zinc|magnesium|calcium|cobalamin|heme|molybdopterin|nickel")
-    iron_sulfur_pattern_go <- "4 iron, 4 sulfur cluster|2 iron, 2 sulfur cluster|3 iron, 4 sulfur cluster|iron-sulfur cluster binding"
-    source_go <-  rlang::as_name(rlang::enquo(go_molecular_function)) # can't be used directly in mutate
+    eco_data <- fetch_eco(show_progress = FALSE)
+    eco_relation <- fetch_eco(return_relation = TRUE, show_progress = FALSE)
     
-    go_data <- data %>% 
-      dplyr::distinct({{ protein_id }},
-                      {{ go_molecular_function }}) %>% 
-      tidyr::drop_na({{ go_molecular_function }}) %>% 
-      dplyr::mutate({{ go_molecular_function }} := stringr::str_split({{ go_molecular_function }}, pattern = "; ")) %>% 
-      tidyr::unnest({{ go_molecular_function }}) %>% 
-      dplyr::filter(stringr::str_detect({{ go_molecular_function }}, pattern = paste0(ion_pattern_go, "|", metal_pattern_go, "|", iron_sulfur_pattern_go)) & 
-                      !stringr::str_detect({{ go_molecular_function }}, pattern = "phosphate ion|chloride ion|organic cation")) %>% 
-      dplyr::mutate(metal_type = stringr::str_extract({{ go_molecular_function }}, pattern = paste0("[:alpha:]+(?= ion)|", metal_pattern_go))) %>% 
-      dplyr::mutate(iron_sulfur_type = stringr::str_extract({{ go_molecular_function }}, pattern = iron_sulfur_pattern_go)) %>% 
-      dplyr::mutate(metal_type = stringr::str_split(ifelse(!is.na(.data$iron_sulfur_type), 
-                                                  paste0(.data$metal_type, ";", .data$iron_sulfur_type), 
-                                                  .data$metal_type), pattern = ";")) %>% 
-      tidyr::unnest(.data$metal_type) %>%
-      dplyr::select(-.data$iron_sulfur_type) %>% 
-      dplyr::mutate(source = source_go,
-                    metal_type = stringi::stri_trans_totitle(.data$metal_type,
-                                                             opts_brkiter = stringi::stri_opts_brkiter(type = "sentence"))) %>%
-      dplyr::mutate(metal_type = dplyr::case_when(.data$metal_type == "Metal" ~ "A metal cation",
-                                                  # could also be "Iron-sulfur (Fe-S)" but feature_metal_binding also only contains Iron-sulfur
-                                                  .data$metal_type == "Iron-sulfur cluster binding" ~ "Iron-sulfur", 
-                                                  .data$metal_type == "4 iron, 4 sulfur cluster" ~ "Iron-sulfur (4Fe-4S)",
-                                                  .data$metal_type == "2 iron, 2 sulfur cluster" ~ "Iron-sulfur (2Fe-2S)",
-                                                  .data$metal_type == "3 iron, 4 sulfur cluster" ~ "Iron-sulfur (3Fe-4S)",
-                                                  .data$metal_type == "Cobalamin" ~ "Cobalt",
-                                                  .data$metal_type == "Ferric iron" | .data$metal_type == "Ferric" ~ "Ferric ion",
-                                                  .data$metal_type == "Ferrous iron" | .data$metal_type == "Ferrous" ~ "Ferrous ion",
-                                                  .data$metal_type == "Heme" ~ "Iron",
-                                                  .data$metal_type == "Molybdopterin" | .data$metal_type == "Molybdate" ~ "Molybdenum",
-                                                  .data$metal_type == "Cupric" ~ "Cupric ion",
-                                                  .data$metal_type == "Cuprous" ~ "Cuprous ion",
-                                                  .data$metal_type == "Gated" |
-                                                  .data$metal_type == "Coupled" |
-                                                  .data$metal_type == "Mechanosensitive" |
-                                                  .data$metal_type == "Type" |
-                                                  .data$metal_type == "Sensing" ~ NA_character_,
-                                                  TRUE ~ .data$metal_type)) %>% 
-      dplyr::group_by(.data$id) %>% 
-      # remove A metal cation in case that there are more specific GO terms
-      dplyr::filter(!(dplyr::n() > 1 & .data$metal_type == "A metal cation" & length(unique(stats::na.omit(.data$metal_type))) > 1))
-
-    # Extract metal binding information
-    result <- data %>%
-      dplyr::distinct(
-        {{ protein_id }},
-        {{ feature_metal_binding }},
-        {{ chebi_cofactor }},
-        {{ chebi_catalytic_activity }},
-        {{ comment_cofactor }}
-      ) %>%
-      tidyr::pivot_longer(-{{ protein_id }},
-        names_to = "source",
-        values_to = "ids"
-      ) %>%
-      dplyr::filter(.data$ids != "") %>%
-      dplyr::mutate(feature_metal_binding_sep = stringr::str_extract_all(
-        .data$ids,
+    # Create two vectors that contain all IDs related to either manual or automatic assertion
+    manual_eco <- eco_relation %>% 
+      find_all_subs(ids = c("ECO:0000352"), 
+                    main_id = main_id, 
+                    sub_id = sub_id, 
+                    type = relation, 
+                    accepted_types = "all") %>% 
+      unlist()
+    
+    automatic_eco <- eco_relation %>% 
+      find_all_subs(ids = c("ECO:0000501"), 
+                    main_id = main_id, 
+                    sub_id = sub_id, 
+                    type = relation, 
+                    accepted_types = "all") %>% 
+      unlist()
+    
+    if (show_progress == TRUE) {
+      message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    }
+    
+    # Extract feature_metal_binding information from UniProt
+    if (show_progress == TRUE) {
+      message("Extract feature_metal_binding information from UniProt ... ", appendLF = FALSE)
+      start_time <- Sys.time()
+    }
+    
+    fmb_uniprot <- data_uniprot %>% 
+      dplyr::distinct(.data$id, .data$feature_metal_binding) %>% 
+      tidyr::drop_na(.data$feature_metal_binding) %>% 
+      # Extract names to be compatible with manual annotation
+      dplyr::mutate(split_fmb = stringr::str_extract_all(
+        .data$feature_metal_binding,
         pattern = "METAL.+?(?=METAL)|METAL.+$"
       )) %>%
-      dplyr::mutate(
-        ids = ifelse(
-          as.character(.data$feature_metal_binding_sep) == "character(0)",
-          .data$ids,
-          .data$feature_metal_binding_sep
-        )
+      tidyr::unnest(.data$split_fmb) %>%
+      dplyr::mutate(fmb_name = str_extract(.data$split_fmb, pattern = '(?<=/note=\\")[^\\";]+(?=[\\";])')) %>%
+      dplyr::mutate(metal_identifier = stringr::str_extract(
+        .data$fmb_name, 
+        pattern = "(?<=[:space:])\\d{1,2}(?=[:space:]|$)")) %>% 
+      dplyr::mutate(fmb_name = stringr::str_trim(
+        stringr::str_replace_all(
+          .data$fmb_name, 
+          pattern = "[:space:]\\d{1,2}(?=[:space:]|$)", 
+          replacement = ""))) %>% 
+      # Deal with cases in which there is no metal name, then just put in "Divalent metal cation"
+      dplyr::mutate(no_metal_name = is.na(.data$fmb_name),
+        fmb_name = ifelse(is.na(.data$fmb_name),
+                                      "Divalent metal cation",
+                                      .data$fmb_name)) %>% 
+      # Look for special identifiers and extract, but do not remove from the name
+      dplyr::mutate(metal_identifier = ifelse(is.na(.data$metal_identifier), 
+                                  str_extract(.data$fmb_name,
+                                              pattern = "(?<=[:space:])A1$|A2$|Z1$|Z2$|Z3$|Z4$|A$|B$"),
+                                  .data$metal_identifier)) %>% 
+      # all values still NA get the identifier 1
+      dplyr::mutate(metal_identifier = ifelse(is.na(.data$metal_identifier), 
+                                              "1",
+                                              .data$metal_identifier)) %>% 
+      dplyr::mutate(metal_position = stringr::str_extract(.data$split_fmb, pattern = "(?<=METAL )\\d+")) %>% 
+      dplyr::mutate(binding_mode = str_extract(
+        str_extract(.data$split_fmb, pattern = '(?<=/note=\\")[^\\"]+(?=\\";)'),
+        pattern = '(?<=; ).+(?=$)'
+      )
       ) %>%
-      dplyr::select(-.data$feature_metal_binding_sep) %>%
-      tidyr::unnest(.data$ids) %>%
-      # split information if there are mutliple cofactor entries
-      # this ensures that notes are still associated with the right entries
-      dplyr::mutate(ids = ifelse(source == rlang::as_name(rlang::enquo(comment_cofactor)),
-                                       stringr::str_extract_all(
-                                         .data$ids,
-                                         pattern = "(?<=COFACTOR:).+?(?=COFACTOR|$)"),
-                                       .data$ids)) %>% 
-      tidyr::unnest(.data$ids) %>% 
-      # extract notes from comment_cofactor
-      dplyr::mutate(note = ifelse(source == rlang::as_name(rlang::enquo(comment_cofactor)), 
-                                  stringr::str_extract(
-                                    .data$ids,
+      dplyr::mutate(evidence = stringr::str_extract(.data$split_fmb, pattern = regex('(?<=evidence=).+(?=$)', ignore_case = TRUE))) %>% 
+      dplyr::mutate(evidence = str_remove_all(.data$evidence, pattern = '"|;')) %>% 
+      dplyr::distinct() %>% 
+      # The the data that will be joined is a dataset provided with protti
+      dplyr::left_join(fmb_annotation_uniprot, by = "fmb_name") %>% 
+      # Label cases in which there was no metal name
+      dplyr::mutate(comment = dplyr::case_when(.data$no_metal_name & !is.na(.data$comment) ~ paste0(.data$comment, ' There was no metal name therefore "Divalent metal cation" was used.'),
+                                               .data$no_metal_name & is.na(.data$comment) ~ 'There was no metal name therefore "Divalent metal cation" was used.',
+                                               TRUE ~ .data$comment)) %>% 
+      dplyr::select(-c(.data$feature_metal_binding, .data$no_metal_name))
+    
+    if (show_progress == TRUE) {
+      message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    }
+    
+    # Check if there are any new terms not manually annotated in the annotation data frame
+    if(any(!(fmb_uniprot$fmb_name %in% fmb_annotation_uniprot$fmb_name))){
+      missing_names <- fmb_uniprot %>% 
+        dplyr::distinct(.data$id, .data$fmb_name) %>% 
+        dplyr::filter(!(.data$fmb_name %in% fmb_annotation_uniprot$fmb_name))
+        
+      warning(strwrap("The following names have been found in the feature_metal_binding column and have not yet been 
+                      manually annotated in the reference data frame provided by protti. Please contact the package 
+                      maintainer to let them be added.",
+                      prefix = "\n", initial = ""),
+              "\n",
+              paste0(utils::capture.output(missing_names), collapse = "\n"))
+    }
+    
+    # Extract comment_cofactor information from UniProt
+    if (show_progress == TRUE) {
+      message("Extract comment_cofactor information from UniProt ... ", appendLF = FALSE)
+      start_time <- Sys.time()
+    }
+    
+    cofactor_uniprot <- data_uniprot %>% 
+      dplyr::distinct(.data$id, .data$comment_cofactor) %>% 
+      tidyr::drop_na(.data$comment_cofactor) %>% 
+      dplyr::mutate(cofactor_split = stringr::str_extract_all(
+                                   .data$comment_cofactor,
+                                   pattern = "(?<=COFACTOR:).+?(?=COFACTOR|$)")) %>% 
+      tidyr::unnest(.data$cofactor_split) %>% 
+      # Extract notes
+      dplyr::mutate(note = stringr::str_extract(
+                                    .data$cofactor_split,
                                     pattern = "(?<=Note\\=).+?(?=;)"
-                                  ),
-                                  NA_character_)) %>% 
+                                  )) %>% 
       tidyr::unnest(.data$note) %>% 
-      dplyr::mutate(ids = ifelse(source == rlang::as_name(rlang::enquo(comment_cofactor)), 
-                                                  stringr::str_extract_all(
-        .data$ids,
-        pattern = "(?<=Name\\=).+?(?=Name|Note|COFACTOR|$)"
-      ),
-      .data$ids)) %>% 
-      tidyr::unnest(.data$ids) %>%
-      # extract evidence from feature_metal_binding and comment_cofactor
-      dplyr::mutate(evidence = stringr::str_extract(.data$ids, pattern = regex('(?<=evidence=).+(?=;|$)', ignore_case = TRUE))) %>% 
-      dplyr::mutate(evidence = str_remove_all(.data$evidence, pattern = '"|;|\\{|\\}')) %>% 
-      dplyr::mutate(cofactor = stringr::str_extract_all(
-        .data$ids,
+      # Split names
+      dplyr::mutate(name_split = stringr::str_extract_all(
+                                   .data$cofactor_split,
+                                   pattern = "(?<=Name\\=).+?(?=Name|Note|COFACTOR|$)"
+                                 )) %>% 
+      # prevent discarding entries without a "name" field e.g. some chlorophyl entries
+      dplyr::mutate(
+        name_split = ifelse(
+          as.character(.data$name_split) == "character(0)",
+          NA,
+          .data$name_split
+        )
+      ) %>% 
+      tidyr::unnest(.data$name_split) %>% 
+      # extract evidence from comment_cofactor
+      dplyr::mutate(evidence = stringr::str_extract(.data$name_split, pattern = '(?<=Evidence=).+(?=;|$)')) %>% 
+      dplyr::mutate(evidence = stringr::str_remove_all(.data$evidence, pattern = ';|\\{|\\}')) %>% 
+      dplyr::mutate(note_evidence = str_extract(.data$note,
+                                                pattern = "(?<=\\{).+(?=\\})")) %>% 
+      dplyr::mutate(chebi_id = stringr::str_extract(
+        .data$name_split,
         pattern = "(?<=CHEBI:)\\d+"
-      )) %>%
-      dplyr::mutate(
-        ids = ifelse(
-          as.character(.data$cofactor) == "character(0)",
-          .data$ids,
-          .data$cofactor
-        )
-      ) %>%
-      dplyr::select(-.data$cofactor) %>%
-      tidyr::unnest(.data$ids) %>%
-        # extract metal positions from feature_metal_binding
-      dplyr::mutate(metal_position = ifelse(source == rlang::as_name(rlang::enquo(feature_metal_binding)),
-        as.numeric(stringr::str_extract(.data$ids, pattern = "\\d+")),
-        NA
-      )) %>%
-        # extract the metal type from the "note" section of feature_metal_binding
-      dplyr::mutate(metal_type = stringr::str_extract(
-        .data$ids,
-        pattern = "(?<=note=\\\").+?(?=\\\"|\\;)"
-      )) %>%
-        # extract the metal ID from feature_metal_binding e.g. if there are mutliple metals per protein
-      dplyr::mutate(metal_id = stringr::str_extract(.data$metal_type, pattern = "\\d$")) %>% 
-      dplyr::mutate(metal_id = ifelse(is.na(.data$metal_id) & source == rlang::as_name(rlang::enquo(feature_metal_binding)), 1, .data$metal_id)) %>% 
-       # clean up the metal type
-      dplyr::mutate(metal_type = stringr::str_remove_all(.data$metal_type, pattern = "\\s\\d$")) %>%
-      dplyr::bind_rows(go_data) %>% 
-      # create a pattern of the metal name to look for matching ChEBI IDs
-      dplyr::mutate(pattern = split_metal_name(.data$metal_type)) %>%
-      dplyr::mutate(chebi_ids = find_chebis(chebi_metal, .data$pattern)) %>%
-      dplyr::mutate(
-        ids = ifelse(
-          as.character(.data$chebi_ids) == "character(0)",
-          .data$ids,
-          .data$chebi_ids
-        )
-      ) %>%
-      dplyr::select(-c(.data$pattern, .data$chebi_ids)) %>%
-      tidyr::unnest(.data$ids) %>%
-      dplyr::mutate(is_metal = .data$ids %in% as.character(metal_cation) |
-        .data$ids %in% as.character(iron_sulfur_cluster) | is.na(.data$ids)) %>%
-      dplyr::filter(.data$is_metal == TRUE) %>%
-      # look for ChEBI sub IDs. Those are IDs that have the ID in the ids column as a parent
-      dplyr::mutate(sub_ids = find_all_subs(chebi_relation, ids = .data$ids, types = "is_a")) %>%
-      # find out which rows are NULL and dont have any sub IDs
-      dplyr::mutate(null = purrr::map(.data$sub_ids, ~ is.null(.))) %>%
-      # Do not include go terms and feature_metal_binding in transfer of IDs to subIDs to clean up. 
-      # But keep specific metal_types for GO and feature to prevent them from being lost.
-      dplyr::mutate(sub_ids = ifelse(((source == rlang::as_name(rlang::enquo(chebi_cofactor)) |
-        source == rlang::as_name(rlang::enquo(chebi_catalytic_activity)) | 
-          source == rlang::as_name(rlang::enquo(comment_cofactor))) &
-        .data$null == TRUE) | 
-          is.na(.data$ids) |
-          (source == source_go &
-          str_detect(.data$metal_type, pattern = " ion$")) |
-            (source == rlang::as_name(rlang::enquo(feature_metal_binding)) &
-               str_detect(.data$metal_type, pattern = "\\+\\)")), 
-        as.integer(.data$ids), 
-        .data$sub_ids)) %>%
-      dplyr::select(-.data$null) %>%
-      # unnest removes all NULL values in sub_ids. This might cause some IDs without sub IDs to get lost. 
-      # some are saved with: c("Ferrous ion", "Ferric ion", "Cupric ion", "Cuprous ion") but there could be more
-      tidyr::unnest(.data$sub_ids) %>%
-      dplyr::left_join(chebi_names, by = c("ids" = "id")) %>%
-      dplyr::rename(main_id_name = .data$name) %>%
-      dplyr::distinct() %>%
-      # combined chebi_cofactor and comment_cofactor information as much as possible
-      dplyr::mutate(is_chebi_cofactor_comment_cofactor = ifelse(.data$source == rlang::as_name(rlang::enquo(chebi_cofactor)) | 
-                                                                .data$source == rlang::as_name(rlang::enquo(comment_cofactor)),
-                                                                TRUE,
-                                                                FALSE)) %>% 
-      dplyr::group_by({{ protein_id }}, .data$sub_ids, .data$is_chebi_cofactor_comment_cofactor) %>% 
-      dplyr::mutate(n_id = dplyr::n()) %>% 
-      dplyr::mutate(source = ifelse(.data$n_id == 2 & 
-                                    .data$is_chebi_cofactor_comment_cofactor,
-                                    paste0(rlang::as_name(rlang::enquo(chebi_cofactor)), " & ", rlang::as_name(rlang::enquo(comment_cofactor))),
-                                    .data$source)) %>% 
-      dplyr::group_by({{ protein_id }}, .data$sub_ids, .data$source) %>% 
-      dplyr::mutate(evidence_all_na = all(is.na(.data$evidence))) %>% 
-      dplyr::mutate(note_all_na = all(is.na(.data$note))) %>% 
-      # make sure go_molecular_function is annotated for all rows with same sub IDS
-      dplyr::group_by({{ protein_id }}, .data$sub_ids) %>% 
-      dplyr::mutate({{ go_molecular_function }} := paste0(unique({{ go_molecular_function }}[!is.na({{ go_molecular_function }})]), collapse = ";")) %>% 
-      dplyr::distinct() %>% 
-      dplyr::filter(!(.data$source == paste0(rlang::as_name(rlang::enquo(chebi_cofactor)), " & ", rlang::as_name(rlang::enquo(comment_cofactor))) & 
-                        dplyr::case_when(.data$evidence_all_na == TRUE & .data$note_all_na == TRUE ~ FALSE,
-                                         .data$evidence_all_na == FALSE & .data$note_all_na == TRUE ~ is.na(.data$evidence),
-                                         .data$evidence_all_na == TRUE & .data$note_all_na == FALSE ~ is.na(.data$note),
-                                         .data$evidence_all_na == FALSE & .data$note_all_na == FALSE ~ is.na(.data$evidence) & is.na(.data$note)
-                               ))) %>% 
-      dplyr::group_by({{ protein_id }}, .data$sub_ids, {{ go_molecular_function }}) %>%
-      # filter out GO annotations that are also part of other sources
-      dplyr::filter(!(dplyr::n() > 1 & .data$source == source_go & !all(.data$source == source_go))) %>% 
-      dplyr::group_by({{ protein_id }}, .data$sub_ids) %>% 
-      # Combine information as much as possible
-      dplyr::mutate(ids = paste0(unique(.data$ids[!is.na(.data$ids)]), collapse = ";"),
-                    main_id_name = paste0(unique(.data$main_id_name[!is.na(.data$main_id_name)]), collapse = ";"),
-                    source = paste0(unique(.data$source[!is.na(.data$source)]), collapse = " & "),
-                    evidence = paste0(unique(.data$evidence[!is.na(.data$evidence)]), collapse = ";"),
-                    note = paste0(unique(.data$note[!is.na(.data$note)]), collapse = ";")) %>% 
-      dplyr::filter(!(dplyr::n() > 1 & is.na(.data$metal_type))) %>% 
-      dplyr::ungroup() %>% 
-      dplyr::distinct() %>% 
-      # If a GO annotation is part of another source add it to source
-      dplyr::mutate(source = ifelse({{ go_molecular_function }} != "" & .data$source != source_go, 
-                                paste0(source, " & ", source_go), 
-                                .data$source)) %>% 
-      dplyr::select(-c(.data$n_id, .data$evidence_all_na, .data$note_all_na, .data$is_chebi_cofactor_comment_cofactor, .data$is_metal)) %>% 
-      dplyr::mutate(sub_ids = as.character(.data$sub_ids)) %>%
-      dplyr::left_join(chebi_names, by = c("sub_ids" = "id")) %>%
-      dplyr::rename(sub_id_name = .data$name) %>% 
-      dplyr::mutate(n_sources = stringr::str_count(.data$source, pattern = "&") + 1) %>% 
-      # remove any rows that are part of a group with chebi IDs but that do not contain any chebi IDs themselves
-      dplyr::mutate(is_iron_cation = stringr::str_detect(.data$main_id_name, pattern = "iron cation")) %>% # to not remove Iron IDs from FeS clusters
-      dplyr::group_by(.data$id, .data$metal_type, .data$is_iron_cation) %>% 
-      dplyr::mutate(any_chebi = any(stringr::str_detect(.data$source, pattern = "chebi"))) %>% 
-      dplyr::ungroup() %>% 
-      dplyr::filter(ifelse(.data$any_chebi,
-                     (stringr::str_detect(.data$source, pattern = "chebi") |
-                         # If GO contains specific iron and copper related patterns do not filter out.
-                         # This is to prevent accidental removal of specific information about the bound metal
-                         stringr::str_detect({{go_molecular_function}}, pattern = special_name_pattern)),
-                     TRUE)) %>% 
-      dplyr::select({{ protein_id }}, 
-                    .data$metal_type, 
-                    .data$metal_position, 
-                    .data$metal_id, 
-                    .data$ids, 
-                    .data$main_id_name, 
-                    .data$sub_ids, 
-                    .data$sub_id_name,
-                    {{ go_molecular_function }},
-                    .data$source, 
-                    .data$n_sources,
-                    .data$evidence, 
-                    .data$note) %>% 
-      dplyr::arrange({{ protein_id }})
+      )) %>% 
+      dplyr::left_join(data_chebi_filtered, by = "chebi_id") %>% 
+      # Filter for all ChEBI entries that contain a metal or that are in the reference data provided by protti
+      # metal_list and metal_chebi_uniprot are provided by protti
+      dplyr::filter(stringr::str_detect(formula, pattern = paste0(paste0(metal_list$symbol, collapse = "(?![:lower:])|"), "(?![:lower:])")) | 
+                      chebi_id %in% as.character(metal_chebi_uniprot$id))
+    
+    if (show_progress == TRUE) {
+      message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    }
+  
+    # Extract comment_catalytic_activity information from UniProt
+    if (show_progress == TRUE) {
+      message("Extract comment_catalytic_activity information from UniProt ... ", appendLF = FALSE)
+      start_time <- Sys.time()
+    }
+    
+    catalytic_activity_uniprot <- data_uniprot %>% 
+      dplyr::distinct(.data$id, .data$comment_catalytic_activity) %>% 
+      tidyr::drop_na(.data$comment_catalytic_activity) %>% 
+      dplyr::mutate(catalytic_activity_split = stringr::str_extract_all(
+        .data$comment_catalytic_activity,
+        pattern = "(?<=CATALYTIC ACTIVITY:).+?(?=CATALYTIC ACTIVITY|$)")) %>% 
+      tidyr::unnest(.data$catalytic_activity_split) %>% 
+      dplyr::mutate(catalytic_activity_split = stringr::str_remove(
+        stringr::str_trim(.data$catalytic_activity_split),
+        pattern = "Reaction=")) %>% 
+      dplyr::mutate(evidence = stringr::str_extract(.data$catalytic_activity_split, pattern = '(?<=Evidence=)[^;]+(?=;)')) %>% 
+      dplyr::mutate(evidence = stringr::str_remove_all(.data$evidence, pattern = ';|\\{|\\}')) %>% 
+      dplyr::mutate(physiological_direction = stringr::str_extract(.data$catalytic_activity_split, pattern = '(?<=PhysiologicalDirection=).+(?=;$)')) %>%
+      dplyr::mutate(physiological_direction = stringr::str_split(.data$physiological_direction, pattern = 'PhysiologicalDirection=')) %>% 
+      tidyr::unnest(.data$physiological_direction) %>%
+      dplyr::mutate(ec = stringr::str_extract(.data$catalytic_activity_split, pattern = '(?<=EC=)[^;]+(?=;)')) %>% 
+      dplyr::mutate(rhea = stringr::str_extract(.data$catalytic_activity_split, pattern = '(?<=RHEA:)\\d+')) %>% 
+      dplyr::mutate(chebi_id = stringr::str_extract_all(
+        .data$catalytic_activity_split,
+        pattern = "(?<=CHEBI:)\\d+"
+      )) %>% 
+      tidyr::unnest(.data$chebi_id) %>% 
+      dplyr::left_join(data_chebi_filtered, by = "chebi_id") %>% 
+      # Filter for all ChEBI entries that contain a metal or that are in the reference data provided by protti
+      # metal_list and metal_chebi_uniprot are provided by protti
+      dplyr::filter(stringr::str_detect(formula, pattern = paste0(paste0(metal_list$symbol, collapse = "(?![:lower:])|"), "(?![:lower:])")) |
+                      chebi_id %in% as.character(metal_chebi_uniprot$id))
+    
+    if (show_progress == TRUE) {
+      message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    }
 
-    result
+    # Check if there are any metal containing entries that are not yet part of the ChEBI dataset provided by protti
+    # This could be an indirect indication that some of the manually added ChEBI entries (without formula but metal related)
+    # are also missing.
+    if(any(!(unique(c(cofactor_uniprot$chebi_id, catalytic_activity_uniprot$chebi_id)) %in% as.character(metal_chebi_uniprot$id)))){
+      missing_chebi_ids <- cofactor_uniprot %>% 
+        dplyr::distinct(.data$id, .data$chebi_id) %>% 
+        dplyr::bind_rows(dplyr::distinct(catalytic_activity_uniprot, .data$id, .data$chebi_id)) %>% 
+        dplyr::distinct() %>% 
+        dplyr::filter(!(.data$chebi_id %in% as.character(metal_chebi_uniprot$id)))
+      
+      warning(strwrap("The following ChEBI IDs have been found in the comment_cofactor or comment_catalytic_activity 
+                      column and have not yet been manually annotated in the reference data frame provided by protti. 
+                      This could be an indicator that there are additional ChEBI IDs missing that do not contain a 
+                      formula but are that are metal related IDs.
+                      Please contact the package maintainer to let potentially missing ChEBI IDs be added.",
+                      prefix = "\n", initial = ""),
+              "\n",
+              paste0(utils::capture.output(missing_chebi_ids), collapse = "\n"))
+    }
+    
+    
+    
+    return(fmb_uniprot)
+    
+    
+    
+    
   }
+
+
+
+# Extract feature metal binding information 
+## Decide what to do with catalytic info, and ligand atom info
+## Extract evidence correctly and annotate
+
+# Extract comment cofactor and CA 
+## if there is only a note make sure that a search for key terms is done to see if there is anything that is missing
+## Decide what to do about physiological direction evidence and rhea
+
+# Extract go information
+
+# There might need to be some more manual annotation for go and uniprot chebi
+
+# Extract ECO information
+# filter go for "molecular_function" and "UniProtKB"
+# fetch eco information and extract IDs based on manual assertion and IDs based on automatic assertion
+
+# Combine information
+
+

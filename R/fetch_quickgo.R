@@ -127,8 +127,15 @@ fetch_quickgo <- function(type = "annotations",
     return(invisible(NULL))
   }
   
-  query_result_clean <- query_result %>% 
-    janitor::clean_names()
+  if(ontology_annotations != "all"){
+    query_result_clean <- query_result %>% 
+      janitor::clean_names() %>% 
+      dplyr::mutate(go_aspect = ontology_annotations)
+  } else {
+    query_result_clean <- query_result %>% 
+      janitor::clean_names()
+  }
+
 
   return(query_result_clean)
   }
