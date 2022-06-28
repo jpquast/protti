@@ -3,6 +3,7 @@
 ## Bug fixes
 * Corrected the "Protein Structure Analysis Workflow" vignette. The example for `map_peptides_on_structure()` was still using "residue" as its input. We now use `find_peptide_in_structure()` to generate the correct input column.
 * Fixed a bug in `fetch_uniprot()` and `fetch_uniprot_proteome()`. As UniProt has updated their website and their programmatic access, we now download the information from the legacy version temporarily. A real fix will follow.
+* Fixed a bug in `fetch_kegg()`. The function did not retrieve any data after the API URL had changed.
 
 # protti 0.3.0
 
