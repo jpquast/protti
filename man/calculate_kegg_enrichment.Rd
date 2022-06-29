@@ -59,7 +59,10 @@ library(dplyr)
 set.seed(123) # Makes example reproducible
 
 # Create example data
-data <- fetch_kegg(species = "eco") \%>\%
+kegg_data <- fetch_kegg(species = "eco") 
+
+if(!is.null(kegg_data)){ # only proceed if information was retrieved
+data <- kegg_data \%>\%
   group_by(uniprot_id) \%>\%
   mutate(significant = rep(sample(
     x = c(TRUE, FALSE),
@@ -92,5 +95,6 @@ kegg <- calculate_kegg_enrichment(
 )
 
 head(kegg, n = 10)
+}
 }
 }
