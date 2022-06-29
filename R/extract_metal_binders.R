@@ -92,6 +92,8 @@ extract_metal_binders <-
            data_quickgo,
            data_chebi = NULL,
            data_chebi_relation = NULL,
+           data_eco = NULL,
+           data_eco_relation = NULL,
            show_progress = TRUE) {
     # Check if required R packages are installed
     if (!requireNamespace("igraph", quietly = TRUE)) {
@@ -154,14 +156,33 @@ extract_metal_binders <-
       dplyr::mutate(chebi_id = as.character(.data$id)) %>% 
       dplyr::distinct(chebi_id, definition, name, formula, mass, charge) 
     
-    # Retrieve ECO information
-    if (show_progress == TRUE) {
-      message("Retrieving ECO information from QuickGO ... ", appendLF = FALSE)
-      start_time <- Sys.time()
+    # Retrieve ECO annotation information if not provided
+    if (missing(data_eco)) {
+      if (show_progress == TRUE) {
+        message("Downloading ECO annotation information from QuickGO ... ", appendLF = FALSE)
+        start_time <- Sys.time()
+      }
+      
+      eco_data <- fetch_eco(show_progress = FALSE)
+      
+      if (show_progress == TRUE) {
+        message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+      }
     }
     
-    eco_data <- fetch_eco(show_progress = FALSE)
-    eco_relation <- fetch_eco(return_relation = TRUE, show_progress = FALSE)
+    # Retrieve ECO relation information if not provided
+    if (missing(data_eco_relation)) {
+      if (show_progress == TRUE) {
+        message("Downloading ECO relation information from QuickGO ... ", appendLF = FALSE)
+        start_time <- Sys.time()
+      }
+      
+      eco_relation <- fetch_eco(return_relation = TRUE, show_progress = FALSE)
+      
+      if (show_progress == TRUE) {
+        message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+      }
+    }
     
     # Create two vectors that contain all IDs related to either manual or automatic assertion
     manual_eco <- eco_relation %>% 
@@ -179,10 +200,6 @@ extract_metal_binders <-
                     type = relation, 
                     accepted_types = "all") %>% 
       unlist()
-    
-    if (show_progress == TRUE) {
-      message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-    }
     
     # Extract feature_metal_binding information from UniProt
     if (show_progress == TRUE) {
@@ -230,6 +247,9 @@ extract_metal_binders <-
       ) %>%
       dplyr::mutate(evidence = stringr::str_extract(.data$split_fmb, pattern = regex('(?<=evidence=).+(?=$)', ignore_case = TRUE))) %>% 
       dplyr::mutate(evidence = str_remove_all(.data$evidence, pattern = '"|;')) %>% 
+      dplyr::mutate(evidence_split = stringr::str_split(.data$evidence, pattern = ", ")) %>% 
+      tidyr::unnest(.data$evidence_split) %>% 
+      tidyr::separate(.data$evidence_split, into = c("eco", "evidence_source"), sep = "\\|", fill = "right") %>% 
       dplyr::distinct() %>% 
       # The the data that will be joined is a dataset provided with protti
       dplyr::left_join(fmb_annotation_uniprot, by = "fmb_name") %>% 

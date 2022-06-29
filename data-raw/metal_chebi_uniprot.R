@@ -11,7 +11,7 @@ library(protti)
 # The relevant columns are: comment(COFACTOR), comment(CATALYTIC ACTIVITY)
 
 url_chebi_uniprot <- utils::URLencode("http://www.uniprot.org/uniprot/?query=reviewed:yes&format=tab&columns=id,comment(COFACTOR),comment(CATALYTIC ACTIVITY)")
-input_chebi_uniprot <- protti:::try_query(url_chebi_uniprot, progress = FALSE, show_col_types = FALSE)
+input_chebi_uniprot <- protti:::try_query(url_chebi_uniprot, timeout = 600, progress = FALSE, show_col_types = FALSE)
 colnames(input_chebi_uniprot) <- janitor::make_clean_names(c("id", "comment(COFACTOR)", "comment(CATALYTIC ACTIVITY)"))
 
 # pivot columns longer for extraction of ChEBI IDs
