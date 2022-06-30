@@ -18,6 +18,7 @@
 #'
 #' @importFrom curl has_internet
 #' @importFrom httr GET timeout http_error message_for_status http_status content
+#' @importFrom methods is
 #'
 #' @return A data frame that contains the table from the url.
 try_query <-
@@ -30,16 +31,16 @@ try_query <-
 
     query_result <- NULL
     try_n <- 0
-    while (class(query_result) != "response" & try_n < max_tries) {
+    while (!is(query_result, "response")  & try_n < max_tries) {
       query_result <- tryCatch(httr::GET(url, httr::timeout(30)),
         error = function(e) conditionMessage(e),
         warning = function(w) conditionMessage(w)
       )
       try_n <- try_n + 1
-      if (!silent & class(query_result) != "response") {
+      if (!silent & !is(query_result, "response")) {
         message(paste0(try_n, ". try failed!"))
       }
-      if (class(query_result) != "response") {
+      if (!is(query_result, "response")) {
         Sys.sleep(3)
       }
     }
@@ -50,7 +51,7 @@ try_query <-
       return(invisible("No internet connection"))
     }
 
-    if (class(query_result) != "response") {
+    if (!is(query_result, "response")) {
       if (!silent) message(query_result)
       return(invisible(query_result))
     }

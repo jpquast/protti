@@ -92,12 +92,20 @@ extract_metal_binders <-
     # Download chebi database if not provided
     if (is.null(chebi_data)) {
       chebi <- fetch_chebi()
+      if (is.null(chebi)){
+        message("ChEBI database could not be downloaded!")
+        return(invisible(NULL))
+      }
     } else {
       chebi <- chebi_data
     }
     # Download chebi relation dataset if not provided
     if (is.null(chebi_relation_data)) {
       chebi_relation <- fetch_chebi(relation = TRUE)
+      if (is.null(chebi_relation)){
+        message("ChEBI relations database could not be downloaded!")
+        return(invisible(NULL))
+      }
     } else {
       chebi_relation <- chebi_relation_data
     }

@@ -33,7 +33,7 @@ In general, there are several ways in which this can be done:
 
   * Inspection of .raw files acquired directly on the mass spectrometer (e.g. using vendor specific applications to visualize mass spectrometry data, such as the Thermo Scientific applications XCalibur™ and FreeStyle™)
   * Different search engines and software offer quality control functionalities (e.g. [Spectronaut™](https://biognosys.com/software/spectronaut/) offers a lot of QC options)
-  * R packages (e.g. [PTXQC](https://pubs.acs.org/doi/10.1021/acs.jproteome.5b00780) which runs on MaxQuant output or [rawDiag](https://pubs.acs.org/doi/10.1021/acs.jproteome.8b00173) which can be used directly on raw files) 
+  * R packages (e.g. [PTXQC](https://pubmed.ncbi.nlm.nih.gov/26653327/) which runs on MaxQuant output or [rawDiag](https://pubmed.ncbi.nlm.nih.gov/29978702/) which can be used directly on raw files) 
 
 _Please note that this is not a complete list, it is just intended to give you an idea of the different possibilities. There are many more software options and R packages for quality control published to date._
 

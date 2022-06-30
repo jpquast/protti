@@ -25,6 +25,7 @@
 #' @importFrom tidyr drop_na
 #' @importFrom stringr str_sort
 #' @importFrom rlang new_formula enquo
+#' @importFrom methods is
 #' @export
 #'
 #' @examples
@@ -58,7 +59,7 @@ qc_intensity_distribution <- function(data,
     dplyr::distinct({{ sample }}, {{ grouping }}, {{ intensity_log2 }}) %>%
     tidyr::drop_na({{ intensity_log2 }})
 
-  if (!missing(sample) && class(dplyr::pull(input, {{ sample }})) != "factor") {
+  if (!missing(sample) && is(dplyr::pull(input, {{ sample }}), "factor")) {
     input <- input %>%
       dplyr::mutate({{ sample }} := factor({{ sample }},
         levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
