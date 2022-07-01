@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -70,7 +70,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.3.0" id="protti-030">protti 0.3.0<a class="anchor" aria-label="anchor" href="#protti-030"></a></h2>
+<h2 class="page-header" data-toc-text="0.3.1" id="protti-031">protti 0.3.1<a class="anchor" aria-label="anchor" href="#protti-031"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-0-3-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-1"></a></h3>
+<ul><li>Corrected the “Protein Structure Analysis Workflow” vignette. The example for <code><a href="../reference/map_peptides_on_structure.html">map_peptides_on_structure()</a></code> was still using “residue” as its input. We now use <code><a href="../reference/find_peptide_in_structure.html">find_peptide_in_structure()</a></code> to generate the correct input column.</li>
+<li>Fixed a bug in <code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code> and <code><a href="../reference/fetch_uniprot_proteome.html">fetch_uniprot_proteome()</a></code>. As UniProt has updated their website and their programmatic access, we now download the information from the legacy version temporarily. A real fix will follow.</li>
+<li>Fixed a bug in <code><a href="../reference/fetch_kegg.html">fetch_kegg()</a></code>. The function did not retrieve any data after the API URL had changed.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.3.0" id="protti-030">protti 0.3.0<small>2022-04-12</small><a class="anchor" aria-label="anchor" href="#protti-030"></a></h2>
 <div class="section level3">
 <h3 id="new-features-0-3-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-3-0"></a></h3>
 <ul><li>The “Protein Structure Analysis Workflow” vignette was added. It contains an example workflow for the analysis of structural proteomics data.</li>
@@ -91,8 +100,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="additional-changes-0-3-0">Additional changes<a class="anchor" aria-label="anchor" href="#additional-changes-0-3-0"></a></h3>
-<ul><li>Improved test coverage for a few functions.</li>
-</ul></div>
+<ul><li>Improved test coverage for a few functions.</li></ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.2.2" id="protti-022">protti 0.2.2<small>2022-03-08</small><a class="anchor" aria-label="anchor" href="#protti-022"></a></h2>
@@ -216,8 +224,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0" id="protti-010">protti 0.1.0<small>2021-04-23</small><a class="anchor" aria-label="anchor" href="#protti-010"></a></h2>
-<ul><li>First release version.</li>
-</ul></div>
+<ul><li>First release version.</li></ul></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -232,7 +239,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

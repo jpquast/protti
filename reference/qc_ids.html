@@ -19,7 +19,7 @@ counted as IDs."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -79,76 +79,95 @@ counted as IDs.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">qc_ids</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">sample</span>,
-  <span class="va">grouping</span>,
-  <span class="va">intensity</span>,
-  remove_na_intensities <span class="op">=</span> <span class="cn">TRUE</span>,
-  condition <span class="op">=</span> <span class="cn">NULL</span>,
-  title <span class="op">=</span> <span class="st">"ID count per sample"</span>,
-  plot <span class="op">=</span> <span class="cn">TRUE</span>,
-  interactive <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">qc_ids</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">sample</span>,</span>
+<span>  <span class="va">grouping</span>,</span>
+<span>  <span class="va">intensity</span>,</span>
+<span>  remove_na_intensities <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  condition <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  title <span class="op">=</span> <span class="st">"ID count per sample"</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame containing at least sample names and precursor/peptide/protein IDs.</p></dd>
+
+
 <dt>sample</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the sample name.</p></dd>
+
+
 <dt>grouping</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains either precursor or
 peptide identifiers.</p></dd>
+
+
 <dt>intensity</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains raw or log2
 transformed intensities. If <code>remove_na_intensities = FALSE</code>, this argument is optional.</p></dd>
+
+
 <dt>remove_na_intensities</dt>
 <dd><p>a logical value that specifies if sample/grouping combinations with
 intensities that are NA (not quantified IDs) should be dropped from the data frame. Default is
 TRUE since we are usually interested in the number of quantifiable IDs.</p></dd>
+
+
 <dt>condition</dt>
 <dd><p>optional, a column in the <code>data</code> data frame that contains condition information
 (e.g. "treated" and "control"). If this column is provided, the bars in the plot will be coloured
 according to the condition.</p></dd>
+
+
 <dt>title</dt>
 <dd><p>optional, a character value that specifies the plot title (default is "ID count
 per sample").</p></dd>
+
+
 <dt>plot</dt>
 <dd><p>a logical value that indicates whether the result should be plotted.</p></dd>
+
+
 <dt>interactive</dt>
 <dd><p>a logical value that specifies whether the plot should be interactive
 (default is FALSE).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A bar plot with the height corresponding to the number of IDs, each bar represents one
+    
+
+<p>A bar plot with the height corresponding to the number of IDs, each bar represents one
 sample (if <code>plot = TRUE</code>). If <code>plot = FALSE</code> a table with ID counts is returned.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span>
-<span class="r-in">  n_proteins <span class="op">=</span> <span class="fl">100</span>,</span>
-<span class="r-in">  frac_change <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span class="r-in">  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in">  n_conditions <span class="op">=</span> <span class="fl">2</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"effect_random"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate number of identifications</span></span>
-<span class="r-in"><span class="fu">qc_ids</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span class="r-in">  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span class="r-in">  condition <span class="op">=</span> <span class="va">condition</span>,</span>
-<span class="r-in">  plot <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_proteins <span class="op">=</span> <span class="fl">100</span>,</span></span>
+<span class="r-in"><span>  frac_change <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
+<span class="r-in"><span>  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>  n_conditions <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"effect_random"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate number of identifications</span></span></span>
+<span class="r-in"><span><span class="fu">qc_ids</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span></span>
+<span class="r-in"><span>  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span></span>
+<span class="r-in"><span>  condition <span class="op">=</span> <span class="va">condition</span>,</span></span>
+<span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   condition   sample   count</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
@@ -158,16 +177,16 @@ sample (if <code>plot = TRUE</code>). If <code>plot = FALSE</code> a table with 
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> condition_2 sample_6  <span style="text-decoration: underline;">1</span>274</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> condition_1 sample_2  <span style="text-decoration: underline;">1</span>251</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> condition_1 sample_1  <span style="text-decoration: underline;">1</span>268</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Plot number of identifications</span></span>
-<span class="r-in"><span class="fu">qc_ids</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span class="r-in">  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span class="r-in">  condition <span class="op">=</span> <span class="va">condition</span>,</span>
-<span class="r-in">  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot number of identifications</span></span></span>
+<span class="r-in"><span><span class="fu">qc_ids</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span></span>
+<span class="r-in"><span>  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span></span>
+<span class="r-in"><span>  condition <span class="op">=</span> <span class="va">condition</span>,</span></span>
+<span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="qc_ids-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -183,7 +202,7 @@ sample (if <code>plot = TRUE</code>). If <code>plot = FALSE</code> a table with 
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

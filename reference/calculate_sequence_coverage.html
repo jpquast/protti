@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -75,7 +75,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">calculate_sequence_coverage</span><span class="op">(</span><span class="va">data</span>, <span class="va">protein_sequence</span>, <span class="va">peptides</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calculate_sequence_coverage</span><span class="op">(</span><span class="va">data</span>, <span class="va">protein_sequence</span>, <span class="va">peptides</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -83,31 +83,38 @@
     <dl><dt>data</dt>
 <dd><p>a data frame containing at least the protein sequence and the identified peptides
 as columns.</p></dd>
+
+
 <dt>protein_sequence</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains protein
 sequences. Can be obtained by using the function <code><a href="fetch_uniprot.html">fetch_uniprot()</a></code></p></dd>
+
+
 <dt>peptides</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the identified
 peptides.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A new column in the <code>data</code> data frame containing the calculated sequence coverage
+    
+
+<p>A new column in the <code>data</code> data frame containing the calculated sequence coverage
 for each identified protein</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  protein_sequence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"abcdefghijklmnop"</span>, <span class="st">"abcdefghijklmnop"</span><span class="op">)</span>,</span>
-<span class="r-in">  pep_stripped_sequence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"abc"</span>, <span class="st">"jklmn"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">calculate_sequence_coverage</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">data</span>,</span>
-<span class="r-in">  protein_sequence <span class="op">=</span> <span class="va">protein_sequence</span>,</span>
-<span class="r-in">  peptides <span class="op">=</span> <span class="va">pep_stripped_sequence</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  protein_sequence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"abcdefghijklmnop"</span>, <span class="st">"abcdefghijklmnop"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  pep_stripped_sequence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"abc"</span>, <span class="st">"jklmn"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">calculate_sequence_coverage</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  protein_sequence <span class="op">=</span> <span class="va">protein_sequence</span>,</span></span>
+<span class="r-in"><span>  peptides <span class="op">=</span> <span class="va">pep_stripped_sequence</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   protein_sequence pep_stripped_sequence coverage</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 abcdefghijklmnop                   abc       50</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 abcdefghijklmnop                 jklmn       50</span>
@@ -125,7 +132,7 @@ for each identified protein</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

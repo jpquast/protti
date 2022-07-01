@@ -22,7 +22,7 @@ peptide is present in a PDB structure."><!-- mathjax --><script src="https://cdn
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -85,47 +85,62 @@ peptide is present in a PDB structure.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">find_peptide_in_structure</span><span class="op">(</span>
-  <span class="va">peptide_data</span>,
-  <span class="va">peptide</span>,
-  <span class="va">start</span>,
-  <span class="va">end</span>,
-  <span class="va">uniprot_id</span>,
-  pdb_data <span class="op">=</span> <span class="cn">NULL</span>,
-  retain_columns <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">find_peptide_in_structure</span><span class="op">(</span></span>
+<span>  <span class="va">peptide_data</span>,</span>
+<span>  <span class="va">peptide</span>,</span>
+<span>  <span class="va">start</span>,</span>
+<span>  <span class="va">end</span>,</span>
+<span>  <span class="va">uniprot_id</span>,</span>
+<span>  pdb_data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  retain_columns <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>peptide_data</dt>
 <dd><p>a data frame containing at least the input columns to this function.</p></dd>
+
+
 <dt>peptide</dt>
 <dd><p>a character column in the <code>peptide_data</code> data frame that contains the
 sequence or any other unique identifier for the peptide that should be found.</p></dd>
+
+
 <dt>start</dt>
 <dd><p>a numeric column in the <code>peptide_data</code> data frame that contains start positions
 of peptides.</p></dd>
+
+
 <dt>end</dt>
 <dd><p>a numeric column in the <code>peptide_data</code> data frame that contains end positions of
 peptides.</p></dd>
+
+
 <dt>uniprot_id</dt>
 <dd><p>a character column in the <code>peptide_data</code> data frame that contains UniProt
 identifiers that correspond to the peptides.</p></dd>
+
+
 <dt>pdb_data</dt>
 <dd><p>optional, a data frame containing data obtained with <code><a href="fetch_pdb.html">fetch_pdb()</a></code>. If not
 provided, information is fetched automatically. If this function should be run multiple times
 it is faster to fetch the information once and provide it to the function. If provided, make
 sure that the column names are identical to the ones that would be obtained by calling <code><a href="fetch_pdb.html">fetch_pdb()</a></code>.</p></dd>
+
+
 <dt>retain_columns</dt>
 <dd><p>a vector indicating if certain columns should be retained from the input
 data frame. Default is not retaining additional columns <code>retain_columns = NULL</code>. Specific
 columns can be retained by providing their names (not in quotations marks, just like other
 column names, but in a vector).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame that contains peptide positions in the corresponding PDB structures. If a
+    
+
+<p>A data frame that contains peptide positions in the corresponding PDB structures. If a
 peptide is not found in any structure or no structure is associated with the protein, the data
 frame contains NAs values for the output columns. The data frame contains the following and
 additional columns:</p><ul><li><p>auth_asym_id: Chain identifier provided by the author of the structure in order to
@@ -160,29 +175,29 @@ the current structure.</p></li>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">peptide_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  uniprot_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P0A8T7"</span>, <span class="st">"P0A8T7"</span>, <span class="st">"P60906"</span><span class="op">)</span>,</span>
-<span class="r-in">  peptide_sequence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="st">"SGIVSFGKETKGKRRLVITPVDGSDPYEEMIPKWRQLNV"</span>,</span>
-<span class="r-in">    <span class="st">"NVFEGERVER"</span>,</span>
-<span class="r-in">    <span class="st">"AIGEVTDVVEKE"</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1160</span>, <span class="fl">1197</span>, <span class="fl">55</span><span class="op">)</span>,</span>
-<span class="r-in">  end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1198</span>, <span class="fl">1206</span>, <span class="fl">66</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Find peptides in protein structure</span></span>
-<span class="r-in"><span class="va">peptide_in_structure</span> <span class="op">&lt;-</span> <span class="fu">find_peptide_in_structure</span><span class="op">(</span></span>
-<span class="r-in">  peptide_data <span class="op">=</span> <span class="va">peptide_data</span>,</span>
-<span class="r-in">  peptide <span class="op">=</span> <span class="va">peptide_sequence</span>,</span>
-<span class="r-in">  start <span class="op">=</span> <span class="va">start</span>,</span>
-<span class="r-in">  end <span class="op">=</span> <span class="va">end</span>,</span>
-<span class="r-in">  uniprot_id <span class="op">=</span> <span class="va">uniprot_id</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">peptide_in_structure</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">peptide_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  uniprot_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P0A8T7"</span>, <span class="st">"P0A8T7"</span>, <span class="st">"P60906"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  peptide_sequence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"SGIVSFGKETKGKRRLVITPVDGSDPYEEMIPKWRQLNV"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"NVFEGERVER"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"AIGEVTDVVEKE"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1160</span>, <span class="fl">1197</span>, <span class="fl">55</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1198</span>, <span class="fl">1206</span>, <span class="fl">66</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Find peptides in protein structure</span></span></span>
+<span class="r-in"><span><span class="va">peptide_in_structure</span> <span class="op">&lt;-</span> <span class="fu">find_peptide_in_structure</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  peptide_data <span class="op">=</span> <span class="va">peptide_data</span>,</span></span>
+<span class="r-in"><span>  peptide <span class="op">=</span> <span class="va">peptide_sequence</span>,</span></span>
+<span class="r-in"><span>  start <span class="op">=</span> <span class="va">start</span>,</span></span>
+<span class="r-in"><span>  end <span class="op">=</span> <span class="va">end</span>,</span></span>
+<span class="r-in"><span>  uniprot_id <span class="op">=</span> <span class="va">uniprot_id</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">peptide_in_structure</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 16</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    uniprot_id pdb_ids auth_asym_id label_asym_id peptide_sequence</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
@@ -200,7 +215,7 @@ the current structure.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   start &lt;dbl&gt;, end &lt;dbl&gt;, label_seq_id_start &lt;dbl&gt;, label_seq_id_end &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   auth_seq_id_start &lt;chr&gt;, auth_seq_id_end &lt;chr&gt;, auth_seq_id &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_peptides &lt;int&gt;, n_peptides_in_structure &lt;int&gt;</span></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -215,7 +230,7 @@ the current structure.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

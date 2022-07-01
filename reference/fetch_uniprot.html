@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -75,55 +75,64 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">fetch_uniprot</span><span class="op">(</span>
-  <span class="va">uniprot_ids</span>,
-  columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"protein names"</span>, <span class="st">"length"</span>, <span class="st">"sequence"</span>, <span class="st">"genes"</span>, <span class="st">"database(GeneID)"</span>,
-    <span class="st">"database(String)"</span>, <span class="st">"go(molecular function)"</span>, <span class="st">"go(biological process)"</span>,
-    <span class="st">"go(cellular compartment)"</span>, <span class="st">"interactor"</span>, <span class="st">"feature(ACTIVE SITE)"</span>,
-    <span class="st">"feature(BINDING SITE)"</span>, <span class="st">"feature(METAL BINDING)"</span>, <span class="st">"chebi(Cofactor)"</span>,
-    <span class="st">"chebi(Catalytic activity)"</span>, <span class="st">"database(PDB)"</span><span class="op">)</span>,
-  batchsize <span class="op">=</span> <span class="fl">200</span>,
-  show_progress <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fetch_uniprot</span><span class="op">(</span></span>
+<span>  <span class="va">uniprot_ids</span>,</span>
+<span>  columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"protein names"</span>, <span class="st">"length"</span>, <span class="st">"sequence"</span>, <span class="st">"genes"</span>, <span class="st">"database(GeneID)"</span>,</span>
+<span>    <span class="st">"database(String)"</span>, <span class="st">"go(molecular function)"</span>, <span class="st">"go(biological process)"</span>,</span>
+<span>    <span class="st">"go(cellular compartment)"</span>, <span class="st">"interactor"</span>, <span class="st">"feature(ACTIVE SITE)"</span>,</span>
+<span>    <span class="st">"feature(BINDING SITE)"</span>, <span class="st">"feature(METAL BINDING)"</span>, <span class="st">"chebi(Cofactor)"</span>,</span>
+<span>    <span class="st">"chebi(Catalytic activity)"</span>, <span class="st">"database(PDB)"</span><span class="op">)</span>,</span>
+<span>  batchsize <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>  show_progress <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>uniprot_ids</dt>
 <dd><p>a character vector of UniProt accession numbers.</p></dd>
+
+
 <dt>columns</dt>
 <dd><p>a character vector of metadata columns that should be imported from UniProt (all
 possible columns can be found <a href="https://www.uniprot.org/help/uniprotkb_column_names" class="external-link">here</a>.)</p></dd>
+
+
 <dt>batchsize</dt>
 <dd><p>a numeric value that specifies the number of proteins processed in a single
 single query. Default is 200.</p></dd>
+
+
 <dt>show_progress</dt>
 <dd><p>a logical value that determines if a progress bar will be shown. Default
 is TRUE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame that contains all protein metadata specified in <code>columns</code> for the
+    
+
+<p>A data frame that contains all protein metadata specified in <code>columns</code> for the
 proteins provided. If an invalid ID was provided that contains a valid UniProt ID, the valid
 portion of the ID is fetched and the invalid input ID is saved in a column called <code>input_id</code>.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="fu">fetch_uniprot</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P36578"</span>, <span class="st">"O43324"</span>, <span class="st">"Q00796"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu">fetch_uniprot</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P36578"</span>, <span class="st">"O43324"</span>, <span class="st">"Q00796"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 17</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id     protein_names    length sequence genes database_gene_id database_string</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> O43324 Eukaryotic tran…    174 MAAAAEL… EEF1… 9521;            9606.ENSP00000…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Q00796 Sorbitol dehydr…    357 MAAAAKP… SORD  6652;            9606.ENSP00000…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> P36578 60S ribosomal p…    427 MACARPL… RPL4… 6124;            9606.ENSP00000…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Q00796 Sorbitol dehydr…    357 MAAAAKP… SORD  6652;            9606.ENSP00000…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> O43324 Eukaryotic tran…    174 MAAAAEL… EEF1… 9521;            9606.ENSP00000…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 10 more variables: go_molecular_function &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   go_biological_process &lt;chr&gt;, go_cellular_compartment &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   interactor &lt;chr&gt;, feature_active_site &lt;lgl&gt;, feature_binding_site &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   feature_metal_binding &lt;chr&gt;, chebi_cofactor &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   chebi_catalytic_activity &lt;chr&gt;, database_pdb &lt;chr&gt;</span></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -138,7 +147,7 @@ portion of the ID is fetched and the invalid input ID is saved in a column calle
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

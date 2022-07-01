@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -75,53 +75,66 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">anova_protti</span><span class="op">(</span><span class="va">data</span>, <span class="va">grouping</span>, <span class="va">condition</span>, <span class="va">mean_ratio</span>, <span class="va">sd</span>, <span class="va">n</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">anova_protti</span><span class="op">(</span><span class="va">data</span>, <span class="va">grouping</span>, <span class="va">condition</span>, <span class="va">mean_ratio</span>, <span class="va">sd</span>, <span class="va">n</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame containing at least the input variables.</p></dd>
+
+
 <dt>grouping</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains precursor or
 peptide identifiers.</p></dd>
+
+
 <dt>condition</dt>
 <dd><p>a character or numeric column in the <code>data</code> data frame that contains the
 conditions.</p></dd>
+
+
 <dt>mean_ratio</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains mean intensities
 or mean intensity ratios.</p></dd>
+
+
 <dt>sd</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains the standard deviation
 corresponding to the mean.</p></dd>
+
+
 <dt>n</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains the number of replicates
 for which the corresponding mean was calculated.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a data frame that contains the within group error (<code>ms_group</code>) and the between
+    
+
+<p>a data frame that contains the within group error (<code>ms_group</code>) and the between
 group error (<code>ms_error</code>), f statistic and p-values.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  precursor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"B"</span><span class="op">)</span>,</span>
-<span class="r-in">  condition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C1"</span>, <span class="st">"C2"</span>, <span class="st">"C3"</span>, <span class="st">"C1"</span>, <span class="st">"C2"</span>, <span class="st">"C3"</span><span class="op">)</span>,</span>
-<span class="r-in">  mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">12</span>, <span class="fl">20</span>, <span class="fl">11</span>, <span class="fl">12</span>, <span class="fl">8</span><span class="op">)</span>,</span>
-<span class="r-in">  sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span>,</span>
-<span class="r-in">  n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">anova_protti</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">data</span>,</span>
-<span class="r-in">  grouping <span class="op">=</span> <span class="va">precursor</span>,</span>
-<span class="r-in">  condition <span class="op">=</span> <span class="va">condition</span>,</span>
-<span class="r-in">  mean <span class="op">=</span> <span class="va">mean</span>,</span>
-<span class="r-in">  sd <span class="op">=</span> <span class="va">sd</span>,</span>
-<span class="r-in">  n <span class="op">=</span> <span class="va">n</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  precursor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"B"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  condition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C1"</span>, <span class="st">"C2"</span>, <span class="st">"C3"</span>, <span class="st">"C1"</span>, <span class="st">"C2"</span>, <span class="st">"C3"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">12</span>, <span class="fl">20</span>, <span class="fl">11</span>, <span class="fl">12</span>, <span class="fl">8</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">anova_protti</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">precursor</span>,</span></span>
+<span class="r-in"><span>  condition <span class="op">=</span> <span class="va">condition</span>,</span></span>
+<span class="r-in"><span>  mean <span class="op">=</span> <span class="va">mean</span>,</span></span>
+<span class="r-in"><span>  sd <span class="op">=</span> <span class="va">sd</span>,</span></span>
+<span class="r-in"><span>  n <span class="op">=</span> <span class="va">n</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   precursor ms_group ms_error     f      pval</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -141,7 +154,7 @@ group error (<code>ms_error</code>), f statistic and p-values.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

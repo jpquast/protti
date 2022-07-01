@@ -19,7 +19,7 @@ queries can be found on their website."><!-- mathjax --><script src="https://cdn
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -79,22 +79,22 @@ queries can be found on their website.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">fetch_metal_pdb</span><span class="op">(</span>
-  id_type <span class="op">=</span> <span class="st">"uniprot"</span>,
-  <span class="va">id_value</span>,
-  site_type <span class="op">=</span> <span class="cn">NULL</span>,
-  pfam <span class="op">=</span> <span class="cn">NULL</span>,
-  cath <span class="op">=</span> <span class="cn">NULL</span>,
-  scop <span class="op">=</span> <span class="cn">NULL</span>,
-  representative <span class="op">=</span> <span class="cn">NULL</span>,
-  metal <span class="op">=</span> <span class="cn">NULL</span>,
-  ligands <span class="op">=</span> <span class="cn">NULL</span>,
-  geometry <span class="op">=</span> <span class="cn">NULL</span>,
-  coordination <span class="op">=</span> <span class="cn">NULL</span>,
-  donors <span class="op">=</span> <span class="cn">NULL</span>,
-  columns <span class="op">=</span> <span class="cn">NULL</span>,
-  show_progress <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fetch_metal_pdb</span><span class="op">(</span></span>
+<span>  id_type <span class="op">=</span> <span class="st">"uniprot"</span>,</span>
+<span>  <span class="va">id_value</span>,</span>
+<span>  site_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pfam <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cath <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scop <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  representative <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  metal <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ligands <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  geometry <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  coordination <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  donors <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  columns <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  show_progress <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -103,21 +103,33 @@ queries can be found on their website.</p>
 <dd><p>a character value that specifies the type of the IDs provided to <code>id_value</code>.
 Default is "uniprot". Possible options include: "uniprot", "pdb", "ec_number", "molecule" and
 "organism".</p></dd>
+
+
 <dt>id_value</dt>
 <dd><p>a character vector supplying IDs that are of the ID type that was specified in
 <code>id_type</code>. E.g. UniProt IDs. Information for these IDs will be retreived.</p></dd>
+
+
 <dt>site_type</dt>
 <dd><p>optional, a character value that specifies a nuclearity for which information
 should be retrieved. The specific nuclearity can be supplied as e.g. "tetranuclear".</p></dd>
+
+
 <dt>pfam</dt>
 <dd><p>optional, a character value that specifies a Pfam domain for which information
 should be retrieved. The domain can be specified as e.g. "Carb_anhydrase".</p></dd>
+
+
 <dt>cath</dt>
 <dd><p>optional, a character value that specifies a CATH ID for which information
 should be retrieved. The ID can be specified as e.g. "3.10.200.10".</p></dd>
+
+
 <dt>scop</dt>
 <dd><p>optional, a character value that specifies a SCOP ID for which information
 should be retrieved. The ID can be specified as e.g. "b.74.1.1".</p></dd>
+
+
 <dt>representative</dt>
 <dd><p>optional, a logical that indicates if only information of representative
 sites of a family should be retrieved it can be specified here. A representative site is a
@@ -126,32 +138,49 @@ the PDB structure with the best X-ray resolution among those containing the site
 cluster. NMR structures are generally discarded in favor of X-ray structures, unless all the
 sites in the cluster are found in NMR structures. If it is <code>TRUE</code>, only representative
 sites are retrieved, if it is <code>FALSE</code>, all sites are retrieved.</p></dd>
+
+
 <dt>metal</dt>
 <dd><p>optional, a character value that specifies a metal for which information
 should be retrieved. The metal can be specified as e.g. "Zn".</p></dd>
+
+
 <dt>ligands</dt>
 <dd><p>optional, a character value that specifies a metal ligand residue for which
 information should be retrieved. The ligand can be specified as e.g. "His".</p></dd>
+
+
 <dt>geometry</dt>
 <dd><p>optional, a character value that specifies a metal site geometry for which
 information should be retrieved. The geometry can be specified here based on the three letter
 code for geometries provided on their website.</p></dd>
+
+
 <dt>coordination</dt>
 <dd><p>optional, a character value that specifies a coordination number for which
 information should be retrieved. The number can be specified as e.g. "3".</p></dd>
+
+
 <dt>donors</dt>
 <dd><p>optional, a character value that specifies a metal ligand atom for which
 information should be retrieved. The atom can be specified as e.g. "S" for sulfur.</p></dd>
+
+
 <dt>columns</dt>
 <dd><p>optional, a character vector that specifies specific columns that should be
 retrieved based on the MetalPDB website. If
 nothing is supplied here, all possible columns will be retrieved.</p></dd>
+
+
 <dt>show_progress</dt>
 <dd><p>logical, if true, a progress bar will be shown. Default is TRUE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame that contains information about protein-metal binding sites. The data
+    
+
+<p>A data frame that contains information about protein-metal binding sites. The data
 frame contains some columns that might not be self explanatory.</p><ul><li><p>auth_id_metal: Unique structure atom identifier of the metal, which is provided by
 the author of the structure in order to match the identification used in the publication
 that describes the structure.</p></li>
@@ -180,8 +209,8 @@ identification used in the publication that describes the structure.</p></li>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">fetch_metal_pdb</span><span class="op">(</span>id_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P42345"</span>, <span class="st">"P00918"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">fetch_metal_pdb</span><span class="op">(</span>id_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P42345"</span>, <span class="st">"P00918"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 25</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   site   organism     scop  site_type ec_number pfam  symbol_metal auth_id_metal</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
@@ -197,8 +226,8 @@ identification used in the publication that describes the structure.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   auth_asym_id_ligand &lt;chr&gt;, auth_seq_id_ligand &lt;int&gt;, residue &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   symbol &lt;chr&gt;, distance &lt;dbl&gt;, auth_id_ligand &lt;int&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   auth_atom_id_ligand &lt;chr&gt;</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">fetch_metal_pdb</span><span class="op">(</span>id_type <span class="op">=</span> <span class="st">"pdb"</span>, id_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1g54"</span><span class="op">)</span>, metal <span class="op">=</span> <span class="st">"Zn"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">fetch_metal_pdb</span><span class="op">(</span>id_type <span class="op">=</span> <span class="st">"pdb"</span>, id_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1g54"</span><span class="op">)</span>, metal <span class="op">=</span> <span class="st">"Zn"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 25</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   site   organism     scop  site_type ec_number pfam  symbol_metal auth_id_metal</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
@@ -213,8 +242,8 @@ identification used in the publication that describes the structure.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   auth_asym_id_ligand &lt;chr&gt;, auth_seq_id_ligand &lt;int&gt;, residue &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   symbol &lt;chr&gt;, distance &lt;dbl&gt;, auth_id_ligand &lt;int&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   auth_atom_id_ligand &lt;chr&gt;</span></span>
-<span class="r-in"><span class="co"># }</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -229,7 +258,7 @@ identification used in the publication that describes the structure.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

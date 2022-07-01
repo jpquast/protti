@@ -18,7 +18,7 @@ organisms."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -77,13 +77,13 @@ organisms.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">fetch_alphafold_prediction</span><span class="op">(</span>
-  uniprot_ids <span class="op">=</span> <span class="cn">NULL</span>,
-  organism_name <span class="op">=</span> <span class="cn">NULL</span>,
-  timeout <span class="op">=</span> <span class="fl">3600</span>,
-  return_data_frame <span class="op">=</span> <span class="cn">FALSE</span>,
-  show_progress <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fetch_alphafold_prediction</span><span class="op">(</span></span>
+<span>  uniprot_ids <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  organism_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  timeout <span class="op">=</span> <span class="fl">3600</span>,</span>
+<span>  return_data_frame <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  show_progress <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -91,6 +91,8 @@ organisms.</p>
     <dl><dt>uniprot_ids</dt>
 <dd><p>optional, a character vector of UniProt identifiers for which predictions
 should be fetched. This argument is mutually exclusive to the <code>organism_name</code> argument.</p></dd>
+
+
 <dt>organism_name</dt>
 <dd><p>optional, a character value providing the name of an organism for which
 all available AlphaFold predictions should be retreived. The name should be the capitalised
@@ -98,20 +100,29 @@ scientific species name (e.g. "Homo sapiens"). <strong>Note:</strong> Some organ
 predictions which might take a considerable amount of time and memory to fetch. Therefore, you
 should be sure that your system can handle fetching predictions for these organisms. This
 argument is mutually exclusive to the <code>uniprot_ids</code> argument.</p></dd>
+
+
 <dt>timeout</dt>
 <dd><p>a numeric value specifying the time in seconds until the download of an organism
 archive times out. The default is 3600 seconds.</p></dd>
+
+
 <dt>return_data_frame</dt>
 <dd><p>a logical value that specifies if true, a data frame instead of a list
 is returned. It is recommended to only use this if not many pdb structures are retrieved.
 Default is FALSE.</p></dd>
+
+
 <dt>show_progress</dt>
 <dd><p>a logical value that specifies if true, a progress bar will be shown.
 Default is TRUE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list that contains atom level data for AlphaFold predictions. If return_data_frame is
+    
+
+<p>A list that contains atom level data for AlphaFold predictions. If return_data_frame is
 TRUE, a data frame with this information is returned instead. The data frame contains the
 following columns:</p><ul><li><p>label_id: Uniquely identifies every atom in the prediction following the standardised
 convention for mmCIF files.</p></li>
@@ -138,13 +149,13 @@ numbering corresponds to the UniProt amino acid positions.</p></li>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="va">alphafold</span> <span class="op">&lt;-</span> <span class="fu">fetch_alphafold_prediction</span><span class="op">(</span></span>
-<span class="r-in">  uniprot_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"F4HVG8"</span>, <span class="st">"O15552"</span><span class="op">)</span>,</span>
-<span class="r-in">  return_data_frame <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">alphafold</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">alphafold</span> <span class="op">&lt;-</span> <span class="fu">fetch_alphafold_prediction</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  uniprot_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"F4HVG8"</span>, <span class="st">"O15552"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  return_data_frame <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">alphafold</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 15</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    label_id type_symbol label_atom_id label_comp_id label_asym_id label_seq_id</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -161,7 +172,7 @@ numbering corresponds to the UniProt amino acid positions.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 9 more variables: x &lt;dbl&gt;, y &lt;dbl&gt;, z &lt;dbl&gt;, prediction_score &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   auth_seq_id &lt;chr&gt;, auth_comp_id &lt;chr&gt;, auth_asym_id &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   uniprot_id &lt;chr&gt;, score_quality &lt;chr&gt;</span></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -176,7 +187,7 @@ numbering corresponds to the UniProt amino acid positions.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -26,7 +26,7 @@ future::plan(sequential).'><!-- mathjax --><script src="https://cdnjs.cloudflare
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -93,20 +93,20 @@ be set to "parallel manual". In this case workers can be terminated after comple
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">parallel_create_structure_contact_map</span><span class="op">(</span>
-  <span class="va">data</span>,
-  data2 <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">id</span>,
-  chain <span class="op">=</span> <span class="cn">NULL</span>,
-  auth_seq_id <span class="op">=</span> <span class="cn">NULL</span>,
-  distance_cutoff <span class="op">=</span> <span class="fl">10</span>,
-  pdb_model_number_selection <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,
-  return_min_residue_distance <span class="op">=</span> <span class="cn">TRUE</span>,
-  export <span class="op">=</span> <span class="cn">FALSE</span>,
-  export_location <span class="op">=</span> <span class="cn">NULL</span>,
-  split_n <span class="op">=</span> <span class="fl">40</span>,
-  processing_type <span class="op">=</span> <span class="st">"parallel"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">parallel_create_structure_contact_map</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  data2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">id</span>,</span>
+<span>  chain <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  auth_seq_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  distance_cutoff <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  pdb_model_number_selection <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  return_min_residue_distance <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  export <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  export_location <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  split_n <span class="op">=</span> <span class="fl">40</span>,</span>
+<span>  processing_type <span class="op">=</span> <span class="st">"parallel"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -125,20 +125,28 @@ created only for small regions it is possible to create multiple maps at once. B
 of regions provided in this data frame to the complete structure are computed. If distances of regions
 from this data frame to another specific subset of regions should be computed, the second subset
 of regions can be provided through the optional <code>data2</code> argument.</p></dd>
+
+
 <dt>data2</dt>
 <dd><p>optional, a data frame that contains a subset of regions for which distances to regions
 provided in the <code>data</code> data frame should be computed. If regions from the <code>data</code> data
 frame should be compared to the whole structure, data2 does not need to be provided.
 This data frame should have the same structure and column names as the <code>data</code> data frame.</p></dd>
+
+
 <dt>id</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains PDB or UniProt IDs for
 structures or AlphaFold predictions of which contact maps should be created. If a structure not
 downloaded directly from PDB is provided (i.e. a locally stored structure file) to the
 <code>structure_file</code> argument, this column should contain "my_structure" as content.</p></dd>
+
+
 <dt>chain</dt>
 <dd><p>optional, a character column in the <code>data</code> data frame that contains chain
 identifiers for the structure file. Identifiers defined by the structure author should be used.
 Distances will be only calculated between the provided chains and the rest of the structure.</p></dd>
+
+
 <dt>auth_seq_id</dt>
 <dd><p>optional, a character (or numeric) column in the <code>data</code> data frame
 that contains semicolon separated positions of regions for which distances should be calculated.
@@ -149,70 +157,87 @@ function. The corresponding column in the output is called <code>auth_seq_id</co
 AlphaFold prediction is provided, UniProt positions should be used. If single positions
 and not stretches of amino acids are provided, the column can be numeric and does not need
 to contain the semicolon separator.</p></dd>
+
+
 <dt>distance_cutoff</dt>
 <dd><p>a numeric value specifying the distance cutoff in Angstrom. All values
 for pairwise comparisons are calculated but only values smaller than this cutoff will be
 returned in the output. If a cutoff of e.g. 5 is selected then only residues with a distance of
 5 Angstrom and less are returned. Using a small value can reduce the size of the contact map
 drastically and is therefore recommended. The default value is 10.</p></dd>
+
+
 <dt>pdb_model_number_selection</dt>
 <dd><p>a numeric vector specifying which models from the structure
 files should be considered for contact maps. E.g. NMR models often have many models in one file.
 The default for this argument is c(0, 1). This means the first model of each structure file is
 selected for contact map calculations. For AlphaFold predictions the model number is 0
 (only .pdb files), therefore this case is also included here.</p></dd>
+
+
 <dt>return_min_residue_distance</dt>
 <dd><p>a logical value that specifies if the contact map should be
 returned for all atom distances or the minimum residue distances. Minimum residue distances are
 smaller in size. If atom distances are not strictly needed it is recommended to set this
 argument to TRUE. The default is TRUE.</p></dd>
+
+
 <dt>export</dt>
 <dd><p>a logical value that indicates if contact maps should be exported as ".csv". The
 name of the file will be the structure ID. Default is <code>export = FALSE</code>.</p></dd>
+
+
 <dt>export_location</dt>
 <dd><p>optional, a character value that specifies the path to the location in
 which the contact map should be saved if <code>export = TRUE</code>. If left empty, they will be
 saved in the current working directory. The location should be provided in the following format
 "folderA/folderB".</p></dd>
+
+
 <dt>split_n</dt>
 <dd><p>a numeric value that specifies the number of structures that should be included
 in each batch. Default is 40.</p></dd>
+
+
 <dt>processing_type</dt>
 <dd><p>a character value that is either "parallel" for parallel processing or
 "sequential" for sequential processing. Alternatively it can also be "parallel manual" in this
 case you have to set up the number of cores on your own using the <code>future::plan(multisession)</code>
 function. The default is "parallel".</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list of contact maps for each PDB or UniProt ID provided in the input is returned.
+    
+
+<p>A list of contact maps for each PDB or UniProt ID provided in the input is returned.
 If the <code>export</code> argument is TRUE, each contact map will be saved as a ".csv" file in the
 current working directory or the location provided to the <code>export_location</code> argument.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  pdb_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"6NPF"</span>, <span class="st">"1C14"</span>, <span class="st">"3NIR"</span><span class="op">)</span>,</span>
-<span class="r-in">  chain <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"A"</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
-<span class="r-in">  auth_seq_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1;2;3;4;5;6;7"</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create contact map</span></span>
-<span class="r-in"><span class="va">contact_maps</span> <span class="op">&lt;-</span> <span class="fu">parallel_create_structure_contact_map</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span class="r-in">  id <span class="op">=</span> <span class="va">pdb_id</span>,</span>
-<span class="r-in">  chain <span class="op">=</span> <span class="va">chain</span>,</span>
-<span class="r-in">  auth_seq_id <span class="op">=</span> <span class="va">auth_seq_id</span>,</span>
-<span class="r-in">  split_n <span class="op">=</span> <span class="fl">1</span>,</span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">contact_maps</span><span class="op">[[</span><span class="st">"3NIR"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">contact_maps</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  pdb_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"6NPF"</span>, <span class="st">"1C14"</span>, <span class="st">"3NIR"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  chain <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"A"</span>, <span class="cn">NA</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  auth_seq_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1;2;3;4;5;6;7"</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create contact map</span></span></span>
+<span class="r-in"><span><span class="va">contact_maps</span> <span class="op">&lt;-</span> <span class="fu">parallel_create_structure_contact_map</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  id <span class="op">=</span> <span class="va">pdb_id</span>,</span></span>
+<span class="r-in"><span>  chain <span class="op">=</span> <span class="va">chain</span>,</span></span>
+<span class="r-in"><span>  auth_seq_id <span class="op">=</span> <span class="va">auth_seq_id</span>,</span></span>
+<span class="r-in"><span>  split_n <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">contact_maps</span><span class="op">[[</span><span class="st">"3NIR"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">contact_maps</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -227,7 +252,7 @@ current working directory or the location provided to the <code>export_location<
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -93,7 +93,7 @@
       <h1 data-toc-skip>Input Preparation Workflow</h1>
                         <h4 data-toc-skip class="author">Dina Schuster</h4>
             
-            <h4 data-toc-skip class="date">2022-04-12</h4>
+            <h4 data-toc-skip class="date">2022-07-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/HEAD/vignettes/input_preparation_workflow.Rmd" class="external-link"><code>vignettes/input_preparation_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>input_preparation_workflow.Rmd</code></div>
@@ -178,10 +178,10 @@
 </h3>
 <p>We will demonstrate how most outputs can be converted with functions from the R packages <a href="https://magrittr.tidyverse.org/index.html" class="external-link"><code>magrittr</code></a>, <a href="https://dplyr.tidyverse.org/index.html" class="external-link"><code>dplyr</code></a>, <a href="https://tidyr.tidyverse.org/index.html" class="external-link"><code>tidyr</code></a> and <a href="https://stringr.tidyverse.org/" class="external-link"><code>stringr</code></a>. You can load packages after you installed them with the <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> function.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></span></code></pre></div>
 <p>Note that we are using the R package <a href="https://magrittr.tidyverse.org/index.html" class="external-link"><code>magrittr</code></a> because of its pipe operator <code>%&gt;%</code>. It takes the output of the preceding function and supplies it as the first argument of the following function. Using <code>%&gt;%</code> makes code easier to read and follow.</p>
 </div>
 </div>
@@ -204,8 +204,8 @@
 </ul>
 <p>Please make sure that the report is a .csv file. You can use the <code><a href="../reference/read_protti.html">read_protti()</a></code> function in order to load the spectronaut report into R. This function is a wrapper around the fast <code>fread()</code> function from the <a href="https://rdatatable.gitlab.io/data.table/" class="external-link"><code>data.table</code></a> package and the <code>clean_names()</code> function from the <a href="http://sfirke.github.io/janitor/" class="external-link"><code>janitor</code></a> package. This will allow you to not only load your data into R very fast, but also to clean up the column names into lower snake case. This will make it easier to remember them and to use them in your data analysis. For the Spectronaut columns <code>R.FileName</code> will change for example into <code>r_file_name</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># To read in your own data you can use read_protti()</span>
-<span class="va">spectronaut_data</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"mydata/spectronaut.csv"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># To read in your own data you can use read_protti()</span></span>
+<span><span class="va">spectronaut_data</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"mydata/spectronaut.csv"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="maxquant">MaxQuant<a class="anchor" aria-label="anchor" href="#maxquant"></a>
@@ -221,46 +221,46 @@
 <p>One important thing for MaxQuant data is to <strong>make sure that you only have one intensity assigned to each peptide or precursor.</strong> You can do this by summing up all intensities that MaxQuant exports (these can be MULTI-MSMS, MSMS, ISO-MSMS, MULTI-MATCH, ISO-SECPEP) or you can filter for example for precursors with MULTI-MSMS quantification and only use these.</p>
 <p>In this section we will show you how to read in the file with <code><a href="../reference/read_protti.html">read_protti()</a></code> and how to create the <code>is_proteotypic</code> column and the <code>condition</code> column (minimally required) with the help of the <code>stringr</code> and <code>dplyr</code> packages. How to filter your data best is described in the data analysis vignettes.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># To read in your own data you can use read_protti()</span>
-<span class="va">evidence</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"yourpath/evidence.txt"</span><span class="op">)</span>
-
-<span class="va">evidence_proteotypic</span> <span class="op">&lt;-</span> <span class="va">evidence</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="co"># adds new column with logicals that are TRUE if the peptide can be assigned </span>
-  <span class="co"># to only one protein and FALSE if it can be assigned to multiple</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>is_proteotypic <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span>
-    string <span class="op">=</span> <span class="va">proteins</span>,
-    pattern <span class="op">=</span> <span class="st">";"</span>,
-    negate <span class="op">=</span> <span class="cn">TRUE</span>
-  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="co"># adds new column with logicals indicating if peptide is coming from a potential contaminant</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>is_contaminant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">potential_contaminant</span> <span class="op">==</span> <span class="st">"+"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> 
-
-<span class="co"># Make an annotation data frame and merge it with your data frame to obtain conditions</span>
-<span class="co"># We are annotating sample 1-3 as controls and samples 4-6 as treated conditions</span>
-
-<span class="va">file_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="co"># make sure that the names are the same name as in your report</span>
-  <span class="st">"sample1"</span>,
-  <span class="st">"sample2"</span>,
-  <span class="st">"sample3"</span>,
-  <span class="st">"sample4"</span>,
-  <span class="st">"sample5"</span>,
-  <span class="st">"sample6"</span>
-<span class="op">)</span>
-
-<span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
-  <span class="st">"control"</span>,
-  <span class="st">"control"</span>,
-  <span class="st">"control"</span>,
-  <span class="st">"treated"</span>,
-  <span class="st">"treated"</span>,
-  <span class="st">"treated"</span>
-<span class="op">)</span>
-
-<span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">file_name</span>, <span class="va">condition</span><span class="op">)</span>
-
-<span class="co"># Combine your long data frame with the annotation</span>
-<span class="va">evidence_annotated</span> <span class="op">&lt;-</span> <span class="va">evidence_proteotypic</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">annotation</span>, by <span class="op">=</span> <span class="st">"file_name"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># To read in your own data you can use read_protti()</span></span>
+<span><span class="va">evidence</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"yourpath/evidence.txt"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">evidence_proteotypic</span> <span class="op">&lt;-</span> <span class="va">evidence</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="co"># adds new column with logicals that are TRUE if the peptide can be assigned </span></span>
+<span>  <span class="co"># to only one protein and FALSE if it can be assigned to multiple</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>is_proteotypic <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span></span>
+<span>    string <span class="op">=</span> <span class="va">proteins</span>,</span>
+<span>    pattern <span class="op">=</span> <span class="st">";"</span>,</span>
+<span>    negate <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="co"># adds new column with logicals indicating if peptide is coming from a potential contaminant</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>is_contaminant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">potential_contaminant</span> <span class="op">==</span> <span class="st">"+"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co"># Make an annotation data frame and merge it with your data frame to obtain conditions</span></span>
+<span><span class="co"># We are annotating sample 1-3 as controls and samples 4-6 as treated conditions</span></span>
+<span></span>
+<span><span class="va">file_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="co"># make sure that the names are the same name as in your report</span></span>
+<span>  <span class="st">"sample1"</span>,</span>
+<span>  <span class="st">"sample2"</span>,</span>
+<span>  <span class="st">"sample3"</span>,</span>
+<span>  <span class="st">"sample4"</span>,</span>
+<span>  <span class="st">"sample5"</span>,</span>
+<span>  <span class="st">"sample6"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"treated"</span>,</span>
+<span>  <span class="st">"treated"</span>,</span>
+<span>  <span class="st">"treated"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">file_name</span>, <span class="va">condition</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Combine your long data frame with the annotation</span></span>
+<span><span class="va">evidence_annotated</span> <span class="op">&lt;-</span> <span class="va">evidence_proteotypic</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">annotation</span>, by <span class="op">=</span> <span class="st">"file_name"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="protein-centric-analysis-1">Protein-centric analysis<a class="anchor" aria-label="anchor" href="#protein-centric-analysis-1"></a>
@@ -268,48 +268,48 @@
 <p>For <strong>protein-centric</strong> analyses you can use the <code>proteinGroups.txt</code> file provided by MaxQuant. This file contains information in a wide format where each sample has its own column containing intensity values. Therefore, we need to transform this data into a long format to meet the conditions of tidy data.</p>
 <p>We will filter the data and use <code>tidyr</code>’s <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer()</a></code> to change the format to long format. Furthermore, we produce an annotation data frame to create a <code>conditions</code> column. The filtering is only done in order to remove proteins with potentially low quality. Further filtering for decoys and potential contaminants should be performed based on the data analysis vignettes.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># To read in your own data you can use read_protti()</span>
-<span class="va">protein_groups</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"yourpath/proteinGroups.txt"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="co"># adds new column with logicals indicating if protein is a potential contaminant, </span>
-  <span class="co"># you can filter these out later on. You should also consider filtering out proteins </span>
-  <span class="co"># that were "only identified by site" and reverse hits, as well as proteins with only </span>
-  <span class="co"># one identified peptide</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>is_potential_contaminant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">potential_contaminant</span> <span class="op">==</span> <span class="st">"+"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> 
-
-<span class="co"># Change wide format to long format and create new columns called `r_file_name`and `intensity`</span>
-<span class="va">protein_groups_long</span> <span class="op">&lt;-</span> <span class="va">protein_groups</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>
-    cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"intensity_"</span><span class="op">)</span>,
-    names_to <span class="op">=</span> <span class="st">"file_name"</span>,
-    values_to <span class="op">=</span> <span class="st">"intensity"</span>
-  <span class="op">)</span>
-
-<span class="co"># Make an annotation data frame and merge it with your data frame to obtain conditions</span>
-<span class="co"># We are annotating sample 1-3 as controls and samples 4-6 as treated conditions</span>
-
-<span class="va">file_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="co"># make sure that the names are the same name as in your report</span>
-  <span class="st">"intensity_sample1"</span>,
-  <span class="st">"intensity_sample2"</span>,
-  <span class="st">"intensity_sample3"</span>,
-  <span class="st">"intensity_sample4"</span>,
-  <span class="st">"intensity_sample5"</span>,
-  <span class="st">"intensity_sample6"</span>
-<span class="op">)</span>
-
-<span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
-  <span class="st">"control"</span>,
-  <span class="st">"control"</span>,
-  <span class="st">"control"</span>,
-  <span class="st">"treated"</span>,
-  <span class="st">"treated"</span>,
-  <span class="st">"treated"</span>
-<span class="op">)</span>
-
-<span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">file_name</span>, <span class="va">condition</span><span class="op">)</span>
-
-<span class="co"># Combine your long data frame with the annotation</span>
-<span class="va">protein_groups_annotated</span> <span class="op">&lt;-</span> <span class="va">protein_groups_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">annotation</span>, by <span class="op">=</span> <span class="st">"file_name"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># To read in your own data you can use read_protti()</span></span>
+<span><span class="va">protein_groups</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"yourpath/proteinGroups.txt"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="co"># adds new column with logicals indicating if protein is a potential contaminant, </span></span>
+<span>  <span class="co"># you can filter these out later on. You should also consider filtering out proteins </span></span>
+<span>  <span class="co"># that were "only identified by site" and reverse hits, as well as proteins with only </span></span>
+<span>  <span class="co"># one identified peptide</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>is_potential_contaminant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">potential_contaminant</span> <span class="op">==</span> <span class="st">"+"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co"># Change wide format to long format and create new columns called `r_file_name`and `intensity`</span></span>
+<span><span class="va">protein_groups_long</span> <span class="op">&lt;-</span> <span class="va">protein_groups</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"intensity_"</span><span class="op">)</span>,</span>
+<span>    names_to <span class="op">=</span> <span class="st">"file_name"</span>,</span>
+<span>    values_to <span class="op">=</span> <span class="st">"intensity"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Make an annotation data frame and merge it with your data frame to obtain conditions</span></span>
+<span><span class="co"># We are annotating sample 1-3 as controls and samples 4-6 as treated conditions</span></span>
+<span></span>
+<span><span class="va">file_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="co"># make sure that the names are the same name as in your report</span></span>
+<span>  <span class="st">"intensity_sample1"</span>,</span>
+<span>  <span class="st">"intensity_sample2"</span>,</span>
+<span>  <span class="st">"intensity_sample3"</span>,</span>
+<span>  <span class="st">"intensity_sample4"</span>,</span>
+<span>  <span class="st">"intensity_sample5"</span>,</span>
+<span>  <span class="st">"intensity_sample6"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"treated"</span>,</span>
+<span>  <span class="st">"treated"</span>,</span>
+<span>  <span class="st">"treated"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">file_name</span>, <span class="va">condition</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Combine your long data frame with the annotation</span></span>
+<span><span class="va">protein_groups_annotated</span> <span class="op">&lt;-</span> <span class="va">protein_groups_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">annotation</span>, by <span class="op">=</span> <span class="st">"file_name"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -327,43 +327,43 @@
 </ul>
 <p>You can add replicate and condition annotations in Skyline directly. However, we will explain in this section how you can also do it in R. If you want to analyse your data on the protein abundance level you will have to combine the precursor intensities to obtain one value for protein abundance. This could be done using the <code><a href="../reference/calculate_protein_abundance.html">calculate_protein_abundance()</a></code> function from <strong>protti</strong>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Load data</span>
-<span class="va">skyline_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"yourpath/skyline.csv"</span><span class="op">)</span>
-
-<span class="va">skyline_data_int</span> <span class="op">&lt;-</span> <span class="va">skyline_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="co"># create a column with precursor information</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>precursor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">peptide_sequence</span>, <span class="st">"_"</span>, <span class="va">charge</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">replicate_name</span>, <span class="va">precursor</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="co"># making a new column containing the summed up intensities of all transitions of one precursor</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>sum_intensity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">area</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">product_mz</span>, <span class="va">area</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># removing the columns we don't need</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># removing duplicated rows from the data frame</span>
-
-<span class="co"># Add annotation</span>
-<span class="co"># make sure that the names are the same name as in your report</span>
-<span class="va">replicate_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> 
-  <span class="st">"sample_1"</span>, 
-  <span class="st">"sample_2"</span>,
-  <span class="st">"sample_3"</span>,
-  <span class="st">"sample_1"</span>,
-  <span class="st">"sample_2"</span>,
-  <span class="st">"sample_3"</span>
-<span class="op">)</span>
-
-<span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
-  <span class="st">"control"</span>,
-  <span class="st">"control"</span>,
-  <span class="st">"control"</span>,
-  <span class="st">"treated"</span>,
-  <span class="st">"treated"</span>,
-  <span class="st">"treated"</span>
-<span class="op">)</span>
-
-<span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">replicate_name</span>, <span class="va">condition</span><span class="op">)</span>
-
-<span class="co"># Combine your long data frame with the annotation</span>
-<span class="va">skyline_annotated</span> <span class="op">&lt;-</span> <span class="va">skyline_data_int</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">annotation</span>, by <span class="op">=</span> <span class="st">"replicate_name"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Load data</span></span>
+<span><span class="va">skyline_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"yourpath/skyline.csv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">skyline_data_int</span> <span class="op">&lt;-</span> <span class="va">skyline_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="co"># create a column with precursor information</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>precursor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">peptide_sequence</span>, <span class="st">"_"</span>, <span class="va">charge</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">replicate_name</span>, <span class="va">precursor</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="co"># making a new column containing the summed up intensities of all transitions of one precursor</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>sum_intensity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">area</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">product_mz</span>, <span class="va">area</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># removing the columns we don't need</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># removing duplicated rows from the data frame</span></span>
+<span></span>
+<span><span class="co"># Add annotation</span></span>
+<span><span class="co"># make sure that the names are the same name as in your report</span></span>
+<span><span class="va">replicate_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> </span>
+<span>  <span class="st">"sample_1"</span>, </span>
+<span>  <span class="st">"sample_2"</span>,</span>
+<span>  <span class="st">"sample_3"</span>,</span>
+<span>  <span class="st">"sample_1"</span>,</span>
+<span>  <span class="st">"sample_2"</span>,</span>
+<span>  <span class="st">"sample_3"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"treated"</span>,</span>
+<span>  <span class="st">"treated"</span>,</span>
+<span>  <span class="st">"treated"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">replicate_name</span>, <span class="va">condition</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Combine your long data frame with the annotation</span></span>
+<span><span class="va">skyline_annotated</span> <span class="op">&lt;-</span> <span class="va">skyline_data_int</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">annotation</span>, by <span class="op">=</span> <span class="st">"replicate_name"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="proteome-discoverer">Proteome Discoverer<a class="anchor" aria-label="anchor" href="#proteome-discoverer"></a>
@@ -386,61 +386,61 @@
 <p>After saving the report as an Excel file please convert it to a .csv file, simply by opening it and saving it as such.</p>
 <p>We will read in the file using <code><a href="../reference/read_protti.html">read_protti()</a></code> and then select the columns we are interested in. You can use the <code>contaminant</code> column for qualitiy control. The <code>number_proteins</code> column contains information on the proteotypicity. If this is 1 then the peptide is proteotypic. If you want to analyse your data qualitatively only with quality control functions of <strong>protti</strong> you can keep peptides without quantifications. Before you start your quantitative analysis remove observations that are labeled <code>"No Quan Values"</code> in the <code>quan_info</code> column. In the below example they are filtered out at this step, but you can keep them and only filter them out later.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Load data</span>
-<span class="va">pd_pep_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span><span class="st">"yourpath/PDpeptides.csv"</span><span class="op">)</span>
-
-<span class="co"># Select relevant columns</span>
-<span class="va">pd_pep_selected</span> <span class="op">&lt;-</span> <span class="va">pd_pep_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>
-    <span class="va">sequence</span>,
-    <span class="va">modifications</span>,
-    <span class="va">number_proteins</span>,
-    <span class="va">contaminant</span>,
-    <span class="va">master_protein_accessions</span>,
-    <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"abundances_grouped"</span><span class="op">)</span>, <span class="co"># select all columns that start with "abundances_grouped"</span>
-    <span class="va">quan_info</span>
-  <span class="op">)</span>
-
-<span class="co"># Filter data frame</span>
-<span class="va">pd_pep_filtered</span> <span class="op">&lt;-</span> <span class="va">pd_pep_selected</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">contaminant</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># remove annotated contaminants</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">number_proteins</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># select proteotypic peptides</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">quan_info</span> <span class="op">!=</span> <span class="st">"No Quan Values"</span><span class="op">)</span> <span class="co"># remove peptides that have no quantification values</span>
-
-<span class="co"># Convert into long format</span>
-<span class="va">pd_pep_long</span> <span class="op">&lt;-</span> <span class="va">pd_pep_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>
-    cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"abundances"</span><span class="op">)</span>,
-    names_to <span class="op">=</span> <span class="st">"file_name"</span>,
-    values_to <span class="op">=</span> <span class="st">"intensity"</span>
-  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="co"># combine peptide sequence and modifications to make a precursor column</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>precursor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">sequence</span>, <span class="va">modifications</span><span class="op">)</span><span class="op">)</span> 
-
-<span class="co"># Make annotation data frame</span>
-<span class="va">file_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="co"># make sure that the names are the same name as in your report</span>
-  <span class="st">"abundances_grouped_f1"</span>,
-  <span class="st">"abundances_grouped_f2"</span>,
-  <span class="st">"abundances_grouped_f3"</span>,
-  <span class="st">"abundances_grouped_f4"</span>,
-  <span class="st">"abundances_grouped_f5"</span>,
-  <span class="st">"abundances_grouped_f6"</span>
-<span class="op">)</span>
-
-<span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
-  <span class="st">"control"</span>,
-  <span class="st">"control"</span>,
-  <span class="st">"control"</span>,
-  <span class="st">"treated"</span>,
-  <span class="st">"treated"</span>,
-  <span class="st">"treated"</span>
-<span class="op">)</span>
-
-<span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">file_name</span>, <span class="va">condition</span><span class="op">)</span>
-
-<span class="co"># Combine your long data frame with the annotation</span>
-<span class="va">pd_pep_long_annotated</span> <span class="op">&lt;-</span> <span class="va">pd_pep_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">annotation</span>, by <span class="op">=</span> <span class="st">"file_name"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Load data</span></span>
+<span><span class="va">pd_pep_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span><span class="st">"yourpath/PDpeptides.csv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Select relevant columns</span></span>
+<span><span class="va">pd_pep_selected</span> <span class="op">&lt;-</span> <span class="va">pd_pep_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>    <span class="va">sequence</span>,</span>
+<span>    <span class="va">modifications</span>,</span>
+<span>    <span class="va">number_proteins</span>,</span>
+<span>    <span class="va">contaminant</span>,</span>
+<span>    <span class="va">master_protein_accessions</span>,</span>
+<span>    <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"abundances_grouped"</span><span class="op">)</span>, <span class="co"># select all columns that start with "abundances_grouped"</span></span>
+<span>    <span class="va">quan_info</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Filter data frame</span></span>
+<span><span class="va">pd_pep_filtered</span> <span class="op">&lt;-</span> <span class="va">pd_pep_selected</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">contaminant</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># remove annotated contaminants</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">number_proteins</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># select proteotypic peptides</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">quan_info</span> <span class="op">!=</span> <span class="st">"No Quan Values"</span><span class="op">)</span> <span class="co"># remove peptides that have no quantification values</span></span>
+<span></span>
+<span><span class="co"># Convert into long format</span></span>
+<span><span class="va">pd_pep_long</span> <span class="op">&lt;-</span> <span class="va">pd_pep_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"abundances"</span><span class="op">)</span>,</span>
+<span>    names_to <span class="op">=</span> <span class="st">"file_name"</span>,</span>
+<span>    values_to <span class="op">=</span> <span class="st">"intensity"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="co"># combine peptide sequence and modifications to make a precursor column</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>precursor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">sequence</span>, <span class="va">modifications</span><span class="op">)</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co"># Make annotation data frame</span></span>
+<span><span class="va">file_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="co"># make sure that the names are the same name as in your report</span></span>
+<span>  <span class="st">"abundances_grouped_f1"</span>,</span>
+<span>  <span class="st">"abundances_grouped_f2"</span>,</span>
+<span>  <span class="st">"abundances_grouped_f3"</span>,</span>
+<span>  <span class="st">"abundances_grouped_f4"</span>,</span>
+<span>  <span class="st">"abundances_grouped_f5"</span>,</span>
+<span>  <span class="st">"abundances_grouped_f6"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"treated"</span>,</span>
+<span>  <span class="st">"treated"</span>,</span>
+<span>  <span class="st">"treated"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">file_name</span>, <span class="va">condition</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Combine your long data frame with the annotation</span></span>
+<span><span class="va">pd_pep_long_annotated</span> <span class="op">&lt;-</span> <span class="va">pd_pep_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">annotation</span>, by <span class="op">=</span> <span class="st">"file_name"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="protein-centric-analysis-2">Protein-centric analysis<a class="anchor" aria-label="anchor" href="#protein-centric-analysis-2"></a>
@@ -457,56 +457,56 @@
 <p>After saving the report as an Excel file please convert it to a .csv file, simply by opening it and saving it as such.</p>
 <p>We will read in the file using <code><a href="../reference/read_protti.html">read_protti()</a></code> and then select the columns we are interested in. Similar to above you can either filter the <code>contaminant</code> and <code>number_peptides</code> columns now or later.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Load data</span>
-<span class="va">pd_prot_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span><span class="st">"yourpath/PDproteins.csv"</span><span class="op">)</span>
-
-<span class="co"># Select relevant columns</span>
-<span class="va">pd_prot_selected</span> <span class="op">&lt;-</span> <span class="va">pd_prot_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>
-    <span class="va">accession</span>,
-    <span class="va">description</span>,
-    <span class="va">contaminant</span>,
-    <span class="va">number_peptides</span>,
-    <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"abundances_grouped"</span><span class="op">)</span>, <span class="co"># select all columns that start with "abundances_grouped"</span>
-  <span class="op">)</span>
-
-<span class="co"># Filter data frame</span>
-<span class="va">pd_prot_data_filtered</span> <span class="op">&lt;-</span> <span class="va">pd_prot_selected</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">contaminant</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># remove annotated contaminants</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">number_peptides</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># select proteins with more than one identified peptide</span>
-
-<span class="co"># Convert into long format</span>
-<span class="va">pd_prot_long</span> <span class="op">&lt;-</span> <span class="va">pd_prot_data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>
-    cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"abundances"</span><span class="op">)</span>,
-    names_to <span class="op">=</span> <span class="st">"file_name"</span>,
-    values_to <span class="op">=</span> <span class="st">"intensity"</span>
-  <span class="op">)</span>
-
-<span class="co"># Make annotation data frame</span>
-<span class="va">file_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="co"># make sure that the names are the same name as in your report</span>
-  <span class="st">"abundances_grouped_f1"</span>,
-  <span class="st">"abundances_grouped_f2"</span>,
-  <span class="st">"abundances_grouped_f3"</span>,
-  <span class="st">"abundances_grouped_f4"</span>,
-  <span class="st">"abundances_grouped_f5"</span>,
-  <span class="st">"abundances_grouped_f6"</span>
-<span class="op">)</span>
-
-<span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
-  <span class="st">"control"</span>,
-  <span class="st">"control"</span>,
-  <span class="st">"control"</span>,
-  <span class="st">"treated"</span>,
-  <span class="st">"treated"</span>,
-  <span class="st">"treated"</span>
-<span class="op">)</span>
-
-<span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">file_name</span>, <span class="va">condition</span><span class="op">)</span>
-
-<span class="co"># Combine your long data frame with the annotation</span>
-<span class="va">pd_prot_long_annotated</span> <span class="op">&lt;-</span> <span class="va">pd_prot_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">annotation</span>, by <span class="op">=</span> <span class="st">"file_name"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Load data</span></span>
+<span><span class="va">pd_prot_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span><span class="st">"yourpath/PDproteins.csv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Select relevant columns</span></span>
+<span><span class="va">pd_prot_selected</span> <span class="op">&lt;-</span> <span class="va">pd_prot_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>    <span class="va">accession</span>,</span>
+<span>    <span class="va">description</span>,</span>
+<span>    <span class="va">contaminant</span>,</span>
+<span>    <span class="va">number_peptides</span>,</span>
+<span>    <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"abundances_grouped"</span><span class="op">)</span>, <span class="co"># select all columns that start with "abundances_grouped"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Filter data frame</span></span>
+<span><span class="va">pd_prot_data_filtered</span> <span class="op">&lt;-</span> <span class="va">pd_prot_selected</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">contaminant</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># remove annotated contaminants</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">number_peptides</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># select proteins with more than one identified peptide</span></span>
+<span></span>
+<span><span class="co"># Convert into long format</span></span>
+<span><span class="va">pd_prot_long</span> <span class="op">&lt;-</span> <span class="va">pd_prot_data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"abundances"</span><span class="op">)</span>,</span>
+<span>    names_to <span class="op">=</span> <span class="st">"file_name"</span>,</span>
+<span>    values_to <span class="op">=</span> <span class="st">"intensity"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Make annotation data frame</span></span>
+<span><span class="va">file_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="co"># make sure that the names are the same name as in your report</span></span>
+<span>  <span class="st">"abundances_grouped_f1"</span>,</span>
+<span>  <span class="st">"abundances_grouped_f2"</span>,</span>
+<span>  <span class="st">"abundances_grouped_f3"</span>,</span>
+<span>  <span class="st">"abundances_grouped_f4"</span>,</span>
+<span>  <span class="st">"abundances_grouped_f5"</span>,</span>
+<span>  <span class="st">"abundances_grouped_f6"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"control"</span>,</span>
+<span>  <span class="st">"treated"</span>,</span>
+<span>  <span class="st">"treated"</span>,</span>
+<span>  <span class="st">"treated"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">file_name</span>, <span class="va">condition</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Combine your long data frame with the annotation</span></span>
+<span><span class="va">pd_prot_long_annotated</span> <span class="op">&lt;-</span> <span class="va">pd_prot_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">annotation</span>, by <span class="op">=</span> <span class="st">"file_name"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -533,7 +533,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>

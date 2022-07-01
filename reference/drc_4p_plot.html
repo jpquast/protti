@@ -18,7 +18,7 @@ protein), based on output from fit_drc_4p function."><!-- mathjax --><script src
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -77,97 +77,122 @@ protein), based on output from <code>fit_drc_4p</code> function.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">drc_4p_plot</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">grouping</span>,
-  <span class="va">response</span>,
-  <span class="va">dose</span>,
-  <span class="va">targets</span>,
-  unit <span class="op">=</span> <span class="st">"uM"</span>,
-  y_axis_name <span class="op">=</span> <span class="st">"Response"</span>,
-  facet <span class="op">=</span> <span class="cn">TRUE</span>,
-  scales <span class="op">=</span> <span class="st">"free"</span>,
-  x_axis_scale_log10 <span class="op">=</span> <span class="cn">TRUE</span>,
-  export <span class="op">=</span> <span class="cn">FALSE</span>,
-  export_name <span class="op">=</span> <span class="st">"dose-response_curves"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">drc_4p_plot</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">grouping</span>,</span>
+<span>  <span class="va">response</span>,</span>
+<span>  <span class="va">dose</span>,</span>
+<span>  <span class="va">targets</span>,</span>
+<span>  unit <span class="op">=</span> <span class="st">"uM"</span>,</span>
+<span>  y_axis_name <span class="op">=</span> <span class="st">"Response"</span>,</span>
+<span>  facet <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  scales <span class="op">=</span> <span class="st">"free"</span>,</span>
+<span>  x_axis_scale_log10 <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  export <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  export_name <span class="op">=</span> <span class="st">"dose-response_curves"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame that is obtained by calling the <code>fit_drc_4p</code> function.</p></dd>
+
+
 <dt>grouping</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the precursor,
 peptide or protein identifiers.</p></dd>
+
+
 <dt>response</dt>
 <dd><p>a numeric column in a nested data frame called <code>plot_points</code> that is part
 of the <code>data</code> data frame. This column contains the response values, e.g. log2 transformed
 intensities.</p></dd>
+
+
 <dt>dose</dt>
 <dd><p>a numeric column in a nested data frame called <code>plot_points</code> that is part
 of the <code>data</code> data frame. This column contains the dose values, e.g. the treatment
 concentrations.</p></dd>
+
+
 <dt>targets</dt>
 <dd><p>a character vector that specifies the names of the precursors, peptides or
 proteins (depending on <code>grouping</code>) that should be plotted. This can also be <code>"all"</code>
 if plots for all curve fits should be created.</p></dd>
+
+
 <dt>unit</dt>
 <dd><p>a character value specifying the unit of the concentration.</p></dd>
+
+
 <dt>y_axis_name</dt>
 <dd><p>a character value specifying the name of the y-axis of the plot.</p></dd>
+
+
 <dt>facet</dt>
 <dd><p>a logical value that indicates if plots should be summarised into facets of 20
 plots. This is recommended for many plots.</p></dd>
+
+
 <dt>scales</dt>
 <dd><p>a character value that specifies if the scales in faceted plots (if more than one
 target was provided) should be <code>"free"</code> or <code>"fixed"</code>.</p></dd>
+
+
 <dt>x_axis_scale_log10</dt>
 <dd><p>a logical value that indicates if the x-axis scale should be log10
 transformed.</p></dd>
+
+
 <dt>export</dt>
 <dd><p>a logical value that indicates if plots should be exported as PDF. The output
 directory will be the current working directory. The name of the file can be chosen using the
 <code>export_name</code> argument. If only one target is selected and <code>export = TRUE</code>,
 the plot is exported and in addition returned in R.</p></dd>
+
+
 <dt>export_name</dt>
 <dd><p>a character value providing the name of the exported file if
 <code>export = TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>If <code>targets = "all"</code> a list containing plots for every unique identifier in the
+    
+
+<p>If <code>targets = "all"</code> a list containing plots for every unique identifier in the
 <code>grouping</code> variable is created. Otherwise a plot for the specified targets is created with
 maximally 20 facets.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span>
-<span class="r-in">  n_proteins <span class="op">=</span> <span class="fl">2</span>,</span>
-<span class="r-in">  frac_change <span class="op">=</span> <span class="fl">1</span>,</span>
-<span class="r-in">  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in">  n_conditions <span class="op">=</span> <span class="fl">8</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"dose_response"</span>,</span>
-<span class="r-in">  concentrations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">5000</span><span class="op">)</span>,</span>
-<span class="r-in">  additional_metadata <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Perform dose response curve fit</span></span>
-<span class="r-in"><span class="va">drc_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit_drc_4p.html">fit_drc_4p</a></span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span class="r-in">  response <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span class="r-in">  dose <span class="op">=</span> <span class="va">concentration</span>,</span>
-<span class="r-in">  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">drc_fit</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_proteins <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  frac_change <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>  n_conditions <span class="op">=</span> <span class="fl">8</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"dose_response"</span>,</span></span>
+<span class="r-in"><span>  concentrations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">5000</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  additional_metadata <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Perform dose response curve fit</span></span></span>
+<span class="r-in"><span><span class="va">drc_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit_drc_4p.html">fit_drc_4p</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span></span>
+<span class="r-in"><span>  response <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span></span>
+<span class="r-in"><span>  dose <span class="op">=</span> <span class="va">concentration</span>,</span></span>
+<span class="r-in"><span>  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">drc_fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tibble [39 × 18] (S3: tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ rank             : num [1:39] 1 2 3 4 NA NA NA NA NA NA ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ protein          : chr [1:39] "protein_2" "protein_2" "protein_1" "protein_2" ...</span>
@@ -499,23 +524,23 @@ maximally 20 facets.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ anova_pval       : num [1:39] 3.67e-20 1.47e-05 1.97e-08 2.86e-07 1.21e-04 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ anova_adj_pval   : num [1:39] 1.61e-18 1.62e-04 4.33e-07 4.19e-06 1.06e-03 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ score            : num [1:39] 1 0.4664 0.3732 0.0586 NA ...</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Plot dose response curves</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">drc_fit</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="fu">drc_4p_plot</span><span class="op">(</span></span>
-<span class="r-in">    data <span class="op">=</span> <span class="va">drc_fit</span>,</span>
-<span class="r-in">    grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span class="r-in">    response <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span class="r-in">    dose <span class="op">=</span> <span class="va">concentration</span>,</span>
-<span class="r-in">    targets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"peptide_2_1"</span>, <span class="st">"peptide_2_3"</span><span class="op">)</span>,</span>
-<span class="r-in">    unit <span class="op">=</span> <span class="st">"pM"</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot dose response curves</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">drc_fit</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu">drc_4p_plot</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    data <span class="op">=</span> <span class="va">drc_fit</span>,</span></span>
+<span class="r-in"><span>    grouping <span class="op">=</span> <span class="va">peptide</span>,</span></span>
+<span class="r-in"><span>    response <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span></span>
+<span class="r-in"><span>    dose <span class="op">=</span> <span class="va">concentration</span>,</span></span>
+<span class="r-in"><span>    targets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"peptide_2_1"</span>, <span class="st">"peptide_2_3"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    unit <span class="op">=</span> <span class="st">"pM"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`1`</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Transformation introduced infinite values in continuous x-axis</span>
 <span class="r-plt img"><img src="drc_4p_plot-1.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -530,7 +555,7 @@ maximally 20 facets.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

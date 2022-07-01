@@ -18,7 +18,7 @@ abundance can be displayed.'><!-- mathjax --><script src="https://cdnjs.cloudfla
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -77,72 +77,91 @@ abundance can be displayed.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">barcode_plot</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">start_position</span>,
-  <span class="va">end_position</span>,
-  <span class="va">protein_length</span>,
-  coverage <span class="op">=</span> <span class="cn">NULL</span>,
-  colouring <span class="op">=</span> <span class="cn">NULL</span>,
-  protein_id <span class="op">=</span> <span class="cn">NULL</span>,
-  facet <span class="op">=</span> <span class="cn">NULL</span>,
-  cutoffs <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">barcode_plot</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">start_position</span>,</span>
+<span>  <span class="va">end_position</span>,</span>
+<span>  <span class="va">protein_length</span>,</span>
+<span>  coverage <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  colouring <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  protein_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  facet <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cutoffs <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>Data frame containing differential abundance, start and end peptide or precursor positions and protein length.</p></dd>
+
+
 <dt>start_position</dt>
 <dd><p>Column in the data frame containing the start positions for each peptide or precursor.</p></dd>
+
+
 <dt>end_position</dt>
 <dd><p>Column in the data frame containing the end positions for each peptide or precursor.</p></dd>
+
+
 <dt>protein_length</dt>
 <dd><p>Column in the data frame containing the length of the protein.</p></dd>
+
+
 <dt>coverage</dt>
 <dd><p>Optional, column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.</p></dd>
+
+
 <dt>colouring</dt>
 <dd><p>Optional argument, column in the data frame containing information by which peptide or precursors should
 be colored.</p></dd>
+
+
 <dt>protein_id</dt>
 <dd><p>Optional argument, column in the data frame containing protein identifiers. Required if only one protein
 should be plotted and the data frame contains only information for this protein.</p></dd>
+
+
 <dt>facet</dt>
 <dd><p>Optional argument, column in the data frame containing information by which data should be faceted. This can be
 protein identifiers. Only 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a
 subsetted data frame should be created.</p></dd>
+
+
 <dt>cutoffs</dt>
 <dd><p>Optional argument specifying the log2 fold change and significance cutoffs used for highlighting peptides.
 If this argument is provided colouring information will be overwritten with peptides that fulfill this condition.
 The cutoff should be provided in a vector of the form c(diff = 2, pval = 0.05). The name of the cutoff should reflect the
 column name that contains this information (log2 fold changes, p-values or adjusted p-values).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A barcode plot is returned.</p>
+    
+
+<p>A barcode plot is returned.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">40</span>, <span class="fl">55</span>, <span class="fl">130</span>, <span class="fl">181</span>, <span class="fl">195</span><span class="op">)</span>,</span>
-<span class="r-in">  end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">11</span>, <span class="fl">51</span>, <span class="fl">60</span>, <span class="fl">145</span>, <span class="fl">187</span>, <span class="fl">200</span><span class="op">)</span>,</span>
-<span class="r-in">  length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">6</span><span class="op">)</span>,</span>
-<span class="r-in">  pg_protein_accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Protein 1"</span>, <span class="fl">6</span><span class="op">)</span>,</span>
-<span class="r-in">  diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
-<span class="r-in">  pval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.01</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">barcode_plot</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">data</span>,</span>
-<span class="r-in">  start_position <span class="op">=</span> <span class="va">start</span>,</span>
-<span class="r-in">  end_position <span class="op">=</span> <span class="va">end</span>,</span>
-<span class="r-in">  protein_length <span class="op">=</span> <span class="va">length</span>,</span>
-<span class="r-in">  facet <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span>
-<span class="r-in">  cutoffs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>diff <span class="op">=</span> <span class="fl">2</span>, pval <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">40</span>, <span class="fl">55</span>, <span class="fl">130</span>, <span class="fl">181</span>, <span class="fl">195</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">11</span>, <span class="fl">51</span>, <span class="fl">60</span>, <span class="fl">145</span>, <span class="fl">187</span>, <span class="fl">200</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">6</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  pg_protein_accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Protein 1"</span>, <span class="fl">6</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  pval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.01</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">barcode_plot</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  start_position <span class="op">=</span> <span class="va">start</span>,</span></span>
+<span class="r-in"><span>  end_position <span class="op">=</span> <span class="va">end</span>,</span></span>
+<span class="r-in"><span>  protein_length <span class="op">=</span> <span class="va">length</span>,</span></span>
+<span class="r-in"><span>  facet <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span></span>
+<span class="r-in"><span>  cutoffs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>diff <span class="op">=</span> <span class="fl">2</span>, pval <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="barcode_plot-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -158,7 +177,7 @@ column name that contains this information (log2 fold changes, p-values or adjus
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -20,7 +20,7 @@ sample names."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/li
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -81,128 +81,185 @@ sample names.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">create_queue</span><span class="op">(</span>
-  date <span class="op">=</span> <span class="cn">NULL</span>,
-  instrument <span class="op">=</span> <span class="cn">NULL</span>,
-  user <span class="op">=</span> <span class="cn">NULL</span>,
-  measurement_type <span class="op">=</span> <span class="cn">NULL</span>,
-  experiment_name <span class="op">=</span> <span class="cn">NULL</span>,
-  digestion <span class="op">=</span> <span class="cn">NULL</span>,
-  treatment_type_1 <span class="op">=</span> <span class="cn">NULL</span>,
-  treatment_type_2 <span class="op">=</span> <span class="cn">NULL</span>,
-  treatment_dose_1 <span class="op">=</span> <span class="cn">NULL</span>,
-  treatment_dose_2 <span class="op">=</span> <span class="cn">NULL</span>,
-  treatment_unit_1 <span class="op">=</span> <span class="cn">NULL</span>,
-  treatment_unit_2 <span class="op">=</span> <span class="cn">NULL</span>,
-  n_replicates <span class="op">=</span> <span class="cn">NULL</span>,
-  number_runs <span class="op">=</span> <span class="cn">FALSE</span>,
-  organism <span class="op">=</span> <span class="cn">NULL</span>,
-  exclude_combinations <span class="op">=</span> <span class="cn">NULL</span>,
-  inj_vol <span class="op">=</span> <span class="cn">NA</span>,
-  data_path <span class="op">=</span> <span class="cn">NA</span>,
-  method_path <span class="op">=</span> <span class="cn">NA</span>,
-  position_row <span class="op">=</span> <span class="cn">NA</span>,
-  position_column <span class="op">=</span> <span class="cn">NA</span>,
-  blank_every_n <span class="op">=</span> <span class="cn">NULL</span>,
-  blank_position <span class="op">=</span> <span class="cn">NA</span>,
-  blank_method_path <span class="op">=</span> <span class="cn">NA</span>,
-  blank_inj_vol <span class="op">=</span> <span class="fl">1</span>,
-  export <span class="op">=</span> <span class="cn">FALSE</span>,
-  export_to_queue <span class="op">=</span> <span class="cn">FALSE</span>,
-  queue_path <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_queue</span><span class="op">(</span></span>
+<span>  date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  instrument <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  user <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  measurement_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  experiment_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  digestion <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  treatment_type_1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  treatment_type_2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  treatment_dose_1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  treatment_dose_2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  treatment_unit_1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  treatment_unit_2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_replicates <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  number_runs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  organism <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  exclude_combinations <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  inj_vol <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  data_path <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  method_path <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  position_row <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  position_column <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  blank_every_n <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  blank_position <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  blank_method_path <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  blank_inj_vol <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  export <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  export_to_queue <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  queue_path <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>date</dt>
 <dd><p>optional, character value indicating the start date of the measurements.</p></dd>
+
+
 <dt>instrument</dt>
 <dd><p>optional, character value indicating the instrument initials.</p></dd>
+
+
 <dt>user</dt>
 <dd><p>optional, character value indicating the user name.</p></dd>
+
+
 <dt>measurement_type</dt>
 <dd><p>optional, character value indicating the measurement type of the
 samples (e.g "DIA", "DDA", "library" etc.).</p></dd>
+
+
 <dt>experiment_name</dt>
 <dd><p>optional, character value indicating the name of the experiment.</p></dd>
+
+
 <dt>digestion</dt>
 <dd><p>optional, character vector indicating the digestion types used in this
 experiment (e.g "LiP" and/or "tryptic control").</p></dd>
+
+
 <dt>treatment_type_1</dt>
 <dd><p>optional, character vector indicating the name of the treatment.</p></dd>
+
+
 <dt>treatment_type_2</dt>
 <dd><p>optional, character vector indicating the name of a second treatment
 that was combined with the first treatment.</p></dd>
+
+
 <dt>treatment_dose_1</dt>
 <dd><p>optional, numeric vector indicating the doses used for treatment 1.
 These can be concentrations or times etc.</p></dd>
+
+
 <dt>treatment_dose_2</dt>
 <dd><p>optional, numeric vector indicating the doses used for treatment 2.
 These can be concentrations or times etc.</p></dd>
+
+
 <dt>treatment_unit_1</dt>
 <dd><p>optional, character vector indicating the unit of the doses for
 treatment 1 (e.g min, mM, etc.).</p></dd>
+
+
 <dt>treatment_unit_2</dt>
 <dd><p>optional, character vector indicating the unit of the doses for
 treatment 2 (e.g min, mM, etc.).</p></dd>
+
+
 <dt>n_replicates</dt>
 <dd><p>optional, a numeric value indicating the number of replicates used per sample.</p></dd>
+
+
 <dt>number_runs</dt>
 <dd><p>a logical that specifies if file names should be numbered from 1:n instead of
 adding experiment information. Default is FALSE.</p></dd>
+
+
 <dt>organism</dt>
 <dd><p>optional, character value indicating the name of the organism used.</p></dd>
+
+
 <dt>exclude_combinations</dt>
 <dd><p>optional, list of lists that contains vectors of treatment types and
 treatment doses of which combinations should be excluded from the final queue.</p></dd>
+
+
 <dt>inj_vol</dt>
 <dd><p>a numeric value indicating the volume used for injection in microliter. Will be
 <code>NA</code> if not specified. Then it needs to be manually specified before the queue can be used.</p></dd>
+
+
 <dt>data_path</dt>
 <dd><p>a character value indicating the file path where the MS raw data should be saved.
 Backslashes should be escaped by another backslash. Will be <code>NA</code> if not specified, but
 needs to be specified later on then.</p></dd>
+
+
 <dt>method_path</dt>
 <dd><p>a character value indicating the file path of the MS acquisition method.
 Backslashes should be escaped by another backslash. Will be <code>NA</code> if not specified, but
 needs to be specified later on then.</p></dd>
+
+
 <dt>position_row</dt>
 <dd><p>a character vector that contains row positions that can be used for the
 samples (e.g c("A", "B")). If the number of specified rows and columns does not equal the total
 number of samples, positions will be repeated.</p></dd>
+
+
 <dt>position_column</dt>
 <dd><p>a character vector that contains column positions that can be used for the
 samples (e.g 8). If the number of specified rows and columns does not equal the total number
 of samples, positions will be repeated.</p></dd>
+
+
 <dt>blank_every_n</dt>
 <dd><p>optional, numeric value that specifies in which intervals a blank sample
 should be inserted.</p></dd>
+
+
 <dt>blank_position</dt>
 <dd><p>a character value that specifies the plate position of the blank. Will be
 <code>NA</code> if not specified, but needs to be specified later on then.</p></dd>
+
+
 <dt>blank_method_path</dt>
 <dd><p>a character value that specifies the file path of the MS acquisition
 method of the blank. Backslashes should be escaped by another backslash. Will be <code>NA</code> if
 not specified, but needs to be specified later on then.</p></dd>
+
+
 <dt>blank_inj_vol</dt>
 <dd><p>a numeric value that specifies the injection volume of the blank sample.
 Will be <code>NA</code> if not specified, but needs to be specified later on then.</p></dd>
+
+
 <dt>export</dt>
 <dd><p>a logical value that specifies if the queue should be exported from R and saved
 as a .csv file. Default is TRUE. Further options for export can be adjusted with the
 <code>export_to_queue</code> and <code>queue_path</code> arguments.</p></dd>
+
+
 <dt>export_to_queue</dt>
 <dd><p>a logical value that specifies if the resulting queue should be appended
 to an already existing queue. If false result will be saved as <code>queue.csv</code>.</p></dd>
+
+
 <dt>queue_path</dt>
 <dd><p>optional, a character value that specifies the file path to a queue file to
 which the generated queue should be appended if <code>export_to_queue = TRUE</code>. If not specified
 queue file can be chosen interactively.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>If <code>export_to_queue = FALSE</code> a file named <code>queue.csv</code> will be returned that
+    
+
+<p>If <code>export_to_queue = FALSE</code> a file named <code>queue.csv</code> will be returned that
 contains the generated queue. If <code>export_to_queue = TRUE</code>, the resulting generated queue
 will be appended to an already existing queue that needs to be specified either interactively
 or through the argument <code>queue_path</code>.</p>
@@ -210,34 +267,34 @@ or through the argument <code>queue_path</code>.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">create_queue</span><span class="op">(</span></span>
-<span class="r-in">  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"200722"</span><span class="op">)</span>,</span>
-<span class="r-in">  instrument <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EX1"</span><span class="op">)</span>,</span>
-<span class="r-in">  user <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jquast"</span><span class="op">)</span>,</span>
-<span class="r-in">  measurement_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DIA"</span><span class="op">)</span>,</span>
-<span class="r-in">  experiment_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"JPQ031"</span><span class="op">)</span>,</span>
-<span class="r-in">  digestion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LiP"</span>, <span class="st">"tryptic control"</span><span class="op">)</span>,</span>
-<span class="r-in">  treatment_type_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EDTA"</span>, <span class="st">"H2O"</span><span class="op">)</span>,</span>
-<span class="r-in">  treatment_type_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Zeba"</span>, <span class="st">"unfiltered"</span><span class="op">)</span>,</span>
-<span class="r-in">  treatment_dose_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span>, <span class="fl">60</span><span class="op">)</span>,</span>
-<span class="r-in">  treatment_unit_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"min"</span><span class="op">)</span>,</span>
-<span class="r-in">  n_replicates <span class="op">=</span> <span class="fl">4</span>,</span>
-<span class="r-in">  number_runs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">  organism <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"E. coli"</span><span class="op">)</span>,</span>
-<span class="r-in">  exclude_combinations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">    treatment_type_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"H2O"</span><span class="op">)</span>,</span>
-<span class="r-in">    treatment_type_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Zeba"</span>, <span class="st">"unfiltered"</span><span class="op">)</span>,</span>
-<span class="r-in">    treatment_dose_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  inj_vol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in">  data_path <span class="op">=</span> <span class="st">"D:\\2007_Data"</span>,</span>
-<span class="r-in">  method_path <span class="op">=</span> <span class="st">"C:\\Xcalibur\\methods\\DIA_120min"</span>,</span>
-<span class="r-in">  position_row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>, <span class="st">"F"</span><span class="op">)</span>,</span>
-<span class="r-in">  position_column <span class="op">=</span> <span class="fl">8</span>,</span>
-<span class="r-in">  blank_every_n <span class="op">=</span> <span class="fl">4</span>,</span>
-<span class="r-in">  blank_position <span class="op">=</span> <span class="st">"1-V1"</span>,</span>
-<span class="r-in">  blank_method_path <span class="op">=</span> <span class="st">"C:\\Xcalibur\\methods\\blank"</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">create_queue</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"200722"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  instrument <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EX1"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  user <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jquast"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  measurement_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DIA"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  experiment_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"JPQ031"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  digestion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LiP"</span>, <span class="st">"tryptic control"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  treatment_type_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EDTA"</span>, <span class="st">"H2O"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  treatment_type_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Zeba"</span>, <span class="st">"unfiltered"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  treatment_dose_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span>, <span class="fl">60</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  treatment_unit_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"min"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  n_replicates <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span>  number_runs <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  organism <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"E. coli"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  exclude_combinations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    treatment_type_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"H2O"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    treatment_type_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Zeba"</span>, <span class="st">"unfiltered"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    treatment_dose_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  inj_vol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  data_path <span class="op">=</span> <span class="st">"D:\\2007_Data"</span>,</span></span>
+<span class="r-in"><span>  method_path <span class="op">=</span> <span class="st">"C:\\Xcalibur\\methods\\DIA_120min"</span>,</span></span>
+<span class="r-in"><span>  position_row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>, <span class="st">"F"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  position_column <span class="op">=</span> <span class="fl">8</span>,</span></span>
+<span class="r-in"><span>  blank_every_n <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span>  blank_position <span class="op">=</span> <span class="st">"1-V1"</span>,</span></span>
+<span class="r-in"><span>  blank_method_path <span class="op">=</span> <span class="st">"C:\\Xcalibur\\methods\\blank"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 80 × 21</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    `Sample Type` `File Name` `Sample ID` Path  `Instrument Me…` `Process Method`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>           </span>
@@ -270,7 +327,7 @@ or through the argument <code>queue_path</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -18,7 +18,7 @@ three peptides are considered for quantification."><!-- mathjax --><script src="
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -77,158 +77,180 @@ three peptides are considered for quantification.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">calculate_protein_abundance</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">sample</span>,
-  <span class="va">protein_id</span>,
-  <span class="va">precursor</span>,
-  <span class="va">peptide</span>,
-  <span class="va">intensity_log2</span>,
-  method <span class="op">=</span> <span class="st">"sum"</span>,
-  for_plot <span class="op">=</span> <span class="cn">FALSE</span>,
-  retain_columns <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calculate_protein_abundance</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">sample</span>,</span>
+<span>  <span class="va">protein_id</span>,</span>
+<span>  <span class="va">precursor</span>,</span>
+<span>  <span class="va">peptide</span>,</span>
+<span>  <span class="va">intensity_log2</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"sum"</span>,</span>
+<span>  for_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  retain_columns <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame that contains at least the input variables.</p></dd>
+
+
 <dt>sample</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the sample name.</p></dd>
+
+
 <dt>protein_id</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the protein
 accession numbers.</p></dd>
+
+
 <dt>precursor</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains precursors.</p></dd>
+
+
 <dt>peptide</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains peptide sequences.
 This column is needed to filter for proteins with at least 3 unique peptides. This can equate
 to more than three precursors. The quantification is done on the precursor level.</p></dd>
+
+
 <dt>intensity_log2</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains log2
 transformed precursor intensities.</p></dd>
+
+
 <dt>method</dt>
 <dd><p>a character value specifying with which method protein quantities should be
 calculated. Possible options include <code>"sum"</code>, which takes the sum of all precursor
 intensities as the protein abundance.</p></dd>
+
+
 <dt>for_plot</dt>
 <dd><p>a logical value indicating whether the result should be only protein intensities
 or protein intensities together with precursor intensities that can be used for plotting using
 <code>qc_protein_abundance</code>. Default is <code>FALSE</code>.</p></dd>
+
+
 <dt>retain_columns</dt>
 <dd><p>a vector indicating if certain columns should be retained from the input
 data frame. Default is not retaining additional columns <code>retain_columns = NULL</code>. Specific
 columns can be retained by providing their names (not in quotations marks, just like other
 column names, but in a vector).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>If <code>for_plot = FALSE</code>, protein abundances are returned, if <code>for_plot = TRUE</code>also precursor intensities are returned in a data frame. The later output is ideal for plotting
+    
+
+<p>If <code>for_plot = FALSE</code>, protein abundances are returned, if <code>for_plot = TRUE</code></p>
+
+
+<p>also precursor intensities are returned in a data frame. The later output is ideal for plotting
 with <code>qc_protein_abundance</code> and can be filtered to only include protein abundances.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S1"</span>, <span class="fl">6</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S2"</span>, <span class="fl">6</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S1"</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S2"</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"P1"</span>, <span class="fl">12</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"P2"</span>, <span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  precursor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A1"</span>, <span class="st">"A2"</span>, <span class="st">"B1"</span>, <span class="st">"B2"</span>, <span class="st">"C1"</span>, <span class="st">"D1"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"E1"</span>, <span class="st">"F1"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  peptide <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"E"</span>, <span class="st">"F"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  intensity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span>, mean <span class="op">=</span> <span class="fl">15</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span>, mean <span class="op">=</span> <span class="fl">21</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">2</span>, mean <span class="op">=</span> <span class="fl">15</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">2</span>, mean <span class="op">=</span> <span class="fl">15</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">data</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S1"</span>, <span class="fl">6</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S2"</span>, <span class="fl">6</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S1"</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S2"</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"P1"</span>, <span class="fl">12</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"P2"</span>, <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  precursor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A1"</span>, <span class="st">"A2"</span>, <span class="st">"B1"</span>, <span class="st">"B2"</span>, <span class="st">"C1"</span>, <span class="st">"D1"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"E1"</span>, <span class="st">"F1"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  peptide <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"E"</span>, <span class="st">"F"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  intensity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span>, mean <span class="op">=</span> <span class="fl">15</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span>, mean <span class="op">=</span> <span class="fl">21</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">2</span>, mean <span class="op">=</span> <span class="fl">15</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">2</span>, mean <span class="op">=</span> <span class="fl">15</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">data</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    sample protein_id precursor peptide intensity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      S1         P1        A1       A  13.68398</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      S1         P1        A2       A  16.71040</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      S1         P1        B1       B  17.30587</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      S1         P1        B2       B  15.55255</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      S1         P1        C1       C  15.28821</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      S1         P1        D1       D  14.84875</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7      S2         P1        A1       A  23.16142</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8      S2         P1        A2       A  21.27632</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9      S2         P1        B1       B  20.84171</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10     S2         P1        B2       B  18.49208</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11     S2         P1        C1       C  19.43472</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12     S2         P1        D1       D  20.92233</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13     S1         P2        E1       E  15.20629</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14     S1         P2        F1       F  15.27687</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15     S2         P2        E1       E  16.64301</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16     S2         P2        F1       F  14.61170</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate protein abundances</span></span>
-<span class="r-in"><span class="va">protein_abundance</span> <span class="op">&lt;-</span> <span class="fu">calculate_protein_abundance</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">data</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span>
-<span class="r-in">  precursor <span class="op">=</span> <span class="va">precursor</span>,</span>
-<span class="r-in">  peptide <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span class="r-in">  intensity_log2 <span class="op">=</span> <span class="va">intensity</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"sum"</span>,</span>
-<span class="r-in">  for_plot <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">protein_abundance</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      S1         P1        A1       A  16.83511</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      S1         P1        A2       A  11.62669</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      S1         P1        B1       B  12.72829</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      S1         P1        B2       B  14.84728</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      S1         P1        C1       C  16.22800</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      S1         P1        D1       D  19.55421</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      S2         P1        A1       A  20.72923</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8      S2         P1        A2       A  20.60246</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      S2         P1        B1       B  20.25829</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     S2         P1        B2       B  19.02045</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     S2         P1        C1       C  21.72110</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12     S2         P1        D1       D  22.04001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13     S1         P2        E1       E  14.11058</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14     S1         P2        F1       F  16.24450</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15     S2         P2        E1       E  15.02052</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16     S2         P2        F1       F  15.79435</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate protein abundances</span></span></span>
+<span class="r-in"><span><span class="va">protein_abundance</span> <span class="op">&lt;-</span> <span class="fu">calculate_protein_abundance</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span></span>
+<span class="r-in"><span>  precursor <span class="op">=</span> <span class="va">precursor</span>,</span></span>
+<span class="r-in"><span>  peptide <span class="op">=</span> <span class="va">peptide</span>,</span></span>
+<span class="r-in"><span>  intensity_log2 <span class="op">=</span> <span class="va">intensity</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"sum"</span>,</span></span>
+<span class="r-in"><span>  for_plot <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">protein_abundance</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   sample protein_id intensity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> S1     P1              18.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> S2     P1              24.0</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate protein abundances and retain precursor</span></span>
-<span class="r-in"><span class="co"># abundances that can be used in a peptide profile plot</span></span>
-<span class="r-in"><span class="va">complete_abundances</span> <span class="op">&lt;-</span> <span class="fu">calculate_protein_abundance</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">data</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span>
-<span class="r-in">  precursor <span class="op">=</span> <span class="va">precursor</span>,</span>
-<span class="r-in">  peptide <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span class="r-in">  intensity_log2 <span class="op">=</span> <span class="va">intensity</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"sum"</span>,</span>
-<span class="r-in">  for_plot <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">complete_abundances</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> S1     P1              19.9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> S2     P1              23.6</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate protein abundances and retain precursor</span></span></span>
+<span class="r-in"><span><span class="co"># abundances that can be used in a peptide profile plot</span></span></span>
+<span class="r-in"><span><span class="va">complete_abundances</span> <span class="op">&lt;-</span> <span class="fu">calculate_protein_abundance</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span></span>
+<span class="r-in"><span>  precursor <span class="op">=</span> <span class="va">precursor</span>,</span></span>
+<span class="r-in"><span>  peptide <span class="op">=</span> <span class="va">peptide</span>,</span></span>
+<span class="r-in"><span>  intensity_log2 <span class="op">=</span> <span class="va">intensity</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"sum"</span>,</span></span>
+<span class="r-in"><span>  for_plot <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">complete_abundances</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 14 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    sample protein_id intensity precursor         peptide</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> S1     P1              18.6 protein_intensity <span style="color: #BB0000;">NA</span>     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> S2     P1              24.0 protein_intensity <span style="color: #BB0000;">NA</span>     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> S1     P1              13.7 A1                A      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> S1     P1              16.7 A2                A      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> S1     P1              17.3 B1                B      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> S1     P1              15.6 B2                B      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> S1     P1              15.3 C1                C      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> S1     P1              14.8 D1                D      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> S2     P1              23.2 A1                A      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> S2     P1              21.3 A2                A      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> S2     P1              20.8 B1                B      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> S2     P1              18.5 B2                B      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> S2     P1              19.4 C1                C      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> S2     P1              20.9 D1                D      </span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> S1     P1              19.9 protein_intensity <span style="color: #BB0000;">NA</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> S2     P1              23.6 protein_intensity <span style="color: #BB0000;">NA</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> S1     P1              16.8 A1                A      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> S1     P1              11.6 A2                A      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> S1     P1              12.7 B1                B      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> S1     P1              14.8 B2                B      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> S1     P1              16.2 C1                C      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> S1     P1              19.6 D1                D      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> S2     P1              20.7 A1                A      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> S2     P1              20.6 A2                A      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> S2     P1              20.3 B1                B      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> S2     P1              19.0 B2                B      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> S2     P1              21.7 C1                C      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> S2     P1              22.0 D1                D      </span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -243,7 +265,7 @@ with <code>qc_protein_abundance</code> and can be filtered to only include prote
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -18,7 +18,7 @@ peptide and protein abundance changes in different samples and conditions."><!--
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -77,120 +77,141 @@ peptide and protein abundance changes in different samples and conditions.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">peptide_profile_plot</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">sample</span>,
-  <span class="va">peptide</span>,
-  <span class="va">intensity_log2</span>,
-  <span class="va">grouping</span>,
-  <span class="va">targets</span>,
-  protein_abundance_plot <span class="op">=</span> <span class="cn">FALSE</span>,
-  interactive <span class="op">=</span> <span class="cn">FALSE</span>,
-  export <span class="op">=</span> <span class="cn">FALSE</span>,
-  export_name <span class="op">=</span> <span class="st">"peptide_profile_plots"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">peptide_profile_plot</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">sample</span>,</span>
+<span>  <span class="va">peptide</span>,</span>
+<span>  <span class="va">intensity_log2</span>,</span>
+<span>  <span class="va">grouping</span>,</span>
+<span>  <span class="va">targets</span>,</span>
+<span>  protein_abundance_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  export <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  export_name <span class="op">=</span> <span class="st">"peptide_profile_plots"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame that contains at least the input variables.</p></dd>
+
+
 <dt>sample</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains sample names.</p></dd>
+
+
 <dt>peptide</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains peptide or
 precursor names.</p></dd>
+
+
 <dt>intensity_log2</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains log2
 transformed intensities.</p></dd>
+
+
 <dt>grouping</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains groups by which
 the data should be split. This can be for example protein IDs.</p></dd>
+
+
 <dt>targets</dt>
 <dd><p>a character vector that specifies elements of the grouping column which should
 be plotted. This can also be <code>"all"</code> if plots for all groups should be created. Depending
 on the number of elements in your grouping column this can be many plots.</p></dd>
+
+
 <dt>protein_abundance_plot</dt>
 <dd><p>a logical value. If the input for this plot comes directly from
 <code>calculate_protein_abundance</code> this argument can be set to <code>TRUE</code>. This displays all
 peptides in gray, while the protein abundance is displayed in green.</p></dd>
+
+
 <dt>interactive</dt>
 <dd><p>a logical value that indicates whether the plot should be interactive
 (default is FALSE). If this is TRUE only one target can be supplied to the function. Interactive
 plots cannot be exported either.</p></dd>
+
+
 <dt>export</dt>
 <dd><p>a logical value that indicates if plots should be exported as PDF. The output
 directory will be the current working directory. The name of the file can be chosen using the
 <code>export_name</code> argument.</p></dd>
+
+
 <dt>export_name</dt>
 <dd><p>A character vector that provides the name of the exported file if
 <code>export = TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list of peptide profile plots.</p>
+    
+
+<p>A list of peptide profile plots.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S1"</span>, <span class="fl">6</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S2"</span>, <span class="fl">6</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S1"</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S2"</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"P1"</span>, <span class="fl">12</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"P2"</span>, <span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  precursor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A1"</span>, <span class="st">"A2"</span>, <span class="st">"B1"</span>, <span class="st">"B2"</span>, <span class="st">"C1"</span>, <span class="st">"D1"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"E1"</span>, <span class="st">"F1"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  peptide <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"E"</span>, <span class="st">"F"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  intensity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span>, mean <span class="op">=</span> <span class="fl">15</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span>, mean <span class="op">=</span> <span class="fl">21</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">2</span>, mean <span class="op">=</span> <span class="fl">15</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">2</span>, mean <span class="op">=</span> <span class="fl">15</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate protein abundances and retain precursor</span></span>
-<span class="r-in"><span class="co"># abundances that can be used in a peptide profile plot</span></span>
-<span class="r-in"><span class="va">complete_abundances</span> <span class="op">&lt;-</span> <span class="fu"><a href="calculate_protein_abundance.html">calculate_protein_abundance</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">data</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span>
-<span class="r-in">  precursor <span class="op">=</span> <span class="va">precursor</span>,</span>
-<span class="r-in">  peptide <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span class="r-in">  intensity_log2 <span class="op">=</span> <span class="va">intensity</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"sum"</span>,</span>
-<span class="r-in">  for_plot <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Plot protein abundance profile</span></span>
-<span class="r-in"><span class="co"># protein_abundance_plot can be set to</span></span>
-<span class="r-in"><span class="co"># FALSE to to also colour precursors</span></span>
-<span class="r-in"><span class="fu">peptide_profile_plot</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">complete_abundances</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  peptide <span class="op">=</span> <span class="va">precursor</span>,</span>
-<span class="r-in">  intensity_log2 <span class="op">=</span> <span class="va">intensity</span>,</span>
-<span class="r-in">  grouping <span class="op">=</span> <span class="va">protein_id</span>,</span>
-<span class="r-in">  targets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P1"</span><span class="op">)</span>,</span>
-<span class="r-in">  protein_abundance_plot <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S1"</span>, <span class="fl">6</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S2"</span>, <span class="fl">6</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S1"</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"S2"</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"P1"</span>, <span class="fl">12</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"P2"</span>, <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  precursor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A1"</span>, <span class="st">"A2"</span>, <span class="st">"B1"</span>, <span class="st">"B2"</span>, <span class="st">"C1"</span>, <span class="st">"D1"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"E1"</span>, <span class="st">"F1"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  peptide <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"E"</span>, <span class="st">"F"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  intensity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span>, mean <span class="op">=</span> <span class="fl">15</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span>, mean <span class="op">=</span> <span class="fl">21</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">2</span>, mean <span class="op">=</span> <span class="fl">15</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">2</span>, mean <span class="op">=</span> <span class="fl">15</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate protein abundances and retain precursor</span></span></span>
+<span class="r-in"><span><span class="co"># abundances that can be used in a peptide profile plot</span></span></span>
+<span class="r-in"><span><span class="va">complete_abundances</span> <span class="op">&lt;-</span> <span class="fu"><a href="calculate_protein_abundance.html">calculate_protein_abundance</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span></span>
+<span class="r-in"><span>  precursor <span class="op">=</span> <span class="va">precursor</span>,</span></span>
+<span class="r-in"><span>  peptide <span class="op">=</span> <span class="va">peptide</span>,</span></span>
+<span class="r-in"><span>  intensity_log2 <span class="op">=</span> <span class="va">intensity</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"sum"</span>,</span></span>
+<span class="r-in"><span>  for_plot <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot protein abundance profile</span></span></span>
+<span class="r-in"><span><span class="co"># protein_abundance_plot can be set to</span></span></span>
+<span class="r-in"><span><span class="co"># FALSE to to also colour precursors</span></span></span>
+<span class="r-in"><span><span class="fu">peptide_profile_plot</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">complete_abundances</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  peptide <span class="op">=</span> <span class="va">precursor</span>,</span></span>
+<span class="r-in"><span>  intensity_log2 <span class="op">=</span> <span class="va">intensity</span>,</span></span>
+<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">protein_id</span>,</span></span>
+<span class="r-in"><span>  targets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P1"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  protein_abundance_plot <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $P1</span>
 <span class="r-plt img"><img src="peptide_profile_plot-1.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -205,7 +226,7 @@ directory will be the current working directory. The name of the file can be cho
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

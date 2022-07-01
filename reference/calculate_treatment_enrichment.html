@@ -18,7 +18,7 @@ proteins as compared to all proteins."><!-- mathjax --><script src="https://cdnj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -77,42 +77,55 @@ proteins as compared to all proteins.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">calculate_treatment_enrichment</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">protein_id</span>,
-  <span class="va">is_significant</span>,
-  <span class="va">binds_treatment</span>,
-  <span class="va">treatment_name</span>,
-  plot <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calculate_treatment_enrichment</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">protein_id</span>,</span>
+<span>  <span class="va">is_significant</span>,</span>
+<span>  <span class="va">binds_treatment</span>,</span>
+<span>  <span class="va">treatment_name</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame contains at least the input variables.</p></dd>
+
+
 <dt>protein_id</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the protein
 accession numbers.</p></dd>
+
+
 <dt>is_significant</dt>
 <dd><p>a logical column in the <code>data</code> data frame that indicates if the
 corresponding protein has a significantly changing peptide. The input data frame may contain
 peptide level information with significance information. The function is able to extract protein
 level information from this.</p></dd>
+
+
 <dt>binds_treatment</dt>
 <dd><p>a logical column in the <code>data</code> data frame that indicates if the
 corresponding protein binds to the treatment. This information can be obtained from different
 databases, e.g. UniProt.</p></dd>
+
+
 <dt>treatment_name</dt>
 <dd><p>a character value that indicates the treatment name. It will be included
 in the plot title.</p></dd>
+
+
 <dt>plot</dt>
 <dd><p>a logical value indicating whether the result should be plotted or returned as a
 table.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A bar plot displaying the percentage of all detect proteins and all significant proteins
+    
+
+<p>A bar plot displaying the percentage of all detect proteins and all significant proteins
 that bind to the treatment. A Fisher's exact test is performed to calculate the significance of
 the enrichment in significant proteins compared to all proteins. The result is reported as a
 p-value. If <code>plot = FALSE</code> a contingency table in long format is returned.</p>
@@ -120,42 +133,42 @@ p-value. If <code>plot = FALSE</code> a contingency table in long format is retu
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"protein"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="fl">20</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="fl">30</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  binds_treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="fl">10</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="fl">10</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="fl">5</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="fl">25</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Plot treatment enrichment</span></span>
-<span class="r-in"><span class="fu">calculate_treatment_enrichment</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">data</span>,</span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span>
-<span class="r-in">  is_significant <span class="op">=</span> <span class="va">significant</span>,</span>
-<span class="r-in">  binds_treatment <span class="op">=</span> <span class="va">binds_treatment</span>,</span>
-<span class="r-in">  treatment <span class="op">=</span> <span class="st">"Rapamycin"</span>,</span>
-<span class="r-in">  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"protein"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="fl">20</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="fl">30</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  binds_treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="fl">5</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="fl">25</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot treatment enrichment</span></span></span>
+<span class="r-in"><span><span class="fu">calculate_treatment_enrichment</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span></span>
+<span class="r-in"><span>  is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
+<span class="r-in"><span>  binds_treatment <span class="op">=</span> <span class="va">binds_treatment</span>,</span></span>
+<span class="r-in"><span>  treatment <span class="op">=</span> <span class="st">"Rapamycin"</span>,</span></span>
+<span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="calculate_treatment_enrichment-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate treatment enrichment</span></span>
-<span class="r-in"><span class="va">enrichment</span> <span class="op">&lt;-</span> <span class="fu">calculate_treatment_enrichment</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">data</span>,</span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span>
-<span class="r-in">  is_significant <span class="op">=</span> <span class="va">significant</span>,</span>
-<span class="r-in">  binds_treatment <span class="op">=</span> <span class="va">binds_treatment</span>,</span>
-<span class="r-in">  plot <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">enrichment</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate treatment enrichment</span></span></span>
+<span class="r-in"><span><span class="va">enrichment</span> <span class="op">&lt;-</span> <span class="fu">calculate_treatment_enrichment</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span></span>
+<span class="r-in"><span>  is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
+<span class="r-in"><span>  binds_treatment <span class="op">=</span> <span class="va">binds_treatment</span>,</span></span>
+<span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">enrichment</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   binds_treatment significant     n   pval</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -177,7 +190,7 @@ p-value. If <code>plot = FALSE</code> a contingency table in long format is retu
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

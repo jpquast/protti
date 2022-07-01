@@ -18,7 +18,7 @@ maintained through a public GitHub repository."><!-- mathjax --><script src="htt
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -77,11 +77,11 @@ maintained through a public <a href="https://github.com/evidenceontology/evidenc
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">fetch_eco</span><span class="op">(</span>
-  return_relation <span class="op">=</span> <span class="cn">FALSE</span>,
-  return_history <span class="op">=</span> <span class="cn">FALSE</span>,
-  show_progress <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fetch_eco</span><span class="op">(</span></span>
+<span>  return_relation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  return_history <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  show_progress <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -90,17 +90,24 @@ maintained through a public <a href="https://github.com/evidenceontology/evidenc
 <dd><p>a logical value that indicates if relational information should be returned instead
 the main descriptive information. This data can be used to check the relations of ECO terms to each other.
 Default is FALSE.</p></dd>
+
+
 <dt>return_history</dt>
 <dd><p>a logical value that indicates if the entry history of an ECO term should be
 returned instead the main descriptive information.
 Default is FALSE.</p></dd>
+
+
 <dt>show_progress</dt>
 <dd><p>a logical value that indicates if a progress bar will be shown.
 Default is TRUE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame that contains descriptive information about each ECO term in the EBI database.
+    
+
+<p>A data frame that contains descriptive information about each ECO term in the EBI database.
 If either <code>return_relation</code> or <code>return_history</code> is set to <code>TRUE</code>, the respective information is
 returned instead of the usual output.</p>
     </div>
@@ -125,10 +132,10 @@ information."</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="va">eco</span> <span class="op">&lt;-</span> <span class="fu">fetch_eco</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">eco</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">eco</span> <span class="op">&lt;-</span> <span class="fu">fetch_eco</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">eco</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 10</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id          is_obsolete main_name definition comment name  type  db_code db_id</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
@@ -139,7 +146,7 @@ information."</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> ECO:0000293 FALSE       systemat… A type of… SELEX … in v… exact MI      0657 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> ECO:0000293 FALSE       systemat… A type of… SELEX … in v… rela… MI      0657 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1 more variable: secondary_ids &lt;chr&gt;</span></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -154,7 +161,7 @@ information."</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -18,7 +18,7 @@ comparison of a reference condition and every other condition."><!-- mathjax -->
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -77,56 +77,75 @@ comparison of a reference condition and every other condition.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">assign_missingness</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">sample</span>,
-  <span class="va">condition</span>,
-  <span class="va">grouping</span>,
-  <span class="va">intensity</span>,
-  ref_condition <span class="op">=</span> <span class="st">"all"</span>,
-  completeness_MAR <span class="op">=</span> <span class="fl">0.7</span>,
-  completeness_MNAR <span class="op">=</span> <span class="fl">0.2</span>,
-  retain_columns <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">assign_missingness</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">sample</span>,</span>
+<span>  <span class="va">condition</span>,</span>
+<span>  <span class="va">grouping</span>,</span>
+<span>  <span class="va">intensity</span>,</span>
+<span>  ref_condition <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  completeness_MAR <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>  completeness_MNAR <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>  retain_columns <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame containing at least the input variables.</p></dd>
+
+
 <dt>sample</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the sample name.</p></dd>
+
+
 <dt>condition</dt>
 <dd><p>a character or numeric column in the <code>data</code> data frame that contains the
 conditions.</p></dd>
+
+
 <dt>grouping</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains precursor or
 peptide identifiers.</p></dd>
+
+
 <dt>intensity</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains intensity values.</p></dd>
+
+
 <dt>ref_condition</dt>
 <dd><p>a character vector providing the condition that is used as a reference for
 missingness determination. Instead of providing one reference condition, "all" can be supplied,
 which will create all pairwise condition pairs. By default <code>ref_condition = "all"</code>.</p></dd>
+
+
 <dt>completeness_MAR</dt>
 <dd><p>a numeric value that specifies the minimal degree of data completeness to
 be considered as MAR. Value has to be between 0 and 1, default is 0.7. It is multiplied with
 the number of replicates and then adjusted downward. The resulting number is the minimal number
 of observations for each condition to be considered as MAR. This number is always at least 1.</p></dd>
+
+
 <dt>completeness_MNAR</dt>
 <dd><p>a numeric value that specifies the maximal degree of data completeness to
 be considered as MNAR. Value has to be between 0 and 1, default is 0.20. It is multiplied with
 the number of replicates and then adjusted downward. The resulting number is the maximal number
 of observations for one condition to be considered as MNAR when the other condition is complete.</p></dd>
+
+
 <dt>retain_columns</dt>
 <dd><p>a vector that indicates columns that should be retained from the input
 data frame. Default is not retaining additional columns <code>retain_columns = NULL</code>. Specific
 columns can be retained by providing their names (not in quotations marks, just like other
 column names, but in a vector).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame that contains the reference condition paired with each treatment condition.
+    
+
+<p>A data frame that contains the reference condition paired with each treatment condition.
 The <code>comparison</code> column contains the comparison name for the specific treatment/reference
 pair. The <code>missingness</code> column reports the type of missingness.</p><ul><li><p>"complete": No missing values for every replicate of this reference/treatment pair for
 the specific grouping variable.</p></li>
@@ -147,19 +166,19 @@ assigned to a comparison does not have any influence on the statistical test in 
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span>
-<span class="r-in">  n_proteins <span class="op">=</span> <span class="fl">10</span>,</span>
-<span class="r-in">  frac_change <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span class="r-in">  n_replicates <span class="op">=</span> <span class="fl">4</span>,</span>
-<span class="r-in">  n_conditions <span class="op">=</span> <span class="fl">2</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"effect_random"</span>,</span>
-<span class="r-in">  additional_metadata <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>, n <span class="op">=</span> <span class="fl">24</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_proteins <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  frac_change <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
+<span class="r-in"><span>  n_replicates <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span>  n_conditions <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"effect_random"</span>,</span></span>
+<span class="r-in"><span>  additional_metadata <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data</span>, n <span class="op">=</span> <span class="fl">24</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 24 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    protein   peptide     condition sample peptide_intensi… change change_peptide</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>         </span>
@@ -174,23 +193,23 @@ assigned to a comparison does not have any influence on the statistical test in 
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> protein_1 peptide_1_2 conditio… sampl…             12.6 TRUE   FALSE         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> protein_1 peptide_1_2 conditio… sampl…             12.7 TRUE   FALSE         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 14 more rows, and 1 more variable: peptide_intensity_missing &lt;dbl&gt;</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Assign missingness information</span></span>
-<span class="r-in"><span class="va">data_missing</span> <span class="op">&lt;-</span> <span class="fu">assign_missingness</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">data</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  condition <span class="op">=</span> <span class="va">condition</span>,</span>
-<span class="r-in">  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span class="r-in">  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span class="r-in">  ref_condition <span class="op">=</span> <span class="st">"all"</span>,</span>
-<span class="r-in">  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Assign missingness information</span></span></span>
+<span class="r-in"><span><span class="va">data_missing</span> <span class="op">&lt;-</span> <span class="fu">assign_missingness</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  condition <span class="op">=</span> <span class="va">condition</span>,</span></span>
+<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span></span>
+<span class="r-in"><span>  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span></span>
+<span class="r-in"><span>  ref_condition <span class="op">=</span> <span class="st">"all"</span>,</span></span>
+<span class="r-in"><span>  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> "all" was provided as reference condition. All pairwise comparisons are</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> created from the conditions and assigned their missingness. The</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> created comparisons are:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> created from the conditions and assigned their missingness. The created</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> comparisons are:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> condition_1_vs_condition_2</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data_missing</span>, n <span class="op">=</span> <span class="fl">24</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data_missing</span>, n <span class="op">=</span> <span class="fl">24</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 24 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    protein   sample   condition  peptide peptide_intensi… comparison missingness</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
@@ -219,7 +238,7 @@ assigned to a comparison does not have any influence on the statistical test in 
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

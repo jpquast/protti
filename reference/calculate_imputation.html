@@ -19,7 +19,7 @@ that can be used for the imputation. Note: The input intensities should be log2 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -79,15 +79,15 @@ that can be used for the imputation. Note: The input intensities should be log2 
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">calculate_imputation</span><span class="op">(</span>
-  min <span class="op">=</span> <span class="cn">NULL</span>,
-  noise <span class="op">=</span> <span class="cn">NULL</span>,
-  mean <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">sd</span>,
-  missingness <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MNAR"</span>, <span class="st">"MAR"</span><span class="op">)</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ludovic"</span>, <span class="st">"noise"</span><span class="op">)</span>,
-  skip_log2_transform_error <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calculate_imputation</span><span class="op">(</span></span>
+<span>  min <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  noise <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mean <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">sd</span>,</span>
+<span>  missingness <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MNAR"</span>, <span class="st">"MAR"</span><span class="op">)</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ludovic"</span>, <span class="st">"noise"</span><span class="op">)</span>,</span>
+<span>  skip_log2_transform_error <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -95,32 +95,47 @@ that can be used for the imputation. Note: The input intensities should be log2 
     <dl><dt>min</dt>
 <dd><p>a numeric value specifying the minimal intensity value of the precursor/peptide.
 Is only required if <code>method = "ludovic"</code> and <code>missingness = "MNAR"</code>.</p></dd>
+
+
 <dt>noise</dt>
 <dd><p>a numeric value specifying a noise value for the precursor/peptide. Is only
 required if <code>method = "noise"</code> and <code>missingness = "MNAR"</code>.</p></dd>
+
+
 <dt>mean</dt>
 <dd><p>a numeric value specifying the mean intensity value of the condition with missing
 values for a given precursor/peptide. Is only required if <code>missingness = "MAR"</code>.</p></dd>
+
+
 <dt>sd</dt>
 <dd><p>a numeric value specifying the mean of the standard deviation of all conditions for
 a given precursor/peptide.</p></dd>
+
+
 <dt>missingness</dt>
 <dd><p>a character value specifying the missingness type of the data determines
 how values for imputation are sampled. This can be <code>"MAR"</code> or <code>"MNAR"</code>.</p></dd>
+
+
 <dt>method</dt>
 <dd><p>a character value specifying the method to be used for imputation. For
 <code>method = "ludovic"</code>, MNAR missingness is sampled around a value that is three lower
 (log2) than the lowest intensity value recorded for the precursor/peptide. For
 <code>method = "noise"</code>, MNAR missingness is sampled around the noise value for the
 precursor/peptide.</p></dd>
+
+
 <dt>skip_log2_transform_error</dt>
 <dd><p>a logical value, if FALSE a check is performed to validate that
 input values are log2 transformed. If input values are &gt; 40 the test is failed and an error is
 returned.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A value sampled from a normal distribution with the input parameters. Method specifics
+    
+
+<p>A value sampled from a normal distribution with the input parameters. Method specifics
 are applied to input parameters prior to sampling.</p>
     </div>
 
@@ -136,7 +151,7 @@ are applied to input parameters prior to sampling.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

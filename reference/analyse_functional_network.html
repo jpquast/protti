@@ -21,7 +21,7 @@ protti pipeline."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -83,17 +83,17 @@ protti pipeline.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">analyse_functional_network</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">protein_id</span>,
-  <span class="va">string_id</span>,
-  <span class="va">organism_id</span>,
-  version <span class="op">=</span> <span class="st">"11.5"</span>,
-  score_threshold <span class="op">=</span> <span class="fl">900</span>,
-  binds_treatment <span class="op">=</span> <span class="cn">NULL</span>,
-  halo_color <span class="op">=</span> <span class="cn">NULL</span>,
-  plot <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">analyse_functional_network</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">protein_id</span>,</span>
+<span>  <span class="va">string_id</span>,</span>
+<span>  <span class="va">organism_id</span>,</span>
+<span>  version <span class="op">=</span> <span class="st">"11.5"</span>,</span>
+<span>  score_threshold <span class="op">=</span> <span class="fl">900</span>,</span>
+<span>  binds_treatment <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  halo_color <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -103,87 +103,106 @@ protti pipeline.</p>
 to plot 400 proteins at a time so do not provide more for network plots). Information about
 treatment binding can be provided and will be displayed as colorful halos around the proteins
 in the network.</p></dd>
+
+
 <dt>protein_id</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the protein
 accession numbers.</p></dd>
+
+
 <dt>string_id</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains STRING database
 identifiers. These can be obtained from UniProt.</p></dd>
+
+
 <dt>organism_id</dt>
 <dd><p>a numeric value specifying an organism ID (NCBI taxon-ID). This can be
 obtained from
 <a href="https://string-db.org/cgi/input?sessionId=bpvps5GS2As6&amp;input_page_show_search=on" class="external-link">here</a>.
 H. sapiens: 9606, S. cerevisiae: 4932, E. coli: 511145.</p></dd>
+
+
 <dt>version</dt>
 <dd><p>a character value that specifies the version of STRINGdb to be used.
 Default is 11.5.</p></dd>
+
+
 <dt>score_threshold</dt>
 <dd><p>a numeric value specifying the interaction score that based on
 <a href="https://string-db.org/cgi/info?sessionId=bBP5N4cIf0PA&amp;footer_active_subpage=scores" class="external-link">STRING</a>
 has to be between 0 and 1000. A score closer to 1000 is related to a higher confidence for the
 interaction. The default value is 900.</p></dd>
+
+
 <dt>binds_treatment</dt>
 <dd><p>a logical column in the <code>data</code> data frame that indicates if the
 corresponding protein binds to the treatment. This information can be obtained from different
 databases, e.g UniProt.</p></dd>
+
+
 <dt>halo_color</dt>
 <dd><p>optional, character value with a color hex-code. This is the color of the
 halo of proteins that bind the treatment.</p></dd>
+
+
 <dt>plot</dt>
 <dd><p>a logical that indicates whether the result should be plotted or returned as a table.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A network plot displaying interactions of the provided proteins. If
+    
+
+<p>A network plot displaying interactions of the provided proteins. If
 <code>binds_treatment</code> was provided halos around the proteins show which proteins interact with
 the treatment. If <code>plot = FALSE</code> a data frame with interaction information is returned.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  uniprot_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="st">"P0A7R1"</span>,</span>
-<span class="r-in">    <span class="st">"P02359"</span>,</span>
-<span class="r-in">    <span class="st">"P60624"</span>,</span>
-<span class="r-in">    <span class="st">"P0A7M2"</span>,</span>
-<span class="r-in">    <span class="st">"P0A7X3"</span>,</span>
-<span class="r-in">    <span class="st">"P0AGD3"</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  database_string <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="st">"511145.b4203;"</span>,</span>
-<span class="r-in">    <span class="st">"511145.b3341;"</span>,</span>
-<span class="r-in">    <span class="st">"511145.b3309;"</span>,</span>
-<span class="r-in">    <span class="st">"511145.b3637;"</span>,</span>
-<span class="r-in">    <span class="st">"511145.b3230;"</span>,</span>
-<span class="r-in">    <span class="st">"511145.b1656;"</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  is_known <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="cn">TRUE</span>,</span>
-<span class="r-in">    <span class="cn">TRUE</span>,</span>
-<span class="r-in">    <span class="cn">TRUE</span>,</span>
-<span class="r-in">    <span class="cn">TRUE</span>,</span>
-<span class="r-in">    <span class="cn">TRUE</span>,</span>
-<span class="r-in">    <span class="cn">FALSE</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Perform network analysis</span></span>
-<span class="r-in"><span class="va">network</span> <span class="op">&lt;-</span> <span class="fu">analyse_functional_network</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">data</span>,</span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="va">uniprot_id</span>,</span>
-<span class="r-in">  string_id <span class="op">=</span> <span class="va">database_string</span>,</span>
-<span class="r-in">  organism_id <span class="op">=</span> <span class="fl">511145</span>,</span>
-<span class="r-in">  binds_treatment <span class="op">=</span> <span class="va">is_known</span>,</span>
-<span class="r-in">  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  uniprot_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"P0A7R1"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"P02359"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"P60624"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"P0A7M2"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"P0A7X3"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"P0AGD3"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  database_string <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"511145.b4203;"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"511145.b3341;"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"511145.b3309;"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"511145.b3637;"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"511145.b3230;"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"511145.b1656;"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  is_known <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Perform network analysis</span></span></span>
+<span class="r-in"><span><span class="va">network</span> <span class="op">&lt;-</span> <span class="fu">analyse_functional_network</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">uniprot_id</span>,</span></span>
+<span class="r-in"><span>  string_id <span class="op">=</span> <span class="va">database_string</span>,</span></span>
+<span class="r-in"><span>  organism_id <span class="op">=</span> <span class="fl">511145</span>,</span></span>
+<span class="r-in"><span>  binds_treatment <span class="op">=</span> <span class="va">is_known</span>,</span></span>
+<span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="analyse_functional_network-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">network</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">network</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -198,7 +217,7 @@ the treatment. If <code>plot = FALSE</code> a data frame with interaction inform
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

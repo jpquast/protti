@@ -19,7 +19,7 @@ structures, use the function fetch_pdb(). The information retrieved is based on 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -79,24 +79,31 @@ structures, use the function <code><a href="fetch_pdb.html">fetch_pdb()</a></cod
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">fetch_pdb_structure</span><span class="op">(</span><span class="va">pdb_ids</span>, return_data_frame <span class="op">=</span> <span class="cn">FALSE</span>, show_progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fetch_pdb_structure</span><span class="op">(</span><span class="va">pdb_ids</span>, return_data_frame <span class="op">=</span> <span class="cn">FALSE</span>, show_progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>pdb_ids</dt>
 <dd><p>a character vector of PDB identifiers.</p></dd>
+
+
 <dt>return_data_frame</dt>
 <dd><p>a logical value that indicates if a data frame instead of a list is
 returned. It is recommended to only use this if not many pdb structures are retrieved. Default
 is FALSE.</p></dd>
+
+
 <dt>show_progress</dt>
 <dd><p>a logical value that indicates if a progress bar will be shown.
 Default is TRUE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list that contains atom data for each PDB structures provided. If return_data_frame is
+    
+
+<p>A list that contains atom data for each PDB structures provided. If return_data_frame is
 TRUE, a data frame with this information is returned instead. The data frame contains the
 following columns:</p><ul><li><p>label_id: Uniquely identifies every atom in the structure following the standardised
 convention for mmCIF files. Example value: "5", "C12", "Ca3g28", "Fe3+17", "H*251", "boron2a",
@@ -143,13 +150,13 @@ describes the structure.</p></li>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="va">pdb_structure</span> <span class="op">&lt;-</span> <span class="fu">fetch_pdb_structure</span><span class="op">(</span></span>
-<span class="r-in">  pdb_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"6HG1"</span>, <span class="st">"1E9I"</span>, <span class="st">"6D3Q"</span>, <span class="st">"4JHW"</span><span class="op">)</span>,</span>
-<span class="r-in">  return_data_frame <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pdb_structure</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">pdb_structure</span> <span class="op">&lt;-</span> <span class="fu">fetch_pdb_structure</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  pdb_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"6HG1"</span>, <span class="st">"1E9I"</span>, <span class="st">"6D3Q"</span>, <span class="st">"4JHW"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  return_data_frame <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pdb_structure</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 18</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    label_id type_symbol label_atom_id label_comp_id label_asym_id entity_id</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -167,7 +174,7 @@ describes the structure.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   site_occupancy &lt;dbl&gt;, b_iso_or_equivalent &lt;dbl&gt;, formal_charge &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   auth_seq_id &lt;chr&gt;, auth_comp_id &lt;chr&gt;, auth_asym_id &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pdb_model_number &lt;dbl&gt;, pdb_id &lt;chr&gt;</span></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -182,7 +189,7 @@ describes the structure.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -93,7 +93,7 @@
       <h1 data-toc-skip>Single Dose Treatment Data Analysis Workflow</h1>
                         <h4 data-toc-skip class="author">Dina Schuster</h4>
             
-            <h4 data-toc-skip class="date">2022-04-12</h4>
+            <h4 data-toc-skip class="date">2022-07-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/HEAD/vignettes/data_analysis_single_dose_treatment_workflow.Rmd" class="external-link"><code>vignettes/data_analysis_single_dose_treatment_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_single_dose_treatment_workflow.Rmd</code></div>
@@ -212,16 +212,16 @@
 </h3>
 <p>Before we can start analysing our data, we need to load the <strong>protti</strong> package. This is done by using the base R function <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code>. In addition, we are also loading the packages <code>magrittr</code> and <code>dplyr</code>. Both <code>magrittr</code> and <code>dplyr</code> are part of the <a href="https://www.tidyverse.org" class="external-link">tidyverse</a>, a collection of packages that provide useful functionalities for data processing and visualisation. If you use many tidyverse packages in your workflow you can easily load all at once by calling <code><a href="https://tidyverse.tidyverse.org" class="external-link">library(tidyverse)</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jpquast/protti" class="external-link">protti</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jpquast/protti" class="external-link">protti</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
 <p>After having loaded the required packages we will load our data set into the R environment. In order to do this for your data set you can use the function <code><a href="../reference/read_protti.html">read_protti()</a></code>. This function is a wrapper around the fast <code>fread()</code> function from the <a href="https://rdatatable.gitlab.io/data.table/" class="external-link"><code>data.table</code></a> package and the <code>clean_names()</code> function from the <a href="http://sfirke.github.io/janitor/" class="external-link"><code>janitor</code></a> package. This will allow you to not only load your data into R very fast, but also to clean up the column names into lower snake case to make them more R-friendly. This will make it easier to remember them and to use them in your data analysis.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># To read in your own data you can use read_protti()</span>
-<span class="va">your_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"mydata/data.csv"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># To read in your own data you can use read_protti()</span></span>
+<span><span class="va">your_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_protti.html">read_protti</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"mydata/data.csv"</span><span class="op">)</span></span></code></pre></div>
 <p>For this example we are going to use the <code>rapamycin_10uM</code> test data set included in <strong>protti</strong>. To read in the file we are simply going to use the <code>utils</code> function <code><a href="https://rdrr.io/r/utils/data.html" class="external-link">data()</a></code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"rapamycin_10uM"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"rapamycin_10uM"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="data-preparation">Data preparation<a class="anchor" aria-label="anchor" href="#data-preparation"></a>
@@ -248,19 +248,19 @@
 </div>
 <p><em>Note: The use of the <code><a href="../reference/filter_cv.html">filter_cv()</a></code> function is optional. It might remove a lot of your data if your experiment was noisy. However, especially in these cases, the function will remove peptides with poor quality and should improve the result. It is very important that if you use this function you should not use the moderated t-test or proDA algorithm on your data for differential abundance estimation and significance testing. This likely will lead to an inflated false positive rate because it alters the distributional assumptions of these tests (<a href="https://pubmed.ncbi.nlm.nih.gov/20460310/" class="external-link">Bourgon 2010</a>).</em></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data_normalised</span> <span class="op">&lt;-</span> <span class="va">rapamycin_10uM</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">eg_is_decoy</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>intensity_log2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log2</a></span><span class="op">(</span><span class="va">fg_quantity</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/normalise.html">normalise</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">r_file_name</span>, 
-            intensity_log2 <span class="op">=</span> <span class="va">intensity_log2</span>,
-            method <span class="op">=</span> <span class="st">"median"</span><span class="op">)</span>
-
-<span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_normalised</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/filter_cv.html">filter_cv</a></span><span class="op">(</span>grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>, 
-            condition <span class="op">=</span> <span class="va">r_condition</span>, 
-            log2_intensity <span class="op">=</span> <span class="va">intensity_log2</span>, 
-            cv_limit <span class="op">=</span> <span class="fl">0.25</span>,
-            min_conditions <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">data_normalised</span> <span class="op">&lt;-</span> <span class="va">rapamycin_10uM</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">eg_is_decoy</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>intensity_log2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log2</a></span><span class="op">(</span><span class="va">fg_quantity</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/normalise.html">normalise</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">r_file_name</span>, </span>
+<span>            intensity_log2 <span class="op">=</span> <span class="va">intensity_log2</span>,</span>
+<span>            method <span class="op">=</span> <span class="st">"median"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="va">data_normalised</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/filter_cv.html">filter_cv</a></span><span class="op">(</span>grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>, </span>
+<span>            condition <span class="op">=</span> <span class="va">r_condition</span>, </span>
+<span>            log2_intensity <span class="op">=</span> <span class="va">intensity_log2</span>, </span>
+<span>            cv_limit <span class="op">=</span> <span class="fl">0.25</span>,</span>
+<span>            min_conditions <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="remove-non-proteotypic-peptides">Remove non-proteotypic peptides<a class="anchor" aria-label="anchor" href="#remove-non-proteotypic-peptides"></a>
@@ -268,8 +268,8 @@
 <p>For LiP-MS analysis we commonly remove non-proteotypic peptides (i.e. peptides that could come from more than one protein). If you detect a change in non-proteotypic peptides it is not possible to clearly assign which protein it comes from and therefore which protein is affected by your treatment. If you are using the output from Spectronaut you will find a column called “pep_is_proteotypic”. This column contains logicals indicating whether your peptide is proteotypic or not.</p>
 <p>To filter out non proteotypic peptides we are using the <code>dplyr</code> function <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data_filtered_proteotypic</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pep_is_proteotypic</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">data_filtered_proteotypic</span> <span class="op">&lt;-</span> <span class="va">data_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pep_is_proteotypic</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="fetching-database-information-and-assigning-peptide-types">Fetching database information and assigning peptide types<a class="anchor" aria-label="anchor" href="#fetching-database-information-and-assigning-peptide-types"></a>
@@ -281,43 +281,43 @@
 <p><em>Note: you can also directly join the UniProt data frame with your data without the need to rename its <code>id</code> column. You can specify in the <code>by</code> argument in <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join()</a></code> that two columns are differently named.</em></p>
 <p>Next, we would like to assign the trypticity of our peptides (i.e. if the peptides are fully-tryptic, semi-tryptic or non-tryptic). In order to do this we first need to define the peptide positions in the protein and find the preceding and following amino acids. To obtain this information we use the <strong>protti</strong> function <code><a href="../reference/find_peptide.html">find_peptide()</a></code>. The output of this function can then be used in the function <code><a href="../reference/assign_peptide_type.html">assign_peptide_type()</a></code> which will add an additional column with the peptide trypticity information. By using the function <code><a href="../reference/calculate_sequence_coverage.html">calculate_sequence_coverage()</a></code> we add an additional column to the data frame containing information on how much of the protein sequence we identified in our experiment.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">uniprot_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">data_filtered_proteotypic</span><span class="op">$</span><span class="va">pg_protein_accessions</span><span class="op">)</span>
-
-<span class="va">uniprot</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="../reference/fetch_uniprot.html">fetch_uniprot</a></span><span class="op">(</span>
-    uniprot_ids <span class="op">=</span> <span class="va">uniprot_ids</span>,
-    columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
-      <span class="st">"protein names"</span>,
-      <span class="st">"genes"</span>,
-      <span class="st">"go(molecular function)"</span>,
-      <span class="st">"database(String)"</span>,
-      <span class="st">"interactor"</span>,
-      <span class="st">"feature(ACTIVE SITE)"</span>,
-      <span class="st">"feature(BINDING SITE)"</span>,
-      <span class="st">"database(PDB)"</span>,
-      <span class="st">"length"</span>,
-      <span class="st">"sequence"</span>
-    <span class="op">)</span>
-  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>pg_protein_accessions <span class="op">=</span> <span class="va">id</span><span class="op">)</span>
-
-<span class="va">data_filtered_uniprot</span> <span class="op">&lt;-</span> <span class="va">data_filtered_proteotypic</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">uniprot</span>,
-            by <span class="op">=</span> <span class="st">"pg_protein_accessions"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/find_peptide.html">find_peptide</a></span><span class="op">(</span>protein_sequence <span class="op">=</span> <span class="va">sequence</span>,
-               peptide_sequence <span class="op">=</span> <span class="va">pep_stripped_sequence</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/assign_peptide_type.html">assign_peptide_type</a></span><span class="op">(</span>aa_before <span class="op">=</span> <span class="va">aa_before</span>,
-               last_aa <span class="op">=</span> <span class="va">last_aa</span>, 
-               aa_after <span class="op">=</span> <span class="va">aa_after</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/calculate_sequence_coverage.html">calculate_sequence_coverage</a></span><span class="op">(</span>protein_sequence <span class="op">=</span> <span class="va">sequence</span>,
-                    peptides <span class="op">=</span> <span class="va">pep_stripped_sequence</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">uniprot_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">data_filtered_proteotypic</span><span class="op">$</span><span class="va">pg_protein_accessions</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">uniprot</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="../reference/fetch_uniprot.html">fetch_uniprot</a></span><span class="op">(</span></span>
+<span>    uniprot_ids <span class="op">=</span> <span class="va">uniprot_ids</span>,</span>
+<span>    columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"protein names"</span>,</span>
+<span>      <span class="st">"genes"</span>,</span>
+<span>      <span class="st">"go(molecular function)"</span>,</span>
+<span>      <span class="st">"database(String)"</span>,</span>
+<span>      <span class="st">"interactor"</span>,</span>
+<span>      <span class="st">"feature(ACTIVE SITE)"</span>,</span>
+<span>      <span class="st">"feature(BINDING SITE)"</span>,</span>
+<span>      <span class="st">"database(PDB)"</span>,</span>
+<span>      <span class="st">"length"</span>,</span>
+<span>      <span class="st">"sequence"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>pg_protein_accessions <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">data_filtered_uniprot</span> <span class="op">&lt;-</span> <span class="va">data_filtered_proteotypic</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">uniprot</span>,</span>
+<span>            by <span class="op">=</span> <span class="st">"pg_protein_accessions"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/find_peptide.html">find_peptide</a></span><span class="op">(</span>protein_sequence <span class="op">=</span> <span class="va">sequence</span>,</span>
+<span>               peptide_sequence <span class="op">=</span> <span class="va">pep_stripped_sequence</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/assign_peptide_type.html">assign_peptide_type</a></span><span class="op">(</span>aa_before <span class="op">=</span> <span class="va">aa_before</span>,</span>
+<span>               last_aa <span class="op">=</span> <span class="va">last_aa</span>, </span>
+<span>               aa_after <span class="op">=</span> <span class="va">aa_after</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/calculate_sequence_coverage.html">calculate_sequence_coverage</a></span><span class="op">(</span>protein_sequence <span class="op">=</span> <span class="va">sequence</span>,</span>
+<span>                    peptides <span class="op">=</span> <span class="va">pep_stripped_sequence</span><span class="op">)</span></span></code></pre></div>
 <p>With the <code><a href="../reference/qc_sequence_coverage.html">qc_sequence_coverage()</a></code> function, you check how sequence coverage is distributed over all proteins in the sample. Usually, the center of the distribution is low due to many proteins with poor coverage. For this small data set with only 40 proteins the sequence coverage is distributed relatively evenly.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/qc_sequence_coverage.html">qc_sequence_coverage</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">data_filtered_uniprot</span>,
-  protein_identifier <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
-  coverage <span class="op">=</span> <span class="va">coverage</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_sequence_coverage.html">qc_sequence_coverage</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">data_filtered_uniprot</span>,</span>
+<span>  protein_identifier <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span>
+<span>  coverage <span class="op">=</span> <span class="va">coverage</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/coverage_plot-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 </div>
@@ -344,49 +344,49 @@
 <p>_*A peptide precursor is the actual molecular unit that was detected on the mass spectrometer. This is a peptide with one specific charge state and its modification(s)._</p>
 <p><em>Note: Although it is not required for the data set analysed in this vignette, analysis of LiP-MS data frequently requires correction of LiP peptide intensities for changes in protein abundance. This can be done using the steps outlined in <a href="https://doi.org/10.1038/nprot.2017.100" class="external-link">Schopper et al. 2017</a>.</em></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diff_abundance_data</span> <span class="op">&lt;-</span> <span class="va">data_filtered_uniprot</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/assign_missingness.html">assign_missingness</a></span><span class="op">(</span>
-    sample <span class="op">=</span> <span class="va">r_file_name</span>,
-    condition <span class="op">=</span> <span class="va">r_condition</span>,
-    grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
-    intensity <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
-    ref_condition <span class="op">=</span> <span class="st">"control"</span>,
-    completeness_MAR <span class="op">=</span> <span class="fl">0.7</span>,
-    completeness_MNAR <span class="op">=</span> <span class="fl">0.25</span>,
-    retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span>, 
-                       <span class="va">go_molecular_function</span>, 
-                       <span class="va">database_string</span>, 
-                       <span class="va">start</span>, 
-                       <span class="va">end</span>, 
-                       <span class="va">length</span>, 
-                       <span class="va">coverage</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/calculate_diff_abundance.html">calculate_diff_abundance</a></span><span class="op">(</span>
-    sample <span class="op">=</span> <span class="va">r_file_name</span>,
-    condition <span class="op">=</span> <span class="va">r_condition</span>,
-    grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
-    intensity_log2 <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
-    missingness <span class="op">=</span> <span class="va">missingness</span>,
-    comparison <span class="op">=</span> <span class="va">comparison</span>,
-    method <span class="op">=</span> <span class="st">"moderated_t-test"</span>,
-    retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span>, 
-                       <span class="va">go_molecular_function</span>, 
-                       <span class="va">database_string</span>, 
-                       <span class="va">start</span>, 
-                       <span class="va">end</span>, 
-                       <span class="va">length</span>, 
-                       <span class="va">coverage</span><span class="op">)</span>
-  <span class="op">)</span> </code></pre></div>
+<code class="sourceCode R"><span><span class="va">diff_abundance_data</span> <span class="op">&lt;-</span> <span class="va">data_filtered_uniprot</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/assign_missingness.html">assign_missingness</a></span><span class="op">(</span></span>
+<span>    sample <span class="op">=</span> <span class="va">r_file_name</span>,</span>
+<span>    condition <span class="op">=</span> <span class="va">r_condition</span>,</span>
+<span>    grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,</span>
+<span>    intensity <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,</span>
+<span>    ref_condition <span class="op">=</span> <span class="st">"control"</span>,</span>
+<span>    completeness_MAR <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>    completeness_MNAR <span class="op">=</span> <span class="fl">0.25</span>,</span>
+<span>    retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span>, </span>
+<span>                       <span class="va">go_molecular_function</span>, </span>
+<span>                       <span class="va">database_string</span>, </span>
+<span>                       <span class="va">start</span>, </span>
+<span>                       <span class="va">end</span>, </span>
+<span>                       <span class="va">length</span>, </span>
+<span>                       <span class="va">coverage</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/calculate_diff_abundance.html">calculate_diff_abundance</a></span><span class="op">(</span></span>
+<span>    sample <span class="op">=</span> <span class="va">r_file_name</span>,</span>
+<span>    condition <span class="op">=</span> <span class="va">r_condition</span>,</span>
+<span>    grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,</span>
+<span>    intensity_log2 <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,</span>
+<span>    missingness <span class="op">=</span> <span class="va">missingness</span>,</span>
+<span>    comparison <span class="op">=</span> <span class="va">comparison</span>,</span>
+<span>    method <span class="op">=</span> <span class="st">"moderated_t-test"</span>,</span>
+<span>    retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span>, </span>
+<span>                       <span class="va">go_molecular_function</span>, </span>
+<span>                       <span class="va">database_string</span>, </span>
+<span>                       <span class="va">start</span>, </span>
+<span>                       <span class="va">end</span>, </span>
+<span>                       <span class="va">length</span>, </span>
+<span>                       <span class="va">coverage</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> </span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="p-value-distribution">p-value distribution<a class="anchor" aria-label="anchor" href="#p-value-distribution"></a>
 </h4>
 <p>The p-value calculated with the moderated t-test is automatically adjusted for multiple testing using the Benjamini-Hochberg correction. This assures that we keep the false discovery rate low. An assumption of this correction is however, that p-values should have an overall uniform distribution. If there is an effect in the data, there will be an increased frequency of low p-values. You can check this by using the protti function <code><a href="../reference/pval_distribution_plot.html">pval_distribution_plot()</a></code>. This also helps you assess whether your p-value distribution fulfills the assumptions for your selected FDR control. The <a href="https://CRAN.R-project.org/package=cp4p" class="external-link">cp4p</a> R package is another great way to check the assumptions underlying FDR control in quantitative experiments.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/pval_distribution_plot.html">pval_distribution_plot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">diff_abundance_data</span>,
-                       grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
-                       pval <span class="op">=</span> <span class="va">pval</span>
-                       <span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pval_distribution_plot.html">pval_distribution_plot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">diff_abundance_data</span>,</span>
+<span>                       grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,</span>
+<span>                       pval <span class="op">=</span> <span class="va">pval</span></span>
+<span>                       <span class="op">)</span></span></code></pre></div>
 <p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/pval_distribution-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>For this subset of data the distribution of p-values is relatively flat and there is no large increase in values in the low p-value range (the distribution is uniform when a lot of your hypotheses are null). This is likely because, for this experiment, only a very small fraction of peptides show changes.</p>
 <p>It is recommended to always check the (non-adjusted) p-value distribution. A histogram that does not have a uniform distribution with or without a specific enrichment for very low p-values (due to a treatment induced effect) indicates a failure of the theoretical null distribution, which could have several causes (<a href="https://www.cambridge.org/core/services/aop-cambridge-core/content/view/0BD692B5CFF1C51B73D480B72B0B3A28/9780511761362c6_p89-112_CBO.pdf/theoretical_permutation_and_empirical_null_distributions.pdf" class="external-link">Efron 2010, chapter 6</a>).</p>
@@ -398,23 +398,23 @@
 <p>Next we are going to visualise the output of the previously performed hypothesis test to assess the results of our experiment. For this we are going to plot a volcano plot with fold-changes on the x-axis and the p-value on the y-axis. The output of the previously used <code><a href="../reference/calculate_diff_abundance.html">calculate_diff_abundance()</a></code> function is ideal to use for the <code><a href="../reference/volcano_plot.html">volcano_plot()</a></code> function as it contains all the information we need: precursor IDs, protein IDs, fold changes (<code>diff</code>), p-values (<code>pval</code>) and adjusted p-values (<code>adj_pval</code>). We are going to highlight the peptides of the known target of rapamycin FKBP12 (UniProt ID = P62942) in blue to quickly find the peptides in the plot. You can also make the plot interactive by setting <code>interactive = TRUE</code>. This will help you quickly obtain more information on each point in the plot.</p>
 <p>Since adjusted p-values are related to unadjusted p-values often in a complex way, it makes them hard to be interpret if they would be used for the y-axis. To nevertheless use the information of adjusted p-values for the plot, you can provide the column name of the adjusted p-values to the <code>significance_cutoff</code> argument next to the desired cutoff. The function will look for the closest adjusted p-values above and below the set cutoff and take the mean of the corresponding p-value as the cutoff line. If there is no adjusted p-value in the data that is below the set cutoff no line is displayed. This allows you to display volcano plots using p-values while using adjusted p-values for the cutoff criteria.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/volcano_plot.html">volcano_plot</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">diff_abundance_data</span>,
-  grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,
-  log2FC <span class="op">=</span> <span class="va">diff</span>,
-  significance <span class="op">=</span> <span class="va">pval</span>,
-  method <span class="op">=</span> <span class="st">"target"</span>,
-  target_column <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
-  target <span class="op">=</span> <span class="st">"P62942"</span>,
-  x_axis_label <span class="op">=</span> <span class="st">"log2(fold change) Rapamycin treated vs. untreated"</span>,
-  significance_cutoff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="st">"adj_pval"</span><span class="op">)</span> 
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/volcano_plot.html">volcano_plot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">diff_abundance_data</span>,</span>
+<span>  grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,</span>
+<span>  log2FC <span class="op">=</span> <span class="va">diff</span>,</span>
+<span>  significance <span class="op">=</span> <span class="va">pval</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"target"</span>,</span>
+<span>  target_column <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span>
+<span>  target <span class="op">=</span> <span class="st">"P62942"</span>,</span>
+<span>  x_axis_label <span class="op">=</span> <span class="st">"log2(fold change) Rapamycin treated vs. untreated"</span>,</span>
+<span>  significance_cutoff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="st">"adj_pval"</span><span class="op">)</span> </span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/volcano_plot-1.png" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="co"># The significance_cutoff argument can also just be used for a </span>
-<span class="co"># regular cutoff line by just providing the cutoff value, e.g.</span>
-<span class="co"># signficiance_cutoff = 0.05</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="co"># The significance_cutoff argument can also just be used for a </span></span>
+<span><span class="co"># regular cutoff line by just providing the cutoff value, e.g.</span></span>
+<span><span class="co"># signficiance_cutoff = 0.05</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="barcode-plot">Barcode plot<a class="anchor" aria-label="anchor" href="#barcode-plot"></a>
@@ -422,19 +422,19 @@
 <p>For LiP-MS experiments a good way to see where on the protein the changes due to binding or conformational changes occur is to plot a barcode plot. A barcode plot can be created with the <strong>protti</strong> function <code><a href="../reference/barcode_plot.html">barcode_plot()</a></code>. The detected peptides are coloured in grey and the changing peptides are highlighted in blue.</p>
 <p>In order to produce a barcode plot only for our target FKBP12 we create a data frame that contains only information for our target protein using <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code> function. The filtered data frame is then used as the input for the plot.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">FKBP12</span> <span class="op">&lt;-</span> <span class="va">diff_abundance_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/barcode_plot.html">barcode_plot</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">FKBP12</span>,
-  start_position <span class="op">=</span> <span class="va">start</span>,
-  end_position <span class="op">=</span> <span class="va">end</span>,
-  protein_length <span class="op">=</span> <span class="va">length</span>,
-  coverage <span class="op">=</span> <span class="va">coverage</span>,
-  colouring <span class="op">=</span> <span class="va">diff</span>,
-  cutoffs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>diff <span class="op">=</span> <span class="fl">1</span>, adj_pval <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>,
-  protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>
-  <span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">FKBP12</span> <span class="op">&lt;-</span> <span class="va">diff_abundance_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/barcode_plot.html">barcode_plot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">FKBP12</span>,</span>
+<span>  start_position <span class="op">=</span> <span class="va">start</span>,</span>
+<span>  end_position <span class="op">=</span> <span class="va">end</span>,</span>
+<span>  protein_length <span class="op">=</span> <span class="va">length</span>,</span>
+<span>  coverage <span class="op">=</span> <span class="va">coverage</span>,</span>
+<span>  colouring <span class="op">=</span> <span class="va">diff</span>,</span>
+<span>  cutoffs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>diff <span class="op">=</span> <span class="fl">1</span>, adj_pval <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>,</span>
+<span>  protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/barcode_plot-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
@@ -443,24 +443,24 @@
 <p>An additional way to plot LiP-MS changes is the Woods’ plot. This plot will show the extent of the precursor fold changes along the protein sequence. The precursors are located on the x-axis based on their start and end positions. The position on the y-axis displays the fold change. The vertical size (y-axis) of the box representing the precurors does not have any meaning.</p>
 <p>To produce a Woods’ plot we use the function <code><a href="../reference/woods_plot.html">woods_plot()</a></code> and colour the peptides according to their adjusted p-values. We are highlighting significant adjusted p-values (&lt; 0.01) with an asterisk. Peptides can also be coloured by another categorical or continous variable. Asterisks can be added for any logical (binary) variable.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">FKBP12</span> <span class="op">&lt;-</span> <span class="va">FKBP12</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">adj_pval</span> <span class="op">&lt;</span> <span class="fl">0.01</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/woods_plot.html">woods_plot</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">FKBP12</span>,
-  fold_change <span class="op">=</span> <span class="va">diff</span>,
-  start_position <span class="op">=</span> <span class="va">start</span>,
-  end_position <span class="op">=</span> <span class="va">end</span>,
-  protein_length <span class="op">=</span> <span class="va">length</span>,
-  coverage <span class="op">=</span> <span class="va">coverage</span>,
-  colouring <span class="op">=</span> <span class="va">adj_pval</span>,
-  protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>, 
-  facet <span class="op">=</span> <span class="cn">FALSE</span>,
-  fold_change_cutoff <span class="op">=</span> <span class="fl">1</span>,
-  highlight <span class="op">=</span> <span class="va">significant</span>
-  <span class="op">)</span>
-<span class="co">#&gt; $`P62942 (81.5%)`</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="va">FKBP12</span> <span class="op">&lt;-</span> <span class="va">FKBP12</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">adj_pval</span> <span class="op">&lt;</span> <span class="fl">0.01</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/woods_plot.html">woods_plot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">FKBP12</span>,</span>
+<span>  fold_change <span class="op">=</span> <span class="va">diff</span>,</span>
+<span>  start_position <span class="op">=</span> <span class="va">start</span>,</span>
+<span>  end_position <span class="op">=</span> <span class="va">end</span>,</span>
+<span>  protein_length <span class="op">=</span> <span class="va">length</span>,</span>
+<span>  coverage <span class="op">=</span> <span class="va">coverage</span>,</span>
+<span>  colouring <span class="op">=</span> <span class="va">adj_pval</span>,</span>
+<span>  protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>, </span>
+<span>  facet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  fold_change_cutoff <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  highlight <span class="op">=</span> <span class="va">significant</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; $`P62942 (81.5%)`</span></span></code></pre></div>
 <p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/woods_plot-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
@@ -468,19 +468,19 @@
 </h4>
 <p>To see how the individual precursors in our target protein are changing with the treatment we plot profile plots by using the function <code><a href="../reference/peptide_profile_plot.html">peptide_profile_plot()</a></code>. This is particularly useful as you can quickly see if your whole protein changes in abundance or only a fraction of precursors/peptides. If you have protein abundance data you can also use the plot to show changes in protein abundance over your treatment condition(s). By selecting multiple targets (as a vector) you can produce the plot for multiple proteins.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">FKBP12_intensity</span> <span class="op">&lt;-</span> <span class="va">data_filtered_uniprot</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/peptide_profile_plot.html">peptide_profile_plot</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">FKBP12_intensity</span>,
-  sample <span class="op">=</span> <span class="va">r_file_name</span>,
-  peptide <span class="op">=</span> <span class="va">eg_precursor_id</span>,
-  intensity_log2 <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,
-  grouping <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
-  targets <span class="op">=</span> <span class="st">"P62942"</span>,
-  protein_abundance_plot <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-<span class="co">#&gt; $P62942</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">FKBP12_intensity</span> <span class="op">&lt;-</span> <span class="va">data_filtered_uniprot</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/peptide_profile_plot.html">peptide_profile_plot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">FKBP12_intensity</span>,</span>
+<span>  sample <span class="op">=</span> <span class="va">r_file_name</span>,</span>
+<span>  peptide <span class="op">=</span> <span class="va">eg_precursor_id</span>,</span>
+<span>  intensity_log2 <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,</span>
+<span>  grouping <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span>
+<span>  targets <span class="op">=</span> <span class="st">"P62942"</span>,</span>
+<span>  protein_abundance_plot <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; $P62942</span></span></code></pre></div>
 <p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/protile_plot-1.png" width="1920" style="display: block; margin: auto;"></p>
 </div>
 </div>
@@ -493,57 +493,57 @@
 <p>For <code><a href="../reference/calculate_kegg_enrichment.html">calculate_kegg_enrichment()</a></code> you need to first use the function <code><a href="../reference/fetch_kegg.html">fetch_kegg()</a></code> to obtain the KEGG pathway identifiers for your data set. You can then use <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">right_join()</a></code>to join the output with the previously produced data frame containing a column indicating whether your hits are significant or not.</p>
 <p>If you know all known interactors of your specific treatment you can check for an enrichment of these with the <code><a href="../reference/calculate_treatment_enrichment.html">calculate_treatment_enrichment()</a></code> function. This is particularly useful if your treatment has an effect on many proteins.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diff_abundance_significant</span> <span class="op">&lt;-</span> <span class="va">diff_abundance_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="co"># mark significant peptides</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>is_significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="op">(</span><span class="va">adj_pval</span> <span class="op">&lt;</span> <span class="fl">0.01</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="co"># mark true positive hits</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>binds_treatment <span class="op">=</span> <span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span> 
-
-<span class="co">### GO enrichment using "molecular function" annotation from UniProt</span>
-
-<span class="fu"><a href="../reference/calculate_go_enrichment.html">calculate_go_enrichment</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">diff_abundance_significant</span>,
-  protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
-  is_significant <span class="op">=</span> <span class="va">is_significant</span>,
-  go_annotations_uniprot <span class="op">=</span> <span class="va">go_molecular_function</span>
-<span class="op">)</span>
-
-<span class="co">### Network analysis</span>
-
-<span class="va">network_input</span> <span class="op">&lt;-</span> <span class="va">diff_abundance_significant</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_significant</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/analyse_functional_network.html">analyse_functional_network</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">network_input</span>,
-                 protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
-                 string_id <span class="op">=</span> <span class="va">database_string</span>,
-                 binds_treatment <span class="op">=</span> <span class="va">binds_treatment</span>,
-                 organism_id <span class="op">=</span> <span class="fl">9606</span><span class="op">)</span>
-
-<span class="co">### KEGG pathway enrichment</span>
-
-<span class="co"># First you need to load KEGG pathway annotations from the KEGG database </span>
-<span class="co"># for your specific organism of interest. In this case HeLa cells were </span>
-<span class="co"># used, therefore the organism of interest is homo sapiens (hsa)</span>
-
-<span class="va">kegg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_kegg.html">fetch_kegg</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"hsa"</span><span class="op">)</span>
-
-<span class="co"># Next we need to annotate our data with KEGG pathway IDs and perform enrichment analysis</span>
-
-<span class="va">diff_abundance_significant</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="co"># columns containing proteins IDs are named differently</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">kegg</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pg_protein_accessions"</span> <span class="op">=</span> <span class="st">"uniprot_id"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/calculate_kegg_enrichment.html">calculate_kegg_enrichment</a></span><span class="op">(</span>protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
-                  is_significant <span class="op">=</span> <span class="va">is_significant</span>,
-                  pathway_id <span class="op">=</span> <span class="va">pathway_id</span>,
-                  pathway_name <span class="op">=</span> <span class="va">pathway_name</span><span class="op">)</span>
-
-<span class="co">### Treatment enrichment analysis</span>
-
-<span class="fu"><a href="../reference/calculate_treatment_enrichment.html">calculate_treatment_enrichment</a></span><span class="op">(</span><span class="va">diff_abundance_significant</span>,
-                     protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,
-                     is_significant <span class="op">=</span> <span class="va">is_significant</span>,
-                     binds_treatment <span class="op">=</span> <span class="va">binds_treatment</span>,
-                     treatment_name <span class="op">=</span> <span class="st">"Rapamycin"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">diff_abundance_significant</span> <span class="op">&lt;-</span> <span class="va">diff_abundance_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="co"># mark significant peptides</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>is_significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="op">(</span><span class="va">adj_pval</span> <span class="op">&lt;</span> <span class="fl">0.01</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="co"># mark true positive hits</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>binds_treatment <span class="op">=</span> <span class="va">pg_protein_accessions</span> <span class="op">==</span> <span class="st">"P62942"</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co">### GO enrichment using "molecular function" annotation from UniProt</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/calculate_go_enrichment.html">calculate_go_enrichment</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">diff_abundance_significant</span>,</span>
+<span>  protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span>
+<span>  is_significant <span class="op">=</span> <span class="va">is_significant</span>,</span>
+<span>  go_annotations_uniprot <span class="op">=</span> <span class="va">go_molecular_function</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">### Network analysis</span></span>
+<span></span>
+<span><span class="va">network_input</span> <span class="op">&lt;-</span> <span class="va">diff_abundance_significant</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">is_significant</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/analyse_functional_network.html">analyse_functional_network</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">network_input</span>,</span>
+<span>                 protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span>
+<span>                 string_id <span class="op">=</span> <span class="va">database_string</span>,</span>
+<span>                 binds_treatment <span class="op">=</span> <span class="va">binds_treatment</span>,</span>
+<span>                 organism_id <span class="op">=</span> <span class="fl">9606</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">### KEGG pathway enrichment</span></span>
+<span></span>
+<span><span class="co"># First you need to load KEGG pathway annotations from the KEGG database </span></span>
+<span><span class="co"># for your specific organism of interest. In this case HeLa cells were </span></span>
+<span><span class="co"># used, therefore the organism of interest is homo sapiens (hsa)</span></span>
+<span></span>
+<span><span class="va">kegg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_kegg.html">fetch_kegg</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"hsa"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Next we need to annotate our data with KEGG pathway IDs and perform enrichment analysis</span></span>
+<span></span>
+<span><span class="va">diff_abundance_significant</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="co"># columns containing proteins IDs are named differently</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">kegg</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pg_protein_accessions"</span> <span class="op">=</span> <span class="st">"uniprot_id"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/calculate_kegg_enrichment.html">calculate_kegg_enrichment</a></span><span class="op">(</span>protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span>
+<span>                  is_significant <span class="op">=</span> <span class="va">is_significant</span>,</span>
+<span>                  pathway_id <span class="op">=</span> <span class="va">pathway_id</span>,</span>
+<span>                  pathway_name <span class="op">=</span> <span class="va">pathway_name</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">### Treatment enrichment analysis</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/calculate_treatment_enrichment.html">calculate_treatment_enrichment</a></span><span class="op">(</span><span class="va">diff_abundance_significant</span>,</span>
+<span>                     protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span>
+<span>                     is_significant <span class="op">=</span> <span class="va">is_significant</span>,</span>
+<span>                     binds_treatment <span class="op">=</span> <span class="va">binds_treatment</span>,</span>
+<span>                     treatment_name <span class="op">=</span> <span class="st">"Rapamycin"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </div>
@@ -565,7 +565,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>

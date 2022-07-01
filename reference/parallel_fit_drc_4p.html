@@ -24,7 +24,7 @@ they are too large for efficient export from the workers."><!-- mathjax --><scri
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -89,37 +89,47 @@ they are too large for efficient export from the workers.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">parallel_fit_drc_4p</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">sample</span>,
-  <span class="va">grouping</span>,
-  <span class="va">response</span>,
-  <span class="va">dose</span>,
-  filter <span class="op">=</span> <span class="st">"post"</span>,
-  replicate_completeness <span class="op">=</span> <span class="fl">0.7</span>,
-  condition_completeness <span class="op">=</span> <span class="fl">0.5</span>,
-  correlation_cutoff <span class="op">=</span> <span class="fl">0.8</span>,
-  log_logarithmic <span class="op">=</span> <span class="cn">TRUE</span>,
-  retain_columns <span class="op">=</span> <span class="cn">NULL</span>,
-  n_cores <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">parallel_fit_drc_4p</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">sample</span>,</span>
+<span>  <span class="va">grouping</span>,</span>
+<span>  <span class="va">response</span>,</span>
+<span>  <span class="va">dose</span>,</span>
+<span>  filter <span class="op">=</span> <span class="st">"post"</span>,</span>
+<span>  replicate_completeness <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>  condition_completeness <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  correlation_cutoff <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>  log_logarithmic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  retain_columns <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_cores <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame that contains at least the input variables.</p></dd>
+
+
 <dt>sample</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the sample names.</p></dd>
+
+
 <dt>grouping</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the precursor,
 peptide or protein identifiers.</p></dd>
+
+
 <dt>response</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains the response
 values, e.g. log2 transformed intensities.</p></dd>
+
+
 <dt>dose</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains the dose values, e.g.
 the treatment concentrations.</p></dd>
+
+
 <dt>filter</dt>
 <dd><p>a character value that determines if models should be filtered and if they should
 be filtered. The option <code>"pre"</code> is not available for parallel fitting of models. This is
@@ -127,6 +137,8 @@ because ANOVA adjusted p-values would be wrongly calculated because the dataset 
 multiple cores. Default is "post" and we recommend always using "post" because compared to
 "none" only some additional columns are added that contain the filter information. For ANOVA
 an adjusted p-value of 0.05 is used as a cutoff.</p></dd>
+
+
 <dt>replicate_completeness</dt>
 <dd><p>a numeric value which similar to <code>completenss_MAR</code> of the
 <code>assign_missingness</code> function sets a threshold for the completeness of data. In contrast
@@ -136,6 +148,8 @@ completeness. The value provided to this argument has to be between 0 and 1, def
 It is multiplied with the number of replicates and then adjusted downward. The resulting number
 is the minimal number of observations that a condition needs to have to be considered "complete
 enough" for the <code>condition_completeness</code> argument.</p></dd>
+
+
 <dt>condition_completeness</dt>
 <dd><p>a numeric value which determines how many conditions need to at
 least fulfill the "complete enough" criteria set with <code>replicate_completeness</code>. The
@@ -143,29 +157,43 @@ value provided to this argument has to be between 0 and 1, default is 0.5. It is
 the number of conditions and then adjusted downward. The resulting number is the minimal number
 of conditions that need to fulfill the <code>replicate_completeness</code> argument for a peptide to
 pass the filtering.</p></dd>
+
+
 <dt>correlation_cutoff</dt>
 <dd><p>a numeric vector that specifies the correlation cutoff used for data
 filtering.</p></dd>
+
+
 <dt>log_logarithmic</dt>
 <dd><p>a logical value that indicates if a logarithmic or log-logarithmic model
 is fitted. If response values form a symmetric curve for non-log transformed dose values, a
 logarithmic model instead of a log-logarithmic model should be used. Usually biological dose
 response data has a log-logarithmic distribution, which is the reason this is the default.
 Log-logarithmic models are symmetric if dose values are log transformed.</p></dd>
+
+
 <dt>retain_columns</dt>
 <dd><p>a vector that specifies columns that should be retained from the input
 data frame. Default is not retaining additional columns <code>retain_columns = NULL</code>. Specific
 columns can be retained by providing their names (not in quotations marks, just like other
 column names, but in a vector).</p></dd>
+
+
 <dt>n_cores</dt>
 <dd><p>optional, a numeric value that specifies the number of cores used if workers
 are set up manually.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame is returned that contains correlations of predicted to measured values as
+    
+
+<p>A data frame is returned that contains correlations of predicted to measured values as
 a measure of the goodness of the curve fit, an associated p-value and the four parameters of
-the model for each group. Furthermore, input data for plots is returned in the columns <code>plot_curve</code>(curve and confidence interval) and <code>plot_points</code> (measured points).</p>
+the model for each group. Furthermore, input data for plots is returned in the columns <code>plot_curve</code></p>
+
+
+<p>(curve and confidence interval) and <code>plot_points</code> (measured points).</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -204,37 +232,37 @@ curves that are TRUE for <code>dose_MNAR</code> in more detail.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># Load libraries</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span>
-<span class="r-in">  n_proteins <span class="op">=</span> <span class="fl">2</span>,</span>
-<span class="r-in">  frac_change <span class="op">=</span> <span class="fl">1</span>,</span>
-<span class="r-in">  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in">  n_conditions <span class="op">=</span> <span class="fl">8</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"dose_response"</span>,</span>
-<span class="r-in">  concentrations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">5000</span><span class="op">)</span>,</span>
-<span class="r-in">  additional_metadata <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Perform dose response curve fit</span></span>
-<span class="r-in"><span class="va">drc_fit</span> <span class="op">&lt;-</span> <span class="fu">parallel_fit_drc_4p</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span class="r-in">  response <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span class="r-in">  dose <span class="op">=</span> <span class="va">concentration</span>,</span>
-<span class="r-in">  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">drc_fit</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">drc_fit</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Load libraries</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_proteins <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  frac_change <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>  n_conditions <span class="op">=</span> <span class="fl">8</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"dose_response"</span>,</span></span>
+<span class="r-in"><span>  concentrations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">5000</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  additional_metadata <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Perform dose response curve fit</span></span></span>
+<span class="r-in"><span><span class="va">drc_fit</span> <span class="op">&lt;-</span> <span class="fu">parallel_fit_drc_4p</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span></span>
+<span class="r-in"><span>  response <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span></span>
+<span class="r-in"><span>  dose <span class="op">=</span> <span class="va">concentration</span>,</span></span>
+<span class="r-in"><span>  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">drc_fit</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">drc_fit</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -249,7 +277,7 @@ curves that are TRUE for <code>dose_MNAR</code> in more detail.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

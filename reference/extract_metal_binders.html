@@ -19,7 +19,7 @@ in the protein and sub-ID evidence level (based on metal presence as cofactor) a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -79,45 +79,60 @@ in the protein and sub-ID evidence level (based on metal presence as cofactor) a
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">extract_metal_binders</span><span class="op">(</span>
-  <span class="va">data</span>,
-  protein_id <span class="op">=</span> <span class="va">id</span>,
-  feature_metal_binding <span class="op">=</span> <span class="va">feature_metal_binding</span>,
-  chebi_cofactor <span class="op">=</span> <span class="va">chebi_cofactor</span>,
-  chebi_catalytic_activity <span class="op">=</span> <span class="va">chebi_catalytic_activity</span>,
-  chebi_data <span class="op">=</span> <span class="cn">NULL</span>,
-  chebi_relation_data <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extract_metal_binders</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  protein_id <span class="op">=</span> <span class="va">id</span>,</span>
+<span>  feature_metal_binding <span class="op">=</span> <span class="va">feature_metal_binding</span>,</span>
+<span>  chebi_cofactor <span class="op">=</span> <span class="va">chebi_cofactor</span>,</span>
+<span>  chebi_catalytic_activity <span class="op">=</span> <span class="va">chebi_catalytic_activity</span>,</span>
+<span>  chebi_data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  chebi_relation_data <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame containing at least the input columns.</p></dd>
+
+
 <dt>protein_id</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the protein
 identifiers.</p></dd>
+
+
 <dt>feature_metal_binding</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the
 feature metal binding information from UniProt.</p></dd>
+
+
 <dt>chebi_cofactor</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the ChEBI
 cofactor information from UniProt.</p></dd>
+
+
 <dt>chebi_catalytic_activity</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains
 the ChEBI catalytic activity information from UniProt.</p></dd>
+
+
 <dt>chebi_data</dt>
 <dd><p>optional, a data frame that can be manually obtained with <code><a href="fetch_chebi.html">fetch_chebi()</a></code>.
 If not provided it will be fetched within the function. If the function is run many times it
 is recommended to provide the data frame to save time.</p></dd>
+
+
 <dt>chebi_relation_data</dt>
 <dd><p>optional, a data frame that can be manually obtained with
 <code>fetch_chebi(relation = TRUE)</code>. If not provided it will be fetched within the function.
 If the function is run many times it is recommended to provide the data frame to save time.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame containing information on protein metal binding state. It contains the
+    
+
+<p>A data frame containing information on protein metal binding state. It contains the
 following types of columns (the naming might vary based on the input):</p><ul><li><p><code>protein_id</code>: UniProt protein identifier.</p></li>
 <li><p><code>source</code>: The source of the information, can be either <code>feature_metal_binding</code>,
 <code>chebi_cofactor</code> or <code>chebi_catalytic_activity</code>.</p></li>
@@ -141,44 +156,44 @@ column.</p></li>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="fetch_uniprot.html">fetch_uniprot</a></span><span class="op">(</span></span>
-<span class="r-in">  uniprot_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Q03640"</span>, <span class="st">"Q03778"</span>, <span class="st">"P22276"</span><span class="op">)</span>,</span>
-<span class="r-in">  columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="st">"feature(METAL BINDING)"</span>,</span>
-<span class="r-in">    <span class="st">"chebi(Cofactor)"</span>,</span>
-<span class="r-in">    <span class="st">"chebi(Catalytic activity)"</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Extract metal binding information</span></span>
-<span class="r-in"><span class="va">metal_info</span> <span class="op">&lt;-</span> <span class="fu">extract_metal_binders</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="va">id</span>,</span>
-<span class="r-in">  feature_metal_binding <span class="op">=</span> <span class="va">feature_metal_binding</span>,</span>
-<span class="r-in">  chebi_cofactor <span class="op">=</span> <span class="va">chebi_cofactor</span>,</span>
-<span class="r-in">  chebi_catalytic_activity <span class="op">=</span> <span class="va">chebi_catalytic_activity</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">metal_info</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="fetch_uniprot.html">fetch_uniprot</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  uniprot_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Q03640"</span>, <span class="st">"Q03778"</span>, <span class="st">"P22276"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"feature(METAL BINDING)"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"chebi(Cofactor)"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"chebi(Catalytic activity)"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Extract metal binding information</span></span></span>
+<span class="r-in"><span><span class="va">metal_info</span> <span class="op">&lt;-</span> <span class="fu">extract_metal_binders</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">id</span>,</span></span>
+<span class="r-in"><span>  feature_metal_binding <span class="op">=</span> <span class="va">feature_metal_binding</span>,</span></span>
+<span class="r-in"><span>  chebi_cofactor <span class="op">=</span> <span class="va">chebi_cofactor</span>,</span></span>
+<span class="r-in"><span>  chebi_catalytic_activity <span class="op">=</span> <span class="va">chebi_catalytic_activity</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">metal_info</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 54 × 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Groups:   id [3]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    id     source            ids   metal_position metal_type sub_ids main_id_name</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> P22276 feature_metal_bi… 63056           <span style="text-decoration: underline;">1</span>095 Zinc       63056   zinc cation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> P22276 feature_metal_bi… 63056           <span style="text-decoration: underline;">1</span>095 Zinc       29105   zinc cation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> P22276 feature_metal_bi… 63056           <span style="text-decoration: underline;">1</span>095 Zinc       37255   zinc cation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> P22276 feature_metal_bi… 63056           <span style="text-decoration: underline;">1</span>098 Zinc       63056   zinc cation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> P22276 feature_metal_bi… 63056           <span style="text-decoration: underline;">1</span>098 Zinc       29105   zinc cation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> P22276 feature_metal_bi… 63056           <span style="text-decoration: underline;">1</span>098 Zinc       37255   zinc cation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> P22276 feature_metal_bi… 63056           <span style="text-decoration: underline;">1</span>107 Zinc       63056   zinc cation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> P22276 feature_metal_bi… 63056           <span style="text-decoration: underline;">1</span>107 Zinc       29105   zinc cation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> P22276 feature_metal_bi… 63056           <span style="text-decoration: underline;">1</span>107 Zinc       37255   zinc cation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> P22276 feature_metal_bi… 63056           <span style="text-decoration: underline;">1</span>110 Zinc       63056   zinc cation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Q03778 feature_metal_bi… 39127             72 Magnesium  39127   magnesium c…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Q03778 feature_metal_bi… 39127             72 Magnesium  18420   magnesium c…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Q03778 feature_metal_bi… 39127             72 Magnesium  33974   magnesium c…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Q03778 feature_metal_bi… 39127             74 Magnesium  39127   magnesium c…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Q03778 feature_metal_bi… 39127             74 Magnesium  18420   magnesium c…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Q03778 feature_metal_bi… 39127             74 Magnesium  33974   magnesium c…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Q03778 chebi_cofactor    29105             <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>         29105   zinc(2+)    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> P22276 feature_metal_bi… 63056           <span style="text-decoration: underline;">1</span>095 Zinc       63056   zinc cation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> P22276 feature_metal_bi… 63056           <span style="text-decoration: underline;">1</span>095 Zinc       29105   zinc cation </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> P22276 feature_metal_bi… 63056           <span style="text-decoration: underline;">1</span>095 Zinc       37255   zinc cation </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 44 more rows, and 2 more variables: multi_evidence &lt;lgl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   sub_id_name &lt;chr&gt;</span></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -193,7 +208,7 @@ column.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

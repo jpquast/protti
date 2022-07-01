@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -75,7 +75,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">fetch_chebi</span><span class="op">(</span>relation <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fetch_chebi</span><span class="op">(</span>relation <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -84,20 +84,23 @@
 <dd><p>a logical value that indicates if ChEBI Ontology data will be returned instead
 the main compound data. This data can be used to check the relations of ChEBI ID's to each other.
 Default is FALSE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame that contains all information about each molecule in the ChEBI database.
+    
+
+<p>A data frame that contains all information about each molecule in the ChEBI database.
 Only "3-star" observations are included in the result. These are entries manually annotated
 by the ChEBI curator team.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="va">chebi</span> <span class="op">&lt;-</span> <span class="fu">fetch_chebi</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">chebi</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">chebi</span> <span class="op">&lt;-</span> <span class="fu">fetch_chebi</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">chebi</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   id chebi_accession parent_id                         definition star</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  1         CHEBI:1     18357 The R-enantiomer of noradrenaline.    3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  1         CHEBI:1     18357 The R-enantiomer of noradrenaline.    3</span>
@@ -119,7 +122,7 @@ by the ChEBI curator team.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 169.17780      0         169.07389</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5 169.17780      0         169.07389</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6 169.17780      0         169.07389</span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -134,7 +137,7 @@ by the ChEBI curator team.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

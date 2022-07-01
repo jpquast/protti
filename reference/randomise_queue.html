@@ -21,7 +21,7 @@ of the result is consistent if the function is run again."><!-- mathjax --><scri
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@ of the result is consistent if the function is run again.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">randomise_queue</span><span class="op">(</span>data <span class="op">=</span> <span class="cn">NULL</span>, rows <span class="op">=</span> <span class="cn">NULL</span>, export <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">randomise_queue</span><span class="op">(</span>data <span class="op">=</span> <span class="cn">NULL</span>, rows <span class="op">=</span> <span class="cn">NULL</span>, export <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -91,52 +91,59 @@ of the result is consistent if the function is run again.</p>
     <dl><dt>data</dt>
 <dd><p>optional, a data frame that contains a queue. If not provided a queue file can be
 chosen interactively.</p></dd>
+
+
 <dt>rows</dt>
 <dd><p>optional, a numeric vector that specifies a range of rows in for which samples
 should be randomized.</p></dd>
+
+
 <dt>export</dt>
 <dd><p>a logical value that determines if a <code>"randomised_queue.csv"</code> file will be
 saved in the working directory. If FALSE a data frame will be returned.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>If <code>export = TRUE</code> a <code>"randomised_queue.csv"</code> file will be saved in the
+    
+
+<p>If <code>export = TRUE</code> a <code>"randomised_queue.csv"</code> file will be saved in the
 working directory. If <code>export = FALSE</code> a data frame that contains the randomised queue
 is returned.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">queue</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_queue.html">create_queue</a></span><span class="op">(</span></span>
-<span class="r-in">  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"200722"</span><span class="op">)</span>,</span>
-<span class="r-in">  instrument <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EX1"</span><span class="op">)</span>,</span>
-<span class="r-in">  user <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jquast"</span><span class="op">)</span>,</span>
-<span class="r-in">  measurement_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DIA"</span><span class="op">)</span>,</span>
-<span class="r-in">  experiment_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"JPQ031"</span><span class="op">)</span>,</span>
-<span class="r-in">  digestion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LiP"</span>, <span class="st">"tryptic control"</span><span class="op">)</span>,</span>
-<span class="r-in">  treatment_type_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EDTA"</span>, <span class="st">"H2O"</span><span class="op">)</span>,</span>
-<span class="r-in">  treatment_type_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Zeba"</span>, <span class="st">"unfiltered"</span><span class="op">)</span>,</span>
-<span class="r-in">  treatment_dose_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span>, <span class="fl">60</span><span class="op">)</span>,</span>
-<span class="r-in">  treatment_unit_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"min"</span><span class="op">)</span>,</span>
-<span class="r-in">  n_replicates <span class="op">=</span> <span class="fl">4</span>,</span>
-<span class="r-in">  number_runs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">  organism <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"E. coli"</span><span class="op">)</span>,</span>
-<span class="r-in">  exclude_combinations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">    treatment_type_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"H2O"</span><span class="op">)</span>,</span>
-<span class="r-in">    treatment_type_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Zeba"</span>, <span class="st">"unfiltered"</span><span class="op">)</span>,</span>
-<span class="r-in">    treatment_dose_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  inj_vol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in">  data_path <span class="op">=</span> <span class="st">"D:\\2007_Data"</span>,</span>
-<span class="r-in">  method_path <span class="op">=</span> <span class="st">"C:\\Xcalibur\\methods\\DIA_120min"</span>,</span>
-<span class="r-in">  position_row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>, <span class="st">"F"</span><span class="op">)</span>,</span>
-<span class="r-in">  position_column <span class="op">=</span> <span class="fl">8</span>,</span>
-<span class="r-in">  blank_every_n <span class="op">=</span> <span class="fl">4</span>,</span>
-<span class="r-in">  blank_position <span class="op">=</span> <span class="st">"1-V1"</span>,</span>
-<span class="r-in">  blank_method_path <span class="op">=</span> <span class="st">"C:\\Xcalibur\\methods\\blank"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">queue</span>, n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">queue</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_queue.html">create_queue</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"200722"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  instrument <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EX1"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  user <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jquast"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  measurement_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DIA"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  experiment_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"JPQ031"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  digestion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LiP"</span>, <span class="st">"tryptic control"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  treatment_type_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EDTA"</span>, <span class="st">"H2O"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  treatment_type_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Zeba"</span>, <span class="st">"unfiltered"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  treatment_dose_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span>, <span class="fl">60</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  treatment_unit_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"min"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  n_replicates <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span>  number_runs <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  organism <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"E. coli"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  exclude_combinations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    treatment_type_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"H2O"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    treatment_type_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Zeba"</span>, <span class="st">"unfiltered"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    treatment_dose_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  inj_vol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  data_path <span class="op">=</span> <span class="st">"D:\\2007_Data"</span>,</span></span>
+<span class="r-in"><span>  method_path <span class="op">=</span> <span class="st">"C:\\Xcalibur\\methods\\DIA_120min"</span>,</span></span>
+<span class="r-in"><span>  position_row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>, <span class="st">"F"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  position_column <span class="op">=</span> <span class="fl">8</span>,</span></span>
+<span class="r-in"><span>  blank_every_n <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span>  blank_position <span class="op">=</span> <span class="st">"1-V1"</span>,</span></span>
+<span class="r-in"><span>  blank_method_path <span class="op">=</span> <span class="st">"C:\\Xcalibur\\methods\\blank"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">queue</span>, n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 20 × 21</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    `Sample Type` `File Name` `Sample ID` Path  `Instrument Me…` `Process Method`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>           </span>
@@ -165,13 +172,13 @@ is returned.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   `ISTD Amt` &lt;dbl&gt;, `Dil Factor` &lt;dbl&gt;, `L1 Study` &lt;lgl&gt;, `L2 Client` &lt;lgl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   `L3 Laboratory` &lt;lgl&gt;, `L4 Company` &lt;lgl&gt;, `L5 Phone` &lt;lgl&gt;, Comment &lt;lgl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   `Sample Name` &lt;chr&gt;</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">randomised_queue</span> <span class="op">&lt;-</span> <span class="fu">randomise_queue</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">queue</span>,</span>
-<span class="r-in">  export <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">randomised_queue</span>, n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">randomised_queue</span> <span class="op">&lt;-</span> <span class="fu">randomise_queue</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">queue</span>,</span></span>
+<span class="r-in"><span>  export <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">randomised_queue</span>, n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 20 × 21</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    `Sample Type` `File Name` `Sample ID` Path  `Instrument Me…` `Process Method`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>           </span>
@@ -214,7 +221,7 @@ is returned.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

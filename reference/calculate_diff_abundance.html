@@ -18,7 +18,7 @@ with protein, peptide or precursor data. Different methods for statistical testi
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -77,23 +77,23 @@ with protein, peptide or precursor data. Different methods for statistical testi
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">calculate_diff_abundance</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">sample</span>,
-  <span class="va">condition</span>,
-  <span class="va">grouping</span>,
-  <span class="va">intensity_log2</span>,
-  missingness <span class="op">=</span> <span class="va">missingness</span>,
-  comparison <span class="op">=</span> <span class="va">comparison</span>,
-  mean <span class="op">=</span> <span class="cn">NULL</span>,
-  sd <span class="op">=</span> <span class="cn">NULL</span>,
-  n_samples <span class="op">=</span> <span class="cn">NULL</span>,
-  ref_condition <span class="op">=</span> <span class="st">"all"</span>,
-  filter_NA_missingness <span class="op">=</span> <span class="cn">TRUE</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"moderated_t-test"</span>, <span class="st">"t-test"</span>, <span class="st">"t-test_mean_sd"</span>, <span class="st">"proDA"</span><span class="op">)</span>,
-  p_adj_method <span class="op">=</span> <span class="st">"BH"</span>,
-  retain_columns <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calculate_diff_abundance</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">sample</span>,</span>
+<span>  <span class="va">condition</span>,</span>
+<span>  <span class="va">grouping</span>,</span>
+<span>  <span class="va">intensity_log2</span>,</span>
+<span>  missingness <span class="op">=</span> <span class="va">missingness</span>,</span>
+<span>  comparison <span class="op">=</span> <span class="va">comparison</span>,</span>
+<span>  mean <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sd <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_samples <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ref_condition <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  filter_NA_missingness <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"moderated_t-test"</span>, <span class="st">"t-test"</span>, <span class="st">"t-test_mean_sd"</span>, <span class="st">"proDA"</span><span class="op">)</span>,</span>
+<span>  p_adj_method <span class="op">=</span> <span class="st">"BH"</span>,</span>
+<span>  retain_columns <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -101,25 +101,37 @@ with protein, peptide or precursor data. Different methods for statistical testi
     <dl><dt>data</dt>
 <dd><p>a data frame containing at least the input variables that are required for the
 selected method. Ideally the output of <code>assign_missingness</code> or <code>impute</code> is used.</p></dd>
+
+
 <dt>sample</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the sample name.
 Is not required if <code>method = "t-test_mean_sd"</code>.</p></dd>
+
+
 <dt>condition</dt>
 <dd><p>a character or numeric column in the <code>data</code> data frame that contains the
 conditions.</p></dd>
+
+
 <dt>grouping</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains precursor or
 peptide identifiers.</p></dd>
+
+
 <dt>intensity_log2</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains intensity
 values. The intensity values need to be log2 transformed. Is not required if
 <code>method = "t-test_mean_sd"</code>.</p></dd>
+
+
 <dt>missingness</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains missingness
 information. Can be obtained by calling <code><a href="assign_missingness.html">assign_missingness()</a></code>. Is not required if
 <code>method = "t-test_mean_sd"</code>. The type of missingness assigned to a comparison does not have
 any influence on the statistical test. However, if <code>filter_NA_missingness = TRUE</code> then
 comparisons with missingness <code>NA</code> are filtered out prior to p-value adjustment.</p></dd>
+
+
 <dt>comparison</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains information of
 treatment/reference condition pairs. Can be obtained by calling <code>assign_missingness</code>.
@@ -127,20 +139,30 @@ Comparisons need to be in the form condition1_vs_condition2, meaning two compare
 separated by <code>"_vs_"</code>. This column determines for which condition pairs differential
 abundances are calculated. Is not required if <code>method = "t-test_mean_sd"</code>, in that case
 please provide a reference condition with the ref_condition argument.</p></dd>
+
+
 <dt>mean</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains mean values for two
 conditions. Is only required if <code>method = "t-test_mean_sd"</code>.</p></dd>
+
+
 <dt>sd</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains standard deviations for
 two conditions. Is only required if <code>method = "t-test_mean_sd"</code>.</p></dd>
+
+
 <dt>n_samples</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains the number of
 samples per condition for two conditions. Is only required if <code>method = "t-test_mean_sd"</code>.</p></dd>
+
+
 <dt>ref_condition</dt>
 <dd><p>optional, character value providing the condition that is used as a
 reference for differential abundance calculation. Only required for <code>method = "t-test_mean_sd"</code>.
 Instead of providing one reference condition, "all" can be supplied, which will create all
 pairwise condition pairs. By default <code>ref_condition = "all"</code>.</p></dd>
+
+
 <dt>filter_NA_missingness</dt>
 <dd><p>a logical value, default is <code>TRUE</code>. For all methods except
 <code>"t-test_mean_sd"</code> missingness information has to be provided. This information can be
@@ -149,6 +171,8 @@ too few samples to be considered robust based on user defined cutoffs, it is ann
 as missingness by the <code><a href="assign_missingness.html">assign_missingness()</a></code> function. If this argument is <code>TRUE</code>,
 these <code>NA</code> reference/treatment pairs are filtered out after the testing and prior to p-value
 adjustment.</p></dd>
+
+
 <dt>method</dt>
 <dd><p>a character value, specifies the method used for statistical hypothesis testing.
 Methods include Welch test (<code>"t-test"</code>), a Welch test on means, standard deviations and
@@ -160,19 +184,26 @@ eliminates the need for data imputation since missing values are inferred from t
 information can be found in the <code>proDA</code> documentation. We do not recommend using the
 <code>moderated_t-test</code> or <code>proDA</code> method if the data was filtered for low CVs or imputation
 was performed. Default is <code>method = "moderated_t-test"</code>.</p></dd>
+
+
 <dt>p_adj_method</dt>
 <dd><p>a character value, specifies the p-value correction method. Possible
 methods are c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). Default
 method is <code>"BH"</code>.</p></dd>
+
+
 <dt>retain_columns</dt>
 <dd><p>a vector indicating if certain columns should be retained from the input
 data frame. Default is not retaining additional columns <code>retain_columns = NULL</code>. Specific
 columns can be retained by providing their names (not in quotations marks, just like other
 column names, but in a vector).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame that contains differential abundances (<code>diff</code>), p-values (<code>pval</code>)
+    
+
+<p>A data frame that contains differential abundances (<code>diff</code>), p-values (<code>pval</code>)
 and adjusted p-values (<code>adj_pval</code>) for each protein, peptide or precursor (depending on
 the <code>grouping</code> variable) and the associated treatment/reference pair. Depending on the
 method the data frame contains additional columns:</p><ul><li><p>"t-test": The <code>std_error</code> column contains the standard error of the differential
@@ -206,53 +237,53 @@ abundances. <code>avg_abundance</code> contains average abundances for treatment
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create synthetic data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span>
-<span class="r-in">  n_proteins <span class="op">=</span> <span class="fl">10</span>,</span>
-<span class="r-in">  frac_change <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span class="r-in">  n_replicates <span class="op">=</span> <span class="fl">4</span>,</span>
-<span class="r-in">  n_conditions <span class="op">=</span> <span class="fl">2</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"effect_random"</span>,</span>
-<span class="r-in">  additional_metadata <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Assign missingness information</span></span>
-<span class="r-in"><span class="va">data_missing</span> <span class="op">&lt;-</span> <span class="fu"><a href="assign_missingness.html">assign_missingness</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">data</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  condition <span class="op">=</span> <span class="va">condition</span>,</span>
-<span class="r-in">  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span class="r-in">  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span class="r-in">  ref_condition <span class="op">=</span> <span class="st">"all"</span>,</span>
-<span class="r-in">  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create synthetic data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_proteins <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  frac_change <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
+<span class="r-in"><span>  n_replicates <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span>  n_conditions <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"effect_random"</span>,</span></span>
+<span class="r-in"><span>  additional_metadata <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Assign missingness information</span></span></span>
+<span class="r-in"><span><span class="va">data_missing</span> <span class="op">&lt;-</span> <span class="fu"><a href="assign_missingness.html">assign_missingness</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  condition <span class="op">=</span> <span class="va">condition</span>,</span></span>
+<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span></span>
+<span class="r-in"><span>  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span></span>
+<span class="r-in"><span>  ref_condition <span class="op">=</span> <span class="st">"all"</span>,</span></span>
+<span class="r-in"><span>  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> "all" was provided as reference condition. All pairwise comparisons are</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> created from the conditions and assigned their missingness. The</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> created comparisons are:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> created from the conditions and assigned their missingness. The created</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> comparisons are:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> condition_1_vs_condition_2</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate differential abundances</span></span>
-<span class="r-in"><span class="co"># Using "moderated_t-test" and "proDA" improves</span></span>
-<span class="r-in"><span class="co"># true positive recovery progressively</span></span>
-<span class="r-in"><span class="va">diff</span> <span class="op">&lt;-</span> <span class="fu">calculate_diff_abundance</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">data_missing</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  condition <span class="op">=</span> <span class="va">condition</span>,</span>
-<span class="r-in">  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span class="r-in">  intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span class="r-in">  missingness <span class="op">=</span> <span class="va">missingness</span>,</span>
-<span class="r-in">  comparison <span class="op">=</span> <span class="va">comparison</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"t-test"</span>,</span>
-<span class="r-in">  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate differential abundances</span></span></span>
+<span class="r-in"><span><span class="co"># Using "moderated_t-test" and "proDA" improves</span></span></span>
+<span class="r-in"><span><span class="co"># true positive recovery progressively</span></span></span>
+<span class="r-in"><span><span class="va">diff</span> <span class="op">&lt;-</span> <span class="fu">calculate_diff_abundance</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data_missing</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  condition <span class="op">=</span> <span class="va">condition</span>,</span></span>
+<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span></span>
+<span class="r-in"><span>  intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span></span>
+<span class="r-in"><span>  missingness <span class="op">=</span> <span class="va">missingness</span>,</span></span>
+<span class="r-in"><span>  comparison <span class="op">=</span> <span class="va">comparison</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"t-test"</span>,</span></span>
+<span class="r-in"><span>  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [1/2] Create input for t-tests ... </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> DONE</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [2/2] Calculate t-tests ... </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> DONE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">diff</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">diff</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 10</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    protein   change_peptide comparison     peptide missingness    pval std_error</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -281,7 +312,7 @@ abundances. <code>avg_abundance</code> contains average abundances for treatment
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

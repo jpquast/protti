@@ -22,7 +22,7 @@ experiment, the score allows to prioritize and narrow down structurally affected
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -85,42 +85,57 @@ experiment, the score allows to prioritize and narrow down structurally affected
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">calculate_aa_scores</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">protein</span>,
-  diff <span class="op">=</span> <span class="va">diff</span>,
-  adj_pval <span class="op">=</span> <span class="va">adj_pval</span>,
-  <span class="va">start_position</span>,
-  <span class="va">end_position</span>,
-  retain_columns <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calculate_aa_scores</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">protein</span>,</span>
+<span>  diff <span class="op">=</span> <span class="va">diff</span>,</span>
+<span>  adj_pval <span class="op">=</span> <span class="va">adj_pval</span>,</span>
+<span>  <span class="va">start_position</span>,</span>
+<span>  <span class="va">end_position</span>,</span>
+<span>  retain_columns <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame containing at least the input columns.</p></dd>
+
+
 <dt>protein</dt>
 <dd><p>a character column in the data frame containing the protein identifier or name.</p></dd>
+
+
 <dt>diff</dt>
 <dd><p>a numeric column in the <code>data</code> data frame containing the log2 fold change.</p></dd>
+
+
 <dt>adj_pval</dt>
 <dd><p>a numeric column in the <code>data</code> data frame containing the adjusted p-value.</p></dd>
+
+
 <dt>start_position</dt>
 <dd><p>a numeric column <code>data</code> in the data frame containing the start position
 of a peptide or precursor.</p></dd>
+
+
 <dt>end_position</dt>
 <dd><p>a numeric column in the data frame containing the end position of a peptide or
 precursor.</p></dd>
+
+
 <dt>retain_columns</dt>
 <dd><p>a vector indicating if certain columns should be retained from the input
 data frame. Default is not retaining additional columns <code>retain_columns = NULL</code>. Specific
 columns can be retained by providing their names (not in quotations marks, just like other
 column names, but in a vector).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame that contains the aggregated scores per amino acid position, enabling to
+    
+
+<p>A data frame that contains the aggregated scores per amino acid position, enabling to
 draw fingerprints for each individual protein.</p>
     </div>
     <div id="author">
@@ -130,22 +145,22 @@ draw fingerprints for each individual protein.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  pg_protein_accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"protein_1"</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="op">-</span><span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="op">-</span><span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">1</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in">  adj_pval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.2</span>, <span class="fl">0.05</span>, <span class="fl">0.002</span>, <span class="fl">0.5</span>, <span class="fl">0.4</span>, <span class="fl">0.7</span>, <span class="fl">0.001</span>, <span class="fl">0.02</span><span class="op">)</span>,</span>
-<span class="r-in">  start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">25</span>, <span class="fl">28</span>, <span class="fl">30</span>, <span class="fl">41</span>, <span class="fl">51</span><span class="op">)</span>,</span>
-<span class="r-in">  end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">8</span>, <span class="fl">10</span>, <span class="fl">16</span>, <span class="fl">23</span>, <span class="fl">35</span>, <span class="fl">35</span>, <span class="fl">35</span>, <span class="fl">48</span>, <span class="fl">55</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="fu">calculate_aa_scores</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">data</span>,</span>
-<span class="r-in">  protein <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span>
-<span class="r-in">  diff <span class="op">=</span> <span class="va">diff</span>,</span>
-<span class="r-in">  adj_pval <span class="op">=</span> <span class="va">adj_pval</span>,</span>
-<span class="r-in">  start_position <span class="op">=</span> <span class="va">start</span>,</span>
-<span class="r-in">  end_position <span class="op">=</span> <span class="va">end</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  pg_protein_accessions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"protein_1"</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="op">-</span><span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="op">-</span><span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">1</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  adj_pval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.2</span>, <span class="fl">0.05</span>, <span class="fl">0.002</span>, <span class="fl">0.5</span>, <span class="fl">0.4</span>, <span class="fl">0.7</span>, <span class="fl">0.001</span>, <span class="fl">0.02</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">25</span>, <span class="fl">28</span>, <span class="fl">30</span>, <span class="fl">41</span>, <span class="fl">51</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">8</span>, <span class="fl">10</span>, <span class="fl">16</span>, <span class="fl">23</span>, <span class="fl">35</span>, <span class="fl">35</span>, <span class="fl">35</span>, <span class="fl">48</span>, <span class="fl">55</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">calculate_aa_scores</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  protein <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span></span>
+<span class="r-in"><span>  diff <span class="op">=</span> <span class="va">diff</span>,</span></span>
+<span class="r-in"><span>  adj_pval <span class="op">=</span> <span class="va">adj_pval</span>,</span></span>
+<span class="r-in"><span>  start_position <span class="op">=</span> <span class="va">start</span>,</span></span>
+<span class="r-in"><span>  end_position <span class="op">=</span> <span class="va">end</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 47 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Groups:   pg_protein_accessions, residue [47]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    pg_protein_accessions residue amino_acid_score</span>
@@ -175,7 +190,7 @@ draw fingerprints for each individual protein.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -75,78 +75,97 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">qc_peak_width</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">sample</span>,
-  <span class="va">intensity</span>,
-  <span class="va">retention_time</span>,
-  peak_width <span class="op">=</span> <span class="cn">NULL</span>,
-  retention_time_start <span class="op">=</span> <span class="cn">NULL</span>,
-  retention_time_end <span class="op">=</span> <span class="cn">NULL</span>,
-  remove_na_intensities <span class="op">=</span> <span class="cn">TRUE</span>,
-  interactive <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">qc_peak_width</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">sample</span>,</span>
+<span>  <span class="va">intensity</span>,</span>
+<span>  <span class="va">retention_time</span>,</span>
+<span>  peak_width <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  retention_time_start <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  retention_time_end <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  remove_na_intensities <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame containing at least sample names and protein IDs.</p></dd>
+
+
 <dt>sample</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the sample names.</p></dd>
+
+
 <dt>intensity</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains intensities. If
 <code>remove_na_intensities = FALSE</code>, this argument is not required.</p></dd>
+
+
 <dt>retention_time</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains retention
 times of precursors.</p></dd>
+
+
 <dt>peak_width</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains peak width
 information. It is not required if <code>retention_time_start</code> and <code>retention_time_end</code>
 columns are provided.</p></dd>
+
+
 <dt>retention_time_start</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains the
 start time of the precursor elution peak. It is not required if the <code>peak_width</code> column
 is provided.</p></dd>
+
+
 <dt>retention_time_end</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains the end
 time of the precursor elution peak. It is not required if the <code>peak_width</code> column is
 provided.</p></dd>
+
+
 <dt>remove_na_intensities</dt>
 <dd><p>a logical value that specifies if sample/grouping combinations
 with intensities that are NA (not quantified IDs) should be dropped from the data frame.
 Default is TRUE since we are usually interested in the peak width of quantifiable data.</p></dd>
+
+
 <dt>interactive</dt>
 <dd><p>a logical value that specifies whether the plot should be interactive
 (default is FALSE).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A line plot displaying one minute binned median precursor elution peak width over
+    
+
+<p>A line plot displaying one minute binned median precursor elution peak width over
 retention time for each sample.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  r_file_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"sample_1"</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"sample2"</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  fg_quantity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2000</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  eg_mean_apex_rt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">8</span>, <span class="fl">9</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  eg_start_rt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">7.5</span>, <span class="fl">8</span>, <span class="fl">9</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">8</span>, <span class="fl">9</span>, <span class="fl">9</span><span class="op">)</span>,</span>
-<span class="r-in">  eg_end_rt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fl">1.5</span>, <span class="fl">2</span>, <span class="fl">3.1</span>, <span class="fl">4.5</span>, <span class="fl">5.8</span>, <span class="fl">6.6</span>, <span class="fl">8</span>, <span class="fl">8</span>, <span class="fl">8.4</span>,</span>
-<span class="r-in">    <span class="fl">9.1</span>, <span class="fl">3</span>, <span class="fl">2.2</span>, <span class="fl">4</span>, <span class="fl">3.4</span>, <span class="fl">4.5</span>, <span class="fl">5.5</span>, <span class="fl">5.6</span>, <span class="fl">8.3</span>, <span class="fl">10</span>, <span class="fl">12</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="fu">qc_peak_width</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">data</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">r_file_name</span>,</span>
-<span class="r-in">  intensity <span class="op">=</span> <span class="va">fg_quantity</span>,</span>
-<span class="r-in">  retention_time <span class="op">=</span> <span class="va">eg_mean_apex_rt</span>,</span>
-<span class="r-in">  retention_time_start <span class="op">=</span> <span class="va">eg_start_rt</span>,</span>
-<span class="r-in">  retention_time_end <span class="op">=</span> <span class="va">eg_end_rt</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  r_file_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"sample_1"</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"sample2"</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  fg_quantity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2000</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  eg_mean_apex_rt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">8</span>, <span class="fl">9</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  eg_start_rt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">7.5</span>, <span class="fl">8</span>, <span class="fl">9</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">8</span>, <span class="fl">9</span>, <span class="fl">9</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  eg_end_rt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fl">1.5</span>, <span class="fl">2</span>, <span class="fl">3.1</span>, <span class="fl">4.5</span>, <span class="fl">5.8</span>, <span class="fl">6.6</span>, <span class="fl">8</span>, <span class="fl">8</span>, <span class="fl">8.4</span>,</span></span>
+<span class="r-in"><span>    <span class="fl">9.1</span>, <span class="fl">3</span>, <span class="fl">2.2</span>, <span class="fl">4</span>, <span class="fl">3.4</span>, <span class="fl">4.5</span>, <span class="fl">5.5</span>, <span class="fl">5.6</span>, <span class="fl">8.3</span>, <span class="fl">10</span>, <span class="fl">12</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">qc_peak_width</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">r_file_name</span>,</span></span>
+<span class="r-in"><span>  intensity <span class="op">=</span> <span class="va">fg_quantity</span>,</span></span>
+<span class="r-in"><span>  retention_time <span class="op">=</span> <span class="va">eg_mean_apex_rt</span>,</span></span>
+<span class="r-in"><span>  retention_time_start <span class="op">=</span> <span class="va">eg_start_rt</span>,</span></span>
+<span class="r-in"><span>  retention_time_end <span class="op">=</span> <span class="va">eg_end_rt</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="qc_peak_width-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -162,7 +181,7 @@ retention time for each sample.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -22,7 +22,7 @@ structure as a colour gradient."><!-- mathjax --><script src="https://cdnjs.clou
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -85,19 +85,19 @@ structure as a colour gradient.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">map_peptides_on_structure</span><span class="op">(</span>
-  <span class="va">peptide_data</span>,
-  <span class="va">uniprot_id</span>,
-  <span class="va">pdb_id</span>,
-  <span class="va">chain</span>,
-  <span class="va">auth_seq_id</span>,
-  <span class="va">map_value</span>,
-  file_format <span class="op">=</span> <span class="st">".cif"</span>,
-  scale_per_structure <span class="op">=</span> <span class="cn">TRUE</span>,
-  export_location <span class="op">=</span> <span class="cn">NULL</span>,
-  structure_file <span class="op">=</span> <span class="cn">NULL</span>,
-  show_progress <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">map_peptides_on_structure</span><span class="op">(</span></span>
+<span>  <span class="va">peptide_data</span>,</span>
+<span>  <span class="va">uniprot_id</span>,</span>
+<span>  <span class="va">pdb_id</span>,</span>
+<span>  <span class="va">chain</span>,</span>
+<span>  <span class="va">auth_seq_id</span>,</span>
+<span>  <span class="va">map_value</span>,</span>
+<span>  file_format <span class="op">=</span> <span class="st">".cif"</span>,</span>
+<span>  scale_per_structure <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  export_location <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  structure_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  show_progress <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -111,15 +111,21 @@ column should contain NA at these positions. If a structure or prediction file i
 <code>structure_file</code> argument, this data frame should only contain information associated with
 the provided structure. In case of a user provided structure, column names should be provided to
 the following arguments: <strong>uniprot_id</strong>, <strong>chain</strong>, <strong>auth_seq_id</strong>, <strong>map_value</strong>.</p></dd>
+
+
 <dt>uniprot_id</dt>
 <dd><p>a character column in the <code>peptide_data</code> data frame that contains UniProt
 identifiers for a corresponding peptide, protein region or amino acid.</p></dd>
+
+
 <dt>pdb_id</dt>
 <dd><p>a character column in the <code>peptide_data</code> data frame that contains PDB
 identifiers for structures in which a corresponding peptide, protein region or amino acid is found.
 If a protein prediction should be fetched from AlphaFold, this column should contain NA. This
 column is not required if a structure or prediction file is provided in the <code>structure_file</code>
 argument.</p></dd>
+
+
 <dt>chain</dt>
 <dd><p>a character column in the <code>peptide_data</code> data frame that contains the name of
 the chain from the PDB structure in which the peptide, protein region or amino acid is found.
@@ -129,6 +135,8 @@ provided as usual (All AlphaFold predictions only have chain A). <strong>Importa
 the author defined chain definitions for both ".cif" and ".pdb" files. When the output of the
 <code>find_peptide_in_structure</code> function is used as the input for this function, this
 corresponds to the <code>auth_asym_id</code> column.</p></dd>
+
+
 <dt>auth_seq_id</dt>
 <dd><p>optional, a character (or numeric) column in the <code>peptide_data</code> data frame
 that contains semicolon separated positions of peptides, protein regions or amino acids in the
@@ -137,6 +145,8 @@ corresponding PDB structure or AlphaFold prediction. This information can be obt
 <code>auth_seq_id</code>. In case of AlphaFold predictions, UniProt positions should be used. If
 signal positions and not stretches of amino acids are provided, the column can be numeric and
 does not need to contain the semicolon separator.</p></dd>
+
+
 <dt>map_value</dt>
 <dd><p>a numeric column in the <code>peptide_data</code> data frame that contains a value
 associated with each peptide, protein region or amino acid. If one start to end position pair
@@ -148,6 +158,8 @@ the same for every selection. For the mapping, values are scaled between 50 and 
 in the structure that do not map any selection receive a value of 0. If an amino acid position
 is associated with multiple mapped values, e.g. from different peptides, the maximum mapped
 value will be displayed.</p></dd>
+
+
 <dt>file_format</dt>
 <dd><p>a character vector containing the file format of the structure that will be
 fetched from the database for the PDB identifiers provided in the <code>pdb_id</code> column. This
@@ -156,83 +168,94 @@ since every structure contains a ".cif" file but not every structure contains a 
 Fetching and mapping onto ".cif" files takes longer than for ".pdb" files. If a structure file
 is provided in the <code>structure_file</code> argument, the file format is detected automatically
 and does not need to be provided.</p></dd>
+
+
 <dt>scale_per_structure</dt>
 <dd><p>a logical value that specifies if scaling should be performed for
 each structure independently (TRUE) or over the whole data set (FALSE). The default is TRUE,
 which scales the scores of each structure independently so that each structure has a score
 range from 50 to 100.</p></dd>
+
+
 <dt>export_location</dt>
 <dd><p>optional, a character argument specifying the path to the location in
 which the fetched and altered structure files should be saved. If left empty, they will be
 saved in the current working directory. The location should be provided in the following
 format "folderA/folderB".</p></dd>
+
+
 <dt>structure_file</dt>
 <dd><p>optional, a character argument specifying the path to the location and
 name of a structure file in ".cif" or ".pdb" format. If a structure is provided the <code>peptide_data</code>
 data frame should only contain mapping information for this structure.</p></dd>
+
+
 <dt>show_progress</dt>
 <dd><p>a logical, if <code>show_progress = TRUE</code>, a progress bar will be shown
 (default is TRUE).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The function exports a modified ".pdb" or ".cif" structure file. B-factors have been
+    
+
+<p>The function exports a modified ".pdb" or ".cif" structure file. B-factors have been
 replaced with scaled (50-100) values provided in the <code>map_value</code> column.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="co"># \dontshow{</span></span>
-<span class="r-in"><span class="va">.old_wd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># }</span></span>
-<span class="r-in"><span class="co"># Load libraries</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">peptide_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  uniprot_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P0A8T7"</span>, <span class="st">"P0A8T7"</span>, <span class="st">"P60906"</span><span class="op">)</span>,</span>
-<span class="r-in">  peptide_sequence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="st">"SGIVSFGKETKGKRRLVITPVDGSDPYEEMIPKWRQLNV"</span>,</span>
-<span class="r-in">    <span class="st">"NVFEGERVER"</span>,</span>
-<span class="r-in">    <span class="st">"AIGEVTDVVEKE"</span></span>
-<span class="r-in">  <span class="op">)</span>,</span>
-<span class="r-in">  start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1160</span>, <span class="fl">1197</span>, <span class="fl">55</span><span class="op">)</span>,</span>
-<span class="r-in">  end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1198</span>, <span class="fl">1206</span>, <span class="fl">66</span><span class="op">)</span>,</span>
-<span class="r-in">  map_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">70</span>, <span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Find peptide positions in structures</span></span>
-<span class="r-in"><span class="va">positions_structure</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_peptide_in_structure.html">find_peptide_in_structure</a></span><span class="op">(</span></span>
-<span class="r-in">  peptide_data <span class="op">=</span> <span class="va">peptide_data</span>,</span>
-<span class="r-in">  peptide <span class="op">=</span> <span class="va">peptide_sequence</span>,</span>
-<span class="r-in">  start <span class="op">=</span> <span class="va">start</span>,</span>
-<span class="r-in">  end <span class="op">=</span> <span class="va">end</span>,</span>
-<span class="r-in">  uniprot_id <span class="op">=</span> <span class="va">uniprot_id</span>,</span>
-<span class="r-in">  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">map_value</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pdb_ids</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"6UU2"</span>, <span class="st">"2EL9"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Map peptides on structures</span></span>
-<span class="r-in"><span class="co"># You can determine the preferred output location</span></span>
-<span class="r-in"><span class="co"># with the export_location argument. Currently it</span></span>
-<span class="r-in"><span class="co"># is saved in the working directory.</span></span>
-<span class="r-in"><span class="fu">map_peptides_on_structure</span><span class="op">(</span></span>
-<span class="r-in">  peptide_data <span class="op">=</span> <span class="va">positions_structure</span>,</span>
-<span class="r-in">  uniprot_id <span class="op">=</span> <span class="va">uniprot_id</span>,</span>
-<span class="r-in">  pdb_id <span class="op">=</span> <span class="va">pdb_ids</span>,</span>
-<span class="r-in">  chain <span class="op">=</span> <span class="va">auth_asym_id</span>,</span>
-<span class="r-in">  auth_seq_id <span class="op">=</span> <span class="va">auth_seq_id</span>,</span>
-<span class="r-in">  map_value <span class="op">=</span> <span class="va">map_value</span>,</span>
-<span class="r-in">  file_format <span class="op">=</span> <span class="st">".pdb"</span>,</span>
-<span class="r-in">  export_location <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># \dontshow{</span></span></span>
+<span class="r-in"><span><span class="va">.old_wd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="co"># Load libraries</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">peptide_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  uniprot_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P0A8T7"</span>, <span class="st">"P0A8T7"</span>, <span class="st">"P60906"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  peptide_sequence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"SGIVSFGKETKGKRRLVITPVDGSDPYEEMIPKWRQLNV"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"NVFEGERVER"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"AIGEVTDVVEKE"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1160</span>, <span class="fl">1197</span>, <span class="fl">55</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1198</span>, <span class="fl">1206</span>, <span class="fl">66</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  map_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">70</span>, <span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Find peptide positions in structures</span></span></span>
+<span class="r-in"><span><span class="va">positions_structure</span> <span class="op">&lt;-</span> <span class="fu"><a href="find_peptide_in_structure.html">find_peptide_in_structure</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  peptide_data <span class="op">=</span> <span class="va">peptide_data</span>,</span></span>
+<span class="r-in"><span>  peptide <span class="op">=</span> <span class="va">peptide_sequence</span>,</span></span>
+<span class="r-in"><span>  start <span class="op">=</span> <span class="va">start</span>,</span></span>
+<span class="r-in"><span>  end <span class="op">=</span> <span class="va">end</span>,</span></span>
+<span class="r-in"><span>  uniprot_id <span class="op">=</span> <span class="va">uniprot_id</span>,</span></span>
+<span class="r-in"><span>  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">map_value</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pdb_ids</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"6UU2"</span>, <span class="st">"2EL9"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Map peptides on structures</span></span></span>
+<span class="r-in"><span><span class="co"># You can determine the preferred output location</span></span></span>
+<span class="r-in"><span><span class="co"># with the export_location argument. Currently it</span></span></span>
+<span class="r-in"><span><span class="co"># is saved in the working directory.</span></span></span>
+<span class="r-in"><span><span class="fu">map_peptides_on_structure</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  peptide_data <span class="op">=</span> <span class="va">positions_structure</span>,</span></span>
+<span class="r-in"><span>  uniprot_id <span class="op">=</span> <span class="va">uniprot_id</span>,</span></span>
+<span class="r-in"><span>  pdb_id <span class="op">=</span> <span class="va">pdb_ids</span>,</span></span>
+<span class="r-in"><span>  chain <span class="op">=</span> <span class="va">auth_asym_id</span>,</span></span>
+<span class="r-in"><span>  auth_seq_id <span class="op">=</span> <span class="va">auth_seq_id</span>,</span></span>
+<span class="r-in"><span>  map_value <span class="op">=</span> <span class="va">map_value</span>,</span></span>
+<span class="r-in"><span>  file_format <span class="op">=</span> <span class="st">".pdb"</span>,</span></span>
+<span class="r-in"><span>  export_location <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The following structures were not fetched, likely because no ".pdb"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> file is available. Try using the ".cif" format for these.6UU2_P0A8T7</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># \dontshow{</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="va">.old_wd</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># }</span></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \dontshow{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="va">.old_wd</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -247,7 +270,7 @@ replaced with scaled (50-100) values provided in the <code>map_value</code> colu
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

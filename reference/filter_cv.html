@@ -24,7 +24,7 @@ function might bias for data completeness."><!-- mathjax --><script src="https:/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -89,68 +89,83 @@ function might bias for data completeness.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">filter_cv</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">grouping</span>,
-  <span class="va">condition</span>,
-  <span class="va">log2_intensity</span>,
-  cv_limit <span class="op">=</span> <span class="fl">0.25</span>,
-  <span class="va">min_conditions</span>,
-  silent <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">filter_cv</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">grouping</span>,</span>
+<span>  <span class="va">condition</span>,</span>
+<span>  <span class="va">log2_intensity</span>,</span>
+<span>  cv_limit <span class="op">=</span> <span class="fl">0.25</span>,</span>
+<span>  <span class="va">min_conditions</span>,</span>
+<span>  silent <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame that contains at least the input variables.</p></dd>
+
+
 <dt>grouping</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the grouping
 variable that can be either precursors, peptides or proteins.</p></dd>
+
+
 <dt>condition</dt>
 <dd><p>a character or numeric column in the <code>data</code> data frame that contains
 information on the sample condition.</p></dd>
+
+
 <dt>log2_intensity</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains log2
 transformed intensities.</p></dd>
+
+
 <dt>cv_limit</dt>
 <dd><p>optional, a numeric value that specifies the CV cutoff that will be applied.
 Default is 0.25.</p></dd>
+
+
 <dt>min_conditions</dt>
 <dd><p>a numeric value that specifies the minimum number of conditions for
 which grouping CVs should be below the cutoff.</p></dd>
+
+
 <dt>silent</dt>
 <dd><p>a logical value that specifies if a message with the number of filtered out
 conditions should be returned. Default is FALSE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The CV filtered data frame.</p>
+    
+
+<p>The CV filtered data frame.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create synthetic data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span>
-<span class="r-in">  n_proteins <span class="op">=</span> <span class="fl">50</span>,</span>
-<span class="r-in">  frac_change <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span class="r-in">  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in">  n_conditions <span class="op">=</span> <span class="fl">2</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"effect_random"</span>,</span>
-<span class="r-in">  additional_metadata <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Filter coefficients of variation</span></span>
-<span class="r-in"><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="fu">filter_cv</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span class="r-in">  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span class="r-in">  condition <span class="op">=</span> <span class="va">condition</span>,</span>
-<span class="r-in">  log2_intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span class="r-in">  cv_limit <span class="op">=</span> <span class="fl">0.25</span>,</span>
-<span class="r-in">  min_conditions <span class="op">=</span> <span class="fl">2</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create synthetic data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_proteins <span class="op">=</span> <span class="fl">50</span>,</span></span>
+<span class="r-in"><span>  frac_change <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
+<span class="r-in"><span>  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>  n_conditions <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"effect_random"</span>,</span></span>
+<span class="r-in"><span>  additional_metadata <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Filter coefficients of variation</span></span></span>
+<span class="r-in"><span><span class="va">data_filtered</span> <span class="op">&lt;-</span> <span class="fu">filter_cv</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span></span>
+<span class="r-in"><span>  condition <span class="op">=</span> <span class="va">condition</span>,</span></span>
+<span class="r-in"><span>  log2_intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span></span>
+<span class="r-in"><span>  cv_limit <span class="op">=</span> <span class="fl">0.25</span>,</span></span>
+<span class="r-in"><span>  min_conditions <span class="op">=</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 191 groups of 704 were filtered out. 73% of data remains.</span>
 </code></pre></div>
     </div>
@@ -166,7 +181,7 @@ conditions should be returned. Default is FALSE.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

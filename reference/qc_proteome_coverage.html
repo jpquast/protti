@@ -18,7 +18,7 @@ he fraction of detected proteins to all proteins in the proteome is calculated."
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -77,62 +77,77 @@ he fraction of detected proteins to all proteins in the proteome is calculated.<
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">qc_proteome_coverage</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">sample</span>,
-  <span class="va">protein_id</span>,
-  <span class="va">organism_id</span>,
-  reviewed <span class="op">=</span> <span class="cn">TRUE</span>,
-  plot <span class="op">=</span> <span class="cn">TRUE</span>,
-  interactive <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">qc_proteome_coverage</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">sample</span>,</span>
+<span>  <span class="va">protein_id</span>,</span>
+<span>  <span class="va">organism_id</span>,</span>
+<span>  reviewed <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame that contains at least sample names and protein ID's.</p></dd>
+
+
 <dt>sample</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the sample name.</p></dd>
+
+
 <dt>protein_id</dt>
 <dd><p>a character or numeric column in the <code>data</code> data frame that contains
 protein identifiers such as UniProt accessions.</p></dd>
+
+
 <dt>organism_id</dt>
 <dd><p>a numeric value that specifies a NCBI taxonomy identifier (TaxId) of the
 organism used. Human: 9606, S. cerevisiae: 559292, E. coli: 83333.</p></dd>
+
+
 <dt>reviewed</dt>
 <dd><p>a logical value that determines if only reviewed protein entries will be considered
 as the full proteome. Default is TRUE.</p></dd>
+
+
 <dt>plot</dt>
 <dd><p>a logical value that specifies whether the result should be plotted.</p></dd>
+
+
 <dt>interactive</dt>
 <dd><p>a logical value that indicates whether the plot should be interactive
 (default is FALSE).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A bar plot showing the percentage of of the proteome detected and undetected in total
+    
+
+<p>A bar plot showing the percentage of of the proteome detected and undetected in total
 and for each sample. If <code>plot = FALSE</code> a data frame containing the numbers is returned.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">proteome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4518</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">101</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"B"</span>, <span class="fl">1000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"C"</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">proteome</span><span class="op">$</span><span class="va">id</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">]</span>, <span class="va">proteome</span><span class="op">$</span><span class="va">id</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">]</span>, <span class="va">proteome</span><span class="op">$</span><span class="va">id</span><span class="op">[</span><span class="fl">1000</span><span class="op">:</span><span class="fl">2000</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate proteome coverage</span></span>
-<span class="r-in"><span class="fu">qc_proteome_coverage</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span>
-<span class="r-in">  organism_id <span class="op">=</span> <span class="fl">83333</span>,</span>
-<span class="r-in">  plot <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">proteome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4518</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">101</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"B"</span>, <span class="fl">1000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"C"</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">proteome</span><span class="op">$</span><span class="va">id</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">]</span>, <span class="va">proteome</span><span class="op">$</span><span class="va">id</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">]</span>, <span class="va">proteome</span><span class="op">$</span><span class="va">id</span><span class="op">[</span><span class="fl">1000</span><span class="op">:</span><span class="fl">2000</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate proteome coverage</span></span></span>
+<span class="r-in"><span><span class="fu">qc_proteome_coverage</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span></span>
+<span class="r-in"><span>  organism_id <span class="op">=</span> <span class="fl">83333</span>,</span></span>
+<span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 8 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   sample type                percentage</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -144,17 +159,17 @@ and for each sample. If <code>plot = FALSE</code> a data frame containing the nu
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> C      proteins_undetected      77.9 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span> Total  proteins_detected        44.2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span> Total  proteins_undetected      55.8 </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Plot proteome coverage</span></span>
-<span class="r-in"><span class="fu">qc_proteome_coverage</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span>
-<span class="r-in">  organism_id <span class="op">=</span> <span class="fl">83333</span>,</span>
-<span class="r-in">  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot proteome coverage</span></span></span>
+<span class="r-in"><span><span class="fu">qc_proteome_coverage</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span></span>
+<span class="r-in"><span>  organism_id <span class="op">=</span> <span class="fl">83333</span>,</span></span>
+<span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="qc_proteome_coverage-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -169,7 +184,7 @@ and for each sample. If <code>plot = FALSE</code> a data frame containing the nu
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

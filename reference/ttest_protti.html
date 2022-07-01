@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -75,45 +75,60 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ttest_protti</span><span class="op">(</span><span class="va">mean1</span>, <span class="va">mean2</span>, <span class="va">sd1</span>, <span class="va">sd2</span>, <span class="va">n1</span>, <span class="va">n2</span>, log_values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ttest_protti</span><span class="op">(</span><span class="va">mean1</span>, <span class="va">mean2</span>, <span class="va">sd1</span>, <span class="va">sd2</span>, <span class="va">n1</span>, <span class="va">n2</span>, log_values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>mean1</dt>
 <dd><p>a numeric vector that contains the means of group1.</p></dd>
+
+
 <dt>mean2</dt>
 <dd><p>a numeric vector that contains the means of group2.</p></dd>
+
+
 <dt>sd1</dt>
 <dd><p>a numeric vector that contains the standard deviations of group1.</p></dd>
+
+
 <dt>sd2</dt>
 <dd><p>a numeric vector that contains the standard deviations of group2.</p></dd>
+
+
 <dt>n1</dt>
 <dd><p>a numeric vector that contains the number of replicates used for the calculation of
 each mean and standard deviation of group1.</p></dd>
+
+
 <dt>n2</dt>
 <dd><p>a numeric vector that contains the number of replicates used for the calculation of
 each mean and standard deviation of group2.</p></dd>
+
+
 <dt>log_values</dt>
 <dd><p>a logical value that indicates if values are log transformed. This determines
 how fold changes are calculated. Default is <code>log_values = TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame that contains the calculated differences of means, standard error, t
+    
+
+<p>A data frame that contains the calculated differences of means, standard error, t
 statistic and p-values.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">ttest_protti</span><span class="op">(</span></span>
-<span class="r-in">  mean1 <span class="op">=</span> <span class="fl">10</span>,</span>
-<span class="r-in">  mean2 <span class="op">=</span> <span class="fl">15.5</span>,</span>
-<span class="r-in">  sd1 <span class="op">=</span> <span class="fl">1</span>,</span>
-<span class="r-in">  sd2 <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span class="r-in">  n1 <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in">  n2 <span class="op">=</span> <span class="fl">3</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ttest_protti</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  mean1 <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  mean2 <span class="op">=</span> <span class="fl">15.5</span>,</span></span>
+<span class="r-in"><span>  sd1 <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  sd2 <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
+<span class="r-in"><span>  n1 <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>  n2 <span class="op">=</span> <span class="fl">3</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   diff std_error t_statistic        pval</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 -5.5 0.6454972   -8.520563 0.003659956</span>
 </code></pre></div>
@@ -130,7 +145,7 @@ statistic and p-values.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -75,36 +75,47 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">qc_sequence_coverage</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">protein_identifier</span>,
-  <span class="va">coverage</span>,
-  sample <span class="op">=</span> <span class="cn">NULL</span>,
-  interactive <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">qc_sequence_coverage</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">protein_identifier</span>,</span>
+<span>  <span class="va">coverage</span>,</span>
+<span>  sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a data frame that contains at least the input variables.</p></dd>
+
+
 <dt>protein_identifier</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains protein
 identifiers.</p></dd>
+
+
 <dt>coverage</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains protein coverage
 in percent. This information can be obtained using the <code><a href="sequence_coverage.html">sequence_coverage</a></code> function.</p></dd>
+
+
 <dt>sample</dt>
 <dd><p>optional, a character column in the <code>data</code> data frame that contains sample names.
 Please only provide this argument if you want to facet the distribution plot by sample
 otherwise do not provide this argument.</p></dd>
+
+
 <dt>interactive</dt>
 <dd><p>a logical value that specifies whether the plot should be interactive
 (default is FALSE).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A protein coverage histogram with 5 percent binwidth. The vertical dotted line
+    
+
+<p>A protein coverage histogram with 5 percent binwidth. The vertical dotted line
 indicates the median.</p>
     </div>
     <div id="see-also">
@@ -114,23 +125,23 @@ indicates the median.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span>
-<span class="r-in">  n_proteins <span class="op">=</span> <span class="fl">100</span>,</span>
-<span class="r-in">  frac_change <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span class="r-in">  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in">  n_conditions <span class="op">=</span> <span class="fl">2</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"effect_random"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Plot sequence coverage</span></span>
-<span class="r-in"><span class="fu">qc_sequence_coverage</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span class="r-in">  protein_identifier <span class="op">=</span> <span class="va">protein</span>,</span>
-<span class="r-in">  coverage <span class="op">=</span> <span class="va">coverage</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_proteins <span class="op">=</span> <span class="fl">100</span>,</span></span>
+<span class="r-in"><span>  frac_change <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
+<span class="r-in"><span>  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>  n_conditions <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"effect_random"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot sequence coverage</span></span></span>
+<span class="r-in"><span><span class="fu">qc_sequence_coverage</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  protein_identifier <span class="op">=</span> <span class="va">protein</span>,</span></span>
+<span class="r-in"><span>  coverage <span class="op">=</span> <span class="va">coverage</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="qc_sequence_coverage-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -146,7 +157,7 @@ indicates the median.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

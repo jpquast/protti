@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -75,17 +75,17 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">qc_charge_states</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">sample</span>,
-  <span class="va">grouping</span>,
-  <span class="va">charge_states</span>,
-  intensity <span class="op">=</span> <span class="cn">NULL</span>,
-  remove_na_intensities <span class="op">=</span> <span class="cn">TRUE</span>,
-  method <span class="op">=</span> <span class="st">"count"</span>,
-  plot <span class="op">=</span> <span class="cn">FALSE</span>,
-  interactive <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">qc_charge_states</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">sample</span>,</span>
+<span>  <span class="va">grouping</span>,</span>
+<span>  <span class="va">charge_states</span>,</span>
+<span>  intensity <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  remove_na_intensities <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"count"</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -93,68 +93,87 @@
     <dl><dt>data</dt>
 <dd><p>a data frame that contains at least sample names, peptide or precursor identifiers
 and missed cleavage counts for each peptide or precursor.</p></dd>
+
+
 <dt>sample</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains the sample name.</p></dd>
+
+
 <dt>grouping</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains either precursor or
 peptide identifiers.</p></dd>
+
+
 <dt>charge_states</dt>
 <dd><p>a character or numeric column in the <code>data</code> data frame that contains
 the different charge states assigned to the precursor or peptide.</p></dd>
+
+
 <dt>intensity</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains the corresponding
 raw or normalised intensity values (not log2) for each peptide or precursor. Required when
 "intensity" is chosen as the method.</p></dd>
+
+
 <dt>remove_na_intensities</dt>
 <dd><p>a logical value that specifies if sample/grouping combinations with
 intensities that are NA (not quantified IDs) should be dropped from the data frame for analysis
 of missed cleavages. Default is TRUE since we are usually interested in quantifiable peptides.
 This is only relevant for method = "count".</p></dd>
+
+
 <dt>method</dt>
 <dd><p>a character value that indicates the method used for evaluation. "count"
 calculates the charge state distribution based on counts of the corresponding peptides or
 precursors in the charge state group, "intensity" calculates the percentage of precursors or
 peptides in each charge state group based on the corresponding intensity values.</p></dd>
+
+
 <dt>plot</dt>
 <dd><p>a logical value that indicates whether the result should be plotted.</p></dd>
+
+
 <dt>interactive</dt>
 <dd><p>a logical value that specifies whether the plot should be interactive
 (default is FALSE).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame that contains the calculated percentage made up by the sum of either
+    
+
+<p>A data frame that contains the calculated percentage made up by the sum of either
 all counts or intensities of peptides or precursors of the corresponding charge state
 (depending on which method is chosen).</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Load libraries</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span>
-<span class="r-in">  n_proteins <span class="op">=</span> <span class="fl">100</span>,</span>
-<span class="r-in">  frac_change <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span class="r-in">  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in">  n_conditions <span class="op">=</span> <span class="fl">2</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"effect_random"</span></span>
-<span class="r-in"><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>intensity_non_log2 <span class="op">=</span> <span class="fl">2</span><span class="op">^</span><span class="va">peptide_intensity_missing</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Calculate charge percentages</span></span>
-<span class="r-in"><span class="fu">qc_charge_states</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span class="r-in">  charge_states <span class="op">=</span> <span class="va">charge</span>,</span>
-<span class="r-in">  intensity <span class="op">=</span> <span class="va">intensity_non_log2</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"intensity"</span>,</span>
-<span class="r-in">  plot <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Load libraries</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_proteins <span class="op">=</span> <span class="fl">100</span>,</span></span>
+<span class="r-in"><span>  frac_change <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
+<span class="r-in"><span>  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>  n_conditions <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"effect_random"</span></span></span>
+<span class="r-in"><span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>intensity_non_log2 <span class="op">=</span> <span class="fl">2</span><span class="op">^</span><span class="va">peptide_intensity_missing</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Calculate charge percentages</span></span></span>
+<span class="r-in"><span><span class="fu">qc_charge_states</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span></span>
+<span class="r-in"><span>  charge_states <span class="op">=</span> <span class="va">charge</span>,</span></span>
+<span class="r-in"><span>  intensity <span class="op">=</span> <span class="va">intensity_non_log2</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"intensity"</span>,</span></span>
+<span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 30 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    sample   charge charge_per</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -169,17 +188,17 @@ all counts or intensities of peptides or precursors of the corresponding charge 
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> sample_2 4          3.33  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> sample_2 5          0.058<span style="text-decoration: underline;">1</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 20 more rows</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Plot charge states</span></span>
-<span class="r-in"><span class="fu">qc_charge_states</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span class="r-in">  sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span class="r-in">  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span class="r-in">  charge_states <span class="op">=</span> <span class="va">charge</span>,</span>
-<span class="r-in">  intensity <span class="op">=</span> <span class="va">intensity_non_log2</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"intensity"</span>,</span>
-<span class="r-in">  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot charge states</span></span></span>
+<span class="r-in"><span><span class="fu">qc_charge_states</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
+<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span></span>
+<span class="r-in"><span>  charge_states <span class="op">=</span> <span class="va">charge</span>,</span></span>
+<span class="r-in"><span>  intensity <span class="op">=</span> <span class="va">intensity_non_log2</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"intensity"</span>,</span></span>
+<span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="qc_charge_states-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -195,7 +214,7 @@ all counts or intensities of peptides or precursors of the corresponding charge 
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -20,7 +20,7 @@ the box representing the peptides or precursors do not have any meaning."><!-- m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
@@ -81,22 +81,22 @@ the box representing the peptides or precursors do not have any meaning.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">woods_plot</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">fold_change</span>,
-  <span class="va">start_position</span>,
-  <span class="va">end_position</span>,
-  <span class="va">protein_length</span>,
-  coverage <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">protein_id</span>,
-  targets <span class="op">=</span> <span class="st">"all"</span>,
-  facet <span class="op">=</span> <span class="cn">TRUE</span>,
-  colouring <span class="op">=</span> <span class="cn">NULL</span>,
-  fold_change_cutoff <span class="op">=</span> <span class="fl">1</span>,
-  highlight <span class="op">=</span> <span class="cn">NULL</span>,
-  export <span class="op">=</span> <span class="cn">FALSE</span>,
-  export_name <span class="op">=</span> <span class="st">"woods_plots"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">woods_plot</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">fold_change</span>,</span>
+<span>  <span class="va">start_position</span>,</span>
+<span>  <span class="va">end_position</span>,</span>
+<span>  <span class="va">protein_length</span>,</span>
+<span>  coverage <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">protein_id</span>,</span>
+<span>  targets <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  facet <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  colouring <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fold_change_cutoff <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  highlight <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  export <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  export_name <span class="op">=</span> <span class="st">"woods_plots"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -105,76 +105,105 @@ the box representing the peptides or precursors do not have any meaning.</p>
 <dd><p>a data frame that contains differential abundance, start and end peptide or
 precursor positions, protein length and optionally a variable based on which peptides or
 precursors should be coloured.</p></dd>
+
+
 <dt>fold_change</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains log2 fold
 changes.</p></dd>
+
+
 <dt>start_position</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains the start
 positions for each peptide or precursor.</p></dd>
+
+
 <dt>end_position</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains the end
 positions for each peptide or precursor.</p></dd>
+
+
 <dt>protein_length</dt>
 <dd><p>a numeric column in the <code>data</code> data frame that contains the length
 of the protein.</p></dd>
+
+
 <dt>coverage</dt>
 <dd><p>optional, a numeric column in the <code>data</code> data frame that contains coverage
 in percent. Will appear in the title of the Woods' plot if provided.</p></dd>
+
+
 <dt>protein_id</dt>
 <dd><p>a character column in the <code>data</code> data frame that contains protein
 identifiers.</p></dd>
+
+
 <dt>targets</dt>
 <dd><p>a character vector that specifies the identifiers of the proteins (depending on
 <code>protein_id</code>) that should be plotted. This can also be <code>"all"</code> if plots for all
 proteins should be created. Default is <code>"all"</code>.</p></dd>
+
+
 <dt>facet</dt>
 <dd><p>a logical value that indicates if plots should be summarised into facets of 20
 plots. This is recommended for many plots. Default is <code>facet = TRUE</code>.</p></dd>
+
+
 <dt>colouring</dt>
 <dd><p>optional, a character or numeric (discrete or continous) column in the data
 frame containing information by which peptide or precursors should be coloured.</p></dd>
+
+
 <dt>fold_change_cutoff</dt>
 <dd><p>optional, a numeric value that specifies the log2 fold change cutoff
 used in the plot. The default value is 2.</p></dd>
+
+
 <dt>highlight</dt>
 <dd><p>optional, a logical column that specifies whether specific peptides or
 precursors should be highlighted with an asterisk.</p></dd>
+
+
 <dt>export</dt>
 <dd><p>a logical value that indicates if plots should be exported as PDF. The output
 directory will be the current working directory. The name of the file can be chosen using the
 <code>export_name</code> argument. Default is <code>export = FALSE</code>.</p></dd>
+
+
 <dt>export_name</dt>
 <dd><p>a character vector that provides the name of the exported file if
 <code>export = TRUE</code>. Default is <code>export_name = "woods_plots"</code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list containing Woods' plots is returned. Plotting peptide or precursor log2 fold
+    
+
+<p>A list containing Woods' plots is returned. Plotting peptide or precursor log2 fold
 changes along the protein sequence.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Create example data</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span class="r-in">  fold_change <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.3</span>, <span class="fl">0.3</span>, <span class="op">-</span><span class="fl">0.4</span>, <span class="op">-</span><span class="fl">4</span>, <span class="fl">1</span><span class="op">)</span>,</span>
-<span class="r-in">  pval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.7</span>, <span class="fl">0.9</span>, <span class="fl">0.003</span>, <span class="fl">0.03</span><span class="op">)</span>,</span>
-<span class="r-in">  start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">45</span>, <span class="fl">90</span>, <span class="fl">140</span><span class="op">)</span>,</span>
-<span class="r-in">  end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">33</span>, <span class="fl">40</span>, <span class="fl">64</span>, <span class="fl">100</span>, <span class="fl">145</span><span class="op">)</span>,</span>
-<span class="r-in">  protein_length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">150</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"P1"</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Plot Woods' plot</span></span>
-<span class="r-in"><span class="fu">woods_plot</span><span class="op">(</span></span>
-<span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span class="r-in">  fold_change <span class="op">=</span> <span class="va">fold_change</span>,</span>
-<span class="r-in">  start_position <span class="op">=</span> <span class="va">start</span>,</span>
-<span class="r-in">  end_position <span class="op">=</span> <span class="va">end</span>,</span>
-<span class="r-in">  protein_length <span class="op">=</span> <span class="va">protein_length</span>,</span>
-<span class="r-in">  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span>
-<span class="r-in">  colouring <span class="op">=</span> <span class="va">pval</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create example data</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  fold_change <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.3</span>, <span class="fl">0.3</span>, <span class="op">-</span><span class="fl">0.4</span>, <span class="op">-</span><span class="fl">4</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  pval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.7</span>, <span class="fl">0.9</span>, <span class="fl">0.003</span>, <span class="fl">0.03</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">45</span>, <span class="fl">90</span>, <span class="fl">140</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">33</span>, <span class="fl">40</span>, <span class="fl">64</span>, <span class="fl">100</span>, <span class="fl">145</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  protein_length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">150</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"P1"</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot Woods' plot</span></span></span>
+<span class="r-in"><span><span class="fu">woods_plot</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
+<span class="r-in"><span>  fold_change <span class="op">=</span> <span class="va">fold_change</span>,</span></span>
+<span class="r-in"><span>  start_position <span class="op">=</span> <span class="va">start</span>,</span></span>
+<span class="r-in"><span>  end_position <span class="op">=</span> <span class="va">end</span>,</span></span>
+<span class="r-in"><span>  protein_length <span class="op">=</span> <span class="va">protein_length</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">protein_id</span>,</span></span>
+<span class="r-in"><span>  colouring <span class="op">=</span> <span class="va">pval</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`1`</span>
 <span class="r-plt img"><img src="woods_plot-1.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -192,7 +221,7 @@ changes along the protein sequence.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>
