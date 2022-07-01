@@ -93,7 +93,7 @@ They were fetched and the original input ID can be found in the "input_id" colum
       stop("No valid UniProt accession numbers found.")
     }
 
-    url <- "http://www.uniprot.org/uniprot/?query="
+    url <- "http://legacy.uniprot.org/uniprot/?query="
     batches <- split(uniprot_ids_filtered, ceiling(seq_along(uniprot_ids_filtered) / batchsize))
     if (show_progress == TRUE) {
       pb <- progress::progress_bar$new(total = length(batches))

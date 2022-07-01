@@ -32,7 +32,7 @@ fetch_uniprot_proteome <-
         prefix = "\n", initial = ""
       ))
     }
-    url <- "http://www.uniprot.org/uniprot/?query="
+    url <- "http://legacy.uniprot.org/uniprot/?query="
     column_names <- janitor::make_clean_names(columns)
     collapsed_columns <- paste(columns, collapse = ",")
     reviewed <- paste0("reviewed:", ifelse(reviewed == TRUE, "yes", "no"))
