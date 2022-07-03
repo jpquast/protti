@@ -1,4 +1,4 @@
-# protti 0.3.1
+# protti 0.4.0
 
 ## New features
 
@@ -16,6 +16,14 @@
 * `fetch_uniprot()` by default now retrieves the `comment(COFACTOR)` column.
 * The default batchsize of `fetch_pdb()` was set to 100 from 200. This was done since more information is retrieved now, which slows to function down and is slightly improved when batch sizes are smaller.
 * `try_query()` now only retries to retrieve information once if the returned message was "Timeout was reached". In addition, a `timeout` and `accept` argument have been added.
+
+# protti 0.3.1
+
+## Bug fixes
+
+* Corrected the "Protein Structure Analysis Workflow" vignette. The example for `map_peptides_on_structure()` was still using "residue" as its input. We now use `find_peptide_in_structure()` to generate the correct input column.
+* Fixed a bug in `fetch_uniprot()` and `fetch_uniprot_proteome()`. As UniProt has updated their website and their programmatic access, we now download the information from the legacy version temporarily. A real fix will follow.
+* Fixed a bug in `fetch_kegg()`. The function did not retrieve any data after the API URL had changed.
 
 # protti 0.3.0
 

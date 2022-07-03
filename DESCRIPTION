@@ -1,6 +1,6 @@
 Package: protti
 Title: Bottom-Up Proteomics and LiP-MS Quality Control and Data Analysis Tools
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: 
     c(person(given = "Jan-Philipp",
            family = "Quast",
@@ -43,7 +43,7 @@ Imports:
     methods,
     R.utils,
     stats
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Suggests: 
     testthat,
     covr,

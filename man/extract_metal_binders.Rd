@@ -5,15 +5,13 @@
 \title{Extract metal-bind protein information from UniProt}
 \usage{
 extract_metal_binders(
-  data,
-  protein_id = id,
-  feature_metal_binding = feature_metal_binding,
-  chebi_cofactor = chebi_cofactor,
-  chebi_catalytic_activity = chebi_catalytic_activity,
-  comment_cofactor = comment_cofactor,
-  go_molecular_function = go_molecular_function,
-  chebi_data = NULL,
-  chebi_relation_data = NULL
+  data_uniprot,
+  data_quickgo,
+  data_chebi = NULL,
+  data_chebi_relation = NULL,
+  data_eco = NULL,
+  data_eco_relation = NULL,
+  show_progress = TRUE
 )
 }
 \arguments{

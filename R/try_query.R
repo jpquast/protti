@@ -34,7 +34,7 @@ try_query <-
 
     query_result <- "empty"
     try_n <- 0
-    while (class(query_result) != "response" & 
+    while (!is(query_result, "response")  & 
            try_n < max_tries & 
            !ifelse(is(query_result, "character"),
                    stringr::str_detect(query_result, pattern = "Timeout was reached"),
@@ -53,10 +53,10 @@ try_query <-
         )
       }
       try_n <- try_n + 1
-      if (!silent & class(query_result) != "response") {
+      if (!silent & !is(query_result, "response")) {
         message(paste0(try_n, ". try failed!"))
       }
-      if (class(query_result) != "response") {
+      if (!is(query_result, "response")) {
         Sys.sleep(3)
       }
     }
@@ -67,7 +67,7 @@ try_query <-
       return(invisible("No internet connection"))
     }
 
-    if (class(query_result) != "response") {
+    if (!is(query_result, "response")) {
       if (!silent) message(query_result)
       return(invisible(query_result))
     }

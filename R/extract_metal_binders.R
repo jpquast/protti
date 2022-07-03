@@ -131,6 +131,10 @@ extract_metal_binders <-
       }
       
       data_chebi <- fetch_chebi()
+      # If database could not be retrieved let the function return NULL.
+      if (is.null(data_chebi)){
+        return(invisible(NULL))
+      }
       
       if (show_progress == TRUE) {
       message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
@@ -144,6 +148,11 @@ extract_metal_binders <-
       }
       
       data_chebi_relation <- fetch_chebi(relation = TRUE)
+      
+      # If database could not be retrieved let the function return NULL.
+      if (is.null(data_chebi_relation)){
+        return(invisible(NULL))
+      }
       
       if (show_progress == TRUE) {
         message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
@@ -164,6 +173,11 @@ extract_metal_binders <-
       }
       
       eco_data <- fetch_eco(show_progress = FALSE)
+      
+      # If database could not be retrieved let the function return NULL.
+      if (is.null(eco_chebi)){
+        return(invisible(NULL))
+      }
       
       if (show_progress == TRUE) {
         message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
