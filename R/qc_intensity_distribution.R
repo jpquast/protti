@@ -25,6 +25,7 @@
 #' @importFrom tidyr drop_na
 #' @importFrom stringr str_sort
 #' @importFrom rlang new_formula enquo
+#' @importFrom methods is
 #' @export
 #'
 #' @examples
