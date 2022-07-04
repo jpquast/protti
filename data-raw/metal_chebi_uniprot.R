@@ -8,16 +8,16 @@ library(tidyverse)
 library(protti)
 
 # First we retrieve all reviewed annotations from UniProt
-# The relevant columns are: comment(COFACTOR), comment(CATALYTIC ACTIVITY)
+# The relevant columns are: cc_cofactor, cc_catalytic_activity
 
-url_chebi_uniprot <- utils::URLencode("http://www.uniprot.org/uniprot/?query=reviewed:yes&format=tab&columns=id,comment(COFACTOR),comment(CATALYTIC ACTIVITY)")
+url_chebi_uniprot <- utils::URLencode("http://rest.uniprot.org/uniprotkb/stream?query=reviewed:true&format=tsv&fields=accession,cc_cofactor,cc_catalytic_activity")
 input_chebi_uniprot <- protti:::try_query(url_chebi_uniprot, timeout = 600, progress = FALSE, show_col_types = FALSE)
-colnames(input_chebi_uniprot) <- janitor::make_clean_names(c("id", "comment(COFACTOR)", "comment(CATALYTIC ACTIVITY)"))
+colnames(input_chebi_uniprot) <- janitor::make_clean_names(c("accession", "cc_cofactor", "cc_catalytic_activity"))
 
 # pivot columns longer for extraction of ChEBI IDs
 
 extracted_chebi_uniprot <- input_chebi_uniprot %>% 
-  tidyr::pivot_longer(-id,
+  tidyr::pivot_longer(-accession,
                       names_to = "source",
                       values_to = "ids"
   ) %>%
@@ -27,7 +27,7 @@ extracted_chebi_uniprot <- input_chebi_uniprot %>%
                                ids,
                                pattern = "(?<=CHEBI:)[:digit:]+")) %>% 
   tidyr::unnest(chebi_id) %>% 
-  dplyr::distinct(id, chebi_id) %>% 
+  dplyr::distinct(accession, chebi_id) %>% 
   dplyr::mutate(chebi_id = as.numeric(chebi_id))
 
 # Retrieve information from the ChEBI database

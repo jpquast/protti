@@ -229,7 +229,7 @@ The [STRING](https://academic.oup.com/nar/article/47/D1/D607/5198476) database p
 
 ## Annotation of data
 
-**protti** has several functions for fetching database information. One commonly used database in the proteomics community is UniProt. By providing the `fetch_uniprot()` function with a character vector of your protein IDs, you can fetch additional information about the proteins. These include names, IDs from other databases, gene ontology annotations, information about the active metabolite and metal binding sites, protein length and sequence. You can freely select which information you are most interested in by providing it to the `columns` arguments of the `fetch_uniprot()` function based on the information they [provide](https://www.uniprot.org/help/uniprotkb_column_names) for download. 
+**protti** has several functions for fetching database information. One commonly used database in the proteomics community is UniProt. By providing the `fetch_uniprot()` function with a character vector of your protein IDs, you can fetch additional information about the proteins. These include names, IDs from other databases, gene ontology annotations, information about the active metabolite and metal binding sites, protein length and sequence. You can freely select which information you are most interested in by providing it to the `columns` arguments of the `fetch_uniprot()` function based on the information they [provide](https://www.uniprot.org/help/return_fields) for download. 
 
 Furthermore, we will add a `passed_filter` column to the data that contains TRUE or FALSE information based on if a precursor passed the filtering criterion defined in the `fit_drc_4p()` function. This is the case if the peptide was assigned a rank. 
 
@@ -241,7 +241,7 @@ uniprot <- fetch_uniprot(unis)
 # annotation of fit data based on information from UniProt
 fit_annotated <- fit %>% 
   # columns containing proteins IDs are named differently
-  left_join(uniprot, by = c("pg_protein_accessions" = "id")) %>% 
+  left_join(uniprot, by = c("pg_protein_accessions" = "accession")) %>% 
   # mark peptides that pass the filtering
   mutate(passed_filter = !is.na(rank)) %>% 
   # create new column with prior knowledge about binding partners of treatment
@@ -260,7 +260,7 @@ Nevertheless, we will demonstrate below how you could use some additional functi
 calculate_go_enrichment(fit_annotated,
               protein_id = pg_protein_accessions,
               is_significant = passed_filter,
-              go_annotations_uniprot = go_molecular_function) # column obtained from UniProt
+              go_annotations_uniprot = go_f) # column obtained from UniProt
 
 ### KEGG pathway enrichment
 
@@ -293,7 +293,7 @@ calculate_treatment_enrichment(fit_annotated,
 fit_annotated %>% 
   filter(passed_filter == TRUE) %>% # only analyse hits that were significant
   analyse_functional_network(protein_id = pg_protein_accessions,
-                   string_id = database_string, # column from UniProt containing STRING IDs
+                   string_id = xref_string, # column from UniProt containing STRING IDs
                    organism_id = 9606, 
                    # tax ID can be found in function documentation or STRING database
                    binds_treatment = binds_treatment,

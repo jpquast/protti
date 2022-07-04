@@ -1,25 +1,25 @@
 # This is version 1, which was created on 22/06/03
 
 # This code annotates all possible names that can appear in the
-# feature(METAL BINDING) column in UniProt with ChEBI IDs that match.
+# ft_metal column in UniProt with ChEBI IDs that match.
 # When updated also update the documentation!
 
 library(tidyverse)
 library(protti)
 
 # First we retrieve all reviewed annotations from UniProt
-# The relevant columns are: feature(METAL BINDING)
+# The relevant columns are: ft_metal
 
-url_fmb_uniprot <- utils::URLencode("http://www.uniprot.org/uniprot/?query=reviewed:yes&format=tab&columns=id,feature(METAL BINDING)")
-input_fmb_uniprot <- protti:::try_query(url_fmb_uniprot, progress = FALSE, show_col_types = FALSE)
-colnames(input_fmb_uniprot) <- janitor::make_clean_names(c("id", "feature(METAL BINDING)"))
+url_fmb_uniprot <- utils::URLencode("http://rest.uniprot.org/uniprotkb/stream?query=reviewed:true&format=tsv&fields=accession,ft_metal")
+input_fmb_uniprot <- protti:::try_query(url_fmb_uniprot, timeout = 600, progress = FALSE, show_col_types = FALSE)
+colnames(input_fmb_uniprot) <- janitor::make_clean_names(c("accession", "ft_metal"))
 
 # Extract all possible names
 
 extracted_fmb_uniprot <- input_fmb_uniprot %>%
-  tidyr::drop_na(feature_metal_binding) %>%
+  tidyr::drop_na(ft_metal) %>%
   dplyr::mutate(fmb_name = stringr::str_extract_all(
-    feature_metal_binding,
+    ft_metal,
     pattern = "METAL.+?(?=METAL)|METAL.+$"
   )) %>%
   tidyr::unnest(fmb_name) %>%

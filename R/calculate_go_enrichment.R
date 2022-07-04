@@ -86,8 +86,8 @@ go_enrichment <- function(...) {
 #' data <- fetch_uniprot_proteome(
 #'   organism_id = 83333,
 #'   columns = c(
-#'     "id",
-#'     "go(molecular function)"
+#'     "accession",
+#'     "go_f"
 #'   )
 #' ) %>%
 #'   mutate(significant = c(
@@ -96,7 +96,7 @@ go_enrichment <- function(...) {
 #'   )) %>%
 #'   mutate(significant = ifelse(
 #'     str_detect(
-#'       go_molecular_function,
+#'       go_f,
 #'       pattern = "ribosome"
 #'     ),
 #'     FALSE,
@@ -106,8 +106,8 @@ go_enrichment <- function(...) {
 #' # Plot gene ontology enrichment
 #' calculate_go_enrichment(
 #'   data,
-#'   protein_id = id,
-#'   go_annotations_uniprot = go_molecular_function,
+#'   protein_id = accession,
+#'   go_annotations_uniprot = go_f,
 #'   is_significant = significant,
 #'   plot = TRUE,
 #'   plot_cutoff = "pval 0.01"
@@ -116,8 +116,8 @@ go_enrichment <- function(...) {
 #' # Calculate gene ontology enrichment
 #' go_enrichment <- calculate_go_enrichment(
 #'   data,
-#'   protein_id = id,
-#'   go_annotations_uniprot = go_molecular_function,
+#'   protein_id = accession,
+#'   go_annotations_uniprot = go_f,
 #'   is_significant = significant,
 #'   plot = FALSE,
 #' )

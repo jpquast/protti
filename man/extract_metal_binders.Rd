@@ -92,16 +92,16 @@ data <- fetch_uniprot(
 )
 
 # Extract metal binding information
-metal_info <- extract_metal_binders(
-  data = data,
-  protein_id = id,
-  feature_metal_binding = feature_metal_binding,
-  chebi_cofactor = chebi_cofactor,
-  chebi_catalytic_activity = chebi_catalytic_activity,
-  comment_cofactor = comment_cofactor,
-  go_molecular_function = go_molecular_function
-)
+#metal_info <- extract_metal_binders(
+ # data = data,
+ # protein_id = id,
+ # feature_metal_binding = feature_metal_binding,
+ # chebi_cofactor = chebi_cofactor,
+ # chebi_catalytic_activity = chebi_catalytic_activity,
+ # comment_cofactor = comment_cofactor,
+ # go_molecular_function = go_molecular_function
+#)
 
-metal_info
+#metal_info
 }
 }

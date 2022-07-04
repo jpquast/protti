@@ -6,12 +6,10 @@
 \usage{
 fetch_uniprot(
   uniprot_ids,
-  columns = c("protein names", "length", "sequence", "genes", "database(GeneID)",
-    "database(String)", "go(molecular function)", "go(biological process)",
-    "go(cellular compartment)", "interactor", "feature(ACTIVE SITE)",
-    "feature(BINDING SITE)", "feature(METAL BINDING)", "chebi(Cofactor)",
-    "chebi(Catalytic activity)", "comment(COFACTOR)", "database(PDB)"),
-  batchsize = 200,
+  columns = c("protein_name", "length", "sequence", "gene_names", "xref_geneid",
+    "xref_string", "go_f", "go_p", "go_c", "cc_interaction", "ft_act_site", "ft_binding",
+    "ft_metal", "cc_cofactor", "cc_catalytic_activity", "xref_pdb"),
+  batchsize = 500,
   show_progress = TRUE
 )
 }
@@ -19,10 +17,11 @@ fetch_uniprot(
 \item{uniprot_ids}{a character vector of UniProt accession numbers.}
 
 \item{columns}{a character vector of metadata columns that should be imported from UniProt (all
-possible columns can be found \href{https://www.uniprot.org/help/uniprotkb_column_names}{here}.)}
+possible columns can be found \href{https://www.uniprot.org/help/return_fields}{here}. For
+cross-referenced database provide the database name with the prefix "xref_", e.g. \code{"xref_pdb"})}
 
 \item{batchsize}{a numeric value that specifies the number of proteins processed in a single
-single query. Default is 200.}
+single query. Default and max value is 500.}
 
 \item{show_progress}{a logical value that determines if a progress bar will be shown. Default
 is TRUE.}

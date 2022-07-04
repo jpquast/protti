@@ -65,7 +65,7 @@ qc_proteome_coverage <- function(data,
     dplyr::mutate({{ sample }} := "Total")
 
   proteome <- fetch_uniprot_proteome({{ organism_id }}, reviewed = reviewed) %>%
-    dplyr::summarize(proteins_proteome = dplyr::n_distinct(.data$id), .groups = "drop")
+    dplyr::summarize(proteins_proteome = dplyr::n_distinct(.data$accession), .groups = "drop")
 
   proteome_coverage <- data %>%
     dplyr::group_by({{ sample }}) %>%
