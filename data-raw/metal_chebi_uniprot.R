@@ -11,7 +11,7 @@ library(protti)
 # The relevant columns are: cc_cofactor, cc_catalytic_activity
 
 url_chebi_uniprot <- utils::URLencode("http://rest.uniprot.org/uniprotkb/stream?query=reviewed:true&format=tsv&fields=accession,cc_cofactor,cc_catalytic_activity")
-input_chebi_uniprot <- protti:::try_query(url_chebi_uniprot, timeout = 600, progress = FALSE, show_col_types = FALSE)
+input_chebi_uniprot <- protti:::try_query(url_chebi_uniprot, timeout = 1000, progress = FALSE, show_col_types = FALSE)
 colnames(input_chebi_uniprot) <- janitor::make_clean_names(c("accession", "cc_cofactor", "cc_catalytic_activity"))
 
 # pivot columns longer for extraction of ChEBI IDs

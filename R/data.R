@@ -83,7 +83,7 @@
 #' @format A data.frame containing information retrieved from ChEBI using `fetch_chebi()`, filtered
 #' using symbols in the `metal_list` and manual annotation of metal related ChEBI IDs that do not 
 #' contain a formula.
-#' @source UniProt (comment(COFACTOR), comment(CATALYTIC ACTIVITY)) and ChEBI
+#' @source UniProt (cc_cofactor, cc_catalytic_activity) and ChEBI
 "metal_chebi_uniprot"
 
 #' List of manual annotations of feature metal binding sites
@@ -94,7 +94,7 @@
 #'
 #' @format A data.frame containing cleaned up feature metal binding sites and manual annotations with 
 #' ChEBI IDs.
-#' @source UniProt feature(METAL BINDING)) and ChEBI
+#' @source UniProt ft_metal and ChEBI
 "fmb_annotation_uniprot"
 
 #' Molecular function gene ontology metal subset
