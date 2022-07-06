@@ -9,7 +9,7 @@ A data.frame containing cleaned up feature metal binding sites and manual annota
 ChEBI IDs.
 }
 \source{
-UniProt feature(METAL BINDING)) and ChEBI
+UniProt ft_metal and ChEBI
 }
 \usage{
 fmb_annotation_uniprot

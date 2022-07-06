@@ -9,7 +9,7 @@ fetch_uniprot(
   columns = c("protein_name", "length", "sequence", "gene_names", "xref_geneid",
     "xref_string", "go_f", "go_p", "go_c", "cc_interaction", "ft_act_site", "ft_binding",
     "ft_metal", "cc_cofactor", "cc_catalytic_activity", "xref_pdb"),
-  batchsize = 500,
+  batchsize = 200,
   show_progress = TRUE
 )
 }
@@ -21,7 +21,7 @@ possible columns can be found \href{https://www.uniprot.org/help/return_fields}{
 cross-referenced database provide the database name with the prefix "xref_", e.g. \code{"xref_pdb"})}
 
 \item{batchsize}{a numeric value that specifies the number of proteins processed in a single
-single query. Default and max value is 500.}
+single query. Default and max value is 200.}
 
 \item{show_progress}{a logical value that determines if a progress bar will be shown. Default
 is TRUE.}

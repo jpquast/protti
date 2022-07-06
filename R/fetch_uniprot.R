@@ -7,7 +7,7 @@
 #' possible columns can be found \href{https://www.uniprot.org/help/return_fields}{here}. For 
 #' cross-referenced database provide the database name with the prefix "xref_", e.g. \code{"xref_pdb"})
 #' @param batchsize a numeric value that specifies the number of proteins processed in a single
-#' single query. Default and max value is 500. 
+#' single query. Default and max value is 200. 
 #' @param show_progress a logical value that determines if a progress bar will be shown. Default
 #' is TRUE.
 #'
@@ -48,7 +48,7 @@ fetch_uniprot <-
              "cc_catalytic_activity",
              "xref_pdb"
            ),
-           batchsize = 500,
+           batchsize = 200,
            show_progress = TRUE) {
     if (!curl::has_internet()) {
       message("No internet connection.")
@@ -100,7 +100,7 @@ They were fetched and the original input ID can be found in the "input_id" colum
       stop("No valid UniProt accession numbers found.")
     }
 
-    url <- "http://rest.uniprot.org/uniprotkb/search?query="
+    url <- "http://rest.uniprot.org/uniprotkb/stream?query="
     # This function splits IDs into batches that are retrieved batch by batch
     # The new UniProt API allows this functionality on the server site by using
     # the size and cursor parameters. We don't change this since the code below also works.
@@ -112,7 +112,7 @@ They were fetched and the original input ID can be found in the "input_id" colum
     result <- purrr::map(batches, function(x) {
       id_query <- paste(paste0("accession_id:", x), collapse = "+OR+")
       query_url <- utils::URLencode(paste0(
-        url, id_query, "&format=tsv&size=500&fields=",
+        url, id_query, "&format=tsv&fields=",
         collapsed_columns
       ))
 

@@ -10,7 +10,7 @@ using symbols in the \code{metal_list} and manual annotation of metal related Ch
 contain a formula.
 }
 \source{
-UniProt (comment(COFACTOR), comment(CATALYTIC ACTIVITY)) and ChEBI
+UniProt (cc_cofactor, cc_catalytic_activity) and ChEBI
 }
 \usage{
 metal_chebi_uniprot
