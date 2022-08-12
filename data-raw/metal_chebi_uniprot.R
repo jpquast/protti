@@ -1,4 +1,4 @@
-# This is version 1, which was created on 22/06/03
+# This is version 2, which was created on 22/08/11
 
 # This code specificially creates a list of ChEBI IDs that appear in UniProt and that 
 # are related to metals.
@@ -10,9 +10,9 @@ library(protti)
 # First we retrieve all reviewed annotations from UniProt
 # The relevant columns are: cc_cofactor, cc_catalytic_activity
 
-url_chebi_uniprot <- utils::URLencode("http://rest.uniprot.org/uniprotkb/stream?query=reviewed:true&format=tsv&fields=accession,cc_cofactor,cc_catalytic_activity")
+url_chebi_uniprot <- utils::URLencode("http://rest.uniprot.org/uniprotkb/stream?query=reviewed:true&format=tsv&fields=accession,cc_cofactor,cc_catalytic_activity,ft_binding")
 input_chebi_uniprot <- protti:::try_query(url_chebi_uniprot, timeout = 1000, progress = FALSE, show_col_types = FALSE)
-colnames(input_chebi_uniprot) <- janitor::make_clean_names(c("accession", "cc_cofactor", "cc_catalytic_activity"))
+colnames(input_chebi_uniprot) <- janitor::make_clean_names(c("accession", "cc_cofactor", "cc_catalytic_activity", "ft_binding"))
 
 # pivot columns longer for extraction of ChEBI IDs
 
@@ -32,14 +32,16 @@ extracted_chebi_uniprot <- input_chebi_uniprot %>%
 
 # Retrieve information from the ChEBI database
 
-chebi <- protti::fetch_chebi()
+chebi <- protti::fetch_chebi(stars = c(2, 3))
 
 # There are ChEBI IDs in UniProt without a formula but that are metal related
 # If there is a new version of this reference created, check if these are still valid or new have been added.
 # Run the code below to check for them:
-# without_formula <- chebi %>% 
-#   dplyr::filter(id %in% extracted_chebi_uniprot$chebi_id) %>% 
-#   dplyr::filter(is.na(formula))
+# without_formula <- chebi %>%
+#   dplyr::filter(id %in% extracted_chebi_uniprot$chebi_id) %>%
+#   dplyr::filter(is.na(formula)) %>%
+#   dplyr::filter(.data$type_name == "STANDARD") %>%
+#   dplyr::distinct(.data$id, .data$chebi_accession, .data$star, .data$definition, .data$name)
 
 metal_chebi_ids_wo_formula <- c(25213, # a metal cation
                                 30408, # iron-sulfur cluster
@@ -47,10 +49,11 @@ metal_chebi_ids_wo_formula <- c(25213, # a metal cation
                                 38201, # a bacteriochlorophyll
                                 60240, # a divalent metal cation
                                 60242, # a monovalent cation (this can also be non-metal so should be handled with care)
-                                60400 # [Ni-Fe-S] cluster
+                                60400, # [Ni-Fe-S] cluster
+                                190135 # [2Fe-2S] cluster
                                 )
 
-# Extract all ChEBI IDs that appear in UniProt and that contain a matal in their formula or that are in the metal_chebi_ids_wo_formula vector above
+# Extract all ChEBI IDs that appear in UniProt and that contain a metal in their formula or that are in the metal_chebi_ids_wo_formula vector above
 
 metal_chebi_uniprot <- chebi %>% 
   dplyr::filter(id %in% extracted_chebi_uniprot$chebi_id) %>% 
@@ -59,6 +62,7 @@ metal_chebi_uniprot <- chebi %>%
                   id %in% metal_chebi_ids_wo_formula)
 
 # In version 1 there were 147 metal related ChEBI IDs
+# In version 2 there were 188 metal related ChEBI IDs
 length(unique(metal_chebi_uniprot$id))
 
 usethis::use_data(metal_chebi_uniprot, overwrite = TRUE)

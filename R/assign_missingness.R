@@ -7,9 +7,10 @@
 #' @param sample a character column in the \code{data} data frame that contains the sample name.
 #' @param condition a character or numeric column in the \code{data} data frame that contains the
 #' conditions.
-#' @param grouping a character column in the \code{data} data frame that contains precursor or
+#' @param grouping a character column in the \code{data} data frame that contains protein, precursor or
 #' peptide identifiers.
-#' @param intensity a numeric column in the \code{data} data frame that contains intensity values.
+#' @param intensity a numeric column in the \code{data} data frame that contains intensity values that 
+#' relate to the \code{grouping} variable.
 #' @param ref_condition a character vector providing the condition that is used as a reference for
 #' missingness determination. Instead of providing one reference condition, "all" can be supplied,
 #' which will create all pairwise condition pairs. By default \code{ref_condition = "all"}.

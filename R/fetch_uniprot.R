@@ -43,7 +43,6 @@ fetch_uniprot <-
              "cc_interaction",
              "ft_act_site",
              "ft_binding",
-             "ft_metal",
              "cc_cofactor",
              "cc_catalytic_activity",
              "xref_pdb"

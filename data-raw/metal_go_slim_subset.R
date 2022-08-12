@@ -180,7 +180,7 @@ g_chebi_id <- igraph::graph_from_data_frame(go_network_connections, directed = T
 
 g_chebi_id_new <- propagate_attribute(g = g_chebi_id, attribute_name = "chebi_id")
 
-propagated_chebi_ids <- as_data_frame(g_chebi_id_new, what="vertices") %>% 
+propagated_chebi_ids <- igraph::as_data_frame(g_chebi_id_new, what="vertices") %>% 
   rename(slims_from_id = name)
 
 ############### relations_relation
@@ -195,7 +195,7 @@ g_relations_relation <- igraph::graph_from_data_frame(go_network_connections, di
 
 g_relations_relation_new <- propagate_attribute(g = g_relations_relation, attribute_name = "relations_relation")
 
-propagated_relations_relation <- as_data_frame(g_relations_relation_new, what="vertices") %>% 
+propagated_relations_relation <- igraph::as_data_frame(g_relations_relation_new, what="vertices") %>% 
   rename(slims_from_id = name)
 
 ############### relations_url
@@ -210,7 +210,7 @@ g_relations_url <- igraph::graph_from_data_frame(go_network_connections, directe
 
 g_relations_url_new <- propagate_attribute(g = g_relations_url, attribute_name = "relations_url")
 
-propagated_relations_urls <- as_data_frame(g_relations_url_new, what="vertices") %>% 
+propagated_relations_urls <- igraph::as_data_frame(g_relations_url_new, what="vertices") %>% 
   rename(slims_from_id = name)
 
 ############### database
@@ -225,7 +225,7 @@ g_database <- igraph::graph_from_data_frame(go_network_connections, directed = T
 
 g_database_new <- propagate_attribute(g = g_database, attribute_name = "database")
 
-propagated_databases <- as_data_frame(g_database_new, what="vertices") %>% 
+propagated_databases <- igraph::as_data_frame(g_database_new, what="vertices") %>% 
   rename(slims_from_id = name)
 
 ############### relations_term
@@ -240,7 +240,7 @@ g_relations_term <- igraph::graph_from_data_frame(go_network_connections, direct
 
 g_relations_term_new <- propagate_attribute(g = g_relations_term, attribute_name = "relations_term")
 
-propagated_relations_terms <- as_data_frame(g_relations_term_new, what="vertices") %>% 
+propagated_relations_terms <- igraph::as_data_frame(g_relations_term_new, what="vertices") %>% 
   rename(slims_from_id = name)
 
 # Create final annotation set 
@@ -305,15 +305,15 @@ manual_go_chebi_annotation <- data.frame(name = c(paste0("GO:0052851;ferric-chel
                                                   paste0("GO:0061473;murein tripeptide carboxypeptidase activity", ";", "CHEBI:25213"),
                                                   paste0("GO:0050453;cob(II)alamin reductase activity", ";", "CHEBI:60488|CHEBI:16304|CHEBI:48828|CHEBI:49415"),
                                                   paste0("GO:0140492;metal-dependent deubiquitinase activity", ";", "CHEBI:25213"),
-                                                  paste0("GO:0000293;ferric-chelate reductase activity", ";", "GO:0000293"),
+                                                  paste0("GO:0000293;ferric-chelate reductase activity", ";", "CHEBI:29034|CHEBI:29033"),
                                                   paste0("GO:0140487;metal ion sequestering activity", ";", "CHEBI:25213"),
                                                   paste0("GO:0140486;zinc ion sequestering activity", ";", "CHEBI:29105"),
                                                   paste0("GO:0008823;cupric reductase activity", ";", "	CHEBI:49552|CHEBI:29036"),
                                                   paste0("GO:0004222;metalloendopeptidase activity", ";", "CHEBI:25213"),
                                                   paste0("GO:0070006;metalloaminopeptidase activity", ";", "CHEBI:25213"),
                                                   paste0("GO:0004322;ferroxidase activity", ";", "CHEBI:29034|CHEBI:29033"),
-                                                  paste0("GO:0015344;siderophore uptake transmembrane transporter activity", ";", "CHEBI:26672|CHEBI:29034"),
-                                                  paste0("GO:0015343;siderophore transmembrane transporter activity", ";", "CHEBI:26672|CHEBI:29034"),
+                                                  paste0("GO:0015344;siderophore uptake transmembrane transporter activity", ";", "CHEBI:26672"),
+                                                  paste0("GO:0015343;siderophore transmembrane transporter activity", ";", "CHEBI:26672"),
                                                   paste0("GO:0004023;alcohol dehydrogenase activity, metal ion-independent", ";", "CHEBI:25213"),
                                                   paste0("GO:0051002;ligase activity, forming nitrogen-metal bonds", ";", "CHEBI:25213"),
                                                   paste0("GO:0051003;ligase activity, forming nitrogen-metal bonds, forming coordination complexes", ";", "CHEBI:25213"),
@@ -340,7 +340,7 @@ manual_go_chebi_annotation <- data.frame(name = c(paste0("GO:0052851;ferric-chel
                                                   paste0("GO:0140314;calcium ion sequestering activity", ";", "CHEBI:39123"),
                                                   paste0("GO:0016851;magnesium chelatase activity", ";", "CHEBI:18420"),
                                                   paste0("GO:0140571;transmembrane ascorbate ferrireductase activity", ";", "CHEBI:29034|CHEBI:29033"),
-                                                  paste0("GO:0015620;ferric-enterobactin transmembrane transporter activity", ";", "CHEBI:144426|CHEBI:29034"),
+                                                  paste0("GO:0015620;ferric-enterobactin transmembrane transporter activity", ";", "CHEBI:144426"),
                                                   paste0("GO:1902945;metalloendopeptidase activity involved in amyloid precursor protein catabolic process", ";", "CHEBI:25213"))) %>% 
   separate(name, into = c("slims_from_id", "main_name", "chebi_id"), sep = ";") %>% 
   mutate(chebi_id = str_split(chebi_id, pattern = "\\|")) %>% 

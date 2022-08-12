@@ -78,18 +78,21 @@
 #'
 #' A list that contains all ChEBI IDs that appear in UniProt and that contain either a metal atom
 #' in their formula or that do not have a formula but the ChEBI term is related to metals.
-#' This was last updated on the 22/06/03.
+#' This was last updated on the 22/08/11.
 #'
-#' @format A data.frame containing information retrieved from ChEBI using `fetch_chebi()`, filtered
-#' using symbols in the `metal_list` and manual annotation of metal related ChEBI IDs that do not 
+#' @format A data.frame containing information retrieved from ChEBI using `fetch_chebi(stars = c(2, 3))`, 
+#' filtered using symbols in the `metal_list` and manual annotation of metal related ChEBI IDs that do not 
 #' contain a formula.
-#' @source UniProt (cc_cofactor, cc_catalytic_activity) and ChEBI
+#' @source UniProt (cc_cofactor, cc_catalytic_activity, ft_binding) and ChEBI
 "metal_chebi_uniprot"
 
 #' List of manual annotations of feature metal binding sites
 #'
-#' A list that contains all feature metal binding site names that appear in UniProt. These sites
-#' have been manually annotated with ChEBI IDs that match the name.
+#' A list that contains all feature metal binding site names that appear in UniProt. It also 
+#' includes annotations for complexed metals that appear in cc_cofactor and cc_catalytic_activity 
+#' UniProt columns. In addition we also we also have annotations for complexed metals from the 
+#' QuickGO database. As complexed metals we define any metal of which the formula is not simply 
+#' the element symbol. These sites have been manually annotated with ChEBI IDs that match the name.
 #' This was last updated on the 22/06/03.
 #'
 #' @format A data.frame containing cleaned up feature metal binding sites and manual annotations with 

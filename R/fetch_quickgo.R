@@ -306,7 +306,7 @@ fetch_quickgo <- function(type = "annotations",
     
     query_result <- try_query(url,
                               type = "application/json",
-                              timeout = 120,
+                              timeout = 1200,
                               simplifyDataFrame = TRUE)
     
     if(methods::is(query_result, "character")){

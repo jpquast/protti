@@ -2,6 +2,12 @@
 
 # This code annotates all possible names that can appear in the
 # ft_metal column in UniProt with ChEBI IDs that match.
+# It also includes annotations for complexed metals that appear 
+# in cc_cofactor and cc_catalytic_activity UniProt columns. In 
+# addition we also we also have annotations for complexed metals
+# from the QuickGO database.
+# As complexed metals we define any metal of which the formula 
+# is not simply the element symbol.
 # When updated also update the documentation!
 
 library(tidyverse)
@@ -44,13 +50,16 @@ chebi_relations <- fetch_chebi(relation = TRUE)
 fmb_annotation_uniprot_manuall <- data.frame(fmb_name = c(
   paste0(c(
     "Arsenite",
+    "35827",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "35827"
+    )), collapse = ","),
     "22633",
     paste0(unlist(protti:::find_all_subs(
       data = chebi_relations,
       ids = "22633"
     )), collapse = ","),
-    "",
-    "",
     ""
   ), collapse = ";"),
   paste0(c(
@@ -1332,26 +1341,29 @@ fmb_annotation_uniprot_manuall <- data.frame(fmb_name = c(
   ), collapse = ";"),
   paste0(c(
     "Molybdate",
+    "37239",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "37239"
+    )), collapse = ","),
     "36264",
     paste0(unlist(protti:::find_all_subs(
       data = chebi_relations,
       ids = "36264"
     )), collapse = ","),
-    "",
-    "",
     ""
   ), collapse = ";"),
   paste0(c(
     "Molybdenum-iron-sulfur-carbon (7Fe-Mo-9S-C-homocitryl)",
-    "37239|24875",
+    "24875|37239",
     paste0(
       c(paste0(unlist(protti:::find_all_subs(
         data = chebi_relations,
-        ids = "37239"
+        ids = "24875"
       )), collapse = ","),
       paste0(unlist(protti:::find_all_subs(
         data = chebi_relations,
-        ids = "24875"
+        ids = "37239"
       )), collapse = ",")),
       collapse = "|"),
     "30409",
@@ -1640,6 +1652,1328 @@ fmb_annotation_uniprot_manuall <- data.frame(fmb_name = c(
     "",
     "",
     ""
+  ), collapse = ";"),
+  paste0(c(
+    "ferroheme b(2-)",
+    "29033",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29033"
+    )), collapse = ","),
+    "60344",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60344"
+    )), collapse = ","),
+    "From cc_cofactor"
+  ), collapse = ";"),
+  paste0(c(
+    "coenzyme F430(5-)",
+    "49786",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "49786"
+    )), collapse = ","),
+    "60540",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60540"
+    )), collapse = ","),
+    "From cc_cofactor"
+  ), collapse = ";"),
+  paste0(c(
+    "heme d cis-diol(2-)",
+    "29033",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29033"
+    )), collapse = ","),
+    "62814",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "62814"
+    )), collapse = ","),
+    "From cc_cofactor"
+  ), collapse = ";"),
+  paste0(c(
+    "5-hydroxybenzimidazolylcob(I)amide(1-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "60494",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60494"
+    )), collapse = ","),
+    "From cc_cofactor"
+  ), collapse = ";"),
+  paste0(c(
+    "dihydrogenvanadate",
+    "35172",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "35172"
+    )), collapse = ","),
+    "35169",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "35169"
+    )), collapse = ","),
+    "From cc_cofactor"
+  ), collapse = ";"),
+  paste0(c(
+    "Mo(VI)-oxido Se-molybdopterin cytosine dinucleotide(4-)",
+    "37239",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "37239"
+    )), collapse = ","),
+    "73094",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "73094"
+    )), collapse = ","),
+    "From cc_cofactor"
+  ), collapse = ";"),
+  paste0(c(
+    "cob(I)alamin(1-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "60488",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60488"
+    )), collapse = ","),
+    "From cc_cofactor"
+  ), collapse = ";"),
+  paste0(c(
+    "divinyl chlorophyll b(1-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "73096",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "73096"
+    )), collapse = ","),
+    "From cc_cofactor"
+  ), collapse = ";"),
+  paste0(c(
+    "bis(molybdopterin)tungsten cofactor",
+    "60401|18420",
+    paste0(
+      c(paste0(unlist(protti:::find_all_subs(
+        data = chebi_relations,
+        ids = "60401"
+      )), collapse = ","),
+      paste0(unlist(protti:::find_all_subs(
+        data = chebi_relations,
+        ids = "18420"
+      )), collapse = ",")),
+      collapse = "|"),
+    "30402",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "30402"
+    )), collapse = ","),
+    "From cc_cofactor"
+  ), collapse = ";"),
+  paste0(c(
+    "tetrahydroxoborate(1-)",
+    "22909",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "22909"
+    )), collapse = ","),
+    "41132",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "41132"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "tetrahydroxoborate(1-)",
+    "22909",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "22909"
+    )), collapse = ","),
+    "41132",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "41132"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "methylarsonous acid",
+    "35827",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "35827"
+    )), collapse = ","),
+    "17826",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "17826"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "methylarsonate(1-)",
+    "35827",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "35827"
+    )), collapse = ","),
+    "33409",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "33409"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "chlorophyll(1-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "139291",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "139291"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "chlorophyllide(2-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "139292",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "139292"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cobalt-sirohydrochlorin(8-)",
+    "48828",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "48828"
+    )), collapse = ","),
+    "60049",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60049"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "methyl-Co(2+)",
+    "48828",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "48828"
+    )), collapse = ","),
+    "85035",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "85035"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "protochlorophyllide(2-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "83350",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "83350"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "arsenate(2-)",
+    "35827",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "35827"
+    )), collapse = ","),
+    "48597",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "48597"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "iron(III) oxide-hydroxide(1-)",
+    "29034",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29034"
+    )), collapse = ","),
+    "78619",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "78619"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "ferroheme o(2-)",
+    "29033",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29033"
+    )), collapse = ","),
+    "60530",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60530"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "ferroheme a(2-)",
+    "29033",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29033"
+    )), collapse = ","),
+    "61715",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "61715"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "ferrienterobactin(3-)",
+    "29034",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29034"
+    )), collapse = ","),
+    "28199",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "28199"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "magnesium protoporphyrin(2-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "60492",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60492"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "tellurite",
+    "60271",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60271"
+    )), collapse = ","),
+    "30477",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "30477"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "methanetelluronate(1-)",
+    "60271",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60271"
+    )), collapse = ","),
+    "71624",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "71624"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "adenosylcobinamide",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "2480",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "2480"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "adenosylcobinamide phosphate(1-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "58502",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "58502"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "adenosylcobinamide guanosyl diphosphate(1-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "60487",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60487"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cob(II)yrinic acid a,c diamide(4-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "58537",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "58537"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cob(II)yrinate(6-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "58894",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "58894"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "ferroheme c di-L-cysteine(2-) residue",
+    "29033",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29033"
+    )), collapse = ","),
+    "83739",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "83739"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "adenosylcobalamin 5'-phosphate(2-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "60493",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60493"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "2,4-divinyl protochlorophyllide a(2-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "58632",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "58632"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "aquacob(III)alamin",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "15852",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "15852"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cyanocob(III)alamin",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "17439",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "17439"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "7(1)-hydroxychlorophyllide a(2-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "83357",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "83357"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "dimethylarsinate",
+    "35827",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "35827"
+    )), collapse = ","),
+    "16223",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "16223"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "7(1)-hydroxychlorophyll a(1-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "83377",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "83377"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "beta-hematin",
+    "29033",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29033"
+    )), collapse = ","),
+    "55377",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "55377"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "bacteriochlorophyllide c(1-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "90965",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "90965"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "Mo(=O)(=S)-molybdopterin cofactor(2-)",
+    "37239",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "37239"
+    )), collapse = ","),
+    "82685",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "82685"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "magnesium protoporphyrin 13-monomethyl ester(1-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "60491",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60491"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "nickel-sirohydrochlorin(8-)",
+    "49786",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "49786"
+    )), collapse = ","),
+    "136841",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "136841"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "nickel-sirohydrochlorin a,c-diamide(6-)",
+    "49786",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "49786"
+    )), collapse = ","),
+    "136887",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "136887"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "bacteriochlorophyllide e(1-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "136512",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "136512"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "bacteriochlorophyllide f(1-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "139237",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "139237"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cobalt-precorrin-7(7-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "70791",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "70791"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cobalt-precorrin-6B(7-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "72780",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "72780"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cobalt-precorrin-4(7-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "60061",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60061"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cobalt(II)-factor III(8-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "73299",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "73299"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "adenosylcob(III)yrinate a,c-diamide(4-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "58503",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "58503"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "3-vinylbacteriochlorophyllide a(2-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "83373",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "83373"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "3-acetylchlorophyllide a(2-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "90794",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "90794"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "bacteriochlorophyllide a(2-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "90795",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "90795"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "3-(1-hydroxyethyl)bacteriochlorophyllide a(2-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "90791",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "90791"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "3-(1-hydroxyethyl)chlorophyllide a(2-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "90792",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "90792"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "Co-methyl-Co-5-hydroxybenzimidazolylcob(III)amide",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "16379",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "16379"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "8,12-diethyl-3-vinylbacteriochlorophyllide d(1-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "90964",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "90964"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "12-ethyl-8-propyl-3-vinylbacteriochlorophyllide d(1-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "90966",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "90966"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "12-ethyl-8-isobutyl-3-vinylbacteriochlorophyllide d(1-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "90967",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "90967"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "3-vinylbacteriochlorophyllide d(1-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "90963",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "90963"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cobalt-precorrin-8(6-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "70792",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "70792"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cobalt(II)-factor IV(6-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "85471",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "85471"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "tungstate",
+    "49955",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "49955"
+    )), collapse = ","),
+    "46502",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "46502"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cobalt-precorrin-5B(8-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "60063",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60063"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cobalt-precorrin-6A(7-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "60064",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60064"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cobalt-precorrin-5A(7-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "60062",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60062"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "arseno-mycothiol(2-)",
+    "35827",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "35827"
+    )), collapse = ","),
+    "59655",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "59655"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cobalt-precorrin-2(8-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "60053",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60053"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "cobalt-precorrin-3(8-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "60060",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60060"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "15,17(3)-seco-F430-17(3)-acid(6-)",
+    "49786",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "49786"
+    )), collapse = ","),
+    "136888",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "136888"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "primary alkymercury(1+)",
+    "25197",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "25197"
+    )), collapse = ","),
+    "83725",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "83725"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "adenosylcobyrate",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "58504",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "58504"
+    )), collapse = ","),
+    "From cc_catalytic_activity"
+  ), collapse = ";"),
+  paste0(c(
+    "chrysobactin",
+    "29034",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29034"
+    )), collapse = ","),
+    "61345",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "61345"
+    )), collapse = ","),
+    "From QuickGO, ChEBI does not contain a metal but is able to bind one. Complexes are usually not 1:1 but multiple ligands are required to bind one Fe3+ (https://doi.org/10.1007/BF01079695)."
+  ), collapse = ";"),
+  paste0(c(
+    "achromobactin",
+    "29034",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29034"
+    )), collapse = ","),
+    "61346",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "61346"
+    )), collapse = ","),
+    "From QuickGO, ChEBI does not contain a metal but is able to bind one."
+  ), collapse = ";"),
+  paste0(c(
+    "enterobactin(1-)",
+    "29034",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29034"
+    )), collapse = ","),
+    "77805",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "77805"
+    )), collapse = ","),
+    "From QuickGO, ChEBI does not contain a metal but is able to bind one."
+  ), collapse = ";"),
+  paste0(c(
+    "Fe3S4 iron-sulfur cluster",
+    "24875",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "24875"
+    )), collapse = ","),
+    "64606",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "64606"
+    )), collapse = ","),
+    "From QuickGO, ChEBI has no formula."
+  ), collapse = ";"),
+  paste0(c(
+    "MgATP(2-)",
+    "18420",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "18420"
+    )), collapse = ","),
+    "30617",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "30617"
+    )), collapse = ","),
+    "From QuickGO."
+  ), collapse = ";"),
+  paste0(c(
+    "cluster",
+    "25213",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "25213"
+    )), collapse = ","),
+    "33731",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "33731"
+    )), collapse = ","),
+    "From QuickGO, ChEBI has no formula."
+  ), collapse = ";"),
+  paste0(c(
+    "antimonous acid",
+    "49867",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "49867"
+    )), collapse = ","),
+    "49870",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "49870"
+    )), collapse = ","),
+    "From QuickGO."
+  ), collapse = ";"),
+  paste0(c(
+    "silicic acid",
+    "30584",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "30584"
+    )), collapse = ","),
+    "26675",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "26675"
+    )), collapse = ","),
+    "From QuickGO."
+  ), collapse = ";"),
+  paste0(c(
+    "chromate(2-)",
+    "33516",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "33516"
+    )), collapse = ","),
+    "35404",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "35404"
+    )), collapse = ","),
+    "From QuickGO."
+  ), collapse = ";"),
+  paste0(c(
+    "iron chelate",
+    "24875",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "24875"
+    )), collapse = ","),
+    "5975",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "5975"
+    )), collapse = ","),
+    "From QuickGO."
+  ), collapse = ";"),
+  paste0(c(
+    "N',N'',N'''-triacetylfusarinine C",
+    "29034",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29034"
+    )), collapse = ","),
+    "60481",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60481"
+    )), collapse = ","),
+    "From QuickGO."
+  ), collapse = ";"),
+    paste0(c(
+      "iron(III) hydroxamate",
+      "29034",
+      paste0(unlist(protti:::find_all_subs(
+        data = chebi_relations,
+        ids = "29034"
+      )), collapse = ","),
+      "28163",
+      paste0(unlist(protti:::find_all_subs(
+        data = chebi_relations,
+        ids = "28163"
+      )), collapse = ","),
+      "From QuickGO."
+    ), collapse = ";"),
+      paste0(c(
+        "achromobactin",
+        "29034",
+        paste0(unlist(protti:::find_all_subs(
+          data = chebi_relations,
+          ids = "29034"
+        )), collapse = ","),
+        "61346",
+        paste0(unlist(protti:::find_all_subs(
+          data = chebi_relations,
+          ids = "61346"
+        )), collapse = ","),
+        "From QuickGO."
+      ), collapse = ";"),
+  paste0(c(
+    "calcium oxalate",
+    "29108",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29108"
+    )), collapse = ","),
+    "60579",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60579"
+    )), collapse = ","),
+    "From QuickGO."
+  ), collapse = ";"),
+  paste0(c(
+    "hydroxylapatite",
+    "29108",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29108"
+    )), collapse = ","),
+    "52255",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "52255"
+    )), collapse = ","),
+    "From QuickGO."
+  ), collapse = ";"),
+  paste0(c(
+    "selenate",
+    "60250",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "60250"
+    )), collapse = ","),
+    "15075",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "15075"
+    )), collapse = ","),
+    "From QuickGO."
+  ), collapse = ";"),
+  paste0(c(
+    "siderophore",
+    "29034",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29034"
+    )), collapse = ","),
+    "26672",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "26672"
+    )), collapse = ","),
+    "From QuickGO."
+  ), collapse = ";"),
+  paste0(c(
+    "cob(I)yrinate a,c diamide(5-)",
+    "23336",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "23336"
+    )), collapse = ","),
+    "58575",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "58575"
+    )), collapse = ","),
+    "From QuickGO."
+  ), collapse = ";"),
+  paste0(c(
+    "ferric enterobactin",
+    "29034",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "29034"
+    )), collapse = ","),
+    "144426",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "144426"
+    )), collapse = ","),
+    "From QuickGO."
+  ), collapse = ";"),
+  paste0(c(
+    "boric acid",
+    "33610",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "33610"
+    )), collapse = ","),
+    "33118",
+    paste0(unlist(protti:::find_all_subs(
+      data = chebi_relations,
+      ids = "33118"
+    )), collapse = ","),
+    "From QuickGO."
   ), collapse = ";")
 ))
 
@@ -1648,8 +2982,8 @@ fmb_annotation_uniprot <- fmb_annotation_uniprot_manuall %>%
     "fmb_name",
     "metal_id",
     "metal_sub_id",
-    "prosthetic_group_id",
-    "prosthetic_group_sub_id",
+    "complex_id",
+    "complex_sub_id",
     "comment"
   ), sep = ";")
 
