@@ -5,12 +5,12 @@
 \alias{metal_chebi_uniprot}
 \title{List of metal-related ChEBI IDs in UniProt}
 \format{
-A data.frame containing information retrieved from ChEBI using \code{fetch_chebi()}, filtered
-using symbols in the \code{metal_list} and manual annotation of metal related ChEBI IDs that do not
+A data.frame containing information retrieved from ChEBI using \code{fetch_chebi(stars = c(2, 3))},
+filtered using symbols in the \code{metal_list} and manual annotation of metal related ChEBI IDs that do not
 contain a formula.
 }
 \source{
-UniProt (cc_cofactor, cc_catalytic_activity) and ChEBI
+UniProt (cc_cofactor, cc_catalytic_activity, ft_binding) and ChEBI
 }
 \usage{
 metal_chebi_uniprot
@@ -18,6 +18,6 @@ metal_chebi_uniprot
 \description{
 A list that contains all ChEBI IDs that appear in UniProt and that contain either a metal atom
 in their formula or that do not have a formula but the ChEBI term is related to metals.
-This was last updated on the 22/06/03.
+This was last updated on the 22/08/11.
 }
 \keyword{datasets}

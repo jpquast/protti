@@ -8,7 +8,6 @@ find_all_subs(
   data,
   ids,
   main_id = id,
-  sub_id = incoming,
   type = type,
   accepted_types = "is_a",
   exclude_parent_id = FALSE
@@ -22,9 +21,6 @@ IDs (sub_id) and their relationship (type). For ChEBI this data frame can be obt
 \item{ids}{a character vector of IDs for which sub IDs should be searched.}
 
 \item{main_id}{a character or integer column containing IDs. Default is \code{id} for ChEBI IDs.}
-
-\item{sub_id}{a character or integer column containing sub IDs that are related to the corresponding
-ID in the \code{main_id} column. Default is \code{incoming} for ChEBI IDs.}
 
 \item{type}{a character column that contains the type of interactions. Default is \code{type} for ChEBI IDs.}
 

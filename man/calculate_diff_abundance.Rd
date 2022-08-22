@@ -32,8 +32,8 @@ Is not required if \code{method = "t-test_mean_sd"}.}
 \item{condition}{a character or numeric column in the \code{data} data frame that contains the
 conditions.}
 
-\item{grouping}{a character column in the \code{data} data frame that contains precursor or
-peptide identifiers.}
+\item{grouping}{a character column in the \code{data} data frame that contains precursor,
+peptide or protein identifiers.}
 
 \item{intensity_log2}{a numeric column in the \code{data} data frame that contains intensity
 values. The intensity values need to be log2 transformed. Is not required if
@@ -42,8 +42,9 @@ values. The intensity values need to be log2 transformed. Is not required if
 \item{missingness}{a character column in the \code{data} data frame that contains missingness
 information. Can be obtained by calling \code{assign_missingness()}. Is not required if
 \code{method = "t-test_mean_sd"}. The type of missingness assigned to a comparison does not have
-any influence on the statistical test. However, if \code{filter_NA_missingness = TRUE} then
-comparisons with missingness \code{NA} are filtered out prior to p-value adjustment.}
+any influence on the statistical test. However, if \code{filter_NA_missingness = TRUE} and
+\code{method = "proDA"}, then comparisons with missingness \code{NA} are filtered out prior
+to p-value adjustment.}
 
 \item{comparison}{a character column in the \code{data} data frame that contains information of
 treatment/reference condition pairs. Can be obtained by calling \code{assign_missingness}.
@@ -71,8 +72,8 @@ pairwise condition pairs. By default \code{ref_condition = "all"}.}
 for example obtained by calling \code{assign_missingness()}. If a reference/treatment pair has
 too few samples to be considered robust based on user defined cutoffs, it is annotated with \code{NA}
 as missingness by the \code{assign_missingness()} function. If this argument is \code{TRUE},
-these \code{NA} reference/treatment pairs are filtered out after the testing and prior to p-value
-adjustment.}
+these \code{NA} reference/treatment pairs are filtered out. For \code{method = "proDA"} this
+is done before the p-value adjustment.}
 
 \item{method}{a character value, specifies the method used for statistical hypothesis testing.
 Methods include Welch test (\code{"t-test"}), a Welch test on means, standard deviations and
@@ -92,7 +93,8 @@ method is \code{"BH"}.}
 \item{retain_columns}{a vector indicating if certain columns should be retained from the input
 data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
 columns can be retained by providing their names (not in quotations marks, just like other
-column names, but in a vector).}
+column names, but in a vector). Please note that if you retain columns that have multiple
+rows per grouped variable there will be duplicated rows in the output.}
 }
 \value{
 A data frame that contains differential abundances (\code{diff}), p-values (\code{pval})
@@ -128,6 +130,10 @@ abundances. \code{avg_abundance} contains average abundances for treatment/refer
 \code{n_obs} contains the number of observations for the specific protein, peptide or precursor
 (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
 }
+For all methods execept \code{"proDA"}, the p-value adjustment is performed only on the
+proportion of data that contains a p-value that is not \code{NA}. For \code{"proDA"} the
+p-value adjustment is either performed on the complete dataset (\code{filter_NA_missingness = TRUE})
+or on the subset of the dataset with missingness that is not \code{NA} (\code{filter_NA_missingness = FALSE}).
 }
 \description{
 Performs differential abundance calculations and statistical hypothesis tests on data frames

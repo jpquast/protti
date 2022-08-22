@@ -2,7 +2,7 @@
 % Please edit documentation in R/extract_metal_binders.R
 \name{extract_metal_binders}
 \alias{extract_metal_binders}
-\title{Extract metal-bind protein information from UniProt}
+\title{Extract metal-binding protein information from UniProt}
 \usage{
 extract_metal_binders(
   data_uniprot,
@@ -15,93 +15,122 @@ extract_metal_binders(
 )
 }
 \arguments{
-\item{data}{a data frame containing at least the input columns.}
+\item{data_uniprot}{a data frame containing at least the \code{ft_binding}, \code{cc_cofactor}
+and \code{cc_catalytic_activity} columns.}
 
-\item{protein_id}{a character column in the \code{data} data frame that contains the protein
-identifiers.}
+\item{data_quickgo}{a data frame containing molecular function gene ontology information for at
+least the proteins of interest. This data should be obtained by calling \code{fetch_quickgo()}.}
 
-\item{feature_metal_binding}{a character column in the \code{data} data frame that contains the
-feature metal binding information from UniProt.}
+\item{data_chebi}{optional, a data frame that can be manually obtained with \code{fetch_chebi(stars = c(2, 3))}.
+It should contain 2 and 3 star entries. If not provided it will be fetched within the function. If the
+function is run many times it is recommended to provide the data frame to save time.}
 
-\item{chebi_cofactor}{a character column in the \code{data} data frame that contains the ChEBI
-cofactor information from UniProt.}
-
-\item{chebi_catalytic_activity}{a character column in the \code{data} data frame that contains
-the ChEBI catalytic activity information from UniProt.}
-
-\item{comment_cofactor}{a character cholumn in the \code{data} data frame that contains
-the comment cofactor information from UniProt.}
-
-\item{go_molecular_function}{a character column in the \code{data} data frame that contains
-the gene ontology "molecular function" column information from UniProt.}
-
-\item{chebi_data}{optional, a data frame that can be manually obtained with \code{fetch_chebi()}.
-If not provided it will be fetched within the function. If the function is run many times it
-is recommended to provide the data frame to save time.}
-
-\item{chebi_relation_data}{optional, a data frame that can be manually obtained with
+\item{data_chebi_relation}{optional, a data frame that can be manually obtained with
 \code{fetch_chebi(relation = TRUE)}. If not provided it will be fetched within the function.
 If the function is run many times it is recommended to provide the data frame to save time.}
+
+\item{data_eco}{optional, a data frame that contains evidence and conclusion ontology data that can be
+obtained by calling \code{fetch_eco()}. If not provided it will be fetched within the function.
+If the function is run many times it is recommended to provide the data frame to save time.}
+
+\item{data_eco_relation}{optional, a data frame that contains relational evidence and conclusion
+ontology data that can be obtained by calling \code{fetch_eco(return_relation = TRUE)}. If not provided it
+will be fetched within the function. If the function is run many times it is recommended to provide
+the data frame to save time.}
+
+\item{show_progress}{a logical value that specifies if progress will be shown (default is TRUE).}
 }
 \value{
 A data frame containing information on protein metal binding state. It contains the
-following types of columns (the naming might vary based on the input):
+following columns:
 \itemize{
-\item{\code{protein_id}: }{UniProt protein identifier.}
-\item{\code{metal_type}: }{Metal name extracted from \code{feature_metal_binding} information.
-This is the name that is used as a search pattern in order to assign a ChEBI ID with the
-\code{split_metal_name} helper function within this function.}
-\item{\code{metal_position}: }{Amino acid position within the protein that is involved in metal
-binding.}
-\item{\code{metal_id}: }{This is a unique identifier for the metal of a protein. If the protein
-binds only one metal this will be 1. If the protein e.g. binds 2 magnesium ions, one will have
-the ID 1, while the other has the ID 2.}
-\item{\code{ids}: }{ChEBI ID assigned to protein and binding site based on \code{metal_type}
-column name. These are general IDs that have sub-IDs. Thus, they generally describe the type of
-metal ion bound to the protein.}
-\item{\code{main_id_name}: }{Official ChEBI name associated with the ID in the \code{ids} column.}
-\item{\code{sub_ids}: }{ChEBI ID that is a sub-ID (incoming) of the ID in the \code{ids} column.
-Thus, they more specifically describe the potential nature of the metal ion.}
-\item{\code{sub_id_name}: }{Official ChEBI name associated with the ID in the \code{sub_ids}
-column.}
-\item{\code{source}: }{The source of the information, can be either \code{feature_metal_binding},
-\code{chebi_cofactor}, \code{comment_cofactor} or \code{chebi_catalytic_activity}.}
-\item{\code{evidence}: }{Evidence level of this annotation. This is usually an evidence & conclusion
-ontology ID (ECO ID). Sometimes a publication ID is included.}
-\item{\code{note}: }{A note specifying the annotation further. Can for example specify how many
-metals are bound per protein.}
+\item{\code{accession}: }{UniProt protein identifier.}
+\item{\code{most_specific_id}: }{ChEBI ID that is most specific for the position after combining information from all sources.
+Can be multiple IDs separated by "," if a position appears multiple times due to multiple fitting IDs.}
+\item{\code{most_specific_id_name}: }{The name of the ID in the \code{most_specfici_id} column. This information is based on
+ChEBI.}
+\item{\code{ligand_identifier}: }{A ligand identifier that is unique per ligand per protein. It consists of the ligand ID and
+ligand name. The ligand ID counts the number of ligands of the same type per protein.}
+\item{\code{ligand_position}: }{The amino acid position of the residue interacting with the ligand.}
+\item{\code{binding_mode}: }{Contains information about the way the amino acid residue interacts with the ligand. If it is
+"covalent" then the residue is not contacting the metal directly but only the cofactor that binds the metal.}
+\item{\code{metal_function}: }{Contains information about the function of the metal. E.g. "catalytic".}
+\item{\code{metal_id_part}: }{Contains a ChEBI ID that identifiers the metal part of the ligand. This is always the metal atom.}
+\item{\code{metal_id_part_name}: }{The name of the ID in the \code{metal_id_part} column. This information is based on
+ChEBI.}
+\item{\code{note}: }{Contains notes associated with information based on cofactors.}
+\item{\code{chebi_id}: }{Contains the original ChEBI IDs the information is based on.}
+\item{\code{source}: }{Contains the sources of the information. This can consist of "binding", "cofactor", "catalytic_activity"
+and "go_term".}
+\item{\code{eco}: }{If there is evidence the annotation is based on it is annotated with an ECO ID, which is split by source.}
+\item{\code{eco_type}: }{The ECO identifier can fall into the "manual_assertion" group for manually curated annotations or the
+"automatic_assertion" group for automatically generated annotations. If there is not evidence it is annotated as
+"automatic_assertion". The information is split by source.}
+\item{\code{evidence_source}: }{The original sources (e.g. literature, PDB) of evidence annotations split by source.}
+\item{\code{reaction}: }{Contains information about the chemical reaction catalysed by the protein that involves the metal.
+Can contain the EC ID, Rhea ID, direction specific Rhea ID, direction of the reaction and evidence for the direction.}
+\item{\code{go_term}: }{Contains gene ontology terms if there are any metal related ones associated with the annotation.}
+\item{\code{go_name}: }{Contains gene ontology names if there are any metal related ones associated with the annotation.}
+\item{\code{assigned_by}: }{Contains information about the source of the gene ontology term assignment.}
+\item{\code{database}: }{Contains information about the source of the ChEBI annotation associated with gene ontology terms.}
 }
+For each protein identifier the data frame contains information on the bound ligand as well as on its position if it is known.
+Since information about metal ligands can come from multiple sources additional information (e.g. evidence) is nested in the returned
+data frame. In order to unnest the relevant information the following steps have to be taken. First, it is
+possible that there are multiple IDs in the "most_specific_id" column. This means that one position cannot be uniquely
+attributed to one specific ligand even with the same ligand_identifier. Apart from the "most_specific_id" column, in
+which those instances are separated by ",", in other columns the relevant information is separated by "||". Now
+information should be split based on source (not the \code{source} column, that one can be removed from the data
+frame). Afterwards, there are certain columns that are associated with specific sources (e.g. \code{go_term} is associated
+with the \code{"go_term"} source). Values of columns not relevant for a certain source should be replaced with \code{NA}.
+Since a \code{most_specific_id} can have multiple \code{chebi_id}s associated with it we need to unnest the \code{chebi_id}
+column and associated columns in which information is separated by "|". Afterwards evidence and additional information can be
+unnested by first splitting data for ";;" and then for ";".
 }
 \description{
 Information of metal binding proteins is extracted from UniProt data retrieved with
-\code{fetch_uniprot}. ChEBI IDs, potential sub-IDs for metal cations, binding site locations
-in the protein and sub-ID evidence level (based on metal presence as cofactor) are extracted.
+\code{fetch_uniprot} as well as QuickGO data retrieved with \code{fetch_quickgo}.
 }
 \examples{
 \donttest{
 # Create example data
-data <- fetch_uniprot(
-  uniprot_ids = c("Q03640", "Q03778", "P22276"),
+
+uniprot_ids <- c("P00393", "P06129", "A0A0C5Q309", "A0A0C9VD04")
+
+## UniProt data
+data_uniprot <- fetch_uniprot(
+  uniprot_ids = uniprot_ids,
   columns = c(
-    "feature(METAL BINDING)",
-    "chebi(Cofactor)",
-    "chebi(Catalytic activity)",
-    "comment(COFACTOR)",
-    "go(molecular function)"
+    "ft_binding",
+    "cc_cofactor",
+    "cc_catalytic_activity"
   )
 )
 
-# Extract metal binding information
-#metal_info <- extract_metal_binders(
- # data = data,
- # protein_id = id,
- # feature_metal_binding = feature_metal_binding,
- # chebi_cofactor = chebi_cofactor,
- # chebi_catalytic_activity = chebi_catalytic_activity,
- # comment_cofactor = comment_cofactor,
- # go_molecular_function = go_molecular_function
-#)
+## QuickGO data
+data_quickgo <- fetch_quickgo(
+  id_annotations = uniprot_ids,
+  ontology_annotations = "molecular_function"
+)
 
-#metal_info
+## ChEBI data (2 and 3 star entries)
+data_chebi <- fetch_chebi(stars = c(2, 3))
+data_chebi_relation <- fetch_chebi(relation = TRUE)
+
+## ECO data
+eco <- fetch_eco()
+eco_relation <- fetch_eco(return_relation = TRUE)
+
+# Extract metal binding information
+metal_info <- extract_metal_binders(
+  data_uniprot = data_uniprot,
+  data_quickgo = data_quickgo,
+  data_chebi = data_chebi,
+  data_chebi_relation = data_chebi_relation,
+  data_eco = eco,
+  data_eco_relation = eco_relation
+)
+
+metal_info
 }
 }

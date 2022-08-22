@@ -70,7 +70,7 @@
 #' A list of all metals and metalloids in the periodic table.
 #'
 #' @format A data.frame containing the columns \code{atomic_number}, \code{symbol}, \code{name},
-#' \code{type}.
+#' \code{type}, \code{chebi_id}.
 #' @source https://en.wikipedia.org/wiki/Metal and https://en.wikipedia.org/wiki/Metalloid
 "metal_list"
 
@@ -85,20 +85,6 @@
 #' contain a formula.
 #' @source UniProt (cc_cofactor, cc_catalytic_activity, ft_binding) and ChEBI
 "metal_chebi_uniprot"
-
-#' List of manual annotations of feature metal binding sites
-#'
-#' A list that contains all feature metal binding site names that appear in UniProt. It also 
-#' includes annotations for complexed metals that appear in cc_cofactor and cc_catalytic_activity 
-#' UniProt columns. In addition we also we also have annotations for complexed metals from the 
-#' QuickGO database. As complexed metals we define any metal of which the formula is not simply 
-#' the element symbol. These sites have been manually annotated with ChEBI IDs that match the name.
-#' This was last updated on the 22/06/03.
-#'
-#' @format A data.frame containing cleaned up feature metal binding sites and manual annotations with 
-#' ChEBI IDs.
-#' @source UniProt ft_metal and ChEBI
-"fmb_annotation_uniprot"
 
 #' Molecular function gene ontology metal subset
 #'

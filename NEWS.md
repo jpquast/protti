@@ -4,18 +4,21 @@
 
 * Reintroduced the functionalities relying on the `iq` package to `protti`. `calculate_protein_abundance()` now has the method `"iq"` again as an option.
 * `fetch_pdb()` now also retrieves information on engineered mutations, non-standard monomers, secondary structure and binding interfaces of ligands.
-* `extract_metal_binders()` now takes additional columns as input to provide an even better summary of metal binding sites. Now the `comment_cofactor` and `go_molecular_function` columns that are retrieved with the `fetch_uniprot()` function have to be provided. 
+* `extract_metal_binders()` was completely redone. This was in response to the UniProt update and rework of the binding column provided by UniProt. This function extracts and concatenates all metal binding information available for a protein based on the UniProt and QuickGO database. Therefore, this function now also takes gene ontology (GO) information from QuickGO as input. Instead of being able to provide column names to specific argument of the function you now only provide the data frames. This makes the function less flexible but reduces the amount of arguments required to achieve the same result. You just need to make sure that the input data frames contain column with the correct names as stated by the function documentation.
 * `fetch_quickgo()` was added. It fetches gene ontology (GO) information from the QuickGO EBI database. The retrieved information can either be GO annotations for provided UniProt IDs or Taxon identifiers, a list of all go terms or a slims subset of GO IDs that can be generated based on provided GO IDs.
+* `fetch_chebi()` now has the `stars` argument with which one can select the evidence levels for which entries should be retrieved.
 
 ## Bug fixes
 
 * Fixed the `auth_seq_id` column that is part of the output of the `fetch_pdb()` function. It previously was possible that it contained duplicated or missing positions. This could be identified by comparing the number of positions within the `auth_seq_id` column and the number of residues in the deposited `pdb_sequence`. Positions are now correct. The original output can be found in the `auth_seq_id_original` column.
+* In the `calculate_diff_abundance()` function the intensity column can be retained with the `retain_columns` argument. This was previously not possible since this column was used to reduce the annotation dataset. However, after reassessing the benefit of this filter step, it seems not necessary. 
+* We assumed that users would only retain columns in `calculate_diff_abundance()` that would not duplicate the data. However, this seems not to be the case, which can lead to wrong p-value adjustment. p-value adjustment was originally performed after the columns indicated in `retain_columns` are joined back to the data. Now p-value adjustment is performed prior to retaining columns as well as only on the subset of data that actually contains p-values. Previously we (by default `filter_NA_missingness = TRUE`) only filtered out `NA`s in the `missingness` column prior to p-value adjustment. However, it is possible that `missingness` is not `NA` but the p-value is `NA`. Now for all methods except for `"proDA"` we remove `NA` p-values before p-value adjustment. For `"proDA"` data is handled as previously since p-values are never `NA`. 
 
 ## Additional changes
 
-* `fetch_uniprot()` by default now retrieves the `comment(COFACTOR)` column.
 * The default batchsize of `fetch_pdb()` was set to 100 from 200. This was done since more information is retrieved now, which slows to function down and is slightly improved when batch sizes are smaller.
 * `try_query()` now only retries to retrieve information once if the returned message was "Timeout was reached". In addition, a `timeout` and `accept` argument have been added.
+* The UniProt database has changed its API, therefore column names have changed as well as the format of data. We adjusted the `fetch_uniprot()` and `fetch_uniprot_proteome()` function accordingly. Please be aware that some columns names might have changed and your code might throw error messages if you did not adjust it accordingly. 
 
 # protti 0.3.1
 

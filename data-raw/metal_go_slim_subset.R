@@ -54,7 +54,8 @@ parent_metal_ids <- c("GO:0046872", # metal ion binding
                       "GO:0140481", # ABC-type iron-sulfur cluster transporter activity
                       "GO:1901238", # ABC-type tungstate transporter activity
                       "GO:0015625", # ABC-type ferric hydroxamate transporter activity
-                      "GO:0015345" # ferric enterobactin:proton symporter activity
+                      "GO:0015345", # ferric enterobactin:proton symporter activity
+                      "GO:1903981" # enterobactin binding
                       )
 
 # Retrieve slim dataset 
@@ -65,25 +66,64 @@ metal_slim_subset <- fetch_quickgo(type = "slims", go_id_slims = parent_metal_id
 
 metal_slim_subset_annotated <- metal_slim_subset %>% 
   left_join(terms, by = c("slims_from_id" = "main_id")) %>% 
-  filter(ontology == "molecular_function") # filter for molecular function ontology
+  filter(ontology == "molecular_function")  # filter for molecular function ontology
 
 # Find terms that still contain metal-related ChEBI IDs that are not yet covered by the subset dataset
 # Retrieve ChEBI IDs in order to find all metal related ChEBI entries
 
-# As defined in metal_chebi_uniprot.R
-metal_chebi_ids_wo_formula <- c(25213, # a metal cation
-                                30408, # iron-sulfur cluster
-                                30413, # heme
-                                38201, # a bacteriochlorophyll
-                                60240, # a divalent metal cation
-                                60242, # a monovalent cation (this can also be non-metal so should be handled with care)
-                                60400 # [Ni-Fe-S] cluster
+# Use directly from metal_chebi_uniprot which is defined in metal_chebi_uniprot.R
+metal_chebi_ids_wo_formula <- setNames(
+  metal_chebi_uniprot %>% 
+  dplyr::filter(is.na(formula)) %>% 
+  dplyr::distinct(metal_atom_id) %>% 
+  dplyr::pull(), 
+  metal_chebi_uniprot %>% 
+    dplyr::filter(is.na(formula)) %>% 
+    dplyr::distinct(id) %>% 
+    dplyr::pull())
+
+# This vector contains additional chebi IDs that are metal related but do not contain a formula. 
+# This should be updated if promted bellow (around line 290)
+more_metal_chebi_ids_wo_formula <- c("63063" = "22977", # cadmium cation
+                                       "61345" = "18248", # chrysobactin
+                                       "61346" = "18248", # achromobactin
+                                       "77805" = "18248", # enterobactin(1-)
+                                       "60253" = "30512", # silver cation
+                                       "63056" = "27363", # zinc cation
+                                       "64606" = "18248", # Fe3S4 iron-sulfur cluster
+                                       "64607" = "18248", # Fe4S4 iron-sulfur cluster
+                                       "33731" = "33521", # cluster
+                                       "5975" = "18248", # iron chelate
+                                       "33515" = "27081", # transition element cation
+                                       "33504" = "22314", # alkali metal cation
+                                       "85620" = "18248", # Fe4S3 iron-sulfur cluster
+                                       "60252" = "25016", # lead cation
+                                       "25197" = "25195", # mercury cation
+                                       "15075" = "27568", # selenate
+                                      "26672" = "18248" # siderophore (was included in the manual annotation)
 )
 
-metal_chebi <- protti::fetch_chebi() %>% 
+metal_chebi_ids_wo_formula <- c(metal_chebi_ids_wo_formula, more_metal_chebi_ids_wo_formula)
+
+# Create annotation vector that indicates what ChEBI ID a certain element symbol should be annotated with
+metal_chebi_annotation <- setNames(metal_list$chebi_id, metal_list$symbol)
+
+metal_chebi <- protti::fetch_chebi(stars = c(2, 3)) %>% 
   dplyr::distinct(id, chebi_accession, formula) %>% 
   dplyr::filter(stringr::str_detect(formula, pattern = paste0(paste0(metal_list$symbol, collapse = "(?![:lower:])|"), "(?![:lower:])")) | 
-                  id %in% metal_chebi_ids_wo_formula)
+                  id %in% as.numeric(names(metal_chebi_ids_wo_formula))) %>% 
+  dplyr::mutate(extract_formula = stringr::str_extract_all(.data$formula, pattern = paste0(paste0(metal_list$symbol, collapse = "(?![:lower:])|"), "(?![:lower:])"))) %>% 
+  dplyr::mutate(
+    extract_formula = ifelse(
+      as.character(.data$extract_formula) == "character(0)",
+      NA,
+      .data$extract_formula
+    )
+  ) %>% 
+  tidyr::unnest(extract_formula) %>% 
+  dplyr::mutate(metal_atom_id = ifelse(is.na(extract_formula), 
+                                       metal_chebi_ids_wo_formula[as.character(id)],
+                                       metal_chebi_annotation[extract_formula]))
 
 # If terms_metal contains any rows add parent GO terms to parent_metal_ids above!
 terms_metal <- terms %>% 
@@ -260,38 +300,17 @@ metal_go_slim_subset_pre <- metal_slim_subset_annotated %>%
          relations_term = str_split(relations_term, pattern = ";")) %>% 
   unnest(c(chebi_id, relations_relation, relations_url, database, relations_term))
 
-# Create another list that contains manually annotated ChEBI IDs that are considered metal even though they do not contain a formula
-# There are many siderophores. Their formula is often without metal but they are counted as metal associated ChEBI ID.
-# First need to create non_metal_chebis then the list below can be created with the commented code.
-# message('"', paste0(unique(non_metal_chebis$relations_term), collapse = '",\n"'), '"')
-more_metal_ids_wo_formula <- c("cadmium cation",
-                               "chrysobactin",
-                               "achromobactin",
-                               "enterobactin(1-)",
-                               "silver cation",
-                               "zinc cation",
-                               "Fe3S4 iron-sulfur cluster",
-                               "Fe4S4 iron-sulfur cluster",
-                               "cluster",
-                               "magnesium ion",
-                               "iron chelate",
-                               "transition element cation",
-                               "alkali metal cation",
-                               "Fe4S3 iron-sulfur cluster",
-                               "lead cation",
-                               "mercury cation",
-                               "selenate")
-
+# These are all the GO terms with metal containing ChEBI IDs
 metal_chebis <- metal_go_slim_subset_pre %>% 
-  filter((chebi_id %in% unique(metal_chebi$chebi_accession)) | 
-           (as.numeric(str_replace(chebi_id, pattern = "CHEBI:", replacement = "")) %in% metal_chebi_ids_wo_formula) |
-           (relations_term %in% more_metal_ids_wo_formula)) 
+  mutate(chebi_id = ifelse(chebi_id == "CHEBI:39128", "CHEBI:18420", chebi_id)) %>% # just do this to correct an entry (magnesium ion to Mg2+)
+  filter((chebi_id %in% unique(metal_chebi$chebi_accession))) 
 
+# These are all the GO terms with NA ChEBI IDs or potential metal ChEBI IDs
 non_metal_chebis <- metal_go_slim_subset_pre %>% 
-  filter(!(chebi_id %in% unique(metal_chebi$chebi_accession)) & 
-           !(as.numeric(str_replace(chebi_id, pattern = "CHEBI:", replacement = "")) %in% metal_chebi_ids_wo_formula) &
-           !(relations_term %in% more_metal_ids_wo_formula) &
-           !(slims_from_id %in% metal_chebis$slims_from_id)) 
+  filter(!(slims_from_id %in% metal_chebis$slims_from_id)) # find all entries that are not in the metal_chebis list
+
+message("If this list is not empty please add to the more_metal_chebi_ids_wo_formula vector in line 82!\n",
+        '"', paste0(na.omit(unique(non_metal_chebis$relations_term)), collapse = '",\n"'), '"')
 
 # Manual annotation of remaining GO IDs
 
@@ -308,7 +327,7 @@ manual_go_chebi_annotation <- data.frame(name = c(paste0("GO:0052851;ferric-chel
                                                   paste0("GO:0000293;ferric-chelate reductase activity", ";", "CHEBI:29034|CHEBI:29033"),
                                                   paste0("GO:0140487;metal ion sequestering activity", ";", "CHEBI:25213"),
                                                   paste0("GO:0140486;zinc ion sequestering activity", ";", "CHEBI:29105"),
-                                                  paste0("GO:0008823;cupric reductase activity", ";", "	CHEBI:49552|CHEBI:29036"),
+                                                  paste0("GO:0008823;cupric reductase activity", ";", "CHEBI:49552|CHEBI:29036"),
                                                   paste0("GO:0004222;metalloendopeptidase activity", ";", "CHEBI:25213"),
                                                   paste0("GO:0070006;metalloaminopeptidase activity", ";", "CHEBI:25213"),
                                                   paste0("GO:0004322;ferroxidase activity", ";", "CHEBI:29034|CHEBI:29033"),
@@ -340,7 +359,7 @@ manual_go_chebi_annotation <- data.frame(name = c(paste0("GO:0052851;ferric-chel
                                                   paste0("GO:0140314;calcium ion sequestering activity", ";", "CHEBI:39123"),
                                                   paste0("GO:0016851;magnesium chelatase activity", ";", "CHEBI:18420"),
                                                   paste0("GO:0140571;transmembrane ascorbate ferrireductase activity", ";", "CHEBI:29034|CHEBI:29033"),
-                                                  paste0("GO:0015620;ferric-enterobactin transmembrane transporter activity", ";", "CHEBI:144426"),
+                                                  paste0("GO:0015620;ferric-enterobactin transmembrane transporter activity", ";", "CHEBI:28199"),
                                                   paste0("GO:1902945;metalloendopeptidase activity involved in amyloid precursor protein catabolic process", ";", "CHEBI:25213"))) %>% 
   separate(name, into = c("slims_from_id", "main_name", "chebi_id"), sep = ";") %>% 
   mutate(chebi_id = str_split(chebi_id, pattern = "\\|")) %>% 
@@ -350,6 +369,8 @@ manual_go_chebi_annotation <- data.frame(name = c(paste0("GO:0052851;ferric-chel
 metal_go_slim_subset <- metal_chebis %>% 
   bind_rows(manual_go_chebi_annotation) %>% 
   distinct(slims_from_id, slims_to_ids, main_name, chebi_id, relations_relation, relations_term, database) %>% 
-  mutate(database = ifelse(is.na(database), "manual", database))
+  mutate(database = ifelse(is.na(database), "manual", database)) %>% 
+  left_join(distinct(metal_chebi, chebi_accession, metal_atom_id), by = c("chebi_id" = "chebi_accession")) %>% 
+  mutate(chebi_id = str_remove(chebi_id, pattern = "CHEBI:"))
 
 usethis::use_data(metal_go_slim_subset, overwrite = TRUE)

@@ -7,7 +7,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_warning(uniprot <- fetch_uniprot(unis))
     expect_is(uniprot, "data.frame")
     expect_equal(nrow(uniprot), 9)
-    expect_equal(ncol(uniprot), 18)
+    expect_equal(ncol(uniprot), 17)
   })
 
   proteome <- fetch_uniprot_proteome(organism_id = "83333", columns = c("accession", "go_f", "xref_string"))
@@ -25,7 +25,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(mobidb), 7)
   })
 
-  database <- fetch_chebi()
+  database <- fetch_chebi(stars = c(2, 3))
   relations <- fetch_chebi(relation = TRUE)
   test_that("fetch_chebi works", {
     expect_is(database, "data.frame")
@@ -97,19 +97,6 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(nrow(metal_pdb), 5)
     expect_equal(ncol(metal_pdb), 25)
   })
-
-  # test_that("extract_metal_binders works", {
-  #   data_uniprot <- fetch_uniprot(c("Q03640", "Q03778", "P22276", "P25889"))
-  #   metal_info <- extract_metal_binders(data = data_uniprot, 
-  #                                       chebi_data = database, 
-  #                                       chebi_relation_data = relations, 
-  #                                       comment_cofactor = comment_cofactor, 
-  #                                       go_molecular_function = go_molecular_function)
-  # 
-  #   expect_is(metal_info, "data.frame")
-  #   expect_equal(ncol(metal_info), 13)
-  #   expect_gt(nrow(metal_info), 110)
-  # })
 
   test_that("deprecated kegg_enrichment works", {
     # first fake significances are generated based on the first 10 rows of every group
@@ -443,13 +430,13 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     ), NA)
   })
 
+  eco <- fetch_eco()
+  eco_relation <- fetch_eco(return_relation = TRUE)
   test_that("fetch_eco works", {
-    eco <- fetch_eco()
     expect_is(eco, "data.frame")
     expect_gt(nrow(eco), 2300)
     expect_equal(ncol(eco), 10)
 
-    eco_relation <- fetch_eco(return_relation = TRUE)
     expect_is(eco_relation, "data.frame")
     expect_gt(nrow(eco_relation), 3200)
     expect_equal(ncol(eco_relation), 3)
@@ -462,15 +449,16 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_error(fetch_eco(return_relation = TRUE, return_history = TRUE))
   })
   
+  uniprot_ids <- c("P00393", "P06129", "A0A0C5Q309", "A0A0C9VD04")
+  annotations <- fetch_quickgo(type = "annotations", id = uniprot_ids, ontology = "molecular_function")
   test_that("fetch_quickgo works", {
-    annotations <- fetch_quickgo(type = "annotations", id = c("P63328","Q4FFP4"), ontology = "molecular_function")
     expect_is(annotations, "data.frame")
-    expect_equal(nrow(annotations), 69)
+    expect_equal(nrow(annotations), 22)
     expect_equal(ncol(annotations), 15)
     
     terms <- fetch_quickgo(type = "terms")
     expect_is(terms, "data.frame")
-    expect_equal(nrow(terms), 47883)
+    expect_equal(nrow(terms), 47906)
     expect_equal(ncol(terms), 13)
 
     slims <- fetch_quickgo(type = "slims", go_id_slims = c("GO:0046872", "GO:0051540"))
@@ -482,5 +470,25 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
                                id = c("P63328","Q4FFP4"), 
                                ontology = "molecular_function", 
                                go_id_slims = c("GO:0046872", "GO:0051540")))
+  })
+  
+  test_that("extract_metal_binders works", {
+    data_uniprot <- fetch_uniprot(uniprot_ids,
+                                  columns = c(
+                                    "ft_binding",
+                                    "cc_cofactor",
+                                    "cc_catalytic_activity"
+                                  ))
+    
+    metal_info <- extract_metal_binders(data_uniprot = data_uniprot,
+                                        data_quickgo = annotations,
+                                        data_chebi = database,
+                                        data_chebi_relation = relations,
+                                        data_eco = eco,
+                                        data_eco_relation = eco_relation)
+    
+    expect_is(metal_info, "data.frame")
+    expect_equal(ncol(metal_info), 20)
+    expect_equal(nrow(metal_info), 34)
   })
 }

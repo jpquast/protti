@@ -4,20 +4,22 @@
 \alias{fetch_chebi}
 \title{Fetch ChEBI database information}
 \usage{
-fetch_chebi(relation = FALSE)
+fetch_chebi(relation = FALSE, stars = c(3))
 }
 \arguments{
 \item{relation}{a logical value that indicates if ChEBI Ontology data will be returned instead
 the main compound data. This data can be used to check the relations of ChEBI ID's to each other.
 Default is FALSE.}
+
+\item{stars}{a numeric vector indicating the "star" level (confidence) for which entries should
+be retrieved (Possible levels are 1, 2 and 3). Default is \code{c(3)} retrieving only "3-star"
+entries, which are manually annotated by the ChEBI curator team.}
 }
 \value{
-A data frame that contains all information about each molecule in the ChEBI database.
-Only "3-star" observations are included in the result. These are entries manually annotated
-by the ChEBI curator team.
+A data frame that contains information about each molecule in the ChEBI database.
 }
 \description{
-Fetches all information from the ChEBI database.
+Fetches information from the ChEBI database.
 }
 \examples{
 \donttest{

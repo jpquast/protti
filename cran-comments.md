@@ -1,6 +1,8 @@
 ## Submission 
 
 * We fixed a bug that was caused by an API change of the UniProt database.
+* The bug caused an error to appear when \donttest examples were tested.
+* This release therefore fixes the problem reported by Prof. Brian Ripley.
 
 ## Test environments
 * macOS-latest (on GitHub actions), R 4.2.1

@@ -8,8 +8,6 @@
 #' \code{fetch_chebi(relation = TRUE)}. For ECO data it can be obtained by calling fetch_eco(relation = TRUE).
 #' @param ids a character vector of IDs for which sub IDs should be searched.
 #' @param main_id a character or integer column containing IDs. Default is \code{id} for ChEBI IDs.
-#' @param sub_id a character or integer column containing sub IDs that are related to the corresponding
-#' ID in the \code{main_id} column. Default is \code{incoming} for ChEBI IDs.
 #' @param type a character column that contains the type of interactions. Default is \code{type} for ChEBI IDs.
 #' @param accepted_types a character vector containing the accepted_types of relationships that should be considered
 #' for the search. It is possible to use "all" relationships. The default type is "is_a". A list of
@@ -27,7 +25,6 @@
 find_all_subs <- function(data, 
                           ids, 
                           main_id = id, 
-                          sub_id = incoming, 
                           type = type, 
                           accepted_types = "is_a", 
                           exclude_parent_id = FALSE) {

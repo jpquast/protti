@@ -8,7 +8,7 @@ fetch_uniprot(
   uniprot_ids,
   columns = c("protein_name", "length", "sequence", "gene_names", "xref_geneid",
     "xref_string", "go_f", "go_p", "go_c", "cc_interaction", "ft_act_site", "ft_binding",
-    "ft_metal", "cc_cofactor", "cc_catalytic_activity", "xref_pdb"),
+    "cc_cofactor", "cc_catalytic_activity", "xref_pdb"),
   batchsize = 200,
   show_progress = TRUE
 )
