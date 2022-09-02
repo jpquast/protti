@@ -4,9 +4,10 @@
 #'
 #' @param uniprot_ids a character vector of UniProt accession numbers.
 #' @param columns a character vector of metadata columns that should be imported from UniProt (all
-#' possible columns can be found \href{https://www.uniprot.org/help/uniprotkb_column_names}{here}.)
+#' possible columns can be found \href{https://www.uniprot.org/help/return_fields}{here}. For 
+#' cross-referenced database provide the database name with the prefix "xref_", e.g. \code{"xref_pdb"})
 #' @param batchsize a numeric value that specifies the number of proteins processed in a single
-#' single query. Default is 200.
+#' single query. Default and max value is 200. 
 #' @param show_progress a logical value that determines if a progress bar will be shown. Default
 #' is TRUE.
 #'
@@ -30,22 +31,21 @@
 fetch_uniprot <-
   function(uniprot_ids,
            columns = c(
-             "protein names",
+             "protein_name",
              "length",
              "sequence",
-             "genes",
-             "database(GeneID)",
-             "database(String)",
-             "go(molecular function)",
-             "go(biological process)",
-             "go(cellular compartment)",
-             "interactor",
-             "feature(ACTIVE SITE)",
-             "feature(BINDING SITE)",
-             "feature(METAL BINDING)",
-             "chebi(Cofactor)",
-             "chebi(Catalytic activity)",
-             "database(PDB)"
+             "gene_names",
+             "xref_geneid",
+             "xref_string",
+             "go_f",
+             "go_p",
+             "go_c",
+             "cc_interaction",
+             "ft_act_site",
+             "ft_binding",
+             "cc_cofactor",
+             "cc_catalytic_activity",
+             "xref_pdb"
            ),
            batchsize = 200,
            show_progress = TRUE) {
@@ -54,7 +54,13 @@ fetch_uniprot <-
       return(invisible(NULL))
     }
     . <- NULL
-    columns <- c("id", columns)
+    if(show_progress){
+      message("Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.")
+    }
+    if (batchsize > 500){
+      stop("Please provide a batchsize that is smaller or equal to 500!")
+    }
+    columns <- c("accession", columns)
     column_names <- janitor::make_clean_names(columns)
     collapsed_columns <- paste(columns, collapse = ",")
     uniprot_ids <- stats::na.omit(uniprot_ids)
@@ -68,11 +74,11 @@ fetch_uniprot <-
       pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
     )]
     valid_id_annotations <- tibble::tibble(input_id = contains_valid_id) %>%
-      dplyr::mutate(id = stringr::str_extract_all(.data$input_id,
+      dplyr::mutate(accession = stringr::str_extract_all(.data$input_id,
         pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
       )) %>%
-      tidyr::unnest(.data$id)
-    uniprot_ids_filtered <- c(uniprot_ids_filtered, valid_id_annotations$id)
+      tidyr::unnest(.data$accession)
+    uniprot_ids_filtered <- c(uniprot_ids_filtered, valid_id_annotations$accession)
     non_identifiable_id <- non_conform_ids[!stringr::str_detect(non_conform_ids,
       pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
     )]
@@ -93,16 +99,19 @@ They were fetched and the original input ID can be found in the "input_id" colum
       stop("No valid UniProt accession numbers found.")
     }
 
-    url <- "http://legacy.uniprot.org/uniprot/?query="
+    url <- "http://rest.uniprot.org/uniprotkb/stream?query="
+    # This function splits IDs into batches that are retrieved batch by batch
+    # The new UniProt API allows this functionality on the server site by using
+    # the size and cursor parameters. We don't change this since the code below also works.
     batches <- split(uniprot_ids_filtered, ceiling(seq_along(uniprot_ids_filtered) / batchsize))
     if (show_progress == TRUE) {
       pb <- progress::progress_bar$new(total = length(batches))
     }
     # fetch all batches
     result <- purrr::map(batches, function(x) {
-      id_query <- paste(paste0("id:", x), collapse = "+or+")
+      id_query <- paste(paste0("accession_id:", x), collapse = "+OR+")
       query_url <- utils::URLencode(paste0(
-        url, id_query, "&format=tab&columns=",
+        url, id_query, "&format=tsv&fields=",
         collapsed_columns
       ))
 
@@ -154,22 +163,22 @@ They were fetched and the original input ID can be found in the "input_id" colum
         stringr::str_extract_all(.[[2]], pattern = "(?<=into )[A-Z0-9]+", simplify = TRUE),
         NA
       )) %>%
-      dplyr::distinct(id, new) %>%
-      tidyr::drop_na(new)
+      dplyr::distinct(.data$accession, .data$new) %>%
+      tidyr::drop_na(.data$new)
 
     new_ids <- new$new
 
     if (length(new_ids) == 0) {
       if (length(contains_valid_id) != 0) {
         result <- result %>%
-          dplyr::left_join(valid_id_annotations, by = "id") %>%
-          dplyr::relocate(.data$id, .data$input_id)
+          dplyr::left_join(valid_id_annotations, by = "accession") %>%
+          dplyr::relocate(.data$accession, .data$input_id)
       }
       return(result)
     }
-    new_id_query <- paste(paste0("id:", new_ids), collapse = "+or+")
+    new_id_query <- paste(paste0("accession_id:", new_ids), collapse = "+OR+")
     new_query_url <- utils::URLencode(paste0(
-      url, new_id_query, "&format=tab&columns=",
+      url, new_id_query, "&format=tsv&fields=",
       collapsed_columns
     ))
 
@@ -182,7 +191,7 @@ They were fetched and the original input ID can be found in the "input_id" colum
     colnames(new_result) <- column_names
 
     new_result <- new %>%
-      dplyr::left_join(new_result, by = c("new" = "id")) %>%
+      dplyr::left_join(new_result, by = c("new" = "accession")) %>%
       dplyr::select(-new)
 
     result <- result %>%
@@ -191,8 +200,8 @@ They were fetched and the original input ID can be found in the "input_id" colum
 
     if (length(contains_valid_id) != 0) {
       result <- result %>%
-        dplyr::left_join(valid_id_annotations, by = "id") %>%
-        dplyr::relocate(.data$id, .data$input_id)
+        dplyr::left_join(valid_id_annotations, by = "accession") %>%
+        dplyr::relocate(.data$accession, .data$input_id)
     }
 
     result

@@ -2,27 +2,41 @@
 % Please edit documentation in R/find_all_subs.R
 \name{find_all_subs}
 \alias{find_all_subs}
-\title{Find all ChEBI sub IDs of an ID}
+\title{Find all sub IDs of an ID in a network}
 \usage{
-find_all_subs(data, ids, types = "is_a")
+find_all_subs(
+  data,
+  ids,
+  main_id = id,
+  type = type,
+  accepted_types = "is_a",
+  exclude_parent_id = FALSE
+)
 }
 \arguments{
-\item{data}{a data frame that contains relational information on ChEBI IDs (id), their sub
-IDs (incoming) and their relationship (type). This data frame can be obtained by calling
-\code{fetch_chebi(relation = TRUE)}.}
+\item{data}{a data frame that contains relational information on IDs (main_id) their sub
+IDs (sub_id) and their relationship (type). For ChEBI this data frame can be obtained by calling
+\code{fetch_chebi(relation = TRUE)}. For ECO data it can be obtained by calling fetch_eco(relation = TRUE).}
 
-\item{ids}{a character vector of ChEBI IDs for which sub IDs should be searched.}
+\item{ids}{a character vector of IDs for which sub IDs should be searched.}
 
-\item{types}{a character vector containing the types of relationships that should be considered
+\item{main_id}{a character or integer column containing IDs. Default is \code{id} for ChEBI IDs.}
+
+\item{type}{a character column that contains the type of interactions. Default is \code{type} for ChEBI IDs.}
+
+\item{accepted_types}{a character vector containing the accepted_types of relationships that should be considered
 for the search. It is possible to use "all" relationships. The default type is "is_a". A list of
-possible relationships can be found
+possible relationships for e.g. ChEBI IDs can be found
 \href{https://docs.google.com/document/d/1_w-DwBdCCOh1gMeeP6yqGzcnkpbHYOa3AGSODe5epcg/edit#heading=h.hnsqoqu978s5}{here}.}
+
+\item{exclude_parent_id}{a logical value that specifies if the parent ID should be included in
+the returned list.}
 }
 \value{
-A list of double vectors containing the provided ID and all of its sub IDs. It
+A list of character vectors containing the provided ID and all of its sub IDs. It
 contains one element per input ID.
 }
 \description{
-For a given ChEBI ID, find all ChEBI sub IDs (incoming IDs) and their sub IDs. The type of
+For a given ID, find all sub IDs and their sub IDs etc. The type of
 relationship can be selected too. This is a helper function for other functions.
 }

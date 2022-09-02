@@ -326,7 +326,7 @@ fetch_metal_pdb <- function(id_type = "uniprot",
       auth_id_metal = .data$atom_pdb_number,
       symbol_metal = .data$symbol
     ) %>%
-    dplyr::group_by(.data$site) %>%
+    dplyr::group_by(.data$site, .data$auth_id_metal) %>%
     dplyr::mutate(check = length(.data$ligands[[1]])) %>%
     dplyr::mutate(ligands = ifelse(.data$check == 0, NA, .data$ligands)) %>%
     tidyr::unnest_longer(.data$ligands) %>%

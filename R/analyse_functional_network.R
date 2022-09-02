@@ -75,7 +75,7 @@ network_analysis <-
 #'     "P0A7X3",
 #'     "P0AGD3"
 #'   ),
-#'   database_string = c(
+#'   xref_string = c(
 #'     "511145.b4203;",
 #'     "511145.b3341;",
 #'     "511145.b3309;",
@@ -97,7 +97,7 @@ network_analysis <-
 #' network <- analyse_functional_network(
 #'   data,
 #'   protein_id = uniprot_id,
-#'   string_id = database_string,
+#'   string_id = xref_string,
 #'   organism_id = 511145,
 #'   binds_treatment = is_known,
 #'   plot = TRUE
@@ -156,7 +156,7 @@ does not match the number of rows in your data.", prefix = "\n", initial = ""))
         dplyr::filter({{ binds_treatment }}) %>%
         dplyr::mutate(color = halo_color)
     }
-    payload_id <- string_db$post_payload(coloring$database_string,
+    payload_id <- string_db$post_payload(dplyr::pull(coloring, {{string_id}}),
       colors = coloring$color
     )
   }

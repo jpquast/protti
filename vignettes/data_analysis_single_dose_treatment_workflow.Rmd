@@ -155,7 +155,7 @@ data_filtered_proteotypic <- data_filtered %>%
 
 In order to obtain more information about our identified proteins we are going to use the function `fetch_uniprot()` to download information from UniProt directly. 
 
-`fetch_uniprot()` uses a vector of UniProt IDs as its input. We produce this vector by using the base R function `unique()` which will extract all unique elements in the selected protein ID column. In this case we want to download the full protein name, gene IDs, GO terms associated with molecular function, StringDB IDs, information on known interacting proteins, location of the active site, location of binding sites, PDB entries, protein length and protein sequence. There are more options for columns to add (for more information on possible columns to add click [here](https://www.uniprot.org/help/uniprotkb_column_names)). 
+`fetch_uniprot()` uses a vector of UniProt IDs as its input. We produce this vector by using the base R function `unique()` which will extract all unique elements in the selected protein ID column. In this case we want to download the full protein name, gene IDs, GO terms associated with molecular function, StringDB IDs, information on known interacting proteins, location of the active site, location of binding sites, PDB entries, protein length and protein sequence. There are more options for columns to add (for more information on possible columns to add click [here](https://www.uniprot.org/help/return_fields)). 
 
 `fetch_uniprot()` returns a new data frame. In order to be able to merge this with our original data frame we have to rename the ID column to match the name of the protein ID column of our original data frame. To do this we use `dplyr`'s `rename()` function. 
 
@@ -172,19 +172,19 @@ uniprot <-
   fetch_uniprot(
     uniprot_ids = uniprot_ids,
     columns = c(
-      "protein names",
-      "genes",
-      "go(molecular function)",
-      "database(String)",
-      "interactor",
-      "feature(ACTIVE SITE)",
-      "feature(BINDING SITE)",
-      "database(PDB)",
+      "protein_name",
+      "gene_names",
+      "go_f",
+      "xref_string",
+      "cc_interaction",
+      "ft_act_site",
+      "ft_binding",
+      "xref_pdb",
       "length",
       "sequence"
     )
   ) %>% 
-  rename(pg_protein_accessions = id)
+  rename(pg_protein_accessions = accession)
 
 data_filtered_uniprot <- data_filtered_proteotypic %>%
   left_join(y = uniprot,
@@ -247,8 +247,8 @@ diff_abundance_data <- data_filtered_uniprot %>%
     completeness_MAR = 0.7,
     completeness_MNAR = 0.25,
     retain_columns = c(pg_protein_accessions, 
-                       go_molecular_function, 
-                       database_string, 
+                       go_f, 
+                       xref_string, 
                        start, 
                        end, 
                        length, 
@@ -263,8 +263,8 @@ diff_abundance_data <- data_filtered_uniprot %>%
     comparison = comparison,
     method = "moderated_t-test",
     retain_columns = c(pg_protein_accessions, 
-                       go_molecular_function, 
-                       database_string, 
+                       go_f, 
+                       xref_string, 
                        start, 
                        end, 
                        length, 
@@ -408,7 +408,7 @@ calculate_go_enrichment(
   data = diff_abundance_significant,
   protein_id = pg_protein_accessions,
   is_significant = is_significant,
-  go_annotations_uniprot = go_molecular_function
+  go_annotations_uniprot = go_f
 )
 
 ### Network analysis
@@ -418,7 +418,7 @@ network_input <- diff_abundance_significant %>%
 
 analyse_functional_network(data = network_input,
                  protein_id = pg_protein_accessions,
-                 string_id = database_string,
+                 string_id = xref_string,
                  binds_treatment = binds_treatment,
                  organism_id = 9606)
 

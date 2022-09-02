@@ -1,14 +1,15 @@
 #' Fetch ChEBI database information
 #'
-#' Fetches all information from the ChEBI database.
+#' Fetches information from the ChEBI database.
 #'
 #' @param relation a logical value that indicates if ChEBI Ontology data will be returned instead
 #' the main compound data. This data can be used to check the relations of ChEBI ID's to each other.
 #' Default is FALSE.
+#' @param stars a numeric vector indicating the "star" level (confidence) for which entries should
+#' be retrieved (Possible levels are 1, 2 and 3). Default is \code{c(3)} retrieving only "3-star" 
+#' entries, which are manually annotated by the ChEBI curator team.
 #'
-#' @return A data frame that contains all information about each molecule in the ChEBI database.
-#' Only "3-star" observations are included in the result. These are entries manually annotated
-#' by the ChEBI curator team.
+#' @return A data frame that contains information about each molecule in the ChEBI database.
 #' @import dplyr
 #' @importFrom httr GET config content
 #' @importFrom tidyr pivot_wider unnest
@@ -23,7 +24,7 @@
 #'
 #' head(chebi)
 #' }
-fetch_chebi <- function(relation = FALSE) {
+fetch_chebi <- function(relation = FALSE, stars = c(3)) {
   if (!curl::has_internet()) {
     message("No internet connection.")
     return(invisible(NULL))
@@ -148,7 +149,7 @@ fetch_chebi <- function(relation = FALSE) {
   # Create one file with all information after cleaning individual source files
 
   chebi_compounds_clean <- chebi_compounds %>%
-    dplyr::filter(.data$STAR == 3) %>%
+    dplyr::filter(.data$STAR %in% stars) %>%
     dplyr::select(-c(
       .data$SOURCE,
       .data$NAME,
@@ -181,7 +182,7 @@ fetch_chebi <- function(relation = FALSE) {
     ))
 
   chebi_compounds_names_clean <- chebi_compounds %>%
-    dplyr::filter(.data$STAR == 3) %>%
+    dplyr::filter(.data$STAR %in% stars) %>%
     dplyr::distinct(.data$ID, .data$NAME) %>%
     dplyr::na_if("null") %>%
     dplyr::filter(!is.na(.data$NAME)) %>%

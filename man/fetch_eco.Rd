@@ -28,7 +28,7 @@ If either \code{return_relation} or \code{return_history} is set to \code{TRUE},
 returned instead of the usual output.
 }
 \description{
-Fetches all evidence & conclusion ontology (ECO) information from the EBI database. The ECO project is
+Fetches all evidence & conclusion ontology (ECO) information from the QuickGO EBI database. The ECO project is
 maintained through a public \href{https://github.com/evidenceontology/evidenceontology}{GitHub repository}.
 }
 \details{

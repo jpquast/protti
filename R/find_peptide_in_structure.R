@@ -105,14 +105,14 @@ find_peptide_in_structure <- function(peptide_data,
     # if pdb_data is not provided by the user, it is fetched
     unis <- unique(dplyr::pull(peptide_data_prep, {{ uniprot_id }}))
 
-    uniprot_info <- fetch_uniprot(unis, columns = c("database(PDB)"))
+    uniprot_info <- fetch_uniprot(unis, columns = c("xref_pdb"))
 
     # Make sure to only execute the code below if there are
     # PDB structures to be extracted and fetched.
-    if (!all(is.na(uniprot_info$database_pdb))) {
+    if (!all(is.na(uniprot_info$xref_pdb))) {
       pdb_id_mapping <- uniprot_info %>%
         tidyr::drop_na() %>%
-        dplyr::mutate(pdb_ids = strsplit(.data$database_pdb, split = ";")) %>%
+        dplyr::mutate(pdb_ids = strsplit(.data$xref_pdb, split = ";")) %>%
         tidyr::unnest(.data$pdb_ids)
 
       pdb_data <- fetch_pdb(pdb_ids = unique(pdb_id_mapping$pdb_ids))
@@ -125,7 +125,7 @@ find_peptide_in_structure <- function(peptide_data,
   # added by this function.
 
   if (ifelse(missing(pdb_data),
-    all(is.na(uniprot_info$database_pdb)),
+    all(is.na(uniprot_info$xref_pdb)),
     !any(unique(dplyr::pull(peptide_data_prep, {{ uniprot_id }})) %in%
       pdb_data$reference_database_accession)
   )) {

@@ -1,6 +1,6 @@
 #' Convert metal names to search pattern
 #'
-#' Converts a vector of metal names extracted from the \code{feature_metal_binding} column
+#' Converts a vector of metal names extracted from the \code{ft_metal} column
 #' obtained with \code{fetch_uniprot} to a pattern that can be used to search for corresponding
 #' ChEBI IDs. This is used as a helper function for other functions.
 #'
@@ -28,6 +28,12 @@ split_metal_name <- function(metal_names) {
         "Divalent",
         "Monovalent",
         "metal",
+        "ion",
+        "Fe",
+        "Cu",
+        "Zn",
+        "Copper",
+        "a",
         "cation",
         "Iron-sulfur",
         "low-spin",
@@ -63,7 +69,12 @@ split_metal_name <- function(metal_names) {
         "b595",
         "b558",
         "b562",
-        "b566"
+        "b566",
+        "Mo",
+        "bis",
+        "dinucleotide",
+        "guanine",
+        "Mo-bis"
       )]
       result <- append(result, x1)
     }
@@ -80,6 +91,7 @@ split_metal_name <- function(metal_names) {
         "4Fe-2O",
         "low-spin",
         "high-spin",
+        "Mo-bis",
         result
       )] # remove these names and also names that are already part of the result
       result <- append(result, x2_clean)
@@ -104,10 +116,16 @@ split_metal_name <- function(metal_names) {
         "2O",
         "low",
         "high",
-        "spin"
+        "spin",
+        "Mo",
+        "bis"
       )]
       result <- append(result, x3)
     }
-    paste(result, collapse = "|")
+    result_pattern <- paste(result, collapse = "|")
+    result_pattern <- str_replace(result_pattern, pattern = "\\)", replacement = "\\\\\\)")
+    result_pattern <- str_replace(result_pattern, pattern = "\\(", replacement = "\\\\\\(")
+    result_pattern <- str_replace(result_pattern, pattern = "\\+", replacement = "\\\\\\+")
+    result_pattern
   })
 }

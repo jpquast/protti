@@ -24,10 +24,11 @@ assign_missingness(
 \item{condition}{a character or numeric column in the \code{data} data frame that contains the
 conditions.}
 
-\item{grouping}{a character column in the \code{data} data frame that contains precursor or
+\item{grouping}{a character column in the \code{data} data frame that contains protein, precursor or
 peptide identifiers.}
 
-\item{intensity}{a numeric column in the \code{data} data frame that contains intensity values.}
+\item{intensity}{a numeric column in the \code{data} data frame that contains intensity values that
+relate to the \code{grouping} variable.}
 
 \item{ref_condition}{a character vector providing the condition that is used as a reference for
 missingness determination. Instead of providing one reference condition, "all" can be supplied,

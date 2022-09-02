@@ -105,11 +105,11 @@ uniprot_ids <- unique(ptsi_pgk$pg_protein_accessions)
 
 # Fetch UniProt information
 uniprot_information <- fetch_uniprot(uniprot_ids = uniprot_ids,
-                                     columns = c("sequence", "database(PDB)"))
+                                     columns = c("sequence", "xref_pdb"))
 
 # Add UniProt information and find peptide positions
 ptsi_pgk_annotated <- ptsi_pgk %>% 
-  left_join(uniprot_information, by = c("pg_protein_accessions" = "id")) %>% 
+  left_join(uniprot_information, by = c("pg_protein_accessions" = "accession")) %>% 
   find_peptide(protein_sequence = sequence, peptide_sequence = pep_stripped_sequence)
 ```
 
@@ -117,13 +117,13 @@ ptsi_pgk_annotated <- ptsi_pgk %>%
 
 You can access structural information with **protti** in order to see if there are protein structures available for your protein, how they were acquired and if they fit your quality requirements. 
 
-In the previous step we already retrieved information about the availability of protein structures for your protein of interest using the `fetch_uniprot()` function. The column `database_pdb` contains PDB identifiers if there is a structure available. Since the identifiers are pasted together into one string we need to separate them into individual identifiers to provide them to the `fetch_pdb()` function. This can be achieved through a combination of the `stringr` function `str_split()` and the `tidyr` function `unnest()`.
+In the previous step we already retrieved information about the availability of protein structures for your protein of interest using the `fetch_uniprot()` function. The column `xref_pdb` contains PDB identifiers if there is a structure available. Since the identifiers are pasted together into one string we need to separate them into individual identifiers to provide them to the `fetch_pdb()` function. This can be achieved through a combination of the `stringr` function `str_split()` and the `tidyr` function `unnest()`.
 
 ```{r extract_pdb_info, eval = test_protti, warning = FALSE}
 # Extract PDB IDs from UniProt information
 ptsi_pgk_pdb_ids <- ptsi_pgk_annotated %>% 
-  distinct(pg_protein_accessions, database_pdb) %>% 
-  mutate(pdb_id = str_split(database_pdb, pattern = ";")) %>% 
+  distinct(pg_protein_accessions, xref_pdb) %>% 
+  mutate(pdb_id = str_split(xref_pdb, pattern = ";")) %>% 
   unnest(pdb_id) %>% 
   filter(pdb_id != "")
 
