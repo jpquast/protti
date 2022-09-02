@@ -47,13 +47,13 @@ following columns:
 \item{\code{accession}: }{UniProt protein identifier.}
 \item{\code{most_specific_id}: }{ChEBI ID that is most specific for the position after combining information from all sources.
 Can be multiple IDs separated by "," if a position appears multiple times due to multiple fitting IDs.}
-\item{\code{most_specific_id_name}: }{The name of the ID in the \code{most_specfici_id} column. This information is based on
+\item{\code{most_specific_id_name}: }{The name of the ID in the \code{most_specific_id} column. This information is based on
 ChEBI.}
 \item{\code{ligand_identifier}: }{A ligand identifier that is unique per ligand per protein. It consists of the ligand ID and
 ligand name. The ligand ID counts the number of ligands of the same type per protein.}
 \item{\code{ligand_position}: }{The amino acid position of the residue interacting with the ligand.}
 \item{\code{binding_mode}: }{Contains information about the way the amino acid residue interacts with the ligand. If it is
-"covalent" then the residue is not contacting the metal directly but only the cofactor that binds the metal.}
+"covalent" then the residue is not in contact with the metal directly but only the cofactor that binds the metal.}
 \item{\code{metal_function}: }{Contains information about the function of the metal. E.g. "catalytic".}
 \item{\code{metal_id_part}: }{Contains a ChEBI ID that identifiers the metal part of the ligand. This is always the metal atom.}
 \item{\code{metal_id_part_name}: }{The name of the ID in the \code{metal_id_part} column. This information is based on
@@ -64,7 +64,7 @@ ChEBI.}
 and "go_term".}
 \item{\code{eco}: }{If there is evidence the annotation is based on it is annotated with an ECO ID, which is split by source.}
 \item{\code{eco_type}: }{The ECO identifier can fall into the "manual_assertion" group for manually curated annotations or the
-"automatic_assertion" group for automatically generated annotations. If there is not evidence it is annotated as
+"automatic_assertion" group for automatically generated annotations. If there is no evidence it is annotated as
 "automatic_assertion". The information is split by source.}
 \item{\code{evidence_source}: }{The original sources (e.g. literature, PDB) of evidence annotations split by source.}
 \item{\code{reaction}: }{Contains information about the chemical reaction catalysed by the protein that involves the metal.
@@ -75,13 +75,13 @@ Can contain the EC ID, Rhea ID, direction specific Rhea ID, direction of the rea
 \item{\code{database}: }{Contains information about the source of the ChEBI annotation associated with gene ontology terms.}
 }
 For each protein identifier the data frame contains information on the bound ligand as well as on its position if it is known.
-Since information about metal ligands can come from multiple sources additional information (e.g. evidence) is nested in the returned
-data frame. In order to unnest the relevant information the following steps have to be taken. First, it is
+Since information about metal ligands can come from multiple sources, additional information (e.g. evidence) is nested in the returned
+data frame. In order to unnest the relevant information the following steps have to be taken: It is
 possible that there are multiple IDs in the "most_specific_id" column. This means that one position cannot be uniquely
 attributed to one specific ligand even with the same ligand_identifier. Apart from the "most_specific_id" column, in
-which those instances are separated by ",", in other columns the relevant information is separated by "||". Now
-information should be split based on source (not the \code{source} column, that one can be removed from the data
-frame). Afterwards, there are certain columns that are associated with specific sources (e.g. \code{go_term} is associated
+which those instances are separated by ",", in other columns the relevant information is separated by "||". Then
+information should be split based on the source (not the \code{source} column, that one can be removed from the data
+frame). There are certain columns associated with specific sources (e.g. \code{go_term} is associated
 with the \code{"go_term"} source). Values of columns not relevant for a certain source should be replaced with \code{NA}.
 Since a \code{most_specific_id} can have multiple \code{chebi_id}s associated with it we need to unnest the \code{chebi_id}
 column and associated columns in which information is separated by "|". Afterwards evidence and additional information can be

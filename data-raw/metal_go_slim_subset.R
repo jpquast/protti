@@ -82,7 +82,7 @@ metal_chebi_ids_wo_formula <- setNames(
     dplyr::distinct(id) %>% 
     dplyr::pull())
 
-# This vector contains additional chebi IDs that are metal related but do not contain a formula. 
+# This vector contains additional ChEBI IDs that are metal related but do not contain a formula. 
 # This should be updated if promted bellow (around line 290)
 more_metal_chebi_ids_wo_formula <- c("63063" = "22977", # cadmium cation
                                        "61345" = "18248", # chrysobactin
@@ -160,9 +160,9 @@ go_network_connections <- go_network %>%
   distinct(slims_from_id, child_id)
 
 # Custom function to propagate chebi_ids 
-# Caution, this function cannot deal with two IDs converging on one unannotated note. It will take over 
+# Caution: this function cannot deal with two IDs converging on one unannotated note. It will take over 
 # the ID of the parent note with the least children.
-# One entry not correct is: GO:0015277 has only sodium annotation even though there is also potassium
+# The only incorrect entry is: GO:0015277 has only sodium annotation even though there is also potassium
 
 propagate_attribute <- function(g, attribute_name = NULL){
   ids_not_na <- V(g)[!is.na(eval(bquote(`$`(V(g), .(as.name(attribute_name))))))]

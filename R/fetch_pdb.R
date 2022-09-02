@@ -459,7 +459,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     )) %>%
     dplyr::ungroup()
 
-  # Deal with cases in which uniprot information of some entries is available but not for others
+  # Deal with cases in which UniProt information of some entries is available but not for others
   polymer_entities_no_uniprots <- polymer_entities %>%
     dplyr::rowwise() %>%
     dplyr::mutate(no_uniprots = is.null(unlist(.data$uniprots))) %>%

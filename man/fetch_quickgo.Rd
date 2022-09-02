@@ -24,7 +24,7 @@ should be retrieved. This argument should only be provided if annotations are re
 
 \item{taxon_id_annotations}{an optional character value that specifies the NCBI taxonomy identifier (TaxId)
 for an organism for which GO annotations should be retrieved.
-should be retrieved. This argument should only be provided if annotations are retrieved.}
+This argument should only be provided if annotations are retrieved.}
 
 \item{ontology_annotations}{an optional character value that specifies the ontology that should be retrieved.
 This can either have the values "all", "molecular_function", "biological_process" or
@@ -48,7 +48,7 @@ Fetches gene ontology (GO) annotations, terms or slims from the QuickGO EBI data
 Annotations can be retrieved for specific UniProt IDs or NCBI taxonomy identifiers. When
 terms are retrieved, a complete list of all GO terms is returned. For the generation of
 a slim dataset you can provide GO IDs that should be considered. A slim dataset is a subset
-go dataset that considers all child terms of the supplied IDs.
+GO dataset that considers all child terms of the supplied IDs.
 }
 \examples{
 \donttest{

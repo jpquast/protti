@@ -55,7 +55,7 @@ fetch_uniprot <-
     }
     . <- NULL
     if(show_progress){
-      message("Please be aware that some column names have changed due to UniProt updating its API! This might cause Errors in your code. You can fix it be replacing the old column names with new one.")
+      message("Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.")
     }
     if (batchsize > 500){
       stop("Please provide a batchsize that is smaller or equal to 500!")

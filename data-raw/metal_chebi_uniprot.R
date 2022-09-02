@@ -34,7 +34,7 @@ extracted_chebi_uniprot <- input_chebi_uniprot %>%
 
 chebi <- protti::fetch_chebi(stars = c(2, 3))
 
-# There are ChEBI IDs in UniProt without a formula but that are metal related
+# There are ChEBI IDs in UniProt without a formula that are still metal related
 # If there is a new version of this reference created, check if these are still valid or new have been added.
 # Run the code below to check for them:
 # without_formula <- chebi %>%
