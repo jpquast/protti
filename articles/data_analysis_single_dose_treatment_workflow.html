@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -93,7 +93,7 @@
       <h1 data-toc-skip>Single Dose Treatment Data Analysis Workflow</h1>
                         <h4 data-toc-skip class="author">Dina Schuster</h4>
             
-            <h4 data-toc-skip class="date">2022-07-01</h4>
+            <h4 data-toc-skip class="date">2022-09-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/HEAD/vignettes/data_analysis_single_dose_treatment_workflow.Rmd" class="external-link"><code>vignettes/data_analysis_single_dose_treatment_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_single_dose_treatment_workflow.Rmd</code></div>
@@ -275,7 +275,7 @@
 <h4 id="fetching-database-information-and-assigning-peptide-types">Fetching database information and assigning peptide types<a class="anchor" aria-label="anchor" href="#fetching-database-information-and-assigning-peptide-types"></a>
 </h4>
 <p>In order to obtain more information about our identified proteins we are going to use the function <code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code> to download information from UniProt directly.</p>
-<p><code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code> uses a vector of UniProt IDs as its input. We produce this vector by using the base R function <code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique()</a></code> which will extract all unique elements in the selected protein ID column. In this case we want to download the full protein name, gene IDs, GO terms associated with molecular function, StringDB IDs, information on known interacting proteins, location of the active site, location of binding sites, PDB entries, protein length and protein sequence. There are more options for columns to add (for more information on possible columns to add click <a href="https://www.uniprot.org/help/uniprotkb_column_names" class="external-link">here</a>).</p>
+<p><code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code> uses a vector of UniProt IDs as its input. We produce this vector by using the base R function <code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique()</a></code> which will extract all unique elements in the selected protein ID column. In this case we want to download the full protein name, gene IDs, GO terms associated with molecular function, StringDB IDs, information on known interacting proteins, location of the active site, location of binding sites, PDB entries, protein length and protein sequence. There are more options for columns to add (for more information on possible columns to add click <a href="https://www.uniprot.org/help/return_fields" class="external-link">here</a>).</p>
 <p><code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code> returns a new data frame. In order to be able to merge this with our original data frame we have to rename the ID column to match the name of the protein ID column of our original data frame. To do this we use <code>dplyr</code>’s <code><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename()</a></code> function.</p>
 <p>To merge the two data frames we use the <code>dplyr</code> function <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join()</a></code>. We match the two data frames by the column “pg_protein_accessions”. By using <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join()</a></code> we retain all rows from our original data frame while adding the columns from the data fame generated with <code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code>.</p>
 <p><em>Note: you can also directly join the UniProt data frame with your data without the need to rename its <code>id</code> column. You can specify in the <code>by</code> argument in <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join()</a></code> that two columns are differently named.</em></p>
@@ -287,19 +287,19 @@
 <span>  <span class="fu"><a href="../reference/fetch_uniprot.html">fetch_uniprot</a></span><span class="op">(</span></span>
 <span>    uniprot_ids <span class="op">=</span> <span class="va">uniprot_ids</span>,</span>
 <span>    columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>      <span class="st">"protein names"</span>,</span>
-<span>      <span class="st">"genes"</span>,</span>
-<span>      <span class="st">"go(molecular function)"</span>,</span>
-<span>      <span class="st">"database(String)"</span>,</span>
-<span>      <span class="st">"interactor"</span>,</span>
-<span>      <span class="st">"feature(ACTIVE SITE)"</span>,</span>
-<span>      <span class="st">"feature(BINDING SITE)"</span>,</span>
-<span>      <span class="st">"database(PDB)"</span>,</span>
+<span>      <span class="st">"protein_name"</span>,</span>
+<span>      <span class="st">"gene_names"</span>,</span>
+<span>      <span class="st">"go_f"</span>,</span>
+<span>      <span class="st">"xref_string"</span>,</span>
+<span>      <span class="st">"cc_interaction"</span>,</span>
+<span>      <span class="st">"ft_act_site"</span>,</span>
+<span>      <span class="st">"ft_binding"</span>,</span>
+<span>      <span class="st">"xref_pdb"</span>,</span>
 <span>      <span class="st">"length"</span>,</span>
 <span>      <span class="st">"sequence"</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>pg_protein_accessions <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>pg_protein_accessions <span class="op">=</span> <span class="va">accession</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">data_filtered_uniprot</span> <span class="op">&lt;-</span> <span class="va">data_filtered_proteotypic</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">uniprot</span>,</span>
@@ -354,8 +354,8 @@
 <span>    completeness_MAR <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>    completeness_MNAR <span class="op">=</span> <span class="fl">0.25</span>,</span>
 <span>    retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span>, </span>
-<span>                       <span class="va">go_molecular_function</span>, </span>
-<span>                       <span class="va">database_string</span>, </span>
+<span>                       <span class="va">go_f</span>, </span>
+<span>                       <span class="va">xref_string</span>, </span>
 <span>                       <span class="va">start</span>, </span>
 <span>                       <span class="va">end</span>, </span>
 <span>                       <span class="va">length</span>, </span>
@@ -370,8 +370,8 @@
 <span>    comparison <span class="op">=</span> <span class="va">comparison</span>,</span>
 <span>    method <span class="op">=</span> <span class="st">"moderated_t-test"</span>,</span>
 <span>    retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span>, </span>
-<span>                       <span class="va">go_molecular_function</span>, </span>
-<span>                       <span class="va">database_string</span>, </span>
+<span>                       <span class="va">go_f</span>, </span>
+<span>                       <span class="va">xref_string</span>, </span>
 <span>                       <span class="va">start</span>, </span>
 <span>                       <span class="va">end</span>, </span>
 <span>                       <span class="va">length</span>, </span>
@@ -505,7 +505,7 @@
 <span>  data <span class="op">=</span> <span class="va">diff_abundance_significant</span>,</span>
 <span>  protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span>
 <span>  is_significant <span class="op">=</span> <span class="va">is_significant</span>,</span>
-<span>  go_annotations_uniprot <span class="op">=</span> <span class="va">go_molecular_function</span></span>
+<span>  go_annotations_uniprot <span class="op">=</span> <span class="va">go_f</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">### Network analysis</span></span>
@@ -515,7 +515,7 @@
 <span></span>
 <span><span class="fu"><a href="../reference/analyse_functional_network.html">analyse_functional_network</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">network_input</span>,</span>
 <span>                 protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span>
-<span>                 string_id <span class="op">=</span> <span class="va">database_string</span>,</span>
+<span>                 string_id <span class="op">=</span> <span class="va">xref_string</span>,</span>
 <span>                 binds_treatment <span class="op">=</span> <span class="va">binds_treatment</span>,</span>
 <span>                 organism_id <span class="op">=</span> <span class="fl">9606</span><span class="op">)</span></span>
 <span></span>
@@ -565,7 +565,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

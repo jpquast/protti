@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -93,7 +93,7 @@
       <h1 data-toc-skip>Dose-Response Data Analysis Workflow</h1>
                         <h4 data-toc-skip class="author">Jan-Philipp Quast</h4>
             
-            <h4 data-toc-skip class="date">2022-07-01</h4>
+            <h4 data-toc-skip class="date">2022-09-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/HEAD/vignettes/data_analysis_dose_response_workflow.Rmd" class="external-link"><code>vignettes/data_analysis_dose_response_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_dose_response_workflow.Rmd</code></div>
@@ -465,17 +465,18 @@ text-align: justify}
 <div class="section level3">
 <h3 id="annotation-of-data">Annotation of data<a class="anchor" aria-label="anchor" href="#annotation-of-data"></a>
 </h3>
-<p><strong>protti</strong> has several functions for fetching database information. One commonly used database in the proteomics community is UniProt. By providing the <code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code> function with a character vector of your protein IDs, you can fetch additional information about the proteins. These include names, IDs from other databases, gene ontology annotations, information about the active metabolite and metal binding sites, protein length and sequence. You can freely select which information you are most interested in by providing it to the <code>columns</code> arguments of the <code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code> function based on the information they <a href="https://www.uniprot.org/help/uniprotkb_column_names" class="external-link">provide</a> for download.</p>
+<p><strong>protti</strong> has several functions for fetching database information. One commonly used database in the proteomics community is UniProt. By providing the <code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code> function with a character vector of your protein IDs, you can fetch additional information about the proteins. These include names, IDs from other databases, gene ontology annotations, information about the active metabolite and metal binding sites, protein length and sequence. You can freely select which information you are most interested in by providing it to the <code>columns</code> arguments of the <code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code> function based on the information they <a href="https://www.uniprot.org/help/return_fields" class="external-link">provide</a> for download.</p>
 <p>Furthermore, we will add a <code>passed_filter</code> column to the data that contains TRUE or FALSE information based on if a precursor passed the filtering criterion defined in the <code><a href="../reference/fit_drc_4p.html">fit_drc_4p()</a></code> function. This is the case if the peptide was assigned a rank.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># fetching of UniProt information</span></span>
 <span><span class="va">unis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">pg_protein_accessions</span><span class="op">)</span></span>
 <span><span class="va">uniprot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_uniprot.html">fetch_uniprot</a></span><span class="op">(</span><span class="va">unis</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.</span></span>
 <span></span>
 <span><span class="co"># annotation of fit data based on information from UniProt</span></span>
 <span><span class="va">fit_annotated</span> <span class="op">&lt;-</span> <span class="va">fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="co"># columns containing proteins IDs are named differently</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">uniprot</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pg_protein_accessions"</span> <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">uniprot</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pg_protein_accessions"</span> <span class="op">=</span> <span class="st">"accession"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="co"># mark peptides that pass the filtering</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>passed_filter <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">rank</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="co"># create new column with prior knowledge about binding partners of treatment</span></span>
@@ -492,7 +493,7 @@ text-align: justify}
 <span><span class="fu"><a href="../reference/calculate_go_enrichment.html">calculate_go_enrichment</a></span><span class="op">(</span><span class="va">fit_annotated</span>,</span>
 <span>              protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span>
 <span>              is_significant <span class="op">=</span> <span class="va">passed_filter</span>,</span>
-<span>              go_annotations_uniprot <span class="op">=</span> <span class="va">go_molecular_function</span><span class="op">)</span> <span class="co"># column obtained from UniProt</span></span>
+<span>              go_annotations_uniprot <span class="op">=</span> <span class="va">go_f</span><span class="op">)</span> <span class="co"># column obtained from UniProt</span></span>
 <span></span>
 <span><span class="co">### KEGG pathway enrichment</span></span>
 <span></span>
@@ -525,7 +526,7 @@ text-align: justify}
 <span><span class="va">fit_annotated</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">passed_filter</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># only analyse hits that were significant</span></span>
 <span>  <span class="fu"><a href="../reference/analyse_functional_network.html">analyse_functional_network</a></span><span class="op">(</span>protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span>
-<span>                   string_id <span class="op">=</span> <span class="va">database_string</span>, <span class="co"># column from UniProt containing STRING IDs</span></span>
+<span>                   string_id <span class="op">=</span> <span class="va">xref_string</span>, <span class="co"># column from UniProt containing STRING IDs</span></span>
 <span>                   organism_id <span class="op">=</span> <span class="fl">9606</span>, </span>
 <span>                   <span class="co"># tax ID can be found in function documentation or STRING database</span></span>
 <span>                   binds_treatment <span class="op">=</span> <span class="va">binds_treatment</span>,</span>
@@ -551,7 +552,7 @@ text-align: justify}
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

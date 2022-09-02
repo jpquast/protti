@@ -22,7 +22,7 @@ by the function by providing ontology_type and organism_id."><!-- mathjax --><sc
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -186,15 +186,15 @@ depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individu
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     intersect, setdiff, setequal, union</span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create example data</span></span></span>
 <span class="r-in"><span><span class="co"># Contains artificial de-enrichment for ribosomes.</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="fetch_uniprot_proteome.html">fetch_uniprot_proteome</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  organism_id <span class="op">=</span> <span class="fl">83333</span>,</span></span>
 <span class="r-in"><span>  columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="st">"id"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"go(molecular function)"</span></span></span>
+<span class="r-in"><span>    <span class="st">"accession"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"go_f"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
@@ -203,18 +203,19 @@ depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individu
 <span class="r-in"><span>  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>      <span class="va">go_molecular_function</span>,</span></span>
+<span class="r-in"><span>      <span class="va">go_f</span>,</span></span>
 <span class="r-in"><span>      pattern <span class="op">=</span> <span class="st">"ribosome"</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span>,</span></span>
 <span class="r-in"><span>    <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>    <span class="va">significant</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot gene ontology enrichment</span></span></span>
 <span class="r-in"><span><span class="fu">calculate_go_enrichment</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">data</span>,</span></span>
-<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">id</span>,</span></span>
-<span class="r-in"><span>  go_annotations_uniprot <span class="op">=</span> <span class="va">go_molecular_function</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">accession</span>,</span></span>
+<span class="r-in"><span>  go_annotations_uniprot <span class="op">=</span> <span class="va">go_f</span>,</span></span>
 <span class="r-in"><span>  is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
 <span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  plot_cutoff <span class="op">=</span> <span class="st">"pval 0.01"</span></span></span>
@@ -224,29 +225,29 @@ depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individu
 <span class="r-in"><span><span class="co"># Calculate gene ontology enrichment</span></span></span>
 <span class="r-in"><span><span class="va">go_enrichment</span> <span class="op">&lt;-</span> <span class="fu">calculate_go_enrichment</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">data</span>,</span></span>
-<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">id</span>,</span></span>
-<span class="r-in"><span>  go_annotations_uniprot <span class="op">=</span> <span class="va">go_molecular_function</span>,</span></span>
+<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">accession</span>,</span></span>
+<span class="r-in"><span>  go_annotations_uniprot <span class="op">=</span> <span class="va">go_f</span>,</span></span>
 <span class="r-in"><span>  is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
 <span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">go_enrichment</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 10</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    term                 go_id    pval adj_pval n_detected_prot… n_detected_prot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> <span style="color: #949494;">"</span>diguanylate cyclas… [GO:… 6.34<span style="color: #949494;">e</span><span style="color: #BB0000;">-9</span>  1.32<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span>             <span style="text-decoration: underline;">3</span>261               13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> <span style="color: #949494;">"</span>structural constit… [GO:… 5.72<span style="color: #949494;">e</span><span style="color: #BB0000;">-7</span>  5.94<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>             <span style="text-decoration: underline;">3</span>261               58</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> <span style="color: #949494;">"</span>rRNA binding <span style="color: #949494;">"</span>      [GO:… 2.09<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>  1.45<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>             <span style="text-decoration: underline;">3</span>261               44</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> <span style="color: #949494;">"</span>N-acetylmuramoyl-L… [GO:… 6.89<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>  3.57<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>             <span style="text-decoration: underline;">3</span>261                5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> <span style="color: #949494;">"</span>carboxypeptidase a… [GO:… 8.59<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>  3.57<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>             <span style="text-decoration: underline;">3</span>261                9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> <span style="color: #949494;">"</span>ribosome binding <span style="color: #949494;">"</span>  [GO:… 1.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span>  3.63<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>             <span style="text-decoration: underline;">3</span>261               28</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> <span style="color: #949494;">"</span>cytochrome bo3 ubi… [GO:… 3.33<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span>  7.74<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>             <span style="text-decoration: underline;">3</span>261                6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> <span style="color: #949494;">"</span>transmembrane sign… [GO:… 3.33<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span>  7.74<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>             <span style="text-decoration: underline;">3</span>261                6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> <span style="color: #949494;">"</span>kinase activity <span style="color: #949494;">"</span>   [GO:… 3.36<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span>  7.74<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>             <span style="text-decoration: underline;">3</span>261               56</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> <span style="color: #949494;">"</span>tRNA binding <span style="color: #949494;">"</span>      [GO:… 4.51<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span>  8.66<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>             <span style="text-decoration: underline;">3</span>261               47</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 4 more variables: n_significant_proteins &lt;int&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_significant_proteins_in_process &lt;int&gt;, n_proteins_expected &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   direction &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    term  go_id     pval adj_pval n_det…¹ n_det…² n_sig…³ n_sig…⁴ n_pro…⁵ direc…⁶</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> <span style="color: #949494;">"</span>ide… [GO:… 1.75<span style="color: #949494;">e</span><span style="color: #BB0000;">-27</span> 3.66<span style="color: #949494;">e</span><span style="color: #BB0000;">-24</span>    <span style="text-decoration: underline;">3</span>262     423     928     235  120.   Up     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> <span style="color: #949494;">"</span>mag… [GO:… 2.57<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span> 2.68<span style="color: #949494;">e</span><span style="color: #BB0000;">-13</span>    <span style="text-decoration: underline;">3</span>262     192     928     111   54.6  Up     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> <span style="color: #949494;">"</span>ATP… [GO:… 2.39<span style="color: #949494;">e</span><span style="color: #BB0000;">-11</span> 1.67<span style="color: #949494;">e</span><span style="color: #BB0000;">- 8</span>    <span style="text-decoration: underline;">3</span>262     448     928     199  127.   Up     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> <span style="color: #949494;">"</span>tra… [GO:… 1.50<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span> 7.82<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>    <span style="text-decoration: underline;">3</span>262      63     928       0   17.9  Down   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> <span style="color: #949494;">"</span>str… [GO:… 6.64<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span> 2.77<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>    <span style="text-decoration: underline;">3</span>262      58     928       0   16.5  Down   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> <span style="color: #949494;">"</span>NAD… [GO:… 6.41<span style="color: #949494;">e</span><span style="color: #BB0000;">- 8</span> 2.23<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>    <span style="text-decoration: underline;">3</span>262      28     928      22    7.97 Up     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> <span style="color: #949494;">"</span>DNA… [GO:… 2.52<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span> 7.51<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>    <span style="text-decoration: underline;">3</span>262     183     928      22   52.1  Down   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> <span style="color: #949494;">"</span>pro… [GO:… 1.04<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span> 2.71<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>    <span style="text-decoration: underline;">3</span>262      11     928      11    3.13 Up     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> <span style="color: #949494;">"</span>gua… [GO:… 1.25<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span> 2.90<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>    <span style="text-decoration: underline;">3</span>262      33     928      23    9.39 Up     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> <span style="color: #949494;">"</span>pho… [GO:… 4.84<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span> 1.01<span style="color: #949494;">e</span><span style="color: #BB0000;">- 3</span>    <span style="text-decoration: underline;">3</span>262      15     928      13    4.27 Up     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with abbreviated variable names ¹​n_detected_proteins,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ²​n_detected_proteins_in_process, ³​n_significant_proteins,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ⁴​n_significant_proteins_in_process, ⁵​n_proteins_expected, ⁶​direction</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
@@ -262,7 +263,7 @@ depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individu
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

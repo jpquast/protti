@@ -19,7 +19,7 @@ structures, use the function fetch_pdb(). The information retrieved is based on 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -158,22 +158,23 @@ describes the structure.</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pdb_structure</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 18</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    label_id type_symbol label_atom_id label_comp_id label_asym_id entity_id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>        1 N           N             ALA           A                     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>        2 C           CA            ALA           A                     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>        3 C           C             ALA           A                     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>        4 O           O             ALA           A                     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>        5 C           CB            ALA           A                     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>        6 H           HA            ALA           A                     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>        7 H           HB1           ALA           A                     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>        8 H           HB2           ALA           A                     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>        9 H           HB3           ALA           A                     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       10 N           N             LYS           A                     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 12 more variables: label_seq_id &lt;dbl&gt;, x &lt;dbl&gt;, y &lt;dbl&gt;, z &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   site_occupancy &lt;dbl&gt;, b_iso_or_equivalent &lt;dbl&gt;, formal_charge &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   auth_seq_id &lt;chr&gt;, auth_comp_id &lt;chr&gt;, auth_asym_id &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   pdb_model_number &lt;dbl&gt;, pdb_id &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    label_id type_sym…¹ label…² label…³ label…⁴ entit…⁵ label…⁶     x     y     z</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>        1 N          N       ALA     A             1       1 -<span style="color: #BB0000;">15.8</span> -<span style="color: #BB0000;">31.8</span> -<span style="color: #BB0000;">39.7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>        2 C          CA      ALA     A             1       1 -<span style="color: #BB0000;">15.3</span> -<span style="color: #BB0000;">30.9</span> -<span style="color: #BB0000;">38.7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>        3 C          C       ALA     A             1       1 -<span style="color: #BB0000;">14.3</span> -<span style="color: #BB0000;">31.5</span> -<span style="color: #BB0000;">37.8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>        4 O          O       ALA     A             1       1 -<span style="color: #BB0000;">14.6</span> -<span style="color: #BB0000;">32.3</span> -<span style="color: #BB0000;">36.9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>        5 C          CB      ALA     A             1       1 -<span style="color: #BB0000;">16.5</span> -<span style="color: #BB0000;">30.4</span> -<span style="color: #BB0000;">37.8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>        6 H          HA      ALA     A             1       1 -<span style="color: #BB0000;">15.0</span> -<span style="color: #BB0000;">30.1</span> -<span style="color: #BB0000;">39.1</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>        7 H          HB1     ALA     A             1       1 -<span style="color: #BB0000;">16.2</span> -<span style="color: #BB0000;">29.7</span> -<span style="color: #BB0000;">37.2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>        8 H          HB2     ALA     A             1       1 -<span style="color: #BB0000;">17.2</span> -<span style="color: #BB0000;">30.1</span> -<span style="color: #BB0000;">38.4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>        9 H          HB3     ALA     A             1       1 -<span style="color: #BB0000;">16.8</span> -<span style="color: #BB0000;">31.2</span> -<span style="color: #BB0000;">37.3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       10 N          N       LYS     A             1       2 -<span style="color: #BB0000;">13.0</span> -<span style="color: #BB0000;">31.2</span> -<span style="color: #BB0000;">38.1</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 8 more variables: site_occupancy &lt;dbl&gt;, b_iso_or_equivalent &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   formal_charge &lt;chr&gt;, auth_seq_id &lt;chr&gt;, auth_comp_id &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   auth_asym_id &lt;chr&gt;, pdb_model_number &lt;dbl&gt;, pdb_id &lt;chr&gt;, and abbreviated</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   variable names ¹​type_symbol, ²​label_atom_id, ³​label_comp_id,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ⁴​label_asym_id, ⁵​entity_id, ⁶​label_seq_id</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
@@ -189,7 +190,7 @@ describes the structure.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -124,6 +124,9 @@
     <loc>/reference/fetch_pdb_structure.html</loc>
   </url>
   <url>
+    <loc>/reference/fetch_quickgo.html</loc>
+  </url>
+  <url>
     <loc>/reference/fetch_uniprot.html</loc>
   </url>
   <url>
@@ -164,6 +167,15 @@
   </url>
   <url>
     <loc>/reference/median_normalisation.html</loc>
+  </url>
+  <url>
+    <loc>/reference/metal_chebi_uniprot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/metal_go_slim_subset.html</loc>
+  </url>
+  <url>
+    <loc>/reference/metal_list.html</loc>
   </url>
   <url>
     <loc>/reference/network_analysis.html</loc>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -70,7 +70,35 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.3.1" id="protti-031">protti 0.3.1<a class="anchor" aria-label="anchor" href="#protti-031"></a></h2>
+<h2 class="page-header" data-toc-text="0.4.0" id="protti-040">protti 0.4.0<a class="anchor" aria-label="anchor" href="#protti-040"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-4-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0"></a></h3>
+<ul><li>Reintroduced the functionalities relying on the <code>iq</code> package to <code>protti</code>. <code><a href="../reference/calculate_protein_abundance.html">calculate_protein_abundance()</a></code> now has the method <code>"iq"</code> again as an option.</li>
+<li>
+<code><a href="../reference/fetch_pdb.html">fetch_pdb()</a></code> now also retrieves information on engineered mutations, non-standard monomers, secondary structure and binding interfaces of ligands.</li>
+<li>
+<code><a href="../reference/extract_metal_binders.html">extract_metal_binders()</a></code> was completely redone. This was in response to the UniProt update and rework of the binding column provided by UniProt. This function extracts and concatenates all metal binding information available for a protein based on the UniProt and QuickGO databases. Therefore, this function now also takes gene ontology (GO) information from QuickGO as input. Instead of being able to provide column names to specific argument of the function you now only provide the data frames. This makes the function less flexible but reduces the amount of arguments required to achieve the same result. You just need to make sure that the input data frames contain columns with the correct names as stated by the function documentation.</li>
+<li>
+<code><a href="../reference/fetch_quickgo.html">fetch_quickgo()</a></code> was added. It fetches gene ontology (GO) information from the QuickGO EBI database. The retrieved information can either be GO annotations for provided UniProt IDs or Taxon identifiers, a list of all GO terms or a “slims” subset of GO IDs that can be generated based on provided GO IDs.</li>
+<li>
+<code><a href="../reference/fetch_chebi.html">fetch_chebi()</a></code> now has the <code>stars</code> argument with which one can select the evidence levels for which entries should be retrieved.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-4-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-4-0"></a></h3>
+<ul><li>Fixed the <code>auth_seq_id</code> column that is part of the output of the <code><a href="../reference/fetch_pdb.html">fetch_pdb()</a></code> function. Previously, the column could contain duplicated or missing positions. This was formerly identified by comparing the number of positions within the <code>auth_seq_id</code> column and the number of residues in the deposited <code>pdb_sequence</code>. Positions are now correct. The original output can be found in the <code>auth_seq_id_original</code> column.</li>
+<li>In the <code><a href="../reference/calculate_diff_abundance.html">calculate_diff_abundance()</a></code> function the intensity column can now be retained with the <code>retain_columns</code> argument. This was previously not possible until now since this column was used to reduce the annotation dataset. However, after reassessing the benefit of this filter step, it seemed not necessary.</li>
+<li>We assumed that users would only retain columns in <code><a href="../reference/calculate_diff_abundance.html">calculate_diff_abundance()</a></code> that would not duplicate the data. However, this seems not to be the case, which can lead to wrong p-value adjustment. p-value adjustment was originally performed after the columns indicated in <code>retain_columns</code> are joined back to the data. Now p-value adjustment is performed prior to retaining columns as well as only on the subset of data that actually contains p-values. Previously we (by default <code>filter_NA_missingness = TRUE</code>) only filtered out <code>NA</code>s in the <code>missingness</code> column prior to p-value adjustment. However, it is possible that <code>missingness</code> is not <code>NA</code> but the p-value is <code>NA</code>. Now for all methods except for <code>"proDA"</code> we remove <code>NA</code> p-values before p-value adjustment. For <code>"proDA"</code> data is handled as previously since p-values are never <code>NA</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="additional-changes-0-4-0">Additional changes<a class="anchor" aria-label="anchor" href="#additional-changes-0-4-0"></a></h3>
+<ul><li>The default batchsize of <code><a href="../reference/fetch_pdb.html">fetch_pdb()</a></code> was changed to 100 (from 200). This was done since more information is retrieved now, which slows to function down and is slightly improved when batch sizes are smaller.</li>
+<li>
+<code><a href="../reference/try_query.html">try_query()</a></code> now only retries to retrieve information once if the returned message was “Timeout was reached”. In addition, a <code>timeout</code> and <code>accept</code> argument have been added.</li>
+<li>The UniProt database has changed its API, therefore column names have changed as well as the format of data. We adjusted the <code><a href="../reference/fetch_uniprot.html">fetch_uniprot()</a></code> and <code><a href="../reference/fetch_uniprot_proteome.html">fetch_uniprot_proteome()</a></code> function accordingly. Please be aware that some columns names might have changed and your code might throw error messages if you did not adjust it accordingly.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.3.1" id="protti-031">protti 0.3.1<small>2022-07-01</small><a class="anchor" aria-label="anchor" href="#protti-031"></a></h2>
 <div class="section level3">
 <h3 id="bug-fixes-0-3-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-1"></a></h3>
 <ul><li>Corrected the “Protein Structure Analysis Workflow” vignette. The example for <code><a href="../reference/map_peptides_on_structure.html">map_peptides_on_structure()</a></code> was still using “residue” as its input. We now use <code><a href="../reference/find_peptide_in_structure.html">find_peptide_in_structure()</a></code> to generate the correct input column.</li>
@@ -239,7 +267,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

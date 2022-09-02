@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -77,11 +77,9 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fetch_uniprot</span><span class="op">(</span></span>
 <span>  <span class="va">uniprot_ids</span>,</span>
-<span>  columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"protein names"</span>, <span class="st">"length"</span>, <span class="st">"sequence"</span>, <span class="st">"genes"</span>, <span class="st">"database(GeneID)"</span>,</span>
-<span>    <span class="st">"database(String)"</span>, <span class="st">"go(molecular function)"</span>, <span class="st">"go(biological process)"</span>,</span>
-<span>    <span class="st">"go(cellular compartment)"</span>, <span class="st">"interactor"</span>, <span class="st">"feature(ACTIVE SITE)"</span>,</span>
-<span>    <span class="st">"feature(BINDING SITE)"</span>, <span class="st">"feature(METAL BINDING)"</span>, <span class="st">"chebi(Cofactor)"</span>,</span>
-<span>    <span class="st">"chebi(Catalytic activity)"</span>, <span class="st">"database(PDB)"</span><span class="op">)</span>,</span>
+<span>  columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"protein_name"</span>, <span class="st">"length"</span>, <span class="st">"sequence"</span>, <span class="st">"gene_names"</span>, <span class="st">"xref_geneid"</span>,</span>
+<span>    <span class="st">"xref_string"</span>, <span class="st">"go_f"</span>, <span class="st">"go_p"</span>, <span class="st">"go_c"</span>, <span class="st">"cc_interaction"</span>, <span class="st">"ft_act_site"</span>, <span class="st">"ft_binding"</span>,</span>
+<span>    <span class="st">"cc_cofactor"</span>, <span class="st">"cc_catalytic_activity"</span>, <span class="st">"xref_pdb"</span><span class="op">)</span>,</span>
 <span>  batchsize <span class="op">=</span> <span class="fl">200</span>,</span>
 <span>  show_progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -95,12 +93,13 @@
 
 <dt>columns</dt>
 <dd><p>a character vector of metadata columns that should be imported from UniProt (all
-possible columns can be found <a href="https://www.uniprot.org/help/uniprotkb_column_names" class="external-link">here</a>.)</p></dd>
+possible columns can be found <a href="https://www.uniprot.org/help/return_fields" class="external-link">here</a>. For
+cross-referenced database provide the database name with the prefix "xref_", e.g. <code>"xref_pdb"</code>)</p></dd>
 
 
 <dt>batchsize</dt>
 <dd><p>a numeric value that specifies the number of proteins processed in a single
-single query. Default is 200.</p></dd>
+single query. Default and max value is 200.</p></dd>
 
 
 <dt>show_progress</dt>
@@ -121,17 +120,17 @@ portion of the ID is fetched and the invalid input ID is saved in a column calle
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu">fetch_uniprot</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P36578"</span>, <span class="st">"O43324"</span>, <span class="st">"Q00796"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 17</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   id     protein_names    length sequence genes database_gene_id database_string</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Q00796 Sorbitol dehydr…    357 MAAAAKP… SORD  6652;            9606.ENSP00000…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> P36578 60S ribosomal p…    427 MACARPL… RPL4… 6124;            9606.ENSP00000…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> O43324 Eukaryotic tran…    174 MAAAAEL… EEF1… 9521;            9606.ENSP00000…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 10 more variables: go_molecular_function &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   go_biological_process &lt;chr&gt;, go_cellular_compartment &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   interactor &lt;chr&gt;, feature_active_site &lt;lgl&gt;, feature_binding_site &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   feature_metal_binding &lt;chr&gt;, chebi_cofactor &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   chebi_catalytic_activity &lt;chr&gt;, database_pdb &lt;chr&gt;</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 16</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   accession protein_n…¹ length seque…² gene_…³ xref_…⁴ xref_…⁵ go_f  go_p  go_c </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> O43324    Eukaryotic…    174 MAAAAE… EEF1E1… 9521;   9606.E… <span style="color: #BB0000;">NA</span>    cell… amin…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> P36578    60S riboso…    427 MACARP… RPL4 R… 6124;   9606.E… RNA … cyto… cyto…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Q00796    Sorbitol d…    357 MAAAAK… SORD    6652;   9606.E… (R,R… flag… cyto…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 6 more variables: cc_interaction &lt;chr&gt;, ft_act_site &lt;lgl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ft_binding &lt;chr&gt;, cc_cofactor &lt;chr&gt;, cc_catalytic_activity &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   xref_pdb &lt;chr&gt;, and abbreviated variable names ¹​protein_name, ²​sequence,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ³​gene_names, ⁴​xref_geneid, ⁵​xref_string</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
@@ -147,7 +146,7 @@ portion of the ID is fetched and the invalid input ID is saved in a column calle
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

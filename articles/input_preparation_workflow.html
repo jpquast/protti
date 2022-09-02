@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -93,7 +93,7 @@
       <h1 data-toc-skip>Input Preparation Workflow</h1>
                         <h4 data-toc-skip class="author">Dina Schuster</h4>
             
-            <h4 data-toc-skip class="date">2022-07-01</h4>
+            <h4 data-toc-skip class="date">2022-09-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/HEAD/vignettes/input_preparation_workflow.Rmd" class="external-link"><code>vignettes/input_preparation_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>input_preparation_workflow.Rmd</code></div>
@@ -169,8 +169,8 @@
 <div class="section level3">
 <h3 id="protein-centric-analysis">Protein-centric analysis<a class="anchor" aria-label="anchor" href="#protein-centric-analysis"></a>
 </h3>
-<p>Many search engines provide the user with protein intensities. However, it is also possible to calculate protein intensities directly from precursor intensities with the <strong>protti</strong> function <code><a href="../reference/calculate_protein_abundance.html">calculate_protein_abundance()</a></code>.</p>
-<p>One advantage of calculating the protein abundance with <strong>protti</strong> is the possibility to median normalise run intensities on the precursor level. This is closer to the actually acquired intensities and thus sample concentrations than if normalisation is performed on the protein level. Some search engines provide the option for automatic median normalisation but not all.</p>
+<p>Many search engines provide the user with protein intensities. However, it is also possible to calculate protein intensities directly from precursor intensities with the <strong>protti</strong> function <code><a href="../reference/calculate_protein_abundance.html">calculate_protein_abundance()</a></code>. <strong>Protti</strong> implements the <code>"iq"</code> method, previously implemented in the R package <a href="https://academic.oup.com/bioinformatics/article/36/8/2611/5697917" class="external-link"><code>iq</code></a> which performs protein quantification based on the maximal peptide ratio extraction algorithm adapted from the MaxLFQ algorithm (<a href="https://www.sciencedirect.com/science/article/pii/S1535947620333107?via%3Dihub" class="external-link">Cox, J. 2013</a>).</p>
+<p>One advantage of calculating the protein abundance with <strong>protti</strong> is the possibility to median normalise run intensities on the precursor level. This is closer to the actually acquired intensities and thus sample concentrations than if normalisation is performed on the protein level. Some search engines provide the option for automatic median normalisation but not all. Furthermore, some search engines calculate protein intensities by summation of precursor intensities irrespective of missingness of peptides in certain samples. In these cases the maximal peptide ratio implemented in extraction algorithm provides a more robust calculation of protein intensities.</p>
 <p>If you prefer to use protein intensities provided by the seach engine of your choice this is not a problem and we will show how some of this information can be converted into the right format.</p>
 </div>
 <div class="section level3">
@@ -181,7 +181,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></span></code></pre></div>
 <p>Note that we are using the R package <a href="https://magrittr.tidyverse.org/index.html" class="external-link"><code>magrittr</code></a> because of its pipe operator <code>%&gt;%</code>. It takes the output of the preceding function and supplies it as the first argument of the following function. Using <code>%&gt;%</code> makes code easier to read and follow.</p>
 </div>
 </div>
@@ -210,7 +210,7 @@
 <div class="section level2">
 <h2 id="maxquant">MaxQuant<a class="anchor" aria-label="anchor" href="#maxquant"></a>
 </h2>
-<p>Depending on which analysis you are performing you will have to use different outputs. For peptide-centric analyses we would recommend to use the <code>evidence.txt</code> file. If you want to perform a protein-centric analysis and you want to use protein quantities calculated by MaxQuant, you need the <code>proteinGroups.txt</code> file.</p>
+<p>Depending on which analysis you are performing you will have to use different outputs. For peptide-centric analyses we would recommend to use the <code>evidence.txt</code> file. If you want to perform a protein-centric analysis and you want to use protein quantities calculated by MaxQuant, you need the <code>proteinGroups.txt</code> file. However, you can also apply the maximal peptide ratio extraction algorithm from the <code>iq</code> R package implemented in the <code>protein_abundance_calculation()</code> function of <strong>protti</strong>. This allows you to only use the <code>evidence.txt</code> file. The resulting protein intensities are identical since they were calculated with the same algorithm.</p>
 <div class="section level3">
 <h3 id="peptide-centric-analysislip-ms-analysis">Peptide-centric analysis/LiP-MS analysis<a class="anchor" aria-label="anchor" href="#peptide-centric-analysislip-ms-analysis"></a>
 </h3>
@@ -533,7 +533,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

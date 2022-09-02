@@ -19,7 +19,7 @@ significance of enrichment."><!-- mathjax --><script src="https://cdnjs.cloudfla
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -188,21 +188,22 @@ frame is returned.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">kegg</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 10</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    pathway_id    pathway_name    pval adj_pval n_detected_prot… n_detected_prot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> path:eco00520 Amino sugar… 9.83<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>    0.123             <span style="text-decoration: underline;">1</span>602               47</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> path:eco00627 Aminobenzoa… 1.52<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>    0.877             <span style="text-decoration: underline;">1</span>602                6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> path:eco02030 Bacterial c… 2.11<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>    0.877             <span style="text-decoration: underline;">1</span>602               20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> path:eco00590 Arachidonic… 3.75<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>    1                 <span style="text-decoration: underline;">1</span>602                2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> path:eco00650 Butanoate m… 4.91<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>    1                 <span style="text-decoration: underline;">1</span>602               35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> path:eco01230 Biosynthesi… 5.01<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>    1                 <span style="text-decoration: underline;">1</span>602              117</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> path:eco00550 Peptidoglyc… 6.67<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>    1                 <span style="text-decoration: underline;">1</span>602               24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> path:eco00360 Phenylalani… 1.12<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>    1                 <span style="text-decoration: underline;">1</span>602               32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> path:eco01501 beta-Lactam… 1.19<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>    1                 <span style="text-decoration: underline;">1</span>602               17</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> path:eco00633 Nitrotoluen… 1.37<span style="color: #949494;">e</span><span style="color: #BB0000;">-1</span>    1                 <span style="text-decoration: underline;">1</span>602                7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 4 more variables: n_significant_proteins &lt;int&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_significant_proteins_in_pathway &lt;int&gt;, n_proteins_expected &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   direction &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pathway_id    pathwa…¹   pval adj_p…² n_det…³ n_det…⁴ n_sig…⁵ n_sig…⁶ n_pro…⁷</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> path:eco00750 Vitamin… 0.029<span style="text-decoration: underline;">7</span>       1    <span style="text-decoration: underline;">1</span>614      10     313       5    1.94</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> path:eco00590 Arachid… 0.037<span style="text-decoration: underline;">9</span>       1    <span style="text-decoration: underline;">1</span>614       2     313       2    0.39</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> path:eco00410 beta-Al… 0.085<span style="text-decoration: underline;">8</span>       1    <span style="text-decoration: underline;">1</span>614      14     313       0    2.71</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> path:eco01230 Biosynt… 0.087<span style="text-decoration: underline;">2</span>       1    <span style="text-decoration: underline;">1</span>614     117     313      15   22.7 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> path:eco00592 alpha-L… 0.098<span style="text-decoration: underline;">9</span>       1    <span style="text-decoration: underline;">1</span>614       3     313       2    0.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> path:eco00230 Purine … 0.109        1    <span style="text-decoration: underline;">1</span>614      78     313      21   15.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> path:eco01503 Cationi… 0.134        1    <span style="text-decoration: underline;">1</span>614      36     313      11    6.98</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> path:eco01232 Nucleot… 0.146        1    <span style="text-decoration: underline;">1</span>614      63     313      17   12.2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> path:eco02030 Bacteri… 0.151        1    <span style="text-decoration: underline;">1</span>614      20     313       1    3.88</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> path:eco02060 Phospho… 0.158        1    <span style="text-decoration: underline;">1</span>614      41     313       4    7.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1 more variable: direction &lt;chr&gt;, and abbreviated variable names</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ¹​pathway_name, ²​adj_pval, ³​n_detected_proteins,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ⁴​n_detected_proteins_in_pathway, ⁵​n_significant_proteins,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ⁶​n_significant_proteins_in_pathway, ⁷​n_proteins_expected</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
@@ -218,7 +219,7 @@ frame is returned.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
