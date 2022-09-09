@@ -27,7 +27,7 @@ argument is mutually exclusive to the \code{uniprot_ids} argument.}
 archive times out. The default is 3600 seconds.}
 
 \item{return_data_frame}{a logical value that specifies if true, a data frame instead of a list
-is returned. It is recommended to only use this if not many pdb structures are retrieved.
+is returned. It is recommended to only use this if information for few proteins is retrieved.
 Default is FALSE.}
 
 \item{show_progress}{a logical value that specifies if true, a progress bar will be shown.
