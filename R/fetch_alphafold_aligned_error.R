@@ -1,7 +1,9 @@
 #' Fetch AlphaFold aligned error
 #'
 #' Fetches the aligned error for AlphaFold predictions for provided proteins. 
-#' The aligned error is useful for assessing inter-domain accuracy.
+#' The aligned error is useful for assessing inter-domain accuracy. In detail it
+#' represents the expected position error at residue x (scored residue), when 
+#' the predicted and true structures are aligned on residue y (aligned residue).
 #' 
 #' @param uniprot_ids a character vector of UniProt identifiers for which predictions
 #' should be fetched.
