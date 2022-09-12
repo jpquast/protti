@@ -1,3 +1,9 @@
+# protti 0.4.0.9000
+
+## New features
+
+* `fetch_alphafold_aligned_error()` was added. It fetches the aligned error matrix for structure predictions from the AlphaFold EBI database.
+
 # protti 0.4.0
 
 ## New features
