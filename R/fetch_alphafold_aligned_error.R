@@ -85,8 +85,8 @@ fetch_alphafold_aligned_error <- function(uniprot_ids = NULL,
       
       final_result <- purrr::imap_dfr(.x = initial_result,
                                  .f = ~ {
-                                   tibble::tibble(scored_residue = .y,
-                                                  aligned_residue = 1:length(initial_result),
+                                   tibble::tibble(aligned_residue = .y,
+                                                  scored_residue = 1:length(initial_result),
                                                   error = as.numeric(.x)) %>% 
                                      dplyr::filter(error <= error_cutoff)
                                  })
