@@ -491,4 +491,14 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(metal_info), 20)
     expect_equal(nrow(metal_info), 34)
   })
+  
+  test_that("fetch_alphafold_aligned_error works", {
+    aligned_error <- fetch_alphafold_aligned_error(uniprot_ids = c("A0A0A7W703"),
+                                                   error_cutoff = 5,
+                                                   return_data_frame = TRUE)
+    
+    expect_is(aligned_error, "data.frame")
+    expect_equal(ncol(aligned_error), 4)
+    expect_equal(nrow(aligned_error), 1854)
+  })
 }
