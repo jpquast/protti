@@ -34,10 +34,13 @@ A list that contains aligned errors for AlphaFold predictions. If return_data_fr
 TRUE, a data frame with this information is returned instead. The data frame contains the
 following columns:
 \itemize{
-\item{scored_residue: }{}
-\item{aligned_residue: }{}
-\item{error: }{}
-\item{accession: }{}
+\item{scored_residue: }{The error for this position is calculated based on the alignment to the
+aligned residue.}
+\item{aligned_residue: }{The residue that is aligned for the calculation of the error of the scored
+residue}
+\item{error: }{The predicted aligned error computed by alpha fold.}
+\item{accession: }{The UniProt protein identifier.}
+}
 }
 \description{
 Fetches the aligned error for AlphaFold predictions for provided proteins.
