@@ -14,7 +14,7 @@
 #' @param timeout a numeric value specifying the time in seconds until the download of an organism
 #' archive times out. The default is 3600 seconds.
 #' @param return_data_frame a logical value that specifies if true, a data frame instead of a list
-#' is returned. It is recommended to only use this if not many pdb structures are retrieved.
+#' is returned. It is recommended to only use this if information for few proteins is retrieved.
 #' Default is FALSE.
 #' @param show_progress a logical value that specifies if true, a progress bar will be shown.
 #' Default is TRUE.
@@ -317,7 +317,7 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
 
     batches <- purrr::map(
       .x = uniprot_ids,
-      .f = ~ paste0("https://alphafold.ebi.ac.uk/files/AF-", .x, "-F1-model_v1.cif")
+      .f = ~ paste0("https://alphafold.ebi.ac.uk/files/AF-", .x, "-F1-model_v3.cif")
     )
 
     names(batches) <- uniprot_ids

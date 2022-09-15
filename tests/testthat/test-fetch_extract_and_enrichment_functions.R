@@ -458,7 +458,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     
     terms <- fetch_quickgo(type = "terms")
     expect_is(terms, "data.frame")
-    expect_equal(nrow(terms), 47916)
+    expect_equal(nrow(terms), 47913)
     expect_equal(ncol(terms), 13)
 
     slims <- fetch_quickgo(type = "slims", go_id_slims = c("GO:0046872", "GO:0051540"))
@@ -490,5 +490,15 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_is(metal_info, "data.frame")
     expect_equal(ncol(metal_info), 20)
     expect_equal(nrow(metal_info), 34)
+  })
+  
+  test_that("fetch_alphafold_aligned_error works", {
+    aligned_error <- fetch_alphafold_aligned_error(uniprot_ids = c("A0A0A7W703"),
+                                                   error_cutoff = 5,
+                                                   return_data_frame = TRUE)
+    
+    expect_is(aligned_error, "data.frame")
+    expect_equal(ncol(aligned_error), 4)
+    expect_equal(nrow(aligned_error), 1854)
   })
 }
