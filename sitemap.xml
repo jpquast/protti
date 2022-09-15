@@ -97,6 +97,9 @@
     <loc>/reference/extract_metal_binders.html</loc>
   </url>
   <url>
+    <loc>/reference/fetch_alphafold_aligned_error.html</loc>
+  </url>
+  <url>
     <loc>/reference/fetch_alphafold_prediction.html</loc>
   </url>
   <url>
