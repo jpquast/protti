@@ -11,11 +11,11 @@
 #' setting this value to a low number reduces the size of the retrieved data. Default is 20.
 #' @param timeout a numeric value specifying the time in seconds until the download of an organism
 #' archive times out. The default is 3600 seconds.
-#' @param return_data_frame a logical value that specifies if true, a data frame instead of a list
+#' @param return_data_frame a logical value; if `TRUE` a data frame instead of a list
 #' is returned. It is recommended to only use this if information for few proteins is retrieved.
-#' Default is FALSE.
-#' @param show_progress a logical value that specifies if true, a progress bar will be shown.
-#' Default is TRUE.
+#' Default is `FALSE`.
+#' @param show_progress a logical value; if `TRUE` a progress bar will be shown.
+#' Default is `TRUE`.
 #' 
 #' @return A list that contains aligned errors for AlphaFold predictions. If return_data_frame is
 #' TRUE, a data frame with this information is returned instead. The data frame contains the
@@ -68,7 +68,7 @@ fetch_alphafold_aligned_error <- function(uniprot_ids = NULL,
   if (show_progress == TRUE) {
     pb <- progress::progress_bar$new(
       total = length(batches),
-      format = "  Fetching AlphaFold aligned error [:bar] :current/:total (:percent) :eta"
+      format = "Fetching AlphaFold aligned error [:bar] :current/:total (:percent) :eta"
     )
   }
   
@@ -108,7 +108,7 @@ fetch_alphafold_aligned_error <- function(uniprot_ids = NULL,
     ) %>%
       dplyr::distinct()
     
-    message("The following IDs have not been retrieved correctly.")
+    message("The following IDs have not been retrieved correctly:")
     message(paste0(utils::capture.output(error_table), collapse = "\n"))
   }
   

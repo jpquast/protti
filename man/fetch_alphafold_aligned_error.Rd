@@ -22,12 +22,12 @@ setting this value to a low number reduces the size of the retrieved data. Defau
 \item{timeout}{a numeric value specifying the time in seconds until the download of an organism
 archive times out. The default is 3600 seconds.}
 
-\item{return_data_frame}{a logical value that specifies if true, a data frame instead of a list
+\item{return_data_frame}{a logical value; if \code{TRUE} a data frame instead of a list
 is returned. It is recommended to only use this if information for few proteins is retrieved.
-Default is FALSE.}
+Default is \code{FALSE}.}
 
-\item{show_progress}{a logical value that specifies if true, a progress bar will be shown.
-Default is TRUE.}
+\item{show_progress}{a logical value; if \code{TRUE} a progress bar will be shown.
+Default is \code{TRUE}.}
 }
 \value{
 A list that contains aligned errors for AlphaFold predictions. If return_data_frame is
