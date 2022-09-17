@@ -178,6 +178,121 @@ ptsi_pgk_prediction_information <- fetch_alphafold_prediction(uniprot_ids = unip
 # mj_predictions <- fetch_alphafold_prediction(organism_name = "Methanocaldococcus jannaschii")
 ```
 
+## AlphaFold domain predictions using the predicted aligned error (PAE)
+
+AlphaFold predictions come with two kinds of error metrics, the per-residue confidence score (pLDDT) that is saved in the b-factor information of structure files and the predicted aligned error (PAE) that can be downloaded separately from the EBI database. According to the description on the EBI website, the PAE matrix at position (x, y) indicates AlphaFold’s expected position error at residue x, when the predicted and true structures are aligned on residue y. This is useful for assessing inter-domain accuracy. One interesting use case for the PAE is the prediction of domains in AlphaFold predictions. Tristan Croll created a [python script](https://github.com/tristanic/pae_to_domains) that uses a graph-based community clustering algorithm on PAEs in order to infer pseudo-rigid protein domains. These domain predictions can be for example used in order to check the validity of distance calculations between residues of a predicted structure. If residues are on two different domains distances should be used with caution.
+
+With **protti** we provide the function `fetch_alphafold_aligned_error()` that allows you to retrieve the predicted aligned error for AlphaFold predictions directly into your R session. In addition, we adapted the python function from Tristan and created the **protti** function `predict_alphafold_domain()` that predicts protein domains for AlphaFold predictions. In the example below we will retrieve PAEs for our two proteins ptsi (P08839) and pgk (P0A799) and subsequently predict protein domains. The `error_cutoff` argument of the `fetch_alphafold_aligned_error()` function defines the maximum error that should be saved. All higher values will be discarded in order to reduce the size of the returned `list`. For the `predict_alphafold_domain()` function we try out two different `graph_resolution` values which will determine the size of the clusters and thus how strict domains are created.
+
+```{r alphafold_domain_prediction, eval = test_protti, warning = FALSE}
+# Fetch aligned errors
+aligned_error <- fetch_alphafold_aligned_error(uniprot_ids = uniprot_ids,
+                                               error_cutoff = 4)
+
+# Predict protein domains with graph_resolution of 1
+af_domains_res_1 <- predict_alphafold_domain(pae_list = aligned_error,
+                                       return_data_frame = TRUE,
+                                       graph_resolution = 1) # Default 
+
+# Predict protein domains with graph_resolution of 0.5
+af_domains_res_05 <- predict_alphafold_domain(pae_list = aligned_error,
+                                       return_data_frame = TRUE,
+                                       graph_resolution = 0.5)
+```
+
+#### ptsI domain prediction with `graph_resolution = 1`
+
+```{r show_model_P08839_res1, eval = test_protti, echo=FALSE, warning=FALSE}
+# This code won't be seen in the Vignette
+# Fetch structure file for model
+protti:::try_query("https://alphafold.ebi.ac.uk/files/AF-P08839-F1-model_v3.pdb",
+  type = "text/tab-separated-values",
+  col_names = FALSE,
+  quote = "",
+  show_col_types = FALSE,
+  progress = FALSE
+) %>%
+  readr::write_tsv(
+    file = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"),
+    quote = "none",
+    escape = "none",
+    col_names = FALSE,
+    progress = FALSE
+  )
+
+# Load the r3dmol package
+library(r3dmol) 
+
+# Extract domain positions
+
+domain1 <- af_domains_res_1 %>% 
+  filter(accession == "P08839" & domain == 1) %>%
+  pull(residue)
+
+domain2 <- af_domains_res_1 %>% 
+  filter(accession == "P08839" & domain == 2) %>%
+  pull(residue)
+
+domain3 <- af_domains_res_1 %>% 
+  filter(accession == "P08839" & domain == 3) %>%
+  pull(residue)
+
+# Create model
+r3dmol() %>%
+  m_add_model(data = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"), format = "pdb") %>% 
+  m_set_style(style = m_style_cartoon()) %>%
+  m_add_style(
+    style = m_style_cartoon(color = "#8047d6"),
+    sel = m_sel(resi = domain1)
+  ) %>% 
+  m_add_style(
+    style = m_style_cartoon(color = "#96d647"),
+    sel = m_sel(resi = domain2)
+  ) %>% 
+  m_add_style(
+    style = m_style_cartoon(color = "#FF7276"),
+    sel = m_sel(resi = domain3)
+  ) %>% 
+  m_zoom_to()
+```
+
+#### ptsI domain prediction with `graph_resolution = 0.5`
+
+```{r show_model_P08839_res05, eval = test_protti, echo=FALSE, warning=FALSE}
+# This code won't be seen in the Vignette
+# Extract domain positions
+
+domain1 <- af_domains_res_05 %>% 
+  filter(accession == "P08839" & domain == 1) %>%
+  pull(residue)
+
+domain2 <- af_domains_res_05 %>% 
+  filter(accession == "P08839" & domain == 2) %>%
+  pull(residue)
+
+domain3 <- af_domains_res_05 %>% 
+  filter(accession == "P08839" & domain == 3) %>%
+  pull(residue)
+
+# Create model
+r3dmol() %>%
+  m_add_model(data = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"), format = "pdb") %>% 
+  m_set_style(style = m_style_cartoon()) %>%
+  m_add_style(
+    style = m_style_cartoon(color = "#8047d6"),
+    sel = m_sel(resi = domain1)
+  ) %>% 
+  m_add_style(
+    style = m_style_cartoon(color = "#96d647"),
+    sel = m_sel(resi = domain2)
+  ) %>% 
+  m_add_style(
+    style = m_style_cartoon(color = "#FF7276"),
+    sel = m_sel(resi = domain3)
+  ) %>% 
+  m_zoom_to()
+```
+
 # Generation of structural contact maps
 
 A very useful structural analysis function provided by **protti** is `create_structure_contact_map()`, which uses atom level structural information to calculate distances between atoms or amino acid residues. The generated contact map can be used in order to visually assess which regions are in close proximity to each other. Furthermore, you can use this function to identify all atoms that are in a certain proximity to a ligand or other small molecules. Additionally, protein-protein interfaces can be easily identified in structures that contain protein complexes. 

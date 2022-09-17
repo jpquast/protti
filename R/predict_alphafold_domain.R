@@ -2,7 +2,7 @@
 #' 
 #' Uses the predicted aligned error (PAE) of AlphaFold predictions to find possible protein domains.
 #' A graph-based community clustering algorithm (Leiden clustering) is used on the predicted error 
-#' (distance) between residues of a protein in order to infer rigid groups in the protein. This is
+#' (distance) between residues of a protein in order to infer pseudo-rigid groups in the protein. This is
 #' for example useful in order to know which parts of protein predictions are likely in a fixed relative 
 #' position towards each other and which might have varying distances. 
 #' This function is based on python code written by Tristan Croll. The original code can be found on his
