@@ -3,6 +3,7 @@
 ## New features
 
 * `fetch_alphafold_aligned_error()` was added. It fetches the aligned error matrix for structure predictions from the AlphaFold EBI database.
+* `predict_alphafold_domain()` was added. It uses a graph-based community clustering algorithm of AlphaFold predicted aligned errors in order to infer protein domains in AlphaFold predictions. The code is based on [python code](https://github.com/tristanic/pae_to_domains) by Tristan Croll.
 
 # protti 0.4.0
 

@@ -501,4 +501,17 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(aligned_error), 4)
     expect_equal(nrow(aligned_error), 1854)
   })
+  
+  aligned_error_list <- fetch_alphafold_aligned_error(uniprot_ids = c("A0A0A7W703"),
+                                                 error_cutoff = 4)
+  test_that("predict_alphafold_domain works", {
+    af_domains <- predict_alphafold_domain(pae_list = aligned_error_list,
+                                           return_data_frame = TRUE)
+    
+    expect_is(af_domains, "data.frame")
+    expect_equal(ncol(af_domains), 3)
+    expect_equal(nrow(af_domains), 61)
+    expect_equal(as.data.frame(table(af_domains$domain))$Freq[1], 6)
+    expect_equal(as.data.frame(table(af_domains$domain))$Freq[2], 55)
+  })
 }
