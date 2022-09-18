@@ -54,7 +54,7 @@
 #' @importFrom rlang .data enquo !! as_name
 #' @importFrom purrr map_df
 #' @importFrom magrittr %>%
-#' @importFrom utils combn
+#' @importFrom utils combn capture.output
 #' @export
 #'
 #' @examples
@@ -144,6 +144,26 @@ from the conditions and assigned their missingness. The created comparisons are:
     dplyr::ungroup() %>%
     dplyr::left_join(all_combinations, by = rlang::as_name(rlang::enquo(condition))) %>%
     tidyr::unnest(.data$comparison)
+  
+  # check if there are any unequal replicate comparisons
+  unequal_replicates <- data_prep %>%
+    dplyr::arrange({{ condition }}) %>% 
+    dplyr::distinct(.data$n_replicates, .data$comparison) %>%
+    dplyr::group_by(.data$comparison) %>%
+    dplyr::mutate(n = dplyr::n()) %>%
+    dplyr::filter(.data$n > 1) %>%
+    dplyr::mutate(n_replicates = paste0(.data$n_replicates, collapse = "/")) %>%
+    dplyr::distinct(.data$n_replicates, .data$comparison)
+  
+  if(nrow(unequal_replicates) != 0){
+    message("\n")
+    message(
+      strwrap('The following comparisons have been detected to have unqueal replicate numbers.
+              If this is intended please ignore this message. This function can appropriately deal
+              with unequal replicate numbers.', prefix = "\n", initial = ""), "\n"
+    )
+    message(paste0(utils::capture.output(unequal_replicates), collapse = "\n"))
+  }
 
   result <- data_prep %>%
     dplyr::mutate(type = ifelse({{ condition }} == stringr::str_extract(.data$comparison, pattern = "(?<=_vs_).+"),
@@ -151,20 +171,23 @@ from the conditions and assigned their missingness. The created comparisons are:
       "treated"
     )) %>%
     split(.$comparison) %>%
-    purrr::map_df(~ .x %>%
-      tidyr::pivot_wider(names_from = .data$type, values_from = .data$n_detect) %>%
-      dplyr::group_by({{ grouping }}) %>%
-      tidyr::fill(treated, control, .direction = "updown") %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(missingness = dplyr::case_when(
-        .data$control == .data$n_replicates & .data$treated == .data$n_replicates ~ "complete",
-        .data$control <= floor(n_replicates * completeness_MNAR) & .data$treated == .data$n_replicates ~ "MNAR",
-        .data$control == .data$n_replicates & .data$treated <= floor(n_replicates * completeness_MNAR) ~ "MNAR",
-        .data$control >= max(floor(.data$n_replicates * completeness_MAR), 1) &
-          .data$treated >= max(floor(.data$n_replicates * completeness_MAR), 1) ~ "MAR"
-      ))) %>%
-    dplyr::select(-c(.data$control, .data$n_replicates, .data$treated)) %>%
-    dplyr::ungroup() %>%
+    purrr::map_df(.f = ~ .x %>%
+                    tidyr::pivot_wider(names_from = .data$type, values_from = c(.data$n_detect, .data$n_replicates)) %>%
+                    dplyr::group_by({{ grouping }}) %>%
+                    tidyr::fill(.data$n_detect_treated, .data$n_detect_control, .data$n_replicates_treated, .data$n_replicates_control, .direction = "updown") %>%
+                    dplyr::ungroup() %>%
+                    dplyr::mutate(missingness = dplyr::case_when(
+                      .data$n_detect_control == .data$n_replicates_control & 
+                        .data$n_detect_treated == .data$n_replicates_treated ~ "complete",
+                      .data$n_detect_control <= floor(n_replicates_control * 0.2) & 
+                        .data$n_detect_treated == .data$n_replicates_treated ~ "MNAR",
+                      .data$n_detect_control == .data$n_replicates_control & 
+                        .data$n_detect_treated <= floor(n_replicates_treated * 0.2) ~ "MNAR",
+                      .data$n_detect_control >= max(floor(.data$n_replicates_control * 0.7), 1) &
+                        .data$n_detect_treated >= max(floor(.data$n_replicates_control * 0.7), 1) ~ "MAR"
+                    ))
+    ) %>% 
+    dplyr::select(-c(.data$n_detect_control, .data$n_detect_treated, .data$n_replicates_control, .data$n_replicates_treated)) %>%
     # Arrange by grouping but in a numeric order of the character vector.
     dplyr::arrange(factor({{ grouping }}, levels = unique(stringr::str_sort({{ grouping }}, numeric = TRUE))))
 

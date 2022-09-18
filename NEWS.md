@@ -5,6 +5,10 @@
 * `fetch_alphafold_aligned_error()` was added. It fetches the aligned error matrix for structure predictions from the AlphaFold EBI database.
 * `predict_alphafold_domain()` was added. It uses a graph-based community clustering algorithm of AlphaFold predicted aligned errors in order to infer protein domains in AlphaFold predictions. The code is based on [python code](https://github.com/tristanic/pae_to_domains) by Tristan Croll.
 
+## Bug fixes
+
+* `assign_missingness()` now correctly deals with unequal replicate numbers of comparisons. In addition there is a message returned if an unequal number of replicates is detected for a comparison.
+
 ## Additional changes
 
 * Updated the "Protein Structure Analysis Workflow" vignette to include the `fetch_alphafold_aligned_error()` and `predict_alphafold_domain()` functions.
