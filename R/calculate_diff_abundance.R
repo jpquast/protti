@@ -325,6 +325,7 @@ Please provide a valid reference condition.", prefix = "\n", initial = ""))
       if (!missing(retain_columns)) {
         t_test_adj_pval <- data %>%
           dplyr::ungroup() %>%
+          tidyr::drop_na({{ intensity_log2 }}) %>% 
           dplyr::select(
             !!enquo(retain_columns),
             colnames(t_test_adj_pval)[!colnames(t_test_adj_pval) %in%
@@ -415,6 +416,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
       if (!missing(retain_columns)) {
         t_test_mean_sd_result <- data %>%
           dplyr::ungroup() %>%
+          tidyr::drop_na({{ intensity_log2 }}) %>% 
           dplyr::select(!!enquo(retain_columns), colnames(t_test_mean_sd_result)[!colnames(t_test_mean_sd_result) %in%
             c(
               "mean_control",
@@ -607,6 +609,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
       if (!missing(retain_columns)) {
         moderated_t_test_adj_pval <- data %>%
           dplyr::ungroup() %>%
+          tidyr::drop_na({{ intensity_log2 }}) %>% 
           dplyr::select(
             !!enquo(retain_columns),
             colnames(moderated_t_test_adj_pval)[!colnames(moderated_t_test_adj_pval) %in%
