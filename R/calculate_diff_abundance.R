@@ -767,6 +767,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
       if (!missing(retain_columns)) {
         proDA_result <- data %>%
           dplyr::ungroup() %>%
+          tidyr::drop_na({{ intensity_log2 }}) %>% 
           dplyr::select(
             !!enquo(retain_columns),
             colnames(proDA_result)[!colnames(proDA_result) %in%
