@@ -448,14 +448,14 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
     expect_error(fetch_eco(return_relation = TRUE, return_history = TRUE))
   })
-  
+
   uniprot_ids <- c("P00393", "P06129", "A0A0C5Q309", "A0A0C9VD04")
   annotations <- fetch_quickgo(type = "annotations", id = uniprot_ids, ontology = "molecular_function")
   test_that("fetch_quickgo works", {
     expect_is(annotations, "data.frame")
     expect_equal(nrow(annotations), 22)
     expect_equal(ncol(annotations), 15)
-    
+
     terms <- fetch_quickgo(type = "terms")
     expect_is(terms, "data.frame")
     expect_gt(nrow(terms), 47000)
@@ -465,49 +465,60 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_is(slims, "data.frame")
     expect_equal(nrow(slims), 43)
     expect_equal(ncol(slims), 2)
-    
-    expect_warning(fetch_quickgo(type = "annotations", 
-                               id = c("P63328","Q4FFP4"), 
-                               ontology = "molecular_function", 
-                               go_id_slims = c("GO:0046872", "GO:0051540")))
+
+    expect_warning(fetch_quickgo(
+      type = "annotations",
+      id = c("P63328", "Q4FFP4"),
+      ontology = "molecular_function",
+      go_id_slims = c("GO:0046872", "GO:0051540")
+    ))
   })
-  
+
   test_that("extract_metal_binders works", {
     data_uniprot <- fetch_uniprot(uniprot_ids,
-                                  columns = c(
-                                    "ft_binding",
-                                    "cc_cofactor",
-                                    "cc_catalytic_activity"
-                                  ))
-    
-    metal_info <- extract_metal_binders(data_uniprot = data_uniprot,
-                                        data_quickgo = annotations,
-                                        data_chebi = database,
-                                        data_chebi_relation = relations,
-                                        data_eco = eco,
-                                        data_eco_relation = eco_relation)
-    
+      columns = c(
+        "ft_binding",
+        "cc_cofactor",
+        "cc_catalytic_activity"
+      )
+    )
+
+    metal_info <- extract_metal_binders(
+      data_uniprot = data_uniprot,
+      data_quickgo = annotations,
+      data_chebi = database,
+      data_chebi_relation = relations,
+      data_eco = eco,
+      data_eco_relation = eco_relation
+    )
+
     expect_is(metal_info, "data.frame")
     expect_equal(ncol(metal_info), 20)
     expect_equal(nrow(metal_info), 34)
   })
-  
+
   test_that("fetch_alphafold_aligned_error works", {
-    aligned_error <- fetch_alphafold_aligned_error(uniprot_ids = c("A0A0A7W703"),
-                                                   error_cutoff = 5,
-                                                   return_data_frame = TRUE)
-    
+    aligned_error <- fetch_alphafold_aligned_error(
+      uniprot_ids = c("A0A0A7W703"),
+      error_cutoff = 5,
+      return_data_frame = TRUE
+    )
+
     expect_is(aligned_error, "data.frame")
     expect_equal(ncol(aligned_error), 4)
     expect_equal(nrow(aligned_error), 1854)
   })
-  
-  aligned_error_list <- fetch_alphafold_aligned_error(uniprot_ids = c("A0A0A7W703"),
-                                                 error_cutoff = 4)
+
+  aligned_error_list <- fetch_alphafold_aligned_error(
+    uniprot_ids = c("A0A0A7W703"),
+    error_cutoff = 4
+  )
   test_that("predict_alphafold_domain works", {
-    af_domains <- predict_alphafold_domain(pae_list = aligned_error_list,
-                                           return_data_frame = TRUE)
-    
+    af_domains <- predict_alphafold_domain(
+      pae_list = aligned_error_list,
+      return_data_frame = TRUE
+    )
+
     expect_is(af_domains, "data.frame")
     expect_equal(ncol(af_domains), 3)
     expect_equal(nrow(af_domains), 61)

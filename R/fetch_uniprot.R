@@ -4,10 +4,10 @@
 #'
 #' @param uniprot_ids a character vector of UniProt accession numbers.
 #' @param columns a character vector of metadata columns that should be imported from UniProt (all
-#' possible columns can be found \href{https://www.uniprot.org/help/return_fields}{here}. For 
+#' possible columns can be found \href{https://www.uniprot.org/help/return_fields}{here}. For
 #' cross-referenced database provide the database name with the prefix "xref_", e.g. \code{"xref_pdb"})
 #' @param batchsize a numeric value that specifies the number of proteins processed in a single
-#' single query. Default and max value is 200. 
+#' single query. Default and max value is 200.
 #' @param show_progress a logical value that determines if a progress bar will be shown. Default
 #' is TRUE.
 #'
@@ -54,10 +54,10 @@ fetch_uniprot <-
       return(invisible(NULL))
     }
     . <- NULL
-    if(show_progress){
+    if (show_progress) {
       message("Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.")
     }
-    if (batchsize > 500){
+    if (batchsize > 500) {
       stop("Please provide a batchsize that is smaller or equal to 500!")
     }
     columns <- c("accession", columns)

@@ -9,7 +9,7 @@
 #' conditions.
 #' @param grouping a character column in the \code{data} data frame that contains protein, precursor or
 #' peptide identifiers.
-#' @param intensity a numeric column in the \code{data} data frame that contains intensity values that 
+#' @param intensity a numeric column in the \code{data} data frame that contains intensity values that
 #' relate to the \code{grouping} variable.
 #' @param ref_condition a character vector providing the condition that is used as a reference for
 #' missingness determination. Instead of providing one reference condition, "all" can be supplied,
@@ -144,23 +144,23 @@ from the conditions and assigned their missingness. The created comparisons are:
     dplyr::ungroup() %>%
     dplyr::left_join(all_combinations, by = rlang::as_name(rlang::enquo(condition))) %>%
     tidyr::unnest(.data$comparison)
-  
+
   # check if there are any unequal replicate comparisons
   unequal_replicates <- data_prep %>%
-    dplyr::arrange({{ condition }}) %>% 
+    dplyr::arrange({{ condition }}) %>%
     dplyr::distinct(.data$n_replicates, .data$comparison) %>%
     dplyr::group_by(.data$comparison) %>%
     dplyr::mutate(n = dplyr::n()) %>%
     dplyr::filter(.data$n > 1) %>%
     dplyr::mutate(n_replicates = paste0(.data$n_replicates, collapse = "/")) %>%
     dplyr::distinct(.data$n_replicates, .data$comparison)
-  
-  if(nrow(unequal_replicates) != 0){
+
+  if (nrow(unequal_replicates) != 0) {
     message("\n")
     message(
-      strwrap('The following comparisons have been detected to have unqueal replicate numbers.
+      strwrap("The following comparisons have been detected to have unqueal replicate numbers.
               If this is intended please ignore this message. This function can appropriately deal
-              with unequal replicate numbers.', prefix = "\n", initial = ""), "\n"
+              with unequal replicate numbers.", prefix = "\n", initial = ""), "\n"
     )
     message(paste0(utils::capture.output(unequal_replicates), collapse = "\n"))
   }
@@ -172,21 +172,20 @@ from the conditions and assigned their missingness. The created comparisons are:
     )) %>%
     split(.$comparison) %>%
     purrr::map_df(.f = ~ .x %>%
-                    tidyr::pivot_wider(names_from = .data$type, values_from = c(.data$n_detect, .data$n_replicates)) %>%
-                    dplyr::group_by({{ grouping }}) %>%
-                    tidyr::fill(.data$n_detect_treated, .data$n_detect_control, .data$n_replicates_treated, .data$n_replicates_control, .direction = "updown") %>%
-                    dplyr::ungroup() %>%
-                    dplyr::mutate(missingness = dplyr::case_when(
-                      .data$n_detect_control == .data$n_replicates_control & 
-                        .data$n_detect_treated == .data$n_replicates_treated ~ "complete",
-                      .data$n_detect_control <= floor(n_replicates_control * 0.2) & 
-                        .data$n_detect_treated == .data$n_replicates_treated ~ "MNAR",
-                      .data$n_detect_control == .data$n_replicates_control & 
-                        .data$n_detect_treated <= floor(n_replicates_treated * 0.2) ~ "MNAR",
-                      .data$n_detect_control >= max(floor(.data$n_replicates_control * 0.7), 1) &
-                        .data$n_detect_treated >= max(floor(.data$n_replicates_control * 0.7), 1) ~ "MAR"
-                    ))
-    ) %>% 
+      tidyr::pivot_wider(names_from = .data$type, values_from = c(.data$n_detect, .data$n_replicates)) %>%
+      dplyr::group_by({{ grouping }}) %>%
+      tidyr::fill(.data$n_detect_treated, .data$n_detect_control, .data$n_replicates_treated, .data$n_replicates_control, .direction = "updown") %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(missingness = dplyr::case_when(
+        .data$n_detect_control == .data$n_replicates_control &
+          .data$n_detect_treated == .data$n_replicates_treated ~ "complete",
+        .data$n_detect_control <= floor(n_replicates_control * 0.2) &
+          .data$n_detect_treated == .data$n_replicates_treated ~ "MNAR",
+        .data$n_detect_control == .data$n_replicates_control &
+          .data$n_detect_treated <= floor(n_replicates_treated * 0.2) ~ "MNAR",
+        .data$n_detect_control >= max(floor(.data$n_replicates_control * 0.7), 1) &
+          .data$n_detect_treated >= max(floor(.data$n_replicates_control * 0.7), 1) ~ "MAR"
+      ))) %>%
     dplyr::select(-c(.data$n_detect_control, .data$n_detect_treated, .data$n_replicates_control, .data$n_replicates_treated)) %>%
     # Arrange by grouping but in a numeric order of the character vector.
     dplyr::arrange(factor({{ grouping }}, levels = unique(stringr::str_sort({{ grouping }}, numeric = TRUE))))

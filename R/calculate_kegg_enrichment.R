@@ -66,42 +66,42 @@ kegg_enrichment <- function(...) {
 #' set.seed(123) # Makes example reproducible
 #'
 #' # Create example data
-#' kegg_data <- fetch_kegg(species = "eco") 
-#' 
-#' if(!is.null(kegg_data)){ # only proceed if information was retrieved
-#' data <- kegg_data %>%
-#'   group_by(uniprot_id) %>%
-#'   mutate(significant = rep(sample(
-#'     x = c(TRUE, FALSE),
-#'     size = 1,
-#'     replace = TRUE,
-#'     prob = c(0.2, 0.8)
-#'   ),
-#'   n = n()
-#'   ))
+#' kegg_data <- fetch_kegg(species = "eco")
 #'
-#' # Plot KEGG enrichment
-#' calculate_kegg_enrichment(
-#'   data,
-#'   protein_id = uniprot_id,
-#'   is_significant = significant,
-#'   pathway_id = pathway_id,
-#'   pathway_name = pathway_name,
-#'   plot = TRUE,
-#'   plot_cutoff = "pval 0.05"
-#' )
+#' if (!is.null(kegg_data)) { # only proceed if information was retrieved
+#'   data <- kegg_data %>%
+#'     group_by(uniprot_id) %>%
+#'     mutate(significant = rep(sample(
+#'       x = c(TRUE, FALSE),
+#'       size = 1,
+#'       replace = TRUE,
+#'       prob = c(0.2, 0.8)
+#'     ),
+#'     n = n()
+#'     ))
 #'
-#' # Calculate KEGG enrichment
-#' kegg <- calculate_kegg_enrichment(
-#'   data,
-#'   protein_id = uniprot_id,
-#'   is_significant = significant,
-#'   pathway_id = pathway_id,
-#'   pathway_name = pathway_name,
-#'   plot = FALSE
-#' )
+#'   # Plot KEGG enrichment
+#'   calculate_kegg_enrichment(
+#'     data,
+#'     protein_id = uniprot_id,
+#'     is_significant = significant,
+#'     pathway_id = pathway_id,
+#'     pathway_name = pathway_name,
+#'     plot = TRUE,
+#'     plot_cutoff = "pval 0.05"
+#'   )
 #'
-#' head(kegg, n = 10)
+#'   # Calculate KEGG enrichment
+#'   kegg <- calculate_kegg_enrichment(
+#'     data,
+#'     protein_id = uniprot_id,
+#'     is_significant = significant,
+#'     pathway_id = pathway_id,
+#'     pathway_name = pathway_name,
+#'     plot = FALSE
+#'   )
+#'
+#'   head(kegg, n = 10)
 #' }
 #' }
 calculate_kegg_enrichment <- function(data,

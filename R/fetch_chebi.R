@@ -6,7 +6,7 @@
 #' the main compound data. This data can be used to check the relations of ChEBI ID's to each other.
 #' Default is FALSE.
 #' @param stars a numeric vector indicating the "star" level (confidence) for which entries should
-#' be retrieved (Possible levels are 1, 2 and 3). Default is \code{c(3)} retrieving only "3-star" 
+#' be retrieved (Possible levels are 1, 2 and 3). Default is \code{c(3)} retrieving only "3-star"
 #' entries, which are manually annotated by the ChEBI curator team.
 #'
 #' @return A data frame that contains information about each molecule in the ChEBI database.
@@ -102,8 +102,8 @@ fetch_chebi <- function(relation = FALSE, stars = c(3)) {
   close(con)
   chebi_compounds <- utils::read.delim(textConnection(chebi_compounds_download),
     quote = "", stringsAsFactors = FALSE
-  ) 
-  
+  )
+
   if (nrow(chebi_compounds) == 1) {
     message(chebi_compounds$V1)
     return(invisible(NULL))
@@ -121,7 +121,7 @@ fetch_chebi <- function(relation = FALSE, stars = c(3)) {
   chebi_names <- utils::read.delim(textConnection(chebi_names_download),
     quote = "", stringsAsFactors = FALSE
   )
-  
+
   if (nrow(chebi_names) == 1) {
     message(chebi_names$V1)
     return(invisible(NULL))

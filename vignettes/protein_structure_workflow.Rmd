@@ -204,6 +204,7 @@ af_domains_res_05 <- predict_alphafold_domain(pae_list = aligned_error,
 
 ```{r show_model_P08839_res1, eval = test_protti, echo=FALSE, warning=FALSE}
 # This code won't be seen in the Vignette
+if(!is.null(af_domains_res_1)){
 # Fetch structure file for model
 protti:::try_query("https://alphafold.ebi.ac.uk/files/AF-P08839-F1-model_v3.pdb",
   type = "text/tab-separated-values",
@@ -254,12 +255,14 @@ r3dmol() %>%
     sel = m_sel(resi = domain3)
   ) %>% 
   m_zoom_to()
+}
 ```
 
 #### ptsI domain prediction with `graph_resolution = 0.5`
 
 ```{r show_model_P08839_res05, eval = test_protti, echo=FALSE, warning=FALSE}
 # This code won't be seen in the Vignette
+if(!is.null(af_domains_res_1)){
 # Extract domain positions
 
 domain1 <- af_domains_res_05 %>% 
@@ -291,6 +294,7 @@ r3dmol() %>%
     sel = m_sel(resi = domain3)
   ) %>% 
   m_zoom_to()
+}
 ```
 
 # Generation of structural contact maps

@@ -209,8 +209,10 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   # split pdb_ids into batches
   batches <- split(pdb_ids, ceiling(seq_along(pdb_ids) / batchsize))
   if (show_progress == TRUE) {
-    pb <- progress::progress_bar$new(total = length(batches),
-                                     format = "[1/6] Fetching PDB entries [:bar] (:percent) :eta")
+    pb <- progress::progress_bar$new(
+      total = length(batches),
+      format = "[1/6] Fetching PDB entries [:bar] (:percent) :eta"
+    )
   }
 
   # query information from database
@@ -285,10 +287,10 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
 
   # process information from database
   if (show_progress == TRUE) {
-  message("[2/6] Extract experimental conditions ... ", appendLF = FALSE)
-  start_time <- Sys.time()
+    message("[2/6] Extract experimental conditions ... ", appendLF = FALSE)
+    start_time <- Sys.time()
   }
-  
+
   query_result_clean <- query_result %>%
     dplyr::bind_cols(
       pdb_ids = .$entries.rcsb_id,
@@ -433,12 +435,12 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     )
 
   if (show_progress == TRUE) {
-  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-  message("[3/6] Extracting polymer information: ")
-  message("-> 1/6 UniProt IDs ... ", appendLF = FALSE)
-  start_time <- Sys.time()
+    message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    message("[3/6] Extracting polymer information: ")
+    message("-> 1/6 UniProt IDs ... ", appendLF = FALSE)
+    start_time <- Sys.time()
   }
-  
+
   polymer_entities <- query_result_clean %>%
     dplyr::select(.data$pdb_ids, .data$entries.polymer_entities) %>%
     tidyr::unnest(.data$entries.polymer_entities) %>%
@@ -475,13 +477,13 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     polymer_entities <- polymer_entities %>%
       tidyr::unnest(c(.data$uniprots))
   }
-  
+
   if (show_progress == TRUE) {
-  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-  message("-> 2/6 UniProt alignment ... ", appendLF = FALSE)
-  start_time <- Sys.time()
+    message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    message("-> 2/6 UniProt alignment ... ", appendLF = FALSE)
+    start_time <- Sys.time()
   }
-  
+
   # Deal with cases in which polymer entity alignment information of some entries is available but not for others
   polymer_entities_no_rcsb_polymer_entity_align <- polymer_entities %>%
     dplyr::rowwise() %>%
@@ -580,11 +582,11 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
 
   # Extract ligand information
   if (show_progress == TRUE) {
-  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-  message("-> 3/6 Ligand binding sites ... ", appendLF = FALSE)
-  start_time <- Sys.time()
+    message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    message("-> 3/6 Ligand binding sites ... ", appendLF = FALSE)
+    start_time <- Sys.time()
   }
-  
+
   polymer_entities_no_ligands <- polymer_entities %>%
     dplyr::rowwise() %>%
     dplyr::mutate(no_ligands = is.null(unlist(.data$rcsb_ligand_neighbors))) %>%
@@ -652,7 +654,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       ),
       .fns = ~ ifelse(str_detect(.data$atom_id, pattern = "NA"), NA, .x)
     )) %>%
-    dplyr::ungroup() %>% 
+    dplyr::ungroup() %>%
     dplyr::rename(
       ligand_donor_atom_id = .data$atom_id,
       ligand_donor_auth_seq_id = .data$auth_seq_id,
@@ -661,7 +663,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       ligand_label_asym_id = .data$ligand_asym_id,
       ligand_bond_is_covalent_or_coordinating = .data$ligand_is_bound,
       ligand_donor_label_seq_id = .data$seq_id
-    ) 
+    )
 
   if ("rcsb_ligand_neighbors" %in% colnames(polymer_entities)) {
     # if none of the retrieved entries contains any ligands then this column needs to be removed manually
@@ -671,11 +673,11 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   # extract modified monomer information
 
   if (show_progress == TRUE) {
-  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-  message("-> 4/6 Modified monomers ... ", appendLF = FALSE)
-  start_time <- Sys.time()
+    message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    message("-> 4/6 Modified monomers ... ", appendLF = FALSE)
+    start_time <- Sys.time()
   }
-  
+
   rcsb_polymer_entity_feature <- polymer_entities %>%
     dplyr::select(.data$pdb_ids, .data$auth_asym_id, .data$rcsb_polymer_entity_feature) %>%
     tidyr::unnest(.data$rcsb_polymer_entity_feature) %>%
@@ -698,11 +700,11 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
 
   # extract secondary structure information
   if (show_progress == TRUE) {
-  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-  message("-> 5/6 Secondary structure ... ", appendLF = FALSE)
-  start_time <- Sys.time()
+    message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    message("-> 5/6 Secondary structure ... ", appendLF = FALSE)
+    start_time <- Sys.time()
   }
-  
+
   rcsb_polymer_instance_feature_data <- polymer_entities %>%
     dplyr::select(.data$pdb_ids, .data$auth_asym_id, .data$rcsb_polymer_instance_feature) %>%
     tidyr::unnest(.data$rcsb_polymer_instance_feature) %>%
@@ -718,11 +720,11 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
 
   # extract info about unmodeled residues
   if (show_progress == TRUE) {
-  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-  message("-> 6/6 Unmodeled residues ... ", appendLF = FALSE)
-  start_time <- Sys.time()
+    message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    message("-> 6/6 Unmodeled residues ... ", appendLF = FALSE)
+    start_time <- Sys.time()
   }
-  
+
   unmodeled_residues <- rcsb_polymer_instance_feature_data %>%
     dplyr::filter(.data$name %in% c("partially modeled residue", "unmodeled residue")) %>%
     dplyr::group_by(.data$pdb_ids, .data$auth_asym_id) %>%
@@ -742,15 +744,15 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   # Modify auth_seq_id positions that are either duplicated or missing.
   # Missing or duplicated entries are identified by comparing the length of auth_seq_id to the length of the sequence.
   if (show_progress == TRUE) {
-  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-  message("[4/6] Correct author sequence positions for some PDB IDs ... ", appendLF = FALSE)
-  start_time <- Sys.time()
+    message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    message("[4/6] Correct author sequence positions for some PDB IDs ... ", appendLF = FALSE)
+    start_time <- Sys.time()
   }
-  
-  fix_auth_seq_positions <- polymer_entities %>% 
+
+  fix_auth_seq_positions <- polymer_entities %>%
     dplyr::rowwise() %>%
     dplyr::filter(length(unlist(.data$auth_to_entity_poly_seq_mapping)) != nchar(.data$pdbx_seq_one_letter_code_can))
-  
+
   # Remove duplicated positions
   polymer_entities_seq_id_duplications <- fix_auth_seq_positions %>%
     dplyr::filter(length(unlist(.data$auth_to_entity_poly_seq_mapping)) > nchar(.data$pdbx_seq_one_letter_code_can)) %>%
@@ -759,9 +761,9 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
 
   # Add missing positions
   polymer_entities_seq_id_missing <- fix_auth_seq_positions %>%
-    dplyr::filter(length(unlist(.data$auth_to_entity_poly_seq_mapping)) < nchar(.data$pdbx_seq_one_letter_code_can)) 
-  
-  if (nrow(polymer_entities_seq_id_missing) > 0){ # do not run the code below if the data frame is empty, this causes error
+    dplyr::filter(length(unlist(.data$auth_to_entity_poly_seq_mapping)) < nchar(.data$pdbx_seq_one_letter_code_can))
+
+  if (nrow(polymer_entities_seq_id_missing) > 0) { # do not run the code below if the data frame is empty, this causes error
     polymer_entities_seq_id_missing <- polymer_entities_seq_id_missing %>%
       dplyr::mutate(auth_seq_id_pdb_numeric = list(stringr::str_replace(.data$auth_to_entity_poly_seq_mapping, pattern = "[:alpha:]", replacement = ""))) %>%
       dplyr::mutate(non_consecutive = list(as.numeric(.data$auth_seq_id_pdb_numeric)[c(diff(as.numeric(.data$auth_seq_id_pdb_numeric)) > 1)])) %>%
@@ -782,22 +784,22 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   polymer_entities <- polymer_entities %>%
     dplyr::rowwise() %>%
     dplyr::filter(length(unlist(.data$auth_to_entity_poly_seq_mapping)) == nchar(.data$pdbx_seq_one_letter_code_can) |
-                    is.null(.data$auth_to_entity_poly_seq_mapping) |
-                    is.na(.data$pdbx_seq_one_letter_code_can)) %>% 
+      is.null(.data$auth_to_entity_poly_seq_mapping) |
+      is.na(.data$pdbx_seq_one_letter_code_can)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(auth_seq_id = .data$auth_to_entity_poly_seq_mapping) %>%
     dplyr::bind_rows(polymer_entities_seq_id_duplications) %>%
     dplyr::bind_rows(polymer_entities_seq_id_missing)
-  
+
   if (show_progress == TRUE) {
-  if(nrow(fix_auth_seq_positions) > 0) {
-    message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-    message("Corrected entries: ", paste0(unique(fix_auth_seq_positions$pdb_ids), collapse = ", "))
-  } else {
-    message("None to correct", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    if (nrow(fix_auth_seq_positions) > 0) {
+      message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+      message("Corrected entries: ", paste0(unique(fix_auth_seq_positions$pdb_ids), collapse = ", "))
+    } else {
+      message("None to correct", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    }
   }
-  }
-  
+
   entity_instance_info <- polymer_entities %>%
     dplyr::distinct(
       .data$asym_id,
@@ -827,10 +829,10 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       .data$auth_to_entity_poly_seq_mapping
     )) %>%
     distinct()
-  
+
   if (show_progress == TRUE) {
-  message("[5/6] Extract non-polymer information ... ", appendLF = FALSE)
-  start_time <- Sys.time()
+    message("[5/6] Extract non-polymer information ... ", appendLF = FALSE)
+    start_time <- Sys.time()
   }
 
   if (!all(is.na(query_result_clean$entries.nonpolymer_entities))) {
@@ -879,11 +881,11 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       .data$entries.exptl_crystal_grow,
       .data$resolution_combined
     ))
-  
+
   if (show_progress == TRUE) {
-  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-  message("[6/6] Combine information ... ", appendLF = FALSE)
-  start_time <- Sys.time()
+    message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    message("[6/6] Combine information ... ", appendLF = FALSE)
+    start_time <- Sys.time()
   }
 
   combined <- polymer_entities %>%
@@ -968,9 +970,9 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       .data$method_nmr,
       .data$resolution_combined
     )
-  
+
   if (show_progress == TRUE) {
-  message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
   }
 
   combined

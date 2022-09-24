@@ -15,8 +15,8 @@
 #' "text/tab-separated-values", "application/json" and "txt/csv". Default is "text/tab-separated-values".
 #' Default is "tab-separated-values".
 #' @param timeout a numeric value that specifies the maximum request time. Default is 30 seconds.
-#' @param accept a character value that specifies the type of data that should be sent by the API if 
-#' it uses content negotiation. The default is NULL and it should only be set for APIs that use 
+#' @param accept a character value that specifies the type of data that should be sent by the API if
+#' it uses content negotiation. The default is NULL and it should only be set for APIs that use
 #' content negotiation.
 #' @param ... other parameters supplied to the parsing function used by httr::content.
 #'
@@ -34,12 +34,13 @@ try_query <-
 
     query_result <- "empty"
     try_n <- 0
-    while (!is(query_result, "response")  & 
-           try_n < max_tries & 
-           !ifelse(is(query_result, "character"),
-                   stringr::str_detect(query_result, pattern = "Timeout was reached"),
-                   FALSE)) { # this ifelse stops requery if the timeout is too low.
-      if(!missing(accept)){
+    while (!is(query_result, "response") &
+      try_n < max_tries &
+      !ifelse(is(query_result, "character"),
+        stringr::str_detect(query_result, pattern = "Timeout was reached"),
+        FALSE
+      )) { # this ifelse stops requery if the timeout is too low.
+      if (!missing(accept)) {
         # with accept set
         query_result <- tryCatch(httr::GET(url, httr::accept(accept), httr::timeout(timeout)),
           error = function(e) conditionMessage(e),
@@ -48,8 +49,8 @@ try_query <-
       } else {
         # without accept set (the usual case)
         query_result <- tryCatch(httr::GET(url, httr::timeout(timeout)),
-                                 error = function(e) conditionMessage(e),
-                                 warning = function(w) conditionMessage(w)
+          error = function(e) conditionMessage(e),
+          warning = function(w) conditionMessage(w)
         )
       }
       try_n <- try_n + 1
@@ -82,7 +83,7 @@ try_query <-
     on.exit(options(readr.show_progress = readr_show_progress))
     # Change variable to not show progress if readr is used
     options(readr.show_progress = FALSE)
-    
+
     result <- suppressMessages(httr::content(query_result, type = type, encoding = "UTF-8", ...))
 
     return(result)
