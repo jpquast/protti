@@ -103,8 +103,13 @@ fetch_chebi <- function(relation = FALSE, stars = c(3)) {
   chebi_compounds <- utils::read.delim(textConnection(chebi_compounds_download),
     quote = "", stringsAsFactors = FALSE
   ) 
+  
   if (nrow(chebi_compounds) == 1) {
     message(chebi_compounds$V1)
+    return(invisible(NULL))
+  }
+  if (nrow(chebi_compounds) == 0) {
+    message("No information could be retrieved from the database, try again later!")
     return(invisible(NULL))
   }
 
@@ -116,8 +121,13 @@ fetch_chebi <- function(relation = FALSE, stars = c(3)) {
   chebi_names <- utils::read.delim(textConnection(chebi_names_download),
     quote = "", stringsAsFactors = FALSE
   )
+  
   if (nrow(chebi_names) == 1) {
     message(chebi_names$V1)
+    return(invisible(NULL))
+  }
+  if (nrow(chebi_names) == 0) {
+    message("No information could be retrieved from the database, try again later!")
     return(invisible(NULL))
   }
 

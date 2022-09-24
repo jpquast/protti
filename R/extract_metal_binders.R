@@ -137,6 +137,19 @@ extract_metal_binders <- function(data_uniprot,
     message("Package \"stringi\" is needed for this function to work. Please install it.", call. = FALSE)
     return(invisible(NULL))
   }
+  
+  # Check if data was provided, if not the connection might have failed
+  if((is.null(data_uniprot) & !missing(data_uniprot))|
+     (is.null(data_quickgo) & !missing(data_quickgo))|
+     (is.null(data_chebi) & !missing(data_chebi))|
+     (is.null(data_chebi_relation) & !missing(data_chebi_relation))|
+     (is.null(data_eco) & !missing(data_eco))|
+     (is.null(data_eco_relation) & !missing(data_eco_relation))){
+    message(strwrap('The provided "data_uniprot", "data_quickgo", "data_chebi", "data_eco" or "data_eco_relation" is NULL. 
+            Please check that there was no connection problem when you retrieved this data and try again.', prefix = "\n", initial = ""))
+    return(invisible(NULL))
+  }
+  
   # Check if provided data has the right format
   # data_uniprot
   if (!("ft_binding" %in% colnames(data_uniprot) &

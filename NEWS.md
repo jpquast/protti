@@ -8,6 +8,8 @@
 ## Bug fixes
 
 * `assign_missingness()` now correctly deals with unequal replicate numbers of comparisons. In addition there is a message returned if an unequal number of replicates is detected for a comparison.
+* `fetch_chebi()` fixed a bug that prevented the function from failing gracefully if there is a connection problem to the server.
+* `extract_metal_binders()` now checks if the provided data frames are `NULL`. If yes, a message and `NULL` is returned.
 
 ## Additional changes
 
