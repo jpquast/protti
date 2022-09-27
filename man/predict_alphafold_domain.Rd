@@ -25,10 +25,10 @@ Default is \code{1}.}
 \item{pae_cutoff}{a numeric value, graph edges will only be created for residue pairs with \code{pae < pae_cutoff}.
 Default is \code{5}.}
 
-\item{graph_resolution}{a numeric value that regulates how aggressively the clustering algorithm is. Smaller values
+\item{graph_resolution}{a numeric value that regulates how aggressive the clustering algorithm is. Smaller values
 lead to larger clusters. Value should be larger than zero, and values larger than 5 are unlikely to be useful.
 Higher values lead to stricter (i.e. smaller) clusters. The value is provided to the Leiden clustering algorithm
-of the \code{igraph} package \verb{as graph_resolution / 100}. Default is \code{1}.}
+of the \code{igraph} package as \code{graph_resolution / 100}. Default is \code{1}.}
 
 \item{return_data_frame}{a logical value; if \code{TRUE} a data frame instead of a list
 is returned. It is recommended to only use this if information for few proteins is retrieved.
@@ -59,12 +59,16 @@ This function is based on python code written by Tristan Croll. The original cod
 \examples{
 \donttest{
 # Fetch aligned errors
-aligned_error <- fetch_alphafold_aligned_error(uniprot_ids = c("F4HVG8", "O15552"),
-                                               error_cutoff = 4)
+aligned_error <- fetch_alphafold_aligned_error(
+  uniprot_ids = c("F4HVG8", "O15552"),
+  error_cutoff = 4
+)
 
 # Predict protein domains
-af_domains <- predict_alphafold_domain(pae_list = aligned_error,
-                                       return_data_frame = TRUE)
+af_domains <- predict_alphafold_domain(
+  pae_list = aligned_error,
+  return_data_frame = TRUE
+)
 
 head(af_domains, n = 10)
 }

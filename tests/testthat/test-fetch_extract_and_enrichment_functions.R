@@ -19,10 +19,10 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
   test_that("fetch_mobidb works", {
     unis <- c("iRT", "P25437", "P30870", "P0A6P9")
-    expect_warning(mobidb <- fetch_mobidb("83333", unis))
+    expect_warning(mobidb <- fetch_mobidb(unis))
     expect_is(mobidb, "data.frame")
-    expect_equal(nrow(mobidb), 2)
-    expect_equal(ncol(mobidb), 7)
+    expect_equal(nrow(mobidb), 259)
+    expect_equal(ncol(mobidb), 6)
   })
 
   database <- fetch_chebi(stars = c(2, 3))

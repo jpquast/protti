@@ -50,9 +50,11 @@ the predicted and true structures are aligned on residue y (aligned residue).
 }
 \examples{
 \donttest{
-aligned_error <- fetch_alphafold_aligned_error(uniprot_ids = c("F4HVG8", "O15552"),
-                                               error_cutoff = 5,
-                                               return_data_frame = TRUE)
+aligned_error <- fetch_alphafold_aligned_error(
+  uniprot_ids = c("F4HVG8", "O15552"),
+  error_cutoff = 5,
+  return_data_frame = TRUE
+)
 
 head(aligned_error, n = 10)
 }

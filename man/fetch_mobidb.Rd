@@ -2,32 +2,34 @@
 % Please edit documentation in R/fetch_mobidb.R
 \name{fetch_mobidb}
 \alias{fetch_mobidb}
-\title{Fetch protein disorder information from MobiDB}
+\title{Fetch protein disorder and mobility information from MobiDB}
 \usage{
-fetch_mobidb(organism_id, protein_ids)
+fetch_mobidb(uniprot_ids = NULL, organism_id = NULL, show_progress = TRUE)
 }
 \arguments{
-\item{organism_id}{a character value that specifies the NCBI taxonomy identifier of an organism
-(TaxId). Possible inputs inlude only: "9606" (Human), "559292" (Yeast), "83333" (E. coli),
-"10090" (Mouse), "9913" (Bovine), "7227" (Fruit fly).}
+\item{uniprot_ids}{optional, a character vector of UniProt identifiers for which information
+should be fetched. This argument is mutually exclusive to the \code{organism_id} argument.}
 
-\item{protein_ids}{a character vector of UniProt identifiers. These need to be proteins from
-the organism provided in \code{organism_id}.}
+\item{organism_id}{optional, a character value providing the NCBI taxonomy identifier of an organism
+(TaxId) of an organism for which all available information should be retreived. This
+argument is mutually exclusive to the \code{uniprot_ids} argument.}
+
+\item{show_progress}{a logical value; if \code{TRUE} a progress bar will be shown.
+Default is \code{TRUE}.}
 }
 \value{
-A data frame that contains start and end positions for disordered regions for each
-protein provided. The \code{feature} column contains information on the source of this
+A data frame that contains start and end positions for disordered and mobile protein
+regions. The \code{feature} column contains information on the source of this
 annotation. More information on the source can be found
 \href{https://mobidb.bio.unipd.it/about/mobidb}{here}.
 }
 \description{
-Fetches information about disordered protein regions from MobiDB.
+Fetches information about disordered and mobile protein regions from MobiDB.
 }
 \examples{
 \donttest{
 fetch_mobidb(
-  organism_id = "83333",
-  protein_ids = c("P0A799", "P62707")
+  uniprot_ids = c("P0A799", "P62707")
 )
 }
 }

@@ -16,10 +16,10 @@
 #' Default is `1`.
 #' @param pae_cutoff a numeric value, graph edges will only be created for residue pairs with `pae < pae_cutoff`.
 #' Default is `5`.
-#' @param graph_resolution a numeric value that regulates how aggressively the clustering algorithm is. Smaller values
+#' @param graph_resolution a numeric value that regulates how aggressive the clustering algorithm is. Smaller values
 #' lead to larger clusters. Value should be larger than zero, and values larger than 5 are unlikely to be useful.
 #' Higher values lead to stricter (i.e. smaller) clusters. The value is provided to the Leiden clustering algorithm
-#' of the `igraph` package `as graph_resolution / 100`. Default is `1`.
+#' of the `igraph` package as `graph_resolution / 100`. Default is `1`.
 #' @param return_data_frame a logical value; if `TRUE` a data frame instead of a list
 #' is returned. It is recommended to only use this if information for few proteins is retrieved.
 #' Default is `FALSE`.

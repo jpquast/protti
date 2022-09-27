@@ -53,9 +53,11 @@ GO dataset that considers all child terms of the supplied IDs.
 \examples{
 \donttest{
 # Annotations
-annotations <- fetch_quickgo(type = "annotations", 
-                             id = c("P63328","Q4FFP4"), 
-                             ontology = "molecular_function")
+annotations <- fetch_quickgo(
+  type = "annotations",
+  id = c("P63328", "Q4FFP4"),
+  ontology = "molecular_function"
+)
 
 head(annotations)
 
@@ -65,8 +67,10 @@ terms <- fetch_quickgo(type = "terms")
 head(terms)
 
 # Slims
-slims <- fetch_quickgo(type = "slims", 
-                       go_id_slims = c("GO:0046872", "GO:0051540"))
+slims <- fetch_quickgo(
+  type = "slims",
+  go_id_slims = c("GO:0046872", "GO:0051540")
+)
 
 head(slims)
 }
