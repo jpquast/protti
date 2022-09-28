@@ -1,6 +1,6 @@
 #' Fetch protein disorder and mobility information from MobiDB
 #'
-#' Fetches information about disordered and mobile protein regions from MobiDB.
+#' Fetches information about disordered and flexible protein regions from MobiDB.
 #'
 #' @param uniprot_ids optional, a character vector of UniProt identifiers for which information
 #' should be fetched. This argument is mutually exclusive to the \code{organism_id} argument.
