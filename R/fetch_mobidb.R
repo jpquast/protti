@@ -10,7 +10,7 @@
 #' @param show_progress a logical value; if `TRUE` a progress bar will be shown.
 #' Default is `TRUE`.
 #'
-#' @return A data frame that contains start and end positions for disordered and mobile protein
+#' @return A data frame that contains start and end positions for disordered and flexible protein
 #' regions. The \code{feature} column contains information on the source of this
 #' annotation. More information on the source can be found
 #' \href{https://mobidb.bio.unipd.it/about/mobidb}{here}.
