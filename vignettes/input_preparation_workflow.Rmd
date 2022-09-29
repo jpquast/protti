@@ -76,7 +76,7 @@ Spectronaut reports already contain data in the tidy data format. Therefore noth
 * FG.Charge (precursor charge state, relevant for quality control)
 * PG.Quantity (protein group quantity, required for protein-centric analyses if you prefer not to calculate them with `calculate_protein_abundance()`)
 
-Please make sure that the report is a .csv file. You can use the `read_protti()` function in order to load the spectronaut report into R. This function is a wrapper around the fast `fread()` function from the [`data.table`](https://rdatatable.gitlab.io/data.table/) package and the `clean_names()` function from the [`janitor`](http://sfirke.github.io/janitor/) package. This will allow you to not only load your data into R very fast, but also to clean up the column names into lower snake case. This will make it easier to remember them and to use them in your data analysis. For the Spectronaut columns `R.FileName` will change for example into `r_file_name`. 
+Please make sure that the report is a .csv file. You can use the `read_protti()` function in order to load the spectronaut report into R. This function is a wrapper around the fast `fread()` function from the [`data.table`](https://rdatatable.gitlab.io/data.table/) package and the `clean_names()` function from the [`janitor`](https://sfirke.github.io/janitor/) package. This will allow you to not only load your data into R very fast, but also to clean up the column names into lower snake case. This will make it easier to remember them and to use them in your data analysis. For the Spectronaut columns `R.FileName` will change for example into `r_file_name`. 
 
 ```{r Spectronaut, eval=FALSE}
 # To read in your own data you can use read_protti()
