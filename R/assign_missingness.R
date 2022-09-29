@@ -176,7 +176,7 @@ from the conditions and assigned their missingness. The created comparisons are:
   if (nrow(unequal_replicates) != 0) {
     message("\n")
     message(
-      strwrap("The following comparisons have been detected to have unqueal replicate numbers.
+      strwrap("The following comparisons have been detected to have unequal replicate numbers.
               If this is intended please ignore this message. This function can appropriately deal
               with unequal replicate numbers.", prefix = "\n", initial = ""), "\n"
     )
