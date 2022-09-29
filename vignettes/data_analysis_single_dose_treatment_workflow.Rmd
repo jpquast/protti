@@ -82,7 +82,7 @@ library(dplyr)
 ```
 
 After having loaded the required packages we will load our data set into the R environment.
-In order to do this for your data set you can use the function `read_protti()`. This function is a wrapper around the fast `fread()` function from the [`data.table`](https://rdatatable.gitlab.io/data.table/) package and the `clean_names()` function from the [`janitor`](http://sfirke.github.io/janitor/) package. This will allow you to not only load your data into R very fast, but also to clean up the column names into lower snake case to make them more R-friendly. This will make it easier to remember them and to use them in your data analysis.
+In order to do this for your data set you can use the function `read_protti()`. This function is a wrapper around the fast `fread()` function from the [`data.table`](https://rdatatable.gitlab.io/data.table/) package and the `clean_names()` function from the [`janitor`](https://sfirke.github.io/janitor/) package. This will allow you to not only load your data into R very fast, but also to clean up the column names into lower snake case to make them more R-friendly. This will make it easier to remember them and to use them in your data analysis.
 
 ```{r eval=FALSE}
 # To read in your own data you can use read_protti()

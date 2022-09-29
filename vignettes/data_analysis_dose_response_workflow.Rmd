@@ -54,7 +54,7 @@ For this vignette we use a subset of proteins from an experiment of HeLa cell ly
 
 We included 39 random proteins and FKBP12 in this sample data set. The proteins were sampled using the seed 123. 
 
-If you want to read your data into R, we suggest using the `read_protti()` function. This function is a wrapper around the fast `fread()` function from the [`data.table`](https://rdatatable.gitlab.io/data.table/) package and the `clean_names()` function from the [`janitor`](http://sfirke.github.io/janitor/) package. This will allow you to not only load your data into R very fast, but also to clean up the column names into lower snake case. This will make it easier to remember them and to use them in your data analysis.
+If you want to read your data into R, we suggest using the `read_protti()` function. This function is a wrapper around the fast `fread()` function from the [`data.table`](https://rdatatable.gitlab.io/data.table/) package and the `clean_names()` function from the [`janitor`](https://sfirke.github.io/janitor/) package. This will allow you to not only load your data into R very fast, but also to clean up the column names into lower snake case. This will make it easier to remember them and to use them in your data analysis.
 To ensure that your data input has the right format you can check out our [input preparation vignette](https://jpquast.github.io/protti/articles/input_preparation_workflow.html).
 
 ```{r use_read_protti, eval=FALSE}
