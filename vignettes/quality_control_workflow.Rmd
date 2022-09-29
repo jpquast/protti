@@ -4,7 +4,7 @@ author: "Dina Schuster"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Qualtiy control (QC) workflow}
+  %\VignetteIndexEntry{Qualtiy Control (QC) workflow}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

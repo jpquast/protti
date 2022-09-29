@@ -353,7 +353,7 @@ map_peptides_on_structure <- function(peptide_data,
       if (file_format == ".cif") {
         batches <- purrr::map(
           .x = uniprot_ids,
-          .f = ~ paste0("https://alphafold.ebi.ac.uk/files/AF-", .x, "-F1-model_v1.cif")
+          .f = ~ paste0("https://alphafold.ebi.ac.uk/files/AF-", .x, "-F1-model_v3.cif")
         )
 
         names(batches) <- paste0(uniprot_ids, "_AlphaFold")
@@ -397,7 +397,7 @@ map_peptides_on_structure <- function(peptide_data,
         # same as above but for .pdb files. Indexing is different.
         batches <- purrr::map(
           .x = uniprot_ids,
-          .f = ~ paste0("https://alphafold.ebi.ac.uk/files/AF-", .x, "-F1-model_v1.pdb")
+          .f = ~ paste0("https://alphafold.ebi.ac.uk/files/AF-", .x, "-F1-model_v3.pdb")
         )
 
         names(batches) <- paste0(uniprot_ids, "_AlphaFold")

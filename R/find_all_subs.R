@@ -13,7 +13,7 @@
 #' for the search. It is possible to use "all" relationships. The default type is "is_a". A list of
 #' possible relationships for e.g. ChEBI IDs can be found
 #' \href{https://docs.google.com/document/d/1_w-DwBdCCOh1gMeeP6yqGzcnkpbHYOa3AGSODe5epcg/edit#heading=h.hnsqoqu978s5}{here}.
-#' @param exclude_parent_id a logical value that specifies if the parent ID should be included in 
+#' @param exclude_parent_id a logical value that specifies if the parent ID should be included in
 #' the returned list.
 #'
 #' @return A list of character vectors containing the provided ID and all of its sub IDs. It
@@ -22,11 +22,11 @@
 #' @importFrom magrittr %>%
 #' @importFrom purrr map
 #' @importFrom rlang .data
-find_all_subs <- function(data, 
-                          ids, 
-                          main_id = id, 
-                          type = type, 
-                          accepted_types = "is_a", 
+find_all_subs <- function(data,
+                          ids,
+                          main_id = id,
+                          type = type,
+                          accepted_types = "is_a",
                           exclude_parent_id = FALSE) {
   if (!requireNamespace("igraph", quietly = TRUE)) {
     message("Package \"igraph\" is needed for this function to work. Please install it.", call. = FALSE)
@@ -34,11 +34,11 @@ find_all_subs <- function(data,
   }
   if (ifelse(length(accepted_types) == 1, accepted_types == "all", FALSE)) {
     data <- data %>%
-      dplyr::select(-{{type}})
+      dplyr::select(-{{ type }})
   } else {
     data <- data %>%
-      dplyr::filter({{type}} %in% accepted_types) %>%
-      dplyr::select(-{{type}})
+      dplyr::filter({{ type }} %in% accepted_types) %>%
+      dplyr::select(-{{ type }})
   }
   # Generate graph
   g <- igraph::graph_from_data_frame(data, directed = TRUE)
@@ -48,10 +48,10 @@ find_all_subs <- function(data,
       return(NULL)
     }
     r <- igraph::subcomponent(g, match(x, igraph::V(g)$name), "out")$name
-    if(exclude_parent_id){
+    if (exclude_parent_id) {
       r <- r[r != x]
     }
-    
+
     r
   })
   result

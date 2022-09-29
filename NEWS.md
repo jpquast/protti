@@ -1,8 +1,20 @@
-# protti 0.4.0.9000
+# protti 0.5.0
 
 ## New features
 
 * `fetch_alphafold_aligned_error()` was added. It fetches the aligned error matrix for structure predictions from the AlphaFold EBI database.
+* `predict_alphafold_domain()` was added. It uses a graph-based community clustering algorithm of AlphaFold predicted aligned errors in order to infer protein domains in AlphaFold predictions. The code is based on [python code](https://github.com/tristanic/pae_to_domains) by Tristan Croll.
+
+## Bug fixes
+
+* `assign_missingness()` now correctly deals with unequal replicate numbers of comparisons. In addition there is a message returned if an unequal number of replicates is detected for a comparison.
+* `fetch_chebi()` fixed a bug that prevented the function from failing gracefully if there is a connection problem to the server.
+* `extract_metal_binders()` now checks if the provided data frames are `NULL`. If yes, a message and `NULL` is returned.
+* `fetch_mobidb()` was updated after the API changed.
+
+## Additional changes
+
+* Updated the "Protein Structure Analysis Workflow" vignette to include the `fetch_alphafold_aligned_error()` and `predict_alphafold_domain()` functions.
 
 # protti 0.4.0
 

@@ -1,6 +1,7 @@
 ## Submission 
 
-* We fixed a bug that was caused by an API change of the UniProt database.
+* We fixed a bug that cased a function to not fail gracefully if there 
+was a connectivity issue to a database. This should now be resolved.
 * The bug caused an error to appear when \donttest examples were tested.
 * This release therefore fixes the problem reported by Prof. Brian Ripley.
 

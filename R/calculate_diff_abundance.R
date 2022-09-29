@@ -60,7 +60,7 @@ diff_abundance <-
 #' Is not required if \code{method = "t-test_mean_sd"}.
 #' @param condition a character or numeric column in the \code{data} data frame that contains the
 #' conditions.
-#' @param grouping a character column in the \code{data} data frame that contains precursor, 
+#' @param grouping a character column in the \code{data} data frame that contains precursor,
 #' peptide or protein identifiers.
 #' @param intensity_log2 a numeric column in the \code{data} data frame that contains intensity
 #' values. The intensity values need to be log2 transformed. Is not required if
@@ -68,8 +68,8 @@ diff_abundance <-
 #' @param missingness a character column in the \code{data} data frame that contains missingness
 #' information. Can be obtained by calling \code{assign_missingness()}. Is not required if
 #' \code{method = "t-test_mean_sd"}. The type of missingness assigned to a comparison does not have
-#' any influence on the statistical test. However, if \code{filter_NA_missingness = TRUE} and 
-#' \code{method = "proDA"}, then comparisons with missingness \code{NA} are filtered out prior 
+#' any influence on the statistical test. However, if \code{filter_NA_missingness = TRUE} and
+#' \code{method = "proDA"}, then comparisons with missingness \code{NA} are filtered out prior
 #' to p-value adjustment.
 #' @param comparison a character column in the \code{data} data frame that contains information of
 #' treatment/reference condition pairs. Can be obtained by calling \code{assign_missingness}.
@@ -110,7 +110,7 @@ diff_abundance <-
 #' @param retain_columns a vector indicating if certain columns should be retained from the input
 #' data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
 #' columns can be retained by providing their names (not in quotations marks, just like other
-#' column names, but in a vector). Please note that if you retain columns that have multiple 
+#' column names, but in a vector). Please note that if you retain columns that have multiple
 #' rows per grouped variable there will be duplicated rows in the output.
 #'
 #' @return A data frame that contains differential abundances (\code{diff}), p-values (\code{pval})
@@ -146,7 +146,7 @@ diff_abundance <-
 #' \code{n_obs} contains the number of observations for the specific protein, peptide or precursor
 #' (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
 #' }
-#' For all methods execept \code{"proDA"}, the p-value adjustment is performed only on the 
+#' For all methods execept \code{"proDA"}, the p-value adjustment is performed only on the
 #' proportion of data that contains a p-value that is not \code{NA}. For \code{"proDA"} the
 #' p-value adjustment is either performed on the complete dataset (\code{filter_NA_missingness = TRUE})
 #' or on the subset of the dataset with missingness that is not \code{NA} (\code{filter_NA_missingness = FALSE}).
@@ -304,20 +304,20 @@ Please provide a valid reference condition.", prefix = "\n", initial = ""))
         )) %>%
         dplyr::mutate(diff = ifelse(diff == "NaN", NA, diff)) %>%
         dplyr::select(-c(.data$control, .data$treated)) %>%
-        dplyr::left_join(t_test_missingness_obs, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison")) 
-      
-      # save all p-values that are NA to join back after adjustment. Otherwise adjustment is wrong since 
+        dplyr::left_join(t_test_missingness_obs, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison"))
+
+      # save all p-values that are NA to join back after adjustment. Otherwise adjustment is wrong since
       # the p.adjust function does not remove NA values
-      t_test_NA_pval <- t_test_result %>% 
+      t_test_NA_pval <- t_test_result %>%
         dplyr::filter(is.na(.data$pval))
-      
+
       # Adjust the p-values for multiple testing
-      t_test_adj_pval <- t_test_result %>% 
-        dplyr::filter(!is.na(.data$pval)) %>% 
+      t_test_adj_pval <- t_test_result %>%
+        dplyr::filter(!is.na(.data$pval)) %>%
         dplyr::group_by({{ comparison }}) %>%
         dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
         dplyr::ungroup() %>%
-        dplyr::bind_rows(t_test_NA_pval) %>% 
+        dplyr::bind_rows(t_test_NA_pval) %>%
         dplyr::arrange(.data$adj_pval, .data$pval)
 
       message("DONE", appendLF = TRUE)
@@ -325,6 +325,7 @@ Please provide a valid reference condition.", prefix = "\n", initial = ""))
       if (!missing(retain_columns)) {
         t_test_adj_pval <- data %>%
           dplyr::ungroup() %>%
+          tidyr::drop_na({{ intensity_log2 }}) %>%
           dplyr::select(
             !!enquo(retain_columns),
             colnames(t_test_adj_pval)[!colnames(t_test_adj_pval) %in%
@@ -415,6 +416,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
       if (!missing(retain_columns)) {
         t_test_mean_sd_result <- data %>%
           dplyr::ungroup() %>%
+          tidyr::drop_na({{ intensity_log2 }}) %>%
           dplyr::select(!!enquo(retain_columns), colnames(t_test_mean_sd_result)[!colnames(t_test_mean_sd_result) %in%
             c(
               "mean_control",
@@ -587,19 +589,19 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
           adj_pval = .data$adj.P.Val
         ) %>%
         dplyr::left_join(moderated_t_test_missingness, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison"))
-      
-      # save all p-values that are NA to join back after adjustment. Otherwise adjustment is wrong since 
+
+      # save all p-values that are NA to join back after adjustment. Otherwise adjustment is wrong since
       # the p.adjust function does not remove NA values
-      moderated_t_test_NA_pval <- moderated_t_test_result %>% 
+      moderated_t_test_NA_pval <- moderated_t_test_result %>%
         dplyr::filter(is.na(.data$pval))
-      
+
       # Adjust the p-values for multiple testing
-      moderated_t_test_adj_pval <- moderated_t_test_result %>% 
-        dplyr::filter(!is.na(.data$pval)) %>% 
+      moderated_t_test_adj_pval <- moderated_t_test_result %>%
+        dplyr::filter(!is.na(.data$pval)) %>%
         dplyr::group_by({{ comparison }}) %>%
         dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
         dplyr::ungroup() %>%
-        dplyr::bind_rows(moderated_t_test_NA_pval) %>% 
+        dplyr::bind_rows(moderated_t_test_NA_pval) %>%
         dplyr::arrange(.data$adj_pval, .data$pval)
 
       message("DONE", appendLF = TRUE)
@@ -607,6 +609,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
       if (!missing(retain_columns)) {
         moderated_t_test_adj_pval <- data %>%
           dplyr::ungroup() %>%
+          tidyr::drop_na({{ intensity_log2 }}) %>%
           dplyr::select(
             !!enquo(retain_columns),
             colnames(moderated_t_test_adj_pval)[!colnames(moderated_t_test_adj_pval) %in%
@@ -640,7 +643,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
 
       if (filter_NA_missingness == TRUE) {
         moderated_t_test_adj_pval <- moderated_t_test_adj_pval %>%
-          tidyr::drop_na({{ missingness }}) 
+          tidyr::drop_na({{ missingness }})
         return(moderated_t_test_adj_pval)
       }
       if (filter_NA_missingness == FALSE) {
@@ -690,7 +693,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
         dplyr::distinct({{ grouping }}, {{ comparison }}, {{ missingness }}, .data$n_obs)
 
       proDA_filter <- proDA_missingness %>%
-        tidyr::drop_na({{ missingness }}) %>% 
+        tidyr::drop_na({{ missingness }}) %>%
         dplyr::distinct({{ grouping }}, {{ comparison }}) %>%
         split(.$comparison) %>%
         purrr::map(dplyr::select, -{{ comparison }})
@@ -767,6 +770,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
       if (!missing(retain_columns)) {
         proDA_result <- data %>%
           dplyr::ungroup() %>%
+          tidyr::drop_na({{ intensity_log2 }}) %>%
           dplyr::select(
             !!enquo(retain_columns),
             colnames(proDA_result)[!colnames(proDA_result) %in%

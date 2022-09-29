@@ -5,7 +5,7 @@
 #' @param organism_id a numeric value that specifies the NCBI taxonomy identifier (TaxId) for an
 #' organism.
 #' @param columns a character vector of metadata columns that should be imported from UniProt (all
-#' possible columns can be found \href{https://www.uniprot.org/help/return_fields}{here}. For 
+#' possible columns can be found \href{https://www.uniprot.org/help/return_fields}{here}. For
 #' cross-referenced database provide the database name with the prefix "xref_", e.g. \code{"xref_pdb"}).
 #' Note: Not more than one or two columns should be selected otherwise the function will not be
 #' able to efficiently retrieve the information. If more information is needed, \code{fetch_uniprot()}

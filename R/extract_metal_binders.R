@@ -59,14 +59,14 @@
 #' Since information about metal ligands can come from multiple sources, additional information (e.g. evidence) is nested in the returned
 #' data frame. In order to unnest the relevant information the following steps have to be taken: It is
 #' possible that there are multiple IDs in the "most_specific_id" column. This means that one position cannot be uniquely
-#' attributed to one specific ligand even with the same ligand_identifier. Apart from the "most_specific_id" column, in 
-#' which those instances are separated by ",", in other columns the relevant information is separated by "||". Then 
-#' information should be split based on the source (not the \code{source} column, that one can be removed from the data 
-#' frame). There are certain columns associated with specific sources (e.g. \code{go_term} is associated 
+#' attributed to one specific ligand even with the same ligand_identifier. Apart from the "most_specific_id" column, in
+#' which those instances are separated by ",", in other columns the relevant information is separated by "||". Then
+#' information should be split based on the source (not the \code{source} column, that one can be removed from the data
+#' frame). There are certain columns associated with specific sources (e.g. \code{go_term} is associated
 #' with the \code{"go_term"} source). Values of columns not relevant for a certain source should be replaced with \code{NA}.
 #' Since a \code{most_specific_id} can have multiple \code{chebi_id}s associated with it we need to unnest the \code{chebi_id}
-#' column and associated columns in which information is separated by "|". Afterwards evidence and additional information can be 
-#' unnested by first splitting data for ";;" and then for ";". 
+#' column and associated columns in which information is separated by "|". Afterwards evidence and additional information can be
+#' unnested by first splitting data for ";;" and then for ";".
 #' @import dplyr
 #' @import tidyr
 #' @import purrr
@@ -79,9 +79,9 @@
 #' @examples
 #' \donttest{
 #' # Create example data
-#' 
+#'
 #' uniprot_ids <- c("P00393", "P06129", "A0A0C5Q309", "A0A0C9VD04")
-#' 
+#'
 #' ## UniProt data
 #' data_uniprot <- fetch_uniprot(
 #'   uniprot_ids = uniprot_ids,
@@ -119,12 +119,12 @@
 #' metal_info
 #' }
 extract_metal_binders <- function(data_uniprot,
-                                      data_quickgo,
-                                      data_chebi = NULL,
-                                      data_chebi_relation = NULL,
-                                      data_eco = NULL,
-                                      data_eco_relation = NULL,
-                                      show_progress = TRUE) {
+                                  data_quickgo,
+                                  data_chebi = NULL,
+                                  data_chebi_relation = NULL,
+                                  data_eco = NULL,
+                                  data_eco_relation = NULL,
+                                  show_progress = TRUE) {
   metal_list <- protti::metal_list
   metal_chebi_uniprot <- protti::metal_chebi_uniprot
   metal_go_slim_subset <- protti::metal_go_slim_subset
@@ -137,6 +137,19 @@ extract_metal_binders <- function(data_uniprot,
     message("Package \"stringi\" is needed for this function to work. Please install it.", call. = FALSE)
     return(invisible(NULL))
   }
+
+  # Check if data was provided, if not the connection might have failed
+  if ((is.null(data_uniprot) & !missing(data_uniprot)) |
+    (is.null(data_quickgo) & !missing(data_quickgo)) |
+    (is.null(data_chebi) & !missing(data_chebi)) |
+    (is.null(data_chebi_relation) & !missing(data_chebi_relation)) |
+    (is.null(data_eco) & !missing(data_eco)) |
+    (is.null(data_eco_relation) & !missing(data_eco_relation))) {
+    message(strwrap('The provided "data_uniprot", "data_quickgo", "data_chebi", "data_eco" or "data_eco_relation" is NULL.
+            Please check that there was no connection problem when you retrieved this data and try again.', prefix = "\n", initial = ""))
+    return(invisible(NULL))
+  }
+
   # Check if provided data has the right format
   # data_uniprot
   if (!("ft_binding" %in% colnames(data_uniprot) &
@@ -246,7 +259,7 @@ extract_metal_binders <- function(data_uniprot,
     dplyr::mutate(chebi_id = as.character(.data$id)) %>%
     dplyr::distinct(.data$chebi_id, .data$definition, .data$name, .data$formula) %>%
     dplyr::filter(stringr::str_detect(.data$formula, pattern = paste0(paste0(metal_list$symbol, collapse = "(?![:lower:])|"), "(?![:lower:])")) |
-                    .data$chebi_id %in% metal_chebi_uniprot$id) %>% # This recreates a version of the data frame provided by protti that contains all metal containing entries from ChEBI
+      .data$chebi_id %in% metal_chebi_uniprot$id) %>% # This recreates a version of the data frame provided by protti that contains all metal containing entries from ChEBI
     dplyr::mutate(extract_formula = stringr::str_extract_all(.data$formula, pattern = paste0(paste0(metal_list$symbol, collapse = "(?![:lower:])|"), "(?![:lower:])"))) %>%
     tidyr::unnest(.data$extract_formula) %>%
     dplyr::mutate(metal_atom_id = ifelse(is.na(.data$extract_formula),
@@ -272,7 +285,7 @@ extract_metal_binders <- function(data_uniprot,
       accepted_types = "all"
     ) %>%
     unlist()
-  
+
   automatic_eco <- data_eco_relation %>%
     find_all_subs(
       ids = c("ECO:0000501"),
@@ -448,7 +461,7 @@ extract_metal_binders <- function(data_uniprot,
       eco_type_binding = .data$eco_type,
       evidence_source_binding = .data$evidence_source
     ) %>%
-    dplyr::mutate(source = "binding") %>% 
+    dplyr::mutate(source = "binding") %>%
     # make sure that accession column is of type "chr" even if data frame is empty
     dplyr::mutate(accession = as.character(.data$accession))
 
@@ -511,8 +524,10 @@ extract_metal_binders <- function(data_uniprot,
     # Now combine data to have one row per accession and chebi_id
     # First concatenate different notes for the same accession and chebi_id
     dplyr::group_by(.data$accession, .data$chebi_id) %>%
-    dplyr::mutate(note = paste0(unique(.data$note), collapse = ","),
-                  note = stringr::str_replace_all(.data$note, pattern = "\\|", replacement = "/")) %>%
+    dplyr::mutate(
+      note = paste0(unique(.data$note), collapse = ","),
+      note = stringr::str_replace_all(.data$note, pattern = "\\|", replacement = "/")
+    ) %>%
     dplyr::ungroup() %>%
     dplyr::distinct() %>%
     # Combine evidence_sources
@@ -529,7 +544,7 @@ extract_metal_binders <- function(data_uniprot,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::distinct() %>%
-    dplyr::mutate(source = "cofactor") %>% 
+    dplyr::mutate(source = "cofactor") %>%
     # make sure that accession column is of type "chr" even if data frame is empty
     dplyr::mutate(accession = as.character(.data$accession))
 
@@ -608,13 +623,15 @@ extract_metal_binders <- function(data_uniprot,
     # Now combine data to have one row per accession and chebi_id
     # First concatenate different evidences for the same accession, chebi_id, eco and reaction
     dplyr::group_by(.data$accession, .data$chebi_id, .data$eco, .data$reaction) %>%
-    dplyr::mutate(evidence_source = paste0(.data$evidence_source, collapse = ",")) %>% 
+    dplyr::mutate(evidence_source = paste0(.data$evidence_source, collapse = ",")) %>%
     dplyr::ungroup() %>%
     dplyr::distinct() %>%
     # Combine evidence_source and reaction
     dplyr::group_by(.data$accession, .data$eco, .data$chebi_id) %>%
-    dplyr::mutate(evidence_source = paste0(.data$evidence_source, collapse = ";"),
-                  reaction = paste0(.data$reaction, collapse = ";")) %>%
+    dplyr::mutate(
+      evidence_source = paste0(.data$evidence_source, collapse = ";"),
+      reaction = paste0(.data$reaction, collapse = ";")
+    ) %>%
     dplyr::ungroup() %>%
     dplyr::distinct() %>%
     # Combine eco and eco_type
@@ -627,7 +644,7 @@ extract_metal_binders <- function(data_uniprot,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::distinct() %>%
-    dplyr::mutate(source = "catalytic_activity") %>% 
+    dplyr::mutate(source = "catalytic_activity") %>%
     # make sure that accession column is of type "chr" even if data frame is empty
     dplyr::mutate(accession = as.character(.data$accession))
 
@@ -724,7 +741,7 @@ extract_metal_binders <- function(data_uniprot,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::distinct() %>%
-    dplyr::mutate(source = "go_term") %>% 
+    dplyr::mutate(source = "go_term") %>%
     # make sure that accession column is of type "chr" even if data frame is empty
     dplyr::mutate(accession = as.character(.data$accession))
 
@@ -910,7 +927,7 @@ extract_metal_binders <- function(data_uniprot,
     dplyr::select(-c(.data$binding_temp_1)) %>%
     dplyr::group_by(.data$accession, .data$chebi_id, .data$ligand_identifier, .data$ligand_position) %>%
     dplyr::mutate(metal_id_part_name = paste0(.data$metal_id_part_name, collapse = ",")) %>%
-    dplyr::ungroup() %>% 
+    dplyr::ungroup() %>%
     dplyr::distinct() %>%
     dplyr::mutate(binding_temp_2 = stringr::str_split(.data$metal_id_part_binding, pattern = ",")) %>%
     tidyr::unnest(.data$binding_temp_2) %>%

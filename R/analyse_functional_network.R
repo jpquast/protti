@@ -156,7 +156,7 @@ does not match the number of rows in your data.", prefix = "\n", initial = ""))
         dplyr::filter({{ binds_treatment }}) %>%
         dplyr::mutate(color = halo_color)
     }
-    payload_id <- string_db$post_payload(dplyr::pull(coloring, {{string_id}}),
+    payload_id <- string_db$post_payload(dplyr::pull(coloring, {{ string_id }}),
       colors = coloring$color
     )
   }

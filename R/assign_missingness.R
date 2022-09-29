@@ -9,7 +9,7 @@
 #' conditions.
 #' @param grouping a character column in the \code{data} data frame that contains protein, precursor or
 #' peptide identifiers.
-#' @param intensity a numeric column in the \code{data} data frame that contains intensity values that 
+#' @param intensity a numeric column in the \code{data} data frame that contains intensity values that
 #' relate to the \code{grouping} variable.
 #' @param ref_condition a character vector providing the condition that is used as a reference for
 #' missingness determination. Instead of providing one reference condition, "all" can be supplied,
@@ -54,7 +54,7 @@
 #' @importFrom rlang .data enquo !! as_name
 #' @importFrom purrr map_df
 #' @importFrom magrittr %>%
-#' @importFrom utils combn
+#' @importFrom utils combn capture.output
 #' @export
 #'
 #' @examples
@@ -145,26 +145,66 @@ from the conditions and assigned their missingness. The created comparisons are:
     dplyr::left_join(all_combinations, by = rlang::as_name(rlang::enquo(condition))) %>%
     tidyr::unnest(.data$comparison)
 
+  # check if there are any unequal replicate comparisons
+  unequal_replicates <- data_prep %>%
+    dplyr::arrange({{ condition }}) %>%
+    dplyr::distinct(.data$n_replicates, .data$comparison) %>%
+    dplyr::group_by(.data$comparison) %>%
+    dplyr::mutate(n = dplyr::n()) %>%
+    dplyr::filter(.data$n > 1) %>%
+    dplyr::mutate(n_replicates = paste0(.data$n_replicates, collapse = "/")) 
+  
+  if(any(unequal_replicates$n > 2)){
+    stop(
+      "\n",
+      strwrap('Some created comparisons seem to have more than two unequal number of replicates.
+              This usually only happens if the wrong grouping variable was selected. Please check this!
+              The grouping variable should split the dataset so that each sample of each condition only
+              appears once for each element of the grouping. E.g. grouping peptide: Each peptide should 
+              only have sample_1 associated once with condition_1 and not twice or more often. If in this
+              case grouping "protein" was inadvertently selected a protein might have multiple peptides, each
+              containing sample_1 of condition_1, which means it appears more than once (appears as many times
+              as there are peptides per protein). This means each condition can have an unequal number of replicates
+              that is as high as the max number of proteins, which is not the correct calculation for replicates.', 
+              prefix = "\n", initial = ""), "\n"
+    )
+  }
+  
+    unequal_replicates <- unequal_replicates %>% 
+    dplyr::distinct(.data$n_replicates, .data$comparison)
+
+  if (nrow(unequal_replicates) != 0) {
+    message("\n")
+    message(
+      strwrap("The following comparisons have been detected to have unequal replicate numbers.
+              If this is intended please ignore this message. This function can appropriately deal
+              with unequal replicate numbers.", prefix = "\n", initial = ""), "\n"
+    )
+    message(paste0(utils::capture.output(unequal_replicates), collapse = "\n"))
+  }
+
   result <- data_prep %>%
     dplyr::mutate(type = ifelse({{ condition }} == stringr::str_extract(.data$comparison, pattern = "(?<=_vs_).+"),
       "control",
       "treated"
     )) %>%
     split(.$comparison) %>%
-    purrr::map_df(~ .x %>%
-      tidyr::pivot_wider(names_from = .data$type, values_from = .data$n_detect) %>%
+    purrr::map_df(.f = ~ .x %>%
+      tidyr::pivot_wider(names_from = .data$type, values_from = c(.data$n_detect, .data$n_replicates)) %>%
       dplyr::group_by({{ grouping }}) %>%
-      tidyr::fill(treated, control, .direction = "updown") %>%
+      tidyr::fill(.data$n_detect_treated, .data$n_detect_control, .data$n_replicates_treated, .data$n_replicates_control, .direction = "updown") %>%
       dplyr::ungroup() %>%
       dplyr::mutate(missingness = dplyr::case_when(
-        .data$control == .data$n_replicates & .data$treated == .data$n_replicates ~ "complete",
-        .data$control <= floor(n_replicates * completeness_MNAR) & .data$treated == .data$n_replicates ~ "MNAR",
-        .data$control == .data$n_replicates & .data$treated <= floor(n_replicates * completeness_MNAR) ~ "MNAR",
-        .data$control >= max(floor(.data$n_replicates * completeness_MAR), 1) &
-          .data$treated >= max(floor(.data$n_replicates * completeness_MAR), 1) ~ "MAR"
+        .data$n_detect_control == .data$n_replicates_control &
+          .data$n_detect_treated == .data$n_replicates_treated ~ "complete",
+        .data$n_detect_control <= floor(n_replicates_control * 0.2) &
+          .data$n_detect_treated == .data$n_replicates_treated ~ "MNAR",
+        .data$n_detect_control == .data$n_replicates_control &
+          .data$n_detect_treated <= floor(n_replicates_treated * 0.2) ~ "MNAR",
+        .data$n_detect_control >= max(floor(.data$n_replicates_control * 0.7), 1) &
+          .data$n_detect_treated >= max(floor(.data$n_replicates_control * 0.7), 1) ~ "MAR"
       ))) %>%
-    dplyr::select(-c(.data$control, .data$n_replicates, .data$treated)) %>%
-    dplyr::ungroup() %>%
+    dplyr::select(-c(.data$n_detect_control, .data$n_detect_treated, .data$n_replicates_control, .data$n_replicates_treated)) %>%
     # Arrange by grouping but in a numeric order of the character vector.
     dplyr::arrange(factor({{ grouping }}, levels = unique(stringr::str_sort({{ grouping }}, numeric = TRUE))))
 
