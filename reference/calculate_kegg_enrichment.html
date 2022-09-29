@@ -19,7 +19,7 @@ significance of enrichment."><!-- mathjax --><script src="https://cdnjs.cloudfla
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -150,56 +150,56 @@ frame is returned.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create example data</span></span></span>
-<span class="r-in"><span><span class="va">kegg_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="fetch_kegg.html">fetch_kegg</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"eco"</span><span class="op">)</span> </span></span>
+<span class="r-in"><span><span class="va">kegg_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="fetch_kegg.html">fetch_kegg</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"eco"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">kegg_data</span><span class="op">)</span><span class="op">)</span><span class="op">{</span> <span class="co"># only proceed if information was retrieved</span></span></span>
-<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">kegg_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">uniprot_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    size <span class="op">=</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>    replace <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>    prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.8</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span>,</span></span>
-<span class="r-in"><span>  n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">kegg_data</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span> <span class="co"># only proceed if information was retrieved</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="va">kegg_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">uniprot_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      size <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>      replace <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>      prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.8</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span>,</span></span>
+<span class="r-in"><span>    n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Plot KEGG enrichment</span></span></span>
-<span class="r-in"><span><span class="fu">calculate_kegg_enrichment</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">data</span>,</span></span>
-<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">uniprot_id</span>,</span></span>
-<span class="r-in"><span>  is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
-<span class="r-in"><span>  pathway_id <span class="op">=</span> <span class="va">pathway_id</span>,</span></span>
-<span class="r-in"><span>  pathway_name <span class="op">=</span> <span class="va">pathway_name</span>,</span></span>
-<span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>  plot_cutoff <span class="op">=</span> <span class="st">"pval 0.05"</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># Plot KEGG enrichment</span></span></span>
+<span class="r-in"><span>  <span class="fu">calculate_kegg_enrichment</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">data</span>,</span></span>
+<span class="r-in"><span>    protein_id <span class="op">=</span> <span class="va">uniprot_id</span>,</span></span>
+<span class="r-in"><span>    is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
+<span class="r-in"><span>    pathway_id <span class="op">=</span> <span class="va">pathway_id</span>,</span></span>
+<span class="r-in"><span>    pathway_name <span class="op">=</span> <span class="va">pathway_name</span>,</span></span>
+<span class="r-in"><span>    plot <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    plot_cutoff <span class="op">=</span> <span class="st">"pval 0.05"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Calculate KEGG enrichment</span></span></span>
-<span class="r-in"><span><span class="va">kegg</span> <span class="op">&lt;-</span> <span class="fu">calculate_kegg_enrichment</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">data</span>,</span></span>
-<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">uniprot_id</span>,</span></span>
-<span class="r-in"><span>  is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
-<span class="r-in"><span>  pathway_id <span class="op">=</span> <span class="va">pathway_id</span>,</span></span>
-<span class="r-in"><span>  pathway_name <span class="op">=</span> <span class="va">pathway_name</span>,</span></span>
-<span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">FALSE</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># Calculate KEGG enrichment</span></span></span>
+<span class="r-in"><span>  <span class="va">kegg</span> <span class="op">&lt;-</span> <span class="fu">calculate_kegg_enrichment</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">data</span>,</span></span>
+<span class="r-in"><span>    protein_id <span class="op">=</span> <span class="va">uniprot_id</span>,</span></span>
+<span class="r-in"><span>    is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
+<span class="r-in"><span>    pathway_id <span class="op">=</span> <span class="va">pathway_id</span>,</span></span>
+<span class="r-in"><span>    pathway_name <span class="op">=</span> <span class="va">pathway_name</span>,</span></span>
+<span class="r-in"><span>    plot <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">kegg</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">kegg</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 10</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    pathway_id    pathwa…¹   pval adj_p…² n_det…³ n_det…⁴ n_sig…⁵ n_sig…⁶ n_pro…⁷</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> path:eco00750 Vitamin… 0.029<span style="text-decoration: underline;">7</span>       1    <span style="text-decoration: underline;">1</span>614      10     313       5    1.94</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> path:eco00590 Arachid… 0.037<span style="text-decoration: underline;">9</span>       1    <span style="text-decoration: underline;">1</span>614       2     313       2    0.39</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> path:eco00410 beta-Al… 0.085<span style="text-decoration: underline;">8</span>       1    <span style="text-decoration: underline;">1</span>614      14     313       0    2.71</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> path:eco01230 Biosynt… 0.087<span style="text-decoration: underline;">2</span>       1    <span style="text-decoration: underline;">1</span>614     117     313      15   22.7 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> path:eco00592 alpha-L… 0.098<span style="text-decoration: underline;">9</span>       1    <span style="text-decoration: underline;">1</span>614       3     313       2    0.58</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> path:eco00230 Purine … 0.109        1    <span style="text-decoration: underline;">1</span>614      78     313      21   15.1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> path:eco01503 Cationi… 0.134        1    <span style="text-decoration: underline;">1</span>614      36     313      11    6.98</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> path:eco01232 Nucleot… 0.146        1    <span style="text-decoration: underline;">1</span>614      63     313      17   12.2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> path:eco02030 Bacteri… 0.151        1    <span style="text-decoration: underline;">1</span>614      20     313       1    3.88</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> path:eco02060 Phospho… 0.158        1    <span style="text-decoration: underline;">1</span>614      41     313       4    7.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> path:eco00750 Vitamin… 0.029<span style="text-decoration: underline;">9</span>       1    <span style="text-decoration: underline;">1</span>616      10     314       5    1.94</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> path:eco01503 Cationi… 0.053<span style="text-decoration: underline;">7</span>       1    <span style="text-decoration: underline;">1</span>616      36     314      12    7   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> path:eco01230 Biosynt… 0.087<span style="text-decoration: underline;">2</span>       1    <span style="text-decoration: underline;">1</span>616     117     314      15   22.7 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> path:eco00310 Lysine … 0.090<span style="text-decoration: underline;">7</span>       1    <span style="text-decoration: underline;">1</span>616      20     314       7    3.89</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> path:eco00541 O-Antig… 0.100        1    <span style="text-decoration: underline;">1</span>616      21     314       1    4.08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> path:eco01250 Biosynt… 0.118        1    <span style="text-decoration: underline;">1</span>616      44     314       4    8.55</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> path:eco01501 beta-La… 0.121        1    <span style="text-decoration: underline;">1</span>616      17     314       6    3.3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> path:eco01120 Microbi… 0.138        1    <span style="text-decoration: underline;">1</span>616     268     314      63   52.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> path:eco00633 Nitroto… 0.140        1    <span style="text-decoration: underline;">1</span>616       7     314       3    1.36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> path:eco02030 Bacteri… 0.151        1    <span style="text-decoration: underline;">1</span>616      20     314       1    3.89</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1 more variable: direction &lt;chr&gt;, and abbreviated variable names</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ¹​pathway_name, ²​adj_pval, ³​n_detected_proteins,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ⁴​n_detected_proteins_in_pathway, ⁵​n_significant_proteins,</span></span>

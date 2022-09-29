@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -70,11 +70,28 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.4.0.9000" id="protti-0409000">protti 0.4.0.9000<a class="anchor" aria-label="anchor" href="#protti-0409000"></a></h2>
+<h2 class="page-header" data-toc-text="0.5.0" id="protti-050">protti 0.5.0<a class="anchor" aria-label="anchor" href="#protti-050"></a></h2>
 <div class="section level3">
-<h3 id="new-features-0-4-0-9000">New features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0-9000"></a></h3>
+<h3 id="new-features-0-5-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-5-0"></a></h3>
 <ul><li>
-<code><a href="../reference/fetch_alphafold_aligned_error.html">fetch_alphafold_aligned_error()</a></code> was added. It fetches the aligned error matrix for structure predictions from the AlphaFold EBI database.</li></ul></div>
+<code><a href="../reference/fetch_alphafold_aligned_error.html">fetch_alphafold_aligned_error()</a></code> was added. It fetches the aligned error matrix for structure predictions from the AlphaFold EBI database.</li>
+<li>
+<code><a href="../reference/predict_alphafold_domain.html">predict_alphafold_domain()</a></code> was added. It uses a graph-based community clustering algorithm of AlphaFold predicted aligned errors in order to infer protein domains in AlphaFold predictions. The code is based on <a href="https://github.com/tristanic/pae_to_domains" class="external-link">python code</a> by Tristan Croll.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-5-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-0"></a></h3>
+<ul><li>
+<code><a href="../reference/assign_missingness.html">assign_missingness()</a></code> now correctly deals with unequal replicate numbers of comparisons. In addition there is a message returned if an unequal number of replicates is detected for a comparison.</li>
+<li>
+<code><a href="../reference/fetch_chebi.html">fetch_chebi()</a></code> fixed a bug that prevented the function from failing gracefully if there is a connection problem to the server.</li>
+<li>
+<code><a href="../reference/extract_metal_binders.html">extract_metal_binders()</a></code> now checks if the provided data frames are <code>NULL</code>. If yes, a message and <code>NULL</code> is returned.</li>
+<li>
+<code><a href="../reference/fetch_mobidb.html">fetch_mobidb()</a></code> was updated after the API changed.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="additional-changes-0-5-0">Additional changes<a class="anchor" aria-label="anchor" href="#additional-changes-0-5-0"></a></h3>
+<ul><li>Updated the “Protein Structure Analysis Workflow” vignette to include the <code><a href="../reference/fetch_alphafold_aligned_error.html">fetch_alphafold_aligned_error()</a></code> and <code><a href="../reference/predict_alphafold_domain.html">predict_alphafold_domain()</a></code> functions.</li></ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.4.0" id="protti-040">protti 0.4.0<small>2022-09-08</small><a class="anchor" aria-label="anchor" href="#protti-040"></a></h2>
