@@ -1,3 +1,13 @@
+# protti 0.5.0.9000
+
+## New features
+
+* `calculate_go_enrichment()` can now be applied on data frames with multiple different groups. The enrichment will be calculated for each group separately. If the data is plotted, each group is displayed in a separate facet. The group is provided to the new `group` argument. The `y_axis_free` argument determines if the y-axis of the faceted plot is "free" or "fixed".
+
+## Bug fixes
+
+* `pval_distribution_plot()` facets now have the correct style.
+
 # protti 0.5.0
 
 ## New features

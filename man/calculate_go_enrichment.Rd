@@ -8,6 +8,8 @@ calculate_go_enrichment(
   data,
   protein_id,
   is_significant,
+  group = NULL,
+  y_axis_free = TRUE,
   go_annotations_uniprot = NULL,
   ontology_type,
   organism_id = NULL,
@@ -27,6 +29,15 @@ accession numbers.}
 corresponding protein has a significantly changing peptide. The input data frame may contain
 peptide level information with significance information. The function is able to extract
 protein level information from this.}
+
+\item{group}{a character column in the \code{data} data frame that contains information by
+which the analysis should be grouped. The analysis will be performed seperately for each of the
+groups. This is most likely a column that lables seperate comparisons of different conditions.
+In protti the \code{asign_missingness()} function creates such a column automatically.}
+
+\item{y_axis_free}{a logical value that specifies if the y-axis of the plot should be "free"
+for each facet if a grouping variable is provided. Default is \code{TRUE}. If \code{FALSE} is selected
+it is easier to compare GO categories directly with each other.}
 
 \item{go_annotations_uniprot}{recommended, a character column in the \code{data} data frame
 that contains gene ontology annotations obtained from UniProt using \code{fetch_uniprot}.
