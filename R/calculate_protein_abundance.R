@@ -123,7 +123,7 @@ calculate_protein_abundance <- function(data,
       {{ intensity_log2 }}
     ) %>%
     tidyr::drop_na() %>%
-    dplyr::group_by({{ protein_id }}) %>%
+    dplyr::group_by({{ protein_id }}, {{ sample }}) %>%
     dplyr::mutate(n_peptides = dplyr::n_distinct(!!rlang::ensym(peptide))) %>%
     dplyr::filter(.data$n_peptides > 2) %>%
     dplyr::select(-.data$n_peptides) %>%
