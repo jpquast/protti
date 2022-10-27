@@ -174,14 +174,14 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       dplyr::filter(protein == "protein_1")
     expect_is(protein_abundance, "data.frame")
     expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(16.78, 16.94, 16.85, 16.81, 16.83, 16.82))
-    expect_equal(nrow(protein_abundance), 288)
+    expect_equal(nrow(protein_abundance), 279)
     expect_equal(ncol(protein_abundance), 4)
 
     arranged_data <- protein_abundance_all %>%
       dplyr::filter(protein == "protein_1" & peptide == "protein_intensity")
     expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(20.87, 20.97, 20.96, 20.81, 20.81, 20.86))
     expect_is(protein_abundance_all, "data.frame")
-    expect_equal(nrow(protein_abundance_all), 4032)
+    expect_equal(nrow(protein_abundance_all), 4005)
     expect_equal(ncol(protein_abundance_all), 4)
   })
 }
