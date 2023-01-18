@@ -93,13 +93,17 @@ library(stringr)
 
 # Create example data
 # Contains artificial de-enrichment for ribosomes.
-data <- fetch_uniprot_proteome(
+uniprot_go_data <- fetch_uniprot_proteome(
   organism_id = 83333,
   columns = c(
     "accession",
     "go_f"
   )
-) \%>\%
+)
+
+if(!is(data, "character")){
+
+data <- uniprot_go_data \%>\%
   mutate(significant = c(
     rep(TRUE, 1000),
     rep(FALSE, n() - 1000)
@@ -133,5 +137,6 @@ go_enrichment <- calculate_go_enrichment(
 )
 
 head(go_enrichment, n = 10)
+}
 }
 }

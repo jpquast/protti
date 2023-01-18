@@ -36,10 +36,10 @@ go_enrichment <- function(...) {
 #' peptide level information with significance information. The function is able to extract
 #' protein level information from this.
 #' @param group a character column in the \code{data} data frame that contains information by
-#' which the analysis should be grouped. The analysis will be performed seperately for each of the 
-#' groups. This is most likely a column that lables seperate comparisons of different conditions. 
+#' which the analysis should be grouped. The analysis will be performed seperately for each of the
+#' groups. This is most likely a column that lables seperate comparisons of different conditions.
 #' In protti the `asign_missingness()` function creates such a column automatically.
-#' @param y_axis_free a logical value that specifies if the y-axis of the plot should be "free" 
+#' @param y_axis_free a logical value that specifies if the y-axis of the plot should be "free"
 #' for each facet if a grouping variable is provided. Default is `TRUE`. If `FALSE` is selected
 #' it is easier to compare GO categories directly with each other.
 #' @param go_annotations_uniprot recommended, a character column in the \code{data} data frame
@@ -90,13 +90,17 @@ go_enrichment <- function(...) {
 #'
 #' # Create example data
 #' # Contains artificial de-enrichment for ribosomes.
-#' data <- fetch_uniprot_proteome(
+#' uniprot_go_data <- fetch_uniprot_proteome(
 #'   organism_id = 83333,
 #'   columns = c(
 #'     "accession",
 #'     "go_f"
 #'   )
-#' ) %>%
+#' )
+#'
+#' if(!is(data, "character")){
+#'
+#' data <- uniprot_go_data %>%
 #'   mutate(significant = c(
 #'     rep(TRUE, 1000),
 #'     rep(FALSE, n() - 1000)
@@ -131,6 +135,7 @@ go_enrichment <- function(...) {
 #'
 #' head(go_enrichment, n = 10)
 #' }
+#' }
 calculate_go_enrichment <- function(data,
                                     protein_id,
                                     is_significant,
@@ -157,7 +162,7 @@ calculate_go_enrichment <- function(data,
         dplyr::group_by({{ protein_id }}, {{group}}) %>%
         dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
         # do this to remove accidental double annotations
-        dplyr::ungroup() %>% 
+        dplyr::ungroup() %>%
         dplyr::distinct()
     } else {
       data <- data %>%
@@ -166,7 +171,7 @@ calculate_go_enrichment <- function(data,
         dplyr::group_by({{ protein_id }}) %>%
         dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
         # do this to remove accidental double annotations
-        dplyr::ungroup() %>% 
+        dplyr::ungroup() %>%
         dplyr::distinct()
     }
   }
@@ -249,7 +254,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       dplyr::distinct(.data$go_id, {{ is_significant }}, .data$n_sig, .data$n_has_process) %>%
       dplyr::ungroup() %>%
       tidyr::complete(.data$go_id, tidyr::nesting(!!rlang::ensym(is_significant), n_sig), fill = list(n_has_process = 0))
-    
+
     fisher_test <- cont_table %>%
       split(dplyr::pull(., .data$go_id)) %>%
       purrr::map(.f = ~ dplyr::select(.x, -.data$go_id) %>%
@@ -263,7 +268,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
           go_id = .y
         )
       )
-    
+
     result_table <- cont_table %>%
       dplyr::left_join(fisher_test, by = "go_id") %>%
       dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
@@ -293,17 +298,17 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       # count number of proteins with process for sig and non-sig proteins
       dplyr::distinct(.data$go_id, {{ is_significant }}, .data$n_sig, .data$n_has_process, {{group}}) %>%
       dplyr::group_by({{group}}) %>%
-      tidyr::complete(.data$go_id, tidyr::nesting(!!rlang::ensym(is_significant), n_sig), fill = list(n_has_process = 0)) %>% 
+      tidyr::complete(.data$go_id, tidyr::nesting(!!rlang::ensym(is_significant), n_sig), fill = list(n_has_process = 0)) %>%
       dplyr::ungroup()
-    
+
     fisher_test <- cont_table %>%
-      split(dplyr::pull(., {{ group }})) %>% 
+      split(dplyr::pull(., {{ group }})) %>%
       purrr::map2_dfr(.y = names(.),
                       .f = ~ {
-                        .x %>% 
-                          dplyr::select(-{{ group }}) %>% 
+                        .x %>%
+                          dplyr::select(-{{ group }}) %>%
                           split(dplyr::pull(., .data$go_id)) %>%
-                          purrr::map(.f = ~ {dplyr::select(.x, -c(.data$go_id)) %>% 
+                          purrr::map(.f = ~ {dplyr::select(.x, -c(.data$go_id)) %>%
                                        tibble::column_to_rownames(var = rlang::as_name(enquo(is_significant))) %>%
                                        as.matrix() %>%
                                        fisher.test()
@@ -314,13 +319,13 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
                               pval = .x$p.value,
                               go_id = .y
                             )
-                          ) %>% 
+                          ) %>%
                           mutate({{ group }} := .y)
                       })
-    
+
     result_table <- cont_table %>%
       dplyr::left_join(fisher_test, by = c("go_id", rlang::as_name(enquo(group)))) %>%
-      dplyr::group_by({{ group }}) %>% 
+      dplyr::group_by({{ group }}) %>%
       dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
       dplyr::group_by(.data$go_id, {{ group }}) %>%
       dplyr::mutate(
@@ -346,11 +351,11 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
   if (plot == FALSE) {
     return(result_table)
   }
-  
+
   if (!missing(group) & y_axis_free){
     # arrange table by group and go term for plot
     # this ensures that the terms are in the right order for a facet plot with a free axis
-    result_table <- result_table %>% 
+    result_table <- result_table %>%
       dplyr::ungroup() %>%
       dplyr::mutate(term = paste(.data$term, {{ group }}, sep = "__"))
   }
