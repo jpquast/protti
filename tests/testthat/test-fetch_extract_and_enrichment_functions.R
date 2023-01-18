@@ -453,7 +453,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   annotations <- fetch_quickgo(type = "annotations", id = uniprot_ids, ontology = "molecular_function")
   test_that("fetch_quickgo works", {
     expect_is(annotations, "data.frame")
-    expect_equal(nrow(annotations), 22)
+    expect_equal(nrow(annotations), 21)
     expect_equal(ncol(annotations), 15)
 
     terms <- fetch_quickgo(type = "terms")
@@ -494,7 +494,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
     expect_is(metal_info, "data.frame")
     expect_equal(ncol(metal_info), 20)
-    expect_equal(nrow(metal_info), 34)
+    expect_equal(nrow(metal_info), 35)
   })
 
   test_that("fetch_alphafold_aligned_error works", {
