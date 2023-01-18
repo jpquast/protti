@@ -5,7 +5,7 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/jpquast/protti/workflows/R-CMD-check/badge.svg)](https://github.com/jpquast/protti/actions)
+[![R-CMD-check](https://github.com/jpquast/protti/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jpquast/protti/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jpquast/protti?branch=master)
 [![CRAN
