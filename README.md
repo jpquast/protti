@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# protti <img src='man/figures/protti_logo.png' align="right" width="12.5%" />
+# protti <img src='man/figures/logo.png' align="right" width="12.5%" />
 
 <!-- badges: start -->
 
@@ -41,29 +41,28 @@ the complex cellular milieu ([Feng
 There is a wide range of functions **protti** provides to the user. The
 main areas of application are:
 
--   **Quality control**: Check a multitude of quality control parameters
+- **Quality control**: Check a multitude of quality control parameters
+  in your data.
+- **Filter for quality**: Prior to data analysis you can filter your
+  data to exclude any observations that are of low quality and
+  potentially not trustworthy.
+- **Imputation**: You can choose to impute your data using several
+  different methods.
+- **Data analysis**: Analyse your data for differential abundance of
+  proteins, peptides or precursors.
+  - **Binary treatment**: Experiments with one control condition and at
+    least one treatment condition in which the control is compared to
+    each of the treatment conditions.
+  - **Dose-response treatment**: Experiments that contain increasing
+    concentrations of the treatment in which a log-logistic
+    dose-response curve is fitted to each protein, peptide or precursor
     in your data.
--   **Filter for quality**: Prior to data analysis you can filter your
-    data to exclude any observations that are of low quality and
-    potentially not trustworthy.
--   **Imputation**: You can choose to impute your data using several
-    different methods.
--   **Data analysis**: Analyse your data for differential abundance of
-    proteins, peptides or precursors.
-    -   **Binary treatment**: Experiments with one control condition and
-        at least one treatment condition in which the control is
-        compared to each of the treatment conditions.
-    -   **Dose-response treatment**: Experiments that contain increasing
-        concentrations of the treatment in which a log-logistic
-        dose-response curve is fitted to each protein, peptide or
-        precursor in your data.
--   **Enrichment and interaction analysis**: Check the list of your
-    significantly changing proteins for e.g. gene ontology enrichments
-    or perform a network analysis using the STRING database directly
-    in R.
--   **Databases**: You can easily access several databases relevant for
-    proteomics (e.g. UniProt) and load any data that interests you
-    directly into R.
+- **Enrichment and interaction analysis**: Check the list of your
+  significantly changing proteins for e.g. gene ontology enrichments or
+  perform a network analysis using the STRING database directly in R.
+- **Databases**: You can easily access several databases relevant for
+  proteomics (e.g. UniProt) and load any data that interests you
+  directly into R.
 
 ### Citation
 
@@ -96,7 +95,7 @@ You can install the development version from
 following commands into R:
 
 Note: If you do not have `devtools` installed make sure to do so by
-removing the comment sign (\#).
+removing the comment sign (#).
 
 ``` r
 # install.packages("devtools")
@@ -137,16 +136,16 @@ to analysis.
 For more in detail workflow suggestions and demonstrations of various
 functions, you can have a look at the package vignettes. These include:
 
--   [Input Preparation
-    Workflow](https://jpquast.github.io/protti/articles/input_preparation_workflow.html)
--   [Quality Control
-    Workflow](https://jpquast.github.io/protti/articles/quality_control_workflow.html)
--   [Single Dose Treatment Data Analysis
-    Workflow](https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html)
--   [Dose-Response Data Analysis
-    Workflow](https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html)
--   [Protein Structure Analysis
-    Workflow](https://jpquast.github.io/protti/articles/protein_structure_workflow.html)
+- [Input Preparation
+  Workflow](https://jpquast.github.io/protti/articles/input_preparation_workflow.html)
+- [Quality Control
+  Workflow](https://jpquast.github.io/protti/articles/quality_control_workflow.html)
+- [Single Dose Treatment Data Analysis
+  Workflow](https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html)
+- [Dose-Response Data Analysis
+  Workflow](https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html)
+- [Protein Structure Analysis
+  Workflow](https://jpquast.github.io/protti/articles/protein_structure_workflow.html)
 
 ### Data analysis
 
@@ -157,7 +156,7 @@ packages. **protti** is designed to work well with the
 [`tidyverse`](https://www.tidyverse.org) package family and we will use
 them for this example. Therefore, you should also load them before you
 get started. Note: If you do not have the `tidyverse` installed you can
-do so by removing the comment sign (\#) in front of the
+do so by removing the comment sign (#) in front of the
 `install.packages()` function. This will install them directly from
 CRAN.
 
@@ -220,15 +219,15 @@ Before you start analysing your data it is recommended that you filter
 out any observations not necessary for your analysis. These include for
 example:
 
--   **Decoys**: Sometimes decoys are included in reports and it is
-    advised to filter them out before data analysis.
--   **Contaminants**: MaxQuant includes contaminant information in their
-    reports. Contaminants are useful for quality control purposes but
-    should be filtered out for analysis.
--   **Non-Proteotypic Peptides**: For the analysis of LiP-MS data you
-    should not include non-proteotypic peptides in your analysis since
-    it is not possible to make sense of them in case they change
-    significantly.
+- **Decoys**: Sometimes decoys are included in reports and it is advised
+  to filter them out before data analysis.
+- **Contaminants**: MaxQuant includes contaminant information in their
+  reports. Contaminants are useful for quality control purposes but
+  should be filtered out for analysis.
+- **Non-Proteotypic Peptides**: For the analysis of LiP-MS data you
+  should not include non-proteotypic peptides in your analysis since it
+  is not possible to make sense of them in case they change
+  significantly.
 
 On your own data you can easily achieve this with `dplyr`’s `filter()`
 function. Our synthetic data does not require any filtering at this
