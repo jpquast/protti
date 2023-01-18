@@ -7,6 +7,7 @@
 fetch_alphafold_prediction(
   uniprot_ids = NULL,
   organism_name = NULL,
+  version = "v4",
   timeout = 3600,
   return_data_frame = FALSE,
   show_progress = TRUE
@@ -22,6 +23,10 @@ scientific species name (e.g. "Homo sapiens"). \strong{Note:} Some organisms con
 predictions which might take a considerable amount of time and memory to fetch. Therefore, you
 should be sure that your system can handle fetching predictions for these organisms. This
 argument is mutually exclusive to the \code{uniprot_ids} argument.}
+
+\item{version}{a character value that specifies the alphafold version that should be used. This
+is regularly updated by the database. We always try to make the current version the default version.
+Available version can be found here: https://ftp.ebi.ac.uk/pub/databases/alphafold/}
 
 \item{timeout}{a numeric value specifying the time in seconds until the download of an organism
 archive times out. The default is 3600 seconds.}

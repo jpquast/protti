@@ -11,6 +11,9 @@
 #' predictions which might take a considerable amount of time and memory to fetch. Therefore, you
 #' should be sure that your system can handle fetching predictions for these organisms. This
 #' argument is mutually exclusive to the \code{uniprot_ids} argument.
+#' @param version a character value that specifies the alphafold version that should be used. This
+#' is regularly updated by the database. We always try to make the current version the default version.
+#' Available version can be found here: https://ftp.ebi.ac.uk/pub/databases/alphafold/
 #' @param timeout a numeric value specifying the time in seconds until the download of an organism
 #' archive times out. The default is 3600 seconds.
 #' @param return_data_frame a logical value that specifies if true, a data frame instead of a list
@@ -70,6 +73,7 @@
 #' }
 fetch_alphafold_prediction <- function(uniprot_ids = NULL,
                                        organism_name = NULL,
+                                       version = "v4",
                                        timeout = 3600,
                                        return_data_frame = FALSE,
                                        show_progress = TRUE) {
@@ -141,62 +145,62 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
     ))
 
     organism_file <- switch(organism_name,
-      "Arabidopsis thaliana" = "UP000006548_3702_ARATH_v3.tar",
-      "Caenorhabditis elegans" = "UP000001940_6239_CAEEL_v3.tar",
-      "Candida albicans" = "UP000000559_237561_CANAL_v3.tar",
-      "Danio rerio" = "UP000000437_7955_DANRE_v3.tar",
-      "Dictyostelium discoideum" = "UP000002195_44689_DICDI_v3.tar",
-      "Drosophila melanogaster" = "UP000000803_7227_DROME_v3.tar",
-      "Escherichia coli" = "UP000000625_83333_ECOLI_v3.tar",
-      "Glycine max" = "UP000008827_3847_SOYBN_v3.tar",
-      "Homo sapiens" = "UP000005640_9606_HUMAN_v3.tar",
-      "Leishmania infantum" = "UP000008153_5671_LEIIN_v3.tar",
-      "Methanocaldococcus jannaschii" = "UP000000805_243232_METJA_v3.tar",
-      "Mus musculus" = "UP000000589_10090_MOUSE_v3.tar",
-      "Mycobacterium tuberculosis" = "UP000001584_83332_MYCTU_v3.tar",
-      "Oryza sativa" = "UP000059680_39947_ORYSJ_v3.tar",
-      "Plasmodium falciparum" = "UP000001450_36329_PLAF7_v3.tar",
-      "Rattus norvegicus" = "UP000002494_10116_RAT_v3.tar",
-      "Saccharomyces cerevisiae" = "UP000002311_559292_YEAST_v3.tar",
-      "Schizosaccharomyces pombe" = "UP000002485_284812_SCHPO_v3.tar",
-      "Staphylococcus aureus" = "UP000008816_93061_STAA8_v3.tar",
-      "Trypanosoma cruzi" = "UP000002296_353153_TRYCC_v3.tar",
-      "Zea mays" = "UP000007305_4577_MAIZE_v3.tar",
-      "Ajellomyces capsulatus" = "UP000001631_447093_AJECG_v3.tar",
-      "Brugia malayi" = "UP000006672_6279_BRUMA_v3.tar",
-      "Campylobacter jejuni" = "UP000000799_192222_CAMJE_v3.tar",
-      "Cladophialophora carrionii" = "UP000094526_86049_9EURO1_v3.tar",
-      "Dracunculus medinensis" = "UP000274756_318479_DRAME_v3.tar",
-      "Enterococcus faecium" = "UP000325664_1352_ENTFC_v3.tar",
-      "Fonsecaea pedrosoi" = "UP000053029_1442368_9EURO2_v3.tar",
-      "Haemophilus influenzae" = "UP000000579_71421_HAEIN_v3.tar",
-      "Helicobacter pylori" = "UP000000429_85962_HELPY_v3.tar",
-      "Klebsiella pneumoniae" = "UP000007841_1125630_KLEPH_v3.tar",
-      "Leishmania infantum" = "UP000008153_5671_LEIIN_v3.tar",
-      "Madurella mycetomatis" = "UP000078237_100816_9PEZI1_v3.tar",
-      "Mycobacterium leprae" = "UP000000806_272631_MYCLE_v3.tar",
-      "Mycobacterium tuberculosis" = "UP000001584_83332_MYCTU_v3.tar",
-      "Mycobacterium ulcerans" = "UP000020681_1299332_MYCUL_v3.tar",
-      "Neisseria gonorrhoeae" = "UP000000535_242231_NEIG1_v3.tar",
-      "Nocardia brasiliensis" = "UP000006304_1133849_9NOCA1_v3.tar",
-      "Onchocerca volvulus" = "UP000024404_6282_ONCVO_v3.tar",
-      "Paracoccidioides lutzii" = "UP000002059_502779_PARBA_v3.tar",
-      "Plasmodium falciparum" = "UP000001450_36329_PLAF7_v3.tar",
-      "Pseudomonas aeruginosa" = "UP000002438_208964_PSEAE_v3.tar",
-      "Salmonella typhimurium" = "UP000001014_99287_SALTY_v3.tar",
-      "Schistosoma mansoni" = "UP000008854_6183_SCHMA_v3.tar",
-      "Shigella dysenteriae" = "UP000002716_300267_SHIDS_v3.tar",
-      "Sporothrix schenckii" = "UP000018087_1391915_SPOS1_v3.tar",
-      "Staphylococcus aureus" = "UP000008816_93061_STAA8_v3.tar",
-      "Streptococcus pneumoniae" = "UP000000586_171101_STRR6_v3.tar",
-      "Strongyloides stercoralis" = "UP000035681_6248_STRER_v3.tar",
-      "Trichuris trichiura" = "UP000030665_36087_TRITR_v3.tar",
-      "Trypanosoma brucei" = "UP000008524_185431_TRYB2_v3.tar",
-      "Trypanosoma cruzi" = "UP000002296_353153_TRYCC_v3.tar",
-      "Wuchereria bancrofti" = "UP000270924_6293_WUCBA_v3.tar"
+      "Arabidopsis thaliana" = "UP000006548_3702_ARATH",
+      "Caenorhabditis elegans" = "UP000001940_6239_CAEEL",
+      "Candida albicans" = "UP000000559_237561_CANAL",
+      "Danio rerio" = "UP000000437_7955_DANRE",
+      "Dictyostelium discoideum" = "UP000002195_44689_DICDI",
+      "Drosophila melanogaster" = "UP000000803_7227_DROME",
+      "Escherichia coli" = "UP000000625_83333_ECOLI",
+      "Glycine max" = "UP000008827_3847_SOYBN",
+      "Homo sapiens" = "UP000005640_9606_HUMAN",
+      "Leishmania infantum" = "UP000008153_5671_LEIIN",
+      "Methanocaldococcus jannaschii" = "UP000000805_243232_METJA",
+      "Mus musculus" = "UP000000589_10090_MOUSE",
+      "Mycobacterium tuberculosis" = "UP000001584_83332_MYCTU",
+      "Oryza sativa" = "UP000059680_39947_ORYSJ",
+      "Plasmodium falciparum" = "UP000001450_36329_PLAF7",
+      "Rattus norvegicus" = "UP000002494_10116_RAT",
+      "Saccharomyces cerevisiae" = "UP000002311_559292_YEAST",
+      "Schizosaccharomyces pombe" = "UP000002485_284812_SCHPO",
+      "Staphylococcus aureus" = "UP000008816_93061_STAA8",
+      "Trypanosoma cruzi" = "UP000002296_353153_TRYCC",
+      "Zea mays" = "UP000007305_4577_MAIZE",
+      "Ajellomyces capsulatus" = "UP000001631_447093_AJECG",
+      "Brugia malayi" = "UP000006672_6279_BRUMA",
+      "Campylobacter jejuni" = "UP000000799_192222_CAMJE",
+      "Cladophialophora carrionii" = "UP000094526_86049_9EURO1",
+      "Dracunculus medinensis" = "UP000274756_318479_DRAME",
+      "Enterococcus faecium" = "UP000325664_1352_ENTFC",
+      "Fonsecaea pedrosoi" = "UP000053029_1442368_9EURO2",
+      "Haemophilus influenzae" = "UP000000579_71421_HAEIN",
+      "Helicobacter pylori" = "UP000000429_85962_HELPY",
+      "Klebsiella pneumoniae" = "UP000007841_1125630_KLEPH",
+      "Leishmania infantum" = "UP000008153_5671_LEIIN",
+      "Madurella mycetomatis" = "UP000078237_100816_9PEZI1",
+      "Mycobacterium leprae" = "UP000000806_272631_MYCLE",
+      "Mycobacterium tuberculosis" = "UP000001584_83332_MYCTU",
+      "Mycobacterium ulcerans" = "UP000020681_1299332_MYCUL",
+      "Neisseria gonorrhoeae" = "UP000000535_242231_NEIG1",
+      "Nocardia brasiliensis" = "UP000006304_1133849_9NOCA1",
+      "Onchocerca volvulus" = "UP000024404_6282_ONCVO",
+      "Paracoccidioides lutzii" = "UP000002059_502779_PARBA",
+      "Plasmodium falciparum" = "UP000001450_36329_PLAF7",
+      "Pseudomonas aeruginosa" = "UP000002438_208964_PSEAE",
+      "Salmonella typhimurium" = "UP000001014_99287_SALTY",
+      "Schistosoma mansoni" = "UP000008854_6183_SCHMA",
+      "Shigella dysenteriae" = "UP000002716_300267_SHIDS",
+      "Sporothrix schenckii" = "UP000018087_1391915_SPOS1",
+      "Staphylococcus aureus" = "UP000008816_93061_STAA8",
+      "Streptococcus pneumoniae" = "UP000000586_171101_STRR6",
+      "Strongyloides stercoralis" = "UP000035681_6248_STRER",
+      "Trichuris trichiura" = "UP000030665_36087_TRITR",
+      "Trypanosoma brucei" = "UP000008524_185431_TRYB2",
+      "Trypanosoma cruzi" = "UP000002296_353153_TRYCC",
+      "Wuchereria bancrofti" = "UP000270924_6293_WUCBA"
     )
 
-    url <- paste0("https://ftp.ebi.ac.uk/pub/databases/alphafold/latest/", organism_file)
+    url <- paste0("https://ftp.ebi.ac.uk/pub/databases/alphafold/", version, "/", organism_file, "_", version, ".tar")
 
     # set new longer timeout and reset to standard once function exits.
     old <- options(timeout = timeout)
@@ -317,7 +321,7 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
 
     batches <- purrr::map(
       .x = uniprot_ids,
-      .f = ~ paste0("https://alphafold.ebi.ac.uk/files/AF-", .x, "-F1-model_v3.cif")
+      .f = ~ paste0("https://alphafold.ebi.ac.uk/files/AF-", .x, "-F1-model_", version, ".cif")
     )
 
     names(batches) <- uniprot_ids
