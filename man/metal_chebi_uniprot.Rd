@@ -18,6 +18,6 @@ metal_chebi_uniprot
 \description{
 A list that contains all ChEBI IDs that appear in UniProt and that contain either a metal atom
 in their formula or that do not have a formula but the ChEBI term is related to metals.
-This was last updated on the 22/08/11.
+This was last updated on the 11/08/22.
 }
 \keyword{datasets}

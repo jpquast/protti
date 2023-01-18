@@ -78,7 +78,7 @@
 #'
 #' A list that contains all ChEBI IDs that appear in UniProt and that contain either a metal atom
 #' in their formula or that do not have a formula but the ChEBI term is related to metals.
-#' This was last updated on the 22/08/11.
+#' This was last updated on the 11/08/22.
 #'
 #' @format A data.frame containing information retrieved from ChEBI using `fetch_chebi(stars = c(2, 3))`,
 #' filtered using symbols in the `metal_list` and manual annotation of metal related ChEBI IDs that do not
@@ -90,7 +90,7 @@
 #'
 #' A subset of molecular function gene ontology terms related to metals that was created
 #' using the slimming process provided by the QuickGO EBI database.
-#' This was last updated on the 22/06/07.
+#' This was last updated on the 06/11/22.
 #'
 #' @format A data.frame containing a slim subset of molecular function gene ontology terms
 #' that are related to metal binding. The `slims_from_id` column contains all IDs relevant
