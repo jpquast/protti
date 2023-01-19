@@ -76,6 +76,8 @@
 <ul><li>
 <code><a href="../reference/calculate_go_enrichment.html">calculate_go_enrichment()</a></code> can now be applied on data frames with multiple different groups. The enrichment will be calculated for each group separately. If the data is plotted, each group is displayed in a separate facet. The group is provided to the new <code>group</code> argument. The <code>y_axis_free</code> argument determines if the y-axis of the faceted plot is “free” or “fixed”.</li>
 <li>Added a <code>version</code> argument to <code><a href="../reference/fetch_alphafold_prediction.html">fetch_alphafold_prediction()</a></code> that specifies which verison of the database should be retrieved. The default is currently the newest version <code>"v4"</code>.</li>
+<li>
+<code><a href="../reference/qc_ranked_intensities.html">qc_ranked_intensities()</a></code> was added. It ranks protein, peptide or precursor intensities from highest to lowest. Ranked intensities can also be plotted using the <code>plot</code> argument.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-0-5-0-9000">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-0-9000"></a></h3>
