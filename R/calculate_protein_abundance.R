@@ -1,7 +1,8 @@
 #' Label-free protein quantification
 #'
 #' Determines relative protein abundances from ion quantification. Only proteins with at least
-#' three peptides are considered for quantification.
+#' three peptides are considered for quantification. The three peptide rule applies for each
+#' sample independently.
 #'
 #' @param data a data frame that contains at least the input variables.
 #' @param sample a character column in the \code{data} data frame that contains the sample name.

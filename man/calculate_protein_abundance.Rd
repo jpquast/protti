@@ -57,7 +57,8 @@ with \code{qc_protein_abundance} and can be filtered to only include protein abu
 }
 \description{
 Determines relative protein abundances from ion quantification. Only proteins with at least
-three peptides are considered for quantification.
+three peptides are considered for quantification. The three peptide rule applies for each
+sample independently.
 }
 \examples{
 \donttest{
