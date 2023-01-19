@@ -36,8 +36,8 @@ go_enrichment <- function(...) {
 #' peptide level information with significance information. The function is able to extract
 #' protein level information from this.
 #' @param group a character column in the \code{data} data frame that contains information by
-#' which the analysis should be grouped. The analysis will be performed seperately for each of the
-#' groups. This is most likely a column that lables seperate comparisons of different conditions.
+#' which the analysis should be grouped. The analysis will be performed separately for each of the
+#' groups. This is most likely a column that labels separate comparisons of different conditions.
 #' In protti the `asign_missingness()` function creates such a column automatically.
 #' @param y_axis_free a logical value that specifies if the y-axis of the plot should be "free"
 #' for each facet if a grouping variable is provided. Default is `TRUE`. If `FALSE` is selected
