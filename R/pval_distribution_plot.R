@@ -80,7 +80,9 @@ pval_distribution_plot <- function(data, grouping, pval, facet_by = NULL) {
       axis.title.x = ggplot2::element_text(size = 15),
       axis.text.y = ggplot2::element_text(size = 15),
       axis.text.x = ggplot2::element_text(size = 15),
-      axis.title.y = ggplot2::element_text(size = 15)
+      axis.title.y = ggplot2::element_text(size = 15),
+      strip.text = ggplot2::element_text(size = 15),
+      strip.background = element_blank()
     )
   plot
 }

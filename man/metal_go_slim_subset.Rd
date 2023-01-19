@@ -19,6 +19,6 @@ metal_go_slim_subset
 \description{
 A subset of molecular function gene ontology terms related to metals that was created
 using the slimming process provided by the QuickGO EBI database.
-This was last updated on the 22/06/07.
+This was last updated on the 06/11/22.
 }
 \keyword{datasets}
