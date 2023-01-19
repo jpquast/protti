@@ -275,3 +275,87 @@ test_that("qc_peak_width works", {
     expect_error(print(p_interactive), NA)
   }
 })
+
+test_that("qc_ranked_intensities works", {
+  set.seed(123)
+  data <- create_synthetic_data(
+    n_proteins = 1000,
+    frac_change = 0.05,
+    n_replicates = 4,
+    n_conditions = 3,
+    method = "effect_random",
+    additional_metadata = FALSE
+  )
+  
+  # Calculate protein abundance
+  protein_intensities <- calculate_protein_abundance(
+    data = data,
+    sample = sample,
+    protein_id = protein,
+    precursor = peptide,
+    peptide = peptide,
+    intensity_log2 = peptide_intensity
+  )
+  
+  # Calculate intensities
+  result_table <- qc_ranked_intensities(
+    data = protein_intensities,
+    sample = sample,
+    grouping = protein,
+    log2_intensity = peptide_intensity
+  )
+  
+  expect_is(result_table, "data.frame")
+  expect_equal(round(result_table$log2_median_intensity[1:5], digits = 1), c(29.7, 27.9, 27.7, 27.4, 27.4))
+  
+  # Calculate intensities faceted
+  result_table_facet <- qc_ranked_intensities(
+    data = protein_intensities,
+    sample = sample,
+    grouping = protein,
+    log2_intensity = peptide_intensity,
+    facet = TRUE
+  )
+  
+  expect_is(result_table_facet, "data.frame")
+  expect_equal(round(result_table_facet$log10_intensity[1:5], digits = 1), c(9.1, 9.0, 9.0, 9.0, 9.0))
+  
+  # Plot ranked intensities for all samples combined
+  p <- qc_ranked_intensities(
+    data = protein_intensities,
+    sample = sample,
+    grouping = protein,
+    log2_intensity = peptide_intensity,
+    y_axis_transformation = "log2",
+    plot = TRUE
+  )
+  
+  expect_is(p, "ggplot")
+  expect_error(print(p), NA)
+  
+  # Plot ranked intensities for each sample separately
+  p_facet <- qc_ranked_intensities(
+    data = protein_intensities,
+    sample = sample,
+    grouping = protein,
+    log2_intensity = peptide_intensity,
+    plot = TRUE,
+    facet = TRUE
+  )
+  
+  expect_is(p_facet, "ggplot")
+  expect_error(print(p_facet), NA)
+
+  if (Sys.getenv("TEST_PROTTI") == "true") {
+    p_interactive <- qc_ranked_intensities(
+      data = protein_intensities,
+      sample = sample,
+      grouping = protein,
+      log2_intensity = peptide_intensity,
+      y_axis_transformation = "log2",
+      plot = TRUE,
+      interactive = TRUE
+    )
+    expect_error(print(p_interactive), NA)
+  }
+})

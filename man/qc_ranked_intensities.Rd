@@ -2,7 +2,7 @@
 % Please edit documentation in R/qc_ranked_intensities.R
 \name{qc_ranked_intensities}
 \alias{qc_ranked_intensities}
-\title{Ranked intensities}
+\title{Check ranked intensities}
 \usage{
 qc_ranked_intensities(
   data,
@@ -10,11 +10,14 @@ qc_ranked_intensities(
   grouping,
   log2_intensity,
   facet = FALSE,
+  plot = FALSE,
+  y_axis_transformation = "log10",
   interactive = FALSE
 )
 }
 \arguments{
-\item{data}{a data frame that contains at least the input variables.}
+\item{data}{a data frame that contains at least sample names, grouping identifiers (precursor,
+peptide or protein) and log2 transformed intensities for each grouping identifier.}
 
 \item{sample}{a character column in the \code{data} data frame that contains the sample names.}
 
@@ -22,27 +25,34 @@ qc_ranked_intensities(
 or peptide identifiers.}
 
 \item{log2_intensity}{a numeric column in the \code{data} data frame that contains the log2
-transfromed intensities of the selected grouping variable.}
+transformed intensities of the selected grouping variable.}
 
-\item{facet}{a logical value that specifies whether the plot should be faceted by samples
-(default is FALSE).If \code{facet = FALSE} the median of each protein intensity will be shown in the plot.}
+\item{facet}{a logical value that specifies whether the calculation should be done group wise by
+sample and if the resulting plot should be faceted by sample. (default is \code{FALSE}).
+If \code{facet = FALSE} the median of each protein intensity will be returned.}
+
+\item{plot}{a logical value that specifies whether the result should be plotted (default is \code{FALSE}).}
+
+\item{y_axis_transformation}{a character value that determines that y-axis transformation. The
+value is either "log2" or "log10" (default is "log10").}
 
 \item{interactive}{a logical value that specifies whether the plot should be interactive
-(default is FALSE).}
+(default is \code{FALSE}).}
 }
 \value{
-A plot showing the ranked intensities is returned.
+A data frame containing the ranked intensities is returned. If \code{plot = TRUE} a plot
+is returned. The intensities are log10 transformed for the plot.
 }
 \description{
-Plots ranked intensities
+Calculates and plots ranked intensities for proteins, peptides or precursors.
 }
 \examples{
 set.seed(123) # Makes example reproducible
 
 # Create synthetic data
 data <- create_synthetic_data(
-  n_proteins = 10,
-  frac_change = 0.5,
+  n_proteins = 1000,
+  frac_change = 0.05,
   n_replicates = 4,
   n_conditions = 3,
   method = "effect_random",
@@ -51,26 +61,31 @@ data <- create_synthetic_data(
 
 # Calculate protein abundance
 protein_intensities <- calculate_protein_abundance(
-                           data = data,
-                           sample = sample, 
-                           protein_id = protein, 
-                           precursor = peptide,
-                           peptide = peptide, 
-                           intensity_log2 = peptide_intensity)
-                          
+  data = data,
+  sample = sample,
+  protein_id = protein,
+  precursor = peptide,
+  peptide = peptide,
+  intensity_log2 = peptide_intensity
+)
+
 # Plot ranked intensities for all samples combined
-qc_ranked_intensities(data = protein_intensities, 
-                     sample = sample, 
-                     grouping = protein, 
-                     log2_intensity = peptide_intensity, 
-                     interactive = TRUE)
+qc_ranked_intensities(
+  data = protein_intensities,
+  sample = sample,
+  grouping = protein,
+  log2_intensity = peptide_intensity,
+  plot = TRUE,
+)
 
 # Plot ranked intensities for each sample separately
-qc_ranked_intensities(data = protein_intensities, 
-                     sample = sample, 
-                     grouping = protein, 
-                     log2_intensity = peptide_intensity, 
-                     interactive = TRUE, 
-                     facet = TRUE)
+qc_ranked_intensities(
+  data = protein_intensities,
+  sample = sample,
+  grouping = protein,
+  log2_intensity = peptide_intensity,
+  plot = TRUE,
+  facet = TRUE
+)
 
 }
