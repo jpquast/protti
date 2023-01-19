@@ -9,6 +9,7 @@
 ## Bug fixes
 
 * `pval_distribution_plot()` facets now have the correct style.
+* `calculate_protein_abundance()` requires at least three distinct peptides for quantification. The function now applies this rule for each sample independently except for checking the whole dataset to contain at least three distinct peptides.
 
 # protti 0.5.0
 
