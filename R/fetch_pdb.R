@@ -284,7 +284,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     message("The following IDs have not been retrieved:")
     message(paste0(utils::capture.output(not_retrieved), collapse = "\n"))
   }
-
+  
   # process information from database
   if (show_progress == TRUE) {
     message("[2/6] Extract experimental conditions ... ", appendLF = FALSE)

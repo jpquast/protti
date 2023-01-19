@@ -56,7 +56,191 @@ parent_metal_ids <- c(
   "GO:1901238", # ABC-type tungstate transporter activity
   "GO:0015625", # ABC-type ferric hydroxamate transporter activity
   "GO:0015345", # ferric enterobactin:proton symporter activity
-  "GO:1903981" # enterobactin binding
+  "GO:1903981", # enterobactin binding
+  "GO:0004076", # biotin synthase activity 
+  "GO:0016041", # glutamate synthase (ferredoxin) activity
+  "GO:0018695", # 4-cresol dehydrogenase (hydroxylating) activity
+  "GO:0018694", # p-cymene methyl hydroxylase activity
+  "GO:0018683", # camphor 5-monooxygenase activity
+  "GO:0018685", # alkane 1-monooxygenase activity
+  "GO:0043757", # adenosylcobinamide-phosphate synthase activity
+  "GO:0043756", # adenosylcobinamide hydrolase activity
+  "GO:0043779", # cobalt-precorrin-5A acetaldehyde-lyase activity
+  "GO:0004130", # cytochrome-c peroxidase activity
+  "GO:0043776", # cobalt-precorrin-6B C5-methyltransferase activity
+  "GO:0043778", # cobalt-precorrin-8 methylmutase activity
+  "GO:0043777", # cobalt-precorrin-7 C15-methyltransferase activity
+  "GO:0004128", # cytochrome-b5 reductase activity, acting on NAD(P)H
+  "GO:0102842", # 1-18:1-2-16:2-monogalactosyldiacylglycerol desaturase activity (SN2-16:3 forming)
+  "GO:0102843", # 1-18:2-2-16:0-monogalactosyldiacylglycerol desaturase activity (SN2-16:1 forming)
+  "GO:0102850", # 1-18:1-2-16:0-phosphatidylglycerol omega-6 desaturase activity
+  "GO:0102859", # 1-18:1-2-18:2-phosphatidylcholine desaturase activity (SN2-18:3 forming)
+  "GO:0102867", # molybdenum cofactor sulfurtransferase activity
+  "GO:0102866", # di-homo-gamma-linolenate delta5 desaturase activity
+  "GO:0102865", # delta6-acyl-lipid desaturase activity
+  "GO:0004507", # steroid 11-beta-monooxygenase activity
+  "GO:0018801", # glutaconyl-CoA decarboxylase activity
+  "GO:0043805", # indolepyruvate ferredoxin oxidoreductase activity
+  "GO:0043807", # 3-methyl-2-oxobutanoate dehydrogenase (ferredoxin) activity
+  "GO:0018836", # alkylmercury lyase activity
+  "GO:0043884", # CO-methylating acetyl-CoA synthase activity
+  "GO:0043823", # spheroidene monooxygenase activity
+  "GO:0018522", # benzoyl-CoA reductase activity
+  "GO:0018525", # 4-hydroxybenzoyl-CoA reductase activity
+  "GO:0018491", # 2-oxobutyrate synthase activity
+  "GO:0018493", # formylmethanofuran dehydrogenase activity
+  "GO:0018492", # carbon-monoxide dehydrogenase (acceptor) activity
+  "GO:0102220", # hydrogenase activity (NAD+, ferredoxin)
+  "GO:0004408", # holocytochrome-c synthase activity
+  "GO:0004460", # L-lactate dehydrogenase (cytochrome) activity
+  "GO:0004458", # D-lactate dehydrogenase (cytochrome) activity
+  "GO:0004498", # calcidiol 1-monooxygenase activity
+  "GO:0102988", # 9,12-cis-hexadecadienoic acid delta 15 desaturase activity
+  "GO:0102985", # delta12-fatty-acid desaturase activity
+  "GO:0102987", # palmitoleic acid delta 12 desaturase activity
+  "GO:0102993", # linolenate delta15 desaturase activity
+  "GO:0016966", # nitric oxide reductase activity
+  "GO:0016630", # protochlorophyllide reductase activity
+  "GO:0016633", # galactonolactone dehydrogenase activity
+  "GO:0016689", # manganese peroxidase activity
+  "GO:0043834", # trimethylamine methyltransferase activity
+  "GO:0043833", # [methyl-Co(III) methylamine-specific corrinoid protein]:coenzyme M methyltransferase activity
+  "GO:0043852", # monomethylamine methyltransferase activity
+  "GO:0102771", # sphingolipid very long chain fatty acid alpha-hydroxylase activity
+  "GO:0102786", # stearoyl-[acp] desaturase activity
+  "GO:0043782", # cobalt-precorrin-3 C17-methyltransferase activity
+  "GO:0043791", # dimethylamine methyltransferase activity
+  "GO:0043797", # glyceraldehyde-3-phosphate dehydrogenase (ferredoxin) activity
+  "GO:0004324", # ferredoxin-NADP+ reductase activity
+  "GO:0004325", # ferrochelatase activity
+  "GO:0004392", # heme oxygenase (decyclizing) activity
+  "GO:0102654", # 1-18:1-2-16:0-phosphatidylglycerol trans-3 desaturase activity
+  "GO:0004129", # cytochrome-c oxidase activity
+  "GO:0043781", # cobalt-factor II C20-methyltransferase activity
+  "GO:0043780", # cobalt-precorrin-5B C1-methyltransferase activity
+  "GO:0016163", # nitrogenase activity
+  "GO:0090523", # cytochrome-b5 reductase activity, acting on NADPH
+  "GO:0004768", # stearoyl-CoA 9-desaturase activity
+  "GO:0051073", # adenosylcobinamide-GDP ribazoletransferase activity
+  "GO:0047152", # methanol-5-hydroxybenzimidazolylcobamide Co-methyltransferase activity
+  "GO:0047111", # formate dehydrogenase (cytochrome-c-553) activity
+  "GO:0047103", # 3-alpha,7-alpha,12-alpha-trihydroxycholestan-26-al 26-oxidoreductase activity
+  "GO:0051266", # sirohydrochlorin ferrochelatase activity
+  "GO:0016852", # sirohydrochlorin cobaltochelatase activity
+  "GO:0016992", # lipoate synthase activity
+  "GO:0003958", # NADPH-hemoprotein reductase activity
+  "GO:0050421", # nitrite reductase (NO-forming) activity
+  "GO:0015047", # NADPH-cytochrome-c2 reductase activity
+  "GO:0015046", # rubredoxin-NADP+ reductase activity
+  "GO:0015044", # rubredoxin-NAD+ reductase activity
+  "GO:0015039", # NADPH-adrenodoxin reductase activity
+  "GO:0052610", # beta-cryptoxanthin hydroxylase activity
+  "GO:0052611", # beta-carotene 3-hydroxylase activity
+  "GO:0052631", # sphingolipid delta-8 desaturase activity
+  "GO:0052607", # 7-hydroxy-chlorophyllide a oxygenase activity
+  "GO:0052606", # chlorophyllide a oxygenase activity
+  "GO:0050046", # delta7-sterol 5(6)-desaturase activity
+  "GO:0052662", # zeaxanthin epoxidase activity
+  "GO:0033738", # methylenetetrahydrofolate reductase (ferredoxin) activity
+  "GO:0008794", # arsenate reductase (glutaredoxin) activity
+  "GO:0033728", # divinyl chlorophyllide a 8-vinyl-reductase activity
+  "GO:0033726", # aldehyde ferredoxin oxidoreductase activity
+  "GO:0030059", # aralkylamine dehydrogenase (azurin) activity
+  "GO:0030338", # CMP-N-acetylneuraminate monooxygenase activity
+  "GO:0030269", # tetrahydromethanopterin S-methyltransferase activity
+  "GO:0042279", # nitrite reductase (cytochrome, ammonia-forming) activity
+  "GO:0042284", # sphingolipid delta-4 desaturase activity
+  "GO:0042242", # cobyrinic acid a,c-diamide synthase activity
+  "GO:0140741", # tRNA U4 sulfurtransferase
+  "GO:0017105", # acyl-CoA delta11-(Z)-desaturase activity
+  "GO:0051743", # red chlorophyll catabolite reductase activity
+  "GO:0051744", # 3,8-divinyl protochlorophyllide a 8-vinyl reductase activity
+  "GO:0036199", # cholest-4-en-3-one 26-monooxygenase activity
+  "GO:0047959", # glycine dehydrogenase (cytochrome) activity
+  "GO:0008386", # cholesterol monooxygenase (side-chain-cleaving) activity
+  "GO:0047783", # corticosterone 18-monooxygenase activity
+  "GO:0047806", # cytochrome-c3 hydrogenase activity
+  "GO:0070225", # sulfide dehydrogenase activity
+  "GO:0047889", # ferredoxin-nitrate reductase activity
+  "GO:0047898", # formate dehydrogenase (cytochrome) activity
+  "GO:0008820", # cobinamide phosphate guanylyltransferase activity
+  "GO:0008818", # cobalamin 5'-phosphate synthase activity
+  "GO:0008901", # ferredoxin hydrogenase activity
+  "GO:0102036", # methyltetrahydrofolate:corrinoid/iron-sulfur protein methyltransferase activity
+  "GO:0050605", # superoxide reductase activity
+  "GO:0050600", # acyl-CoA 11-(E)-desaturase activity
+  "GO:0050618", # phycoerythrobilin:ferredoxin oxidoreductase activity
+  "GO:0050619", # phytochromobilin:ferredoxin oxidoreductase activity
+  "GO:0050617", # 15,16-dihydrobiliverdin:ferredoxin oxidoreductase activity
+  "GO:0050612", # arsenate reductase (donor) activity
+  "GO:0050610", # methylarsonate reductase activity
+  "GO:0050611", # arsenate reductase (azurin) activity
+  "GO:0050620", # phycocyanobilin:ferredoxin oxidoreductase activity
+  "GO:0050626", # trimethylamine-N-oxide reductase (cytochrome c) activity
+  "GO:0047595", # 6-hydroxynicotinate reductase activity
+  "GO:0047553", # 2-oxoglutarate synthase activity
+  "GO:0047527", # 2,3-dihydroxybenzoate-serine ligase activity
+  "GO:0106344", # 4-amino-5-hydroxymethyl-2-methylpyrimidine phosphate synthase activity from histidine and PLP
+  "GO:0106364", # 4-hydroxy-3-all-trans-hexaprenylbenzoate oxygenase activity
+  "GO:0008860", # ferredoxin-NAD+ reductase activity
+  "GO:0008849", # enterochelin esterase activity
+  "GO:0033740", # hydroxylamine oxidoreductase activity
+  "GO:0102100", # mycothiol-arsenate ligase activity
+  "GO:0033797", # selenate reductase activity
+  "GO:0102172", # 4alpha-hydroxymethyl,4beta,14alpha-dimethyl-9beta,19-cyclo-5alpha-ergost-24(241)-en-3beta-ol-4alpha-methyl oxidase activity
+  "GO:0102178", # 4alpha-formyl-ergosta-7,24(241)-dien-3beta-ol-methyl oxidase activity
+  "GO:0102177", # 24-methylenelophenol methyl oxidase activity
+  "GO:0102179", # 24-ethylidenelophenol 4alpha-methyl oxidase activity
+  "GO:0102174", # 4alpha-formyl,4beta,14alpha-dimethyl-9beta,19-cyclo-5alpha-ergost-24(241)-en-3beta-ol-4alpha-methyl oxidase activity
+  "GO:0102173", # 24-methylenecycloartanol 4alpha-methyl oxidase activity
+  "GO:0102181", # 4alpha-formyl-stigmasta-7,24(241)-dien-3beta-ol-methyl oxidase activity
+  "GO:0102180", # 4alpha-hydroxymethyl-stigmasta-7,24(241)-dien-3beta-ol-methyl oxidase activity
+  "GO:0008495", # protoheme IX farnesyltransferase activity
+  "GO:0047726", # iron-cytochrome-c reductase activity
+  "GO:0008121", # ubiquinol-cytochrome-c reductase activity
+  "GO:0047749", # cholestanetriol 26-monooxygenase activity
+  "GO:0047748", # cholestanetetraol 26-dehydrogenase activity
+  "GO:0047059", # polyvinyl alcohol dehydrogenase (cytochrome) activity
+  "GO:0047051", # D-lactate dehydrogenase (cytochrome c-553) activity
+  "GO:1990088", # [methyl-Co(III) methanol-specific corrinoid protein]:coenzyme M methyltransferase
+  "GO:0015420", # ABC-type vitamin B12 transporter activity
+  "GO:0015446", # ATPase-coupled arsenite transmembrane transporter activity
+  "GO:0050310", # sulfite dehydrogenase activity
+  "GO:0050311", # sulfite reductase (ferredoxin) activity
+  "GO:0050338", # thiosulfate dehydrogenase activity
+  "GO:0052933", # alcohol dehydrogenase (cytochrome c(L)) activity
+  "GO:0052934", # alcohol dehydrogenase (cytochrome c) activity
+  "GO:0050304", # nitrous-oxide reductase activity
+  "GO:0062185", # secalciferol 1-monooxygenase activity
+  "GO:0062181", # 1-alpha,25-dihydroxyvitamin D3 23-hydroxylase activity
+  "GO:0062180", # 25-hydroxycholecalciferol-23-hydroxylase activity
+  "GO:0050183", # phosphatidylcholine 12-monooxygenase activity
+  "GO:0050184", # phosphatidylcholine desaturase activity
+  "GO:0050140", # nitrate reductase (cytochrome) activity
+  "GO:0050087", # mannitol dehydrogenase (cytochrome) activity
+  "GO:0050207", # plasmanylethanolamine desaturase activity
+  "GO:0052876", # methylamine dehydrogenase (amicyanin) activity
+  "GO:0061603", # molybdenum cofactor guanylyltransferase activity
+  "GO:0061602", # molybdenum cofactor cytidylyltransferase activity
+  "GO:0010277", # chlorophyllide a oxygenase [overall] activity
+  "GO:0036200", # 3-ketosteroid 9-alpha-monooxygenase activity
+  "GO:0000254", # C-4 methylsterol oxidase activity
+  "GO:0036354", # 2-desacetyl-2-hydroxyethyl bacteriochlorophyllide a dehydrogenase activity
+  "GO:0036428", # adenosylcobinamide kinase (GTP-specific) activity
+  "GO:0036429", # adenosylcobinamide kinase (ATP-specific) activity
+  "GO:0061599", # molybdopterin molybdotransferase activity
+  "GO:0048529", # magnesium-protoporphyrin IX monomethyl ester (oxidative) cyclase activity
+  "GO:0051921", # adenosylcobyric acid synthase (glutamine-hydrolyzing) activity
+  "GO:0048307", # ferredoxin-nitrite reductase activity
+  "GO:0061896", # all-trans retinol 3,4-desaturase activity
+  "GO:0103012", # ferredoxin-thioredoxin reductase activity
+  "GO:0019164", # pyruvate synthase activity
+  "GO:0019133", # choline monooxygenase activity
+  "GO:0046408", # chlorophyll synthetase activity
+  "GO:0046406", # magnesium protoporphyrin IX methyltransferase activity
+  "GO:0009496", # plastoquinol--plastocyanin reductase activity
+  "GO:0046429", # 4-hydroxy-3-methylbut-2-en-1-yl diphosphate synthase activity
+  "GO:0032441" # pheophorbide a oxygenase activity
 )
 
 # Retrieve slim dataset
@@ -85,7 +269,7 @@ metal_chebi_ids_wo_formula <- setNames(
 )
 
 # This vector contains additional ChEBI IDs that are metal related but do not contain a formula.
-# This should be updated if promted bellow (around line 290)
+# This should be updated if promted bellow (around line 520)
 more_metal_chebi_ids_wo_formula <- c(
   "63063" = "22977", # cadmium cation
   "61345" = "18248", # chrysobactin
@@ -136,12 +320,28 @@ terms_metal <- terms %>%
   filter(chebi_id %in% unique(metal_chebi$chebi_accession)) %>%
   filter(!main_id %in% metal_slim_subset_annotated$slims_from_id)
 
+terms_metal_id_name <- terms_metal %>% 
+  distinct(main_id, main_name)
+
+terms_metal_paste <- paste0(paste0('"', terms_metal_id_name$main_id, '", \\# ', terms_metal_id_name$main_name), collapse = "\n")
 # Assign a ChEBI ID to all GO terms.
-# If child terms do not have a ChEBI ID they take over the ChEBI ID from their parent
+# If child terms do not have a ChEBI ID (or ChEBI IDs that are not metals) they take over the ChEBI ID from their parent
 
 # The igraph package is used for this
 
 go_network <- metal_slim_subset_annotated %>%
+  mutate(chebi_id = ifelse(!(chebi_id %in% metal_chebi$chebi_accession) | is.na(chebi_id), NA, chebi_id),
+         relations_relation = ifelse(is.na(chebi_id), NA, relations_relation),
+         relations_url = ifelse(is.na(chebi_id), NA, relations_url),
+         database = ifelse(is.na(chebi_id), NA, database),
+         relations_term = ifelse(is.na(chebi_id), NA, relations_term)) %>% 
+  group_by(slims_from_id) %>% 
+  filter(all(is.na(chebi_id)) | !is.na(chebi_id)) %>% 
+  ungroup() %>% 
+  # exclude all non-metal IDs according to the above ChEBI list
+  # this might however also exclude non-metal ChEBI IDs if they are present.
+  # One can run this pipeline once commenting these arguments out and checking for new non-metal IDs
+  # Then run it again with the arguments enabled.
   distinct(slims_from_id, child_id, chebi_id, relations_relation, relations_url, database, relations_term) %>%
   group_by(slims_from_id) %>%
   mutate(
@@ -322,7 +522,7 @@ non_metal_chebis <- metal_go_slim_subset_pre %>%
   filter(!(slims_from_id %in% metal_chebis$slims_from_id)) # find all entries that are not in the metal_chebis list
 
 message(
-  "If this list is not empty please add to the more_metal_chebi_ids_wo_formula vector in line 82!\n",
+  "If this list is not empty please add to the more_metal_chebi_ids_wo_formula vector in line 273!\n In order for this not to be always empty first comment out the lines around 333.",
   '"', paste0(na.omit(unique(non_metal_chebis$relations_term)), collapse = '",\n"'), '"'
 )
 
@@ -339,10 +539,8 @@ message(
 )
 
 manual_go_chebi_annotation <- data.frame(name = c(
-  paste0("GO:0052851;ferric-chelate reductase (NADPH) activity", ";", "CHEBI:29034|CHEBI:29033"),
   paste0("GO:0030946;protein tyrosine phosphatase activity, metal-dependent", ";", "CHEBI:25213"),
   paste0("GO:0061473;murein tripeptide carboxypeptidase activity", ";", "CHEBI:25213"),
-  paste0("GO:0050453;cob(II)alamin reductase activity", ";", "CHEBI:60488|CHEBI:16304|CHEBI:48828|CHEBI:49415"),
   paste0("GO:0140492;metal-dependent deubiquitinase activity", ";", "CHEBI:25213"),
   paste0("GO:0000293;ferric-chelate reductase activity", ";", "CHEBI:29034|CHEBI:29033"),
   paste0("GO:0140487;metal ion sequestering activity", ";", "CHEBI:25213"),
@@ -350,23 +548,15 @@ manual_go_chebi_annotation <- data.frame(name = c(
   paste0("GO:0008823;cupric reductase activity", ";", "CHEBI:49552|CHEBI:29036"),
   paste0("GO:0004222;metalloendopeptidase activity", ";", "CHEBI:25213"),
   paste0("GO:0070006;metalloaminopeptidase activity", ";", "CHEBI:25213"),
-  paste0("GO:0004322;ferroxidase activity", ";", "CHEBI:29034|CHEBI:29033"),
   paste0("GO:0015344;siderophore uptake transmembrane transporter activity", ";", "CHEBI:26672"),
   paste0("GO:0015343;siderophore transmembrane transporter activity", ";", "CHEBI:26672"),
   paste0("GO:0004023;alcohol dehydrogenase activity, metal ion-independent", ";", "CHEBI:25213"),
   paste0("GO:0051002;ligase activity, forming nitrogen-metal bonds", ";", "CHEBI:25213"),
   paste0("GO:0051003;ligase activity, forming nitrogen-metal bonds, forming coordination complexes", ";", "CHEBI:25213"),
   paste0("GO:0004181;metallocarboxypeptidase activity", ";", "CHEBI:25213"),
-  paste0("GO:0030586;[methionine synthase] reductase activity", ";", "CHEBI:25213"),
-  paste0("GO:0016152;mercury (II) reductase activity", ";", "CHEBI:25197"),
-  paste0("GO:0051116;cobaltochelatase activity", ";", "CHEBI:58537|CHEBI:48828"),
   paste0("GO:0008235;metalloexopeptidase activity", ";", "CHEBI:25213"),
   paste0("GO:0008237;metallopeptidase activity", ";", "CHEBI:25213"),
-  paste0("GO:0047852;diferric-transferrin reductase activity", ";", "CHEBI:29034|CHEBI:29033"),
   paste0("GO:0043783;oxidoreductase activity, acting on metal ions, flavin as acceptor", ";", "CHEBI:25213"),
-  paste0("GO:0043784;cob(II)yrinic acid a,c-diamide reductase activity", ";", "CHEBI:58575|CHEBI:58537|CHEBI:48828|CHEBI:85033"),
-  paste0("GO:0140618;ferric-chelate reductase (NADH) activity", ";", "CHEBI:26672|CHEBI:29034|CHEBI:29033"),
-  paste0("GO:0033787;cyanocobalamin reductase (cyanide-eliminating) activity", ";", "CHEBI:60488|CHEBI:17439|CHEBI:49415|CHEBI:85033"),
   paste0("GO:0140758;metal-dependent deNEDDylase activity", ";", "CHEBI:25213"),
   paste0("GO:0009046;zinc D-Ala-D-Ala carboxypeptidase activity", ";", "CHEBI:29105"),
   paste0("GO:0008191;metalloendopeptidase inhibitor activity", ";", "CHEBI:25213"),
@@ -377,8 +567,7 @@ manual_go_chebi_annotation <- data.frame(name = c(
   paste0("GO:0016724;oxidoreductase activity, acting on metal ions, oxygen as acceptor", ";", "CHEBI:25213"),
   paste0("GO:0140315;iron ion sequestering activity", ";", "CHEBI:24875"),
   paste0("GO:0140314;calcium ion sequestering activity", ";", "CHEBI:39123"),
-  paste0("GO:0016851;magnesium chelatase activity", ";", "CHEBI:18420"),
-  paste0("GO:0140571;transmembrane ascorbate ferrireductase activity", ";", "CHEBI:29034|CHEBI:29033"),
+  paste0("GO:0106423;tubulin-tyrosine carboxypeptidase", ";", "CHEBI:25213"),
   paste0("GO:0015620;ferric-enterobactin transmembrane transporter activity", ";", "CHEBI:28199"),
   paste0("GO:1902945;metalloendopeptidase activity involved in amyloid precursor protein catabolic process", ";", "CHEBI:25213")
 )) %>%
