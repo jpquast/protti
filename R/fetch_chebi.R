@@ -6,8 +6,10 @@
 #' the main compound data. This data can be used to check the relations of ChEBI ID's to each other.
 #' Default is FALSE.
 #' @param stars a numeric vector indicating the "star" level (confidence) for which entries should
-#' be retrieved (Possible levels are 1, 2 and 3). Default is \code{c(3)} retrieving only "3-star"
+#' be retrieved (Possible levels are 1, 2 and 3). Default is `c(3)` retrieving only "3-star"
 #' entries, which are manually annotated by the ChEBI curator team.
+#' @param timeout a numeric value specifying the time in seconds until the download of an organism
+#' archive times out. The default is 60 seconds.
 #'
 #' @return A data frame that contains information about each molecule in the ChEBI database.
 #' @import dplyr
@@ -24,7 +26,7 @@
 #'
 #' head(chebi)
 #' }
-fetch_chebi <- function(relation = FALSE, stars = c(3)) {
+fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
   if (!curl::has_internet()) {
     message("No internet connection.")
     return(invisible(NULL))
@@ -33,7 +35,7 @@ fetch_chebi <- function(relation = FALSE, stars = c(3)) {
   if (relation == TRUE) {
     chebi_relation_result <- tryCatch(httr::GET(
       "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv",
-      httr::timeout(60)
+      httr::timeout(timeout)
     ),
     error = function(e) conditionMessage(e),
     warning = function(w) conditionMessage(w)
@@ -72,7 +74,7 @@ fetch_chebi <- function(relation = FALSE, stars = c(3)) {
   # Download compound data
   chebi_chemical_data_result <- tryCatch(httr::GET(
     "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv",
-    httr::timeout(60)
+    httr::timeout(timeout)
   ),
   error = function(e) conditionMessage(e),
   warning = function(w) conditionMessage(w)
@@ -133,7 +135,7 @@ fetch_chebi <- function(relation = FALSE, stars = c(3)) {
 
   chebi_accession_result <- tryCatch(httr::GET(
     "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv",
-    httr::timeout(60)
+    httr::timeout(timeout)
   ),
   error = function(e) conditionMessage(e),
   warning = function(w) conditionMessage(w)

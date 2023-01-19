@@ -5,6 +5,7 @@
 * `calculate_go_enrichment()` can now be applied on data frames with multiple different groups. The enrichment will be calculated for each group separately. If the data is plotted, each group is displayed in a separate facet. The group is provided to the new `group` argument. The `y_axis_free` argument determines if the y-axis of the faceted plot is "free" or "fixed".
 * Added a `version` argument to `fetch_alphafold_prediction()` that specifies which verison of the database should be retrieved. The default is currently the newest version `"v4"`.
 * `qc_ranked_intensities()` was added. It ranks protein, peptide or precursor intensities from highest to lowest. Ranked intensities can also be plotted using the `plot` argument.
+* `fetch_chebi()` recieved a `timeout` argument that specifies after how many seconds the connection to the database should timeout. The default is 60 seconds as previously used.
 
 ## Bug fixes
 

@@ -4,7 +4,7 @@
 \alias{fetch_chebi}
 \title{Fetch ChEBI database information}
 \usage{
-fetch_chebi(relation = FALSE, stars = c(3))
+fetch_chebi(relation = FALSE, stars = c(3), timeout = 60)
 }
 \arguments{
 \item{relation}{a logical value that indicates if ChEBI Ontology data will be returned instead
@@ -14,6 +14,9 @@ Default is FALSE.}
 \item{stars}{a numeric vector indicating the "star" level (confidence) for which entries should
 be retrieved (Possible levels are 1, 2 and 3). Default is \code{c(3)} retrieving only "3-star"
 entries, which are manually annotated by the ChEBI curator team.}
+
+\item{timeout}{a numeric value specifying the time in seconds until the download of an organism
+archive times out. The default is 60 seconds.}
 }
 \value{
 A data frame that contains information about each molecule in the ChEBI database.

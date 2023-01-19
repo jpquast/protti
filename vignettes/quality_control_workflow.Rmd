@@ -331,6 +331,21 @@ qc_pca(
 )
 ``` 
 
+### Ranked intensity distribution
+
+It can be useful to check which precursors, peptides or proteins are the most or least abundant in the sample by ranking their intensities. You can create a data frame containing ranked median intensities for the whole experiment or ranked intensities for each sample using the `qc_ranked_intensities()` function. In addition you can also create a corresponding plot by setting the `plot` argument to `TRUE`. If you would like to axis to not be log10 transformed but rather log2 you can change the `y_axis_transformation` argument.
+
+```{r qc_ranked_intensities, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
+# Plot ranked peptide intensities
+qc_ranked_intensities(
+  data = data,
+  sample = sample,
+  grouping = peptide,
+  intensity_log2 = peptide_intensity,
+  plot = TRUE,
+)
+```
+
 ### Additional QC functions
 
 There are two additional QC functions that are not included in this vignette: 

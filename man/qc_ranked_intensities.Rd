@@ -8,7 +8,7 @@ qc_ranked_intensities(
   data,
   sample,
   grouping,
-  log2_intensity,
+  intensity_log2,
   facet = FALSE,
   plot = FALSE,
   y_axis_transformation = "log10",
@@ -24,7 +24,7 @@ peptide or protein) and log2 transformed intensities for each grouping identifie
 \item{grouping}{a character column in the \code{data} data frame that contains protein, precursor,
 or peptide identifiers.}
 
-\item{log2_intensity}{a numeric column in the \code{data} data frame that contains the log2
+\item{intensity_log2}{a numeric column in the \code{data} data frame that contains the log2
 transformed intensities of the selected grouping variable.}
 
 \item{facet}{a logical value that specifies whether the calculation should be done group wise by
@@ -69,12 +69,16 @@ protein_intensities <- calculate_protein_abundance(
   intensity_log2 = peptide_intensity
 )
 
+# The name of the column containing protein intensities is in this case
+# "peptide_intensity", which is slightly misleading.
+# calculate_protein_abundance() just takes over the previous column name.
+
 # Plot ranked intensities for all samples combined
 qc_ranked_intensities(
   data = protein_intensities,
   sample = sample,
   grouping = protein,
-  log2_intensity = peptide_intensity,
+  intensity_log2 = peptide_intensity,
   plot = TRUE,
 )
 
@@ -83,7 +87,7 @@ qc_ranked_intensities(
   data = protein_intensities,
   sample = sample,
   grouping = protein,
-  log2_intensity = peptide_intensity,
+  intensity_log2 = peptide_intensity,
   plot = TRUE,
   facet = TRUE
 )
