@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Qualtiy Control (QC) Workflow</h1>
                         <h4 data-toc-skip class="author">Dina Schuster</h4>
             
-            <h4 data-toc-skip class="date">2023-01-19</h4>
+            <h4 data-toc-skip class="date">2023-01-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/HEAD/vignettes/quality_control_workflow.Rmd" class="external-link"><code>vignettes/quality_control_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>quality_control_workflow.Rmd</code></div>
@@ -451,6 +451,23 @@ text-align: justify}
 <span>  plot_style <span class="op">=</span> <span class="st">"pca"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_pca-2.png" width="576" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level4">
+<h4 id="ranked-intensity-distribution">Ranked intensity distribution<a class="anchor" aria-label="anchor" href="#ranked-intensity-distribution"></a>
+</h4>
+<p>It can be useful to check which precursors, peptides or proteins are the most or least abundant in the sample by ranking their intensities. You can create a data frame containing ranked median intensities for the whole experiment or ranked intensities for each sample using the <code><a href="../reference/qc_ranked_intensities.html">qc_ranked_intensities()</a></code> function. In addition you can also create a corresponding plot by setting the <code>plot</code> argument to <code>TRUE</code>. If you would like to axis to not be log10 transformed but rather log2 you can change the <code>y_axis_transformation</code> argument.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Plot ranked peptide intensities</span></span>
+<span><span class="fu"><a href="../reference/qc_ranked_intensities.html">qc_ranked_intensities</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">data</span>,</span>
+<span>  sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>  intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: ggrepel: 17 unlabeled data points (too many overlaps). Consider</span></span>
+<span><span class="co">#&gt; increasing max.overlaps</span></span></code></pre></div>
+<p><img src="quality_control_workflow_files/figure-html/qc_ranked_intensities-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="additional-qc-functions">Additional QC functions<a class="anchor" aria-label="anchor" href="#additional-qc-functions"></a>

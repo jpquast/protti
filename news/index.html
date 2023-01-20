@@ -78,11 +78,16 @@
 <li>Added a <code>version</code> argument to <code><a href="../reference/fetch_alphafold_prediction.html">fetch_alphafold_prediction()</a></code> that specifies which verison of the database should be retrieved. The default is currently the newest version <code>"v4"</code>.</li>
 <li>
 <code><a href="../reference/qc_ranked_intensities.html">qc_ranked_intensities()</a></code> was added. It ranks protein, peptide or precursor intensities from highest to lowest. Ranked intensities can also be plotted using the <code>plot</code> argument.</li>
+<li>
+<code><a href="../reference/fetch_chebi.html">fetch_chebi()</a></code> recieved a <code>timeout</code> argument that specifies after how many seconds the connection to the database should timeout. The default is 60 seconds as previously used.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-0-5-0-9000">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-0-9000"></a></h3>
 <ul><li>
-<code><a href="../reference/pval_distribution_plot.html">pval_distribution_plot()</a></code> facets now have the correct style.</li></ul></div>
+<code><a href="../reference/pval_distribution_plot.html">pval_distribution_plot()</a></code> facets now have the correct style.</li>
+<li>
+<code><a href="../reference/calculate_protein_abundance.html">calculate_protein_abundance()</a></code> requires at least three distinct peptides for quantification. The function now applies this rule for each sample independently except for checking the whole dataset to contain at least three distinct peptides.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.0" id="protti-050">protti 0.5.0<small>2022-09-29</small><a class="anchor" aria-label="anchor" href="#protti-050"></a></h2>

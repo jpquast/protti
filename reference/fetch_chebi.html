@@ -75,7 +75,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fetch_chebi</span><span class="op">(</span>relation <span class="op">=</span> <span class="cn">FALSE</span>, stars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fetch_chebi</span><span class="op">(</span>relation <span class="op">=</span> <span class="cn">FALSE</span>, stars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>, timeout <span class="op">=</span> <span class="fl">60</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -90,6 +90,11 @@ Default is FALSE.</p></dd>
 <dd><p>a numeric vector indicating the "star" level (confidence) for which entries should
 be retrieved (Possible levels are 1, 2 and 3). Default is <code>c(3)</code> retrieving only "3-star"
 entries, which are manually annotated by the ChEBI curator team.</p></dd>
+
+
+<dt>timeout</dt>
+<dd><p>a numeric value specifying the time in seconds until the download of an organism
+archive times out. The default is 60 seconds.</p></dd>
 
 </dl></div>
     <div id="value">
