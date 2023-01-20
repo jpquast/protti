@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -142,7 +142,7 @@ is returned. The intensities are log10 transformed for the plot.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create synthetic data</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  n_proteins <span class="op">=</span> <span class="fl">1000</span>,</span></span>
+<span class="r-in"><span>  n_proteins <span class="op">=</span> <span class="fl">50</span>,</span></span>
 <span class="r-in"><span>  frac_change <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
 <span class="r-in"><span>  n_replicates <span class="op">=</span> <span class="fl">4</span>,</span></span>
 <span class="r-in"><span>  n_conditions <span class="op">=</span> <span class="fl">3</span>,</span></span>
@@ -150,36 +150,22 @@ is returned. The intensities are log10 transformed for the plot.</p>
 <span class="r-in"><span>  additional_metadata <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Calculate protein abundance</span></span></span>
-<span class="r-in"><span><span class="va">protein_intensities</span> <span class="op">&lt;-</span> <span class="fu"><a href="calculate_protein_abundance.html">calculate_protein_abundance</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
-<span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
-<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">protein</span>,</span></span>
-<span class="r-in"><span>  precursor <span class="op">=</span> <span class="va">peptide</span>,</span></span>
-<span class="r-in"><span>  peptide <span class="op">=</span> <span class="va">peptide</span>,</span></span>
-<span class="r-in"><span>  intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The name of the column containing protein intensities is in this case</span></span></span>
-<span class="r-in"><span><span class="co"># "peptide_intensity", which is slightly misleading.</span></span></span>
-<span class="r-in"><span><span class="co"># calculate_protein_abundance() just takes over the previous column name.</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot ranked intensities for all samples combined</span></span></span>
 <span class="r-in"><span><span class="fu">qc_ranked_intensities</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  data <span class="op">=</span> <span class="va">protein_intensities</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
 <span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
-<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">protein</span>,</span></span>
+<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span></span>
 <span class="r-in"><span>  intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity</span>,</span></span>
 <span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 5 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 9 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
 <span class="r-plt img"><img src="qc_ranked_intensities-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot ranked intensities for each sample separately</span></span></span>
 <span class="r-in"><span><span class="fu">qc_ranked_intensities</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  data <span class="op">=</span> <span class="va">protein_intensities</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
 <span class="r-in"><span>  sample <span class="op">=</span> <span class="va">sample</span>,</span></span>
-<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">protein</span>,</span></span>
+<span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span></span>
 <span class="r-in"><span>  intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity</span>,</span></span>
 <span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  facet <span class="op">=</span> <span class="cn">TRUE</span></span></span>
@@ -187,13 +173,13 @@ is returned. The intensities are log10 transformed for the plot.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 19 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 19 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 19 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 18 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 19 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 19 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 19 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 19 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 19 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 19 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 19 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 18 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 19 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>ggrepel: 19 unlabeled data points (too many overlaps). Consider increasing max.overlaps</span>
 <span class="r-plt img"><img src="qc_ranked_intensities-2.png" alt="" width="700" height="433"></span>
