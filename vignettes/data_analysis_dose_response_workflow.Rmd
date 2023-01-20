@@ -14,7 +14,8 @@ text-align: justify}
 </style>
 
 ```{r, include = FALSE}
-test_protti <- identical(Sys.getenv("TEST_PROTTI"), "true")
+build_vignette_on_cran <- identical(Sys.getenv("BUILD_VIGNETTE"), "true")
+test_protti <- identical(Sys.getenv("TEST_PROTTI"), "true") & build_vignette_on_cran
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -22,6 +23,15 @@ knitr::opts_chunk$set(
 ```
 
 # Introduction
+
+```{r CRAN_comment, message=FALSE, warning=FALSE, echo=FALSE}
+if (build_vignette_on_cran == FALSE){
+  print("!!! IMPORTANT !!!")
+  print("This Vignette has not been built completely on CRAN due to size limitations.")
+  print("Please check the correct version here: ")
+  print("https://jpquast.github.io/protti/articles/https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html")
+}
+```
 
 This vignette will take you through all important steps for the analysis of dose-response experiments with **protti**. For experiments with treatment titrations (i.e. samples treated with different amounts of the same compound, protein, metabolite, element, ion, etc.) you can fit sigmoidal log-logistic regression curves to the data and determine significantly changing precursors, peptides or proteins based on Pearson correlation and ANOVA q-value. 
 
