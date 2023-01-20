@@ -35,7 +35,7 @@
 #'
 #' # Create synthetic data
 #' data <- create_synthetic_data(
-#'   n_proteins = 1000,
+#'   n_proteins = 50,
 #'   frac_change = 0.05,
 #'   n_replicates = 4,
 #'   n_conditions = 3,
@@ -43,34 +43,20 @@
 #'   additional_metadata = FALSE
 #' )
 #'
-#' # Calculate protein abundance
-#' protein_intensities <- calculate_protein_abundance(
-#'   data = data,
-#'   sample = sample,
-#'   protein_id = protein,
-#'   precursor = peptide,
-#'   peptide = peptide,
-#'   intensity_log2 = peptide_intensity
-#' )
-#'
-#' # The name of the column containing protein intensities is in this case
-#' # "peptide_intensity", which is slightly misleading.
-#' # calculate_protein_abundance() just takes over the previous column name.
-#'
 #' # Plot ranked intensities for all samples combined
 #' qc_ranked_intensities(
-#'   data = protein_intensities,
+#'   data = data,
 #'   sample = sample,
-#'   grouping = protein,
+#'   grouping = peptide,
 #'   intensity_log2 = peptide_intensity,
 #'   plot = TRUE,
 #' )
 #'
 #' # Plot ranked intensities for each sample separately
 #' qc_ranked_intensities(
-#'   data = protein_intensities,
+#'   data = data,
 #'   sample = sample,
-#'   grouping = protein,
+#'   grouping = peptide,
 #'   intensity_log2 = peptide_intensity,
 #'   plot = TRUE,
 #'   facet = TRUE
