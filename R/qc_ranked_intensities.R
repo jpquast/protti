@@ -7,7 +7,7 @@
 #' @param sample a character column in the `data` data frame that contains the sample names.
 #' @param grouping a character column in the `data` data frame that contains protein, precursor,
 #' or peptide identifiers.
-#' @param log2_intensity a numeric column in the `data` data frame that contains the log2
+#' @param intensity_log2 a numeric column in the `data` data frame that contains the log2
 #' transformed intensities of the selected grouping variable.
 #' @param facet a logical value that specifies whether the calculation should be done group wise by
 #' sample and if the resulting plot should be faceted by sample. (default is `FALSE`).
@@ -27,6 +27,7 @@
 #' @importFrom plotly ggplotly
 #' @importFrom utils data
 #' @importFrom stringr str_sort
+#' @importFrom ggrepel geom_text_repel
 #' @export
 #'
 #' @examples
@@ -52,12 +53,16 @@
 #'   intensity_log2 = peptide_intensity
 #' )
 #'
+#' # The name of the column containing protein intensities is in this case
+#' # "peptide_intensity", which is slightly misleading.
+#' # calculate_protein_abundance() just takes over the previous column name.
+#'
 #' # Plot ranked intensities for all samples combined
 #' qc_ranked_intensities(
 #'   data = protein_intensities,
 #'   sample = sample,
 #'   grouping = protein,
-#'   log2_intensity = peptide_intensity,
+#'   intensity_log2 = peptide_intensity,
 #'   plot = TRUE,
 #' )
 #'
@@ -66,7 +71,7 @@
 #'   data = protein_intensities,
 #'   sample = sample,
 #'   grouping = protein,
-#'   log2_intensity = peptide_intensity,
+#'   intensity_log2 = peptide_intensity,
 #'   plot = TRUE,
 #'   facet = TRUE
 #' )
@@ -74,45 +79,49 @@
 qc_ranked_intensities <- function(data,
                                   sample,
                                   grouping,
-                                  log2_intensity,
+                                  intensity_log2,
                                   facet = FALSE,
                                   plot = FALSE,
                                   y_axis_transformation = "log10",
                                   interactive = FALSE) {
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
-  
+
   data_prep <- data %>%
-    dplyr::distinct({{ sample }}, {{ grouping }}, {{ log2_intensity }}) %>%
-    tidyr::drop_na({{ log2_intensity }}) %>%
-    dplyr::mutate(intensity = 2^{{ log2_intensity }}) 
-  
-  if(is(dplyr::pull(data, {{ sample }}), "character")) {
+    dplyr::distinct({{ sample }}, {{ grouping }}, {{ intensity_log2 }}) %>%
+    tidyr::drop_na({{ intensity_log2 }}) %>%
+    dplyr::mutate(intensity = 2^{{ intensity_log2 }})
+
+  if (is(dplyr::pull(data, {{ sample }}), "character")) {
     # reorder sample names if they are not already a factor
-    data_prep <- data_prep %>% 
-    dplyr::mutate({{ sample }} := factor({{ sample }},
-                                         levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
-    ))
+    data_prep <- data_prep %>%
+      dplyr::mutate({{ sample }} := factor({{ sample }},
+        levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+      ))
   }
 
   if (facet) {
     input <- data_prep %>%
-      dplyr::group_by({{ grouping }}, {{ sample }}) %>%
       dplyr::mutate(log10_intensity = log10(.data$intensity)) %>% # log10 transform intensities
-      dplyr::distinct({{ sample }}, {{ grouping }}, {{ log2_intensity }}, .data$log10_intensity) %>%
-      dplyr::group_by({{ sample }}) %>%
+      dplyr::distinct({{ sample }}, {{ grouping }}, {{ intensity_log2 }}, .data$log10_intensity) %>%
       dplyr::arrange(dplyr::desc(.data$log10_intensity)) %>% # sort intensities
-      dplyr::mutate(rank = 1:dplyr::n()) # give intensities a rank
+      dplyr::group_by({{ sample }}) %>%
+      dplyr::mutate(rank = 1:dplyr::n()) %>% # give intensities a rank
+      dplyr::ungroup()
 
     if (y_axis_transformation == "log2") {
       input <- input %>%
-        dplyr::mutate(intensity_plot = {{ log2_intensity }})
+        dplyr::mutate(intensity_plot = {{ intensity_log2 }})
     }
 
     if (y_axis_transformation == "log10") {
       input <- input %>%
         dplyr::mutate(intensity_plot = .data$log10_intensity)
     }
+
+    input_top <- input %>%
+      dplyr::group_by({{ sample }}) %>%
+      filter(rank <= 10 | rank >= dplyr::n() - 9)
   } else {
     input <- data_prep %>%
       dplyr::group_by({{ grouping }}) %>%
@@ -135,6 +144,9 @@ qc_ranked_intensities <- function(data,
       input <- input %>%
         dplyr::mutate(intensity_plot = .data$log10_median_intensity)
     }
+
+    input_top <- input %>%
+      filter(rank <= 10 | rank >= dplyr::n() - 9)
   }
 
   if (plot == FALSE) {
@@ -146,7 +158,7 @@ qc_ranked_intensities <- function(data,
   }
 
   plot <- input %>%
-    ggplot2::ggplot(ggplot2::aes(.data$rank, .data$intensity_plot, text = paste("grouping:" = {{ grouping }}))) +
+    ggplot2::ggplot(ggplot2::aes(.data$rank, .data$intensity_plot)) +
     ggplot2::geom_point(
       size = 3,
       colour = protti_colours[1]
@@ -161,6 +173,15 @@ qc_ranked_intensities <- function(data,
     {
       if (facet) {
         ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(sample)), scales = "free", ncol = 4)
+      }
+    } +
+    {
+      if (!interactive) {
+        ggrepel::geom_text_repel(
+          data = input_top,
+          aes(label = {{ grouping }}),
+          size = 4
+        )
       }
     } +
     ggplot2::theme_bw() +

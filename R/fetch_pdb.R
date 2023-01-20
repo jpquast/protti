@@ -284,7 +284,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     message("The following IDs have not been retrieved:")
     message(paste0(utils::capture.output(not_retrieved), collapse = "\n"))
   }
-  
+
   # process information from database
   if (show_progress == TRUE) {
     message("[2/6] Extract experimental conditions ... ", appendLF = FALSE)
@@ -298,16 +298,16 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       .$entries.rcsb_entry_info
     ) %>%
     dplyr::select(-c(
-      .data$entries.rcsb_id,
-      .data$entries.struct_keywords,
-      .data$entries.rcsb_entry_info
+      "entries.rcsb_id",
+      "entries.struct_keywords",
+      "entries.rcsb_entry_info"
     )) %>%
-    tidyr::unnest(.data$entries.exptl) %>%
+    tidyr::unnest("entries.exptl") %>%
     dplyr::rename(structure_method = .data$method)
 
   crystal_growth_info <- query_result_clean %>%
-    dplyr::select(.data$pdb_ids, .data$entries.exptl_crystal_grow) %>%
-    tidyr::unnest(.data$entries.exptl_crystal_grow)
+    dplyr::select("pdb_ids", "entries.exptl_crystal_grow") %>%
+    tidyr::unnest("entries.exptl_crystal_grow")
 
   # make sure that the data is complete even if there is no crystal structure
   should_not_be_here <- colnames(crystal_growth_info)[!colnames(crystal_growth_info) %in% c(
