@@ -29,7 +29,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
             protein_sequence = protein_sequence,
             peptide_sequence = peptide
           ) %>%
-          peptide_type(aa_before = aa_before, last_aa = last_aa))
+          peptide_type(aa_before = aa_before, last_aa = last_aa, aa_after = aa_after))
       })
       expect_is(assigned_types, "data.frame")
       expect_equal(nrow(assigned_types), 3)
