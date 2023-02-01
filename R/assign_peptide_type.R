@@ -54,6 +54,11 @@ assign_peptide_type <- function(data,
                                 aa_before = aa_before,
                                 last_aa = last_aa,
                                 aa_after = aa_after) {
+
+  if (missing(aa_before) | missing(last_aa) | missing(aa_after)) {
+    stop("Please provide all 3 required amino acids (aa_before, last_aa and aa_after).")
+  }
+  
   data %>%
     dplyr::mutate(N_term_tryp = dplyr::if_else({{ aa_before }} == "" |
       {{ aa_before }} == "K" |
