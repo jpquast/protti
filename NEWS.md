@@ -1,3 +1,9 @@
+# protti 0.6.0.9000
+
+## Bug fixes
+
+* `plot_volcano()` now also works interactively if there are no significant hits.
+
 # protti 0.6.0
 
 ## New features
