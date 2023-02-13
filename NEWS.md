@@ -3,6 +3,7 @@
 ## Bug fixes
 
 * `plot_volcano()` now also works interactively if there are no significant hits.
+* `fetch_chebi()` fixed an issue cased by `na_if()` that changed its behaviour after the recent `dplyr` update.
 
 # protti 0.6.0
 
