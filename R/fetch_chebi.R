@@ -40,6 +40,7 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
     error = function(e) conditionMessage(e),
     warning = function(w) conditionMessage(w)
     )
+
     # Check again if there is an internet connection
     if (!curl::has_internet()) {
       message("No internet connection.")
@@ -169,7 +170,7 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
       .data$MODIFIED_ON,
       .data$CREATED_BY
     )) %>%
-    dplyr::na_if("null") %>%
+    dplyr::mutate(dplyr::across(c(.data$PARENT_ID, .data$DEFINITION), ~ dplyr::na_if(.x, "null"))) %>%
     dplyr::mutate(PARENT_ID = as.numeric(.data$PARENT_ID))
 
 
@@ -196,7 +197,7 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
   chebi_compounds_names_clean <- chebi_compounds %>%
     dplyr::filter(.data$STAR %in% stars) %>%
     dplyr::distinct(.data$ID, .data$NAME) %>%
-    dplyr::na_if("null") %>%
+    dplyr::mutate(dplyr::across(c(.data$NAME), ~ dplyr::na_if(.x, "null"))) %>%
     dplyr::filter(!is.na(.data$NAME)) %>%
     dplyr::mutate(TYPE_NAME = "STANDARD") %>%
     dplyr::select(.data$ID, .data$TYPE_NAME, .data$NAME)
