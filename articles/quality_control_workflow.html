@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
       </span>
     </div>
 
@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Qualtiy Control (QC) Workflow</h1>
                         <h4 data-toc-skip class="author">Dina Schuster</h4>
             
-            <h4 data-toc-skip class="date">2023-01-20</h4>
+            <h4 data-toc-skip class="date">2023-02-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/HEAD/vignettes/quality_control_workflow.Rmd" class="external-link"><code>vignettes/quality_control_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>quality_control_workflow.Rmd</code></div>
@@ -263,14 +263,14 @@ text-align: justify}
 <span>       condition <span class="op">=</span> <span class="va">condition</span>, </span>
 <span>       plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
-<span><span class="co">#&gt;   condition   sample   count</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> condition_1 sample_3    98</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> condition_2 sample_4    97</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> condition_2 sample_5    99</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> condition_2 sample_6    98</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> condition_1 sample_2    99</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> condition_1 sample_1    98</span></span>
+<span><span class="co">#&gt;   sample   condition   count</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> sample_3 condition_1    98</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> sample_4 condition_2    97</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> sample_5 condition_2    99</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> sample_6 condition_2    98</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> sample_2 condition_1    99</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> sample_1 condition_1    98</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/qc_ids.html">qc_ids</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,</span>
 <span>       sample <span class="op">=</span> <span class="va">sample</span>,</span>
@@ -347,7 +347,14 @@ text-align: justify}
 <span>                 charge_states <span class="op">=</span> <span class="va">charge</span>, </span>
 <span>                 method <span class="op">=</span> <span class="st">"intensity"</span>,</span>
 <span>                 intensity <span class="op">=</span> <span class="va">raw_intensity</span>, </span>
-<span>                 plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span>                 plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in</span></span>
+<span><span class="co">#&gt; dplyr 1.1.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `reframe()` instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> When switching from `summarise()` to `reframe()`, remember that `reframe()`</span></span>
+<span><span class="co">#&gt;   always returns an ungrouped data frame and adjust accordingly.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">protti</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/jpquast/protti/issues&gt;</span>.</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_charge_states-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">

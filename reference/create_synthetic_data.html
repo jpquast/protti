@@ -18,7 +18,7 @@ test functions while knowing the ground truth."><meta property="og:image" conten
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
       </span>
     </div>
 
@@ -220,20 +220,20 @@ values that were created based on a probabilistic dropout curve.</p>
 <span class="r-in"><span>  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span></span>
 <span class="r-in"><span>  n_conditions <span class="op">=</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 978 × 14</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,080 × 14</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    protein peptide condi…¹ sample pepti…² change chang…³ pepti…⁴ cover…⁵ n_mis…⁶</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> protei… peptid… condit… sampl…    19.4 TRUE   TRUE       19.4    14.6       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> protei… peptid… condit… sampl…    19.5 TRUE   TRUE       19.5    16.7       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> protei… peptid… condit… sampl…    19.4 TRUE   TRUE       19.4    14.6       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> protei… peptid… condit… sampl…    19.6 TRUE   TRUE       19.6    10.4       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> protei… peptid… condit… sampl…    19.3 TRUE   TRUE       19.3    14.6       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> protei… peptid… condit… sampl…    19.8 TRUE   TRUE       19.8    14.6       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> protei… peptid… condit… sampl…    18.1 TRUE   TRUE       18.1    14.6       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> protei… peptid… condit… sampl…    17.7 TRUE   TRUE       17.7    16.7       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> protei… peptid… condit… sampl…    17.8 TRUE   TRUE       17.8    14.6       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> protei… peptid… condit… sampl…    18.4 TRUE   TRUE       18.4    10.4       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 968 more rows, 4 more variables: charge &lt;dbl&gt;, pep_type &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> protei… peptid… condit… sampl…    14.0 TRUE   TRUE       14.0    1.42       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> protei… peptid… condit… sampl…    13.0 TRUE   TRUE       <span style="color: #BB0000;">NA</span>      1.83       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> protei… peptid… condit… sampl…    14.2 TRUE   TRUE       <span style="color: #BB0000;">NA</span>      1.02       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> protei… peptid… condit… sampl…    14.3 TRUE   TRUE       14.3    1.83       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> protei… peptid… condit… sampl…    14.6 TRUE   TRUE       <span style="color: #BB0000;">NA</span>      1.42       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> protei… peptid… condit… sampl…    13.9 TRUE   TRUE       13.9    1.83       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> protei… peptid… condit… sampl…    19.0 TRUE   TRUE       19.0    1.42       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> protei… peptid… condit… sampl…    19.3 TRUE   TRUE       19.3    1.83       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> protei… peptid… condit… sampl…    19.2 TRUE   TRUE       19.2    1.02       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> protei… peptid… condit… sampl…    16.8 TRUE   TRUE       16.8    1.83       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1,070 more rows, 4 more variables: charge &lt;dbl&gt;, pep_type &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   peak_width &lt;dbl&gt;, retention_time &lt;dbl&gt;, and abbreviated variable names</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ¹​condition, ²​peptide_intensity, ³​change_peptide,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ⁴​peptide_intensity_missing, ⁵​coverage, ⁶​n_missed_cleavage</span></span>

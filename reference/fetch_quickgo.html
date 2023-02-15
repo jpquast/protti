@@ -21,7 +21,7 @@ GO dataset that considers all child terms of the supplied IDs."><meta property="
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
       </span>
     </div>
 
@@ -152,7 +152,7 @@ depending on what the input "type" was.</p>
 <span class="r-in"><span>  ontology <span class="op">=</span> <span class="st">"molecular_function"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving GO annotations ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE(10.26s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE(5.62s)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">annotations</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 15</span></span>
@@ -176,10 +176,10 @@ depending on what the input "type" was.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 13</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   main_id  is_ob…¹ main_…² defin…³ ontol…⁴ usage child…⁵ child…⁶ chebi…⁷ relat…⁸</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> GO:0006… FALSE   creati… The ch… biolog… Unre… GO:000… is_a;i… CHEBI:… creati…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> GO:0006… FALSE   creati… The ch… biolog… Unre… GO:001… is_a;i… CHEBI:… creati…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> GO:0006… FALSE   creati… The ch… biolog… Unre… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      CHEBI:… creati…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> GO:0006… FALSE   protei… The di… biolog… Unre… GO:004… regula… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> GO:0006… FALSE   protei… The pr… biolog… Unre… GO:000… is_a;i… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> GO:0006… FALSE   protei… The pr… biolog… Unre… GO:004… is_a;i… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> GO:0006… FALSE   riboso… The di… biolog… Unre… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> GO:0006… FALSE   phosph… The ch… biolog… Unre… GO:004… is_a;i… CHEBI:… N(omeg…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 3 more variables: database &lt;chr&gt;, relations_url &lt;chr&gt;,</span></span>
