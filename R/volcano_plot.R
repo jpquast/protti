@@ -224,7 +224,7 @@ volcano_plot <- function(data,
         y = y_axis_label,
         color = legend_label
       ) +
-      {if (nrow(dplyr::filter(data, .data$target == TRUE)) != 0){
+      {if (nrow(cutoff_line) != 0){
       geom_hline(data = cutoff_line, aes(yintercept = .data$mean_adjusted_cutoff), linetype = "dashed") 
       }}+
       geom_vline(xintercept = log2FC_cutoff, linetype = "dashed") +
@@ -294,7 +294,7 @@ volcano_plot <- function(data,
         x = x_axis_label,
         y = y_axis_label
       ) +
-      {if (nrow(dplyr::filter(data, (abs({{ log2FC }}) > log2FC_cutoff) & ({{ significance }} < .data$mean_adjusted_cutoff))) != 0){
+      {if (nrow(cutoff_line) != 0){
       geom_hline(data = cutoff_line, aes(yintercept = .data$mean_adjusted_cutoff), linetype = "dashed") 
         }}+
       geom_vline(xintercept = log2FC_cutoff, linetype = "dashed") +
