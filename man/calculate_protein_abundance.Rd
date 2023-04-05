@@ -43,7 +43,7 @@ used. Default is \code{"iq"}.}
 
 \item{for_plot}{a logical value indicating whether the result should be only protein intensities
 or protein intensities together with precursor intensities that can be used for plotting using
-\code{qc_protein_abundance}. Default is \code{FALSE}.}
+\code{peptide_profile_plot()}. Default is \code{FALSE}.}
 
 \item{retain_columns}{a vector indicating if certain columns should be retained from the input
 data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
@@ -53,7 +53,7 @@ column names, but in a vector).}
 \value{
 If \code{for_plot = FALSE}, protein abundances are returned, if \code{for_plot = TRUE}
 also precursor intensities are returned in a data frame. The later output is ideal for plotting
-with \code{qc_protein_abundance} and can be filtered to only include protein abundances.
+with \code{peptide_profile_plot()} and can be filtered to only include protein abundances.
 }
 \description{
 Determines relative protein abundances from ion quantification. Only proteins with at least
