@@ -116,6 +116,7 @@ calculate_protein_abundance <- function(data,
 
   # Filter out any proteins with less than 3 peptides
   input <- data %>%
+    dplyr::ungroup() %>% 
     dplyr::distinct(
       {{ sample }},
       {{ protein_id }},
@@ -127,7 +128,7 @@ calculate_protein_abundance <- function(data,
     dplyr::group_by({{ protein_id }}, {{ sample }}) %>%
     dplyr::mutate(n_peptides = dplyr::n_distinct(!!rlang::ensym(peptide))) %>%
     dplyr::filter(.data$n_peptides > 2) %>%
-    dplyr::select(-.data$n_peptides) %>%
+    dplyr::select(-"n_peptides") %>%
     dplyr::ungroup()
 
   if (method == "sum") {
@@ -227,15 +228,13 @@ calculate_protein_abundance <- function(data,
         !!enquo(retain_columns),
         colnames(combined)[!colnames(combined) %in%
           c(
-            rlang::as_name(rlang::enquo(intensity_log2)),
-            rlang::as_name(rlang::enquo(precursor))
+            rlang::as_name(rlang::enquo(intensity_log2))
           )]
       ) %>%
       dplyr::distinct() %>%
       dplyr::right_join(combined, by = colnames(combined)[!colnames(combined) %in%
         c(
-          rlang::as_name(rlang::enquo(intensity_log2)),
-          rlang::as_name(rlang::enquo(precursor))
+          rlang::as_name(rlang::enquo(intensity_log2))
         )])
 
     return(combined)

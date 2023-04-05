@@ -7,8 +7,9 @@
 ## Bug fixes
 
 * `plot_volcano()` now also works interactively if there are no significant hits.
-* `fetch_chebi()` fixed an issue cased by `na_if()` that changed its behaviour after the recent `dplyr` update.
-* `qc_proteome_coverage()` fixed the label order of fractions proteins detected and not detected in the proteome.
+* `fetch_chebi()`: fixed an issue cased by `na_if()` that changed its behaviour after the recent `dplyr` update.
+* `qc_proteome_coverage()`: fixed the label order of fractions proteins detected and not detected in the proteome.
+* `calculate_protein_abundance()` now correctly retains columns if `for_plot = TRUE`. Previously the columns to retain were not joined considering the precursor column, which lead to duplications of information where it did not belong.
 
 # protti 0.6.0
 
