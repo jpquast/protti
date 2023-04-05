@@ -14,6 +14,8 @@
 #' @param plot_style a character value that indicates the plotting style. \code{plot_style = "boxplot"}
 #' plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution.
 #' \code{plot_style = "violin"} returns a violin plot. Default is \code{plot_style = "density"}.
+#' @param max_cv a numeric value that specifies the maximum percentage of CVs that should be included 
+#' in the returned plot. The default value is `max_cv = 200`.
 #'
 #' @return Either a data frame with the median CVs in % or a plot showing the distribution of the CVs
 #' is returned.
@@ -68,7 +70,8 @@ qc_cvs <-
            condition,
            intensity,
            plot = TRUE,
-           plot_style = "density") {
+           plot_style = "density",
+           max_cv = 200) {
     protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
     utils::data("protti_colours", envir = environment()) # then overwrite it with real data
     if (plot == FALSE) {
@@ -123,11 +126,11 @@ The function does not handle log2 transformed data.",
         dplyr::mutate(median = stats::median(.data$values)) %>%
         dplyr::distinct()
 
-      if (max(result$values) > 200) {
+      if (max(result$values) > max_cv) {
         cv_too_high <- result %>%
-          dplyr::filter(.data$values > 200) %>%
+          dplyr::filter(.data$values > max_cv) %>%
           nrow()
-        warning(paste(cv_too_high), " values were exluded from the plot (CV > 200 %)")
+        warning(paste(cv_too_high), " values were exluded from the plot (CV > ", max_cv, " %)")
       }
 
       if (plot_style == "boxplot") {
@@ -144,7 +147,7 @@ The function does not handle log2 transformed data.",
             y = "Coefficient of variation [%]",
             fill = "Condition"
           ) +
-          ggplot2::scale_y_continuous(limits = c(0, 200)) +
+          ggplot2::scale_y_continuous(limits = c(0, max_cv)) +
           ggplot2::scale_fill_manual(values = c("grey", protti_colours)) +
           ggplot2::theme_bw() +
           ggplot2::theme(
@@ -168,7 +171,7 @@ The function does not handle log2 transformed data.",
             y = "Density",
             color = "Condition"
           ) +
-          ggplot2::scale_x_continuous(limits = c(0, 200)) +
+          ggplot2::scale_x_continuous(limits = c(0, max_cv)) +
           geom_vline(
             data = dplyr::distinct(result, .data$median, .data$type),
             ggplot2::aes(
@@ -203,7 +206,7 @@ The function does not handle log2 transformed data.",
             y = "Coefficient of variation [%]",
             fill = "Condition"
           ) +
-          ggplot2::scale_y_continuous(limits = c(0, 200)) +
+          ggplot2::scale_y_continuous(limits = c(0, max_cv)) +
           ggplot2::scale_fill_manual(values = c("grey", protti_colours)) +
           ggplot2::theme_bw() +
           ggplot2::theme(

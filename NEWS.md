@@ -1,5 +1,9 @@
 # protti 0.6.0.9000
 
+## New features
+
+* `qc_cvs()` received a new argument called `max_cv` that specifies the maximum CV that should be included in the plot.
+
 ## Bug fixes
 
 * `plot_volcano()` now also works interactively if there are no significant hits.
