@@ -54,6 +54,11 @@ volcano_protti <- function(...) {
 #' "-log10(q-value)".
 #' @param legend_label optional, a character value that specifies the legend label. Default is
 #' "Target".
+#' @param colour optional, a character vector containing colours that should be used to colour 
+#' points according to the selected method. IMPORTANT: the first value in the vector is the 
+#' default point colour, the additional values specify colouring of target or significant points.
+#' E.g. `c("grey60", "#5680C1")` to achieve the same colouring as the default for the "significant"
+#' method.
 #' @param log2FC_cutoff optional, a numeric value that specifies the log2 transformed fold change
 #' cutoff used for the vertical lines, which can be used to assess the significance of changes.
 #' Default value is 1.
@@ -148,12 +153,24 @@ volcano_plot <- function(data,
                          x_axis_label = "log2(fold change)",
                          y_axis_label = "-log10(p-value)",
                          legend_label = "Target",
+                         colour = NULL,
                          log2FC_cutoff = 1,
                          significance_cutoff = 0.01,
                          interactive = FALSE) {
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
 
+  if (!missing(colour)){
+    if(length(colour) < 2){
+      stop("Please provide more colours!")
+    }
+    background <- colour[1]
+    additional_colour <- colour[-1]
+  } else {
+    background <- "grey60"
+      additional_colour <- protti_colours
+  }
+  
   data <- data %>%
     tidyr::drop_na({{ log2FC }}, {{ significance }})
 
@@ -207,7 +224,7 @@ volcano_plot <- function(data,
         x = {{ log2FC }},
         y = -1 * log10({{ significance }})
       ),
-      colour = "grey60"
+      colour = background
       ) +
       geom_point(
         data = dplyr::filter(data, .data$target == TRUE),
@@ -248,7 +265,7 @@ volcano_plot <- function(data,
         legend.text = ggplot2::element_text(size = 15),
         strip.background = element_blank()
       ) +
-      ggplot2::scale_color_manual(values = protti_colours) +
+      ggplot2::scale_color_manual(values = additional_colour) +
       scale_x_continuous(breaks = seq(
         round(-1 * max(abs(dplyr::pull(data, {{ log2FC }})), na.rm = TRUE) - 0.5, 0),
         round(max(abs(dplyr::pull(data, {{ log2FC }})), na.rm = TRUE) + 0.5, 0), 1
@@ -278,7 +295,7 @@ volcano_plot <- function(data,
         x = {{ log2FC }},
         y = -log10({{ significance }})
       ),
-      colour = "grey60"
+      colour = background
       ) +
       geom_point(
         data = dplyr::filter(data, (abs({{ log2FC }}) > log2FC_cutoff) & ({{ significance }} < .data$mean_adjusted_cutoff)),
@@ -287,7 +304,7 @@ volcano_plot <- function(data,
           y = -log10({{ significance }})
         ),
         size = 3,
-        colour = "#5680C1"
+        colour = additional_colour[1]
       ) +
       labs(
         title = title,

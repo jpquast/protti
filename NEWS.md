@@ -4,10 +4,11 @@
 
 * `qc_cvs()` received a new argument called `max_cv` that specifies the maximum CV that should be included in the plot.
 * `peptide_profile_plot()` received a new argument called `complete_sample`. If set to `TRUE`, each protein gets assigned all sample names that are found in the input data. This ensures that the plot always contains all samples on the x-axis even if there are no measured intensities for a specific sample. The default is `FALSE`, which is the original behaviour of the function.
+* `volcano_plot()` received the `colour` argument that allows the user to provide custom colours for points.
 
 ## Bug fixes
 
-* `plot_volcano()` now also works interactively if there are no significant hits.
+* `volcano_plot()` now also works interactively if there are no significant hits.
 * `fetch_chebi()`: fixed an issue cased by `na_if()` that changed its behaviour after the recent `dplyr` update.
 * `qc_proteome_coverage()`: fixed the label order of fractions proteins detected and not detected in the proteome.
 * `calculate_protein_abundance()` now correctly retains columns if `for_plot = TRUE`. Previously the columns to retain were not joined considering the precursor column, which lead to duplications of information where it did not belong.

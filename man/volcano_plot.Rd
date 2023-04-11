@@ -18,6 +18,7 @@ volcano_plot(
   x_axis_label = "log2(fold change)",
   y_axis_label = "-log10(p-value)",
   legend_label = "Target",
+  colour = NULL,
   log2FC_cutoff = 1,
   significance_cutoff = 0.01,
   interactive = FALSE
@@ -69,6 +70,12 @@ is "Volcano plot".}
 
 \item{legend_label}{optional, a character value that specifies the legend label. Default is
 "Target".}
+
+\item{colour}{optional, a character vector containing colours that should be used to colour
+points according to the selected method. IMPORTANT: the first value in the vector is the
+default point colour, the additional values specify colouring of target or significant points.
+E.g. \code{c("grey60", "#5680C1")} to achieve the same colouring as the default for the "significant"
+method.}
 
 \item{log2FC_cutoff}{optional, a numeric value that specifies the log2 transformed fold change
 cutoff used for the vertical lines, which can be used to assess the significance of changes.
