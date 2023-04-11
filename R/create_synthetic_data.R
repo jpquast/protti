@@ -285,15 +285,15 @@ create_synthetic_data <- function(n_proteins,
       dplyr::ungroup() %>%
       dplyr::mutate(peptide_intensity = .data$peptide_intensity + .data$offset) %>%
       dplyr::select(-c(
-        .data$peptide_intensity_mean,
-        .data$replicate_sd,
-        .data$n,
-        .data$n_change_peptide,
-        .data$effect,
-        .data$effect_total,
-        .data$b,
-        .data$c,
-        .data$offset
+        "peptide_intensity_mean",
+        "replicate_sd",
+        "n",
+        "n_change_peptide",
+        "effect",
+        "effect_total",
+        "b",
+        "c",
+        "offset"
       ))
     # formula for inflection point and slope sampling roughly simulates
     # the behaviour of real data. They have been figured out by trial and error.

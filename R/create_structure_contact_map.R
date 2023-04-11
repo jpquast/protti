@@ -259,7 +259,7 @@ Please always provide a chain ID for your start and end positions."),
           ),
           extra = "drop"
         ) %>%
-        dplyr::select(-c(.data$X1, .data$x1, .data$x2, .data$x3, .data$x4)) %>%
+        dplyr::select(-c("X1", "x1", "x2", "x3", "x4")) %>%
         dplyr::group_by(.data$label_asym_id, .data$label_atom_id, .data$label_comp_id) %>%
         dplyr::mutate(label_seq_id = ifelse(.data$label_seq_id == ".",
           1:n(),
@@ -279,17 +279,17 @@ Please always provide a chain ID for your start and end positions."),
         ) %>%
         dplyr::filter(.data$pdb_model_number %in% pdb_model_number_selection) %>%
         dplyr::select(
-          .data$label_id,
-          .data$x,
-          .data$y,
-          .data$z,
-          .data$label_comp_id,
-          .data$label_seq_id,
-          .data$label_asym_id,
-          .data$auth_comp_id,
-          .data$auth_seq_id,
-          .data$auth_asym_id,
-          .data$id
+          "label_id",
+          "x",
+          "y",
+          "z",
+          "label_comp_id",
+          "label_seq_id",
+          "label_asym_id",
+          "auth_comp_id",
+          "auth_seq_id",
+          "auth_asym_id",
+          "id"
         ) %>%
         dplyr::mutate(retain_pattern = stringr::str_replace_all(
           paste(.data$id, .data$auth_asym_id, .data$auth_seq_id, sep = "_"),
@@ -426,17 +426,17 @@ Please always provide a chain ID for your start and end positions."),
           structures <- .x %>%
             dplyr::filter(.data$pdb_model_number %in% pdb_model_number_selection) %>%
             dplyr::select(
-              .data$label_id,
-              .data$x,
-              .data$y,
-              .data$z,
-              .data$label_comp_id,
-              .data$label_seq_id,
-              .data$label_asym_id,
-              .data$auth_comp_id,
-              .data$auth_seq_id,
-              .data$auth_asym_id,
-              .data$pdb_id
+              "label_id",
+              "x",
+              "y",
+              "z",
+              "label_comp_id",
+              "label_seq_id",
+              "label_asym_id",
+              "auth_comp_id",
+              "auth_seq_id",
+              "auth_asym_id",
+              "pdb_id"
             ) %>%
             dplyr::mutate(retain_pattern = stringr::str_replace_all(
               paste(.data$pdb_id, .data$auth_asym_id, .data$auth_seq_id, sep = "_"),
@@ -481,19 +481,19 @@ Please always provide a chain ID for your start and end positions."),
           }
           predictions <- .x %>%
             dplyr::select(
-              .data$label_id,
-              .data$x,
-              .data$y,
-              .data$z,
-              .data$label_comp_id,
-              .data$label_seq_id,
-              .data$label_asym_id,
-              .data$auth_comp_id,
-              .data$auth_seq_id,
-              .data$auth_asym_id,
-              .data$uniprot_id,
-              .data$prediction_score,
-              .data$score_quality
+              "label_id",
+              "x",
+              "y",
+              "z",
+              "label_comp_id",
+              "label_seq_id",
+              "label_asym_id",
+              "auth_comp_id",
+              "auth_seq_id",
+              "auth_asym_id",
+              "uniprot_id",
+              "prediction_score",
+              "score_quality"
             ) %>%
             dplyr::mutate(retain_pattern = stringr::str_replace_all(
               paste(.data$uniprot_id, .data$auth_asym_id, .data$auth_seq_id, sep = "_"),
@@ -561,11 +561,11 @@ Please always provide a chain ID for your start and end positions."),
 
       current_structure1 <- .y %>%
         dplyr::filter(.data$should_be_retained) %>%
-        dplyr::select(-c(.data$x, .data$y, .data$z, .data$should_be_retained, .data$should_be_retained2, .data$retain_pattern))
+        dplyr::select(-c("x", "y", "z", "should_be_retained", "should_be_retained2", "retain_pattern"))
 
       current_structure2 <- .y %>%
         dplyr::filter(.data$should_be_retained2) %>%
-        dplyr::select(-c(.data$x, .data$y, .data$z, .data$should_be_retained, .data$should_be_retained2, .data$retain_pattern))
+        dplyr::select(-c("x", "y", "z", "should_be_retained", "should_be_retained2", "retain_pattern"))
 
       current_structure_minimum1 <- .y %>%
         dplyr::filter(.data$should_be_retained) %>%
@@ -597,7 +597,7 @@ Please always provide a chain ID for your start and end positions."),
             dplyr::left_join(current_structure_minimum1, by = c("var1" = "label_id")) %>%
             dplyr::left_join(current_structure_minimum2, by = c("var2" = "label_id")) %>%
             dplyr::mutate(distance = sqrt((.data$x.x - .data$x.y)^2 + (.data$y.x - .data$y.y)^2 + (.data$z.x - .data$z.y)^2)) %>%
-            dplyr::select(.data$var1, .data$var2, .data$distance) %>%
+            dplyr::select("var1", "var2", "distance") %>%
             dplyr::filter(.data$distance <= distance_cutoff) %>%
             dplyr::left_join(current_structure1 %>% dplyr::select(-.data$id), by = c("var1" = "label_id")) %>%
             dplyr::left_join(current_structure2, by = c("var2" = "label_id"), suffix = c("_var1", "_var2"))
@@ -628,13 +628,13 @@ Please always provide a chain ID for your start and end positions."),
         dplyr::mutate(min_distance_residue = suppressWarnings(min(.data$distance))) %>%
         dplyr::ungroup() %>%
         dplyr::rename(
-          label_id_var1 = .data$var1,
-          label_id_var2 = .data$var2
+          label_id_var1 = "var1",
+          label_id_var2 = "var2"
         )
 
       if (return_min_residue_distance == TRUE) {
         residue_distance <- residue_distance %>%
-          dplyr::select(-c(.data$label_id_var1, .data$label_id_var2, .data$distance)) %>%
+          dplyr::select(-c("label_id_var1", "label_id_var2", "distance")) %>%
           dplyr::distinct()
       }
 

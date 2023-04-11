@@ -176,7 +176,7 @@ fit_drc_4p <- function(data,
         sd = sd({{ response }}, na.rm = TRUE)
       ) %>%
       dplyr::distinct({{ grouping }}, {{ dose }}, .data$mean_ratio, .data$sd, .data$n) %>%
-      tidyr::drop_na(.data$mean_ratio, .data$sd) %>%
+      tidyr::drop_na("mean_ratio", "sd") %>%
       anova_protti({{ grouping }}, {{ dose }}, .data$mean_ratio, .data$sd, .data$n) %>%
       dplyr::distinct({{ grouping }}, .data$pval) %>%
       dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
@@ -512,14 +512,14 @@ fit_drc_4p <- function(data,
   output <- correlation_output %>%
     dplyr::left_join(line_fit, by = rlang::as_name(rlang::enquo(grouping))) %>%
     dplyr::group_by({{ grouping }}) %>%
-    tidyr::nest(plot_curve = c(.data$dose, .data$Prediction, .data$Lower, .data$Upper)) %>%
+    tidyr::nest(plot_curve = c("dose", "Prediction", "Lower", "Upper")) %>%
     dplyr::left_join(plot_points, by = rlang::as_name(rlang::enquo(grouping))) %>%
     tidyr::nest(plot_points = c({{ response }}, {{ dose }})) %>%
     dplyr::rename(
-      hill_coefficient = .data$`hill:(Intercept)`,
-      min_model = .data$`min_value:(Intercept)`,
-      max_model = .data$`max_value:(Intercept)`,
-      ec_50 = .data$`ec_50:(Intercept)`
+      hill_coefficient = "hill:(Intercept)",
+      min_model = "min_value:(Intercept)",
+      max_model = "max_value:(Intercept)",
+      ec_50 = "ec_50:(Intercept)"
     ) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(dplyr::desc(.data$correlation))
