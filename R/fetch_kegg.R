@@ -34,6 +34,10 @@ fetch_kegg <- function(species) {
     return(invisible(NULL))
   }
   colnames(result_link) <- c("kegg_id", "pathway_id")
+  result_link$pathway_id <- stringr::str_replace_all(result_link$pathway_id,
+                                                     pattern = "path:",
+                                                     replacement = ""
+  )
   # download pathway_id names
   url_name <- paste("https://rest.kegg.jp/list/pathway", species, sep = "/")
   result_name <- try_query(url_name, col_names = FALSE, progress = FALSE, show_col_types = FALSE)
@@ -42,6 +46,7 @@ fetch_kegg <- function(species) {
     return(invisible(NULL))
   }
   colnames(result_name) <- c("pathway_id", "pathway_name")
+  
   # download kegg_id to uniprot_id conversion
   url_conv <- paste("https://rest.kegg.jp/conv/uniprot", species, sep = "/")
   result_conv <- try_query(url_conv, col_names = FALSE, progress = FALSE, show_col_types = FALSE)
