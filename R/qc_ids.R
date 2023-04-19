@@ -99,7 +99,7 @@ or set remove_na_intensities to FALSE",
       dplyr::distinct() %>%
       dplyr::ungroup()
 
-    if (is(dplyr::pull(input, {{ sample }}), "character")) {
+    if (is(dplyr::pull(result, {{ sample }}), "character")) {
       result <- result %>%
         dplyr::mutate({{ sample }} := factor({{ sample }},
           levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
