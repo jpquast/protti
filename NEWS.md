@@ -13,6 +13,8 @@
 * `qc_proteome_coverage()`: fixed the label order of fractions proteins detected and not detected in the proteome.
 * `calculate_protein_abundance()` now correctly retains columns if `for_plot = TRUE`. Previously the columns to retain were not joined considering the precursor column, which lead to duplications of information where it did not belong.
 * `fetch_kegg()` now returns the pathway name again correctly.
+* `qc_intensity_distribution()`: If the provided sample column is of type factor, the level order won't be overwritten anymore.
+* `qc_median_intensities()`: If the provided sample column is of type factor, the level order won't be overwritten anymore.
 
 # protti 0.6.0
 

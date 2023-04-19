@@ -3,7 +3,7 @@
 #' Median intensities per run are returned either as a plot or a table.
 #'
 #' @param data a data frame that contains at least the input variables.
-#' @param sample a character column in the \code{data} data frame that contains the sample name.
+#' @param sample a character or factor column in the \code{data} data frame that contains the sample name.
 #' @param grouping a character column in the \code{data} data frame that contains either precursor or
 #' peptide identifiers.
 #' @param intensity a numeric column in the \code{data} data frame that contains intensity values.
@@ -69,10 +69,14 @@ qc_median_intensities <- function(data,
     return(table)
   }
 
+  if (is(dplyr::pull(table, {{ sample }}), "character")) {
+    table <- table %>%
+      mutate({{ sample }} := factor({{ sample }},
+        levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+      ))
+  }
+
   plot <- table %>%
-    mutate({{ sample }} := factor({{ sample }},
-      levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
-    )) %>%
     ggplot2::ggplot(ggplot2::aes({{ sample }}, .data$median_intensity, group = 1)) +
     ggplot2::geom_line(size = 1) +
     ggplot2::labs(title = "Medians of run intensities", x = "", y = "Intensity") +
