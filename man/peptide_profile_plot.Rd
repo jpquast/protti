@@ -37,7 +37,7 @@ be plotted. This can also be \code{"all"} if plots for all groups should be crea
 on the number of elements in your grouping column this can be many plots.}
 
 \item{complete_sample}{a logical value that indicates if samples that are completely missing for
-a given protein should be anyway shown on the x-axis of the plot. The default value is \code{FALSE}.}
+a given protein should be shown on the x-axis of the plot anyway. The default value is \code{FALSE}.}
 
 \item{protein_abundance_plot}{a logical value. If the input for this plot comes directly from
 \code{calculate_protein_abundance} this argument can be set to \code{TRUE}. This displays all
