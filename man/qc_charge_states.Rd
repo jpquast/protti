@@ -20,7 +20,7 @@ qc_charge_states(
 \item{data}{a data frame that contains at least sample names, peptide or precursor identifiers
 and missed cleavage counts for each peptide or precursor.}
 
-\item{sample}{a character column in the \code{data} data frame that contains the sample name.}
+\item{sample}{a character or factor column in the \code{data} data frame that contains the sample name.}
 
 \item{grouping}{a character column in the \code{data} data frame that contains either precursor or
 peptide identifiers.}

@@ -4,7 +4,7 @@
 #' non-tryptic) for each sample.
 #'
 #' @param data a data frame that contains at least the input columns.
-#' @param sample a character column in the \code{data} data frame that contains the sample names.
+#' @param sample a character or factor column in the \code{data} data frame that contains the sample names.
 #' @param peptide a character column in the \code{data} data frame that contains the peptide
 #' sequence.
 #' @param pep_type a character column in the \code{data} data frame that contains the peptide
@@ -102,12 +102,16 @@ qc_peptide_type <- function(data,
       dplyr::mutate(pep_type = factor({{ pep_type }},
         levels = c("fully-tryptic", "semi-tryptic", "non-tryptic")
       ))
+    
+    if (is(dplyr::pull(result, {{ sample }}), "character")) {
+      result <- result %>%
+        dplyr::mutate({{ sample }} := factor({{ sample }},
+                                             levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+        ))
+    }
 
     if (plot == TRUE & interactive == FALSE) {
       plot <- result %>%
-        dplyr::mutate({{ sample }} := factor({{ sample }},
-          levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
-        )) %>%
         ggplot2::ggplot(ggplot2::aes(
           x = {{ sample }},
           y = .data$peptide_type_percent,
@@ -141,9 +145,6 @@ qc_peptide_type <- function(data,
     }
     if (plot == TRUE & interactive == TRUE) {
       plot <- result %>%
-        dplyr::mutate({{ sample }} := factor({{ sample }},
-          levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
-        )) %>%
         ggplot2::ggplot(ggplot2::aes({{ sample }}, .data$peptide_type_percent, fill = .data$pep_type)) +
         ggplot2::geom_col(col = "black", size = 1) +
         ggplot2::labs(
@@ -189,12 +190,16 @@ qc_peptide_type <- function(data,
       dplyr::mutate(pep_type = factor({{ pep_type }},
         levels = c("fully-tryptic", "semi-tryptic", "non-tryptic")
       ))
+    
+    if (is(dplyr::pull(result, {{ sample }}), "character")) {
+      result <- result %>%
+        dplyr::mutate({{ sample }} := factor({{ sample }},
+                                             levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+        ))
+    }
 
     if (plot == TRUE & interactive == FALSE) {
       plot <- result %>%
-        dplyr::mutate({{ sample }} := factor({{ sample }},
-          levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
-        )) %>%
         ggplot2::ggplot(ggplot2::aes(
           x = {{ sample }},
           y = .data$peptide_type_percent,
@@ -227,9 +232,6 @@ qc_peptide_type <- function(data,
     }
     if (plot == TRUE & interactive == TRUE) {
       plot <- result %>%
-        dplyr::mutate({{ sample }} := factor({{ sample }},
-          levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
-        )) %>%
         ggplot2::ggplot(ggplot2::aes(
           x = {{ sample }},
           .data$peptide_type_percent,

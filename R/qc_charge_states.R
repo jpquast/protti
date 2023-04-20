@@ -4,7 +4,7 @@
 #'
 #' @param data a data frame that contains at least sample names, peptide or precursor identifiers
 #' and missed cleavage counts for each peptide or precursor.
-#' @param sample a character column in the \code{data} data frame that contains the sample name.
+#' @param sample a character or factor column in the \code{data} data frame that contains the sample name.
 #' @param grouping a character column in the \code{data} data frame that contains either precursor or
 #' peptide identifiers.
 #' @param charge_states a character or numeric column in the \code{data} data frame that contains
@@ -105,9 +105,15 @@ qc_charge_states <-
         dplyr::group_by({{ sample }}, {{ charge_states }}) %>%
         dplyr::summarise(charge_per = n / .data$total_peptides * 100) %>%
         dplyr::ungroup() %>%
-        dplyr::mutate({{ charge_states }} := forcats::fct_inorder(factor({{ charge_states }}))) %>%
-        dplyr::mutate({{ sample }} := factor({{ sample }}, levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))))
+        dplyr::mutate({{ charge_states }} := forcats::fct_inorder(factor({{ charge_states }}))) 
 
+      if (is(dplyr::pull(result, {{ sample }}), "character")) {
+        result <- result %>%
+          dplyr::mutate({{ sample }} := factor({{ sample }},
+                                               levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+          ))
+      }
+      
       if (plot == FALSE) {
         return(result)
       } else {
@@ -155,8 +161,14 @@ qc_charge_states <-
         dplyr::summarise(charge_per = .data$sum_intensity_cs / .data$total_intensity * 100) %>%
         dplyr::ungroup() %>%
         dplyr::mutate({{ charge_states }} := forcats::fct_inorder(factor({{ charge_states }}))) %>%
-        dplyr::mutate({{ sample }} := factor({{ sample }}, levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE)))) %>%
         dplyr::distinct()
+      
+      if (is(dplyr::pull(result, {{ sample }}), "character")) {
+        result <- result %>%
+          dplyr::mutate({{ sample }} := factor({{ sample }},
+                                               levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+          ))
+      }
 
       if (plot == FALSE) {
         return(result)

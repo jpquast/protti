@@ -3,7 +3,7 @@
 #' Calculates the percentage of contaminating proteins as the share of total intensity.
 #'
 #' @param data a data frame that contains at least the input variables.
-#' @param sample a character column in the \code{data} data frame that contains the sample names.
+#' @param sample a character or factor column in the \code{data} data frame that contains the sample names.
 #' @param protein a character column in the \code{data} data frame that contains protein IDs or
 #' protein names.
 #' @param is_contaminant a logical column that indicates if the protein is a contaminant.
@@ -76,9 +76,15 @@ qc_contaminants <- function(data,
   if (plot == FALSE) {
     return(result)
   }
+  
+  if (is(dplyr::pull(result, {{ sample }}), "character")) {
+    result <- result %>%
+      dplyr::mutate({{ sample }} := factor({{ sample }},
+                                           levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+      ))
+  }
 
   plot_result <- result %>%
-    dplyr::mutate({{ sample }} := factor({{ sample }}, levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE)))) %>%
     ggplot2::ggplot(ggplot2::aes({{ sample }}, .data$contaminant_percentage, fill = {{ protein }})) +
     ggplot2::geom_col(col = "black", size = 1) +
     ggplot2::labs(
