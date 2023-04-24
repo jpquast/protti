@@ -4,7 +4,7 @@
 #' precursors is present in each sample.
 #'
 #' @param data a data frame containing at least the input variables.
-#' @param sample a character column in the \code{data} data frame that contains the sample names.
+#' @param sample a character or factor column in the \code{data} data frame that contains the sample names.
 #' @param grouping a character column in the \code{data} data frame that contains either precursor
 #' or peptide identifiers.
 #' @param intensity a numeric column in the \code{data} data frame that contains any intensity
@@ -91,10 +91,14 @@ qc_data_completeness <- function(data,
     return(result)
   }
 
+  if (is(dplyr::pull(result, {{ sample }}), "character")) {
+    result <- result %>%
+      dplyr::mutate({{ sample }} := factor({{ sample }},
+                                           levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+      ))
+  }
+  
   completeness_plot <- result %>%
-    dplyr::mutate({{ sample }} := factor({{ sample }},
-      levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
-    )) %>%
     ggplot2::ggplot(ggplot2::aes({{ sample }}, .data$completeness)) +
     ggplot2::geom_col(fill = "#5680C1", col = "black", size = 1) +
     {
