@@ -9,6 +9,7 @@ calculate_treatment_enrichment(
   protein_id,
   is_significant,
   binds_treatment,
+  group = NULL,
   treatment_name,
   plot = TRUE
 )
@@ -27,6 +28,11 @@ level information from this.}
 \item{binds_treatment}{a logical column in the \code{data} data frame that indicates if the
 corresponding protein binds to the treatment. This information can be obtained from different
 databases, e.g. UniProt.}
+
+\item{group}{optional, character column in the \code{data} data frame that contains information by
+which the analysis should be grouped. The analysis will be performed separately for each of the
+groups. This is most likely a column that labels separate comparisons of different conditions.
+In protti the \code{asign_missingness()} function creates such a column automatically.}
 
 \item{treatment_name}{a character value that indicates the treatment name. It will be included
 in the plot title.}
