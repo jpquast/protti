@@ -156,10 +156,16 @@ fit_drc_4p <- function(data,
 
   # preprocessing of data
   data_prep <- data %>%
+    tidyr::drop_na({{ dose }}) %>%
     dplyr::ungroup() %>%
     dplyr::distinct({{ sample }}, {{ grouping }}, {{ response }}, {{ dose }}) %>%
     tidyr::complete(nesting(!!ensym(sample), !!ensym(dose)), !!ensym(grouping)) %>%
     dplyr::mutate({{ dose }} := as.numeric({{ dose }}))
+
+  # If the data_prep data.frame is empty return a data.frame that contains only the grouping and retained column
+  if (nrow(data_prep) == 0){
+    return(data.frame())
+  }
 
   if (filter != "none") {
     n_conditions <- length(unique(dplyr::pull(data_prep, {{ dose }})))
@@ -179,6 +185,7 @@ fit_drc_4p <- function(data,
       tidyr::drop_na("mean_ratio", "sd") %>%
       anova_protti({{ grouping }}, {{ dose }}, .data$mean_ratio, .data$sd, .data$n) %>%
       dplyr::distinct({{ grouping }}, .data$pval) %>%
+      tidyr::drop_na(.data$pval) %>% # remove NA pvalues before adjustment!
       dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
       dplyr::rename(anova_pval = .data$pval)
 
@@ -436,6 +443,11 @@ fit_drc_4p <- function(data,
       .y = names(.),
       .f = ~ dplyr::mutate(.x, {{ grouping }} := .y)
     )
+
+  # Return empty data.frame if there are no correlations. This prevents parallel_fit_drc_4p from failing.
+  if (nrow(correlation_output) == 0){
+    return(data.frame())
+  }
 
   # creating correlation output data frame
 

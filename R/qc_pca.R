@@ -9,7 +9,7 @@
 #' or peptide identifiers.
 #' @param intensity a numeric column in the \code{data} data frame that contains the corresponding
 #' intensity values for each peptide or precursor.
-#' @param condition a column in the \code{data} data frame that contains condition information
+#' @param condition a numeric or character column in the \code{data} data frame that contains condition information
 #' (e.g. "treated" and "control").
 #' @param components a character vector indicating the two components that should be displayed in
 #' the plot. By default these are PC1 and PC2. You can provide these using a character vector of
@@ -106,12 +106,13 @@ qc_pca <-
       dplyr::mutate(dimension = factor(.data$dimension,
         levels = unique(stringr::str_sort(.data$dimension, numeric = TRUE))
       ))
+
     if (plot_style == "pca") {
       plot <- pca_df %>%
         ggplot2::ggplot(aes(
           x = !!rlang::sym(components[1]),
           y = !!rlang::sym(components[2]),
-          col = as.character({{ condition }}),
+          col = {{ condition }},
           shape = {{ digestion }}
         )) +
         ggplot2::geom_point(size = 3) +
@@ -137,7 +138,16 @@ qc_pca <-
         size = 4,
         show.legend = FALSE
         ) +
-        ggplot2::scale_color_manual(values = protti_colours) +
+        {if(is.numeric(unique(dplyr::pull(pca_df, {{ condition }})))){
+          ggplot2::scale_color_gradientn(colours = c(
+            "#0D0887", "#2E0595", "#46039F", "#5C01A6", "#7201A8", "#8707A6", "#9A169F",
+                     "#AC2694", "#BC3587", "#CA457A", "#D6556D", "#E26561", "#EB7655", "#F48849",
+                     "#FA9B3D", "#FDAF31", "#FDC527", "#F9DC24", "#F0F921"
+          ))
+        } else {
+          ggplot2::scale_color_manual(values = protti_colours)
+        }
+          }+
         ggplot2::theme(
           panel.background = element_blank(),
           panel.border = element_rect(colour = "black", fill = NA),

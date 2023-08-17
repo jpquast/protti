@@ -27,7 +27,7 @@ or peptide identifiers.}
 \item{intensity}{a numeric column in the \code{data} data frame that contains the corresponding
 intensity values for each peptide or precursor.}
 
-\item{condition}{a column in the \code{data} data frame that contains condition information
+\item{condition}{a numeric or character column in the \code{data} data frame that contains condition information
 (e.g. "treated" and "control").}
 
 \item{components}{a character vector indicating the two components that should be displayed in
