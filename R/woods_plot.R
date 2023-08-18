@@ -177,13 +177,13 @@ woods_plot <- function(data,
         yintercept = -{{ fold_change_cutoff }},
         col = "blue",
         alpha = .8,
-        size = 0.7
+        linewidth = 0.7
       ) +
       ggplot2::geom_hline(
         yintercept = {{ fold_change_cutoff }},
         col = "blue",
         alpha = .8,
-        size = 0.7
+        linewidth = 0.7
       ) +
       ggplot2::ylim(
         min(-2.5, dplyr::pull(data, {{ fold_change }})) - 0.5,
