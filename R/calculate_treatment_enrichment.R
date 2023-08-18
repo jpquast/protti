@@ -175,6 +175,19 @@ calculate_treatment_enrichment <- function(data,
     return(cont_table)
   }
 
+  # Add p-value to group name for plot
+  if(!missing(group)){
+    cont_table <- cont_table %>%
+      dplyr::mutate(group_pval = paste0({{ group }}, " (p-value: ",
+                                        ifelse(.data$pval < 0.01,
+                                               formatC(.data$pval,
+                                                       format = "e", digits = 1
+                                               ),
+                                               round(.data$pval, digits = 2)
+                                        ),
+                                        ")"))
+  }
+
   enrichment_plot <- cont_table %>%
     dplyr::mutate(total = sum(.data$n)) %>%
     dplyr::mutate(
@@ -209,24 +222,37 @@ calculate_treatment_enrichment <- function(data,
     ggplot2::ggplot(ggplot2::aes(.data$name, .data$value)) +
     ggplot2::geom_col(fill = "cornflowerblue", col = "black", size = 1.2) +
     {if (!missing(group)){
-        ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)))
+        ggplot2::facet_wrap(~ .data$group_pval)
     }} +
-    ggplot2::labs(
-      title = paste0(
-        "Proteins interacting with ",
-        treatment_name,
-        " (p-value: ",
-        ifelse(cont_table$pval < 0.01,
-          formatC(cont_table$pval,
-            format = "e", digits = 1
+    {
+      if (!missing(group)){
+        ggplot2::labs(
+          title = paste0(
+            "Proteins interacting with ",
+            treatment_name
           ),
-          round(cont_table$pval, digits = 2)
-        ),
-        ")"
-      ),
-      x = "",
-      y = paste("Interact with", treatment_name, "[%]")
-    ) +
+          x = "",
+          y = paste("Interact with", treatment_name, "[%]")
+        )
+      } else {
+        ggplot2::labs(
+          title = paste0(
+            "Proteins interacting with ",
+            treatment_name,
+            " (p-value: ",
+            ifelse(cont_table$pval < 0.01,
+                   formatC(cont_table$pval,
+                           format = "e", digits = 1
+                   ),
+                   round(cont_table$pval, digits = 2)
+            ),
+            ")"
+          ),
+          x = "",
+          y = paste("Interact with", treatment_name, "[%]")
+        )
+      }
+    } +
     ggplot2::geom_text(aes(label = paste("n =", count)),
       position = position_stack(vjust = 0.5),
       size = 8
