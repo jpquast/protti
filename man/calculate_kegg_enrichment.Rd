@@ -64,13 +64,14 @@ kegg_data <- fetch_kegg(species = "eco")
 if (!is.null(kegg_data)) { # only proceed if information was retrieved
   data <- kegg_data \%>\%
     group_by(uniprot_id) \%>\%
-    mutate(significant = rep(sample(
-      x = c(TRUE, FALSE),
-      size = 1,
-      replace = TRUE,
-      prob = c(0.2, 0.8)
-    ),
-    n = n()
+    mutate(significant = rep(
+      sample(
+        x = c(TRUE, FALSE),
+        size = 1,
+        replace = TRUE,
+        prob = c(0.2, 0.8)
+      ),
+      n = n()
     ))
 
   # Plot KEGG enrichment

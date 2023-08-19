@@ -132,22 +132,24 @@ qc_pca <-
           ),
           color = "Condition"
         ) +
-        ggrepel::geom_text_repel(aes(label = paste(
-          stringr::str_replace_all(as.character({{ sample }}), fixed("_"), " ")
-        )),
-        size = 4,
-        show.legend = FALSE
+        ggrepel::geom_text_repel(
+          aes(label = paste(
+            stringr::str_replace_all(as.character({{ sample }}), fixed("_"), " ")
+          )),
+          size = 4,
+          show.legend = FALSE
         ) +
-        {if(is.numeric(unique(dplyr::pull(pca_df, {{ condition }})))){
-          ggplot2::scale_color_gradientn(colours = c(
-            "#0D0887", "#2E0595", "#46039F", "#5C01A6", "#7201A8", "#8707A6", "#9A169F",
-                     "#AC2694", "#BC3587", "#CA457A", "#D6556D", "#E26561", "#EB7655", "#F48849",
-                     "#FA9B3D", "#FDAF31", "#FDC527", "#F9DC24", "#F0F921"
-          ))
-        } else {
-          ggplot2::scale_color_manual(values = protti_colours)
-        }
-          }+
+        {
+          if (is.numeric(unique(dplyr::pull(pca_df, {{ condition }})))) {
+            ggplot2::scale_color_gradientn(colours = c(
+              "#0D0887", "#2E0595", "#46039F", "#5C01A6", "#7201A8", "#8707A6", "#9A169F",
+              "#AC2694", "#BC3587", "#CA457A", "#D6556D", "#E26561", "#EB7655", "#F48849",
+              "#FA9B3D", "#FDAF31", "#FDC527", "#F9DC24", "#F0F921"
+            ))
+          } else {
+            ggplot2::scale_color_manual(values = protti_colours)
+          }
+        } +
         ggplot2::theme(
           panel.background = element_blank(),
           panel.border = element_rect(colour = "black", fill = NA),
@@ -173,12 +175,13 @@ qc_pca <-
           x = "Dimension",
           y = "Explained variance [%]"
         ) +
-        ggplot2::geom_text(aes(label = paste0(
-          as.character(round(.data$percent_variance, digits = 1)), "%"
-        )),
-        size = 4,
-        vjust = -0.6,
-        hjust = -0.1
+        ggplot2::geom_text(
+          aes(label = paste0(
+            as.character(round(.data$percent_variance, digits = 1)), "%"
+          )),
+          size = 4,
+          vjust = -0.6,
+          hjust = -0.1
         ) +
         ggplot2::scale_y_continuous(
           limits = NULL,

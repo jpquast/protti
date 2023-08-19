@@ -33,12 +33,13 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
   }
   # Retrieve relational information
   if (relation == TRUE) {
-    chebi_relation_result <- tryCatch(httr::GET(
-      "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv",
-      httr::timeout(timeout)
-    ),
-    error = function(e) conditionMessage(e),
-    warning = function(w) conditionMessage(w)
+    chebi_relation_result <- tryCatch(
+      httr::GET(
+        "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv",
+        httr::timeout(timeout)
+      ),
+      error = function(e) conditionMessage(e),
+      warning = function(w) conditionMessage(w)
     )
 
     # Check again if there is an internet connection
@@ -73,12 +74,13 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
   }
 
   # Download compound data
-  chebi_chemical_data_result <- tryCatch(httr::GET(
-    "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv",
-    httr::timeout(timeout)
-  ),
-  error = function(e) conditionMessage(e),
-  warning = function(w) conditionMessage(w)
+  chebi_chemical_data_result <- tryCatch(
+    httr::GET(
+      "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv",
+      httr::timeout(timeout)
+    ),
+    error = function(e) conditionMessage(e),
+    warning = function(w) conditionMessage(w)
   )
 
   # check if response is error
@@ -134,12 +136,13 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
     return(invisible(NULL))
   }
 
-  chebi_accession_result <- tryCatch(httr::GET(
-    "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv",
-    httr::timeout(timeout)
-  ),
-  error = function(e) conditionMessage(e),
-  warning = function(w) conditionMessage(w)
+  chebi_accession_result <- tryCatch(
+    httr::GET(
+      "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv",
+      httr::timeout(timeout)
+    ),
+    error = function(e) conditionMessage(e),
+    warning = function(w) conditionMessage(w)
   )
 
   # check if response is error

@@ -382,8 +382,8 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
       }
 
       all_combinations <- all_combinations %>%
-        tidyr::pivot_longer(cols = c(.data$V1, .data$V2), names_to = "name", values_to = rlang::as_name(rlang::enquo(condition))) %>%
-        dplyr::select(-.data$name) %>%
+        tidyr::pivot_longer(cols = c("V1", "V2"), names_to = "name", values_to = rlang::as_name(rlang::enquo(condition))) %>%
+        dplyr::select(-"name") %>%
         dplyr::group_by({{ condition }}) %>%
         dplyr::mutate(comparison = list(.data$combinations)) %>%
         dplyr::distinct(.data$comparison, {{ condition }})
@@ -393,7 +393,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
         dplyr::distinct({{ condition }}, {{ grouping }}, {{ mean }}, {{ sd }}, {{ n_samples }}) %>%
         tidyr::drop_na() %>%
         dplyr::left_join(all_combinations, by = rlang::as_name(rlang::enquo(condition))) %>%
-        tidyr::unnest(.data$comparison) %>%
+        tidyr::unnest("comparison") %>%
         dplyr::rename(mean = {{ mean }}, sd = {{ sd }}, n = {{ n_samples }}) %>%
         dplyr::mutate({{ condition }} := ifelse({{ condition }} == stringr::str_extract(.data$comparison, pattern = "(?<=_vs_).+"),
           "control",

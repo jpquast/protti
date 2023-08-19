@@ -223,33 +223,33 @@ fetch_quickgo <- function(type = "annotations",
 
     pre_extracted_result <- query_result %>%
       janitor::clean_names() %>%
-      tidyr::unnest(.data$definition) %>%
-      dplyr::rename(main_name = .data$name) %>%
-      dplyr::rename(definition = .data$text) %>%
-      select(-c(.data$xrefs)) %>%
+      tidyr::unnest("definition") %>%
+      dplyr::rename(main_name = "name") %>%
+      dplyr::rename(definition = "text") %>%
+      select(-c("xrefs")) %>%
       dplyr::rename(
-        main_id = .data$id,
-        ontology = .data$aspect
+        main_id = "id",
+        ontology = "aspect"
       )
 
     # synonyms (not used yet but could be added in the future)
 
     synonyms <- pre_extracted_result %>%
       dplyr::distinct(.data$main_id, .data$synonyms) %>%
-      tidyr::unnest(.data$synonyms) %>%
+      tidyr::unnest("synonyms") %>%
       dplyr::rename(
-        synonym = .data$name,
-        synonym_type = .data$type
+        synonym = "name",
+        synonym_type = "type"
       )
 
     # children
 
     children <- pre_extracted_result %>%
       dplyr::distinct(.data$main_id, .data$children) %>%
-      tidyr::unnest(.data$children) %>%
+      tidyr::unnest("children") %>%
       dplyr::rename(
-        child_id = .data$id,
-        children_relation = .data$relation
+        child_id = "id",
+        children_relation = "relation"
       ) %>%
       dplyr::group_by(.data$main_id) %>%
       dplyr::mutate(
@@ -263,19 +263,19 @@ fetch_quickgo <- function(type = "annotations",
 
     history <- pre_extracted_result %>%
       dplyr::distinct(.data$main_id, .data$history) %>%
-      tidyr::unnest(.data$history)
+      tidyr::unnest("history")
 
     # relations
 
     relations <- pre_extracted_result %>%
       dplyr::distinct(.data$main_id, .data$x_relations) %>%
-      tidyr::unnest(.data$x_relations) %>%
+      tidyr::unnest("x_relations") %>%
       dplyr::rename(
-        chebi_id = .data$id,
-        relations_term = .data$term,
-        database = .data$namespace,
-        relations_url = .data$url,
-        relations_relation = .data$relation
+        chebi_id = "id",
+        relations_term = "term",
+        database = "namespace",
+        relations_url = "url",
+        relations_relation = "relation"
       )
 
     result <- pre_extracted_result %>%
@@ -331,7 +331,7 @@ fetch_quickgo <- function(type = "annotations",
     } else {
       query_result <- query_result[["results"]] %>%
         janitor::clean_names() %>%
-        tidyr::unnest(.data$slims_to_ids)
+        tidyr::unnest("slims_to_ids")
     }
 
     return(query_result)

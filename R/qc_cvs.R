@@ -14,7 +14,7 @@
 #' @param plot_style a character value that indicates the plotting style. \code{plot_style = "boxplot"}
 #' plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution.
 #' \code{plot_style = "violin"} returns a violin plot. Default is \code{plot_style = "density"}.
-#' @param max_cv a numeric value that specifies the maximum percentage of CVs that should be included 
+#' @param max_cv a numeric value that specifies the maximum percentage of CVs that should be included
 #' in the returned plot. The default value is `max_cv = 200`.
 #'
 #' @return Either a data frame with the median CVs in % or a plot showing the distribution of the CVs
@@ -95,7 +95,7 @@ The function does not handle log2 transformed data.",
         dplyr::mutate(median_cv = stats::median(.data$cv)) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(median_cv_combined = stats::median(.data$cv_combined)) %>%
-        dplyr::select(-{{ grouping }}, -.data$cv_combined, -.data$cv) %>%
+        dplyr::select(-{{ grouping }}, -c("cv_combined", "cv")) %>%
         dplyr::distinct()
 
       return(result)
@@ -135,12 +135,13 @@ The function does not handle log2 transformed data.",
 
       if (plot_style == "boxplot") {
         plot <- ggplot2::ggplot(result) +
-          ggplot2::geom_boxplot(aes(
-            x = .data$type,
-            y = .data$values,
-            fill = .data$type
-          ),
-          na.rm = TRUE
+          ggplot2::geom_boxplot(
+            aes(
+              x = .data$type,
+              y = .data$values,
+              fill = .data$type
+            ),
+            na.rm = TRUE
           ) +
           ggplot2::labs(
             title = "Coefficients of variation",

@@ -30,15 +30,15 @@
 #' the author defined chain definitions for both ".cif" and ".pdb" files. When the output of the
 #' \code{find_peptide_in_structure} function is used as the input for this function, this
 #' corresponds to the \code{auth_asym_id} column.
-#' @param auth_seq_id optional, a character (or numeric) column in the \code{peptide_data} data frame 
-#' that contains semicolon separated positions of peptides, protein regions or amino acids in the 
-#' corresponding PDB structure or AlphaFold prediction. This information can be obtained from the 
-#' \code{find_peptide_in_structure} function. The corresponding column in the output is called 
-#' \code{auth_seq_id}. In case of AlphaFold predictions, UniProt positions should be used. If 
-#' signal positions and not stretches of amino acids are provided, the column can be numeric and 
+#' @param auth_seq_id optional, a character (or numeric) column in the \code{peptide_data} data frame
+#' that contains semicolon separated positions of peptides, protein regions or amino acids in the
+#' corresponding PDB structure or AlphaFold prediction. This information can be obtained from the
+#' \code{find_peptide_in_structure} function. The corresponding column in the output is called
+#' \code{auth_seq_id}. In case of AlphaFold predictions, UniProt positions should be used. If
+#' signal positions and not stretches of amino acids are provided, the column can be numeric and
 #' does not need to contain the semicolon separator.
 #' @param map_value a numeric column in the \code{peptide_data} data frame that contains a value
-#' associated with each peptide, protein region or amino acid. If one start to end position pair 
+#' associated with each peptide, protein region or amino acid. If one start to end position pair
 #' has multiple different map values, the maximum will be used. This value will be displayed as a
 #' colour gradient when mapped onto the structure. The value can for example be the fold change,
 #' p-value or score associated with each peptide, protein region or amino acid (selection). If
@@ -54,9 +54,9 @@
 #' Fetching and mapping onto ".cif" files takes longer than for ".pdb" files. If a structure file
 #' is provided in the \code{structure_file} argument, the file format is detected automatically
 #' and does not need to be provided.
-#' @param scale_per_structure a logical value that specifies if scaling should be performed for 
+#' @param scale_per_structure a logical value that specifies if scaling should be performed for
 #' each structure independently (TRUE) or over the whole data set (FALSE). The default is TRUE,
-#' which scales the scores of each structure independently so that each structure has a score 
+#' which scales the scores of each structure independently so that each structure has a score
 #' range from 50 to 100.
 #' @param export_location optional, a character argument specifying the path to the location in
 #' which the fetched and altered structure files should be saved. If left empty, they will be
@@ -87,7 +87,7 @@
 #' }
 #' # Load libraries
 #' library(dplyr)
-#' 
+#'
 #' # Create example data
 #' peptide_data <- data.frame(
 #'   uniprot_id = c("P0A8T7", "P0A8T7", "P60906"),
@@ -100,7 +100,7 @@
 #'   end = c(1198, 1206, 66),
 #'   map_value = c(70, 100, 100)
 #' )
-#' 
+#'
 #' # Find peptide positions in structures
 #' positions_structure <- find_peptide_in_structure(
 #'   peptide_data = peptide_data,
@@ -110,7 +110,7 @@
 #'   uniprot_id = uniprot_id,
 #'   retain_columns = c(map_value)) %>%
 #'   filter(pdb_ids %in% c("6UU2", "2EL9"))
-#' 
+#'
 #' # Map peptides on structures
 #' # You can determine the preferred output location
 #' # with the export_location argument. Currently it
@@ -125,7 +125,7 @@
 #'   file_format = ".pdb",
 #'   export_location = getwd()
 #' )
-#' 
+#'
 #' \dontshow{
 #' setwd(.old_wd)
 #' }
@@ -164,11 +164,11 @@ map_peptides_on_structure <- function(peptide_data,
       tidyr::drop_na({{ auth_seq_id }}) %>%
       # remove observations that do not have any position
       # information because they did not fit a protein.
-      dplyr::group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, {{ auth_seq_id }}) %>% 
-      dplyr::mutate({{ map_value}} := max({{ map_value }}, na.rm = TRUE)) %>% 
+      dplyr::group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, {{ auth_seq_id }}) %>%
+      dplyr::mutate({{ map_value}} := max({{ map_value }}, na.rm = TRUE)) %>%
       # This makes sure that there is only one value per peptide.
       # It will always take the maximum value.
-      dplyr::ungroup() %>% 
+      dplyr::ungroup() %>%
       dplyr::distinct(
         {{ uniprot_id }},
         {{ pdb_id }},
@@ -176,12 +176,12 @@ map_peptides_on_structure <- function(peptide_data,
         {{ auth_seq_id }},
         {{ map_value }}
       ) %>%
-      dplyr::mutate(scaling_info = ifelse(rep(scale_per_structure, dplyr::n()), 
+      dplyr::mutate(scaling_info = ifelse(rep(scale_per_structure, dplyr::n()),
                                           {{ pdb_id }},
-                                          "scale_overall")) %>% 
-      # determines if scores should by scaled by structure or 
+                                          "scale_overall")) %>%
+      # determines if scores should by scaled by structure or
       # one scale for the whole data set.
-      dplyr::group_by(.data$scaling_info) %>% 
+      dplyr::group_by(.data$scaling_info) %>%
       dplyr::mutate({{ map_value }} := round(
         scale_protti(c({{ map_value }}), method = "01") * 50 + 50,
         digits = 2
@@ -190,11 +190,11 @@ map_peptides_on_structure <- function(peptide_data,
       group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, {{ auth_seq_id }}) %>%
       dplyr::mutate(residue_internal = stringr::str_split({{ auth_seq_id }}, pattern = ";")) %>%
       dplyr::ungroup() %>%
-      tidyr::unnest(.data$residue_internal) %>%
+      tidyr::unnest("residue_internal") %>%
       dplyr::group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, .data$residue_internal) %>%
       dplyr::mutate({{ map_value }} := max({{ map_value }})) %>%
       dplyr::ungroup() %>%
-      dplyr::select(-c({{ auth_seq_id }}, .data$scaling_info)) %>% 
+      dplyr::select(-c({{ auth_seq_id }}, "scaling_info")) %>%
       dplyr::distinct() %>%
       dplyr::mutate(
         id = ifelse(is.na({{ pdb_id }}), {{ uniprot_id }}, {{ pdb_id }}),
@@ -223,11 +223,11 @@ map_peptides_on_structure <- function(peptide_data,
         dplyr::distinct({{ pdb_id }}, {{ uniprot_id }}) %>%
         dplyr::group_by({{ pdb_id }}) %>%
         dplyr::mutate(name = paste({{ uniprot_id }}, collapse = "_")) %>%
-        dplyr::mutate(name = ifelse(nchar(.data$name) >= 240, 
+        dplyr::mutate(name = ifelse(nchar(.data$name) >= 240,
                                     paste0(stringr::str_count(.data$name, pattern = "_") + 1, "_proteins"),
                                     .data$name
                                     )
-        ) %>% 
+        ) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(name = paste0({{ pdb_id }}, "_", .data$name)) %>%
         dplyr::select(-{{ uniprot_id }}) %>%
@@ -592,7 +592,7 @@ map_peptides_on_structure <- function(peptide_data,
                                      list(NA)
       )) %>%
       dplyr::ungroup() %>%
-      tidyr::unnest(.data$residue_internal) %>% 
+      tidyr::unnest(.data$residue_internal) %>%
       dplyr::group_by({{ chain }}, .data$residue_internal) %>%
       dplyr::mutate({{ map_value }} := max({{ map_value }})) %>%
       dplyr::ungroup() %>%

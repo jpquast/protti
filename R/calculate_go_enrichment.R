@@ -98,42 +98,41 @@ go_enrichment <- function(...) {
 #'   )
 #' )
 #'
-#' if(!is(data, "character")){
+#' if (!is(data, "character")) {
+#'   data <- uniprot_go_data %>%
+#'     mutate(significant = c(
+#'       rep(TRUE, 1000),
+#'       rep(FALSE, n() - 1000)
+#'     )) %>%
+#'     mutate(significant = ifelse(
+#'       str_detect(
+#'         go_f,
+#'         pattern = "ribosome"
+#'       ),
+#'       FALSE,
+#'       significant
+#'     ))
 #'
-#' data <- uniprot_go_data %>%
-#'   mutate(significant = c(
-#'     rep(TRUE, 1000),
-#'     rep(FALSE, n() - 1000)
-#'   )) %>%
-#'   mutate(significant = ifelse(
-#'     str_detect(
-#'       go_f,
-#'       pattern = "ribosome"
-#'     ),
-#'     FALSE,
-#'     significant
-#'   ))
+#'   # Plot gene ontology enrichment
+#'   calculate_go_enrichment(
+#'     data,
+#'     protein_id = accession,
+#'     go_annotations_uniprot = go_f,
+#'     is_significant = significant,
+#'     plot = TRUE,
+#'     plot_cutoff = "pval 0.01"
+#'   )
 #'
-#' # Plot gene ontology enrichment
-#' calculate_go_enrichment(
-#'   data,
-#'   protein_id = accession,
-#'   go_annotations_uniprot = go_f,
-#'   is_significant = significant,
-#'   plot = TRUE,
-#'   plot_cutoff = "pval 0.01"
-#' )
+#'   # Calculate gene ontology enrichment
+#'   go_enrichment <- calculate_go_enrichment(
+#'     data,
+#'     protein_id = accession,
+#'     go_annotations_uniprot = go_f,
+#'     is_significant = significant,
+#'     plot = FALSE,
+#'   )
 #'
-#' # Calculate gene ontology enrichment
-#' go_enrichment <- calculate_go_enrichment(
-#'   data,
-#'   protein_id = accession,
-#'   go_annotations_uniprot = go_f,
-#'   is_significant = significant,
-#'   plot = FALSE,
-#' )
-#'
-#' head(go_enrichment, n = 10)
+#'   head(go_enrichment, n = 10)
 #' }
 #' }
 calculate_go_enrichment <- function(data,
@@ -155,11 +154,11 @@ calculate_go_enrichment <- function(data,
 
   if (length(unique(dplyr::pull(data, {{ protein_id }}))) != nrow(data)) {
     # group by the "group" argument if provided
-    if(!missing(group)){
+    if (!missing(group)) {
       data <- data %>%
         dplyr::ungroup() %>%
-        dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}, {{group}}) %>%
-        dplyr::group_by({{ protein_id }}, {{group}}) %>%
+        dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}, {{ group }}) %>%
+        dplyr::group_by({{ protein_id }}, {{ group }}) %>%
         dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
         # do this to remove accidental double annotations
         dplyr::ungroup() %>%
@@ -242,7 +241,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
 
   if (!missing(go_annotations_uniprot)) go_data <- input
 
-  if (missing(group)){
+  if (missing(group)) {
     # group argument is missing
     cont_table <- go_data %>%
       tidyr::drop_na(.data$go_id, {{ is_significant }}) %>%
@@ -258,9 +257,9 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     fisher_test <- cont_table %>%
       split(dplyr::pull(., .data$go_id)) %>%
       purrr::map(.f = ~ dplyr::select(.x, -.data$go_id) %>%
-                   tibble::column_to_rownames(var = rlang::as_name(enquo(is_significant))) %>%
-                   as.matrix() %>%
-                   fisher.test()) %>%
+        tibble::column_to_rownames(var = rlang::as_name(enquo(is_significant))) %>%
+        as.matrix() %>%
+        fisher.test()) %>%
       purrr::map2_df(
         .y = names(.),
         .f = ~ tibble::tibble(
@@ -291,37 +290,40 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     # group argument is not missing
     cont_table <- go_data %>%
       tidyr::drop_na(.data$go_id, {{ is_significant }}) %>%
-      dplyr::group_by({{ is_significant }}, {{group}}) %>%
+      dplyr::group_by({{ is_significant }}, {{ group }}) %>%
       dplyr::mutate(n_sig = dplyr::n_distinct(.data$protein_id)) %>%
-      dplyr::group_by(.data$go_id, {{ is_significant }}, {{group}}) %>%
+      dplyr::group_by(.data$go_id, {{ is_significant }}, {{ group }}) %>%
       dplyr::mutate(n_has_process = dplyr::n_distinct(.data$protein_id)) %>%
       # count number of proteins with process for sig and non-sig proteins
-      dplyr::distinct(.data$go_id, {{ is_significant }}, .data$n_sig, .data$n_has_process, {{group}}) %>%
-      dplyr::group_by({{group}}) %>%
+      dplyr::distinct(.data$go_id, {{ is_significant }}, .data$n_sig, .data$n_has_process, {{ group }}) %>%
+      dplyr::group_by({{ group }}) %>%
       tidyr::complete(.data$go_id, tidyr::nesting(!!rlang::ensym(is_significant), n_sig), fill = list(n_has_process = 0)) %>%
       dplyr::ungroup()
 
     fisher_test <- cont_table %>%
       split(dplyr::pull(., {{ group }})) %>%
-      purrr::map2_dfr(.y = names(.),
-                      .f = ~ {
-                        .x %>%
-                          dplyr::select(-{{ group }}) %>%
-                          split(dplyr::pull(., .data$go_id)) %>%
-                          purrr::map(.f = ~ {dplyr::select(.x, -c(.data$go_id)) %>%
-                                       tibble::column_to_rownames(var = rlang::as_name(enquo(is_significant))) %>%
-                                       as.matrix() %>%
-                                       fisher.test()
-                            }) %>%
-                          purrr::map2_dfr(
-                            .y = names(.),
-                            .f = ~ tibble::tibble(
-                              pval = .x$p.value,
-                              go_id = .y
-                            )
-                          ) %>%
-                          mutate({{ group }} := .y)
-                      })
+      purrr::map2_dfr(
+        .y = names(.),
+        .f = ~ {
+          .x %>%
+            dplyr::select(-{{ group }}) %>%
+            split(dplyr::pull(., .data$go_id)) %>%
+            purrr::map(.f = ~ {
+              dplyr::select(.x, -c(.data$go_id)) %>%
+                tibble::column_to_rownames(var = rlang::as_name(enquo(is_significant))) %>%
+                as.matrix() %>%
+                fisher.test()
+            }) %>%
+            purrr::map2_dfr(
+              .y = names(.),
+              .f = ~ tibble::tibble(
+                pval = .x$p.value,
+                go_id = .y
+              )
+            ) %>%
+            mutate({{ group }} := .y)
+        }
+      )
 
     result_table <- cont_table %>%
       dplyr::left_join(fisher_test, by = c("go_id", rlang::as_name(enquo(group)))) %>%
@@ -352,7 +354,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     return(result_table)
   }
 
-  if (!missing(group) & y_axis_free){
+  if (!missing(group) & y_axis_free) {
     # arrange table by group and go term for plot
     # this ensures that the terms are in the right order for a facet plot with a free axis
     result_table <- result_table %>%
@@ -423,8 +425,8 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     ggplot2::scale_y_continuous(breaks = seq(0, 100, 1)) +
     ggplot2::coord_flip() +
     {
-      if (!missing(group)){
-        if (y_axis_free){
+      if (!missing(group)) {
+        if (y_axis_free) {
           ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)), scales = "free_y")
         } else {
           ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)))
@@ -432,7 +434,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       }
     } +
     {
-      if (!missing(group)){
+      if (!missing(group)) {
         # if axis were free then the special naming that ensures the right order needs to be removed again
         scale_x_discrete(labels = function(x) gsub("__.+$", "", x))
       }

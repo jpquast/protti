@@ -76,11 +76,11 @@ qc_contaminants <- function(data,
   if (plot == FALSE) {
     return(result)
   }
-  
+
   if (is(dplyr::pull(result, {{ sample }}), "character")) {
     result <- result %>%
       dplyr::mutate({{ sample }} := factor({{ sample }},
-                                           levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+        levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
       ))
   }
 

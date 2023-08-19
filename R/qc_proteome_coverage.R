@@ -77,7 +77,7 @@ qc_proteome_coverage <- function(data,
       proteins_detected = .data$proteins_detected / proteome$proteins_proteome * 100
     ) %>%
     tidyr::pivot_longer(
-      cols = c(.data$proteins_detected, .data$proteins_undetected),
+      cols = c("proteins_detected", "proteins_undetected"),
       names_to = "type",
       values_to = "percentage"
     ) %>%

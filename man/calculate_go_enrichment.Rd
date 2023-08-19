@@ -101,42 +101,41 @@ uniprot_go_data <- fetch_uniprot_proteome(
   )
 )
 
-if(!is(data, "character")){
+if (!is(data, "character")) {
+  data <- uniprot_go_data \%>\%
+    mutate(significant = c(
+      rep(TRUE, 1000),
+      rep(FALSE, n() - 1000)
+    )) \%>\%
+    mutate(significant = ifelse(
+      str_detect(
+        go_f,
+        pattern = "ribosome"
+      ),
+      FALSE,
+      significant
+    ))
 
-data <- uniprot_go_data \%>\%
-  mutate(significant = c(
-    rep(TRUE, 1000),
-    rep(FALSE, n() - 1000)
-  )) \%>\%
-  mutate(significant = ifelse(
-    str_detect(
-      go_f,
-      pattern = "ribosome"
-    ),
-    FALSE,
-    significant
-  ))
+  # Plot gene ontology enrichment
+  calculate_go_enrichment(
+    data,
+    protein_id = accession,
+    go_annotations_uniprot = go_f,
+    is_significant = significant,
+    plot = TRUE,
+    plot_cutoff = "pval 0.01"
+  )
 
-# Plot gene ontology enrichment
-calculate_go_enrichment(
-  data,
-  protein_id = accession,
-  go_annotations_uniprot = go_f,
-  is_significant = significant,
-  plot = TRUE,
-  plot_cutoff = "pval 0.01"
-)
+  # Calculate gene ontology enrichment
+  go_enrichment <- calculate_go_enrichment(
+    data,
+    protein_id = accession,
+    go_annotations_uniprot = go_f,
+    is_significant = significant,
+    plot = FALSE,
+  )
 
-# Calculate gene ontology enrichment
-go_enrichment <- calculate_go_enrichment(
-  data,
-  protein_id = accession,
-  go_annotations_uniprot = go_f,
-  is_significant = significant,
-  plot = FALSE,
-)
-
-head(go_enrichment, n = 10)
+  head(go_enrichment, n = 10)
 }
 }
 }

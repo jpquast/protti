@@ -163,7 +163,7 @@ fit_drc_4p <- function(data,
     dplyr::mutate({{ dose }} := as.numeric({{ dose }}))
 
   # If the data_prep data.frame is empty return a data.frame that contains only the grouping and retained column
-  if (nrow(data_prep) == 0){
+  if (nrow(data_prep) == 0) {
     return(data.frame())
   }
 
@@ -187,7 +187,7 @@ fit_drc_4p <- function(data,
       dplyr::distinct({{ grouping }}, .data$pval) %>%
       tidyr::drop_na(.data$pval) %>% # remove NA pvalues before adjustment!
       dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
-      dplyr::rename(anova_pval = .data$pval)
+      dplyr::rename(anova_pval = "pval")
 
     # extract elements that pass anova significant threshold
     anova_filtered <- anova %>%
@@ -445,7 +445,7 @@ fit_drc_4p <- function(data,
     )
 
   # Return empty data.frame if there are no correlations. This prevents parallel_fit_drc_4p from failing.
-  if (nrow(correlation_output) == 0){
+  if (nrow(correlation_output) == 0) {
     return(data.frame())
   }
 

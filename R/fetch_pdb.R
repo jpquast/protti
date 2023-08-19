@@ -224,11 +224,12 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       stringr::str_replace_all(pattern = "\\[", replacement = "%5B") %>%
       stringr::str_replace_all(pattern = "\\]", replacement = "%5D")
 
-    query <- try_query(httr::modify_url("https://data.rcsb.org/graphql",
-      query = url_encode_query
-    ),
-    type = "application/json",
-    simplifyDataFrame = TRUE
+    query <- try_query(
+      httr::modify_url("https://data.rcsb.org/graphql",
+        query = url_encode_query
+      ),
+      type = "application/json",
+      simplifyDataFrame = TRUE
     )
 
     if (show_progress == TRUE) {
@@ -778,11 +779,13 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
         values = as.character(rep(.data$non_consecutive, .data$n_missing) + unlist(.data$replacement_values_addition))
       ))) %>%
       dplyr::ungroup() %>%
-      dplyr::select(-c("auth_seq_id_pdb_numeric",
-                       "non_consecutive",
-                       "n_missing",
-                       "replacement_values_addition",
-                       "replacement_positions"))
+      dplyr::select(-c(
+        "auth_seq_id_pdb_numeric",
+        "non_consecutive",
+        "n_missing",
+        "replacement_values_addition",
+        "replacement_positions"
+      ))
   }
   # Join corrected entries back
   polymer_entities <- polymer_entities %>%

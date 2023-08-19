@@ -294,11 +294,11 @@ fetch_metal_pdb <- function(id_type = "uniprot",
       )),
       should_be_here
     )) %>%
-    tidyr::unnest(.data$metals)
+    tidyr::unnest("metals")
 
   if ("metals" %in% colnames(content_metal)) {
     content_metal <- content_metal %>%
-      dplyr::select(-c(.data$metals))
+      dplyr::select(-c("metals"))
   }
 
   columns_metal <- c(
@@ -322,14 +322,14 @@ fetch_metal_pdb <- function(id_type = "uniprot",
       should_be_here_metal
     )) %>%
     dplyr::rename(
-      auth_seq_id_metal = .data$residue_pdb_number,
-      auth_id_metal = .data$atom_pdb_number,
-      symbol_metal = .data$symbol
+      auth_seq_id_metal = "residue_pdb_number",
+      auth_id_metal = "atom_pdb_number",
+      symbol_metal = "symbol"
     ) %>%
     dplyr::group_by(.data$site, .data$auth_id_metal) %>%
     dplyr::mutate(check = length(.data$ligands[[1]])) %>%
     dplyr::mutate(ligands = ifelse(.data$check == 0, NA, .data$ligands)) %>%
-    tidyr::unnest_longer(.data$ligands) %>%
+    tidyr::unnest_longer("ligands") %>%
     dplyr::bind_cols(donors = .$ligands)
 
   columns_ligand <- c("check", "chain", "donors", "residue_pdb_number", "residue")
@@ -343,9 +343,9 @@ fetch_metal_pdb <- function(id_type = "uniprot",
       )),
       should_be_here_ligand
     )) %>%
-    tidyr::unnest_longer(.data$donors) %>%
+    tidyr::unnest_longer("donors") %>%
     dplyr::bind_cols(atom = .$donors) %>%
-    dplyr::select(-c(.data$ligands, .data$donors, .data$check))
+    dplyr::select(-c("ligands", "donors", "check"))
 
   columns_donor <- c("atom", "symbol", "atom_pdb_number", "distance")
   should_be_here_donor <- columns_donor[!columns_donor %in% colnames(content_donor)]
@@ -359,10 +359,10 @@ fetch_metal_pdb <- function(id_type = "uniprot",
       should_be_here_donor
     )) %>%
     dplyr::rename(
-      auth_asym_id_ligand = .data$chain,
-      auth_seq_id_ligand = .data$residue_pdb_number,
-      auth_id_ligand = .data$atom_pdb_number,
-      auth_atom_id_ligand = .data$atom
+      auth_asym_id_ligand = "chain",
+      auth_seq_id_ligand = "residue_pdb_number",
+      auth_id_ligand = "atom_pdb_number",
+      auth_atom_id_ligand = "atom"
     ) %>%
     dplyr::ungroup()
 

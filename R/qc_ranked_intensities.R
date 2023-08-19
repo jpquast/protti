@@ -137,7 +137,7 @@ qc_ranked_intensities <- function(data,
 
   if (plot == FALSE) {
     output <- input %>%
-      dplyr::select(-.data$intensity_plot)
+      dplyr::select(-"intensity_plot")
 
     # return data frame
     return(output)

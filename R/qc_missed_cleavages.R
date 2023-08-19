@@ -104,12 +104,12 @@ intensities or set remove_na_intensities to FALSE",
         dplyr::group_by({{ sample }}, {{ missed_cleavages }}) %>%
         dplyr::summarise(mc_percent = n / .data$total_peptide_count * 100) %>%
         dplyr::ungroup() %>%
-        dplyr::mutate({{ missed_cleavages }} := forcats::fct_inorder(factor({{ missed_cleavages }}))) 
-      
+        dplyr::mutate({{ missed_cleavages }} := forcats::fct_inorder(factor({{ missed_cleavages }})))
+
       if (is(dplyr::pull(result, {{ sample }}), "character")) {
         result <- result %>%
           dplyr::mutate({{ sample }} := factor({{ sample }},
-                                               levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+            levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
           ))
       }
 
@@ -166,18 +166,17 @@ intensities or set remove_na_intensities to FALSE",
         dplyr::mutate(total_intensity = sum({{ intensity }})) %>%
         dplyr::group_by({{ sample }}, {{ missed_cleavages }}) %>%
         dplyr::mutate(sum_intensity_mc = sum({{ intensity }})) %>%
-        dplyr::summarise(mc_percent = .data$sum_intensity_mc / .data$total_intensity * 100) %>%
-        dplyr::ungroup() %>%
+        dplyr::reframe(mc_percent = .data$sum_intensity_mc / .data$total_intensity * 100) %>%
         dplyr::mutate({{ missed_cleavages }} := forcats::fct_inorder(factor({{ missed_cleavages }}))) %>%
         dplyr::distinct()
 
       if (is(dplyr::pull(result, {{ sample }}), "character")) {
         result <- result %>%
           dplyr::mutate({{ sample }} := factor({{ sample }},
-                                               levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+            levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
           ))
       }
-      
+
       if (plot == FALSE) {
         return(result)
       } else {

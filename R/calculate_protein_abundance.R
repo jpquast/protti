@@ -209,15 +209,16 @@ calculate_protein_abundance <- function(data,
       dplyr::select(-{{ precursor }})
   }
 
-  if(!missing(retain_columns)){
+  if (!missing(retain_columns)) {
     protein_intensity_retain <- data %>%
       dplyr::select(
         !!enquo(retain_columns),
         colnames(combined)[!colnames(combined) %in%
-                             c(
-                               rlang::as_name(rlang::enquo(intensity_log2)),
-                               rlang::as_name(rlang::enquo(precursor))
-                             )]) %>%
+          c(
+            rlang::as_name(rlang::enquo(intensity_log2)),
+            rlang::as_name(rlang::enquo(precursor))
+          )]
+      ) %>%
       dplyr::distinct() %>%
       dplyr::mutate({{ precursor }} := "protein_intensity")
   }

@@ -105,15 +105,15 @@ qc_charge_states <-
         dplyr::group_by({{ sample }}, {{ charge_states }}) %>%
         dplyr::summarise(charge_per = n / .data$total_peptides * 100) %>%
         dplyr::ungroup() %>%
-        dplyr::mutate({{ charge_states }} := forcats::fct_inorder(factor({{ charge_states }}))) 
+        dplyr::mutate({{ charge_states }} := forcats::fct_inorder(factor({{ charge_states }})))
 
       if (is(dplyr::pull(result, {{ sample }}), "character")) {
         result <- result %>%
           dplyr::mutate({{ sample }} := factor({{ sample }},
-                                               levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+            levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
           ))
       }
-      
+
       if (plot == FALSE) {
         return(result)
       } else {
@@ -158,15 +158,14 @@ qc_charge_states <-
         dplyr::mutate(total_intensity = sum({{ intensity }})) %>%
         dplyr::group_by({{ sample }}, {{ charge_states }}) %>%
         dplyr::mutate(sum_intensity_cs = sum({{ intensity }})) %>%
-        dplyr::summarise(charge_per = .data$sum_intensity_cs / .data$total_intensity * 100) %>%
-        dplyr::ungroup() %>%
+        dplyr::reframe(charge_per = .data$sum_intensity_cs / .data$total_intensity * 100) %>%
         dplyr::mutate({{ charge_states }} := forcats::fct_inorder(factor({{ charge_states }}))) %>%
         dplyr::distinct()
-      
+
       if (is(dplyr::pull(result, {{ sample }}), "character")) {
         result <- result %>%
           dplyr::mutate({{ sample }} := factor({{ sample }},
-                                               levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+            levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
           ))
       }
 

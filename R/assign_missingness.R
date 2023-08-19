@@ -152,25 +152,26 @@ from the conditions and assigned their missingness. The created comparisons are:
     dplyr::group_by(.data$comparison) %>%
     dplyr::mutate(n = dplyr::n()) %>%
     dplyr::filter(.data$n > 1) %>%
-    dplyr::mutate(n_replicates = paste0(.data$n_replicates, collapse = "/")) 
-  
-  if(any(unequal_replicates$n > 2)){
+    dplyr::mutate(n_replicates = paste0(.data$n_replicates, collapse = "/"))
+
+  if (any(unequal_replicates$n > 2)) {
     stop(
       "\n",
       strwrap('Some created comparisons seem to have more than two unequal number of replicates.
               This usually only happens if the wrong grouping variable was selected. Please check this!
               The grouping variable should split the dataset so that each sample of each condition only
-              appears once for each element of the grouping. E.g. grouping peptide: Each peptide should 
+              appears once for each element of the grouping. E.g. grouping peptide: Each peptide should
               only have sample_1 associated once with condition_1 and not twice or more often. If in this
               case grouping "protein" was inadvertently selected a protein might have multiple peptides, each
               containing sample_1 of condition_1, which means it appears more than once (appears as many times
               as there are peptides per protein). This means each condition can have an unequal number of replicates
-              that is as high as the max number of proteins, which is not the correct calculation for replicates.', 
-              prefix = "\n", initial = ""), "\n"
+              that is as high as the max number of proteins, which is not the correct calculation for replicates.',
+        prefix = "\n", initial = ""
+      ), "\n"
     )
   }
-  
-    unequal_replicates <- unequal_replicates %>% 
+
+  unequal_replicates <- unequal_replicates %>%
     dplyr::distinct(.data$n_replicates, .data$comparison)
 
   if (nrow(unequal_replicates) != 0) {

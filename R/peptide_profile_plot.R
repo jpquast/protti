@@ -130,23 +130,23 @@ peptide_profile_plot <- function(data,
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
   if (missing(targets)) stop("Please provide at least one target to plot!")
-  
+
   input <- data %>%
     dplyr::distinct({{ sample }}, {{ peptide }}, {{ intensity_log2 }}, {{ grouping }}) %>%
     tidyr::drop_na({{ intensity_log2 }})
-  
-  if (complete_sample){
+
+  if (complete_sample) {
     input <- input %>%
-      tidyr::complete({{ sample }}, {{ grouping }}) %>% 
+      tidyr::complete({{ sample }}, {{ grouping }}) %>%
       tidyr::fill({{ peptide }}, .direction = "downup")
   }
-  
+
   if (!("all" %in% targets)) {
     input <- input %>%
       dplyr::filter({{ grouping }} %in% targets) %>%
       split(dplyr::pull(., !!ensym(grouping)))
   }
-  
+
   if ("all" %in% targets) {
     groups <- length(unique(dplyr::pull(data, {{ grouping }})))
     message("Splitting into ", groups, " groups and returning ", groups, " plots.")

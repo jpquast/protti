@@ -94,10 +94,10 @@ qc_data_completeness <- function(data,
   if (is(dplyr::pull(result, {{ sample }}), "character")) {
     result <- result %>%
       dplyr::mutate({{ sample }} := factor({{ sample }},
-                                           levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+        levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
       ))
   }
-  
+
   completeness_plot <- result %>%
     ggplot2::ggplot(ggplot2::aes({{ sample }}, .data$completeness)) +
     ggplot2::geom_col(fill = "#5680C1", col = "black", size = 1) +

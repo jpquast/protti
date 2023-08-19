@@ -67,7 +67,6 @@ Before we can start analysing our data, we need to load the **protti** package. 
 library(protti)
 library(magrittr)
 library(dplyr)
-
 ```
 
 After having loaded the required packages we can create a synthetic dataset, that contains data similar to data obtained from a treatment experiment with e.g. a protein, metabolite or small-molecule.
@@ -81,15 +80,16 @@ Please note that generally, quality control should be conducted on raw unfiltere
 
 ```{r create_synthetic_data, eval = test_protti}
 # by setting the seed we are making sure that the random object generation can be reproduced
-set.seed(123) 
+set.seed(123)
 
-data <- create_synthetic_data(n_proteins = 100,
-                              frac_change = 0.05,
-                              n_replicates = 3,
-                              n_conditions = 2,
-                              method = "effect_random",
-                              additional_metadata = TRUE)
-
+data <- create_synthetic_data(
+  n_proteins = 100,
+  frac_change = 0.05,
+  n_replicates = 3,
+  n_conditions = 2,
+  method = "effect_random",
+  additional_metadata = TRUE
+)
 ```
 
 ## Quality control
@@ -116,20 +116,24 @@ The "combined" group of CVs contains CVs across all samples and not only across 
 ```{r qc_cvs, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
 input <- data %>%
   # as the data is log2 transformed, we need to transform it back before calculating the CVs
-  mutate(raw_intensity = 2^peptide_intensity_missing) 
+  mutate(raw_intensity = 2^peptide_intensity_missing)
 
-qc_cvs(data = input,
-       grouping = peptide,
-       condition = condition,
-       intensity = raw_intensity, 
-       plot = FALSE)
+qc_cvs(
+  data = input,
+  grouping = peptide,
+  condition = condition,
+  intensity = raw_intensity,
+  plot = FALSE
+)
 
-qc_cvs(data = input,
-       grouping = peptide,
-       condition = condition,
-       intensity = raw_intensity, 
-       plot = TRUE, 
-       plot_style = "violin")
+qc_cvs(
+  data = input,
+  grouping = peptide,
+  condition = condition,
+  intensity = raw_intensity,
+  plot = TRUE,
+  plot_style = "violin"
+)
 ```
 
 ### Number of identifications (IDs)
@@ -139,20 +143,24 @@ The number of protein or peptide identifications should be similar for different
 For the analysis of the number of identifications of precursors, peptides or proteins we use the function `qc_ids()`. This function can return either a table or a plot. The output of this function - and also of a lot of other **protti** functions - can be plotted in an interactive plot that makes use of the R package `plotly`. You can plot an interactive version of the plot by setting `interactive = TRUE` within the function call. 
 
 ```{r qc_ids, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
-qc_ids(data = input,
-       sample = sample,
-       grouping = protein,
-       intensity = peptide_intensity_missing,
-       condition = condition, 
-       plot = FALSE)
+qc_ids(
+  data = input,
+  sample = sample,
+  grouping = protein,
+  intensity = peptide_intensity_missing,
+  condition = condition,
+  plot = FALSE
+)
 
-qc_ids(data = input,
-       sample = sample,
-       grouping = protein,
-       intensity = peptide_intensity_missing,
-       condition = condition, 
-       title = "Protein identifications per sample",
-       plot = TRUE)
+qc_ids(
+  data = input,
+  sample = sample,
+  grouping = protein,
+  intensity = peptide_intensity_missing,
+  condition = condition,
+  title = "Protein identifications per sample",
+  plot = TRUE
+)
 ```
 
 ### Peptide types
@@ -172,22 +180,26 @@ We are going to use the function `qc_peptide_type()` to evaluate the distributio
 In a typical LiP-MS experiment, there should be few non-tryptic peptides. The peptide type distribution for fully- and semi-, and non-tryptic peptides depends on your digestion conditions (i.e. temperature, duration, concentration).
 
 ```{r qc_peptide_type, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
-qc_peptide_type(data = input,
-                sample = sample, 
-                peptide = peptide, 
-                pep_type = pep_type, 
-                method = "intensity", 
-                intensity = raw_intensity, 
-                plot = TRUE, 
-                interactive = FALSE)
+qc_peptide_type(
+  data = input,
+  sample = sample,
+  peptide = peptide,
+  pep_type = pep_type,
+  method = "intensity",
+  intensity = raw_intensity,
+  plot = TRUE,
+  interactive = FALSE
+)
 
-qc_peptide_type(data = input,
-                sample = sample, 
-                peptide = peptide, 
-                pep_type = pep_type, 
-                method = "count", 
-                plot = TRUE, 
-                interactive = FALSE)
+qc_peptide_type(
+  data = input,
+  sample = sample,
+  peptide = peptide,
+  pep_type = pep_type,
+  method = "count",
+  plot = TRUE,
+  interactive = FALSE
+)
 ```
 
 ### Run intensities
@@ -197,17 +209,20 @@ The function `qc_intensity_distribution()` plots all precursor, peptide or prote
 Rrun intensities can also be assessed by plotting the median run intensities as a line plot. This helps you quickly assess if there are any trends in your data. The function to use for this analysis is `qc_median_intensities()`. 
 
 ```{r qc_intensity_distribution_boxplot, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
+qc_intensity_distribution(
+  data = input,
+  sample = sample,
+  grouping = peptide,
+  intensity_log2 = peptide_intensity_missing,
+  plot_style = "boxplot"
+)
 
-qc_intensity_distribution(data = input,
-                          sample = sample,
-                          grouping = peptide,
-                          intensity_log2 = peptide_intensity_missing,
-                          plot_style = "boxplot")
-
-qc_median_intensities(data = input,
-                      sample = sample,
-                      grouping = peptide,
-                      intensity = peptide_intensity_missing)
+qc_median_intensities(
+  data = input,
+  sample = sample,
+  grouping = peptide,
+  intensity = peptide_intensity_missing
+)
 ```
 
 ### Charge states
@@ -216,13 +231,15 @@ The charge state distibution of the detected peptides can be assessed with `qc_c
 For `method = "intensity"` the function requires the raw intensity values created previously as its input.
 
 ```{r qc_charge_states, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
-qc_charge_states(data = input, 
-                 sample = sample, 
-                 grouping = peptide, 
-                 charge_states = charge, 
-                 method = "intensity",
-                 intensity = raw_intensity, 
-                 plot = TRUE)
+qc_charge_states(
+  data = input,
+  sample = sample,
+  grouping = peptide,
+  charge_states = charge,
+  method = "intensity",
+  intensity = raw_intensity,
+  plot = TRUE
+)
 ```
 
 ### Missed cleavages
@@ -234,13 +251,15 @@ The number of missed cleavages should generally be low in a proteomics or LiP-MS
 We are going to check the numbers of missed cleavages in our dataset by using the function `qc_missed_cleavages()`. It can assess missed cleavages based on the count of peptides with missed cleavages or the intensities of the corresponding peptides. For `method = "intensity"` the function uses the raw (not log2 transformed) intensity values. You can have the function either return a plot or a table.  
 
 ```{r qc_missed_cleavages, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
-qc_missed_cleavages(data = input, 
-                    sample = sample, 
-                    grouping = peptide, 
-                    missed_cleavages = n_missed_cleavage, 
-                    method = "intensity",
-                    intensity = raw_intensity, 
-                    plot = TRUE)
+qc_missed_cleavages(
+  data = input,
+  sample = sample,
+  grouping = peptide,
+  missed_cleavages = n_missed_cleavage,
+  method = "intensity",
+  intensity = raw_intensity,
+  plot = TRUE
+)
 ```
 
 ### Sequence coverage
@@ -250,9 +269,11 @@ The following function gives you insight into the protein coverage (i.e. what pe
 To assess the protein coverage distribution, we are going to use the function `qc_protein_coverage()`. If you do not have a column containing the protein coverages in your data, you can use the function `calculate_sequence_coverage()` to obtain this information. 
 
 ```{r qc_sequence_coverage, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
-qc_sequence_coverage(data = input, 
-                     protein_identifier = protein, 
-                     coverage = coverage)
+qc_sequence_coverage(
+  data = input,
+  protein_identifier = protein,
+  coverage = coverage
+)
 ``` 
 
 ### Peak width
@@ -261,11 +282,13 @@ In order to identify potential chromatographic issues that might have occurred d
 The peak widths should be similar for all the measured samples of the experiment. 
 
 ```{r qc_peak_width, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
-qc_peak_width(data = input,
-              sample = sample, 
-              intensity = peptide_intensity_missing,
-              retention_time = retention_time, 
-              peak_width = peak_width)
+qc_peak_width(
+  data = input,
+  sample = sample,
+  intensity = peptide_intensity_missing,
+  retention_time = retention_time,
+  peak_width = peak_width
+)
 ``` 
 
 ### Data completeness
@@ -273,11 +296,13 @@ qc_peak_width(data = input,
 The function `qc_data_completeness()` checks how many of all detected precursors, peptides or proteins were identified in each sample. The function can return either a plot or a table. 
 
 ```{r qc_data_completeness, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
-qc_data_completeness(data = input, 
-                     sample = sample, 
-                     grouping = peptide, 
-                     intensity = peptide_intensity_missing, 
-                     plot = TRUE)
+qc_data_completeness(
+  data = input,
+  sample = sample,
+  grouping = peptide,
+  intensity = peptide_intensity_missing,
+  plot = TRUE
+)
 ``` 
 
 ### Log2 Intensity distribution
@@ -285,10 +310,12 @@ qc_data_completeness(data = input,
 For different kinds of analyses (e.g. t-tests) it is important that your data intensity follows a normal distribution. To ensure that this is the case, we are going to use the function `qc_intensity_distriubution()`. The function returns a histogram plot when `plot_style = "histogram"` showing how the intensities are distributed.
 
 ```{r qc_intensity_distribution_histogram, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
-qc_intensity_distribution(data = input,
-                          grouping = peptide,
-                          intensity_log2 = peptide_intensity_missing,
-                          plot_style = "histogram")
+qc_intensity_distribution(
+  data = input,
+  grouping = peptide,
+  intensity_log2 = peptide_intensity_missing,
+  plot_style = "histogram"
+)
 ``` 
 
 ### Sample correlation
@@ -296,12 +323,14 @@ qc_intensity_distribution(data = input,
 Another approach to quality control is to check the correlation of your samples. Ideally, replicates should cluster together and different treatment conditions should be separated. We are now going to check if this is the case for our data by using the function `qc_sample_correlation()`. The function will return a correlation heatmap with a comparison of all samples.
 
 ```{r qc_sample_correlation, eval = test_protti, fig.width = 6, fig.height = 4, fig.align = "center"}
- qc_sample_correlation(data = input,
-                       sample = sample, 
-                       grouping = peptide, 
-                       intensity_log2 = peptide_intensity_missing, 
-                       condition = condition, 
-                       interactive = FALSE)
+qc_sample_correlation(
+  data = input,
+  sample = sample,
+  grouping = peptide,
+  intensity_log2 = peptide_intensity_missing,
+  condition = condition,
+  interactive = FALSE
+)
 ``` 
 
 ### Principal component analysis (PCA)
@@ -326,7 +355,7 @@ qc_pca(
   grouping = peptide,
   intensity = peptide_intensity_missing,
   condition = condition,
-  components = c("PC1", "PC2"), 
+  components = c("PC1", "PC2"),
   plot_style = "pca"
 )
 ``` 

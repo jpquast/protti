@@ -202,7 +202,7 @@ Please always provide a chain ID for your start and end positions."),
             list(NA)
           )) %>%
           dplyr::ungroup() %>%
-          tidyr::unnest(.data$residue) %>%
+          tidyr::unnest("residue") %>%
           dplyr::mutate(retain_pattern = stringr::str_replace_all(
             paste({{ id }}, {{ chain }}, .data$residue, sep = "_"),
             pattern = "_NA",
@@ -447,7 +447,7 @@ Please always provide a chain ID for your start and end positions."),
               .data$retain_pattern,
               pattern = paste(paste0(data_retain_pattern1, "(?=$|_)"), collapse = "|")
             )) %>%
-            dplyr::rename(id = .data$pdb_id)
+            dplyr::rename(id = "pdb_id")
 
           if (data2_missing) {
             structures %>%

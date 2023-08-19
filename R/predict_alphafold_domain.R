@@ -86,14 +86,14 @@ predict_alphafold_domain <- function(pae_list,
       }
       # Create aligned error matrix
       aligned_error_matrix <- .x %>%
-        dplyr::select(c(.data$scored_residue, .data$aligned_residue, .data$error)) %>%
+        dplyr::select(c("scored_residue", "aligned_residue", "error")) %>%
         # prevent the creation of Inf weights. Convert all 0 values to a low value instead.
         dplyr::mutate(error = ifelse(error == 0, 0.001, .data$error)) %>%
         tidyr::pivot_wider(
-          names_from = .data$scored_residue,
-          values_from = .data$error
+          names_from = "scored_residue",
+          values_from = "error"
         ) %>%
-        dplyr::select(-c(.data$aligned_residue)) %>%
+        dplyr::select(-c("aligned_residue")) %>%
         as.matrix()
 
       # Calculate all weights

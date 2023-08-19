@@ -54,8 +54,8 @@ volcano_protti <- function(...) {
 #' "-log10(q-value)".
 #' @param legend_label optional, a character value that specifies the legend label. Default is
 #' "Target".
-#' @param colour optional, a character vector containing colours that should be used to colour 
-#' points according to the selected method. IMPORTANT: the first value in the vector is the 
+#' @param colour optional, a character vector containing colours that should be used to colour
+#' points according to the selected method. IMPORTANT: the first value in the vector is the
 #' default point colour, the additional values specify colouring of target or significant points.
 #' E.g. `c("grey60", "#5680C1")` to achieve the same colouring as the default for the "significant"
 #' method.
@@ -160,17 +160,17 @@ volcano_plot <- function(data,
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
 
-  if (!missing(colour)){
-    if(length(colour) < 2){
+  if (!missing(colour)) {
+    if (length(colour) < 2) {
       stop("Please provide more colours!")
     }
     background <- colour[1]
     additional_colour <- colour[-1]
   } else {
     background <- "grey60"
-      additional_colour <- protti_colours
+    additional_colour <- protti_colours
   }
-  
+
   data <- data %>%
     tidyr::drop_na({{ log2FC }}, {{ significance }})
 
@@ -220,11 +220,12 @@ volcano_plot <- function(data,
         label1 = {{ target_column }},
         label2 = {{ grouping }}
       )) +
-      geom_point(aes(
-        x = {{ log2FC }},
-        y = -1 * log10({{ significance }})
-      ),
-      colour = background
+      geom_point(
+        aes(
+          x = {{ log2FC }},
+          y = -1 * log10({{ significance }})
+        ),
+        colour = background
       ) +
       geom_point(
         data = dplyr::filter(data, .data$target == TRUE),
@@ -241,9 +242,11 @@ volcano_plot <- function(data,
         y = y_axis_label,
         color = legend_label
       ) +
-      {if (nrow(cutoff_line) != 0){
-      geom_hline(data = cutoff_line, aes(yintercept = .data$mean_adjusted_cutoff), linetype = "dashed") 
-      }}+
+      {
+        if (nrow(cutoff_line) != 0) {
+          geom_hline(data = cutoff_line, aes(yintercept = .data$mean_adjusted_cutoff), linetype = "dashed")
+        }
+      } +
       geom_vline(xintercept = log2FC_cutoff, linetype = "dashed") +
       geom_vline(xintercept = -log2FC_cutoff, linetype = "dashed") +
       {
@@ -291,11 +294,12 @@ volcano_plot <- function(data,
         label1 = {{ target_column }},
         label2 = {{ grouping }}
       )) +
-      geom_point(aes(
-        x = {{ log2FC }},
-        y = -log10({{ significance }})
-      ),
-      colour = background
+      geom_point(
+        aes(
+          x = {{ log2FC }},
+          y = -log10({{ significance }})
+        ),
+        colour = background
       ) +
       geom_point(
         data = dplyr::filter(data, (abs({{ log2FC }}) > log2FC_cutoff) & ({{ significance }} < .data$mean_adjusted_cutoff)),
@@ -311,9 +315,11 @@ volcano_plot <- function(data,
         x = x_axis_label,
         y = y_axis_label
       ) +
-      {if (nrow(cutoff_line) != 0){
-      geom_hline(data = cutoff_line, aes(yintercept = .data$mean_adjusted_cutoff), linetype = "dashed") 
-        }}+
+      {
+        if (nrow(cutoff_line) != 0) {
+          geom_hline(data = cutoff_line, aes(yintercept = .data$mean_adjusted_cutoff), linetype = "dashed")
+        }
+      } +
       geom_vline(xintercept = log2FC_cutoff, linetype = "dashed") +
       geom_vline(xintercept = -1 * log2FC_cutoff, linetype = "dashed") +
       {

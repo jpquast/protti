@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 # Introduction
 
 ```{r CRAN_comment, message=FALSE, warning=FALSE, echo=FALSE}
-if (build_vignette_on_cran == FALSE){
+if (build_vignette_on_cran == FALSE) {
   print("!!! IMPORTANT !!!")
   print("This Vignette has not been built completely on CRAN due to size limitations.")
   print("Please check the correct version here: ")
@@ -92,12 +92,14 @@ In addition to the removal of decoys we also remove any non-proteotypic peptides
 
 ```{r filter_transform_normalise, eval = test_protti}
 # Filter, log2 transform and normalise data
-data_normalised <- rapamycin_dose_response %>% 
-  filter(eg_is_decoy == FALSE) %>% 
-  mutate(intensity_log2 = log2(fg_quantity)) %>% 
-  normalise(sample = r_file_name,
-            intensity_log2 = intensity_log2,
-            method = "median") %>% 
+data_normalised <- rapamycin_dose_response %>%
+  filter(eg_is_decoy == FALSE) %>%
+  mutate(intensity_log2 = log2(fg_quantity)) %>%
+  normalise(
+    sample = r_file_name,
+    intensity_log2 = intensity_log2,
+    method = "median"
+  ) %>%
   filter(pep_is_proteotypic == TRUE)
 ```
 
@@ -106,14 +108,16 @@ It is also useful to check the intensity distribution of all precursors with the
 For experiments measured in data independent acquisition (DIA) mode, it is good to filter out very low intensity values that are not part of the distribution. These values are likely false assignments of peaks. If you look closely you can see a small peak around 0 corresponding to these values. In the case of our distribution we could chose a cutoff at a log2 intensity of 5, which corresponds to a raw intensity of 32. 
 
 ```{r intensity_distribution, eval = test_protti, fig.align = "center", fig.width = 7, fig.height = 5}
-qc_intensity_distribution(data = data_normalised,
-                          grouping = eg_precursor_id,
-                          intensity = normalised_intensity_log2,
-                          plot_style = "histogram")
+qc_intensity_distribution(
+  data = data_normalised,
+  grouping = eg_precursor_id,
+  intensity = normalised_intensity_log2,
+  plot_style = "histogram"
+)
 ```
 
 ```{r intensity_filtering, eval = test_protti}
-data_normalised <- data_normalised %>% 
+data_normalised <- data_normalised %>%
   filter(normalised_intensity_log2 > 5)
 ```
 
@@ -124,11 +128,13 @@ Before we fit dose-response models to our data, we can check how samples cluster
 _Note: Many of **protti**'s plotting functions also have the option to display an interactive version of the plot with an `interactive` argument._
 
 ```{r sample_correlation, eval = test_protti, fig.align = "center", fig.width = 7, fig.height = 5}
-qc_sample_correlation(data = data_normalised,
-                      sample = r_file_name,
-                      grouping = eg_precursor_id,
-                      intensity_log2 = normalised_intensity_log2,
-                      condition = r_condition)
+qc_sample_correlation(
+  data = data_normalised,
+  sample = r_file_name,
+  grouping = eg_precursor_id,
+  intensity_log2 = normalised_intensity_log2,
+  condition = r_condition
+)
 ```
 
 For our rapamycin data set we cannot identify any clear sample clustering based on correlation, because only a small subset of proteins was selected for this example. Furthermore, data sets in which only a few changes are expected commonly do not cluster nicely. This is because precursors/peptides/proteins have very similar intensity values across conditions and clustering is in this case based on variance. In case of more global changes samples should usually cluster nicely. 
@@ -136,11 +142,13 @@ For our rapamycin data set we cannot identify any clear sample clustering based 
 In addition to correlation based clustering a principal component analysis can be performed using the **protti** function `qc_pca()`. Similar to before, good clustering is usually dependent on the amount of changing precursors (or peptides/proteins). 
 
 ```{r sample_pca, eval = test_protti, fig.align = "center", fig.width = 7, fig.height = 5, warning = FALSE, message = FALSE}
-qc_pca(data = data_normalised,
-       sample = r_file_name,
-       grouping = eg_precursor_id,
-       intensity = normalised_intensity_log2,
-       condition = r_condition)
+qc_pca(
+  data = data_normalised,
+  sample = r_file_name,
+  grouping = eg_precursor_id,
+  intensity = normalised_intensity_log2,
+  condition = r_condition
+)
 ```
 
 # Fitting dose-response curves
@@ -159,13 +167,15 @@ $b$ is the Hill's coefficient (e.g. the negative slope at the inflection point)
 The output of `fit_drc_4p()` provides extensive information on the goodness of fit. Furthermore, the function filters and ranks fits based on several criteria which include completeness of data and a significance cutoff based on an adjusted p-value obtained from ANOVA. For details about the filtering steps you can read the function documentation by calling `?fit_drc_4p`. If you only care about your potential hits (and exclude precursors/peptides/proteins that do not pass the filtering e.g. due to too few observations), you can choose `filter = "pre"`, which filters the data before model fitting. This speeds up the process because less models need to be fit. If you want to perform enrichment analysis later on you should keep the default `filter = "post"`. This will fit all possible models and then only annotate models based on whether they passed or failed the filtering step (`passed_filter`). 
 
 ```{r model_fit, eval = test_protti}
-fit <- data_normalised %>% 
-  fit_drc_4p(sample = r_file_name, 
-             grouping = eg_precursor_id,
-             response = normalised_intensity_log2,
-             dose = r_condition,
-             filter = "post", 
-             retain_columns = c(pg_protein_accessions)) 
+fit <- data_normalised %>%
+  fit_drc_4p(
+    sample = r_file_name,
+    grouping = eg_precursor_id,
+    response = normalised_intensity_log2,
+    dose = r_condition,
+    filter = "post",
+    retain_columns = c(pg_protein_accessions)
+  )
 
 # make sure to retain columns that you need later but that are not part of the function
 ```
@@ -179,13 +189,15 @@ _Note: Keep in mind that by spreading the model fitting over multiple cores, mor
 future::plan(future::multisession, workers = 3)
 
 # fit models in parallel
-parallel_fit <- data_normalised %>% 
-  parallel_fit_drc_4p(sample = r_file_name,
-                      grouping = eg_precursor_id,
-                      response = normalised_intensity_log2,
-                      dose = r_condition,
-                      retain_columns = c(pg_protein_accessions),
-                      n_cores = 3)
+parallel_fit <- data_normalised %>%
+  parallel_fit_drc_4p(
+    sample = r_file_name,
+    grouping = eg_precursor_id,
+    response = normalised_intensity_log2,
+    dose = r_condition,
+    retain_columns = c(pg_protein_accessions),
+    n_cores = 3
+  )
 
 # remove workers again after you are done
 future::plan(future::sequential)
@@ -194,19 +206,23 @@ future::plan(future::sequential)
 If we examine all precursors based on their rank (calculated from correlation and ANOVA q-value), we can see that as expected most of them are FKBP12 (P62942) peptides. One benefit of analysing LiP-MS data on the precursor level (rather than peptide level) is that multiple lines of evidence for a change in the specific peptide can be used (we have data for each different charge and modification state). Therefore, it is always good to check if there are other precursors of a good scoring peptide that do not show any regulation at all. This would mean that the reason for the observed response is not based on a biological effect.
 
 ```{r result_analysis, eval = test_protti, echo=FALSE, results='asis'}
-fit %>% 
-  filter(rank <= 20) %>% 
-  select(rank, 
-         score, 
-         eg_precursor_id, 
-         pg_protein_accessions, 
-         anova_adj_pval, 
-         correlation, 
-         ec_50) %>% 
-  mutate(anova_adj_pval = format(anova_adj_pval, digits = 3),
-         correlation = format(correlation, digits = 3),
-         ec_50 = format(ec_50, digits = 2),
-         score = format(score, digits = 3)) %>% 
+fit %>%
+  filter(rank <= 20) %>%
+  select(
+    rank,
+    score,
+    eg_precursor_id,
+    pg_protein_accessions,
+    anova_adj_pval,
+    correlation,
+    ec_50
+  ) %>%
+  mutate(
+    anova_adj_pval = format(anova_adj_pval, digits = 3),
+    correlation = format(correlation, digits = 3),
+    ec_50 = format(ec_50, digits = 2),
+    score = format(score, digits = 3)
+  ) %>%
   knitr::kable(caption = "All hits")
 ```
 
@@ -219,12 +235,13 @@ Note: The output of `fit_drc_4p()` includes two columns with data frames contain
 ```{r model_plot, eval = test_protti, fig.align = "center", fig.width = 7, fig.height = 5, message = FALSE, warning = FALSE}
 # Model plotting
 drc_4p_plot(fit,
-            grouping = eg_precursor_id,
-            dose = r_condition,
-            response = normalised_intensity_log2,
-            targets = "_VFDVELLKLE_.2",
-            unit = "pM",
-            export = FALSE)
+  grouping = eg_precursor_id,
+  dose = r_condition,
+  response = normalised_intensity_log2,
+  targets = "_VFDVELLKLE_.2",
+  unit = "pM",
+  export = FALSE
+)
 ```
 
 # Further analysis
@@ -249,13 +266,13 @@ unis <- unique(fit$pg_protein_accessions)
 uniprot <- fetch_uniprot(unis)
 
 # annotation of fit data based on information from UniProt
-fit_annotated <- fit %>% 
+fit_annotated <- fit %>%
   # columns containing proteins IDs are named differently
-  left_join(uniprot, by = c("pg_protein_accessions" = "accession")) %>% 
+  left_join(uniprot, by = c("pg_protein_accessions" = "accession")) %>%
   # mark peptides that pass the filtering
-  mutate(passed_filter = !is.na(rank)) %>% 
+  mutate(passed_filter = !is.na(rank)) %>%
   # create new column with prior knowledge about binding partners of treatment
-  mutate(binds_treatment = pg_protein_accessions == "P62942") 
+  mutate(binds_treatment = pg_protein_accessions == "P62942")
 ```
 
 ## Enrichment and network analysis
@@ -268,44 +285,50 @@ Nevertheless, we will demonstrate below how you could use some additional functi
 ### GO enrichment using "molecular function" annotation from UniProt
 
 calculate_go_enrichment(fit_annotated,
-              protein_id = pg_protein_accessions,
-              is_significant = passed_filter,
-              go_annotations_uniprot = go_f) # column obtained from UniProt
+  protein_id = pg_protein_accessions,
+  is_significant = passed_filter,
+  go_annotations_uniprot = go_f
+) # column obtained from UniProt
 
 ### KEGG pathway enrichment
 
-# First you need to load KEGG pathway annotations from the KEGG database 
-# for your specific organism of interest. In this case HeLa cells were 
+# First you need to load KEGG pathway annotations from the KEGG database
+# for your specific organism of interest. In this case HeLa cells were
 # used, therefore the organism of interest is homo sapiens (hsa)
 
 kegg <- fetch_kegg(species = "hsa")
 
 # Next we need to annotate our data with KEGG pathway IDs and perform enrichment analysis
 
-fit %>% 
+fit %>%
   # columns containing proteins IDs are named differently
-  left_join(kegg, by = c("pg_protein_accessions" = "uniprot_id")) %>% 
-  calculate_kegg_enrichment(protein_id = pg_protein_accessions,
-                  is_significant = passed_filter,
-                  pathway_id = pathway_id, # column name from kegg data frame
-                  pathway_name = pathway_name) # column name from kegg data frame
+  left_join(kegg, by = c("pg_protein_accessions" = "uniprot_id")) %>%
+  calculate_kegg_enrichment(
+    protein_id = pg_protein_accessions,
+    is_significant = passed_filter,
+    pathway_id = pathway_id, # column name from kegg data frame
+    pathway_name = pathway_name
+  ) # column name from kegg data frame
 
 ### Treatment enrichment analysis
 
 calculate_treatment_enrichment(fit_annotated,
-                     protein_id = pg_protein_accessions,
-                     is_significant = passed_filter,
-                     binds_treatment = binds_treatment,
-                     treatment_name = "Rapamycin")
+  protein_id = pg_protein_accessions,
+  is_significant = passed_filter,
+  binds_treatment = binds_treatment,
+  treatment_name = "Rapamycin"
+)
 
 ### Network analysis
 
-fit_annotated %>% 
+fit_annotated %>%
   filter(passed_filter == TRUE) %>% # only analyse hits that were significant
-  analyse_functional_network(protein_id = pg_protein_accessions,
-                   string_id = xref_string, # column from UniProt containing STRING IDs
-                   organism_id = 9606, 
-                   # tax ID can be found in function documentation or STRING database
-                   binds_treatment = binds_treatment,
-                   plot = TRUE)
+  analyse_functional_network(
+    protein_id = pg_protein_accessions,
+    string_id = xref_string, # column from UniProt containing STRING IDs
+    organism_id = 9606,
+    # tax ID can be found in function documentation or STRING database
+    binds_treatment = binds_treatment,
+    plot = TRUE
+  )
 ```

@@ -102,11 +102,11 @@ qc_peptide_type <- function(data,
       dplyr::mutate(pep_type = factor({{ pep_type }},
         levels = c("fully-tryptic", "semi-tryptic", "non-tryptic")
       ))
-    
+
     if (is(dplyr::pull(result, {{ sample }}), "character")) {
       result <- result %>%
         dplyr::mutate({{ sample }} := factor({{ sample }},
-                                             levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+          levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
         ))
     }
 
@@ -190,11 +190,11 @@ qc_peptide_type <- function(data,
       dplyr::mutate(pep_type = factor({{ pep_type }},
         levels = c("fully-tryptic", "semi-tryptic", "non-tryptic")
       ))
-    
+
     if (is(dplyr::pull(result, {{ sample }}), "character")) {
       result <- result %>%
         dplyr::mutate({{ sample }} := factor({{ sample }},
-                                             levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
+          levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
         ))
     }
 

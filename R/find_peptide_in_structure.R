@@ -164,7 +164,7 @@ find_peptide_in_structure <- function(peptide_data,
         .data$auth_seq_id,
         .data$label_asym_id
       ) %>%
-      dplyr::rename(length_pdb = .data$length) %>%
+      dplyr::rename(length_pdb = "length") %>%
       dplyr::mutate({{ uniprot_id }} := .data$reference_database_accession) %>%
       dplyr::mutate(length_pdb_sequence = nchar(.data$pdb_sequence)) %>%
       dplyr::mutate(
@@ -172,19 +172,19 @@ find_peptide_in_structure <- function(peptide_data,
         entity_end_seq_id = as.numeric(.data$entity_beg_seq_id) + as.numeric(.data$length_pdb) - 1
       ) %>%
       dplyr::select(
-        .data$pdb_ids,
-        .data$auth_asym_id,
+        "pdb_ids",
+        "auth_asym_id",
         {{ uniprot_id }},
-        .data$entity_beg_seq_id,
-        .data$entity_end_seq_id,
-        .data$ref_beg_seq_id,
-        .data$ref_end_seq_id,
-        .data$pdb_sequence,
-        .data$length_pdb_sequence,
-        .data$auth_seq_id,
-        .data$label_asym_id
+        "entity_beg_seq_id",
+        "entity_end_seq_id",
+        "ref_beg_seq_id",
+        "ref_end_seq_id",
+        "pdb_sequence",
+        "length_pdb_sequence",
+        "auth_seq_id",
+        "label_asym_id"
       ) %>%
-      dplyr::right_join(peptide_data_prep, by = c(rlang::as_name(rlang::enquo(uniprot_id)))) %>%
+      dplyr::right_join(peptide_data_prep, by = c(rlang::as_name(rlang::enquo(uniprot_id))), relationship = "many-to-many") %>%
       dplyr::mutate(peptide_in_pdb = ({{ start }} >= .data$ref_beg_seq_id &
         {{ start }} <= .data$ref_end_seq_id) |
         ({{ end }} >= .data$ref_beg_seq_id &
@@ -252,21 +252,21 @@ find_peptide_in_structure <- function(peptide_data,
       ) %>%
       dplyr::select(
         {{ uniprot_id }},
-        .data$pdb_ids,
-        .data$auth_asym_id,
-        .data$label_asym_id,
+        "pdb_ids",
+        "auth_asym_id",
+        "label_asym_id",
         {{ peptide }},
-        .data$peptide_seq_in_pdb,
-        .data$fit_type,
+        "peptide_seq_in_pdb",
+        "fit_type",
         {{ start }},
         {{ end }},
-        .data$label_seq_id_start,
-        .data$label_seq_id_end,
-        .data$auth_seq_id_start,
-        .data$auth_seq_id_end,
-        .data$auth_seq_id,
-        .data$n_peptides,
-        .data$n_peptides_in_structure
+        "label_seq_id_start",
+        "label_seq_id_end",
+        "auth_seq_id_start",
+        "auth_seq_id_end",
+        "auth_seq_id",
+        "n_peptides",
+        "n_peptides_in_structure"
       )
   }
   # Retain also peptides in the data frame that were not found in any pdb structure or of

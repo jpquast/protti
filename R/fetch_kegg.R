@@ -35,8 +35,8 @@ fetch_kegg <- function(species) {
   }
   colnames(result_link) <- c("kegg_id", "pathway_id")
   result_link$pathway_id <- stringr::str_replace_all(result_link$pathway_id,
-                                                     pattern = "path:",
-                                                     replacement = ""
+    pattern = "path:",
+    replacement = ""
   )
   # download pathway_id names
   url_name <- paste("https://rest.kegg.jp/list/pathway", species, sep = "/")
