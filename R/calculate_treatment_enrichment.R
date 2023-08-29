@@ -177,6 +177,7 @@ calculate_treatment_enrichment <- function(data,
   }
 
   # Add p-value to group name for plot
+  # also group to correctly calculate the total number of proteins in the next step
   if (!missing(group)) {
     cont_table <- cont_table %>%
       dplyr::mutate(group_pval = paste0(
@@ -188,7 +189,8 @@ calculate_treatment_enrichment <- function(data,
           round(.data$pval, digits = 2)
         ),
         ")"
-      ))
+      )) %>% 
+      dplyr::group_by({{ group }})
   }
 
   enrichment_plot <- cont_table %>%
