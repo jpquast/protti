@@ -191,7 +191,8 @@ qc_sample_correlation <- function(data,
         annotation = annotation,
         annotation_colors = annotation_colours,
         main = "Correlation based hierachical clustering of samples",
-        color = viridis_colours
+        color = viridis_colours,
+        silent = TRUE
       )
     return(heatmap_static)
   }
