@@ -197,12 +197,12 @@ from the conditions and assigned their missingness. The created comparisons are:
       dplyr::mutate(missingness = dplyr::case_when(
         .data$n_detect_control == .data$n_replicates_control &
           .data$n_detect_treated == .data$n_replicates_treated ~ "complete",
-        .data$n_detect_control <= floor(n_replicates_control * 0.2) &
+        .data$n_detect_control <= floor(n_replicates_control * completeness_MNAR) &
           .data$n_detect_treated == .data$n_replicates_treated ~ "MNAR",
         .data$n_detect_control == .data$n_replicates_control &
-          .data$n_detect_treated <= floor(n_replicates_treated * 0.2) ~ "MNAR",
-        .data$n_detect_control >= max(floor(.data$n_replicates_control * 0.7), 1) &
-          .data$n_detect_treated >= max(floor(.data$n_replicates_control * 0.7), 1) ~ "MAR"
+          .data$n_detect_treated <= floor(n_replicates_treated * completeness_MNAR) ~ "MNAR",
+        .data$n_detect_control >= max(floor(.data$n_replicates_control * completeness_MAR), 1) &
+          .data$n_detect_treated >= max(floor(.data$n_replicates_control * completeness_MAR), 1) ~ "MAR"
       ))) %>%
     dplyr::select(-c(.data$n_detect_control, .data$n_detect_treated, .data$n_replicates_control, .data$n_replicates_treated)) %>%
     # Arrange by grouping but in a numeric order of the character vector.
