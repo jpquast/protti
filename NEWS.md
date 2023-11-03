@@ -1,3 +1,7 @@
+# protti 0.6.X
+## Bug fixes
+* `fetch_kegg()` joins data without the pathway_name being `NA`after change in KEGG database layout #217
+
 # protti 0.6.0.9000
 
 ## Bug fixes
