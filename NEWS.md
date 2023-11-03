@@ -6,15 +6,20 @@
 * `peptide_profile_plot()` received a new argument called `complete_sample`. If set to `TRUE`, each protein gets assigned all sample names that are found in the input data. This ensures that the plot always contains all samples on the x-axis even if there are no measured intensities for a specific sample. The default is `FALSE`, which is the original behaviour of the function.
 * `volcano_plot()` received the `colour` argument that allows the user to provide custom colours for points.
 * Increased the speed of `find_peptide()` and `assign_peptide_type()` by only computing on the smallest possible subset of data before joining back to the original data frame.
+* `calculate_treatment_enrichment()` can now be applied on data frames with multiple different groups. The enrichment will be calculated for each group separately. If the data is plotted, each group is displayed in a separate facet. The group is provided to the new `group` argument.
+* `qc_pca()`: If the condition argument is numeric a colour gradient is used instead.
 
 ## Bug fixes
 
 * `volcano_plot()` now also works interactively if there are no significant hits.
 * `fetch_chebi()`: fixed an issue caused by `na_if()` that changed its behaviour after the recent `dplyr` update.
-* `qc_proteome_coverage()`: fixed the label order of fractions of proteins detected and not detected in the proteome.
-* `calculate_protein_abundance()` now correctly retains columns if `for_plot = TRUE`. Previously the columns to retain were not joined considering the precursor column, which lead to duplications of information where it did not belong.
+* `qc_proteome_coverage()`: fixed the label order of fractions of proteins detected and not detected in the proteome. Fixes issue #194.
+* `calculate_protein_abundance()` now correctly retains columns if `for_plot = TRUE`. Previously the columns to retain were not joined considering the precursor column, which lead to duplications of information where it did not belong. Fixes issue #197.
 * `fetch_kegg()` now returns the pathway name correctly again.
 * `qc_intensity_distribution()`, `qc_median_intensities()`, `qc_charge_states()`, `qc_contaminants()`, `qc_missed_cleavages()`, `qc_peptide_type()`, `qc_ids()`: If the provided sample column is of type factor, the level order won't be overwritten anymore.
+*`fit_drc_4p()`: If there are no correlations an empty data frame is returned to prevent errors in `parallel_fit_drc_4p()`.
+* `calculate_sequence_coverage()` does not fail anymore if a protein only contains `NA` peptide sequences.
+* `qc_sequence_coverage()` does not return a plot anymore if `plot = FALSE`. This fixes issue #207.
 
 # protti 0.6.0
 

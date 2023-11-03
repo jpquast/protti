@@ -38,7 +38,7 @@ go_enrichment <- function(...) {
 #' @param group optional, character column in the \code{data} data frame that contains information by
 #' which the analysis should be grouped. The analysis will be performed separately for each of the
 #' groups. This is most likely a column that labels separate comparisons of different conditions.
-#' In protti the `asign_missingness()` function creates such a column automatically.
+#' In protti the `assign_missingness()` function creates such a column automatically.
 #' @param y_axis_free a logical value that specifies if the y-axis of the plot should be "free"
 #' for each facet if a grouping variable is provided. Default is `TRUE`. If `FALSE` is selected
 #' it is easier to compare GO categories directly with each other.
@@ -66,7 +66,8 @@ go_enrichment <- function(...) {
 #' to determine the number of GO terms in the plot. This information should be provided with the
 #' type first followed by the threshold separated by a space. Example are
 #' \code{plot_cutoff = "adj_pval top10"}, \code{plot_cutoff = "pval 0.05"} or
-#' \code{plot_cutoff = "adj_pval 0.01"}. The threshold can be chosen freely.
+#' \code{plot_cutoff = "adj_pval 0.01"}. The threshold can be chosen freely. The default value is
+#' \code{"adj_pval top10"}.
 #'
 #' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or
 #' depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individually with the
@@ -98,7 +99,7 @@ go_enrichment <- function(...) {
 #'   )
 #' )
 #'
-#' if (!is(data, "character")) {
+#' if (!is(uniprot_go_data, "character")) {
 #'   data <- uniprot_go_data %>%
 #'     mutate(significant = c(
 #'       rep(TRUE, 1000),

@@ -32,7 +32,7 @@ databases, e.g. UniProt.}
 \item{group}{optional, character column in the \code{data} data frame that contains information by
 which the analysis should be grouped. The analysis will be performed separately for each of the
 groups. This is most likely a column that labels separate comparisons of different conditions.
-In protti the \code{asign_missingness()} function creates such a column automatically.}
+In protti the \code{assign_missingness()} function creates such a column automatically.}
 
 \item{treatment_name}{a character value that indicates the treatment name. It will be included
 in the plot title.}

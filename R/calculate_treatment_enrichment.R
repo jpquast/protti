@@ -37,7 +37,7 @@ treatment_enrichment <- function(...) {
 #' @param group optional, character column in the \code{data} data frame that contains information by
 #' which the analysis should be grouped. The analysis will be performed separately for each of the
 #' groups. This is most likely a column that labels separate comparisons of different conditions.
-#' In protti the `asign_missingness()` function creates such a column automatically.
+#' In protti the `assign_missingness()` function creates such a column automatically.
 #' @param treatment_name a character value that indicates the treatment name. It will be included
 #' in the plot title.
 #' @param plot a logical value indicating whether the result should be plotted or returned as a
@@ -189,7 +189,7 @@ calculate_treatment_enrichment <- function(data,
           round(.data$pval, digits = 2)
         ),
         ")"
-      )) %>% 
+      )) %>%
       dplyr::group_by({{ group }})
   }
 
