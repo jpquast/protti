@@ -185,7 +185,7 @@ fit_drc_4p <- function(data,
       tidyr::drop_na("mean_ratio", "sd") %>%
       anova_protti({{ grouping }}, {{ dose }}, .data$mean_ratio, .data$sd, .data$n) %>%
       dplyr::distinct({{ grouping }}, .data$pval) %>%
-      tidyr::drop_na(.data$pval) %>% # remove NA pvalues before adjustment!
+      tidyr::drop_na("pval") %>% # remove NA pvalues before adjustment!
       dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
       dplyr::rename(anova_pval = "pval")
 

@@ -172,7 +172,7 @@ fetch_eco <- function(return_relation = FALSE,
   result <- query_result_unnest_3 %>%
     tidyr::unnest("synonyms") %>%
     dplyr::distinct(.data$id, .data$name, .data$type) %>%
-    dplyr::right_join(dplyr::select(query_result_unnest_3, c(-"synonyms")), by = "id") %>%
+    dplyr::right_join(dplyr::select(query_result_unnest_3, c(-"synonyms")), by = "id", relationship = "many-to-many") %>%
     dplyr::select(
       "id",
       "isObsolete",

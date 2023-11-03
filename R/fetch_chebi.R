@@ -207,7 +207,8 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
 
   chebi_names_clean <- chebi_names %>%
     dplyr::distinct(.data$COMPOUND_ID, .data$NAME, .data$TYPE) %>%
-    dplyr::rename(ID = .data$COMPOUND_ID, TYPE_NAME = .data$TYPE) %>%
+    dplyr::rename(ID = "COMPOUND_ID",
+                  TYPE_NAME = "TYPE") %>%
     dplyr::bind_rows(chebi_compounds_names_clean)
 
   chebi <- chebi_compounds_clean %>%

@@ -59,7 +59,7 @@ calculate_aa_scores <- function(data,
     dplyr::mutate(score = -log10({{ adj_pval }}) * abs({{ diff }})) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(residue = list(seq({{ start_position }}, {{ end_position }}))) %>%
-    tidyr::unnest(.data$residue) %>%
+    tidyr::unnest("residue") %>%
     dplyr::group_by({{ protein }}, .data$residue) %>%
     dplyr::mutate(amino_acid_score = mean(.data$score)) %>%
     dplyr::distinct({{ protein }}, .data$residue, .data$amino_acid_score)

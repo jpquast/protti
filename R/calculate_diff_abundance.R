@@ -399,7 +399,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
           "control",
           "treated"
         )) %>%
-        tidyr::pivot_wider(names_from = {{ condition }}, values_from = c(.data$mean, .data$sd, .data$n)) %>%
+        tidyr::pivot_wider(names_from = {{ condition }}, values_from = c("mean", "sd", "n")) %>%
         dplyr::mutate(ttest_protti(
           mean1 = .data$mean_control,
           mean2 = .data$mean_treated,
@@ -760,8 +760,9 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
             .f = ~ dplyr::mutate(.x, comparison = str_replace_all(.y, pattern = "`", replacement = ""))
           ) %>%
           purrr::map_dfr(~ dplyr::mutate(.x, adj_pval = p.adjust(.data$pval, method = p_adj_method))) %>%
-          dplyr::select(-.data$n_obs, -.data$n_approx) %>%
-          dplyr::rename({{ grouping }} := .data$name, std_error = .data$se) %>%
+          dplyr::select(-"n_obs", -"n_approx") %>%
+          dplyr::rename({{ grouping }} := "name",
+                        std_error = "se") %>%
           dplyr::left_join(proDA_missingness, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison"))
 
         message("DONE", appendLF = TRUE)
