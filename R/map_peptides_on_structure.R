@@ -495,7 +495,7 @@ map_peptides_on_structure <- function(peptide_data,
               replacement = {{ map_value }}
             )) %>%
             dplyr::mutate(X1 = ifelse(!is.na(.data$atoms_mod), .data$atoms_mod, .data$X1)) %>%
-            dplyr::select(.data$X1) %>%
+            dplyr::select("X1") %>%
             readr::write_tsv(
               file = paste0(export_location, .y, file_format),
               quote = "none",
@@ -542,7 +542,7 @@ map_peptides_on_structure <- function(peptide_data,
             dplyr::mutate({{ map_value }} := ifelse(str_detect({{ map_value }}, pattern = "NA"), NA, {{ map_value }})) %>%
             dplyr::mutate(atoms_mod = `str_sub<-`(.data$atoms, 61, 66, value = {{ map_value }})) %>%
             dplyr::mutate(X1 = ifelse(!is.na(.data$atoms_mod), .data$atoms_mod, .data$X1)) %>%
-            dplyr::select(.data$X1) %>%
+            dplyr::select("X1") %>%
             readr::write_tsv(
               file = paste0(export_location, .y, file_format),
               quote = "none",
@@ -592,7 +592,7 @@ map_peptides_on_structure <- function(peptide_data,
                                      list(NA)
       )) %>%
       dplyr::ungroup() %>%
-      tidyr::unnest(.data$residue_internal) %>%
+      tidyr::unnest("residue_internal") %>%
       dplyr::group_by({{ chain }}, .data$residue_internal) %>%
       dplyr::mutate({{ map_value }} := max({{ map_value }})) %>%
       dplyr::ungroup() %>%
@@ -636,7 +636,7 @@ for the mapping. Make sure to provide a chain identifier if a mapping should be 
           replacement = {{ map_value }}
         )) %>%
         dplyr::mutate(X1 = ifelse(!is.na(.data$atoms_mod), .data$atoms_mod, .data$X1)) %>%
-        dplyr::select(.data$X1) %>%
+        dplyr::select("X1") %>%
         readr::write_tsv(
           file = paste0(export_location, "modified_", file_name),
           quote = "none",
@@ -664,7 +664,7 @@ for the mapping. Make sure to provide a chain identifier if a mapping should be 
         dplyr::mutate({{ map_value }} := ifelse(str_detect({{ map_value }}, pattern = "NA"), NA, {{ map_value }})) %>%
         dplyr::mutate(atoms_mod = `str_sub<-`(.data$atoms, 61, 66, value = {{ map_value }})) %>%
         dplyr::mutate(X1 = ifelse(!is.na(.data$atoms_mod), .data$atoms_mod, .data$X1)) %>%
-        dplyr::select(.data$X1) %>%
+        dplyr::select("X1") %>%
         readr::write_tsv(
           file = paste0(export_location, "modified_", file_name),
           quote = "none",

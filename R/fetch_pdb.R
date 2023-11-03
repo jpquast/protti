@@ -897,7 +897,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
 
   combined <- polymer_entities %>%
     dplyr::full_join(nonpolymer_entities, by = c("pdb_ids", "auth_asym_ids"), relationship = "many-to-many") %>%
-    dplyr::left_join(rcsb_binding_affinity, by = "pdb_ids") %>%
+    dplyr::left_join(rcsb_binding_affinity, by = "pdb_ids", relationship = "many-to-many" ) %>%
     dplyr::left_join(additional_info, by = "pdb_ids") %>%
     dplyr::left_join(crystal_growth_info, by = "pdb_ids") %>%
     dplyr::left_join(nmr_info, by = "pdb_ids") %>%

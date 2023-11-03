@@ -320,7 +320,7 @@ Please always provide a chain ID for your start and end positions."),
           stringr::str_extract(.data$X1, pattern = "\\d+"),
           NA
         ))) %>%
-        tidyr::fill(.data$pdb_model_number, .direction = "down") %>%
+        tidyr::fill("pdb_model_number", .direction = "down") %>%
         dplyr::mutate(pdb_model_number = ifelse(is.na(.data$pdb_model_number), 0, .data$pdb_model_number)) %>%
         dplyr::filter(!stringr::str_detect(.data$X1, pattern = "^MODEL")) %>%
         dplyr::mutate(
@@ -362,7 +362,7 @@ Please always provide a chain ID for your start and end positions."),
           id = "my_structure"
         ) %>%
         dplyr::filter(.data$pdb_model_number %in% pdb_model_number_selection) %>%
-        dplyr::select(-c(.data$X1, .data$pdb_model_number)) %>%
+        dplyr::select(-c("X1", "pdb_model_number")) %>%
         dplyr::mutate(retain_pattern = stringr::str_replace_all(
           paste(.data$id, .data$auth_asym_id, .data$auth_seq_id, sep = "_"),
           pattern = "_NA",
@@ -504,7 +504,7 @@ Please always provide a chain ID for your start and end positions."),
               .data$retain_pattern,
               pattern = paste(paste0(data_retain_pattern1, "(?=$|_)"), collapse = "|")
             )) %>%
-            dplyr::rename(id = .data$uniprot_id)
+            dplyr::rename(id = "uniprot_id")
 
           if (data2_missing) {
             predictions %>%
@@ -599,7 +599,7 @@ Please always provide a chain ID for your start and end positions."),
             dplyr::mutate(distance = sqrt((.data$x.x - .data$x.y)^2 + (.data$y.x - .data$y.y)^2 + (.data$z.x - .data$z.y)^2)) %>%
             dplyr::select("var1", "var2", "distance") %>%
             dplyr::filter(.data$distance <= distance_cutoff) %>%
-            dplyr::left_join(current_structure1 %>% dplyr::select(-.data$id), by = c("var1" = "label_id")) %>%
+            dplyr::left_join(current_structure1 %>% dplyr::select(-"id"), by = c("var1" = "label_id")) %>%
             dplyr::left_join(current_structure2, by = c("var2" = "label_id"), suffix = c("_var1", "_var2"))
         }
       )

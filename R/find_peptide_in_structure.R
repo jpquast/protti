@@ -113,7 +113,7 @@ find_peptide_in_structure <- function(peptide_data,
       pdb_id_mapping <- uniprot_info %>%
         tidyr::drop_na() %>%
         dplyr::mutate(pdb_ids = strsplit(.data$xref_pdb, split = ";")) %>%
-        tidyr::unnest(.data$pdb_ids)
+        tidyr::unnest("pdb_ids")
 
       pdb_data <- fetch_pdb(pdb_ids = unique(pdb_id_mapping$pdb_ids))
     }

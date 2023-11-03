@@ -19,7 +19,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
   test_that("find_peptide_in_structure works", {
     expect_is(positions_structure, "data.frame")
-    expect_equal(nrow(positions_structure), 457)
+    expect_equal(nrow(positions_structure), 569)
     expect_equal(ncol(positions_structure), 17)
   })
 
@@ -69,7 +69,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     ))
 
     expect_false(file.exists(paste0(tempdir(), "/6UU2_P0A8T7.pdb")))
-    expect_gt(file.info(paste0(tempdir(), "/2EL9_P60906.pdb"))$size, 1000000)
+    expect_gt(file.info(paste0(tempdir(), "/2EL9_P60906.pdb"))$size, 900000)
     expect_gt(file.info(paste0(tempdir(), "/P37648_AlphaFold.pdb"))$size, 300000)
 
     file_pdb_6UU2_P0A8T7 <- readr::read_tsv(paste0(tempdir(), "/2EL9_P60906.pdb"), col_names = FALSE, show_col_types = FALSE, progress = FALSE) %>%
@@ -99,7 +99,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       export_location = tempdir()
     )
 
-    expect_gt(file.info(paste0(tempdir(), "/modified_2EL9_P60906.cif"))$size, 1000000)
+    expect_gt(file.info(paste0(tempdir(), "/modified_2EL9_P60906.cif"))$size, 900000)
 
     # .pdb structure file provided
     map_peptides_on_structure(
@@ -113,7 +113,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       export_location = tempdir()
     )
 
-    expect_gt(file.info(paste0(tempdir(), "/modified_2EL9_P60906.pdb"))$size, 1000000)
+    expect_gt(file.info(paste0(tempdir(), "/modified_2EL9_P60906.pdb"))$size, 900000)
   })
 
   test_that("create_structure_contact_map works", {

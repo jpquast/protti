@@ -158,7 +158,7 @@ woods_plot <- function(data,
           fill = {{ colouring }}
         ),
         col = "black",
-        size = 0.7,
+        linewidth = 0.7,
         alpha = 0.8
       ) +
       {

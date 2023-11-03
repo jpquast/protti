@@ -261,12 +261,12 @@ extract_metal_binders <- function(data_uniprot,
     dplyr::filter(stringr::str_detect(.data$formula, pattern = paste0(paste0(metal_list$symbol, collapse = "(?![:lower:])|"), "(?![:lower:])")) |
       .data$chebi_id %in% metal_chebi_uniprot$id) %>% # This recreates a version of the data frame provided by protti that contains all metal containing entries from ChEBI
     dplyr::mutate(extract_formula = stringr::str_extract_all(.data$formula, pattern = paste0(paste0(metal_list$symbol, collapse = "(?![:lower:])|"), "(?![:lower:])"))) %>%
-    tidyr::unnest(.data$extract_formula) %>%
+    tidyr::unnest("extract_formula") %>%
     dplyr::mutate(metal_atom_id = ifelse(is.na(.data$extract_formula),
       stats::setNames(metal_chebi_uniprot$metal_atom_id, as.character(metal_chebi_uniprot$id))[.data$chebi_id],
       stats::setNames(metal_list$chebi_id, metal_list$symbol)[.data$extract_formula]
     )) %>%
-    dplyr::select(-.data$extract_formula) %>%
+    dplyr::select(-"extract_formula") %>%
     dplyr::group_by(.data$chebi_id) %>%
     dplyr::mutate(metal_atom_id = paste0(.data$metal_atom_id, collapse = ",")) %>%
     dplyr::distinct()
@@ -281,7 +281,7 @@ extract_metal_binders <- function(data_uniprot,
     find_all_subs(
       ids = c("ECO:0000352"),
       main_id = .data$main_id,
-      type = .data$relation,
+      type = "relation",
       accepted_types = "all"
     ) %>%
     unlist()
@@ -290,7 +290,7 @@ extract_metal_binders <- function(data_uniprot,
     find_all_subs(
       ids = c("ECO:0000501"),
       main_id = .data$main_id,
-      type = .data$relation,
+      type = "relation",
       accepted_types = "all"
     ) %>%
     unlist()
@@ -560,7 +560,7 @@ extract_metal_binders <- function(data_uniprot,
 
   catalytic_activity_uniprot <- data_uniprot %>%
     dplyr::distinct(.data$accession, .data$cc_catalytic_activity) %>%
-    tidyr::drop_na(.data$cc_catalytic_activity) %>%
+    tidyr::drop_na("cc_catalytic_activity") %>%
     dplyr::mutate(catalytic_activity_split = stringr::str_extract_all(
       .data$cc_catalytic_activity,
       pattern = "(?<=CATALYTIC ACTIVITY:).+?(?=CATALYTIC ACTIVITY|$)"
@@ -709,13 +709,13 @@ extract_metal_binders <- function(data_uniprot,
       by = c("go_term" = "slims_from_id"),
       relationship = "many-to-many"
     ) %>%
-    dplyr::rename(metal_id_part = .data$metal_atom_id) %>%
+    dplyr::rename(metal_id_part = "metal_atom_id") %>%
     dplyr::mutate(eco_type = dplyr::case_when(
       .data$eco %in% manual_eco ~ "manual_assertion",
       .data$eco %in% automatic_eco ~ "automatic_assertion"
     )) %>%
     dplyr::mutate(eco_type = ifelse(is.na(.data$eco_type), "automatic_assertion", .data$eco_type)) %>%
-    tidyr::unite(.data$reference, .data$with_from, col = "evidence_source", na.rm = TRUE) %>%
+    tidyr::unite("reference", "with_from", col = "evidence_source", na.rm = TRUE) %>%
     dplyr::mutate(evidence_source = stringr::str_replace_all(.data$evidence_source, pattern = "\\|", replacement = ",")) %>%
     # Now combine data to have one row per accession and chebi_id
     # First combine evidence_source etc.

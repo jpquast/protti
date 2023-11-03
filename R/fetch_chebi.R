@@ -200,7 +200,7 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
   chebi_compounds_names_clean <- chebi_compounds %>%
     dplyr::filter(.data$STAR %in% stars) %>%
     dplyr::distinct(.data$ID, .data$NAME) %>%
-    dplyr::mutate(dplyr::across(c(.data$NAME), ~ dplyr::na_if(.x, "null"))) %>%
+    dplyr::mutate(dplyr::across(c("NAME"), ~ dplyr::na_if(.x, "null"))) %>%
     dplyr::filter(!is.na(.data$NAME)) %>%
     dplyr::mutate(TYPE_NAME = "STANDARD") %>%
     dplyr::select("ID", "TYPE_NAME", "NAME")
