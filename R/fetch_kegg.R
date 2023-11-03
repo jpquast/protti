@@ -34,6 +34,10 @@ fetch_kegg <- function(species) {
     return(invisible(NULL))
   }
   colnames(result_link) <- c("kegg_id", "pathway_id")
+  # remove path: from pathway_id
+  result_link <- result_link %>%
+    dplyr::mutate(pathway_id = stringr::str_replace(pathway_id, "^path:", ""))
+
   # download pathway_id names
   url_name <- paste("https://rest.kegg.jp/list/pathway", species, sep = "/")
   result_name <- try_query(url_name, col_names = FALSE, progress = FALSE, show_col_types = FALSE)
@@ -56,7 +60,7 @@ fetch_kegg <- function(species) {
   )
   # combine datasets
   result <- result_link %>%
-    dplyr::left_join(result_name, by = "pathway_id") %>%
-    dplyr::left_join(result_conv, by = "kegg_id")
+    dplyr::left_join(result_name, by = "pathway_id", relationship = "many-to-many") %>%
+    dplyr::left_join(result_conv, by = "kegg_id", relationship = "many-to-many")
   result
 }
