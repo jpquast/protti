@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, master]
   pull_request:
-    branches: [main, master]
+    branches: all
 
 name: R-CMD-check
 
@@ -29,6 +29,7 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
       TEST_PROTTI: true
       BUILD_VIGNETTE: true
+      R_CHECK_DONTTEST_EXAMPLES: false
 
     steps:
       - uses: actions/checkout@v3
