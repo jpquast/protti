@@ -14,7 +14,7 @@
 #' all options that can be supplied to httr::content, these include e.g.
 #' "text/tab-separated-values", "application/json" and "txt/csv". Default is "text/tab-separated-values".
 #' Default is "tab-separated-values".
-#' @param timeout a numeric value that specifies the maximum request time. Default is 30 seconds.
+#' @param timeout a numeric value that specifies the maximum request time. Default is 60 seconds.
 #' @param accept a character value that specifies the type of data that should be sent by the API if
 #' it uses content negotiation. The default is NULL and it should only be set for APIs that use
 #' content negotiation.
