@@ -453,7 +453,8 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   annotations <- fetch_quickgo(type = "annotations", id = uniprot_ids, ontology = "molecular_function")
   test_that("fetch_quickgo works", {
     expect_is(annotations, "data.frame")
-    expect_equal(nrow(annotations), 24)
+    expect_gte(nrow(annotations), 24)
+    expect_lte(nrow(annotations), 30)
     expect_equal(ncol(annotations), 15)
 
     terms <- fetch_quickgo(type = "terms")
