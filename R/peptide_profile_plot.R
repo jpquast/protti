@@ -32,6 +32,8 @@ plot_peptide_profiles <- function(...) {
 #' @param targets a character vector that specifies elements of the grouping column which should
 #' be plotted. This can also be \code{"all"} if plots for all groups should be created. Depending
 #' on the number of elements in your grouping column this can be many plots.
+#' @param complete_sample a logical value that indicates if samples that are completely missing for
+#' a given protein should be shown on the x-axis of the plot anyway. The default value is `FALSE`.
 #' @param protein_abundance_plot a logical value. If the input for this plot comes directly from
 #' \code{calculate_protein_abundance} this argument can be set to \code{TRUE}. This displays all
 #' peptides in gray, while the protein abundance is displayed in green.
@@ -41,7 +43,7 @@ plot_peptide_profiles <- function(...) {
 #' @param export a logical value that indicates if plots should be exported as PDF. The output
 #' directory will be the current working directory. The name of the file can be chosen using the
 #' \code{export_name} argument.
-#' @param export_name A character vector that provides the name of the exported file if
+#' @param export_name a character vector that provides the name of the exported file if
 #' \code{export = TRUE}.
 #'
 #' @return A list of peptide profile plots.
@@ -118,6 +120,7 @@ peptide_profile_plot <- function(data,
                                  intensity_log2,
                                  grouping,
                                  targets,
+                                 complete_sample = FALSE,
                                  protein_abundance_plot = FALSE,
                                  interactive = FALSE,
                                  export = FALSE,
@@ -127,19 +130,27 @@ peptide_profile_plot <- function(data,
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
   if (missing(targets)) stop("Please provide at least one target to plot!")
+
+  input <- data %>%
+    dplyr::distinct({{ sample }}, {{ peptide }}, {{ intensity_log2 }}, {{ grouping }}) %>%
+    tidyr::drop_na({{ intensity_log2 }})
+
+  if (complete_sample) {
+    input <- input %>%
+      tidyr::complete({{ sample }}, {{ grouping }}) %>%
+      tidyr::fill({{ peptide }}, .direction = "downup")
+  }
+
   if (!("all" %in% targets)) {
-    input <- data %>%
-      dplyr::distinct({{ sample }}, {{ peptide }}, {{ intensity_log2 }}, {{ grouping }}) %>%
-      tidyr::drop_na({{ intensity_log2 }}) %>%
+    input <- input %>%
       dplyr::filter({{ grouping }} %in% targets) %>%
       split(dplyr::pull(., !!ensym(grouping)))
   }
+
   if ("all" %in% targets) {
     groups <- length(unique(dplyr::pull(data, {{ grouping }})))
     message("Splitting into ", groups, " groups and returning ", groups, " plots.")
-    input <- data %>%
-      dplyr::distinct({{ sample }}, {{ peptide }}, {{ intensity_log2 }}, {{ grouping }}) %>%
-      tidyr::drop_na({{ intensity_log2 }}) %>%
+    input <- input %>%
       split(dplyr::pull(., !!ensym(grouping)))
   }
   pb <- progress::progress_bar$new(
@@ -197,7 +208,7 @@ peptide_profile_plot <- function(data,
       suppressWarnings(print(plot))
       grDevices::dev.off()
     } else {
-      return(plot)
+      return(suppressWarnings(suppressMessages(print(plot))))
     }
   }
   if (interactive == TRUE) {

@@ -72,7 +72,7 @@ filter_cv <- function(data,
     dplyr::group_by({{ grouping }}) %>%
     dplyr::mutate(cv_count = sum(.data$cv_small, na.rm = TRUE)) %>%
     dplyr::filter(.data$cv_count >= {{ min_conditions }}) %>%
-    dplyr::select(-c(.data$cv_small, .data$cv_count)) %>%
+    dplyr::select(-c("cv_small", "cv_count")) %>%
     dplyr::ungroup()
 
   n_groups_end <- length(unique(dplyr::pull(peptide_list, {{ grouping }})))

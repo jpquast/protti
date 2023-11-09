@@ -253,7 +253,7 @@ Please provide a valid reference condition.", prefix = "\n", initial = ""))
           "treated"
         )) %>%
         dplyr::select(-{{ condition }}) %>%
-        tidyr::pivot_wider(names_from = .data$type, values_from = .data$intensity, values_fill = list(NA))
+        tidyr::pivot_wider(names_from = "type", values_from = "intensity", values_fill = list(NA))
 
       message("DONE", appendLF = TRUE)
       message("[2/2] Calculate t-tests ... ", appendLF = FALSE)
@@ -303,7 +303,7 @@ Please provide a valid reference condition.", prefix = "\n", initial = ""))
           }
         )) %>%
         dplyr::mutate(diff = ifelse(diff == "NaN", NA, diff)) %>%
-        dplyr::select(-c(.data$control, .data$treated)) %>%
+        dplyr::select(-c("control", "treated")) %>%
         dplyr::left_join(t_test_missingness_obs, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison"))
 
       # save all p-values that are NA to join back after adjustment. Otherwise adjustment is wrong since
@@ -382,8 +382,8 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
       }
 
       all_combinations <- all_combinations %>%
-        tidyr::pivot_longer(cols = c(.data$V1, .data$V2), names_to = "name", values_to = rlang::as_name(rlang::enquo(condition))) %>%
-        dplyr::select(-.data$name) %>%
+        tidyr::pivot_longer(cols = c("V1", "V2"), names_to = "name", values_to = rlang::as_name(rlang::enquo(condition))) %>%
+        dplyr::select(-"name") %>%
         dplyr::group_by({{ condition }}) %>%
         dplyr::mutate(comparison = list(.data$combinations)) %>%
         dplyr::distinct(.data$comparison, {{ condition }})
@@ -393,13 +393,13 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
         dplyr::distinct({{ condition }}, {{ grouping }}, {{ mean }}, {{ sd }}, {{ n_samples }}) %>%
         tidyr::drop_na() %>%
         dplyr::left_join(all_combinations, by = rlang::as_name(rlang::enquo(condition))) %>%
-        tidyr::unnest(.data$comparison) %>%
+        tidyr::unnest("comparison") %>%
         dplyr::rename(mean = {{ mean }}, sd = {{ sd }}, n = {{ n_samples }}) %>%
         dplyr::mutate({{ condition }} := ifelse({{ condition }} == stringr::str_extract(.data$comparison, pattern = "(?<=_vs_).+"),
           "control",
           "treated"
         )) %>%
-        tidyr::pivot_wider(names_from = {{ condition }}, values_from = c(.data$mean, .data$sd, .data$n)) %>%
+        tidyr::pivot_wider(names_from = {{ condition }}, values_from = c("mean", "sd", "n")) %>%
         dplyr::mutate(ttest_protti(
           mean1 = .data$mean_control,
           mean2 = .data$mean_treated,
@@ -408,7 +408,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
           n1 = .data$n_control,
           n2 = .data$n_treated
         )) %>%
-        tidyr::drop_na(.data$pval) %>%
+        tidyr::drop_na("pval") %>%
         dplyr::group_by(.data$comparison) %>%
         dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = p_adj_method)) %>%
         dplyr::arrange(.data$adj_pval, .data$pval)
@@ -580,13 +580,13 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
       ) %>%
         dplyr::mutate(comparison = stringr::str_replace_all({{ comparison }}, pattern = "^x|(?<=_vs_)x", replacement = "")) %>%
         dplyr::rename(
-          diff = .data$logFC,
-          CI_2.5 = .data$CI.L,
-          CI_97.5 = .data$CI.R,
-          t_statistic = .data$t,
-          avg_abundance = .data$AveExpr,
-          pval = .data$P.Value,
-          adj_pval = .data$adj.P.Val
+          diff = "logFC",
+          CI_2.5 = "CI.L",
+          CI_97.5 = "CI.R",
+          t_statistic = "t",
+          avg_abundance = "AveExpr",
+          pval = "P.Value",
+          adj_pval = "adj.P.Val"
         ) %>%
         dplyr::left_join(moderated_t_test_missingness, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison"))
 
@@ -747,8 +747,8 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
             .f = ~ dplyr::mutate(.x, comparison = str_replace_all(.y, pattern = "`", replacement = ""))
           ) %>%
           purrr::map_dfr(~ dplyr::mutate(.x, adj_pval = p.adjust(.data$pval, method = p_adj_method))) %>%
-          dplyr::select(-.data$n_obs, -.data$n_approx) %>%
-          dplyr::rename({{ grouping }} := .data$name, std_error = .data$se) %>%
+          dplyr::select(-c("n_obs", "n_approx")) %>%
+          dplyr::rename({{ grouping }} := "name", std_error = "se") %>%
           dplyr::left_join(proDA_missingness, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison"))
 
         message("DONE", appendLF = TRUE)
@@ -760,8 +760,9 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
             .f = ~ dplyr::mutate(.x, comparison = str_replace_all(.y, pattern = "`", replacement = ""))
           ) %>%
           purrr::map_dfr(~ dplyr::mutate(.x, adj_pval = p.adjust(.data$pval, method = p_adj_method))) %>%
-          dplyr::select(-.data$n_obs, -.data$n_approx) %>%
-          dplyr::rename({{ grouping }} := .data$name, std_error = .data$se) %>%
+          dplyr::select(-"n_obs", -"n_approx") %>%
+          dplyr::rename({{ grouping }} := "name",
+                        std_error = "se") %>%
           dplyr::left_join(proDA_missingness, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison"))
 
         message("DONE", appendLF = TRUE)

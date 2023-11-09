@@ -5,7 +5,7 @@
 #' counted as IDs.
 #'
 #' @param data a data frame containing at least sample names and precursor/peptide/protein IDs.
-#' @param sample a character column in the \code{data} data frame that contains the sample name.
+#' @param sample a character or factor column in the \code{data} data frame that contains the sample name.
 #' @param grouping a character column in the \code{data} data frame that contains either precursor or
 #' peptide identifiers.
 #' @param intensity a character column in the \code{data} data frame that contains raw or log2
@@ -99,11 +99,15 @@ or set remove_na_intensities to FALSE",
       dplyr::distinct() %>%
       dplyr::ungroup()
 
-    if (plot == TRUE) {
-      plot <- result %>%
+    if (is(dplyr::pull(result, {{ sample }}), "character")) {
+      result <- result %>%
         dplyr::mutate({{ sample }} := factor({{ sample }},
           levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
-        )) %>%
+        ))
+    }
+
+    if (plot == TRUE) {
+      plot <- result %>%
         ggplot2::ggplot(aes(x = {{ sample }}, y = .data$count, fill = {{ condition }})) +
         ggplot2::geom_col(col = "black", size = 1) +
         {

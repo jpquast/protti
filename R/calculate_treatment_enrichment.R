@@ -34,6 +34,10 @@ treatment_enrichment <- function(...) {
 #' @param binds_treatment a logical column in the \code{data} data frame that indicates if the
 #' corresponding protein binds to the treatment. This information can be obtained from different
 #' databases, e.g. UniProt.
+#' @param group optional, character column in the \code{data} data frame that contains information by
+#' which the analysis should be grouped. The analysis will be performed separately for each of the
+#' groups. This is most likely a column that labels separate comparisons of different conditions.
+#' In protti the `assign_missingness()` function creates such a column automatically.
 #' @param treatment_name a character value that indicates the treatment name. It will be included
 #' in the plot title.
 #' @param plot a logical value indicating whether the result should be plotted or returned as a
@@ -50,6 +54,7 @@ treatment_enrichment <- function(...) {
 #' @importFrom rlang .data as_name enquo ensym !!
 #' @importFrom tibble column_to_rownames
 #' @importFrom magrittr %>%
+#' @importFrom purrr map2_dfr
 #' @export
 #'
 #' @examples
@@ -92,34 +97,100 @@ calculate_treatment_enrichment <- function(data,
                                            protein_id,
                                            is_significant,
                                            binds_treatment,
+                                           group = NULL,
                                            treatment_name,
                                            plot = TRUE) {
-  data <- data %>%
-    dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ binds_treatment }}) %>%
-    dplyr::group_by({{ protein_id }}) %>%
-    dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0,
-      TRUE,
-      FALSE
-    )) %>%
-    dplyr::distinct()
+  # to avoid note about no global variable binding.
+  . <- NULL
 
-  cont_table <- data %>%
-    dplyr::group_by({{ binds_treatment }}, {{ is_significant }}) %>%
-    dplyr::summarize(n = dplyr::n_distinct(!!rlang::ensym(protein_id)), .groups = "drop") %>%
-    tidyr::complete({{ binds_treatment }}, {{ is_significant }}, fill = list(n = 0))
+  # group by the "group" argument if provided
+  if (!missing(group)) {
+    data <- data %>%
+      dplyr::ungroup() %>%
+      dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ binds_treatment }}, {{ group }}) %>%
+      dplyr::group_by({{ protein_id }}, {{ group }}) %>%
+      dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0,
+        TRUE,
+        FALSE
+      )) %>%
+      dplyr::ungroup() %>%
+      dplyr::distinct()
 
+    # Create contingency table
+    cont_table <- data %>%
+      dplyr::group_by({{ binds_treatment }}, {{ is_significant }}, {{ group }}) %>%
+      dplyr::summarize(n = dplyr::n_distinct(!!rlang::ensym(protein_id)), .groups = "drop") %>%
+      dplyr::group_by({{ group }}) %>%
+      tidyr::complete({{ binds_treatment }}, {{ is_significant }}, fill = list(n = 0)) %>%
+      dplyr::ungroup()
 
-  fisher_test <- cont_table %>%
-    tidyr::pivot_wider(names_from = {{ is_significant }}, values_from = .data$n) %>%
-    tibble::column_to_rownames(var = rlang::as_name(rlang::enquo(binds_treatment))) %>%
-    as.matrix() %>%
-    stats::fisher.test()
+    fisher_test <- cont_table %>%
+      split(dplyr::pull(., {{ group }})) %>%
+      purrr::map2_dfr(
+        .y = names(.),
+        .f = ~ {
+          ftest <- .x %>%
+            dplyr::select(-{{ group }}) %>%
+            tidyr::pivot_wider(names_from = {{ is_significant }}, values_from = .data$n) %>%
+            tibble::column_to_rownames(var = rlang::as_name(rlang::enquo(binds_treatment))) %>%
+            as.matrix() %>%
+            stats::fisher.test()
 
-  cont_table <- cont_table %>%
-    dplyr::mutate(pval = fisher_test$p.value)
+          data.frame(pval = ftest$p.value) %>%
+            dplyr::mutate({{ group }} := .y)
+        }
+      )
+
+    cont_table <- cont_table %>%
+      dplyr::left_join(fisher_test, by = rlang::as_name(rlang::enquo(group))) %>%
+      dplyr::arrange({{ group }})
+  } else {
+    data <- data %>%
+      dplyr::ungroup() %>%
+      dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ binds_treatment }}) %>%
+      dplyr::group_by({{ protein_id }}) %>%
+      dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0,
+        TRUE,
+        FALSE
+      )) %>%
+      dplyr::ungroup() %>%
+      dplyr::distinct()
+
+    # Create contingency table
+    cont_table <- data %>%
+      dplyr::group_by({{ binds_treatment }}, {{ is_significant }}) %>%
+      dplyr::summarize(n = dplyr::n_distinct(!!rlang::ensym(protein_id)), .groups = "drop") %>%
+      tidyr::complete({{ binds_treatment }}, {{ is_significant }}, fill = list(n = 0))
+
+    fisher_test <- cont_table %>%
+      tidyr::pivot_wider(names_from = {{ is_significant }}, values_from = .data$n) %>%
+      tibble::column_to_rownames(var = rlang::as_name(rlang::enquo(binds_treatment))) %>%
+      as.matrix() %>%
+      stats::fisher.test()
+
+    cont_table <- cont_table %>%
+      dplyr::mutate(pval = fisher_test$p.value)
+  }
 
   if (plot == FALSE) {
     return(cont_table)
+  }
+
+  # Add p-value to group name for plot
+  # also group to correctly calculate the total number of proteins in the next step
+  if (!missing(group)) {
+    cont_table <- cont_table %>%
+      dplyr::mutate(group_pval = paste0(
+        {{ group }}, " (p-value: ",
+        ifelse(.data$pval < 0.01,
+          formatC(.data$pval,
+            format = "e", digits = 1
+          ),
+          round(.data$pval, digits = 2)
+        ),
+        ")"
+      )) %>%
+      dplyr::group_by({{ group }})
   }
 
   enrichment_plot <- cont_table %>%
@@ -155,22 +226,40 @@ calculate_treatment_enrichment <- function(data,
     )) %>%
     ggplot2::ggplot(ggplot2::aes(.data$name, .data$value)) +
     ggplot2::geom_col(fill = "cornflowerblue", col = "black", size = 1.2) +
-    ggplot2::labs(
-      title = paste0(
-        "Proteins interacting with ",
-        treatment_name,
-        " (p-value: ",
-        ifelse(cont_table$pval < 0.01,
-          formatC(cont_table$pval,
-            format = "e", digits = 1
+    {
+      if (!missing(group)) {
+        ggplot2::facet_wrap(~ .data$group_pval)
+      }
+    } +
+    {
+      if (!missing(group)) {
+        ggplot2::labs(
+          title = paste0(
+            "Proteins interacting with ",
+            treatment_name
           ),
-          round(cont_table$pval, digits = 2)
-        ),
-        ")"
-      ),
-      x = "",
-      y = paste("Interact with", treatment_name, "[%]")
-    ) +
+          x = "",
+          y = paste("Interact with", treatment_name, "[%]")
+        )
+      } else {
+        ggplot2::labs(
+          title = paste0(
+            "Proteins interacting with ",
+            treatment_name,
+            " (p-value: ",
+            ifelse(cont_table$pval < 0.01,
+              formatC(cont_table$pval,
+                format = "e", digits = 1
+              ),
+              round(cont_table$pval, digits = 2)
+            ),
+            ")"
+          ),
+          x = "",
+          y = paste("Interact with", treatment_name, "[%]")
+        )
+      }
+    } +
     ggplot2::geom_text(aes(label = paste("n =", count)),
       position = position_stack(vjust = 0.5),
       size = 8
@@ -188,7 +277,9 @@ calculate_treatment_enrichment <- function(data,
       ),
       axis.title.y = ggplot2::element_text(
         size = 15
-      )
+      ),
+      strip.text = ggplot2::element_text(size = 15),
+      strip.background = element_blank()
     )
   if (plot == TRUE) {
     return(enrichment_plot)

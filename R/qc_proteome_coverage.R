@@ -64,7 +64,15 @@ qc_proteome_coverage <- function(data,
     dplyr::summarize(proteins_detected = dplyr::n_distinct(!!ensym(protein_id)), .groups = "drop") %>%
     dplyr::mutate({{ sample }} := "Total")
 
-  proteome <- fetch_uniprot_proteome({{ organism_id }}, reviewed = reviewed) %>%
+  proteome <- fetch_uniprot_proteome(organism_id, reviewed = reviewed)
+
+  if(is(proteome, "character")){
+    # UniProt information could not be fetched.
+    message("UniProt information could not be fetched")
+    return(NULL)
+  }
+
+  proteome <- proteome %>%
     dplyr::summarize(proteins_proteome = dplyr::n_distinct(.data$accession), .groups = "drop")
 
   proteome_coverage <- data %>%
@@ -77,7 +85,7 @@ qc_proteome_coverage <- function(data,
       proteins_detected = .data$proteins_detected / proteome$proteins_proteome * 100
     ) %>%
     tidyr::pivot_longer(
-      cols = c(.data$proteins_detected, .data$proteins_undetected),
+      cols = c("proteins_detected", "proteins_undetected"),
       names_to = "type",
       values_to = "percentage"
     ) %>%
@@ -96,7 +104,7 @@ qc_proteome_coverage <- function(data,
     ggplot2::scale_fill_manual(
       values = c("proteins_detected" = "#5680C1", "proteins_undetected" = "#B96DAD"),
       name = "Proteins",
-      labels = c("Detected", "Not detected")
+      labels = c("Not detected", "Detected")
     ) +
     ggplot2::geom_text(
       data = proteome_coverage %>% dplyr::filter(.data$percentage > 5),

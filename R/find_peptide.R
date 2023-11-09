@@ -33,6 +33,7 @@
 find_peptide <-
   function(data, protein_sequence, peptide_sequence) {
     data %>%
+      dplyr::distinct({{ protein_sequence }}, {{ peptide_sequence }}) %>%
       dplyr::mutate(
         start = stringr::str_locate({{ protein_sequence }}, {{ peptide_sequence }})[, 1],
         end = stringr::str_locate({{ protein_sequence }}, {{ peptide_sequence }})[, 2]
@@ -48,5 +49,9 @@ find_peptide <-
       dplyr::mutate(aa_after = stringr::str_sub({{ protein_sequence }},
         start = .data$end + 1,
         end = .data$end + 1
+      )) %>%
+      dplyr::right_join(data, c(
+        rlang::as_name(rlang::enquo(protein_sequence)),
+        rlang::as_name(rlang::enquo(peptide_sequence))
       ))
   }

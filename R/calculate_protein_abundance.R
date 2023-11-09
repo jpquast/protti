@@ -23,7 +23,7 @@
 #' used. Default is \code{"iq"}.
 #' @param for_plot a logical value indicating whether the result should be only protein intensities
 #' or protein intensities together with precursor intensities that can be used for plotting using
-#' \code{qc_protein_abundance}. Default is \code{FALSE}.
+#' \code{peptide_profile_plot()}. Default is \code{FALSE}.
 #' @param retain_columns a vector indicating if certain columns should be retained from the input
 #' data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
 #' columns can be retained by providing their names (not in quotations marks, just like other
@@ -31,7 +31,7 @@
 #'
 #' @return If \code{for_plot = FALSE}, protein abundances are returned, if \code{for_plot = TRUE}
 #' also precursor intensities are returned in a data frame. The later output is ideal for plotting
-#' with \code{qc_protein_abundance} and can be filtered to only include protein abundances.
+#' with \code{peptide_profile_plot()} and can be filtered to only include protein abundances.
 #'
 #' @import dplyr
 #' @import progress
@@ -116,6 +116,7 @@ calculate_protein_abundance <- function(data,
 
   # Filter out any proteins with less than 3 peptides
   input <- data %>%
+    dplyr::ungroup() %>%
     dplyr::distinct(
       {{ sample }},
       {{ protein_id }},
@@ -127,7 +128,7 @@ calculate_protein_abundance <- function(data,
     dplyr::group_by({{ protein_id }}, {{ sample }}) %>%
     dplyr::mutate(n_peptides = dplyr::n_distinct(!!rlang::ensym(peptide))) %>%
     dplyr::filter(.data$n_peptides > 2) %>%
-    dplyr::select(-.data$n_peptides) %>%
+    dplyr::select(-"n_peptides") %>%
     dplyr::ungroup()
 
   if (method == "sum") {
@@ -208,6 +209,20 @@ calculate_protein_abundance <- function(data,
       dplyr::select(-{{ precursor }})
   }
 
+  if (!missing(retain_columns)) {
+    protein_intensity_retain <- data %>%
+      dplyr::select(
+        !!enquo(retain_columns),
+        colnames(combined)[!colnames(combined) %in%
+          c(
+            rlang::as_name(rlang::enquo(intensity_log2)),
+            rlang::as_name(rlang::enquo(precursor))
+          )]
+      ) %>%
+      dplyr::distinct() %>%
+      dplyr::mutate({{ precursor }} := "protein_intensity")
+  }
+
   if (!missing(retain_columns) & for_plot == FALSE) {
     result <- data %>%
       dplyr::select(
@@ -227,15 +242,14 @@ calculate_protein_abundance <- function(data,
         !!enquo(retain_columns),
         colnames(combined)[!colnames(combined) %in%
           c(
-            rlang::as_name(rlang::enquo(intensity_log2)),
-            rlang::as_name(rlang::enquo(precursor))
+            rlang::as_name(rlang::enquo(intensity_log2))
           )]
       ) %>%
       dplyr::distinct() %>%
+      dplyr::bind_rows(protein_intensity_retain) %>%
       dplyr::right_join(combined, by = colnames(combined)[!colnames(combined) %in%
         c(
-          rlang::as_name(rlang::enquo(intensity_log2)),
-          rlang::as_name(rlang::enquo(precursor))
+          rlang::as_name(rlang::enquo(intensity_log2))
         )])
 
     return(combined)

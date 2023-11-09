@@ -261,12 +261,12 @@ extract_metal_binders <- function(data_uniprot,
     dplyr::filter(stringr::str_detect(.data$formula, pattern = paste0(paste0(metal_list$symbol, collapse = "(?![:lower:])|"), "(?![:lower:])")) |
       .data$chebi_id %in% metal_chebi_uniprot$id) %>% # This recreates a version of the data frame provided by protti that contains all metal containing entries from ChEBI
     dplyr::mutate(extract_formula = stringr::str_extract_all(.data$formula, pattern = paste0(paste0(metal_list$symbol, collapse = "(?![:lower:])|"), "(?![:lower:])"))) %>%
-    tidyr::unnest(.data$extract_formula) %>%
+    tidyr::unnest("extract_formula") %>%
     dplyr::mutate(metal_atom_id = ifelse(is.na(.data$extract_formula),
       stats::setNames(metal_chebi_uniprot$metal_atom_id, as.character(metal_chebi_uniprot$id))[.data$chebi_id],
       stats::setNames(metal_list$chebi_id, metal_list$symbol)[.data$extract_formula]
     )) %>%
-    dplyr::select(-.data$extract_formula) %>%
+    dplyr::select(-"extract_formula") %>%
     dplyr::group_by(.data$chebi_id) %>%
     dplyr::mutate(metal_atom_id = paste0(.data$metal_atom_id, collapse = ",")) %>%
     dplyr::distinct()
@@ -281,7 +281,7 @@ extract_metal_binders <- function(data_uniprot,
     find_all_subs(
       ids = c("ECO:0000352"),
       main_id = .data$main_id,
-      type = .data$relation,
+      type = "relation",
       accepted_types = "all"
     ) %>%
     unlist()
@@ -290,7 +290,7 @@ extract_metal_binders <- function(data_uniprot,
     find_all_subs(
       ids = c("ECO:0000501"),
       main_id = .data$main_id,
-      type = .data$relation,
+      type = "relation",
       accepted_types = "all"
     ) %>%
     unlist()
@@ -307,13 +307,13 @@ extract_metal_binders <- function(data_uniprot,
 
   b_uniprot <- data_uniprot %>%
     dplyr::distinct(.data$accession, .data$ft_binding) %>%
-    tidyr::drop_na(.data$ft_binding) %>%
+    tidyr::drop_na("ft_binding") %>%
     # Extract each position
     dplyr::mutate(ft_binding = stringr::str_extract_all(
       .data$ft_binding,
       pattern = "BINDING.+?(?=BINDING)|BINDING.+$"
     )) %>%
-    tidyr::unnest(.data$ft_binding) %>%
+    tidyr::unnest("ft_binding") %>%
     dplyr::mutate(chebi_id = stringr::str_extract(.data$ft_binding, pattern = '(?<=/ligand_id=\\"ChEBI:CHEBI:)[^\\";]+(?=[\\";])')) %>%
     # Filter with the previously generated data_chebi_filtered to only keep metal ChEBI IDs
     dplyr::filter(.data$chebi_id %in% data_chebi_filtered$chebi_id) %>%
@@ -343,7 +343,7 @@ extract_metal_binders <- function(data_uniprot,
       !all(is.na(.data$evidence)))) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(evidence_split = stringr::str_split(.data$evidence, pattern = ", ")) %>%
-    tidyr::unnest(.data$evidence_split) %>%
+    tidyr::unnest("evidence_split") %>%
     tidyr::separate(.data$evidence_split, into = c("eco", "evidence_source"), sep = "\\|", fill = "right") %>%
     dplyr::distinct() %>%
     dplyr::mutate(eco_type = dplyr::case_when(
@@ -356,7 +356,7 @@ extract_metal_binders <- function(data_uniprot,
       paste0("1(", .data$ligand_name, ")"),
       paste0(.data$ligand_identifier, "(", .data$ligand_name, ")")
     )) %>%
-    dplyr::select(-c(.data$ft_binding, .data$evidence, .data$isoform, .data$ligand_name)) %>%
+    dplyr::select(-c("ft_binding", "evidence", "isoform", "ligand_name")) %>%
     dplyr::distinct() %>%
     # Extract metal positions
     dplyr::mutate(ligand_position = stringr::str_split(.data$ligand_position, pattern = "\\.\\.")) %>%
@@ -368,7 +368,7 @@ extract_metal_binders <- function(data_uniprot,
         as.numeric(.x)
       }
     )) %>%
-    tidyr::unnest(.data$ligand_position) %>%
+    tidyr::unnest("ligand_position") %>%
     # Combine the binding_mode column to prevent duplicates
     # The reason for duplicates is a wrong annotation in UniProt (P00081).
     # There are also issues with additional IDs such as E3PRJ4, Q9DHD6, P00081.
@@ -428,7 +428,7 @@ extract_metal_binders <- function(data_uniprot,
       NA,
       .data$metal_id_part
     )) %>%
-    dplyr::select(-.data$metal_atom_id) %>%
+    dplyr::select(-"metal_atom_id") %>%
     # Combine positions
     dplyr::group_by(.data$accession, .data$chebi_id, .data$ligand_identifier) %>%
     dplyr::mutate(
@@ -456,10 +456,10 @@ extract_metal_binders <- function(data_uniprot,
     dplyr::ungroup() %>%
     dplyr::distinct() %>%
     dplyr::rename(
-      metal_id_part_binding = .data$metal_id_part,
-      eco_binding = .data$eco,
-      eco_type_binding = .data$eco_type,
-      evidence_source_binding = .data$evidence_source
+      metal_id_part_binding = "metal_id_part",
+      eco_binding = "eco",
+      eco_type_binding = "eco_type",
+      evidence_source_binding = "evidence_source"
     ) %>%
     dplyr::mutate(source = "binding") %>%
     # make sure that accession column is of type "chr" even if data frame is empty
@@ -477,24 +477,24 @@ extract_metal_binders <- function(data_uniprot,
 
   cofactor_uniprot <- data_uniprot %>%
     dplyr::distinct(.data$accession, .data$cc_cofactor) %>%
-    tidyr::drop_na(.data$cc_cofactor) %>%
+    tidyr::drop_na("cc_cofactor") %>%
     dplyr::mutate(cofactor_split = stringr::str_extract_all(
       .data$cc_cofactor,
       pattern = "(?<=COFACTOR:).+?(?=COFACTOR|$)"
     )) %>%
-    tidyr::unnest(.data$cofactor_split) %>%
+    tidyr::unnest("cofactor_split") %>%
     # Extract notes
     dplyr::mutate(note = stringr::str_extract(
       .data$cofactor_split,
       pattern = "(?<=Note\\=).+?(?=;)"
     )) %>%
-    tidyr::unnest(.data$note) %>%
+    tidyr::unnest("note") %>%
     # Split names
     dplyr::mutate(name_split = stringr::str_extract_all(
       .data$cofactor_split,
       pattern = "(?<=Name\\=).+?(?=Name|Note|COFACTOR|$)"
     )) %>%
-    tidyr::unnest(.data$name_split) %>%
+    tidyr::unnest("name_split") %>%
     # Extract ChEBI IDs from cc_cofactor
     dplyr::mutate(chebi_id = stringr::str_extract(
       .data$name_split,
@@ -506,7 +506,7 @@ extract_metal_binders <- function(data_uniprot,
     dplyr::mutate(evidence = stringr::str_extract(.data$name_split, pattern = "(?<=Evidence=).+(?=;|$)")) %>%
     dplyr::mutate(evidence = stringr::str_remove_all(.data$evidence, pattern = ";|\\{|\\}")) %>%
     dplyr::mutate(evidence_split = stringr::str_split(.data$evidence, pattern = ", ")) %>%
-    tidyr::unnest(.data$evidence_split) %>%
+    tidyr::unnest("evidence_split") %>%
     tidyr::separate(.data$evidence_split, into = c("eco", "evidence_source"), sep = "\\|", fill = "right") %>%
     dplyr::mutate(eco = stringr::str_trim(.data$eco)) %>%
     dplyr::distinct() %>%
@@ -517,10 +517,10 @@ extract_metal_binders <- function(data_uniprot,
     dplyr::mutate(eco_type = ifelse(is.na(.data$eco_type), "automatic_assertion", .data$eco_type)) %>%
     # dplyr::mutate(note_evidence = str_extract(.data$note,
     #                                           pattern = "(?<=\\{).+(?=\\})")) %>%
-    dplyr::select(-c(.data$cc_cofactor, .data$cofactor_split, .data$name_split, .data$evidence)) %>%
+    dplyr::select(-c("cc_cofactor", "cofactor_split", "name_split", "evidence")) %>%
     # Add metal_id_part position using the data provided by protti
     dplyr::left_join(dplyr::distinct(data_chebi_filtered, .data$chebi_id, .data$metal_atom_id) %>%
-      dplyr::rename(metal_id_part = .data$metal_atom_id), by = "chebi_id") %>%
+      dplyr::rename(metal_id_part = "metal_atom_id"), by = "chebi_id") %>%
     # Now combine data to have one row per accession and chebi_id
     # First concatenate different notes for the same accession and chebi_id
     dplyr::group_by(.data$accession, .data$chebi_id) %>%
@@ -560,12 +560,12 @@ extract_metal_binders <- function(data_uniprot,
 
   catalytic_activity_uniprot <- data_uniprot %>%
     dplyr::distinct(.data$accession, .data$cc_catalytic_activity) %>%
-    tidyr::drop_na(.data$cc_catalytic_activity) %>%
+    tidyr::drop_na("cc_catalytic_activity") %>%
     dplyr::mutate(catalytic_activity_split = stringr::str_extract_all(
       .data$cc_catalytic_activity,
       pattern = "(?<=CATALYTIC ACTIVITY:).+?(?=CATALYTIC ACTIVITY|$)"
     )) %>%
-    tidyr::unnest(.data$catalytic_activity_split) %>%
+    tidyr::unnest("catalytic_activity_split") %>%
     dplyr::mutate(catalytic_activity_split = stringr::str_remove(
       stringr::str_trim(.data$catalytic_activity_split),
       pattern = "Reaction="
@@ -574,13 +574,13 @@ extract_metal_binders <- function(data_uniprot,
       .data$catalytic_activity_split,
       pattern = "(?<=CHEBI:)\\d+"
     )) %>%
-    tidyr::unnest(.data$chebi_id) %>%
+    tidyr::unnest("chebi_id") %>%
     # Filter with data_chebi_filtered to only keep metal ChEBI IDs
     dplyr::filter(.data$chebi_id %in% data_chebi_filtered$chebi_id) %>%
     dplyr::mutate(evidence = stringr::str_extract(.data$catalytic_activity_split, pattern = "(?<=Evidence=)[^;]+(?=;)")) %>%
     dplyr::mutate(evidence = stringr::str_remove_all(.data$evidence, pattern = ";|\\{|\\}")) %>%
     dplyr::mutate(evidence_split = stringr::str_split(.data$evidence, pattern = ", ")) %>%
-    tidyr::unnest(.data$evidence_split) %>%
+    tidyr::unnest("evidence_split") %>%
     tidyr::separate(.data$evidence_split, into = c("eco", "evidence_source"), sep = "\\|", fill = "right") %>%
     dplyr::mutate(eco = stringr::str_trim(.data$eco)) %>%
     dplyr::distinct() %>%
@@ -591,7 +591,7 @@ extract_metal_binders <- function(data_uniprot,
     dplyr::mutate(eco_type = ifelse(is.na(.data$eco_type), "automatic_assertion", .data$eco_type)) %>%
     dplyr::mutate(reaction = stringr::str_extract(.data$catalytic_activity_split, pattern = "(?<=PhysiologicalDirection=).+(?=;$)")) %>%
     dplyr::mutate(reaction = stringr::str_split(.data$reaction, pattern = "PhysiologicalDirection=")) %>%
-    tidyr::unnest(.data$reaction) %>%
+    tidyr::unnest("reaction") %>%
     dplyr::mutate(reaction = stringr::str_replace(.data$reaction, pattern = "Xref=Rhea:", replacement = "Direction")) %>%
     dplyr::mutate(rhea = stringr::str_extract_all(.data$catalytic_activity_split, pattern = "(?<=RHEA:)\\d+")) %>%
     dplyr::mutate(rhea = paste0(" RHEA:", purrr::map2_chr(
@@ -610,16 +610,16 @@ extract_metal_binders <- function(data_uniprot,
       NA
     )) %>%
     dplyr::mutate(ec = paste0("EC:", stringr::str_extract(.data$catalytic_activity_split, pattern = "(?<=EC=)[^;]+(?=;)"), ", ", .data$rhea)) %>%
-    tidyr::unite(col = "reaction", c(.data$ec, .data$reaction), na.rm = TRUE, sep = ", ") %>%
+    tidyr::unite(col = "reaction", c("ec", "reaction"), na.rm = TRUE, sep = ", ") %>%
     dplyr::mutate(
       reaction = stringr::str_replace_all(.data$reaction, pattern = "=", replacement = ":"),
       reaction = stringr::str_replace_all(.data$reaction, pattern = ";", replacement = ","),
       reaction = stringr::str_replace_all(.data$reaction, pattern = "\\|", replacement = "/")
     ) %>%
-    dplyr::select(-c(.data$cc_catalytic_activity, .data$catalytic_activity_split, .data$evidence, .data$rhea)) %>%
+    dplyr::select(-c("cc_catalytic_activity", "catalytic_activity_split", "evidence", "rhea")) %>%
     # Add metal_id_part position using the data provided by protti
     dplyr::left_join(dplyr::distinct(data_chebi_filtered, .data$chebi_id, .data$metal_atom_id) %>%
-      dplyr::rename(metal_id_part = .data$metal_atom_id), by = "chebi_id") %>%
+      dplyr::rename(metal_id_part = "metal_atom_id"), by = "chebi_id") %>%
     # Now combine data to have one row per accession and chebi_id
     # First concatenate different evidences for the same accession, chebi_id, eco and reaction
     dplyr::group_by(.data$accession, .data$chebi_id, .data$eco, .data$reaction) %>%
@@ -691,30 +691,31 @@ extract_metal_binders <- function(data_uniprot,
     # Filter GO data to only contain protein IDs also in the UniProt input
     dplyr::filter(.data$gene_product_id %in% data_uniprot$accession) %>%
     dplyr::select(
-      .data$gene_product_id,
-      .data$go_term,
-      .data$go_name,
-      .data$eco_id,
-      .data$reference,
-      .data$with_from,
-      .data$assigned_by
+      "gene_product_id",
+      "go_term",
+      "go_name",
+      "eco_id",
+      "reference",
+      "with_from",
+      "assigned_by"
     ) %>%
     dplyr::distinct() %>%
     dplyr::rename(
-      eco = .data$eco_id,
-      accession = .data$gene_product_id
+      eco = "eco_id",
+      accession = "gene_product_id"
     ) %>%
     # join ChEBI annotations to data
     dplyr::left_join(dplyr::distinct(metal_go_slim_subset, .data$slims_from_id, .data$chebi_id, .data$database, .data$metal_atom_id),
-      by = c("go_term" = "slims_from_id")
+      by = c("go_term" = "slims_from_id"),
+      relationship = "many-to-many"
     ) %>%
-    dplyr::rename(metal_id_part = .data$metal_atom_id) %>%
+    dplyr::rename(metal_id_part = "metal_atom_id") %>%
     dplyr::mutate(eco_type = dplyr::case_when(
       .data$eco %in% manual_eco ~ "manual_assertion",
       .data$eco %in% automatic_eco ~ "automatic_assertion"
     )) %>%
     dplyr::mutate(eco_type = ifelse(is.na(.data$eco_type), "automatic_assertion", .data$eco_type)) %>%
-    tidyr::unite(.data$reference, .data$with_from, col = "evidence_source", na.rm = TRUE) %>%
+    tidyr::unite("reference", "with_from", col = "evidence_source", na.rm = TRUE) %>%
     dplyr::mutate(evidence_source = stringr::str_replace_all(.data$evidence_source, pattern = "\\|", replacement = ",")) %>%
     # Now combine data to have one row per accession and chebi_id
     # First combine evidence_source etc.
@@ -786,7 +787,7 @@ extract_metal_binders <- function(data_uniprot,
       .f = ~ length(.x) > 1
     ))) %>%
     dplyr::ungroup() %>%
-    tidyr::unnest(.data$most_specific_id) %>%
+    tidyr::unnest("most_specific_id") %>%
     dplyr::arrange(.data$source) %>%
     dplyr::group_by(.data$accession, .data$most_specific_id) %>%
     dplyr::mutate(
@@ -835,7 +836,7 @@ extract_metal_binders <- function(data_uniprot,
     ) %>%
     dplyr::ungroup() %>%
     dplyr::filter(!.data$appears) %>%
-    dplyr::select(-c(.data$appears, .data$chebi_sub_id)) %>%
+    dplyr::select(-c("appears", "chebi_sub_id")) %>%
     dplyr::distinct() %>%
     # unpack positions and corresponding info
     dplyr::mutate(
@@ -850,15 +851,15 @@ extract_metal_binders <- function(data_uniprot,
       chebi_id_binding = stringr::str_split(.data$chebi_id_binding, pattern = "\\|")
     ) %>%
     tidyr::unnest(c(
-      .data$ligand_identifier,
-      .data$ligand_position,
-      .data$metal_id_part_binding,
-      .data$binding_mode,
-      .data$metal_function,
-      .data$eco_binding,
-      .data$eco_type_binding,
-      .data$evidence_source_binding,
-      .data$chebi_id_binding
+      "ligand_identifier",
+      "ligand_position",
+      "metal_id_part_binding",
+      "binding_mode",
+      "metal_function",
+      "eco_binding",
+      "eco_type_binding",
+      "evidence_source_binding",
+      "chebi_id_binding"
     )) %>%
     dplyr::mutate(
       ligand_identifier = stringr::str_split(.data$ligand_identifier, pattern = ";;;;"),
@@ -872,15 +873,15 @@ extract_metal_binders <- function(data_uniprot,
       chebi_id_binding = stringr::str_split(.data$chebi_id_binding, pattern = ";;;;")
     ) %>%
     tidyr::unnest(c(
-      .data$ligand_identifier,
-      .data$ligand_position,
-      .data$metal_id_part_binding,
-      .data$binding_mode,
-      .data$metal_function,
-      .data$eco_binding,
-      .data$eco_type_binding,
-      .data$evidence_source_binding,
-      .data$chebi_id_binding
+      "ligand_identifier",
+      "ligand_position",
+      "metal_id_part_binding",
+      "binding_mode",
+      "metal_function",
+      "eco_binding",
+      "eco_type_binding",
+      "evidence_source_binding",
+      "chebi_id_binding"
     )) %>%
     dplyr::mutate(
       ligand_identifier = stringr::str_split(.data$ligand_identifier, pattern = ";;;"),
@@ -894,22 +895,22 @@ extract_metal_binders <- function(data_uniprot,
       chebi_id_binding = stringr::str_split(.data$chebi_id_binding, pattern = ";;;")
     ) %>%
     tidyr::unnest(c(
-      .data$ligand_identifier,
-      .data$ligand_position,
-      .data$metal_id_part_binding,
-      .data$binding_mode,
-      .data$metal_function,
-      .data$eco_binding,
-      .data$eco_type_binding,
-      .data$evidence_source_binding,
-      .data$chebi_id_binding
+      "ligand_identifier",
+      "ligand_position",
+      "metal_id_part_binding",
+      "binding_mode",
+      "metal_function",
+      "eco_binding",
+      "eco_type_binding",
+      "evidence_source_binding",
+      "chebi_id_binding"
     )) %>%
     dplyr::mutate(ligand_position = as.numeric(.data$ligand_position)) %>%
     dplyr::arrange(.data$accession, .data$ligand_position) %>%
     dplyr::left_join(chebi_names,
       by = c("most_specific_id" = "id")
     ) %>%
-    dplyr::rename(most_specific_id_name = .data$name) %>%
+    dplyr::rename(most_specific_id_name = "name") %>%
     dplyr::mutate(
       note = ifelse(.data$note == "NA" | .data$note == "", NA, .data$note),
       reaction = ifelse(.data$reaction == "NA" | .data$reaction == "", NA, .data$reaction),
@@ -919,23 +920,23 @@ extract_metal_binders <- function(data_uniprot,
       database = ifelse(.data$database == "NA" | .data$database == "", NA, .data$database)
     ) %>%
     dplyr::mutate(binding_temp_1 = stringr::str_split(.data$metal_id_part, pattern = ",")) %>%
-    tidyr::unnest(.data$binding_temp_1) %>%
+    tidyr::unnest("binding_temp_1") %>%
     dplyr::left_join(chebi_names,
       by = c("binding_temp_1" = "id")
     ) %>%
-    dplyr::rename(metal_id_part_name = .data$name) %>%
-    dplyr::select(-c(.data$binding_temp_1)) %>%
+    dplyr::rename(metal_id_part_name = "name") %>%
+    dplyr::select(-c("binding_temp_1")) %>%
     dplyr::group_by(.data$accession, .data$chebi_id, .data$ligand_identifier, .data$ligand_position) %>%
     dplyr::mutate(metal_id_part_name = paste0(.data$metal_id_part_name, collapse = ",")) %>%
     dplyr::ungroup() %>%
     dplyr::distinct() %>%
     dplyr::mutate(binding_temp_2 = stringr::str_split(.data$metal_id_part_binding, pattern = ",")) %>%
-    tidyr::unnest(.data$binding_temp_2) %>%
+    tidyr::unnest("binding_temp_2") %>%
     dplyr::left_join(chebi_names,
       by = c("binding_temp_2" = "id")
     ) %>%
-    dplyr::rename(metal_id_part_binding_name = .data$name) %>%
-    dplyr::select(-c(.data$binding_temp_2)) %>%
+    dplyr::rename(metal_id_part_binding_name = "name") %>%
+    dplyr::select(-c("binding_temp_2")) %>%
     dplyr::group_by(.data$accession, .data$chebi_id, .data$ligand_identifier, .data$ligand_position) %>%
     dplyr::mutate(metal_id_part_binding_name = paste0(.data$metal_id_part_binding_name, collapse = ",")) %>%
     dplyr::distinct() %>%
@@ -1006,28 +1007,28 @@ extract_metal_binders <- function(data_uniprot,
       )
     ) %>%
     dplyr::ungroup() %>%
-    dplyr::select(-c(.data$eco_binding, .data$eco_type_binding, .data$evidence_source_binding, .data$chebi_id_binding, .data$metal_id_part_binding, .data$metal_id_part_binding_name)) %>%
+    dplyr::select(-c("eco_binding", "eco_type_binding", "evidence_source_binding", "chebi_id_binding", "metal_id_part_binding", "metal_id_part_binding_name")) %>%
     dplyr::select(
-      .data$accession,
-      .data$most_specific_id,
-      .data$most_specific_id_name,
-      .data$ligand_identifier,
-      .data$ligand_position,
-      .data$binding_mode,
-      .data$metal_function,
-      .data$metal_id_part,
-      .data$metal_id_part_name,
-      .data$note,
-      .data$chebi_id,
-      .data$source,
-      .data$eco,
-      .data$eco_type,
-      .data$evidence_source,
-      .data$reaction,
-      .data$go_term,
-      .data$go_name,
-      .data$assigned_by,
-      .data$database
+      "accession",
+      "most_specific_id",
+      "most_specific_id_name",
+      "ligand_identifier",
+      "ligand_position",
+      "binding_mode",
+      "metal_function",
+      "metal_id_part",
+      "metal_id_part_name",
+      "note",
+      "chebi_id",
+      "source",
+      "eco",
+      "eco_type",
+      "evidence_source",
+      "reaction",
+      "go_term",
+      "go_name",
+      "assigned_by",
+      "database"
     )
 
   if (show_progress == TRUE) {

@@ -73,7 +73,7 @@ metal_chebi_uniprot <- chebi %>%
     metal_chebi_ids_wo_formula[as.character(id)],
     metal_chebi_annotation[extract_formula]
   )) %>%
-  dplyr::select(-.data$extract_formula) %>%
+  dplyr::select(-"extract_formula") %>%
   dplyr::group_by(.data$id) %>%
   dplyr::mutate(metal_atom_id = paste0(.data$metal_atom_id, collapse = ",")) %>%
   dplyr::distinct()

@@ -133,7 +133,7 @@ fetch_eco <- function(return_relation = FALSE,
 
     history <- query_result %>%
       dplyr::distinct(.data$id, .data$history) %>%
-      tidyr::unnest(.data$history) %>%
+      tidyr::unnest("history") %>%
       dplyr::distinct(.data$id, .data$timestamp, .data$action, .data$category, .data$text)
 
     return(history)
@@ -144,9 +144,9 @@ fetch_eco <- function(return_relation = FALSE,
 
     relation <- query_result %>%
       dplyr::distinct(.data$id, .data$children) %>%
-      dplyr::rename(main_id = .data$id) %>%
-      tidyr::unnest(.data$children) %>%
-      dplyr::rename(child_id = .data$id)
+      dplyr::rename(main_id = "id") %>%
+      tidyr::unnest("children") %>%
+      dplyr::rename(child_id = "id")
 
     return(relation)
   }
@@ -154,36 +154,36 @@ fetch_eco <- function(return_relation = FALSE,
   # Unnest the data frame bit by bit to not lose information
 
   query_result_unnest_1 <- query_result %>%
-    dplyr::select(-c(.data$history, .data$children)) %>%
-    tidyr::unnest(.data$definition) %>%
-    dplyr::rename(main_name = .data$name) %>%
-    dplyr::rename(definition = .data$text)
+    dplyr::select(-c("history", "children")) %>%
+    tidyr::unnest("definition") %>%
+    dplyr::rename(main_name = "name") %>%
+    dplyr::rename(definition = "text")
 
   query_result_unnest_2 <- query_result_unnest_1 %>%
-    tidyr::unnest(.data$secondaryIds) %>%
+    tidyr::unnest("secondaryIds") %>%
     dplyr::distinct(.data$id, .data$secondaryIds) %>%
-    dplyr::right_join(dplyr::select(query_result_unnest_1, c(-.data$secondaryIds)), by = "id")
+    dplyr::right_join(dplyr::select(query_result_unnest_1, c(-"secondaryIds")), by = "id")
 
   query_result_unnest_3 <- query_result_unnest_2 %>%
-    tidyr::unnest(.data$xRefs) %>%
+    tidyr::unnest("xRefs") %>%
     dplyr::distinct(.data$id, .data$dbCode, .data$dbId) %>%
-    dplyr::right_join(dplyr::select(query_result_unnest_2, c(-.data$xRefs)), by = "id")
+    dplyr::right_join(dplyr::select(query_result_unnest_2, c(-"xRefs")), by = "id")
 
   result <- query_result_unnest_3 %>%
-    tidyr::unnest(.data$synonyms) %>%
+    tidyr::unnest("synonyms") %>%
     dplyr::distinct(.data$id, .data$name, .data$type) %>%
-    dplyr::right_join(dplyr::select(query_result_unnest_3, c(-.data$synonyms)), by = "id") %>%
+    dplyr::right_join(dplyr::select(query_result_unnest_3, c(-"synonyms")), by = "id", relationship = "many-to-many") %>%
     dplyr::select(
-      .data$id,
-      .data$isObsolete,
-      .data$main_name,
-      .data$definition,
-      .data$comment,
-      .data$name,
-      .data$type,
-      .data$dbCode,
-      .data$dbId,
-      .data$secondaryIds
+      "id",
+      "isObsolete",
+      "main_name",
+      "definition",
+      "comment",
+      "name",
+      "type",
+      "dbCode",
+      "dbId",
+      "secondaryIds"
     ) %>%
     janitor::clean_names()
 

@@ -282,18 +282,18 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
             )
           ) %>%
           dplyr::select(-c(
-            .data$X1,
-            .data$x1,
-            .data$x2,
-            .data$x3,
-            .data$x4,
-            .data$x5,
-            .data$x6,
-            .data$x7,
-            .data$formal_charge,
-            .data$site_occupancy,
-            .data$entity_id,
-            .data$pdb_model_number
+            "X1",
+            "x1",
+            "x2",
+            "x3",
+            "x4",
+            "x5",
+            "x6",
+            "x7",
+            "formal_charge",
+            "site_occupancy",
+            "entity_id",
+            "pdb_model_number"
           )) %>%
           dplyr::mutate(
             label_id = as.numeric(.data$label_id),
@@ -385,18 +385,18 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
               )
             ) %>%
             dplyr::select(-c(
-              .data$X1,
-              .data$x1,
-              .data$x2,
-              .data$x3,
-              .data$x4,
-              .data$x5,
-              .data$x6,
-              .data$x7,
-              .data$formal_charge,
-              .data$site_occupancy,
-              .data$entity_id,
-              .data$pdb_model_number
+              "X1",
+              "x1",
+              "x2",
+              "x3",
+              "x4",
+              "x5",
+              "x6",
+              "x7",
+              "formal_charge",
+              "site_occupancy",
+              "entity_id",
+              "pdb_model_number"
             )) %>%
             dplyr::mutate(
               label_id = as.numeric(.data$label_id),

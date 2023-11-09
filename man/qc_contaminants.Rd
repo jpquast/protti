@@ -18,7 +18,7 @@ qc_contaminants(
 \arguments{
 \item{data}{a data frame that contains at least the input variables.}
 
-\item{sample}{a character column in the \code{data} data frame that contains the sample names.}
+\item{sample}{a character or factor column in the \code{data} data frame that contains the sample names.}
 
 \item{protein}{a character column in the \code{data} data frame that contains protein IDs or
 protein names.}

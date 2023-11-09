@@ -152,7 +152,7 @@ fetch_pdb_structure <- function(pdb_ids, return_data_frame = FALSE, show_progres
               "pdb_model_number"
             )
           ) %>%
-          dplyr::select(-c(.data$X1, .data$x1, .data$x2, .data$x3, .data$x4)) %>%
+          dplyr::select(-c("X1", "x1", "x2", "x3", "x4")) %>%
           dplyr::group_by(.data$label_asym_id, .data$label_atom_id, .data$label_comp_id) %>%
           dplyr::mutate(label_seq_id = ifelse(.data$label_seq_id == ".",
             1:n(),

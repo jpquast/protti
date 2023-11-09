@@ -65,7 +65,6 @@ randomise_queue <-
   function(data = NULL,
            rows = NULL,
            export = FALSE) {
-
     # load data interactively if no data is provided in the data argument
     if (is.null(data)) {
       path <- file.choose(".")

@@ -102,14 +102,15 @@ barcode_plot <- function(data,
   # Create plot
   data %>%
     ggplot2::ggplot() +
-    ggplot2::geom_rect(ggplot2::aes(
-      ymin = -2.5,
-      ymax = 2.5,
-      xmax = {{ end_position }} / {{ protein_length }} * 100,
-      xmin = ({{ start_position }} - 1) / {{ protein_length }} * 100,
-      fill = {{ colouring }}
-    ),
-    size = 0.7
+    ggplot2::geom_rect(
+      ggplot2::aes(
+        ymin = -2.5,
+        ymax = 2.5,
+        xmax = {{ end_position }} / {{ protein_length }} * 100,
+        xmin = ({{ start_position }} - 1) / {{ protein_length }} * 100,
+        fill = {{ colouring }}
+      ),
+      size = 0.7
     ) +
     ggplot2::scale_fill_manual(values = c(
       "#999999", "#5680C1", "#B96DAD", "#64CACA", "#81ABE9", "#F6B8D1", "#99F1E4", "#9AD1FF", "#548BDF", "#A55098", "#3EB6B6",

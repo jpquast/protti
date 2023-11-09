@@ -142,7 +142,7 @@ impute <- function(data,
       {{ intensity_log2 }}
     )) %>%
     dplyr::mutate(imputed = is.na({{ intensity_log2 }}) & !is.na(.data$imputed_intensity)) %>%
-    dplyr::select(-.data$impute, -.data$mean, -.data$sd, -.data$min, -.data$noise_mean) %>%
+    dplyr::select(-c("impute", "mean", "sd", "min", "noise_mean")) %>%
     dplyr::arrange(factor({{ grouping }}, levels = unique(stringr::str_sort({{ grouping }}, numeric = TRUE))))
 
   if (missing(retain_columns)) {
