@@ -14,7 +14,7 @@
 #' all options that can be supplied to httr::content, these include e.g.
 #' "text/tab-separated-values", "application/json" and "txt/csv". Default is "text/tab-separated-values".
 #' Default is "tab-separated-values".
-#' @param timeout a numeric value that specifies the maximum request time. Default is 30 seconds.
+#' @param timeout a numeric value that specifies the maximum request time. Default is 60 seconds.
 #' @param accept a character value that specifies the type of data that should be sent by the API if
 #' it uses content negotiation. The default is NULL and it should only be set for APIs that use
 #' content negotiation.
@@ -25,7 +25,7 @@
 #'
 #' @return A data frame that contains the table from the url.
 try_query <-
-  function(url, max_tries = 5, silent = TRUE, type = "text/tab-separated-values", timeout = 30, accept = NULL, ...) {
+  function(url, max_tries = 5, silent = TRUE, type = "text/tab-separated-values", timeout = 60, accept = NULL, ...) {
     # Check if there is an internet connection first
     if (!curl::has_internet()) {
       if (!silent) message("No internet connection.")

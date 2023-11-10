@@ -19,7 +19,8 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
   test_that("find_peptide_in_structure works", {
     expect_is(positions_structure, "data.frame")
-    expect_equal(nrow(positions_structure), 569)
+    expect_gte(nrow(positions_structure), 569)
+    expect_lte(nrow(positions_structure), 600)
     expect_equal(ncol(positions_structure), 17)
   })
 

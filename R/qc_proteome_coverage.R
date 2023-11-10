@@ -64,13 +64,16 @@ qc_proteome_coverage <- function(data,
     dplyr::summarize(proteins_detected = dplyr::n_distinct(!!ensym(protein_id)), .groups = "drop") %>%
     dplyr::mutate({{ sample }} := "Total")
 
-  proteome <- fetch_uniprot_proteome(organism_id, reviewed = reviewed) %>%
-    dplyr::summarize(proteins_proteome = dplyr::n_distinct(.data$accession), .groups = "drop")
+  proteome <- fetch_uniprot_proteome(organism_id, reviewed = reviewed)
 
   if(is(proteome, "character")){
-    # return NULL if UniProt information could not be fetched.
+    # UniProt information could not be fetched.
+    message("UniProt information could not be fetched")
     return(NULL)
   }
+
+  proteome <- proteome %>%
+    dplyr::summarize(proteins_proteome = dplyr::n_distinct(.data$accession), .groups = "drop")
 
   proteome_coverage <- data %>%
     dplyr::group_by({{ sample }}) %>%
