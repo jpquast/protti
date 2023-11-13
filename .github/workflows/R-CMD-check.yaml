@@ -36,7 +36,7 @@ jobs:
 
       - name: Install remotes package
         run: |
-          Rscript -e 'install.packages("remotes")'
+          Rscript -e 'install.packages("remotes", lib="$HOME/R/library")'
 
       - name: Install lme4 package
         run: |
