@@ -36,7 +36,7 @@ jobs:
 
       - name: Install remotes package
         run: |
-          Rscript -e 'install.packages("remotes", repos="https://ftp.belnet.be/mirror/CRAN")'
+          Rscript -e 'install.packages("remotes")'
 
       - name: Install lme4 package
         run: |
