@@ -42,21 +42,16 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-        #run: |
-      ##- name: Install remotes package
-         # R_LIBS_USER="$HOME/R/library"
-          #Rscript -e 'install.packages("remotes", lib=Sys.getenv("R_LIBS_USER"))'
-          #mkdir -p "$R_LIBS_USER"
-
-
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
+          extra-packages: any::lme4
           needs: check
 
-      - name: Install lme4 package
-        run: |
-          Rscript -e 'remotes::install_cran("lme4", dependencies = TRUE, upgrade = "always")'
+      #  run: |
+     # - name: Install remotes and lme4 package
+       #   Rscript -e 'install.packages("remotes", lib=Sys.getenv("R_LIB_FOR_PAK"))'
+        #  Rscript -e 'remotes::install_cran("lme4", dependencies = TRUE, upgrade = "always")'
 
       - uses: r-lib/actions/check-r-package@v2
         with:
