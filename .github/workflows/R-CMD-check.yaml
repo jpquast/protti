@@ -56,7 +56,7 @@ jobs:
 
       - name: Install lme4 package
         run: |
-          Rscript -e 'remotes::install_cran("lme4", dependencies = TRUE, upgrade = "always")
+          Rscript -e 'remotes::install_cran("lme4", dependencies = TRUE, upgrade = "always")'
 
       - uses: r-lib/actions/check-r-package@v2
         with:
