@@ -30,10 +30,13 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
       TEST_PROTTI: true
       BUILD_VIGNETTE: true
-      R_CHECK_DONTTEST_EXAMPLES: false
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Install lme4 package
+        run: |
+          R -e 'remotes::install_cran("lme4", dependencies = TRUE, upgrade = "always")
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -51,4 +54,3 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
-
