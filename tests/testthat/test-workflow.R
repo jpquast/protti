@@ -7,7 +7,7 @@ data <- create_synthetic_data(
   n_replicates = 3,
   n_conditions = 2,
   method = "effect_random",
-  additional_metadata = FALSE
+  additional_metadata = TRUE
 )
 
 data_drc <- create_synthetic_data(
@@ -330,6 +330,61 @@ test_that("calculate_diff_abundance works", {
     expect_equal(round(min(diff_proDA$adj_pval, na.rm = TRUE), digits = 5), 0.00125)
   }
 })
+#
+# test_that("correct_lip_for_abundance works", {
+#   diff_lip = normalised_data %>%
+#       dplyr::mutate(fg_intensity_log2 = log2(fg_quantity)) %>%
+#       assign_missingness(
+#         sample = r_file_name,
+#         condition = r_condition,
+#         intensity = fg_intensity_log2,
+#         grouping = eg_precursor_id,
+#         ref_condition = "control",
+#         retain_columns = "pg_protein_accessions") %>%
+#       calculate_diff_abundance(
+#         sample = r_file_name,
+#         condition = r_condition,
+#         grouping = eg_precursor_id,
+#         intensity_log2 = fg_intensity_log2,
+#         comparison = comparison,
+#         method = "t-test",
+#         retain_columns = "pg_protein_accessions"
+#        )
+#
+#   diff_trp = normalised_data %>%
+#     dplyr::group_by(pg_protein_accessions, r_file_name) %>%
+#     dplyr::mutate(pg_quantity = sum(fg_quantity)) %>%
+#     dplyr::distinct(
+#       r_condition,
+#       r_file_name,
+#       pg_protein_accessions,
+#       pg_quantity
+#     ) %>%
+#     dplyr::mutate(pg_intensity_log2 = log2(pg_quantity)) %>%
+#     assign_missingness(
+#       sample = r_file_name,
+#       condition = r_condition,
+#       intensity = pg_intensity_log2,
+#                      grouping = pg_protein_accessions,
+#                      ref_condition = "control") %>%
+#     calculate_diff_abundance(sample = r_file_name,
+#                      condition = r_condition,
+#                      grouping = pg_protein_accessions,
+#                      intensity_log2 = pg_intensity_log2,
+#                      comparison = comparison,
+#                      method = "t-test")
+#
+#   corrected = correct_lip_for_abundance(
+#     lip_data = diff_lip,
+#     trp_data = diff_trp,
+#     protein_id = pg_protein_accessions,
+#     grouping = eg_precursor_id,
+#     retain_columns = c("missingness"),
+#     method = "satterthwaite"
+#   )
+#
+#
+# })
 
 if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("deprecated diff_abundance works", {
