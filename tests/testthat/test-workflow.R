@@ -7,7 +7,7 @@ data <- create_synthetic_data(
   n_replicates = 3,
   n_conditions = 2,
   method = "effect_random",
-  additional_metadata = TRUE
+  additional_metadata = FALSE
 )
 
 data_drc <- create_synthetic_data(
