@@ -1,3 +1,6 @@
+## New features
+* `correct_lip_for_abundance()` was added. If corrects LiP-peptides for changes in protein abundance and calculates their significance using a t-test. Big thanks to @FehrAaron! 
+
 # protti 0.6.0.9000
 
 ## New features
