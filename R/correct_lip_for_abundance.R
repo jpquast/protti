@@ -172,14 +172,15 @@ correct_lip_for_abundance <- function(
 
   if (method == "satterthwaite") {
     corrected_data <- combined_data %>%
-      dplyr::mutate(adj_diff = !!diff_pep - !!diff_prot) %>%
-      dplyr::mutate(adj_std_error = sqrt((!!se_pep)**2 + (!!se_prot)**2)) %>%
-      dplyr::mutate(numer = ((!!se_pep)**2 + (!!se_prot)**2)**2) %>%
-      dplyr::mutate(denom = ((!!se_pep)**4 / (!!n_pep - 2) + (!!se_prot)**4 / (!!n_prot - 2))) %>%
-      dplyr::mutate(df = numer / denom) %>%
-      dplyr::mutate(tval = adj_diff / adj_std_error) %>%
-      dplyr::mutate(pval = 2 * stats::pt(abs(tval), df, lower.tail = FALSE))
-
+      dplyr::mutate(
+        adj_diff = !!diff_pep - !!diff_prot,
+        adj_std_error = sqrt((!!se_pep)**2 + (!!se_prot)**2),
+        numer = ((!!se_pep)**2 + (!!se_prot)**2)**2,
+        denom = ((!!se_pep)**4 / (!!n_pep - 2) + (!!se_prot)**4 / (!!n_prot - 2)),
+        df = numer / denom,
+        tval = adj_diff / adj_std_error,
+        pval = 2 * stats::pt(abs(tval), df, lower.tail = FALSE)
+      )
 
     adjusted_data <- dplyr::left_join(
       x = corrected_data,
@@ -203,7 +204,6 @@ correct_lip_for_abundance <- function(
         tval = adj_diff / adj_std_error,
         pval = 2 * stats::pt(abs(tval), df, lower.tail = FALSE)
       )
-
 
     adjusted_data <- dplyr::left_join(
       x = corrected_data,
