@@ -42,8 +42,7 @@ Imports:
     httr,
     methods,
     R.utils,
-    stats,
-    lme4 (>= 1.1-35)
+    stats
 RoxygenNote: 7.2.3
 Suggests: 
     testthat,

@@ -1,7 +1,9 @@
-#' Protein abundance correction
+#' Protein abundance correction for LiP-data
 #'
 #' Performs the correction of LiP-peptides for changes in protein abundance and
-#' calculates their significance using a t-test
+#' calculates their significance using a t-test. This function was implemented based
+#' on the [MSstatsLiP](https://www.bioconductor.org/packages/release/bioc/html/MSstatsLiP.html)
+#' package developed by the Vitek lab.
 #'
 #' @param lip_data a data frame containing at least the input variables. Ideally,
 #' the result from the \code{calculate_diff_abundance} function is used.

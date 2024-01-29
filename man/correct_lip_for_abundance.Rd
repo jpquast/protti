@@ -2,7 +2,7 @@
 % Please edit documentation in R/correct_lip_for_abundance.R
 \name{correct_lip_for_abundance}
 \alias{correct_lip_for_abundance}
-\title{Protein abundance correction}
+\title{Protein abundance correction for LiP-data}
 \usage{
 correct_lip_for_abundance(
   lip_data,
@@ -66,7 +66,9 @@ adjusted p-values (\code{adj_pval})
 }
 \description{
 Performs the correction of LiP-peptides for changes in protein abundance and
-calculates their significance using a t-test
+calculates their significance using a t-test. This function was implemented based
+on the \href{https://www.bioconductor.org/packages/release/bioc/html/MSstatsLiP.html}{MSstatsLiP}
+package developed by the Vitek lab.
 }
 \examples{
 
@@ -76,61 +78,70 @@ library(dplyr)
 
 # Load example data and simulate tryptic data by summing up precursors
 
-data = rapamycin_10uM
+data <- rapamycin_10uM
 
-data_trp = data \%>\% 
-dplyr::group_by(pg_protein_accessions, r_file_name) \%>\%
-dplyr::mutate(pg_quantity = sum(fg_quantity)) \%>\%
-dplyr::distinct(r_condition,
-              r_file_name,
-              pg_protein_accessions,
-              pg_quantity) 
-              
+data_trp <- data \%>\%
+  dplyr::group_by(pg_protein_accessions, r_file_name) \%>\%
+  dplyr::mutate(pg_quantity = sum(fg_quantity)) \%>\%
+  dplyr::distinct(
+    r_condition,
+    r_file_name,
+    pg_protein_accessions,
+    pg_quantity
+  )
+
 
 # Calculate differential abundances for LiP and Trp data
 
+diff_lip <- data \%>\%
+  dplyr::mutate(fg_intensity_log2 = log2(fg_quantity)) \%>\%
+  assign_missingness(
+    sample = r_file_name,
+    condition = r_condition,
+    intensity = fg_intensity_log2,
+    grouping = eg_precursor_id,
+    ref_condition = "control",
+    retain_columns = "pg_protein_accessions"
+  ) \%>\%
+  calculate_diff_abundance(
+    sample = r_file_name,
+    condition = r_condition,
+    grouping = eg_precursor_id,
+    intensity_log2 = fg_intensity_log2,
+    comparison = comparison,
+    method = "t-test",
+    retain_columns = "pg_protein_accessions"
+  )
 
-diff_lip = data \%>\%
-    mutate(fg_intensity_log2 = log2(fg_quantity)) \%>\%
-    assign_missingness(sample = r_file_name,
-                   condition = r_condition,
-                   intensity = fg_intensity_log2,
-                   grouping = eg_precursor_id,
-                   ref_condition = "control",
-                   retain_columns = "pg_protein_accessions") \%>\%
-    calculate_diff_abundance(sample = r_file_name,
-                   condition = r_condition,
-                   grouping = eg_precursor_id,
-                   intensity_log2 = fg_intensity_log2,
-                   comparison = comparison,
-                   method = "t-test",
-                   retain_columns = "pg_protein_accessions")
 
+diff_trp <- data_trp \%>\%
+  dplyr::mutate(pg_intensity_log2 = log2(pg_quantity)) \%>\%
+  assign_missingness(
+    sample = r_file_name,
+    condition = r_condition,
+    intensity = pg_intensity_log2,
+    grouping = pg_protein_accessions,
+    ref_condition = "control"
+  ) \%>\%
+  calculate_diff_abundance(
+    sample = r_file_name,
+    condition = r_condition,
+    grouping = pg_protein_accessions,
+    intensity_log2 = pg_intensity_log2,
+    comparison = comparison,
+    method = "t-test"
+  )
 
-diff_trp = data_trp \%>\%
-     mutate(pg_intensity_log2 = log2(pg_quantity)) \%>\%
-     assign_missingness(sample = r_file_name,
-                   condition = r_condition,
-                   intensity = pg_intensity_log2,
-                   grouping = pg_protein_accessions,
-                   ref_condition = "control") \%>\%
-     calculate_diff_abundance(sample = r_file_name,
-                   condition = r_condition,
-                   grouping = pg_protein_accessions,
-                   intensity_log2 = pg_intensity_log2,
-                   comparison = comparison,
-                   method = "t-test")
-                   
 # Correct for abundance changes
 
-corrected = correct_lip_for_abundance(
-
+corrected <- correct_lip_for_abundance(
   lip_data = diff_lip,
   trp_data = diff_trp,
   protein_id = pg_protein_accessions,
   grouping = eg_precursor_id,
   retain_columns = c("missingness"),
-  method = "satterthwaite")
+  method = "satterthwaite"
+)
 
 head(corrected, n = 10)
 }
