@@ -46,7 +46,6 @@ jobs:
         with:
           extra-packages:
               any::rcmdcheck
-              any::lme4
           needs: check
 
       #  run: |

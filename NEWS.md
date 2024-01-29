@@ -2,6 +2,7 @@
 
 ## New features
 
+* `correct_lip_for_abundance()` was added. It corrects LiP-peptides for changes in protein abundance and calculates their significance using a t-test. The function is based on the [MSstatsLiP](https://www.bioconductor.org/packages/release/bioc/html/MSstatsLiP.html) package developed by the Vitek Lab. Big thanks to @FehrAaron for implementing it! 
 * `qc_cvs()` received a new argument called `max_cv` that specifies the maximum CV that should be included in the plot.
 * `peptide_profile_plot()` received a new argument called `complete_sample`. If set to `TRUE`, each protein gets assigned all sample names that are found in the input data. This ensures that the plot always contains all samples on the x-axis even if there are no measured intensities for a specific sample. The default is `FALSE`, which is the original behaviour of the function.
 * `volcano_plot()` received the `colour` argument that allows the user to provide custom colours for points.
