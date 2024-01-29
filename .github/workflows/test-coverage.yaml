@@ -44,7 +44,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Test coverage
-        env: 
+        env:
            TEST_PROTTI: true
            BUILD_VIGNETTE: true
         run: covr::codecov()
