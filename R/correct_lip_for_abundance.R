@@ -179,20 +179,20 @@ correct_lip_for_abundance <- function(
         adj_std_error = sqrt((!!se_pep)**2 + (!!se_prot)**2),
         numer = ((!!se_pep)**2 + (!!se_prot)**2)**2,
         denom = ((!!se_pep)**4 / (!!n_pep - 2) + (!!se_prot)**4 / (!!n_prot - 2)),
-        df = numer / denom,
-        tval = adj_diff / adj_std_error,
-        pval = 2 * stats::pt(abs(tval), df, lower.tail = FALSE)
+        df = .data$numer / .data$denom,
+        tval = .data$adj_diff / .data$adj_std_error,
+        pval = 2 * stats::pt(abs(.data$tval), .data$df, lower.tail = FALSE)
       )
 
     adjusted_data <- dplyr::left_join(
       x = corrected_data,
       y = corrected_data %>%
-        dplyr::filter(is.na(pval) == FALSE) %>%
+        dplyr::filter(is.na(.data$pval) == FALSE) %>%
         dplyr::group_by({{ comparison }}) %>%
-        dplyr::mutate(adj_pval = p.adjust(pval, method = {{ p_adj_method }})),
+        dplyr::mutate(adj_pval = p.adjust(.data$pval, method = {{ p_adj_method }})),
       by = colnames(corrected_data)
     ) %>%
-      dplyr::select(-numer, -denom, -tval)
+      dplyr::select(-c("numer", "denom", "tval"))
 
     return(adjusted_data)
   }
@@ -203,18 +203,18 @@ correct_lip_for_abundance <- function(
         adj_diff = !!diff_pep - !!diff_prot,
         adj_std_error = sqrt((!!se_pep)**2 + (!!se_prot)**2),
         df = !!n_pep - 2,
-        tval = adj_diff / adj_std_error,
-        pval = 2 * stats::pt(abs(tval), df, lower.tail = FALSE)
+        tval = .data$adj_diff / .data$adj_std_error,
+        pval = 2 * stats::pt(abs(.data$tval), .data$df, lower.tail = FALSE)
       )
 
     adjusted_data <- dplyr::left_join(
       x = corrected_data,
       y = corrected_data %>%
-        dplyr::filter(is.na(pval) == FALSE) %>%
-        dplyr::mutate(adj_pval = p.adjust(pval, method = {{ p_adj_method }})),
+        dplyr::filter(is.na(.data$pval) == FALSE) %>%
+        dplyr::mutate(adj_pval = p.adjust(.data$pval, method = {{ p_adj_method }})),
       by = colnames(corrected_data)
     ) %>%
-      dplyr::select(-tval)
+      dplyr::select(-"tval")
 
 
     return(adjusted_data)
