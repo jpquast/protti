@@ -21,6 +21,7 @@
 *`fit_drc_4p()`: If there are no correlations an empty data frame is returned to prevent errors in `parallel_fit_drc_4p()`.
 * `calculate_sequence_coverage()` does not fail anymore if a protein only contains `NA` peptide sequences.
 * `qc_sequence_coverage()` does not return a plot anymore if `plot = FALSE`. This fixes issue #207.
+* `qc_data_completeness()` if sample was of type `factor` the function did not properly facet the data when the `digestion` argument was provided. Now we filter out all 0% completeness values that come from factor levels that are not present in subsetted data. 
 
 # protti 0.6.0
 
