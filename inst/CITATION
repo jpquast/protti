@@ -1,6 +1,6 @@
 citHeader("To cite protti in publications, please use:")
 
-citEntry(entry = "article",
+bibentry(entry = "article",
   textVersion = "Quast, J.P., Schuster, D., Picotti, P. (2022). protti: an R package for comprehensive data analysis of peptide- and protein-centric bottom-up proteomics data. Bioinformatics Advances, 2(1).",
   author = "Jan-Philipp Quast, Dina Schuster, Paola Picotti",
   title = "protti: an R package for comprehensive data analysis of peptide- and protein-centric bottom-up proteomics data",
