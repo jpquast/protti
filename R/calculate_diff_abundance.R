@@ -7,19 +7,19 @@
 #' and adjusted p-values (\code{adj_pval}) for each protein, peptide or precursor (depending on
 #' the \code{grouping} variable) and the associated treatment/reference pair. Depending on the
 #' method the data frame contains additional columns:
-#' \itemize{
-#' \item{"t-test": }{The \code{std_error} column contains the standard error of the differential
+#'
+#' * "t-test": The \code{std_error} column contains the standard error of the differential
 #' abundances. \code{n_obs} contains the number of observations for the specific protein, peptide
-#' or precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
-#' \item{"t-test_mean_sd": }{Columns labeled as control refer to the second condition of the
+#' or precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.
+#' * "t-test_mean_sd": Columns labeled as control refer to the second condition of the
 #' comparison pairs. Treated refers to the first condition. \code{mean_control} and \code{mean_treated}
 #' columns contain the means for the reference and treatment condition, respectively. \code{sd_control}
 #' and \code{sd_treated} columns contain the standard deviations for the reference and treatment
 #' condition, respectively. \code{n_control} and \code{n_treated} columns contain the numbers of
 #' samples for the reference and treatment condition, respectively. The \code{std_error} column
 #' contains the standard error of the differential abundances. \code{t_statistic} contains the
-#' t_statistic for the t-test.}
-#' \item{"moderated_t-test": }{\code{CI_2.5} and \code{CI_97.5} contain the 2.5% and 97.5%
+#' t_statistic for the t-test.
+#' * "moderated_t-test": \code{CI_2.5} and \code{CI_97.5} contain the 2.5% and 97.5%
 #' confidence interval borders for differential abundances. \code{avg_abundance} contains average
 #' abundances for treatment/reference pairs (mean of the two group means). \code{t_statistic}
 #' contains the t_statistic for the t-test. \code{B} The B-statistic is the log-odds that the
@@ -29,13 +29,13 @@
 #' 4.48/(1+4.48)=0.82, i.e., the probability is about 82% that this group is differentially
 #' abundant. A B-statistic of zero corresponds to a 50-50 chance that the group is differentially
 #' abundant.\code{n_obs} contains the number of observations for the specific protein, peptide or
-#' precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
-#' \item{"proDA": }{The \code{std_error} column contains the standard error of the differential
+#' precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.
+#' * "proDA": The \code{std_error} column contains the standard error of the differential
 #' abundances. \code{avg_abundance} contains average abundances for treatment/reference pairs
 #' (mean of the two group means). \code{t_statistic} contains the t_statistic for the t-test.
 #' \code{n_obs} contains the number of observations for the specific protein, peptide or precursor
-#' (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
-#' }
+#' (depending on the \code{grouping} variable) and the associated treatment/reference pair.
+#'
 #' @keywords internal
 #' @export
 diff_abundance <-
@@ -117,19 +117,19 @@ diff_abundance <-
 #' and adjusted p-values (\code{adj_pval}) for each protein, peptide or precursor (depending on
 #' the \code{grouping} variable) and the associated treatment/reference pair. Depending on the
 #' method the data frame contains additional columns:
-#' \itemize{
-#' \item{"t-test": }{The \code{std_error} column contains the standard error of the differential
+#'
+#' * "t-test": The \code{std_error} column contains the standard error of the differential
 #' abundances. \code{n_obs} contains the number of observations for the specific protein, peptide
-#' or precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
-#' \item{"t-test_mean_sd": }{Columns labeled as control refer to the second condition of the
+#' or precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.
+#' * "t-test_mean_sd": Columns labeled as control refer to the second condition of the
 #' comparison pairs. Treated refers to the first condition. \code{mean_control} and \code{mean_treated}
 #' columns contain the means for the reference and treatment condition, respectively. \code{sd_control}
 #' and \code{sd_treated} columns contain the standard deviations for the reference and treatment
 #' condition, respectively. \code{n_control} and \code{n_treated} columns contain the numbers of
 #' samples for the reference and treatment condition, respectively. The \code{std_error} column
 #' contains the standard error of the differential abundances. \code{t_statistic} contains the
-#' t_statistic for the t-test.}
-#' \item{"moderated_t-test": }{\code{CI_2.5} and \code{CI_97.5} contain the 2.5% and 97.5%
+#' t_statistic for the t-test.
+#' * "moderated_t-test": \code{CI_2.5} and \code{CI_97.5} contain the 2.5% and 97.5%
 #' confidence interval borders for differential abundances. \code{avg_abundance} contains average
 #' abundances for treatment/reference pairs (mean of the two group means). \code{t_statistic}
 #' contains the t_statistic for the t-test. \code{B} The B-statistic is the log-odds that the
@@ -139,13 +139,13 @@ diff_abundance <-
 #' 4.48/(1+4.48)=0.82, i.e., the probability is about 82% that this group is differentially
 #' abundant. A B-statistic of zero corresponds to a 50-50 chance that the group is differentially
 #' abundant.\code{n_obs} contains the number of observations for the specific protein, peptide or
-#' precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
-#' \item{"proDA": }{The \code{std_error} column contains the standard error of the differential
+#' precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.
+#' * "proDA": The \code{std_error} column contains the standard error of the differential
 #' abundances. \code{avg_abundance} contains average abundances for treatment/reference pairs
 #' (mean of the two group means). \code{t_statistic} contains the t_statistic for the t-test.
 #' \code{n_obs} contains the number of observations for the specific protein, peptide or precursor
-#' (depending on the \code{grouping} variable) and the associated treatment/reference pair.}
-#' }
+#' (depending on the \code{grouping} variable) and the associated treatment/reference pair.
+#'
 #' For all methods execept \code{"proDA"}, the p-value adjustment is performed only on the
 #' proportion of data that contains a p-value that is not \code{NA}. For \code{"proDA"} the
 #' p-value adjustment is either performed on the complete dataset (\code{filter_NA_missingness = TRUE})

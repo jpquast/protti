@@ -54,17 +54,18 @@ A data frame that contains the reference condition paired with each treatment co
 The \code{comparison} column contains the comparison name for the specific treatment/reference
 pair. The \code{missingness} column reports the type of missingness.
 \itemize{
-\item{"complete": }{No missing values for every replicate of this reference/treatment pair for
-the specific grouping variable.}
-\item{"MNAR": }{Missing not at random. All replicates of either the reference or treatment
-condition have missing values for the specific grouping variable.}
-\item{"MAR": }{Missing at random. At least n-1 replicates have missing values for the
-reference/treatment pair for the specific grouping varible.}
-\item{NA: }{The comparison is not complete enough to fall into any other category. It will not
+\item "complete": No missing values for every replicate of this reference/treatment pair for
+the specific grouping variable.
+\item "MNAR": Missing not at random. All replicates of either the reference or treatment
+condition have missing values for the specific grouping variable.
+\item "MAR": Missing at random. At least n-1 replicates have missing values for the
+reference/treatment pair for the specific grouping varible.
+\item NA: The comparison is not complete enough to fall into any other category. It will not
 be imputed if imputation is performed. For statistical significance testing these comparisons
 are filtered out after the test and prior to p-value adjustment. This can be prevented by setting
-\code{filter_NA_missingness = FALSE} in the \code{calculate_diff_abundance()} function.}
+\code{filter_NA_missingness = FALSE} in the \code{calculate_diff_abundance()} function.
 }
+
 The type of missingness has an influence on the way values are imputeted if imputation is
 performed subsequently using the \code{impute()} function. How each type of missingness is
 specifically imputed can be found in the function description. The type of missingness

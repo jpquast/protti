@@ -43,27 +43,27 @@ A list that contains atom level data for AlphaFold predictions. If return_data_f
 TRUE, a data frame with this information is returned instead. The data frame contains the
 following columns:
 \itemize{
-\item{label_id: }{Uniquely identifies every atom in the prediction following the standardised
-convention for mmCIF files.}
-\item{type_symbol: }{The code used to identify the atom species representing this atom type.
-This code is the element symbol.}
-\item{label_atom_id: }{Uniquely identifies every atom for the given residue following the
-standardised convention for mmCIF files.}
-\item{label_comp_id: }{A chemical identifier for the residue. This is the three- letter code
-for the amino acid.}
-\item{label_asym_id: }{Chain identifier following the standardised convention for mmCIF files.
-Since every prediction only contains one protein this is always "A".}
-\item{label_seq_id: }{Uniquely and sequentially identifies residues for each protein. The
-numbering corresponds to the UniProt amino acid positions.}
-\item{x: }{The x coordinate of the atom.}
-\item{y: }{The y coordinate of the atom.}
-\item{z: }{The z coordinate of the atom.}
-\item{prediction_score: }{Contains the prediction score for each residue.}
-\item{auth_seq_id: }{Same as \code{label_seq_id}. But of type character.}
-\item{auth_comp_id: }{Same as \code{label_comp_id}.}
-\item{auth_asym_id: }{Same as \code{label_asym_id}.}
-\item{uniprot_id: }{The UniProt identifier of the predicted protein.}
-\item{score_quality: }{Score annotations.}
+\item label_id: Uniquely identifies every atom in the prediction following the standardised
+convention for mmCIF files.
+\item type_symbol: The code used to identify the atom species representing this atom type.
+This code is the element symbol.
+\item label_atom_id: Uniquely identifies every atom for the given residue following the
+standardised convention for mmCIF files.
+\item label_comp_id: A chemical identifier for the residue. This is the three- letter code
+for the amino acid.
+\item label_asym_id: Chain identifier following the standardised convention for mmCIF files.
+Since every prediction only contains one protein this is always "A".
+\item label_seq_id: Uniquely and sequentially identifies residues for each protein. The
+numbering corresponds to the UniProt amino acid positions.
+\item x: The x coordinate of the atom.
+\item y: The y coordinate of the atom.
+\item z: The z coordinate of the atom.
+\item prediction_score: Contains the prediction score for each residue.
+\item auth_seq_id: Same as \code{label_seq_id}. But of type character.
+\item auth_comp_id: Same as \code{label_comp_id}.
+\item auth_asym_id: Same as \code{label_asym_id}.
+\item uniprot_id: The UniProt identifier of the predicted protein.
+\item score_quality: Score annotations.
 }
 }
 \description{

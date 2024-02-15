@@ -42,9 +42,9 @@ A list of the provided proteins that contains domain assignments for each residu
 \code{TRUE}, a data frame with this information is returned instead. The data frame contains the
 following columns:
 \itemize{
-\item{residue: }{The protein residue number.}
-\item{domain: }{A numeric value representing a distinct predicted domain in the protein.}
-\item{accession: }{The UniProt protein identifier.}
+\item residue: The protein residue number.
+\item domain: A numeric value representing a distinct predicted domain in the protein.
+\item accession: The UniProt protein identifier.
 }
 }
 \description{

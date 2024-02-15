@@ -11,36 +11,36 @@
 #'
 #' @return A data frame that contains structure metadata for the PDB IDs provided. The data frame
 #' contains some columns that might not be self explanatory.
-#' \itemize{
-#' \item{auth_asym_id: }{Chain identifier provided by the author of the structure in order to
-#' match the identification used in the publication that describes the structure.}
-#' \item{label_asym_id: }{Chain identifier following the standardised convention for mmCIF files.}
-#' \item{entity_beg_seq_id, ref_beg_seq_id, length, pdb_sequence: }{\code{entity_beg_seq_id} is a
+#'
+#' * auth_asym_id: Chain identifier provided by the author of the structure in order to
+#' match the identification used in the publication that describes the structure.
+#' * label_asym_id: Chain identifier following the standardised convention for mmCIF files.
+#' * entity_beg_seq_id, ref_beg_seq_id, length, pdb_sequence: \code{entity_beg_seq_id} is a
 #' position in the structure sequence (\code{pdb_sequence}) that matches the position given in
 #' \code{ref_beg_seq_id}, which is a position within the protein sequence (not included in the
 #' data frame). \code{length} identifies the stretch of sequence for which positions match
 #' accordingly between structure and protein sequence. \code{entity_beg_seq_id} is a residue ID
-#' based on the standardised convention for mmCIF files.}
-#' \item{auth_seq_id: }{Residue identifier provided by the author of the structure in order to
+#' based on the standardised convention for mmCIF files.
+#' * auth_seq_id: Residue identifier provided by the author of the structure in order to
 #' match the identification used in the publication that describes the structure. This character
 #' vector has the same length as the \code{pdb_sequence} and each position is the identifier for
 #' the matching amino acid position in \code{pdb_sequence}. The contained values are not
-#' necessarily numbers and the values do not have to be positive.}
-#' \item{modified_monomer: }{Is composed of first the composition ID of the modification, followed
+#' necessarily numbers and the values do not have to be positive.
+#' * modified_monomer: Is composed of first the composition ID of the modification, followed
 #' by the \code{label_seq_id} position. In parenthesis are the parent monomer identifiers as
-#' they appear in the sequence.}
-#' \item{ligand_*: }{Any column starting with the \code{ligand_*} prefix contains information about
+#' they appear in the sequence.
+#' * ligand_*: Any column starting with the \code{ligand_*} prefix contains information about
 #' the position, identity and donors for ligand binding sites. If there are multiple entities of
-#' ligands they are separated by "|". Specific donor level information is separated by ";".}
-#' \item{secondar_structure: }{Contains information about helix and sheet secondary structure elements.
-#' Individual regions are separated by ";".}
-#' \item{unmodeled_structure: }{Contains information about unmodeled or partially modeled regions in
-#' the model. Individual regions are separated by ";".}
-#' \item{auth_seq_id_original: }{In some cases the sequence positions do not match the number of residues
+#' ligands they are separated by "|". Specific donor level information is separated by ";".
+#' * secondar_structure: Contains information about helix and sheet secondary structure elements.
+#' Individual regions are separated by ";".
+#' * unmodeled_structure: Contains information about unmodeled or partially modeled regions in
+#' the model. Individual regions are separated by ";".
+#' * auth_seq_id_original: In some cases the sequence positions do not match the number of residues
 #' in the sequence either because positions are missing or duplicated. This always coincides with modified
 #' residues, however does not always occur when there is a modified residue in the sequence. This column
-#' contains the original \code{auth_seq_id} information that does not have these positions corrected.}
-#' }
+#' contains the original \code{auth_seq_id} information that does not have these positions corrected.
+#'
 #' @import dplyr
 #' @import progress
 #' @import purrr

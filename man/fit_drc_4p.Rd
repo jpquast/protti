@@ -83,10 +83,10 @@ If \code{include_models = FALSE} a data frame is returned that contains correlat
 of predicted to measured values as a measure of the goodness of the curve fit, an associated
 p-value and the four parameters of the model for each group. Furthermore, input data for plots
 is returned in the columns \code{plot_curve} (curve and confidence interval) and \code{plot_points}
-(measured points). If \ code{include_models = TURE}, a list is returned that contains:
+(measured points). If \code{include_models = TURE}, a list is returned that contains:
 \itemize{
-\item{\code{fit_objects}: }{The fit objects of type \code{drc} for each group.}
-\item{\code{correlations}: }{The correlation data frame described above}
+\item \code{fit_objects}: The fit objects of type \code{drc} for each group.
+\item \code{correlations}: The correlation data frame described above
 }
 }
 \description{

@@ -84,15 +84,15 @@
 #' columns can be retained by providing their names (not in quotations marks, just like other
 #' column names, but in a vector).
 #'
-#' @return If \code{include_models = FALSE} a data frame is returned that contains correlations
+#' @return If `include_models = FALSE` a data frame is returned that contains correlations
 #' of predicted to measured values as a measure of the goodness of the curve fit, an associated
 #' p-value and the four parameters of the model for each group. Furthermore, input data for plots
-#' is returned in the columns \code{plot_curve} (curve and confidence interval) and \code{plot_points}
-#' (measured points). If \ code{include_models = TURE}, a list is returned that contains:
-#' \itemize{
-#' \item{\code{fit_objects}: }{The fit objects of type \code{drc} for each group.}
-#' \item{\code{correlations}: }{The correlation data frame described above}
-#' }
+#' is returned in the columns `plot_curve` (curve and confidence interval) and `plot_points`
+#' (measured points). If `include_models = TURE`, a list is returned that contains:
+#'
+#' * `fit_objects`: The fit objects of type `drc` for each group.
+#' * `correlations`: The correlation data frame described above
+#'
 #' @import dplyr
 #' @import tidyr
 #' @import progress

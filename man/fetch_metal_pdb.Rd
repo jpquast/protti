@@ -75,30 +75,30 @@ nothing is supplied here, all possible columns will be retrieved.}
 A data frame that contains information about protein-metal binding sites. The data
 frame contains some columns that might not be self explanatory.
 \itemize{
-\item{auth_id_metal: }{Unique structure atom identifier of the metal, which is provided by
+\item auth_id_metal: Unique structure atom identifier of the metal, which is provided by
 the author of the structure in order to match the identification used in the publication
-that describes the structure.}
-\item{auth_seq_id_metal: }{Residue identifier of the metal, which is provided by the author of
+that describes the structure.
+\item auth_seq_id_metal: Residue identifier of the metal, which is provided by the author of
 the structure in order to match the identification used in the publication that describes the
-structure.}
-\item{pattern: }{Metal pattern for each metal bound by the structure.}
-\item{is_representative: }{A representative site is a site selected to represent a cluster of
+structure.
+\item pattern: Metal pattern for each metal bound by the structure.
+\item is_representative: A representative site is a site selected to represent a cluster of
 equivalent sites. The selection is done by choosing the PDB structure with the best X-ray
 resolution among those containing the sites in the cluster. NMR structures are generally
 discarded in favor of X-ray structures, unless all the sites in the cluster are found in NMR
-structures.}
-\item{auth_asym_id_ligand: }{Chain identifier of the metal-coordinating ligand residues, which
+structures.
+\item auth_asym_id_ligand: Chain identifier of the metal-coordinating ligand residues, which
 is provided by the author of the structure in order to match the identification used in the
-publication that describes the structure.}
-\item{auth_seq_id_ligand: }{Residue identifier of the metal-coordinating ligand residues, which
+publication that describes the structure.
+\item auth_seq_id_ligand: Residue identifier of the metal-coordinating ligand residues, which
 is provided by the author of the structure in order to match the identification used in the
-publication that describes the structure.}
-\item{auth_id_ligand: }{Unique structure atom identifier of the metal-coordinating ligand r
+publication that describes the structure.
+\item auth_id_ligand: Unique structure atom identifier of the metal-coordinating ligand r
 esidues, which is provided by the author of the structure in order to match the identification
-used in the publication that describes the structure.}
-\item{auth_atom_id_ligand: }{Unique residue specific atom identifier of the metal-coordinating
+used in the publication that describes the structure.
+\item auth_atom_id_ligand: Unique residue specific atom identifier of the metal-coordinating
 ligand residues, which is provided by the author of the structure in order to match the
-identification used in the publication that describes the structure.}
+identification used in the publication that describes the structure.
 }
 }
 \description{
