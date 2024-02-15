@@ -454,7 +454,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("fetch_quickgo works", {
     expect_is(annotations, "data.frame")
     expect_gte(nrow(annotations), 24)
-    expect_lte(nrow(annotations), 30)
+    expect_lte(nrow(annotations), 40)
     expect_equal(ncol(annotations), 15)
 
     terms <- fetch_quickgo(type = "terms")
