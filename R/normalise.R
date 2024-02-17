@@ -24,7 +24,8 @@ median_normalisation <- function(...) {
 #' original intensity minus the run median plus the global median. This is also the way it is
 #' implemented in the Spectronaut search engine.
 #'
-#' @param data a data frame containing at least sample names and intensity values.
+#' @param data a data frame containing at least sample names and intensity values. Please note that if the
+#' data frame is grouped, the normalisation will be computed by group.
 #' @param sample a character column in the \code{data} data frame that contains the sample names.
 #' @param intensity_log2 a numeric column in the \code{data} data frame that contains the log2 transformed
 #' intensity values to be normalised.
@@ -59,9 +60,9 @@ normalise <-
       median_normalised <- data %>%
         dplyr::distinct() %>%
         dplyr::mutate(global_median = stats::median({{ intensity_log2 }}, na.rm = TRUE)) %>%
-        dplyr::group_by({{ sample }}) %>%
+        dplyr::group_by({{ sample }}, .add = TRUE) %>%
         dplyr::mutate(run_median = stats::median({{ intensity_log2 }}, na.rm = TRUE)) %>%
-        dplyr::ungroup() %>%
+        dplyr::ungroup({{ sample }}) %>%
         dplyr::mutate(normalised_intensity_log2 = {{ intensity_log2 }} - .data$run_median + .data$global_median) %>%
         dplyr::select(-.data$run_median, -.data$global_median)
 
