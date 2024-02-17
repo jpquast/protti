@@ -7,7 +7,7 @@
 #' identifiers.
 #' @param coverage a numeric column in the \code{data} data frame that contains protein coverage
 #' in percent. This information can be obtained using the \code{\link{sequence_coverage}} function.
-#' @param sample optional, a character column in the \code{data} data frame that contains sample names.
+#' @param sample optional, a character or factor column in the \code{data} data frame that contains sample names.
 #' Please only provide this argument if you want to facet the distribution plot by sample
 #' otherwise do not provide this argument.
 #' @param interactive a logical value that specifies whether the plot should be interactive
@@ -49,9 +49,12 @@ qc_sequence_coverage <- function(data,
                                  interactive = FALSE) {
   result <- data %>%
     dplyr::distinct({{ protein_identifier }}, {{ coverage }}, {{ sample }}) %>%
-    tidyr::drop_na({{ coverage }})
+    tidyr::drop_na({{ coverage }}) %>%
+    dplyr::group_by({{ sample }}) %>%
+    dplyr::mutate(median_coverage = median({{ coverage }})) %>%
+    dplyr::ungroup()
 
-  if (!missing(sample)) {
+  if (!missing(sample) && is(dplyr::pull(result, {{ sample }}), "character")) {
     result <- result %>%
       dplyr::mutate({{ sample }} := factor({{ sample }},
         levels = unique(stringr::str_sort({{ sample }}, numeric = TRUE))
@@ -67,7 +70,10 @@ qc_sequence_coverage <- function(data,
       boundary = 0,
       size = 1
     ) +
-    ggplot2::geom_vline(xintercept = stats::median(dplyr::pull(result, {{ coverage }}), na.rm = TRUE), linetype = "dashed") +
+    ggplot2::geom_vline(data = result %>% dplyr::distinct(.data$median_coverage, {{ sample }}),
+                        mapping = aes(xintercept = median_coverage),
+                        linewidth = 1,
+                        linetype = "dashed") +
     ggplot2::labs(
       title = "Protein coverage distribution",
       x = "Coverage [%]",
