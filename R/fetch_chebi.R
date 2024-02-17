@@ -33,12 +33,13 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
   }
   # Retrieve relational information
   if (relation == TRUE) {
-    chebi_relation_result <- tryCatch(httr::GET(
-      "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv",
-      httr::timeout(timeout)
-    ),
-    error = function(e) conditionMessage(e),
-    warning = function(w) conditionMessage(w)
+    chebi_relation_result <- tryCatch(
+      httr::GET(
+        "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv",
+        httr::timeout(timeout)
+      ),
+      error = function(e) conditionMessage(e),
+      warning = function(w) conditionMessage(w)
     )
 
     # Check again if there is an internet connection
@@ -64,21 +65,22 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
 
     chebi_relation_clean <- chebi_relation %>%
       dplyr::filter(.data$STATUS == "C") %>%
-      dplyr::select(-c(.data$ID, .data$STATUS)) %>%
-      dplyr::rename(incoming = .data$FINAL_ID) %>%
-      dplyr::rename(ID = .data$INIT_ID) %>%
+      dplyr::select(-c("ID", "STATUS")) %>%
+      dplyr::rename(incoming = "FINAL_ID") %>%
+      dplyr::rename(ID = "INIT_ID") %>%
       janitor::clean_names()
 
     return(chebi_relation_clean)
   }
 
   # Download compound data
-  chebi_chemical_data_result <- tryCatch(httr::GET(
-    "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv",
-    httr::timeout(timeout)
-  ),
-  error = function(e) conditionMessage(e),
-  warning = function(w) conditionMessage(w)
+  chebi_chemical_data_result <- tryCatch(
+    httr::GET(
+      "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv",
+      httr::timeout(timeout)
+    ),
+    error = function(e) conditionMessage(e),
+    warning = function(w) conditionMessage(w)
   )
 
   # check if response is error
@@ -134,12 +136,13 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
     return(invisible(NULL))
   }
 
-  chebi_accession_result <- tryCatch(httr::GET(
-    "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv",
-    httr::timeout(timeout)
-  ),
-  error = function(e) conditionMessage(e),
-  warning = function(w) conditionMessage(w)
+  chebi_accession_result <- tryCatch(
+    httr::GET(
+      "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv",
+      httr::timeout(timeout)
+    ),
+    error = function(e) conditionMessage(e),
+    warning = function(w) conditionMessage(w)
   )
 
   # check if response is error
@@ -164,53 +167,54 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
   chebi_compounds_clean <- chebi_compounds %>%
     dplyr::filter(.data$STAR %in% stars) %>%
     dplyr::select(-c(
-      .data$SOURCE,
-      .data$NAME,
-      .data$STATUS,
-      .data$MODIFIED_ON,
-      .data$CREATED_BY
+      "SOURCE",
+      "NAME",
+      "STATUS",
+      "MODIFIED_ON",
+      "CREATED_BY"
     )) %>%
-    dplyr::mutate(dplyr::across(c(.data$PARENT_ID, .data$DEFINITION), ~ dplyr::na_if(.x, "null"))) %>%
+    dplyr::mutate(dplyr::across(c("PARENT_ID", "DEFINITION"), ~ dplyr::na_if(.x, "null"))) %>%
     dplyr::mutate(PARENT_ID = as.numeric(.data$PARENT_ID))
 
 
   chebi_accession_clean <- chebi_accession %>%
     dplyr::distinct(.data$COMPOUND_ID, .data$TYPE, .data$ACCESSION_NUMBER) %>%
-    dplyr::rename(ID = .data$COMPOUND_ID) %>%
-    dplyr::rename(TYPE_ACCESSION = .data$TYPE)
+    dplyr::rename(ID = "COMPOUND_ID") %>%
+    dplyr::rename(TYPE_ACCESSION = "TYPE")
 
   chebi_chemical_data_clean <- chebi_chemical_data %>%
     dplyr::distinct(.data$COMPOUND_ID, .data$TYPE, .data$CHEMICAL_DATA) %>%
-    dplyr::rename(ID = .data$COMPOUND_ID) %>%
+    dplyr::rename(ID = "COMPOUND_ID") %>%
     tidyr::pivot_wider(
-      names_from = .data$TYPE,
-      values_from = .data$CHEMICAL_DATA,
+      names_from = "TYPE",
+      values_from = "CHEMICAL_DATA",
       values_fn = list
     ) %>%
     tidyr::unnest(cols = c(
-      .data$FORMULA,
-      .data$MASS,
-      .data$CHARGE,
-      .data$`MONOISOTOPIC MASS`
+      "FORMULA",
+      "MASS",
+      "CHARGE",
+      "MONOISOTOPIC MASS"
     ))
 
   chebi_compounds_names_clean <- chebi_compounds %>%
     dplyr::filter(.data$STAR %in% stars) %>%
     dplyr::distinct(.data$ID, .data$NAME) %>%
-    dplyr::mutate(dplyr::across(c(.data$NAME), ~ dplyr::na_if(.x, "null"))) %>%
+    dplyr::mutate(dplyr::across(c("NAME"), ~ dplyr::na_if(.x, "null"))) %>%
     dplyr::filter(!is.na(.data$NAME)) %>%
     dplyr::mutate(TYPE_NAME = "STANDARD") %>%
-    dplyr::select(.data$ID, .data$TYPE_NAME, .data$NAME)
+    dplyr::select("ID", "TYPE_NAME", "NAME")
 
   chebi_names_clean <- chebi_names %>%
     dplyr::distinct(.data$COMPOUND_ID, .data$NAME, .data$TYPE) %>%
-    dplyr::rename(ID = .data$COMPOUND_ID, TYPE_NAME = .data$TYPE) %>%
+    dplyr::rename(ID = "COMPOUND_ID",
+                  TYPE_NAME = "TYPE") %>%
     dplyr::bind_rows(chebi_compounds_names_clean)
 
   chebi <- chebi_compounds_clean %>%
     dplyr::left_join(chebi_names_clean, by = "ID") %>%
-    dplyr::left_join(chebi_accession_clean, by = "ID") %>%
-    dplyr::left_join(chebi_chemical_data_clean, by = "ID")
+    dplyr::left_join(chebi_accession_clean, by = "ID", relationship = "many-to-many") %>%
+    dplyr::left_join(chebi_chemical_data_clean, by = "ID", relationship = "many-to-many")
 
   # Add info to old compound IDs
 
@@ -222,32 +226,32 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
   parent_info <- chebi %>%
     dplyr::filter(.data$ID %in% parent_ids) %>%
     dplyr::select(c(
-      .data$ID,
-      .data$NAME,
-      .data$TYPE_NAME,
-      .data$DEFINITION,
-      .data$TYPE_ACCESSION,
-      .data$ACCESSION_NUMBER,
-      .data$FORMULA,
-      .data$MASS,
-      .data$CHARGE,
-      .data$`MONOISOTOPIC MASS`
+      "ID",
+      "NAME",
+      "TYPE_NAME",
+      "DEFINITION",
+      "TYPE_ACCESSION",
+      "ACCESSION_NUMBER",
+      "FORMULA",
+      "MASS",
+      "CHARGE",
+      "MONOISOTOPIC MASS"
     ))
 
   parent_complete <- chebi %>%
     dplyr::filter(!is.na(.data$PARENT_ID)) %>%
     dplyr::select(-c(
-      .data$NAME,
-      .data$TYPE_NAME,
-      .data$DEFINITION,
-      .data$TYPE_ACCESSION,
-      .data$ACCESSION_NUMBER,
-      .data$FORMULA,
-      .data$MASS,
-      .data$CHARGE,
-      .data$`MONOISOTOPIC MASS`
+      "NAME",
+      "TYPE_NAME",
+      "DEFINITION",
+      "TYPE_ACCESSION",
+      "ACCESSION_NUMBER",
+      "FORMULA",
+      "MASS",
+      "CHARGE",
+      "MONOISOTOPIC MASS"
     )) %>%
-    dplyr::left_join(parent_info, by = c("PARENT_ID" = "ID"))
+    dplyr::left_join(parent_info, by = c("PARENT_ID" = "ID"), relationship = "many-to-many")
 
   chebi <- chebi %>%
     dplyr::filter(is.na(.data$PARENT_ID)) %>%

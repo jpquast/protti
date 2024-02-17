@@ -147,7 +147,7 @@ create_synthetic_data <- function(n_proteins,
       ),
       digits = 4
     ))) %>%
-    tidyr::unnest(.data$peptide_intensity_mean) %>%
+    tidyr::unnest("peptide_intensity_mean") %>%
     dplyr::mutate(peptide = paste0(
       "peptide_", stringr::str_extract(
         .data$protein,
@@ -155,20 +155,21 @@ create_synthetic_data <- function(n_proteins,
       ),
       "_", 1:dplyr::n()
     )) %>%
-    dplyr::mutate(replicate_sd = round(stats::rlnorm(
-      n = 1,
-      meanlog = mean_log_replicates,
-      sdlog = sd_log_replicates
-    ),
-    digits = 4
+    dplyr::mutate(replicate_sd = round(
+      stats::rlnorm(
+        n = 1,
+        meanlog = mean_log_replicates,
+        sdlog = sd_log_replicates
+      ),
+      digits = 4
     )) %>%
-    dplyr::select(-c(.data$mean, .data$sd))
+    dplyr::select(-c("mean", "sd"))
 
   # sample peptide intensities for replicates and conditions
   proteins_replicates <- proteins %>%
     dplyr::group_by(.data$peptide) %>%
     dplyr::mutate(condition = list(sort(rep(paste0("condition_", 1:n_conditions), n_replicates)))) %>%
-    tidyr::unnest(c(.data$condition)) %>%
+    tidyr::unnest(c("condition")) %>%
     dplyr::mutate(sample = paste0("sample_", 1:(n_conditions * n_replicates))) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(peptide_intensity = stats::rnorm(
@@ -215,12 +216,12 @@ create_synthetic_data <- function(n_proteins,
       dplyr::ungroup() %>%
       dplyr::mutate(peptide_intensity = .data$peptide_intensity + .data$offset) %>%
       dplyr::select(-c(
-        .data$peptide_intensity_mean,
-        .data$replicate_sd,
-        .data$effect,
-        .data$n,
-        .data$n_change_peptide,
-        .data$offset
+        "peptide_intensity_mean",
+        "replicate_sd",
+        "effect",
+        "n",
+        "n_change_peptide",
+        "offset"
       ))
   }
 
@@ -255,17 +256,18 @@ create_synthetic_data <- function(n_proteins,
       dplyr::group_by(.data$peptide) %>%
       dplyr::mutate(effect_total = rep(.data$effect_total[1], (n_replicates * n_conditions))) %>%
       dplyr::ungroup() %>%
-      dplyr::mutate(b = sample(c(
-        stats::rlnorm(dplyr::n(),
-          meanlog = 0.6,
-          sdlog = 0.4
+      dplyr::mutate(b = sample(
+        c(
+          stats::rlnorm(dplyr::n(),
+            meanlog = 0.6,
+            sdlog = 0.4
+          ),
+          -rlnorm(dplyr::n(),
+            meanlog = 0.6,
+            sdlog = 0.4
+          )
         ),
-        -rlnorm(dplyr::n(),
-          meanlog = 0.6,
-          sdlog = 0.4
-        )
-      ),
-      size = dplyr::n()
+        size = dplyr::n()
       )) %>%
       dplyr::mutate(c = stats::rlnorm(dplyr::n(),
         meanlog = log(mean(concentrations) / 2),
@@ -285,15 +287,15 @@ create_synthetic_data <- function(n_proteins,
       dplyr::ungroup() %>%
       dplyr::mutate(peptide_intensity = .data$peptide_intensity + .data$offset) %>%
       dplyr::select(-c(
-        .data$peptide_intensity_mean,
-        .data$replicate_sd,
-        .data$n,
-        .data$n_change_peptide,
-        .data$effect,
-        .data$effect_total,
-        .data$b,
-        .data$c,
-        .data$offset
+        "peptide_intensity_mean",
+        "replicate_sd",
+        "n",
+        "n_change_peptide",
+        "effect",
+        "effect_total",
+        "b",
+        "c",
+        "offset"
       ))
     # formula for inflection point and slope sampling roughly simulates
     # the behaviour of real data. They have been figured out by trial and error.
@@ -311,12 +313,12 @@ create_synthetic_data <- function(n_proteins,
       .data$peptide_intensity,
       NA
     )) %>%
-    dplyr::select(-.data$dropout_probability) %>%
+    dplyr::select(-"dropout_probability") %>%
     dplyr::group_by(.data$peptide) %>%
     dplyr::mutate(isna = sum(!is.na(.data$peptide_intensity_missing))) %>%
     # remove peptides for which every intensity is NA after dropout
     dplyr::filter(.data$isna > 0) %>%
-    dplyr::select(-.data$isna) %>%
+    dplyr::select(-"isna") %>%
     dplyr::ungroup()
 
   if (additional_metadata == FALSE) {
@@ -334,7 +336,7 @@ create_synthetic_data <- function(n_proteins,
       dplyr::mutate(coverage_peptide = .data$coverage / dplyr::n_distinct(.data$peptide)) %>%
       dplyr::group_by(.data$sample, .data$protein) %>%
       dplyr::mutate(coverage = sum(!is.na(.data$peptide_intensity_missing)) * .data$coverage_peptide) %>%
-      dplyr::select(-.data$coverage_peptide) %>%
+      dplyr::select(-"coverage_peptide") %>%
       dplyr::ungroup()
 
     # adding missed cleavage estimates based on poisson distribution

@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 # Introduction
 
 ```{r CRAN_comment, message=FALSE, warning=FALSE, echo=FALSE}
-if (build_vignette_on_cran == FALSE){
+if (build_vignette_on_cran == FALSE) {
   print("!!! IMPORTANT !!!")
   print("This Vignette has not been built completely on CRAN due to size limitations.")
   print("Please check the correct version here: ")
@@ -104,12 +104,14 @@ First we need to annotate the data with information required for structural data
 uniprot_ids <- unique(ptsi_pgk$pg_protein_accessions)
 
 # Fetch UniProt information
-uniprot_information <- fetch_uniprot(uniprot_ids = uniprot_ids,
-                                     columns = c("sequence", "xref_pdb"))
+uniprot_information <- fetch_uniprot(
+  uniprot_ids = uniprot_ids,
+  columns = c("sequence", "xref_pdb")
+)
 
 # Add UniProt information and find peptide positions
-ptsi_pgk_annotated <- ptsi_pgk %>% 
-  left_join(uniprot_information, by = c("pg_protein_accessions" = "accession")) %>% 
+ptsi_pgk_annotated <- ptsi_pgk %>%
+  left_join(uniprot_information, by = c("pg_protein_accessions" = "accession")) %>%
   find_peptide(protein_sequence = sequence, peptide_sequence = pep_stripped_sequence)
 ```
 
@@ -121,10 +123,10 @@ In the previous step we already retrieved information about the availability of 
 
 ```{r extract_pdb_info, eval = test_protti, warning = FALSE}
 # Extract PDB IDs from UniProt information
-ptsi_pgk_pdb_ids <- ptsi_pgk_annotated %>% 
-  distinct(pg_protein_accessions, xref_pdb) %>% 
-  mutate(pdb_id = str_split(xref_pdb, pattern = ";")) %>% 
-  unnest(pdb_id) %>% 
+ptsi_pgk_pdb_ids <- ptsi_pgk_annotated %>%
+  distinct(pg_protein_accessions, xref_pdb) %>%
+  mutate(pdb_id = str_split(xref_pdb, pattern = ";")) %>%
+  unnest(pdb_id) %>%
   filter(pdb_id != "")
 
 # Fetch pdb information
@@ -138,11 +140,13 @@ Generally, the molecular information about the structure is divided into "polyme
 You could for example only consider structures for your analysis that were determined by X-ray crystallography and that have a resolution of below 3 Å. In addition, you could select only the one structure that contains the longest sequence stretch for each of our proteins (the structure with the maximum `length`). This can be achieved in the following way:
 
 ```{r filter_structures, eval = test_protti, warning = FALSE}
-filtered_structures <- ptsi_pgk_pdb_information %>% 
-  filter(experimental_method == "X-ray",
-         resolution_combined <= 3) %>% 
-  group_by(reference_database_accession) %>% 
-  filter(length == max(length)) %>% 
+filtered_structures <- ptsi_pgk_pdb_information %>%
+  filter(
+    experimental_method == "X-ray",
+    resolution_combined <= 3
+  ) %>%
+  group_by(reference_database_accession) %>%
+  filter(length == max(length)) %>%
   ungroup()
 ```
 
@@ -159,8 +163,10 @@ Similar to `fetch_pdb()` PDB identifiers are provided as input to `fetch_pdb_str
 pdb_ids <- unique(filtered_structures$pdb_ids) # "1ZMR", "2HWG"
 
 # Fetch atom level structural information
-ptsi_pgk_structure_information <- fetch_pdb_structure(pdb_ids = pdb_ids,
-                                                      return_data_frame = TRUE)
+ptsi_pgk_structure_information <- fetch_pdb_structure(
+  pdb_ids = pdb_ids,
+  return_data_frame = TRUE
+)
 ```
 
 ## Fetching atomic structure prediction information from AlphaFold
@@ -171,8 +177,10 @@ It is of course also possible to retrieve structure prediction information for p
 
 ```{r fetch_alphafold_prediction, eval = test_protti, warning = FALSE}
 # Fetch atom level structural prediction information from AlphaFold
-ptsi_pgk_prediction_information <- fetch_alphafold_prediction(uniprot_ids = uniprot_ids,
-                                                              return_data_frame = TRUE)
+ptsi_pgk_prediction_information <- fetch_alphafold_prediction(
+  uniprot_ids = uniprot_ids,
+  return_data_frame = TRUE
+)
 
 # Example for fetching all predictions for Methanocaldococcus jannaschii
 # mj_predictions <- fetch_alphafold_prediction(organism_name = "Methanocaldococcus jannaschii")
@@ -186,75 +194,81 @@ With **protti** we provide the function `fetch_alphafold_aligned_error()` that a
 
 ```{r alphafold_domain_prediction, eval = test_protti, warning = FALSE}
 # Fetch aligned errors
-aligned_error <- fetch_alphafold_aligned_error(uniprot_ids = uniprot_ids,
-                                               error_cutoff = 4)
+aligned_error <- fetch_alphafold_aligned_error(
+  uniprot_ids = uniprot_ids,
+  error_cutoff = 4
+)
 
 # Predict protein domains with graph_resolution of 1
-af_domains_res_1 <- predict_alphafold_domain(pae_list = aligned_error,
-                                       return_data_frame = TRUE,
-                                       graph_resolution = 1) # Default 
+af_domains_res_1 <- predict_alphafold_domain(
+  pae_list = aligned_error,
+  return_data_frame = TRUE,
+  graph_resolution = 1
+) # Default
 
 # Predict protein domains with graph_resolution of 0.5
-af_domains_res_05 <- predict_alphafold_domain(pae_list = aligned_error,
-                                       return_data_frame = TRUE,
-                                       graph_resolution = 0.5)
+af_domains_res_05 <- predict_alphafold_domain(
+  pae_list = aligned_error,
+  return_data_frame = TRUE,
+  graph_resolution = 0.5
+)
 ```
 
 #### ptsI domain prediction with `graph_resolution = 1`
 
 ```{r show_model_P08839_res1, eval = test_protti, echo=FALSE, warning=FALSE}
 # This code won't be seen in the Vignette
-if(!is.null(af_domains_res_1)){
-# Fetch structure file for model
-protti:::try_query("https://alphafold.ebi.ac.uk/files/AF-P08839-F1-model_v3.pdb",
-  type = "text/tab-separated-values",
-  col_names = FALSE,
-  quote = "",
-  show_col_types = FALSE,
-  progress = FALSE
-) %>%
-  readr::write_tsv(
-    file = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"),
-    quote = "none",
-    escape = "none",
+if (!is.null(af_domains_res_1)) {
+  # Fetch structure file for model
+  protti:::try_query("https://alphafold.ebi.ac.uk/files/AF-P08839-F1-model_v3.pdb",
+    type = "text/tab-separated-values",
     col_names = FALSE,
+    quote = "",
+    show_col_types = FALSE,
     progress = FALSE
-  )
+  ) %>%
+    readr::write_tsv(
+      file = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"),
+      quote = "none",
+      escape = "none",
+      col_names = FALSE,
+      progress = FALSE
+    )
 
-# Load the r3dmol package
-library(r3dmol) 
+  # Load the r3dmol package
+  library(r3dmol)
 
-# Extract domain positions
+  # Extract domain positions
 
-domain1 <- af_domains_res_1 %>% 
-  filter(accession == "P08839" & domain == 1) %>%
-  pull(residue)
+  domain1 <- af_domains_res_1 %>%
+    filter(accession == "P08839" & domain == 1) %>%
+    pull(residue)
 
-domain2 <- af_domains_res_1 %>% 
-  filter(accession == "P08839" & domain == 2) %>%
-  pull(residue)
+  domain2 <- af_domains_res_1 %>%
+    filter(accession == "P08839" & domain == 2) %>%
+    pull(residue)
 
-domain3 <- af_domains_res_1 %>% 
-  filter(accession == "P08839" & domain == 3) %>%
-  pull(residue)
+  domain3 <- af_domains_res_1 %>%
+    filter(accession == "P08839" & domain == 3) %>%
+    pull(residue)
 
-# Create model
-r3dmol() %>%
-  m_add_model(data = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"), format = "pdb") %>% 
-  m_set_style(style = m_style_cartoon()) %>%
-  m_add_style(
-    style = m_style_cartoon(color = "#8047d6"),
-    sel = m_sel(resi = domain1)
-  ) %>% 
-  m_add_style(
-    style = m_style_cartoon(color = "#96d647"),
-    sel = m_sel(resi = domain2)
-  ) %>% 
-  m_add_style(
-    style = m_style_cartoon(color = "#FF7276"),
-    sel = m_sel(resi = domain3)
-  ) %>% 
-  m_zoom_to()
+  # Create model
+  r3dmol() %>%
+    m_add_model(data = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"), format = "pdb") %>%
+    m_set_style(style = m_style_cartoon()) %>%
+    m_add_style(
+      style = m_style_cartoon(color = "#8047d6"),
+      sel = m_sel(resi = domain1)
+    ) %>%
+    m_add_style(
+      style = m_style_cartoon(color = "#96d647"),
+      sel = m_sel(resi = domain2)
+    ) %>%
+    m_add_style(
+      style = m_style_cartoon(color = "#FF7276"),
+      sel = m_sel(resi = domain3)
+    ) %>%
+    m_zoom_to()
 }
 ```
 
@@ -262,38 +276,38 @@ r3dmol() %>%
 
 ```{r show_model_P08839_res05, eval = test_protti, echo=FALSE, warning=FALSE}
 # This code won't be seen in the Vignette
-if(!is.null(af_domains_res_1)){
-# Extract domain positions
+if (!is.null(af_domains_res_1)) {
+  # Extract domain positions
 
-domain1 <- af_domains_res_05 %>% 
-  filter(accession == "P08839" & domain == 1) %>%
-  pull(residue)
+  domain1 <- af_domains_res_05 %>%
+    filter(accession == "P08839" & domain == 1) %>%
+    pull(residue)
 
-domain2 <- af_domains_res_05 %>% 
-  filter(accession == "P08839" & domain == 2) %>%
-  pull(residue)
+  domain2 <- af_domains_res_05 %>%
+    filter(accession == "P08839" & domain == 2) %>%
+    pull(residue)
 
-domain3 <- af_domains_res_05 %>% 
-  filter(accession == "P08839" & domain == 3) %>%
-  pull(residue)
+  domain3 <- af_domains_res_05 %>%
+    filter(accession == "P08839" & domain == 3) %>%
+    pull(residue)
 
-# Create model
-r3dmol() %>%
-  m_add_model(data = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"), format = "pdb") %>% 
-  m_set_style(style = m_style_cartoon()) %>%
-  m_add_style(
-    style = m_style_cartoon(color = "#8047d6"),
-    sel = m_sel(resi = domain1)
-  ) %>% 
-  m_add_style(
-    style = m_style_cartoon(color = "#96d647"),
-    sel = m_sel(resi = domain2)
-  ) %>% 
-  m_add_style(
-    style = m_style_cartoon(color = "#FF7276"),
-    sel = m_sel(resi = domain3)
-  ) %>% 
-  m_zoom_to()
+  # Create model
+  r3dmol() %>%
+    m_add_model(data = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"), format = "pdb") %>%
+    m_set_style(style = m_style_cartoon()) %>%
+    m_add_style(
+      style = m_style_cartoon(color = "#8047d6"),
+      sel = m_sel(resi = domain1)
+    ) %>%
+    m_add_style(
+      style = m_style_cartoon(color = "#96d647"),
+      sel = m_sel(resi = domain2)
+    ) %>%
+    m_add_style(
+      style = m_style_cartoon(color = "#FF7276"),
+      sel = m_sel(resi = domain3)
+    ) %>%
+    m_zoom_to()
 }
 ```
 
@@ -309,13 +323,14 @@ In the following we are going to identify structure specific peptide start and e
 
 ```{r find_peptide, eval = test_protti, warning = FALSE}
 ptsi_pgk_peptide_structure_positions <- find_peptide_in_structure(
-   peptide_data = ptsi_pgk_annotated,
-   peptide = pep_stripped_sequence,
-   start = start,
-   end = end,
-   uniprot_id = pg_protein_accessions,
-   pdb_data = filtered_structures,
-   retain_columns = c(eg_precursor_id, diff, adj_pval))
+  peptide_data = ptsi_pgk_annotated,
+  peptide = pep_stripped_sequence,
+  start = start,
+  end = end,
+  uniprot_id = pg_protein_accessions,
+  pdb_data = filtered_structures,
+  retain_columns = c(eg_precursor_id, diff, adj_pval)
+)
 ```
 
 _Note: The `peptide` argument in this function does not necessarily require the peptide sequence but can also take any other unique peptide identifier as input. This is possible because peptides are not matched to the structure sequence by their sequence but are identified based on their start and end positions in the protein._
@@ -334,10 +349,10 @@ _Note: The input to the `create_structure_contact_map()` function can be a data 
 
 ```{r create_structure_contact_map, eval = test_protti, warning = FALSE, fig.width = 10, fig.height = 7, fig.align = "center"}
 # Filter data for significant peptides.
-significant_peptides <- ptsi_pgk_peptide_structure_positions %>% 
+significant_peptides <- ptsi_pgk_peptide_structure_positions %>%
   filter(abs(diff) > 2, adj_pval <= 0.01)
 
-# Create a structure contact maps 
+# Create a structure contact maps
 contact_map <- create_structure_contact_map(
   data = significant_peptides,
   id = pdb_ids,
@@ -362,7 +377,7 @@ integer_breaks <- function(n = 5, ...) {
 # Plot structure contact maps
 # 1ZMR
 contact_map[["1ZMR"]] %>% # Extract data frame from list
-  mutate(chain_combinations = paste0("chain_", label_asym_id_var1, "_vs_chain_", label_asym_id_var2)) %>% 
+  mutate(chain_combinations = paste0("chain_", label_asym_id_var1, "_vs_chain_", label_asym_id_var2)) %>%
   ggplot(aes(x = label_seq_id_var1, y = label_seq_id_var2, fill = min_distance_residue)) +
   geom_tile() +
   scale_y_continuous(breaks = integer_breaks()) +
@@ -370,10 +385,10 @@ contact_map[["1ZMR"]] %>% # Extract data frame from list
   facet_wrap(~chain_combinations, scale = "free") +
   labs(title = "Structure contact map 1ZMR") +
   theme_bw()
-  
+
 # 2HWG
 contact_map[["2HWG"]] %>% # Extract data frame from list
-  mutate(chain_combinations = paste0("chain_", label_asym_id_var1, "_vs_chain_", label_asym_id_var2)) %>% 
+  mutate(chain_combinations = paste0("chain_", label_asym_id_var1, "_vs_chain_", label_asym_id_var2)) %>%
   ggplot(aes(x = label_seq_id_var1, y = label_seq_id_var2, fill = min_distance_residue)) +
   geom_tile() +
   scale_y_continuous(breaks = integer_breaks()) +
@@ -413,19 +428,20 @@ You provide information on colouring through the `map_value` argument. This shou
 Lastly, we can specify an export location to indicate a place where the structure file should be saved. In this example the location is specified as a temporary file directory using the `tempdir()` function. You should change that location to any more accessible place. If you leave the argument empty, structures will be automatically saved in your working directory.
 
 ```{r peptide_mapping, eval = test_protti, warning = FALSE}
-ptsi_pgk_peptide_structure_positions %>% 
-  mutate(map_value = ifelse(eg_precursor_id %in% significant_peptides$eg_precursor_id, 
-                            100, 
-                            0)) %>% 
+ptsi_pgk_peptide_structure_positions %>%
+  mutate(map_value = ifelse(eg_precursor_id %in% significant_peptides$eg_precursor_id,
+    100,
+    0
+  )) %>%
   map_peptides_on_structure(
-   uniprot_id = pg_protein_accessions,
-   pdb_id = pdb_ids,
-   chain = auth_asym_id,
-   auth_seq_id = auth_seq_id,
-   map_value = map_value,
-   file_format = ".pdb", 
-   export_location = tempdir() # change to a location of your choice
- )
+    uniprot_id = pg_protein_accessions,
+    pdb_id = pdb_ids,
+    chain = auth_asym_id,
+    auth_seq_id = auth_seq_id,
+    map_value = map_value,
+    file_format = ".pdb",
+    export_location = tempdir() # change to a location of your choice
+  )
 ```
 
 The function does not return anything in the R environment. Structures are directly saved in the desired format. The files contain the name of the structure and separated by "_" the name of all UniProt IDs present in the structure file.
@@ -445,11 +461,11 @@ If you run the code snippets on your own make sure you replace `paste0(tempdir()
 # install.packages("r3dmol")
 
 # Load the r3dmol package
-library(r3dmol) 
+library(r3dmol)
 
 # Create structure
 r3dmol() %>%
-  m_add_model(data = paste0(tempdir(), "/1ZMR_P0A799.pdb"), format = "pdb") %>% 
+  m_add_model(data = paste0(tempdir(), "/1ZMR_P0A799.pdb"), format = "pdb") %>%
   m_set_style(style = m_style_cartoon(
     colorfunc = "
         function(atom) {
@@ -539,25 +555,26 @@ amino_acid_score <- calculate_aa_scores(
 
 # Find amino acid positions in the structure
 ptsi_pgk_amino_acid_structure_positions <- find_peptide_in_structure(
-   peptide_data = amino_acid_score,
-   peptide = residue,
-   start = residue,
-   end = residue,
-   uniprot_id = pg_protein_accessions,
-   pdb_data = filtered_structures,
-   retain_columns = c(amino_acid_score))
+  peptide_data = amino_acid_score,
+  peptide = residue,
+  start = residue,
+  end = residue,
+  uniprot_id = pg_protein_accessions,
+  pdb_data = filtered_structures,
+  retain_columns = c(amino_acid_score)
+)
 
 # Map the score on structure
 map_peptides_on_structure(
   peptide_data = ptsi_pgk_amino_acid_structure_positions,
-   uniprot_id = pg_protein_accessions,
-   pdb_id = pdb_ids,
-   chain = auth_asym_id,
-   auth_seq_id = auth_seq_id,
-   map_value = amino_acid_score,
-   file_format = ".pdb",
-   export_location = tempdir()
- )
+  uniprot_id = pg_protein_accessions,
+  pdb_id = pdb_ids,
+  chain = auth_asym_id,
+  auth_seq_id = auth_seq_id,
+  map_value = amino_acid_score,
+  file_format = ".pdb",
+  export_location = tempdir()
+)
 ```
 
 While the previous method of displaying only significantly changing peptides that have a minimum fold change is useful for the identification of regions that change the most, it is not resistant to false positive peptides. The score on the other hand will only be high if an amino acid is consistently part of significant and differentially abundant peptides. The problem of the score is that it is hard and visually even impossible to interpret what a certain score means. This is due to the fact that the same score can be caused by two completely different scenarios. On the one hand an amino acid might be associated with peptides that have a low fold change but are highly significant. On the other hand it can be associated with peptides that have a high fold change but are of low significance. Both scenarios could yield the same amino acid score. Therefore, the score should not be misinterpreted as describing the extent of the change but should rather be seen as a probability that a certain amino acid is really structurally affected.
@@ -566,10 +583,13 @@ You can visualise the score as a colour gradient using the `r3dmol` package in R
 
 ```{r score_3d_structure_mapping, eval = test_protti, echo=TRUE, warning=FALSE}
 # create a color gradient with 101 colors
-color_gradient <- paste0('"', 
-                         paste(colorRampPalette(c("white", "#90EE90", "#FF7276"))(101), 
-                               collapse = '", "'), 
-                         '"')
+color_gradient <- paste0(
+  '"',
+  paste(colorRampPalette(c("white", "#90EE90", "#FF7276"))(101),
+    collapse = '", "'
+  ),
+  '"'
+)
 
 # create structure
 r3dmol() %>%
@@ -577,7 +597,7 @@ r3dmol() %>%
   m_set_style(style = m_style_cartoon(
     colorfunc = paste0("
         function(atom) {
-          const color = [", color_gradient,"]
+          const color = [", color_gradient, "]
           return color[Math.round(atom.b)]
         }")
   )) %>%

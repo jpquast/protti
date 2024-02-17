@@ -44,36 +44,37 @@ the data frame to save time.}
 A data frame containing information on protein metal binding state. It contains the
 following columns:
 \itemize{
-\item{\code{accession}: }{UniProt protein identifier.}
-\item{\code{most_specific_id}: }{ChEBI ID that is most specific for the position after combining information from all sources.
-Can be multiple IDs separated by "," if a position appears multiple times due to multiple fitting IDs.}
-\item{\code{most_specific_id_name}: }{The name of the ID in the \code{most_specific_id} column. This information is based on
-ChEBI.}
-\item{\code{ligand_identifier}: }{A ligand identifier that is unique per ligand per protein. It consists of the ligand ID and
-ligand name. The ligand ID counts the number of ligands of the same type per protein.}
-\item{\code{ligand_position}: }{The amino acid position of the residue interacting with the ligand.}
-\item{\code{binding_mode}: }{Contains information about the way the amino acid residue interacts with the ligand. If it is
-"covalent" then the residue is not in contact with the metal directly but only the cofactor that binds the metal.}
-\item{\code{metal_function}: }{Contains information about the function of the metal. E.g. "catalytic".}
-\item{\code{metal_id_part}: }{Contains a ChEBI ID that identifiers the metal part of the ligand. This is always the metal atom.}
-\item{\code{metal_id_part_name}: }{The name of the ID in the \code{metal_id_part} column. This information is based on
-ChEBI.}
-\item{\code{note}: }{Contains notes associated with information based on cofactors.}
-\item{\code{chebi_id}: }{Contains the original ChEBI IDs the information is based on.}
-\item{\code{source}: }{Contains the sources of the information. This can consist of "binding", "cofactor", "catalytic_activity"
-and "go_term".}
-\item{\code{eco}: }{If there is evidence the annotation is based on it is annotated with an ECO ID, which is split by source.}
-\item{\code{eco_type}: }{The ECO identifier can fall into the "manual_assertion" group for manually curated annotations or the
+\item \code{accession}: UniProt protein identifier.
+\item \code{most_specific_id}: ChEBI ID that is most specific for the position after combining information from all sources.
+Can be multiple IDs separated by "," if a position appears multiple times due to multiple fitting IDs.
+\item \code{most_specific_id_name}: The name of the ID in the \code{most_specific_id} column. This information is based on
+ChEBI.
+\item \code{ligand_identifier}: A ligand identifier that is unique per ligand per protein. It consists of the ligand ID and
+ligand name. The ligand ID counts the number of ligands of the same type per protein.
+\item \code{ligand_position}: The amino acid position of the residue interacting with the ligand.
+\item \code{binding_mode}: Contains information about the way the amino acid residue interacts with the ligand. If it is
+"covalent" then the residue is not in contact with the metal directly but only the cofactor that binds the metal.
+\item \code{metal_function}: Contains information about the function of the metal. E.g. "catalytic".
+\item \code{metal_id_part}: Contains a ChEBI ID that identifiers the metal part of the ligand. This is always the metal atom.
+\item \code{metal_id_part_name}: The name of the ID in the \code{metal_id_part} column. This information is based on
+ChEBI.
+\item \code{note}: Contains notes associated with information based on cofactors.
+\item \code{chebi_id}: Contains the original ChEBI IDs the information is based on.
+\item \code{source}: Contains the sources of the information. This can consist of "binding", "cofactor", "catalytic_activity"
+and "go_term".
+\item \code{eco}: If there is evidence the annotation is based on it is annotated with an ECO ID, which is split by source.
+\item \code{eco_type}: The ECO identifier can fall into the "manual_assertion" group for manually curated annotations or the
 "automatic_assertion" group for automatically generated annotations. If there is no evidence it is annotated as
-"automatic_assertion". The information is split by source.}
-\item{\code{evidence_source}: }{The original sources (e.g. literature, PDB) of evidence annotations split by source.}
-\item{\code{reaction}: }{Contains information about the chemical reaction catalysed by the protein that involves the metal.
-Can contain the EC ID, Rhea ID, direction specific Rhea ID, direction of the reaction and evidence for the direction.}
-\item{\code{go_term}: }{Contains gene ontology terms if there are any metal related ones associated with the annotation.}
-\item{\code{go_name}: }{Contains gene ontology names if there are any metal related ones associated with the annotation.}
-\item{\code{assigned_by}: }{Contains information about the source of the gene ontology term assignment.}
-\item{\code{database}: }{Contains information about the source of the ChEBI annotation associated with gene ontology terms.}
+"automatic_assertion". The information is split by source.
+\item \code{evidence_source}: The original sources (e.g. literature, PDB) of evidence annotations split by source.
+\item \code{reaction}: Contains information about the chemical reaction catalysed by the protein that involves the metal.
+Can contain the EC ID, Rhea ID, direction specific Rhea ID, direction of the reaction and evidence for the direction.
+\item \code{go_term}: Contains gene ontology terms if there are any metal related ones associated with the annotation.
+\item \code{go_name}: Contains gene ontology names if there are any metal related ones associated with the annotation.
+\item \code{assigned_by}: Contains information about the source of the gene ontology term assignment.
+\item \code{database}: Contains information about the source of the ChEBI annotation associated with gene ontology terms.
 }
+
 For each protein identifier the data frame contains information on the bound ligand as well as on its position if it is known.
 Since information about metal ligands can come from multiple sources, additional information (e.g. evidence) is nested in the returned
 data frame. In order to unnest the relevant information the following steps have to be taken: It is

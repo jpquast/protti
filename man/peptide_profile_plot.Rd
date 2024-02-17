@@ -11,6 +11,7 @@ peptide_profile_plot(
   intensity_log2,
   grouping,
   targets,
+  complete_sample = FALSE,
   protein_abundance_plot = FALSE,
   interactive = FALSE,
   export = FALSE,
@@ -35,6 +36,9 @@ the data should be split. This can be for example protein IDs.}
 be plotted. This can also be \code{"all"} if plots for all groups should be created. Depending
 on the number of elements in your grouping column this can be many plots.}
 
+\item{complete_sample}{a logical value that indicates if samples that are completely missing for
+a given protein should be shown on the x-axis of the plot anyway. The default value is \code{FALSE}.}
+
 \item{protein_abundance_plot}{a logical value. If the input for this plot comes directly from
 \code{calculate_protein_abundance} this argument can be set to \code{TRUE}. This displays all
 peptides in gray, while the protein abundance is displayed in green.}
@@ -47,7 +51,7 @@ plots cannot be exported either.}
 directory will be the current working directory. The name of the file can be chosen using the
 \code{export_name} argument.}
 
-\item{export_name}{A character vector that provides the name of the exported file if
+\item{export_name}{a character vector that provides the name of the exported file if
 \code{export = TRUE}.}
 }
 \value{

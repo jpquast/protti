@@ -11,36 +11,36 @@
 #'
 #' @return A data frame that contains structure metadata for the PDB IDs provided. The data frame
 #' contains some columns that might not be self explanatory.
-#' \itemize{
-#' \item{auth_asym_id: }{Chain identifier provided by the author of the structure in order to
-#' match the identification used in the publication that describes the structure.}
-#' \item{label_asym_id: }{Chain identifier following the standardised convention for mmCIF files.}
-#' \item{entity_beg_seq_id, ref_beg_seq_id, length, pdb_sequence: }{\code{entity_beg_seq_id} is a
+#'
+#' * auth_asym_id: Chain identifier provided by the author of the structure in order to
+#' match the identification used in the publication that describes the structure.
+#' * label_asym_id: Chain identifier following the standardised convention for mmCIF files.
+#' * entity_beg_seq_id, ref_beg_seq_id, length, pdb_sequence: \code{entity_beg_seq_id} is a
 #' position in the structure sequence (\code{pdb_sequence}) that matches the position given in
 #' \code{ref_beg_seq_id}, which is a position within the protein sequence (not included in the
 #' data frame). \code{length} identifies the stretch of sequence for which positions match
 #' accordingly between structure and protein sequence. \code{entity_beg_seq_id} is a residue ID
-#' based on the standardised convention for mmCIF files.}
-#' \item{auth_seq_id: }{Residue identifier provided by the author of the structure in order to
+#' based on the standardised convention for mmCIF files.
+#' * auth_seq_id: Residue identifier provided by the author of the structure in order to
 #' match the identification used in the publication that describes the structure. This character
 #' vector has the same length as the \code{pdb_sequence} and each position is the identifier for
 #' the matching amino acid position in \code{pdb_sequence}. The contained values are not
-#' necessarily numbers and the values do not have to be positive.}
-#' \item{modified_monomer: }{Is composed of first the composition ID of the modification, followed
+#' necessarily numbers and the values do not have to be positive.
+#' * modified_monomer: Is composed of first the composition ID of the modification, followed
 #' by the \code{label_seq_id} position. In parenthesis are the parent monomer identifiers as
-#' they appear in the sequence.}
-#' \item{ligand_*: }{Any column starting with the \code{ligand_*} prefix contains information about
+#' they appear in the sequence.
+#' * ligand_*: Any column starting with the \code{ligand_*} prefix contains information about
 #' the position, identity and donors for ligand binding sites. If there are multiple entities of
-#' ligands they are separated by "|". Specific donor level information is separated by ";".}
-#' \item{secondar_structure: }{Contains information about helix and sheet secondary structure elements.
-#' Individual regions are separated by ";".}
-#' \item{unmodeled_structure: }{Contains information about unmodeled or partially modeled regions in
-#' the model. Individual regions are separated by ";".}
-#' \item{auth_seq_id_original: }{In some cases the sequence positions do not match the number of residues
+#' ligands they are separated by "|". Specific donor level information is separated by ";".
+#' * secondar_structure: Contains information about helix and sheet secondary structure elements.
+#' Individual regions are separated by ";".
+#' * unmodeled_structure: Contains information about unmodeled or partially modeled regions in
+#' the model. Individual regions are separated by ";".
+#' * auth_seq_id_original: In some cases the sequence positions do not match the number of residues
 #' in the sequence either because positions are missing or duplicated. This always coincides with modified
 #' residues, however does not always occur when there is a modified residue in the sequence. This column
-#' contains the original \code{auth_seq_id} information that does not have these positions corrected.}
-#' }
+#' contains the original \code{auth_seq_id} information that does not have these positions corrected.
+#'
 #' @import dplyr
 #' @import progress
 #' @import purrr
@@ -224,11 +224,12 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       stringr::str_replace_all(pattern = "\\[", replacement = "%5B") %>%
       stringr::str_replace_all(pattern = "\\]", replacement = "%5D")
 
-    query <- try_query(httr::modify_url("https://data.rcsb.org/graphql",
-      query = url_encode_query
-    ),
-    type = "application/json",
-    simplifyDataFrame = TRUE
+    query <- try_query(
+      httr::modify_url("https://data.rcsb.org/graphql",
+        query = url_encode_query
+      ),
+      type = "application/json",
+      simplifyDataFrame = TRUE
     )
 
     if (show_progress == TRUE) {
@@ -303,7 +304,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       "entries.rcsb_entry_info"
     )) %>%
     tidyr::unnest("entries.exptl") %>%
-    dplyr::rename(structure_method = .data$method)
+    dplyr::rename(structure_method = "method")
 
   crystal_growth_info <- query_result_clean %>%
     dplyr::select("pdb_ids", "entries.exptl_crystal_grow") %>%
@@ -329,7 +330,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   ) %in% colnames(crystal_growth_info)]
 
   crystal_growth_info <- crystal_growth_info %>%
-    dplyr::select(-should_not_be_here) %>%
+    dplyr::select(-all_of(should_not_be_here)) %>%
     dplyr::bind_cols(stats::setNames(
       data.frame(matrix(
         ncol = length(should_be_here),
@@ -338,25 +339,25 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       should_be_here
     )) %>%
     dplyr::rename(
-      pH_crystallisation = .data$pH,
-      method_crystallisation = .data$method,
-      temp_crystallisation = .data$temp
+      pH_crystallisation = "pH",
+      method_crystallisation = "method",
+      temp_crystallisation = "temp"
     )
 
   resolution_info <- query_result_clean %>%
-    dplyr::select(.data$pdb_ids, .data$resolution_combined) %>%
-    tidyr::unnest(.data$resolution_combined)
+    dplyr::select("pdb_ids", "resolution_combined") %>%
+    tidyr::unnest("resolution_combined")
 
   nmr_info <- query_result_clean %>%
     dplyr::select(
-      .data$pdb_ids,
-      .data$entries.pdbx_nmr_exptl,
-      .data$entries.pdbx_nmr_exptl_sample_conditions,
-      .data$entries.pdbx_nmr_refine
+      "pdb_ids",
+      "entries.pdbx_nmr_exptl",
+      "entries.pdbx_nmr_exptl_sample_conditions",
+      "entries.pdbx_nmr_refine"
     ) %>%
-    tidyr::unnest(.data$entries.pdbx_nmr_exptl) %>%
-    tidyr::unnest(.data$entries.pdbx_nmr_exptl_sample_conditions) %>%
-    tidyr::unnest(.data$entries.pdbx_nmr_refine)
+    tidyr::unnest("entries.pdbx_nmr_exptl") %>%
+    tidyr::unnest("entries.pdbx_nmr_exptl_sample_conditions") %>%
+    tidyr::unnest("entries.pdbx_nmr_refine")
 
   # make sure that the data is complete even if there is no NMR structure
   should_not_be_here <- colnames(nmr_info)[!colnames(nmr_info) %in% c(
@@ -384,7 +385,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   ) %in% colnames(nmr_info)]
 
   nmr_info <- nmr_info %>%
-    dplyr::select(-should_not_be_here) %>%
+    dplyr::select(-all_of(should_not_be_here)) %>%
     dplyr::bind_cols(stats::setNames(
       data.frame(matrix(
         ncol = length(should_be_here),
@@ -393,16 +394,16 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       should_be_here
     )) %>%
     dplyr::rename(
-      type_nmr = .data$type,
-      pH_nmr = .data$pH,
-      temp_nmr = .data$temperature,
-      method_nmr = .data$method,
-      ionic_strength_nmr = .data$ionic_strength
+      type_nmr = "type",
+      pH_nmr = "pH",
+      temp_nmr = "temperature",
+      method_nmr = "method",
+      ionic_strength_nmr = "ionic_strength"
     )
 
   rcsb_binding_affinity <- query_result_clean %>%
-    dplyr::select(.data$pdb_ids, .data$entries.rcsb_binding_affinity) %>%
-    tidyr::unnest(.data$entries.rcsb_binding_affinity)
+    dplyr::select("pdb_ids", "entries.rcsb_binding_affinity") %>%
+    tidyr::unnest("entries.rcsb_binding_affinity")
 
   # make sure that the data is complete even if there is no affinity information
   should_not_be_here <- colnames(rcsb_binding_affinity)[!colnames(rcsb_binding_affinity) %in% c(
@@ -421,7 +422,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   ) %in% colnames(rcsb_binding_affinity)]
 
   rcsb_binding_affinity <- rcsb_binding_affinity %>%
-    dplyr::select(-should_not_be_here) %>%
+    dplyr::select(-all_of(should_not_be_here)) %>%
     dplyr::bind_cols(stats::setNames(
       data.frame(matrix(
         ncol = length(should_be_here),
@@ -430,8 +431,8 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       should_be_here
     )) %>%
     dplyr::rename(
-      affinity_comp_id = .data$comp_id,
-      affinity_value = .data$value
+      affinity_comp_id = "comp_id",
+      affinity_value = "value"
     )
 
   if (show_progress == TRUE) {
@@ -442,18 +443,18 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   }
 
   polymer_entities <- query_result_clean %>%
-    dplyr::select(.data$pdb_ids, .data$entries.polymer_entities) %>%
-    tidyr::unnest(.data$entries.polymer_entities) %>%
+    dplyr::select("pdb_ids", "entries.polymer_entities") %>%
+    tidyr::unnest("entries.polymer_entities") %>%
     dplyr::bind_cols(
       .$entity_poly,
       .$rcsb_polymer_entity_container_identifiers
     ) %>%
     dplyr::select(-c(
-      .data$entity_poly,
-      .data$rcsb_polymer_entity_container_identifiers,
-      .data$rcsb_entity_source_organism
+      "entity_poly",
+      "rcsb_polymer_entity_container_identifiers",
+      "rcsb_entity_source_organism"
     )) %>%
-    tidyr::unnest(.data$rcsb_polymer_entity) %>%
+    tidyr::unnest("rcsb_polymer_entity") %>%
     dplyr::rowwise() %>%
     dplyr::mutate(rcsb_non_std_monomers = ifelse(!is.null(unlist(.data$rcsb_non_std_monomers)),
       paste0(.data$rcsb_non_std_monomers, collapse = ";"),
@@ -467,15 +468,15 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     dplyr::mutate(no_uniprots = is.null(unlist(.data$uniprots))) %>%
     dplyr::ungroup() %>%
     dplyr::filter(.data$no_uniprots) %>%
-    dplyr::select(-c(.data$uniprots, .data$no_uniprots))
+    dplyr::select(-c("uniprots", "no_uniprots"))
 
   if (nrow(polymer_entities_no_uniprots) > 0) {
     polymer_entities <- polymer_entities %>%
-      tidyr::unnest(c(.data$uniprots)) %>%
+      tidyr::unnest(c("uniprots")) %>%
       dplyr::bind_rows(polymer_entities_no_uniprots)
   } else {
     polymer_entities <- polymer_entities %>%
-      tidyr::unnest(c(.data$uniprots))
+      tidyr::unnest(c("uniprots"))
   }
 
   if (show_progress == TRUE) {
@@ -490,15 +491,15 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     dplyr::mutate(no_rcsb_polymer_entity_align = is.null(unlist(.data$rcsb_polymer_entity_align))) %>%
     dplyr::ungroup() %>%
     dplyr::filter(.data$no_rcsb_polymer_entity_align) %>%
-    dplyr::select(-c(.data$rcsb_polymer_entity_align, .data$no_rcsb_polymer_entity_align))
+    dplyr::select(-c("rcsb_polymer_entity_align", "no_rcsb_polymer_entity_align"))
 
   if (nrow(polymer_entities_no_rcsb_polymer_entity_align) > 0) {
     polymer_entities <- polymer_entities %>%
-      tidyr::unnest(c(.data$rcsb_polymer_entity_align)) %>%
+      tidyr::unnest(c("rcsb_polymer_entity_align")) %>%
       dplyr::bind_rows(polymer_entities_no_rcsb_polymer_entity_align)
   } else {
     polymer_entities <- polymer_entities %>%
-      tidyr::unnest(c(.data$rcsb_polymer_entity_align))
+      tidyr::unnest(c("rcsb_polymer_entity_align"))
   }
 
   # some proteins do not contain UniProt information therefore data needs to be extracted differently
@@ -508,10 +509,10 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
         uniprot_container_identifiers = .$rcsb_uniprot_container_identifiers,
         uniprot_protein = .$rcsb_uniprot_protein
       ) %>%
-      dplyr::select(-c(.data$rcsb_uniprot_container_identifiers, .data$rcsb_uniprot_protein))
+      dplyr::select(-c("rcsb_uniprot_container_identifiers", "rcsb_uniprot_protein"))
   } else {
     polymer_entities <- polymer_entities %>%
-      dplyr::select(-c(.data$uniprots)) %>%
+      dplyr::select(-c("uniprots")) %>%
       dplyr::mutate(
         uniprot_id = NA,
         name = data.frame(value = NA)
@@ -528,27 +529,27 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       dplyr::filter(.data$no_aligned_regions)
 
     polymer_entities <- polymer_entities %>%
-      tidyr::unnest(c(.data$aligned_regions)) %>%
+      tidyr::unnest(c("aligned_regions")) %>%
       dplyr::bind_cols(.$name) %>%
-      dplyr::select(-c(.data$name, .data$entry_id)) %>%
-      dplyr::rename(name_protein = .data$value) %>%
-      tidyr::unnest(c(.data$auth_asym_ids, .data$polymer_entity_instances)) %>%
+      dplyr::select(-c("name", "entry_id")) %>%
+      dplyr::rename(name_protein = "value") %>%
+      tidyr::unnest(c("auth_asym_ids", "polymer_entity_instances")) %>%
       dplyr::bind_cols(
         rcsb_polymer_entity_instance_container_identifiers = .$rcsb_polymer_entity_instance_container_identifiers
       ) %>%
-      dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers))
+      dplyr::select(-c("rcsb_polymer_entity_instance_container_identifiers"))
 
     if (nrow(polymer_entities_no_aligned_regions) > 0) {
       polymer_entities_no_aligned_regions <- polymer_entities_no_aligned_regions %>%
-        dplyr::select(-c(.data$aligned_regions, .data$no_aligned_regions)) %>%
+        dplyr::select(-c("aligned_regions", "no_aligned_regions")) %>%
         dplyr::bind_cols(.$name) %>%
-        dplyr::select(-c(.data$name, .data$entry_id)) %>%
-        dplyr::rename(name_protein = .data$value) %>%
-        tidyr::unnest(c(.data$auth_asym_ids, .data$polymer_entity_instances)) %>%
+        dplyr::select(-c("name", "entry_id")) %>%
+        dplyr::rename(name_protein = "value") %>%
+        tidyr::unnest(c("auth_asym_ids", "polymer_entity_instances")) %>%
         dplyr::bind_cols(
           rcsb_polymer_entity_instance_container_identifiers = .$rcsb_polymer_entity_instance_container_identifiers
         ) %>%
-        dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers)) %>%
+        dplyr::select(-c("rcsb_polymer_entity_instance_container_identifiers")) %>%
         dplyr::mutate(
           entity_beg_seq_id = NA,
           ref_beg_seq_id = NA,
@@ -561,15 +562,15 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     }
   } else {
     polymer_entities <- polymer_entities %>%
-      dplyr::select(-c(.data$rcsb_polymer_entity_align)) %>%
+      dplyr::select(-c("rcsb_polymer_entity_align")) %>%
       dplyr::bind_cols(.$name) %>%
-      dplyr::select(-c(.data$name, .data$entry_id)) %>%
-      dplyr::rename(name_protein = .data$value) %>%
-      tidyr::unnest(c(.data$auth_asym_ids, .data$polymer_entity_instances)) %>%
+      dplyr::select(-c("name", "entry_id")) %>%
+      dplyr::rename(name_protein = "value") %>%
+      tidyr::unnest(c("auth_asym_ids", "polymer_entity_instances")) %>%
       dplyr::bind_cols(
         rcsb_polymer_entity_instance_container_identifiers = .$rcsb_polymer_entity_instance_container_identifiers
       ) %>%
-      dplyr::select(-c(.data$rcsb_polymer_entity_instance_container_identifiers)) %>%
+      dplyr::select(-c("rcsb_polymer_entity_instance_container_identifiers")) %>%
       dplyr::mutate(
         entity_beg_seq_id = NA,
         ref_beg_seq_id = NA,
@@ -592,7 +593,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     dplyr::mutate(no_ligands = is.null(unlist(.data$rcsb_ligand_neighbors))) %>%
     dplyr::ungroup() %>%
     dplyr::filter(.data$no_ligands) %>%
-    dplyr::select(-c(.data$rcsb_ligand_neighbors, .data$no_ligands)) %>%
+    dplyr::select(-c("rcsb_ligand_neighbors", "no_ligands")) %>%
     dplyr::mutate(
       atom_id = as.character(NA),
       auth_seq_id = as.integer(NA),
@@ -606,20 +607,20 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     )
 
   polymer_entities <- polymer_entities %>%
-    tidyr::unnest(c(.data$rcsb_ligand_neighbors)) %>%
+    tidyr::unnest(c("rcsb_ligand_neighbors")) %>%
     dplyr::bind_rows(polymer_entities_no_ligands) %>%
     dplyr::mutate(ligand_is_bound = ifelse(.data$ligand_is_bound == "Y", "TRUE", "FALSE")) %>%
     dplyr::group_by(.data$pdb_ids, .data$auth_asym_id, .data$ligand_entity_id) %>%
     dplyr::mutate(dplyr::across(
       .cols = c(
-        .data$atom_id,
-        .data$auth_seq_id,
-        .data$comp_id,
-        .data$ligand_asym_id,
-        .data$ligand_atom_id,
-        .data$ligand_comp_id,
-        .data$ligand_is_bound,
-        .data$seq_id
+        "atom_id",
+        "auth_seq_id",
+        "comp_id",
+        "ligand_asym_id",
+        "ligand_atom_id",
+        "ligand_comp_id",
+        "ligand_is_bound",
+        "seq_id"
       ),
       .fns = ~ paste0(.x, collapse = ";")
     )) %>%
@@ -627,48 +628,48 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     dplyr::group_by(.data$pdb_ids, .data$auth_asym_id) %>%
     dplyr::mutate(dplyr::across(
       .cols = c(
-        .data$atom_id,
-        .data$auth_seq_id,
-        .data$comp_id,
-        .data$ligand_asym_id,
-        .data$ligand_atom_id,
-        .data$ligand_comp_id,
-        .data$ligand_entity_id,
-        .data$ligand_is_bound,
-        .data$seq_id
+        "atom_id",
+        "auth_seq_id",
+        "comp_id",
+        "ligand_asym_id",
+        "ligand_atom_id",
+        "ligand_comp_id",
+        "ligand_entity_id",
+        "ligand_is_bound",
+        "seq_id"
       ),
       .fns = ~ paste0(.x, collapse = "|")
     )) %>%
     dplyr::distinct() %>%
     dplyr::mutate(dplyr::across(
       .cols = c(
-        .data$atom_id,
-        .data$auth_seq_id,
-        .data$comp_id,
-        .data$ligand_asym_id,
-        .data$ligand_atom_id,
-        .data$ligand_comp_id,
-        .data$ligand_entity_id,
-        .data$ligand_is_bound,
-        .data$seq_id
+        "atom_id",
+        "auth_seq_id",
+        "comp_id",
+        "ligand_asym_id",
+        "ligand_atom_id",
+        "ligand_comp_id",
+        "ligand_entity_id",
+        "ligand_is_bound",
+        "seq_id"
       ),
       .fns = ~ ifelse(str_detect(.data$atom_id, pattern = "NA"), NA, .x)
     )) %>%
     dplyr::ungroup() %>%
     dplyr::rename(
-      ligand_donor_atom_id = .data$atom_id,
-      ligand_donor_auth_seq_id = .data$auth_seq_id,
-      ligand_donor_id = .data$comp_id,
-      ligand_id = .data$ligand_comp_id,
-      ligand_label_asym_id = .data$ligand_asym_id,
-      ligand_bond_is_covalent_or_coordinating = .data$ligand_is_bound,
-      ligand_donor_label_seq_id = .data$seq_id
+      ligand_donor_atom_id = "atom_id",
+      ligand_donor_auth_seq_id = "auth_seq_id",
+      ligand_donor_id = "comp_id",
+      ligand_id = "ligand_comp_id",
+      ligand_label_asym_id = "ligand_asym_id",
+      ligand_bond_is_covalent_or_coordinating = "ligand_is_bound",
+      ligand_donor_label_seq_id = "seq_id"
     )
 
   if ("rcsb_ligand_neighbors" %in% colnames(polymer_entities)) {
     # if none of the retrieved entries contains any ligands then this column needs to be removed manually
     polymer_entities <- polymer_entities %>%
-      select(-.data$rcsb_ligand_neighbors)
+      select(-"rcsb_ligand_neighbors")
   }
   # extract modified monomer information
 
@@ -679,9 +680,9 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   }
 
   rcsb_polymer_entity_feature <- polymer_entities %>%
-    dplyr::select(.data$pdb_ids, .data$auth_asym_id, .data$rcsb_polymer_entity_feature) %>%
-    tidyr::unnest(.data$rcsb_polymer_entity_feature) %>%
-    tidyr::unnest(.data$feature_positions)
+    dplyr::select("pdb_ids", "auth_asym_id", "rcsb_polymer_entity_feature") %>%
+    tidyr::unnest("rcsb_polymer_entity_feature") %>%
+    tidyr::unnest("feature_positions")
 
   modified_monomer <- rcsb_polymer_entity_feature %>%
     dplyr::filter(.data$type %in% c("modified_monomer")) %>%
@@ -706,9 +707,9 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   }
 
   rcsb_polymer_instance_feature_data <- polymer_entities %>%
-    dplyr::select(.data$pdb_ids, .data$auth_asym_id, .data$rcsb_polymer_instance_feature) %>%
-    tidyr::unnest(.data$rcsb_polymer_instance_feature) %>%
-    tidyr::unnest(.data$feature_positions)
+    dplyr::select("pdb_ids", "auth_asym_id", "rcsb_polymer_instance_feature") %>%
+    tidyr::unnest("rcsb_polymer_instance_feature") %>%
+    tidyr::unnest("feature_positions")
 
   secondary_structures <- rcsb_polymer_instance_feature_data %>%
     dplyr::filter(.data$name %in% c("helix", "sheet")) %>%
@@ -739,7 +740,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     left_join(modified_monomer, by = c("pdb_ids", "auth_asym_id")) %>%
     left_join(secondary_structures, by = c("pdb_ids", "auth_asym_id")) %>%
     left_join(unmodeled_residues, by = c("pdb_ids", "auth_asym_id")) %>%
-    select(-c(.data$rcsb_polymer_instance_feature, .data$rcsb_polymer_entity_feature))
+    select(-c("rcsb_polymer_instance_feature", "rcsb_polymer_entity_feature"))
 
   # Modify auth_seq_id positions that are either duplicated or missing.
   # Missing or duplicated entries are identified by comparing the length of auth_seq_id to the length of the sequence.
@@ -778,7 +779,13 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
         values = as.character(rep(.data$non_consecutive, .data$n_missing) + unlist(.data$replacement_values_addition))
       ))) %>%
       dplyr::ungroup() %>%
-      dplyr::select(-c(.data$auth_seq_id_pdb_numeric, .data$non_consecutive, .data$n_missing, .data$replacement_values_addition, .data$replacement_positions))
+      dplyr::select(-c(
+        "auth_seq_id_pdb_numeric",
+        "non_consecutive",
+        "n_missing",
+        "replacement_values_addition",
+        "replacement_positions"
+      ))
   }
   # Join corrected entries back
   polymer_entities <- polymer_entities %>%
@@ -808,25 +815,25 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       .data$auth_to_entity_poly_seq_mapping
     ) %>%
     dplyr::rename(
-      auth_asym_ids = .data$auth_asym_id,
-      pdb_ids = .data$entry_id
+      auth_asym_ids = "auth_asym_id",
+      pdb_ids = "entry_id"
     )
 
   uniprot_info <- polymer_entities %>%
     dplyr::distinct(.data$uniprot_id, .data$name_protein) %>%
     dplyr::rename(
-      reference_database_accession = .data$uniprot_id,
-      protein_name = .data$name_protein
+      reference_database_accession = "uniprot_id",
+      protein_name = "name_protein"
     )
 
   polymer_entities <- polymer_entities %>%
     select(-c(
-      .data$uniprot_id,
-      .data$name_protein,
-      .data$asym_id,
-      .data$auth_asym_id,
-      .data$entry_id,
-      .data$auth_to_entity_poly_seq_mapping
+      "uniprot_id",
+      "name_protein",
+      "asym_id",
+      "auth_asym_id",
+      "entry_id",
+      "auth_to_entity_poly_seq_mapping"
     )) %>%
     distinct()
 
@@ -837,30 +844,30 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
 
   if (!all(is.na(query_result_clean$entries.nonpolymer_entities))) {
     nonpolymer_entities <- query_result_clean %>%
-      dplyr::select(.data$pdb_ids, .data$entries.nonpolymer_entities) %>%
-      tidyr::unnest(.data$entries.nonpolymer_entities) %>%
+      dplyr::select("pdb_ids", "entries.nonpolymer_entities") %>%
+      tidyr::unnest("entries.nonpolymer_entities") %>%
       dplyr::bind_cols(
         .$rcsb_nonpolymer_entity_container_identifiers,
         .$nonpolymer_comp
       ) %>%
       dplyr::bind_cols(.$chem_comp) %>%
       dplyr::select(-c(
-        .data$nonpolymer_comp,
-        .data$rcsb_nonpolymer_entity_container_identifiers,
-        .data$chem_comp,
-        .data$entry_id
+        "nonpolymer_comp",
+        "rcsb_nonpolymer_entity_container_identifiers",
+        "chem_comp",
+        "entry_id"
       )) %>%
-      tidyr::unnest(.data$auth_asym_ids) %>%
+      tidyr::unnest("auth_asym_ids") %>%
       dplyr::rename(
-        name_nonpolymer = .data$name,
-        formula_nonpolymer = .data$formula,
-        formula_weight_nonpolymer = .data$formula_weight,
-        type_nonpolymer = .data$type,
-        id_nonpolymer = .data$id
+        name_nonpolymer = "name",
+        formula_nonpolymer = "formula",
+        formula_weight_nonpolymer = "formula_weight",
+        type_nonpolymer = "type",
+        id_nonpolymer = "id"
       )
   } else {
     nonpolymer_entities <- polymer_entities %>%
-      dplyr::select(.data$pdb_ids, .data$auth_asym_ids) %>%
+      dplyr::select("pdb_ids", "auth_asym_ids") %>%
       dplyr::mutate(
         name_nonpolymer = NA,
         formula_nonpolymer = NA,
@@ -872,14 +879,14 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
 
   additional_info <- query_result_clean %>%
     dplyr::select(-c(
-      .data$entries.nonpolymer_entities,
-      .data$entries.polymer_entities,
-      .data$entries.rcsb_binding_affinity,
-      .data$entries.pdbx_nmr_exptl,
-      .data$entries.pdbx_nmr_exptl_sample_conditions,
-      .data$entries.pdbx_nmr_refine,
-      .data$entries.exptl_crystal_grow,
-      .data$resolution_combined
+      "entries.nonpolymer_entities",
+      "entries.polymer_entities",
+      "entries.rcsb_binding_affinity",
+      "entries.pdbx_nmr_exptl",
+      "entries.pdbx_nmr_exptl_sample_conditions",
+      "entries.pdbx_nmr_refine",
+      "entries.exptl_crystal_grow",
+      "resolution_combined"
     ))
 
   if (show_progress == TRUE) {
@@ -889,8 +896,8 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   }
 
   combined <- polymer_entities %>%
-    dplyr::full_join(nonpolymer_entities, by = c("pdb_ids", "auth_asym_ids")) %>%
-    dplyr::left_join(rcsb_binding_affinity, by = "pdb_ids") %>%
+    dplyr::full_join(nonpolymer_entities, by = c("pdb_ids", "auth_asym_ids"), relationship = "many-to-many") %>%
+    dplyr::left_join(rcsb_binding_affinity, by = "pdb_ids", relationship = "many-to-many" ) %>%
     dplyr::left_join(additional_info, by = "pdb_ids") %>%
     dplyr::left_join(crystal_growth_info, by = "pdb_ids") %>%
     dplyr::left_join(nmr_info, by = "pdb_ids") %>%
@@ -898,12 +905,12 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     dplyr::left_join(uniprot_info, by = "reference_database_accession") %>%
     dplyr::left_join(entity_instance_info, by = c("pdb_ids", "auth_asym_ids")) %>%
     dplyr::rename(
-      auth_asym_id = .data$auth_asym_ids,
-      label_asym_id = .data$asym_id,
-      pdb_sequence = .data$pdbx_seq_one_letter_code_can,
-      auth_seq_id_original = .data$auth_to_entity_poly_seq_mapping,
-      engineered_mutation = .data$pdbx_mutation,
-      non_std_monomer = .data$rcsb_non_std_monomers
+      auth_asym_id = "auth_asym_ids",
+      label_asym_id = "asym_id",
+      pdb_sequence = "pdbx_seq_one_letter_code_can",
+      auth_seq_id_original = "auth_to_entity_poly_seq_mapping",
+      engineered_mutation = "pdbx_mutation",
+      non_std_monomer = "rcsb_non_std_monomers"
     ) %>%
     dplyr::rowwise() %>%
     # make character string out of list column
@@ -923,52 +930,52 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       )
     ) %>%
     dplyr::select(
-      .data$pdb_ids,
-      .data$auth_asym_id,
-      .data$label_asym_id,
-      .data$reference_database_accession,
-      .data$protein_name,
-      .data$reference_database_name,
-      .data$entity_beg_seq_id,
-      .data$ref_beg_seq_id,
-      .data$length,
-      .data$pdb_sequence,
-      .data$auth_seq_id,
-      .data$auth_seq_id_original,
-      .data$engineered_mutation,
-      .data$modified_monomer,
-      .data$ligand_donor_atom_id,
-      .data$ligand_donor_auth_seq_id,
-      .data$ligand_donor_label_seq_id,
-      .data$ligand_donor_id,
-      .data$ligand_label_asym_id,
-      .data$ligand_atom_id,
-      .data$ligand_id,
-      .data$ligand_entity_id,
-      .data$ligand_bond_is_covalent_or_coordinating,
-      .data$secondary_structure,
-      .data$unmodeled_structure,
-      .data$id_nonpolymer,
-      .data$type_nonpolymer,
-      .data$formula_weight_nonpolymer,
-      .data$name_nonpolymer,
-      .data$formula_nonpolymer,
-      .data$experimental_method,
-      .data$structure_method,
-      .data$affinity_comp_id,
-      .data$affinity_value,
-      .data$pdbx_keywords,
-      .data$assembly_count,
-      .data$inter_mol_metalic_bond_count,
-      .data$pH_crystallisation,
-      .data$temp_crystallisation,
-      .data$method_crystallisation,
-      .data$type_nmr,
-      .data$ionic_strength_nmr,
-      .data$pH_nmr,
-      .data$temp_nmr,
-      .data$method_nmr,
-      .data$resolution_combined
+      "pdb_ids",
+      "auth_asym_id",
+      "label_asym_id",
+      "reference_database_accession",
+      "protein_name",
+      "reference_database_name",
+      "entity_beg_seq_id",
+      "ref_beg_seq_id",
+      "length",
+      "pdb_sequence",
+      "auth_seq_id",
+      "auth_seq_id_original",
+      "engineered_mutation",
+      "modified_monomer",
+      "ligand_donor_atom_id",
+      "ligand_donor_auth_seq_id",
+      "ligand_donor_label_seq_id",
+      "ligand_donor_id",
+      "ligand_label_asym_id",
+      "ligand_atom_id",
+      "ligand_id",
+      "ligand_entity_id",
+      "ligand_bond_is_covalent_or_coordinating",
+      "secondary_structure",
+      "unmodeled_structure",
+      "id_nonpolymer",
+      "type_nonpolymer",
+      "formula_weight_nonpolymer",
+      "name_nonpolymer",
+      "formula_nonpolymer",
+      "experimental_method",
+      "structure_method",
+      "affinity_comp_id",
+      "affinity_value",
+      "pdbx_keywords",
+      "assembly_count",
+      "inter_mol_metalic_bond_count",
+      "pH_crystallisation",
+      "temp_crystallisation",
+      "method_crystallisation",
+      "type_nmr",
+      "ionic_strength_nmr",
+      "pH_nmr",
+      "temp_nmr",
+      "method_nmr",
+      "resolution_combined"
     )
 
   if (show_progress == TRUE) {

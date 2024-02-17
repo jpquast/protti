@@ -33,6 +33,7 @@ sequence_coverage <- function(...) {
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_count
 #' @importFrom rlang .data as_name enquo
+#' @importFrom tidyr drop_na
 #' @export
 #'
 #' @examples
@@ -49,6 +50,9 @@ sequence_coverage <- function(...) {
 calculate_sequence_coverage <-
   function(data, protein_sequence, peptides) {
     result <- data %>%
+      dplyr::ungroup() %>%
+      # drop_na prevents function from failing if a protein group contains only NA peptide sequences.
+      tidyr::drop_na({{ peptides }}) %>%
       dplyr::distinct({{ protein_sequence }}, {{ peptides }}) %>%
       dplyr::group_by({{ protein_sequence }}) %>%
       find_peptide({{ protein_sequence }}, {{ peptides }}) %>%

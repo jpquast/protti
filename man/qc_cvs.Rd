@@ -10,7 +10,8 @@ qc_cvs(
   condition,
   intensity,
   plot = TRUE,
-  plot_style = "density"
+  plot_style = "density",
+  max_cv = 200
 )
 }
 \arguments{
@@ -31,6 +32,9 @@ raw or untransformed normalised intensity values for each peptide or precursor.}
 \item{plot_style}{a character value that indicates the plotting style. \code{plot_style = "boxplot"}
 plots a boxplot, whereas \code{plot_style = "density"} plots the CV density distribution.
 \code{plot_style = "violin"} returns a violin plot. Default is \code{plot_style = "density"}.}
+
+\item{max_cv}{a numeric value that specifies the maximum percentage of CVs that should be included
+in the returned plot. The default value is \code{max_cv = 200}.}
 }
 \value{
 Either a data frame with the median CVs in \% or a plot showing the distribution of the CVs

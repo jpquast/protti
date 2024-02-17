@@ -331,6 +331,80 @@ test_that("calculate_diff_abundance works", {
   }
 })
 
+test_that("correct_lip_for_abundance works", {
+  data <- rapamycin_10uM
+  diff_lip = data %>%
+      dplyr::mutate(fg_intensity_log2 = log2(fg_quantity)) %>%
+      assign_missingness(
+        sample = r_file_name,
+        condition = r_condition,
+        intensity = fg_intensity_log2,
+        grouping = eg_precursor_id,
+        ref_condition = "control",
+        retain_columns = "pg_protein_accessions") %>%
+      calculate_diff_abundance(
+        sample = r_file_name,
+        condition = r_condition,
+        grouping = eg_precursor_id,
+        intensity_log2 = fg_intensity_log2,
+        comparison = comparison,
+        method = "t-test",
+        retain_columns = "pg_protein_accessions"
+       )
+
+  diff_trp = data %>%
+    dplyr::group_by(pg_protein_accessions, r_file_name) %>%
+    dplyr::mutate(pg_quantity = sum(fg_quantity)) %>%
+    dplyr::distinct(
+      r_condition,
+      r_file_name,
+      pg_protein_accessions,
+      pg_quantity
+    ) %>%
+    dplyr::mutate(pg_intensity_log2 = log2(pg_quantity)) %>%
+    assign_missingness(
+      sample = r_file_name,
+      condition = r_condition,
+      intensity = pg_intensity_log2,
+                     grouping = pg_protein_accessions,
+                     ref_condition = "control") %>%
+    calculate_diff_abundance(sample = r_file_name,
+                     condition = r_condition,
+                     grouping = pg_protein_accessions,
+                     intensity_log2 = pg_intensity_log2,
+                     comparison = comparison,
+                     method = "t-test")
+
+  corrected_satterthwaite = correct_lip_for_abundance(
+    lip_data = diff_lip,
+    trp_data = diff_trp,
+    protein_id = pg_protein_accessions,
+    grouping = eg_precursor_id,
+    retain_columns = c("missingness"),
+    method = "satterthwaite"
+  )
+
+  corrected_no_df_approximation = correct_lip_for_abundance(
+    lip_data = diff_lip,
+    trp_data = diff_trp,
+    protein_id = pg_protein_accessions,
+    grouping = eg_precursor_id,
+    retain_columns = c("missingness"),
+    method = "no_df_approximation"
+  )
+
+  expect_is(corrected_satterthwaite, "data.frame")
+  expect_equal(corrected_satterthwaite$adj_diff[1], 2.474938, tolerance=1e-3)
+  expect_equal(corrected_satterthwaite$adj_std_error[1], 0.1531189, tolerance=1e-3)
+  expect_equal(corrected_satterthwaite$adj_pval[1], 1.561211e-05, tolerance=1e-3)
+  expect_equal(corrected_satterthwaite$df[1], 10.13124, tolerance=1e-3)
+
+  expect_is(corrected_no_df_approximation, "data.frame")
+  expect_equal(corrected_no_df_approximation$adj_diff[1], 2.474938, tolerance=1e-3)
+  expect_equal(corrected_no_df_approximation$adj_std_error[1], 0.1531189, tolerance=1e-3)
+  expect_equal(corrected_no_df_approximation$df[1], 6)
+})
+
 if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("deprecated diff_abundance works", {
     rlang::with_options(lifecycle_verbosity = "warning", {

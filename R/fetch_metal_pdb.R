@@ -42,32 +42,32 @@
 #'
 #' @return A data frame that contains information about protein-metal binding sites. The data
 #' frame contains some columns that might not be self explanatory.
-#' \itemize{
-#' \item{auth_id_metal: }{Unique structure atom identifier of the metal, which is provided by
+#'
+#' * auth_id_metal: Unique structure atom identifier of the metal, which is provided by
 #' the author of the structure in order to match the identification used in the publication
-#' that describes the structure.}
-#' \item{auth_seq_id_metal: }{Residue identifier of the metal, which is provided by the author of
+#' that describes the structure.
+#' * auth_seq_id_metal: Residue identifier of the metal, which is provided by the author of
 #' the structure in order to match the identification used in the publication that describes the
-#' structure.}
-#' \item{pattern: }{Metal pattern for each metal bound by the structure.}
-#' \item{is_representative: }{A representative site is a site selected to represent a cluster of
+#' structure.
+#' * pattern: Metal pattern for each metal bound by the structure.
+#' * is_representative: A representative site is a site selected to represent a cluster of
 #' equivalent sites. The selection is done by choosing the PDB structure with the best X-ray
 #' resolution among those containing the sites in the cluster. NMR structures are generally
 #' discarded in favor of X-ray structures, unless all the sites in the cluster are found in NMR
-#' structures.}
-#' \item{auth_asym_id_ligand: }{Chain identifier of the metal-coordinating ligand residues, which
+#' structures.
+#' * auth_asym_id_ligand: Chain identifier of the metal-coordinating ligand residues, which
 #' is provided by the author of the structure in order to match the identification used in the
-#' publication that describes the structure.}
-#' \item{auth_seq_id_ligand: }{Residue identifier of the metal-coordinating ligand residues, which
+#' publication that describes the structure.
+#' * auth_seq_id_ligand: Residue identifier of the metal-coordinating ligand residues, which
 #' is provided by the author of the structure in order to match the identification used in the
-#' publication that describes the structure.}
-#' \item{auth_id_ligand: }{Unique structure atom identifier of the metal-coordinating ligand r
+#' publication that describes the structure.
+#' * auth_id_ligand: Unique structure atom identifier of the metal-coordinating ligand r
 #' esidues, which is provided by the author of the structure in order to match the identification
-#' used in the publication that describes the structure.}
-#' \item{auth_atom_id_ligand: }{Unique residue specific atom identifier of the metal-coordinating
+#' used in the publication that describes the structure.
+#' * auth_atom_id_ligand: Unique residue specific atom identifier of the metal-coordinating
 #' ligand residues, which is provided by the author of the structure in order to match the
-#' identification used in the publication that describes the structure.}
-#' }
+#' identification used in the publication that describes the structure.
+#'
 #' @import dplyr
 #' @import progress
 #' @import purrr
@@ -294,11 +294,11 @@ fetch_metal_pdb <- function(id_type = "uniprot",
       )),
       should_be_here
     )) %>%
-    tidyr::unnest(.data$metals)
+    tidyr::unnest("metals")
 
   if ("metals" %in% colnames(content_metal)) {
     content_metal <- content_metal %>%
-      dplyr::select(-c(.data$metals))
+      dplyr::select(-c("metals"))
   }
 
   columns_metal <- c(
@@ -322,14 +322,14 @@ fetch_metal_pdb <- function(id_type = "uniprot",
       should_be_here_metal
     )) %>%
     dplyr::rename(
-      auth_seq_id_metal = .data$residue_pdb_number,
-      auth_id_metal = .data$atom_pdb_number,
-      symbol_metal = .data$symbol
+      auth_seq_id_metal = "residue_pdb_number",
+      auth_id_metal = "atom_pdb_number",
+      symbol_metal = "symbol"
     ) %>%
     dplyr::group_by(.data$site, .data$auth_id_metal) %>%
     dplyr::mutate(check = length(.data$ligands[[1]])) %>%
     dplyr::mutate(ligands = ifelse(.data$check == 0, NA, .data$ligands)) %>%
-    tidyr::unnest_longer(.data$ligands) %>%
+    tidyr::unnest_longer("ligands") %>%
     dplyr::bind_cols(donors = .$ligands)
 
   columns_ligand <- c("check", "chain", "donors", "residue_pdb_number", "residue")
@@ -343,9 +343,9 @@ fetch_metal_pdb <- function(id_type = "uniprot",
       )),
       should_be_here_ligand
     )) %>%
-    tidyr::unnest_longer(.data$donors) %>%
+    tidyr::unnest_longer("donors") %>%
     dplyr::bind_cols(atom = .$donors) %>%
-    dplyr::select(-c(.data$ligands, .data$donors, .data$check))
+    dplyr::select(-c("ligands", "donors", "check"))
 
   columns_donor <- c("atom", "symbol", "atom_pdb_number", "distance")
   should_be_here_donor <- columns_donor[!columns_donor %in% colnames(content_donor)]
@@ -359,10 +359,10 @@ fetch_metal_pdb <- function(id_type = "uniprot",
       should_be_here_donor
     )) %>%
     dplyr::rename(
-      auth_asym_id_ligand = .data$chain,
-      auth_seq_id_ligand = .data$residue_pdb_number,
-      auth_id_ligand = .data$atom_pdb_number,
-      auth_atom_id_ligand = .data$atom
+      auth_asym_id_ligand = "chain",
+      auth_seq_id_ligand = "residue_pdb_number",
+      auth_id_ligand = "atom_pdb_number",
+      auth_atom_id_ligand = "atom"
     ) %>%
     dplyr::ungroup()
 

@@ -19,7 +19,7 @@ qc_peptide_type(
 \arguments{
 \item{data}{a data frame that contains at least the input columns.}
 
-\item{sample}{a character column in the \code{data} data frame that contains the sample names.}
+\item{sample}{a character or factor column in the \code{data} data frame that contains the sample names.}
 
 \item{peptide}{a character column in the \code{data} data frame that contains the peptide
 sequence.}

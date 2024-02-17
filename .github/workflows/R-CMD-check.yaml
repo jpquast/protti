@@ -4,7 +4,8 @@ on:
   push:
     branches: [main, master]
   pull_request:
-    branches: [main, master]
+    branches:
+      - '*'
 
 name: R-CMD-check
 
@@ -43,8 +44,14 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
+          extra-packages:
+              any::rcmdcheck
           needs: check
+
+      #  run: |
+     # - name: Install remotes and lme4 package
+       #   Rscript -e 'install.packages("remotes", lib=Sys.getenv("R_LIB_FOR_PAK"))'
+        #  Rscript -e 'remotes::install_cran("lme4", dependencies = TRUE, upgrade = "always")'
 
       - uses: r-lib/actions/check-r-package@v2
         with:

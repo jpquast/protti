@@ -57,7 +57,7 @@ parent_metal_ids <- c(
   "GO:0015625", # ABC-type ferric hydroxamate transporter activity
   "GO:0015345", # ferric enterobactin:proton symporter activity
   "GO:1903981", # enterobactin binding
-  "GO:0004076", # biotin synthase activity 
+  "GO:0004076", # biotin synthase activity
   "GO:0016041", # glutamate synthase (ferredoxin) activity
   "GO:0018695", # 4-cresol dehydrogenase (hydroxylating) activity
   "GO:0018694", # p-cymene methyl hydroxylase activity
@@ -320,7 +320,7 @@ terms_metal <- terms %>%
   filter(chebi_id %in% unique(metal_chebi$chebi_accession)) %>%
   filter(!main_id %in% metal_slim_subset_annotated$slims_from_id)
 
-terms_metal_id_name <- terms_metal %>% 
+terms_metal_id_name <- terms_metal %>%
   distinct(main_id, main_name)
 
 terms_metal_paste <- paste0(paste0('"', terms_metal_id_name$main_id, '", \\# ', terms_metal_id_name$main_name), collapse = "\n")
@@ -330,14 +330,16 @@ terms_metal_paste <- paste0(paste0('"', terms_metal_id_name$main_id, '", \\# ', 
 # The igraph package is used for this
 
 go_network <- metal_slim_subset_annotated %>%
-  mutate(chebi_id = ifelse(!(chebi_id %in% metal_chebi$chebi_accession) | is.na(chebi_id), NA, chebi_id),
-         relations_relation = ifelse(is.na(chebi_id), NA, relations_relation),
-         relations_url = ifelse(is.na(chebi_id), NA, relations_url),
-         database = ifelse(is.na(chebi_id), NA, database),
-         relations_term = ifelse(is.na(chebi_id), NA, relations_term)) %>% 
-  group_by(slims_from_id) %>% 
-  filter(all(is.na(chebi_id)) | !is.na(chebi_id)) %>% 
-  ungroup() %>% 
+  mutate(
+    chebi_id = ifelse(!(chebi_id %in% metal_chebi$chebi_accession) | is.na(chebi_id), NA, chebi_id),
+    relations_relation = ifelse(is.na(chebi_id), NA, relations_relation),
+    relations_url = ifelse(is.na(chebi_id), NA, relations_url),
+    database = ifelse(is.na(chebi_id), NA, database),
+    relations_term = ifelse(is.na(chebi_id), NA, relations_term)
+  ) %>%
+  group_by(slims_from_id) %>%
+  filter(all(is.na(chebi_id)) | !is.na(chebi_id)) %>%
+  ungroup() %>%
   # exclude all non-metal IDs according to the above ChEBI list
   # this might however also exclude non-metal ChEBI IDs if they are present.
   # One can run this pipeline once commenting these arguments out and checking for new non-metal IDs

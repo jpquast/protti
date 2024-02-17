@@ -17,7 +17,7 @@ qc_data_completeness(
 \arguments{
 \item{data}{a data frame containing at least the input variables.}
 
-\item{sample}{a character column in the \code{data} data frame that contains the sample names.}
+\item{sample}{a character or factor column in the \code{data} data frame that contains the sample names.}
 
 \item{grouping}{a character column in the \code{data} data frame that contains either precursor
 or peptide identifiers.}

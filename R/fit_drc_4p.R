@@ -84,15 +84,15 @@
 #' columns can be retained by providing their names (not in quotations marks, just like other
 #' column names, but in a vector).
 #'
-#' @return If \code{include_models = FALSE} a data frame is returned that contains correlations
+#' @return If `include_models = FALSE` a data frame is returned that contains correlations
 #' of predicted to measured values as a measure of the goodness of the curve fit, an associated
 #' p-value and the four parameters of the model for each group. Furthermore, input data for plots
-#' is returned in the columns \code{plot_curve} (curve and confidence interval) and \code{plot_points}
-#' (measured points). If \ code{include_models = TURE}, a list is returned that contains:
-#' \itemize{
-#' \item{\code{fit_objects}: }{The fit objects of type \code{drc} for each group.}
-#' \item{\code{correlations}: }{The correlation data frame described above}
-#' }
+#' is returned in the columns `plot_curve` (curve and confidence interval) and `plot_points`
+#' (measured points). If `include_models = TURE`, a list is returned that contains:
+#'
+#' * `fit_objects`: The fit objects of type `drc` for each group.
+#' * `correlations`: The correlation data frame described above
+#'
 #' @import dplyr
 #' @import tidyr
 #' @import progress
@@ -156,10 +156,16 @@ fit_drc_4p <- function(data,
 
   # preprocessing of data
   data_prep <- data %>%
+    tidyr::drop_na({{ dose }}) %>%
     dplyr::ungroup() %>%
     dplyr::distinct({{ sample }}, {{ grouping }}, {{ response }}, {{ dose }}) %>%
     tidyr::complete(nesting(!!ensym(sample), !!ensym(dose)), !!ensym(grouping)) %>%
     dplyr::mutate({{ dose }} := as.numeric({{ dose }}))
+
+  # If the data_prep data.frame is empty return a data.frame that contains only the grouping and retained column
+  if (nrow(data_prep) == 0) {
+    return(data.frame())
+  }
 
   if (filter != "none") {
     n_conditions <- length(unique(dplyr::pull(data_prep, {{ dose }})))
@@ -176,11 +182,12 @@ fit_drc_4p <- function(data,
         sd = sd({{ response }}, na.rm = TRUE)
       ) %>%
       dplyr::distinct({{ grouping }}, {{ dose }}, .data$mean_ratio, .data$sd, .data$n) %>%
-      tidyr::drop_na(.data$mean_ratio, .data$sd) %>%
+      tidyr::drop_na("mean_ratio", "sd") %>%
       anova_protti({{ grouping }}, {{ dose }}, .data$mean_ratio, .data$sd, .data$n) %>%
       dplyr::distinct({{ grouping }}, .data$pval) %>%
+      tidyr::drop_na("pval") %>% # remove NA pvalues before adjustment!
       dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
-      dplyr::rename(anova_pval = .data$pval)
+      dplyr::rename(anova_pval = "pval")
 
     # extract elements that pass anova significant threshold
     anova_filtered <- anova %>%
@@ -437,6 +444,11 @@ fit_drc_4p <- function(data,
       .f = ~ dplyr::mutate(.x, {{ grouping }} := .y)
     )
 
+  # Return empty data.frame if there are no correlations. This prevents parallel_fit_drc_4p from failing.
+  if (nrow(correlation_output) == 0) {
+    return(data.frame())
+  }
+
   # creating correlation output data frame
 
   correlation_output <- correlation_output %>%
@@ -512,14 +524,14 @@ fit_drc_4p <- function(data,
   output <- correlation_output %>%
     dplyr::left_join(line_fit, by = rlang::as_name(rlang::enquo(grouping))) %>%
     dplyr::group_by({{ grouping }}) %>%
-    tidyr::nest(plot_curve = c(.data$dose, .data$Prediction, .data$Lower, .data$Upper)) %>%
+    tidyr::nest(plot_curve = c("dose", "Prediction", "Lower", "Upper")) %>%
     dplyr::left_join(plot_points, by = rlang::as_name(rlang::enquo(grouping))) %>%
     tidyr::nest(plot_points = c({{ response }}, {{ dose }})) %>%
     dplyr::rename(
-      hill_coefficient = .data$`hill:(Intercept)`,
-      min_model = .data$`min_value:(Intercept)`,
-      max_model = .data$`max_value:(Intercept)`,
-      ec_50 = .data$`ec_50:(Intercept)`
+      hill_coefficient = "hill:(Intercept)",
+      min_model = "min_value:(Intercept)",
+      max_model = "max_value:(Intercept)",
+      ec_50 = "ec_50:(Intercept)"
     ) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(dplyr::desc(.data$correlation))

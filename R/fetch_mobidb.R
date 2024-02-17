@@ -47,21 +47,21 @@ fetch_mobidb <- function(uniprot_ids = NULL, organism_id = NULL, show_progress =
     # Check uniprot ID validity
     uniprot_ids <- stats::na.omit(uniprot_ids)
     id_test <- stringr::str_detect(uniprot_ids,
-                                   pattern = "^([OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2})$"
+      pattern = "^([OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2})$"
     )
     non_conform_ids <- uniprot_ids[!id_test]
     uniprot_ids <- uniprot_ids[id_test]
-    
+
     if (length(non_conform_ids) != 0) {
       warning(strwrap("These UniProt accession numbers did not conform
 to uniprot standards and were skipped from fetching: ",
-prefix = "\n", initial = ""
+        prefix = "\n", initial = ""
       ), paste(non_conform_ids, collapse = ", "))
     }
     if (length(uniprot_ids) == 0) {
       stop("No valid UniProt accession numbers found.")
     }
-    
+
     if (length(uniprot_ids) < 800) {
       # generate url
       url <- paste0(

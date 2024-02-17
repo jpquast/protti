@@ -140,24 +140,26 @@ woods_plot <- function(data,
   plots <- purrr::map2(.x = data_facet, .y = names(data_facet), function(x, y) {
     pb$tick()
     ggplot2::ggplot(data = x) +
-      ggplot2::geom_rect(ggplot2::aes(
-        xmin = 0,
-        xmax = {{ protein_length }},
-        ymin = -0.01,
-        ymax = 0.01
-      ),
-      fill = "black"
+      ggplot2::geom_rect(
+        ggplot2::aes(
+          xmin = 0,
+          xmax = {{ protein_length }},
+          ymin = -0.01,
+          ymax = 0.01
+        ),
+        fill = "black"
       ) +
-      ggplot2::geom_rect(ggplot2::aes(
-        xmin = {{ start_position }},
-        xmax = {{ end_position }},
-        ymin = {{ fold_change }} - 0.2,
-        ymax = {{ fold_change }} + 0.2,
-        fill = {{ colouring }}
-      ),
-      col = "black",
-      size = 0.7,
-      alpha = 0.8
+      ggplot2::geom_rect(
+        ggplot2::aes(
+          xmin = {{ start_position }},
+          xmax = {{ end_position }},
+          ymin = {{ fold_change }} - 0.2,
+          ymax = {{ fold_change }} + 0.2,
+          fill = {{ colouring }}
+        ),
+        col = "black",
+        linewidth = 0.7,
+        alpha = 0.8
       ) +
       {
         if (!highlight_missing) {
@@ -177,13 +179,13 @@ woods_plot <- function(data,
         yintercept = -{{ fold_change_cutoff }},
         col = "blue",
         alpha = .8,
-        size = 0.7
+        linewidth = 0.7
       ) +
       ggplot2::geom_hline(
         yintercept = {{ fold_change_cutoff }},
         col = "blue",
         alpha = .8,
-        size = 0.7
+        linewidth = 0.7
       ) +
       ggplot2::ylim(
         min(-2.5, dplyr::pull(data, {{ fold_change }})) - 0.5,

@@ -203,10 +203,10 @@ create_queue <-
             )
         )) %>%
         dplyr::select(-c(
-          .data$t1_null,
-          .data$t2_null,
-          .data$d1_null,
-          .data$d2_null
+          "t1_null",
+          "t2_null",
+          "d1_null",
+          "d2_null"
         ))
 
       sample_name <- sample_name %>%
@@ -239,10 +239,10 @@ create_queue <-
             )
         )) %>%
         dplyr::select(-c(
-          .data$t1_null,
-          .data$t2_null,
-          .data$d1_null,
-          .data$d2_null
+          "t1_null",
+          "t2_null",
+          "d1_null",
+          "d2_null"
         ))
     }
 
@@ -255,7 +255,7 @@ create_queue <-
           user,
           measurement_type,
           experiment_name,
-          .data$number
+          "number"
         )
     }
 
@@ -285,7 +285,7 @@ create_queue <-
 
     result <- data %>%
       dplyr::mutate(`Sample Type` = "Unknown") %>%
-      dplyr::select(.data$`Sample Type`, .data$`File Name`) %>%
+      dplyr::select("Sample Type", "File Name") %>%
       dplyr::mutate(`Sample ID` = 1) %>%
       dplyr::mutate(Path = data_path) %>%
       dplyr::mutate(`Instrument Method` = method_path) %>%
@@ -314,7 +314,7 @@ create_queue <-
 
       blank <- tidyr::unite(blank_names, "File Name", sep = "_") %>%
         dplyr::mutate(`Sample Type` = "QC") %>%
-        dplyr::select(.data$`Sample Type`, .data$`File Name`) %>%
+        dplyr::select("Sample Type", "File Name") %>%
         dplyr::mutate(`Sample ID` = 1) %>%
         dplyr::mutate(Path = data_path) %>%
         dplyr::mutate(`Instrument Method` = blank_method_path) %>%

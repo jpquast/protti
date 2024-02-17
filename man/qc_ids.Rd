@@ -19,7 +19,7 @@ qc_ids(
 \arguments{
 \item{data}{a data frame containing at least sample names and precursor/peptide/protein IDs.}
 
-\item{sample}{a character column in the \code{data} data frame that contains the sample name.}
+\item{sample}{a character or factor column in the \code{data} data frame that contains the sample name.}
 
 \item{grouping}{a character column in the \code{data} data frame that contains either precursor or
 peptide identifiers.}

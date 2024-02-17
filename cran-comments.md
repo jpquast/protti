@@ -1,14 +1,11 @@
 ## Submission 
 
-* We fixed a bug that caused an example to fail if there 
-was a connectivity issue to a database. This should now be resolved.
-* The bug caused an error to appear when \donttest examples were tested.
-* This release therefore fixes the problem reported by Prof. Brian Ripley.
+* We have fixed a few bugs and added a new functions.
 
 ## Test environments
-* macOS-latest (on GitHub actions), R 4.2.2
-* windows-latest (on GitHub actions), R 4.2.2
-* ubuntu-20.04 (on GitHub actions), R 4.2.2
+* macOS-latest (on GitHub actions), R 4.3.2
+* windows-latest (on GitHub actions), R 4.3.2
+* ubuntu-20.04 (on GitHub actions), R 4.3.2
 * ubuntu-20.04 (on GitHub actions), r-devel
 * windows-ix86+x86_64 (win-builder), r-devel
 * fedora-clang-devel (R-hub), r-devel
