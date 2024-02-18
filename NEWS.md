@@ -1,3 +1,10 @@
+# protti 0.7.0.9000
+
+## New features
+
+* `calculate_go_enrichment()` got additional arguments.
+  * `facet_n_col`: determines the number of columns the faceted plot should have if a group column is provided.
+
 # protti 0.7.0
 
 ## New features

@@ -42,6 +42,8 @@ go_enrichment <- function(...) {
 #' @param y_axis_free a logical value that specifies if the y-axis of the plot should be "free"
 #' for each facet if a grouping variable is provided. Default is `TRUE`. If `FALSE` is selected
 #' it is easier to compare GO categories directly with each other.
+#' @param facet_n_col a numeric value that specifies the number of columns the faceted plot should have
+#' if a column name is provided to group. The default is 2.
 #' @param go_annotations_uniprot recommended, a character column in the \code{data} data frame
 #' that contains gene ontology annotations obtained from UniProt using \code{fetch_uniprot}.
 #' These annotations are already separated into the desired ontology type so the argument
@@ -112,7 +114,11 @@ go_enrichment <- function(...) {
 #'       ),
 #'       FALSE,
 #'       significant
-#'     ))
+#'     )) %>%
+#'     mutate(group = c(rep("A", 500),
+#'                      rep("B", 500),
+#'                      rep("A", (n() - 1000)/2),
+#'                      rep("B", round((n() - 1000)/2))))
 #'
 #'   # Plot gene ontology enrichment
 #'   calculate_go_enrichment(
@@ -123,6 +129,18 @@ go_enrichment <- function(...) {
 #'     plot = TRUE,
 #'     plot_cutoff = "pval 0.01"
 #'   )
+#'
+#'  # Plot gene ontology enrichment with group
+#'  calculate_go_enrichment(
+#'    data,
+#'    protein_id = accession,
+#'    go_annotations_uniprot = go_f,
+#'    is_significant = significant,
+#'    group = group,
+#'    facet_n_col = 1,
+#'    plot = TRUE,
+#'    plot_cutoff = "pval 0.01"
+#'  )
 #'
 #'   # Calculate gene ontology enrichment
 #'   go_enrichment <- calculate_go_enrichment(
@@ -141,6 +159,7 @@ calculate_go_enrichment <- function(data,
                                     is_significant,
                                     group = NULL,
                                     y_axis_free = TRUE,
+                                    facet_n_col = 2,
                                     go_annotations_uniprot = NULL,
                                     ontology_type,
                                     organism_id = NULL,
@@ -428,9 +447,9 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     {
       if (!missing(group)) {
         if (y_axis_free) {
-          ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)), scales = "free_y")
+          ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)), scales = "free_y", ncol = facet_n_col)
         } else {
-          ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)))
+          ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)), ncol = facet_n_col)
         }
       }
     } +
