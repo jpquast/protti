@@ -5,8 +5,9 @@
 #'
 #' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or
 #' depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individually with the
-#' \code{plot_cutoff} argument. Bars are colored according to the direction of the enrichment. If
-#' \code{plot = FALSE}, a data frame is returned. P-values are adjusted with Benjamini-Hochberg.
+#' \code{plot_cutoff} argument. Bars are colored according to the direction of the enrichment
+#' (enriched or deenriched). If \code{plot = FALSE}, a data frame is returned. P-values are
+#' adjusted with Benjamini-Hochberg.
 #' @keywords internal
 #' @export
 go_enrichment <- function(...) {
@@ -85,8 +86,9 @@ go_enrichment <- function(...) {
 #'
 #' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or
 #' depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individually with the
-#' `plot_cutoff` argument. Bars are colored according to the direction of the enrichment. If
-#' `plot = FALSE`, a data frame is returned. P-values are adjusted with Benjamini-Hochberg.
+#' `plot_cutoff` argument. Bars are colored according to the direction of the enrichment (enriched
+#' or deenriched). If `plot = FALSE`, a data frame is returned. P-values are adjusted with
+#' Benjamini-Hochberg.
 #'
 #' @import dplyr
 #' @import ggplot2
@@ -187,6 +189,13 @@ calculate_go_enrichment <- function(data,
   . <- NULL
   n_sig <- NULL
   group_missing <- missing(group)
+  alternative_test <- switch(enrichment_type,
+                             "all" = "two.sided",
+                             "enriched" = "greater",
+                             "deenriched" = "less",
+                             "none")
+
+  if (alternative_test == "none") stop("Please provide a valid enrichment_type! Can be 'all', 'enriched', 'deenriched'.")
 
   if (length(unique(dplyr::pull(data, {{ protein_id }}))) != nrow(data)) {
     data <- data %>%
@@ -300,7 +309,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       purrr::map(.f = ~ dplyr::select(.x, -.data$go_id) %>%
         tibble::column_to_rownames(var = rlang::as_name(enquo(is_significant))) %>%
         as.matrix() %>%
-        fisher.test()) %>%
+        fisher.test(alternative = alternative_test)) %>%
       purrr::map2_df(
         .y = names(.),
         .f = ~ tibble::tibble(
@@ -322,7 +331,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
               dplyr::select(.x, -c(.data$go_id)) %>%
                 tibble::column_to_rownames(var = rlang::as_name(enquo(is_significant))) %>%
                 as.matrix() %>%
-                fisher.test()
+                fisher.test(alternative = alternative_test)
             }) %>%
             purrr::map2_dfr(
               .y = names(.),
@@ -357,7 +366,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       .data$n_significant_proteins / .data$n_detected_proteins * .data$n_detected_proteins_in_process,
       digits = 2
     )) %>%
-    dplyr::mutate(direction = ifelse(.data$n_proteins_expected < .data$n_significant_proteins_in_process, "Up", "Down")) %>%
+    dplyr::mutate(enrichment_type = ifelse(.data$n_proteins_expected < .data$n_significant_proteins_in_process, "Enriched", "Deenriched")) %>%
     dplyr::arrange(.data$pval)
 
   if (stringr::str_detect(result_table$go_id[1], pattern = "\\[GO:")) {
@@ -405,7 +414,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
           plot_input,
           ggplot2::aes(stats::reorder(.data$term, .data$neg_log_sig),
             .data$neg_log_sig,
-            fill = .data$direction
+            fill = .data$enrichment_type
           )
         )
       } else {
@@ -413,12 +422,12 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
           plot_input,
           ggplot2::aes(stats::reorder(.data$go_id, .data$neg_log_sig),
             .data$neg_log_sig,
-            fill = .data$direction
+            fill = .data$enrichment_type
           )
         )
       }
     } +
-    ggplot2::geom_col(col = "black", size = 1.5) +
+    ggplot2::geom_col(col = "black", size = 1) +
     {
       if (label == TRUE & nrow(plot_input) > 0) {
         geom_text(
@@ -438,7 +447,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
         )
       }
     } +
-    ggplot2::scale_fill_manual(values = c(Down = "#56B4E9", Up = "#E76145")) +
+    ggplot2::scale_fill_manual(values = c(Deenriched = "#56B4E9", Enriched = "#E76145")) +
     ggplot2::scale_y_continuous(breaks = seq(0, 100, 1)) +
     ggplot2::coord_flip() +
     {
@@ -468,7 +477,8 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       if (type == "pval") {
         ggplot2::labs(
           title = plot_title,
-          y = "-log10 p-value"
+          y = "-log10 p-value",
+          fill = "Enrichment Type"
         )
       }
     } +
@@ -479,6 +489,8 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       axis.text.y = ggplot2::element_text(size = 15),
       axis.title.x = ggplot2::element_text(size = 15),
       axis.title.y = ggplot2::element_blank(),
+      legend.title = ggplot2::element_text(size = 15),
+      legend.text = ggplot2::element_text(size = 13),
       strip.text = ggplot2::element_text(size = 15),
       strip.background = element_blank()
     )

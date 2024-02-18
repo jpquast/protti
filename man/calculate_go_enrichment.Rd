@@ -18,6 +18,7 @@ calculate_go_enrichment(
   plot = TRUE,
   plot_title = "Gene ontology enrichment of significant proteins",
   label = TRUE,
+  enrichment_type = "all",
   min_n_detected_proteins_in_process = 1,
   plot_cutoff = "adj_pval top10"
 )
@@ -73,6 +74,11 @@ enrichment of significant proteins".}
 \item{label}{a logical argument indicating whether labels should be added to the plot.
 Default is TRUE.}
 
+\item{enrichment_type}{a character argument that is either "all", "enriched" or "deenriched". This
+determines if the enrichment analysis should be performed in order to check for both enrichemnt and
+deenrichemnt or only one of the two. This affects the statistics performed and therefore also the displayed
+plot.}
+
 \item{min_n_detected_proteins_in_process}{is a numeric argument that specifies the minimal number
 of detected proteins a GO term needs to have to be displayed in the plot. The default is 1, meaning
 no filtering of the plotted data is performed. This argument does not affect any computations or
@@ -91,8 +97,9 @@ type first followed by the threshold separated by a space. Example are
 \value{
 A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or
 depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individually with the
-\code{plot_cutoff} argument. Bars are colored according to the direction of the enrichment. If
-\code{plot = FALSE}, a data frame is returned. P-values are adjusted with Benjamini-Hochberg.
+\code{plot_cutoff} argument. Bars are colored according to the direction of the enrichment (enriched
+or deenriched). If \code{plot = FALSE}, a data frame is returned. P-values are adjusted with
+Benjamini-Hochberg.
 }
 \description{
 Analyses enrichment of gene ontology terms associated with proteins in the fraction of

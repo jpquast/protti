@@ -6,6 +6,7 @@
   * `facet_n_col`: determines the number of columns the faceted plot should have if a group column is provided.
   * `plot_title`: specifies the title of the plot.
   * `min_n_detected_proteins_in_process`: argument for plotting that specifies the minimum number of proteins a GO term needs to be detected for.
+  * `enrichment_type`: specifies what kind of enrichment should be calculated. It can be "all", "enrichment" or "deenrichment". This argument affects how the `fisher.test()` calculates the enrichment. A two-sided test will be used for "all", while a one-sided test in the specific direction will be used for "enriched" or "deenriched".
 
 # protti 0.7.0
 
