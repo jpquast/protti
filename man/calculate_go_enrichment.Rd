@@ -16,7 +16,9 @@ calculate_go_enrichment(
   organism_id = NULL,
   go_data = NULL,
   plot = TRUE,
+  plot_title = "Gene ontology enrichment of significant proteins",
   label = TRUE,
+  min_n_detected_proteins_in_process = 1,
   plot_cutoff = "adj_pval top10"
 )
 }
@@ -59,14 +61,24 @@ organism (TaxId). Possible inputs include only: "9606" (Human), "559292" (Yeast)
 (E. coli). Is only necessary if GO data is not provided either by \code{go_annotations_uniprot}
 or in \code{go_data}.}
 
-\item{go_data}{Optional, a data frame that can be obtained with \code{fetch_go}. If you provide
-data not obtained with \code{fetch_go} make sure column names for protein ID (db_id) and GO ID
-(go_id) are the same as for data obtained with \code{fetch_go}.}
+\item{go_data}{Optional, a data frame that can be obtained with \code{fetch_go()}. If you provide
+data not obtained with \code{fetch_go()} make sure column names for protein ID (\code{db_id}) and GO ID
+(\code{go_id}) are the same as for data obtained with \code{fetch_go()}.}
 
 \item{plot}{a logical argument indicating whether the result should be plotted or returned as a table.}
 
+\item{plot_title}{a character value that specifies the title of the plot. The default is "Gene ontology
+enrichment of significant proteins".}
+
 \item{label}{a logical argument indicating whether labels should be added to the plot.
 Default is TRUE.}
+
+\item{min_n_detected_proteins_in_process}{is a numeric argument that specifies the minimal number
+of detected proteins a GO term needs to have to be displayed in the plot. The default is 1, meaning
+no filtering of the plotted data is performed. This argument does not affect any computations or
+the returned data if \code{plot = FALSE}. This argument is useful in order to remove terms that were only
+detected in for example 1 protein. Even though these terms are sometimes significant, they are not
+really relevant.}
 
 \item{plot_cutoff}{a character value indicating if the plot should contain the top 10 most
 significant proteins (p-value or adjusted p-value), or if a significance cutoff should be used

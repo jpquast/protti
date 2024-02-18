@@ -57,24 +57,32 @@ go_enrichment <- function(...) {
 #' organism (TaxId). Possible inputs include only: "9606" (Human), "559292" (Yeast) and "83333"
 #' (E. coli). Is only necessary if GO data is not provided either by \code{go_annotations_uniprot}
 #' or in \code{go_data}.
-#' @param go_data Optional, a data frame that can be obtained with \code{fetch_go}. If you provide
-#' data not obtained with \code{fetch_go} make sure column names for protein ID (db_id) and GO ID
-#' (go_id) are the same as for data obtained with \code{fetch_go}.
+#' @param go_data Optional, a data frame that can be obtained with `fetch_go()`. If you provide
+#' data not obtained with `fetch_go()` make sure column names for protein ID (`db_id`) and GO ID
+#' (`go_id`) are the same as for data obtained with `fetch_go()`.
 #' @param plot a logical argument indicating whether the result should be plotted or returned as a table.
+#' @param plot_title a character value that specifies the title of the plot. The default is "Gene ontology
+#' enrichment of significant proteins".
 #' @param label a logical argument indicating whether labels should be added to the plot.
 #' Default is TRUE.
+#' @param min_n_detected_proteins_in_process is a numeric argument that specifies the minimal number
+#' of detected proteins a GO term needs to have to be displayed in the plot. The default is 1, meaning
+#' no filtering of the plotted data is performed. This argument does not affect any computations or
+#' the returned data if `plot = FALSE`. This argument is useful in order to remove terms that were only
+#' detected in for example 1 protein. Even though these terms are sometimes significant, they are not
+#' really relevant.
 #' @param plot_cutoff a character value indicating if the plot should contain the top 10 most
 #' significant proteins (p-value or adjusted p-value), or if a significance cutoff should be used
 #' to determine the number of GO terms in the plot. This information should be provided with the
 #' type first followed by the threshold separated by a space. Example are
-#' \code{plot_cutoff = "adj_pval top10"}, \code{plot_cutoff = "pval 0.05"} or
-#' \code{plot_cutoff = "adj_pval 0.01"}. The threshold can be chosen freely. The default value is
-#' \code{"adj_pval top10"}.
+#' `plot_cutoff = "adj_pval top10"`, `plot_cutoff = "pval 0.05"` or
+#' `plot_cutoff = "adj_pval 0.01"`. The threshold can be chosen freely. The default value is
+#' `"adj_pval top10"`.
 #'
 #' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or
 #' depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individually with the
-#' \code{plot_cutoff} argument. Bars are colored according to the direction of the enrichment. If
-#' \code{plot = FALSE}, a data frame is returned. P-values are adjusted with Benjamini-Hochberg.
+#' `plot_cutoff` argument. Bars are colored according to the direction of the enrichment. If
+#' `plot = FALSE`, a data frame is returned. P-values are adjusted with Benjamini-Hochberg.
 #'
 #' @import dplyr
 #' @import ggplot2
@@ -165,7 +173,9 @@ calculate_go_enrichment <- function(data,
                                     organism_id = NULL,
                                     go_data = NULL,
                                     plot = TRUE,
+                                    plot_title = "Gene ontology enrichment of significant proteins",
                                     label = TRUE,
+                                    min_n_detected_proteins_in_process = 1,
                                     plot_cutoff = "adj_pval top10") {
   # to avoid note about no global variable binding. Usually this can be avoided with
   # .data$ but not in nesting in complete function.
@@ -374,10 +384,13 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     return(result_table)
   }
 
+  filtered_result_table <- result_table %>%
+    dplyr::filter(n_detected_proteins_in_process >= min_n_detected_proteins_in_process)
+
   if (!missing(group) & y_axis_free) {
     # arrange table by group and go term for plot
     # this ensures that the terms are in the right order for a facet plot with a free axis
-    result_table <- result_table %>%
+    filtered_result_table <- filtered_result_table %>%
       dplyr::ungroup() %>%
       dplyr::mutate(term = paste(.data$term, {{ group }}, sep = "__"))
   }
@@ -386,7 +399,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
   if (stringr::str_detect(plot_cutoff, pattern = "top10")) {
     split_cutoff <- stringr::str_split(plot_cutoff, pattern = " ", simplify = TRUE)
     type <- split_cutoff[1]
-    plot_input <- result_table %>%
+    plot_input <- filtered_result_table %>%
       dplyr::ungroup() %>%
       dplyr::mutate(neg_log_sig = -log10(!!rlang::ensym(type))) %>%
       dplyr::slice(1:10)
@@ -394,7 +407,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     split_cutoff <- stringr::str_split(plot_cutoff, pattern = " ", simplify = TRUE)
     type <- split_cutoff[1]
     threshold <- as.numeric(split_cutoff[2])
-    plot_input <- result_table %>%
+    plot_input <- filtered_result_table %>%
       dplyr::ungroup() %>%
       dplyr::mutate(neg_log_sig = -log10(!!rlang::ensym(type))) %>%
       dplyr::filter(!!rlang::ensym(type) <= threshold)
@@ -462,7 +475,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     {
       if (type == "adj_pval") {
         ggplot2::labs(
-          title = "Gene ontology enrichment of significant proteins",
+          title = plot_title,
           y = "-log10 adjusted p-value"
         )
       }
@@ -470,7 +483,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     {
       if (type == "pval") {
         ggplot2::labs(
-          title = "Gene ontology enrichment of significant proteins",
+          title = plot_title,
           y = "-log10 p-value"
         )
       }

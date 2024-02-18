@@ -4,6 +4,8 @@
 
 * `calculate_go_enrichment()` got additional arguments.
   * `facet_n_col`: determines the number of columns the faceted plot should have if a group column is provided.
+  * `plot_title`: specifies the title of the plot.
+  * `min_n_detected_proteins_in_process`: argument for plotting that specifies the minimum number of proteins a GO term needs to be detected for.
 
 # protti 0.7.0
 
