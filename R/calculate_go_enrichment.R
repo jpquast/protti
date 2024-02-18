@@ -65,6 +65,10 @@ go_enrichment <- function(...) {
 #' enrichment of significant proteins".
 #' @param label a logical argument indicating whether labels should be added to the plot.
 #' Default is TRUE.
+#' @param enrichment_type a character argument that is either "all", "enriched" or "deenriched". This
+#' determines if the enrichment analysis should be performed in order to check for both enrichemnt and
+#' deenrichemnt or only one of the two. This affects the statistics performed and therefore also the displayed
+#' plot.
 #' @param min_n_detected_proteins_in_process is a numeric argument that specifies the minimal number
 #' of detected proteins a GO term needs to have to be displayed in the plot. The default is 1, meaning
 #' no filtering of the plotted data is performed. This argument does not affect any computations or
@@ -175,35 +179,31 @@ calculate_go_enrichment <- function(data,
                                     plot = TRUE,
                                     plot_title = "Gene ontology enrichment of significant proteins",
                                     label = TRUE,
+                                    enrichment_type = "all",
                                     min_n_detected_proteins_in_process = 1,
                                     plot_cutoff = "adj_pval top10") {
   # to avoid note about no global variable binding. Usually this can be avoided with
   # .data$ but not in nesting in complete function.
   . <- NULL
   n_sig <- NULL
+  group_missing <- missing(group)
 
   if (length(unique(dplyr::pull(data, {{ protein_id }}))) != nrow(data)) {
-    # group by the "group" argument if provided
-    if (!missing(group)) {
-      data <- data %>%
-        dplyr::ungroup() %>%
-        dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}, {{ group }}) %>%
-        dplyr::group_by({{ protein_id }}, {{ group }}) %>%
-        dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
-        # do this to remove accidental double annotations
-        dplyr::ungroup() %>%
-        dplyr::distinct()
-    } else {
-      data <- data %>%
-        dplyr::ungroup() %>%
-        dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}) %>%
-        dplyr::group_by({{ protein_id }}) %>%
-        dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
-        # do this to remove accidental double annotations
-        dplyr::ungroup() %>%
-        dplyr::distinct()
-    }
+    data <- data %>%
+      dplyr::ungroup() %>%
+    {
+      # conditional grouping
+      if (!group_missing) dplyr::distinct(., {{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}, {{ group }}) %>%
+        dplyr::group_by({{ protein_id }}, {{ group }}) else
+        dplyr::distinct(., {{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}) %>%
+        dplyr::group_by({{ protein_id }})
+    } %>%
+      dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
+      # do this to remove accidental double annotations
+      dplyr::ungroup() %>%
+      dplyr::distinct()
   }
+
   if (!missing(go_annotations_uniprot)) {
     if (!stringr::str_detect(
       dplyr::pull(
@@ -271,19 +271,30 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
 
   if (!missing(go_annotations_uniprot)) go_data <- input
 
-  if (missing(group)) {
-    # group argument is missing
-    cont_table <- go_data %>%
-      tidyr::drop_na(.data$go_id, {{ is_significant }}) %>%
-      dplyr::group_by({{ is_significant }}) %>%
-      dplyr::mutate(n_sig = dplyr::n_distinct(.data$protein_id)) %>%
-      dplyr::group_by(.data$go_id, {{ is_significant }}) %>%
-      dplyr::mutate(n_has_process = dplyr::n_distinct(.data$protein_id)) %>%
-      # count number of proteins with process for sig and non-sig proteins
-      dplyr::distinct(.data$go_id, {{ is_significant }}, .data$n_sig, .data$n_has_process) %>%
-      dplyr::ungroup() %>%
-      tidyr::complete(.data$go_id, tidyr::nesting(!!rlang::ensym(is_significant), n_sig), fill = list(n_has_process = 0))
+  # group argument is not missing
+  cont_table <- go_data %>%
+    tidyr::drop_na(.data$go_id, {{ is_significant }}) %>%
+    {   # group argument is missing
+      if (group_missing) dplyr::group_by(., {{ is_significant }}) else
+        # group argument is not missing
+        dplyr::group_by(., {{ is_significant }}, {{ group }})
+    } %>%
+    dplyr::mutate(n_sig = dplyr::n_distinct(.data$protein_id)) %>%
+    dplyr::group_by(.data$go_id, .add = TRUE) %>%
+    dplyr::mutate(n_has_process = dplyr::n_distinct(.data$protein_id)) %>%
+    # count number of proteins with process for sig and non-sig proteins
+    {   # group argument is missing
+      if (group_missing) dplyr::distinct(., .data$go_id, {{ is_significant }}, .data$n_sig, .data$n_has_process) %>%
+        dplyr::ungroup() else
+        # group argument is not missing
+          dplyr::distinct(., .data$go_id, {{ is_significant }}, .data$n_sig, .data$n_has_process, {{ group }}) %>%
+        dplyr::group_by({{ group }})
+    } %>%
+    tidyr::complete(.data$go_id, tidyr::nesting(!!rlang::ensym(is_significant), n_sig), fill = list(n_has_process = 0)) %>%
+    dplyr::ungroup()
 
+
+  if (group_missing) {
     fisher_test <- cont_table %>%
       split(dplyr::pull(., .data$go_id)) %>%
       purrr::map(.f = ~ dplyr::select(.x, -.data$go_id) %>%
@@ -298,38 +309,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
         )
       )
 
-    result_table <- cont_table %>%
-      dplyr::left_join(fisher_test, by = "go_id") %>%
-      dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
-      dplyr::group_by(.data$go_id) %>%
-      dplyr::mutate(
-        n_detected_proteins = sum(.data$n_sig),
-        n_detected_proteins_in_process = sum(.data$n_has_process),
-        n_significant_proteins = ifelse({{ is_significant }} == TRUE, .data$n_sig, NA),
-        n_significant_proteins_in_process = ifelse({{ is_significant }} == TRUE, .data$n_has_process, NA)
-      ) %>%
-      tidyr::drop_na() %>%
-      dplyr::select(-c({{ is_significant }}, .data$n_sig, .data$n_has_process)) %>%
-      dplyr::mutate(n_proteins_expected = round(
-        .data$n_significant_proteins / .data$n_detected_proteins * .data$n_detected_proteins_in_process,
-        digits = 2
-      )) %>%
-      dplyr::mutate(direction = ifelse(.data$n_proteins_expected < .data$n_significant_proteins_in_process, "Up", "Down")) %>%
-      dplyr::arrange(.data$pval)
   } else {
-    # group argument is not missing
-    cont_table <- go_data %>%
-      tidyr::drop_na(.data$go_id, {{ is_significant }}) %>%
-      dplyr::group_by({{ is_significant }}, {{ group }}) %>%
-      dplyr::mutate(n_sig = dplyr::n_distinct(.data$protein_id)) %>%
-      dplyr::group_by(.data$go_id, {{ is_significant }}, {{ group }}) %>%
-      dplyr::mutate(n_has_process = dplyr::n_distinct(.data$protein_id)) %>%
-      # count number of proteins with process for sig and non-sig proteins
-      dplyr::distinct(.data$go_id, {{ is_significant }}, .data$n_sig, .data$n_has_process, {{ group }}) %>%
-      dplyr::group_by({{ group }}) %>%
-      tidyr::complete(.data$go_id, tidyr::nesting(!!rlang::ensym(is_significant), n_sig), fill = list(n_has_process = 0)) %>%
-      dplyr::ungroup()
-
     fisher_test <- cont_table %>%
       split(dplyr::pull(., {{ group }})) %>%
       purrr::map2_dfr(
@@ -354,27 +334,31 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
             mutate({{ group }} := .y)
         }
       )
-
-    result_table <- cont_table %>%
-      dplyr::left_join(fisher_test, by = c("go_id", rlang::as_name(enquo(group)))) %>%
-      dplyr::group_by({{ group }}) %>%
-      dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
-      dplyr::group_by(.data$go_id, {{ group }}) %>%
-      dplyr::mutate(
-        n_detected_proteins = sum(.data$n_sig),
-        n_detected_proteins_in_process = sum(.data$n_has_process),
-        n_significant_proteins = ifelse({{ is_significant }} == TRUE, .data$n_sig, NA),
-        n_significant_proteins_in_process = ifelse({{ is_significant }} == TRUE, .data$n_has_process, NA)
-      ) %>%
-      tidyr::drop_na() %>%
-      dplyr::select(-c({{ is_significant }}, .data$n_sig, .data$n_has_process)) %>%
-      dplyr::mutate(n_proteins_expected = round(
-        .data$n_significant_proteins / .data$n_detected_proteins * .data$n_detected_proteins_in_process,
-        digits = 2
-      )) %>%
-      dplyr::mutate(direction = ifelse(.data$n_proteins_expected < .data$n_significant_proteins_in_process, "Up", "Down")) %>%
-      dplyr::arrange(.data$pval)
   }
+
+  result_table <- cont_table %>%
+    {   # group argument is missing
+      if(group_missing) dplyr::left_join(., fisher_test, by = "go_id") else
+        # group argument is not missing
+        dplyr::left_join(., fisher_test, by = c("go_id", rlang::as_name(enquo(group)))) %>%
+        dplyr::group_by({{ group }})
+    } %>%
+    dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
+    dplyr::group_by(.data$go_id, .add = TRUE) %>%
+    dplyr::mutate(
+      n_detected_proteins = sum(.data$n_sig),
+      n_detected_proteins_in_process = sum(.data$n_has_process),
+      n_significant_proteins = ifelse({{ is_significant }} == TRUE, .data$n_sig, NA),
+      n_significant_proteins_in_process = ifelse({{ is_significant }} == TRUE, .data$n_has_process, NA)
+    ) %>%
+    tidyr::drop_na() %>%
+    dplyr::select(-c({{ is_significant }}, .data$n_sig, .data$n_has_process)) %>%
+    dplyr::mutate(n_proteins_expected = round(
+      .data$n_significant_proteins / .data$n_detected_proteins * .data$n_detected_proteins_in_process,
+      digits = 2
+    )) %>%
+    dplyr::mutate(direction = ifelse(.data$n_proteins_expected < .data$n_significant_proteins_in_process, "Up", "Down")) %>%
+    dplyr::arrange(.data$pval)
 
   if (stringr::str_detect(result_table$go_id[1], pattern = "\\[GO:")) {
     result_table <- suppressWarnings(tidyr::separate(result_table, .data$go_id, c("term", "go_id"), "(?=\\[GO:)"))
