@@ -21,7 +21,7 @@ identifiers.}
 \item{coverage}{a numeric column in the \code{data} data frame that contains protein coverage
 in percent. This information can be obtained using the \code{\link{sequence_coverage}} function.}
 
-\item{sample}{optional, a character column in the \code{data} data frame that contains sample names.
+\item{sample}{optional, a character or factor column in the \code{data} data frame that contains sample names.
 Please only provide this argument if you want to facet the distribution plot by sample
 otherwise do not provide this argument.}
 
