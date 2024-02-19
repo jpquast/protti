@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -89,6 +89,7 @@
 <span>  x_axis_label <span class="op">=</span> <span class="st">"log2(fold change)"</span>,</span>
 <span>  y_axis_label <span class="op">=</span> <span class="st">"-log10(p-value)"</span>,</span>
 <span>  legend_label <span class="op">=</span> <span class="st">"Target"</span>,</span>
+<span>  colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  log2FC_cutoff <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  significance_cutoff <span class="op">=</span> <span class="fl">0.01</span>,</span>
 <span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -167,6 +168,14 @@ is "Volcano plot".</p></dd>
 <dt>legend_label</dt>
 <dd><p>optional, a character value that specifies the legend label. Default is
 "Target".</p></dd>
+
+
+<dt>colour</dt>
+<dd><p>optional, a character vector containing colours that should be used to colour
+points according to the selected method. IMPORTANT: the first value in the vector is the
+default point colour, the additional values specify colouring of target or significant points.
+E.g. <code>c("grey60", "#5680C1")</code> to achieve the same colouring as the default for the "significant"
+method.</p></dd>
 
 
 <dt>log2FC_cutoff</dt>

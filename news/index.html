@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -70,13 +70,43 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.0.9000" id="protti-0609000">protti 0.6.0.9000<a class="anchor" aria-label="anchor" href="#protti-0609000"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.0" id="protti-070">protti 0.7.0<small>2024-02-17</small><a class="anchor" aria-label="anchor" href="#protti-070"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-0-6-0-9000">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-6-0-9000"></a></h3>
+<h3 id="new-features-0-7-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-7-0"></a></h3>
 <ul><li>
-<code>plot_volcano()</code> now also works interactively if there are no significant hits.</li>
+<code><a href="../reference/correct_lip_for_abundance.html">correct_lip_for_abundance()</a></code> was added. It corrects LiP-peptides for changes in protein abundance and calculates their significance using a t-test. The function is based on the <a href="https://www.bioconductor.org/packages/release/bioc/html/MSstatsLiP.html" class="external-link">MSstatsLiP</a> package developed by the Vitek Lab. Big thanks to <a href="https://github.com/FehrAaron" class="external-link">@FehrAaron</a> for implementing it!</li>
 <li>
-<code><a href="../reference/fetch_chebi.html">fetch_chebi()</a></code> fixed an issue cased by <code><a href="https://dplyr.tidyverse.org/reference/na_if.html" class="external-link">na_if()</a></code> that changed its behaviour after the recent <code>dplyr</code> update.</li>
+<code><a href="../reference/qc_cvs.html">qc_cvs()</a></code> received a new argument called <code>max_cv</code> that specifies the maximum CV that should be included in the plot.</li>
+<li>
+<code><a href="../reference/peptide_profile_plot.html">peptide_profile_plot()</a></code> received a new argument called <code>complete_sample</code>. If set to <code>TRUE</code>, each protein gets assigned all sample names that are found in the input data. This ensures that the plot always contains all samples on the x-axis even if there are no measured intensities for a specific sample. The default is <code>FALSE</code>, which is the original behaviour of the function.</li>
+<li>
+<code><a href="../reference/volcano_plot.html">volcano_plot()</a></code> received the <code>colour</code> argument that allows the user to provide custom colours for points.</li>
+<li>Increased the speed of <code><a href="../reference/find_peptide.html">find_peptide()</a></code> and <code><a href="../reference/assign_peptide_type.html">assign_peptide_type()</a></code> by only computing on the smallest possible subset of data before joining back to the original data frame.</li>
+<li>
+<code><a href="../reference/calculate_treatment_enrichment.html">calculate_treatment_enrichment()</a></code> can now be applied on data frames with multiple different groups. The enrichment will be calculated for each group separately. If the data is plotted, each group is displayed in a separate facet. The group is provided to the new <code>group</code> argument.</li>
+<li>
+<code><a href="../reference/qc_pca.html">qc_pca()</a></code>: If the condition argument is numeric a colour gradient is used instead.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-7-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-7-0"></a></h3>
+<ul><li>
+<code><a href="../reference/volcano_plot.html">volcano_plot()</a></code> now also works interactively if there are no significant hits.</li>
+<li>
+<code><a href="../reference/fetch_chebi.html">fetch_chebi()</a></code>: fixed an issue caused by <code><a href="https://dplyr.tidyverse.org/reference/na_if.html" class="external-link">na_if()</a></code> that changed its behaviour after the recent <code>dplyr</code> update.</li>
+<li>
+<code><a href="../reference/qc_proteome_coverage.html">qc_proteome_coverage()</a></code>: fixed the label order of fractions of proteins detected and not detected in the proteome. Fixes issue <a href="https://github.com/jpquast/protti/issues/194" class="external-link">#194</a>.</li>
+<li>
+<code><a href="../reference/calculate_protein_abundance.html">calculate_protein_abundance()</a></code> now correctly retains columns if <code>for_plot = TRUE</code>. Previously the columns to retain were not joined considering the precursor column, which lead to duplications of information where it did not belong. Fixes issue <a href="https://github.com/jpquast/protti/issues/197" class="external-link">#197</a>.</li>
+<li>
+<code><a href="../reference/fetch_kegg.html">fetch_kegg()</a></code> now returns the pathway name correctly again.</li>
+<li>
+<code><a href="../reference/qc_intensity_distribution.html">qc_intensity_distribution()</a></code>, <code><a href="../reference/qc_median_intensities.html">qc_median_intensities()</a></code>, <code><a href="../reference/qc_charge_states.html">qc_charge_states()</a></code>, <code><a href="../reference/qc_contaminants.html">qc_contaminants()</a></code>, <code><a href="../reference/qc_missed_cleavages.html">qc_missed_cleavages()</a></code>, <code><a href="../reference/qc_peptide_type.html">qc_peptide_type()</a></code>, <code><a href="../reference/qc_ids.html">qc_ids()</a></code>: If the provided sample column is of type factor, the level order won’t be overwritten anymore. *<code><a href="../reference/fit_drc_4p.html">fit_drc_4p()</a></code>: If there are no correlations an empty data frame is returned to prevent errors in <code><a href="../reference/parallel_fit_drc_4p.html">parallel_fit_drc_4p()</a></code>.</li>
+<li>
+<code><a href="../reference/calculate_sequence_coverage.html">calculate_sequence_coverage()</a></code> does not fail anymore if a protein only contains <code>NA</code> peptide sequences.</li>
+<li>
+<code><a href="../reference/qc_sequence_coverage.html">qc_sequence_coverage()</a></code> does not return a plot anymore if <code>plot = FALSE</code>. This fixes issue <a href="https://github.com/jpquast/protti/issues/207" class="external-link">#207</a>.</li>
+<li>
+<code><a href="../reference/qc_data_completeness.html">qc_data_completeness()</a></code> if sample was of type <code>factor</code> the function did not properly facet the data when the <code>digestion</code> argument was provided. Now we filter out all 0% completeness values that come from factor levels that are not present in subsetted data.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -121,7 +151,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="additional-changes-0-5-0">Additional changes<a class="anchor" aria-label="anchor" href="#additional-changes-0-5-0"></a></h3>
-<ul><li>Updated the “Protein Structure Analysis Workflow” vignette to include the <code><a href="../reference/fetch_alphafold_aligned_error.html">fetch_alphafold_aligned_error()</a></code> and <code><a href="../reference/predict_alphafold_domain.html">predict_alphafold_domain()</a></code> functions.</li></ul></div>
+<ul><li>Updated the “Protein Structure Analysis Workflow” vignette to include the <code><a href="../reference/fetch_alphafold_aligned_error.html">fetch_alphafold_aligned_error()</a></code> and <code><a href="../reference/predict_alphafold_domain.html">predict_alphafold_domain()</a></code> functions.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.4.0" id="protti-040">protti 0.4.0<small>2022-09-08</small><a class="anchor" aria-label="anchor" href="#protti-040"></a></h2>
@@ -182,7 +213,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="additional-changes-0-3-0">Additional changes<a class="anchor" aria-label="anchor" href="#additional-changes-0-3-0"></a></h3>
-<ul><li>Improved test coverage for a few functions.</li></ul></div>
+<ul><li>Improved test coverage for a few functions.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.2.2" id="protti-022">protti 0.2.2<small>2022-03-08</small><a class="anchor" aria-label="anchor" href="#protti-022"></a></h2>
@@ -306,7 +338,8 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0" id="protti-010">protti 0.1.0<small>2021-04-23</small><a class="anchor" aria-label="anchor" href="#protti-010"></a></h2>
-<ul><li>First release version.</li></ul></div>
+<ul><li>First release version.</li>
+</ul></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

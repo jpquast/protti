@@ -18,7 +18,7 @@ proteins as compared to all proteins."><meta property="og:image" content="/logo.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -82,6 +82,7 @@ proteins as compared to all proteins.</p>
 <span>  <span class="va">protein_id</span>,</span>
 <span>  <span class="va">is_significant</span>,</span>
 <span>  <span class="va">binds_treatment</span>,</span>
+<span>  group <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">treatment_name</span>,</span>
 <span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -109,6 +110,13 @@ level information from this.</p></dd>
 <dd><p>a logical column in the <code>data</code> data frame that indicates if the
 corresponding protein binds to the treatment. This information can be obtained from different
 databases, e.g. UniProt.</p></dd>
+
+
+<dt>group</dt>
+<dd><p>optional, character column in the <code>data</code> data frame that contains information by
+which the analysis should be grouped. The analysis will be performed separately for each of the
+groups. This is most likely a column that labels separate comparisons of different conditions.
+In protti the <code><a href="assign_missingness.html">assign_missingness()</a></code> function creates such a column automatically.</p></dd>
 
 
 <dt>treatment_name</dt>

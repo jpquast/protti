@@ -19,7 +19,7 @@ and statistical testing using ANOVA."><meta property="og:image" content="/logo.p
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -189,7 +189,7 @@ p-value and the four parameters of the model for each group. Furthermore, input 
 is returned in the columns <code>plot_curve</code> (curve and confidence interval) and <code>plot_points</code></p>
 
 
-<p>(measured points). If \ codeinclude_models = TURE, a list is returned that contains:</p><ul><li><p><code>fit_objects</code>: The fit objects of type <code>drc</code> for each group.</p></li>
+<p>(measured points). If <code>include_models = TURE</code>, a list is returned that contains:</p><ul><li><p><code>fit_objects</code>: The fit objects of type <code>drc</code> for each group.</p></li>
 <li><p><code>correlations</code>: The correlation data frame described above</p></li>
 </ul></div>
     <div id="details">
@@ -263,12 +263,12 @@ curves that are TRUE for <code>dose_MNAR</code> in more detail.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ protein           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "protein_2", "protein_2", "protein_1", "protein_2", …</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ change_peptide    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, F…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ peptide           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "peptide_2_1", "peptide_2_3", "peptide_1_1", "peptid…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ hill_coefficient  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 2.226694e+00, 3.280387e+00, 1.946307e+00, -3.310549e…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ min_model         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 14.87823, 12.46267, 15.98840, 19.14721, 17.38775, 14…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ max_model         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 19.12933, 16.18910, 17.09802, 19.80934, 17.91039, 15…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ ec_50             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 2.453723e+02, 1.417578e+02, 9.428132e+01, 6.293053e+…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ correlation       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.9986256, 0.9938863, 0.9668223, 0.9280152, 0.769789…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ pval              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.131609e-29, 8.423311e-15, 1.584597e-14, 6.625673e-…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ hill_coefficient  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 2.226694e+00, 3.280387e+00, 1.909346e+00, -3.310549e…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ min_model         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 14.87823, 12.46267, 15.98568, 19.14721, 17.38775, 14…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ max_model         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 19.12933, 16.18910, 17.09790, 19.80934, 17.91039, 15…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ ec_50             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 2.453723e+02, 1.417578e+02, 9.518399e+01, 6.293053e+…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ correlation       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.9986256, 0.9938863, 0.9668006, 0.9280152, 0.769789…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ pval              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.131609e-29, 8.423311e-15, 1.595858e-14, 6.625673e-…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ plot_curve        <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> [&lt;tbl_df[100 x 4]&gt;], [&lt;tbl_df[100 x 4]&gt;], [&lt;tbl_df[…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ plot_points       <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> [&lt;tbl_df[24 x 2]&gt;], [&lt;tbl_df[16 x 2]&gt;], [&lt;tbl_df[24…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ enough_conditions <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE…</span>
@@ -277,27 +277,26 @@ curves that are TRUE for <code>dose_MNAR</code> in more detail.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ passed_filter     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, …</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ anova_pval        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 3.666126e-20, 1.471594e-05, 1.966510e-08, 2.858086e-…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ anova_adj_pval    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.613095e-18, 1.618753e-04, 4.326322e-07, 4.191860e-…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ score             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.00000000, 0.46644068, 0.37320103, 0.05860592, NA, …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ score             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1.00000000, 0.46644068, 0.37304758, 0.05860592, NA, …</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">drc_fit</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 19</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     rank protein   change_pep…¹ peptide hill_c…² min_m…³ max_m…⁴   ec_50 corre…⁵</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1 protein_2 TRUE         peptid…  2.23<span style="color: #949494;">e</span>+0    14.9    19.1 2.45<span style="color: #949494;">e</span> 2   0.999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2 protein_2 TRUE         peptid…  3.28<span style="color: #949494;">e</span>+0    12.5    16.2 1.42<span style="color: #949494;">e</span> 2   0.994</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3 protein_1 TRUE         peptid…  1.95<span style="color: #949494;">e</span>+0    16.0    17.1 9.43<span style="color: #949494;">e</span> 1   0.967</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4 protein_2 TRUE         peptid… -<span style="color: #BB0000;">3.31</span><span style="color: #949494;">e</span>+0    19.1    19.8 6.29<span style="color: #949494;">e</span> 2   0.928</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    <span style="color: #BB0000;">NA</span> protein_1 TRUE         peptid… -<span style="color: #BB0000;">4.79</span><span style="color: #949494;">e</span>+0    17.4    17.9 2.02<span style="color: #949494;">e</span> 2   0.770</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>    <span style="color: #BB0000;">NA</span> protein_1 FALSE        peptid…  2.74<span style="color: #949494;">e</span>+0    14.8    15.2 7.57<span style="color: #949494;">e</span> 1   0.728</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    <span style="color: #BB0000;">NA</span> protein_1 FALSE        peptid… -<span style="color: #BB0000;">1.10</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>    15.3    14.7 1.95<span style="color: #949494;">e</span> 7   0.559</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    <span style="color: #BB0000;">NA</span> protein_1 FALSE        peptid…  3.42<span style="color: #949494;">e</span>+0    16.8    17.2 1.42<span style="color: #949494;">e</span> 3   0.526</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    <span style="color: #BB0000;">NA</span> protein_1 FALSE        peptid… -<span style="color: #BB0000;">1.74</span><span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span>    16.1    15.4 5.69<span style="color: #949494;">e</span>13   0.490</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    <span style="color: #BB0000;">NA</span> protein_1 FALSE        peptid… -<span style="color: #BB0000;">1.35</span><span style="color: #949494;">e</span>+0    16.2    16.5 3.35<span style="color: #949494;">e</span> 0   0.485</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 10 more variables: pval &lt;dbl&gt;, plot_curve &lt;list&gt;, plot_points &lt;list&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   enough_conditions &lt;lgl&gt;, anova_significant &lt;lgl&gt;, dose_MNAR &lt;lgl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   passed_filter &lt;lgl&gt;, anova_pval &lt;dbl&gt;, anova_adj_pval &lt;dbl&gt;, score &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   and abbreviated variable names ¹​change_peptide, ²​hill_coefficient,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ³​min_model, ⁴​max_model, ⁵​correlation</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     rank protein   change_peptide peptide   hill_coefficient min_model max_model</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1 protein_2 TRUE           peptide_…        2.23           14.9      19.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2 protein_2 TRUE           peptide_…        3.28           12.5      16.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3 protein_1 TRUE           peptide_…        1.91           16.0      17.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4 protein_2 TRUE           peptide_…       -<span style="color: #BB0000;">3.31</span>           19.1      19.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    <span style="color: #BB0000;">NA</span> protein_1 TRUE           peptide_…       -<span style="color: #BB0000;">4.79</span>           17.4      17.9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>    <span style="color: #BB0000;">NA</span> protein_1 FALSE          peptide_…        2.71           14.8      15.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    <span style="color: #BB0000;">NA</span> protein_1 FALSE          peptide_…       -<span style="color: #BB0000;">0.011</span><span style="color: #BB0000; text-decoration: underline;">0</span>         15.3      14.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    <span style="color: #BB0000;">NA</span> protein_1 FALSE          peptide_…        3.59           16.7      17.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    <span style="color: #BB0000;">NA</span> protein_1 FALSE          peptide_…       -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">017</span><span style="color: #BB0000;">4</span>      16.1      15.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    <span style="color: #BB0000;">NA</span> protein_1 FALSE          peptide_…       -<span style="color: #BB0000;">1.33</span>           16.2      16.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 12 more variables: ec_50 &lt;dbl&gt;, correlation &lt;dbl&gt;, pval &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   plot_curve &lt;list&gt;, plot_points &lt;list&gt;, enough_conditions &lt;lgl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   anova_significant &lt;lgl&gt;, dose_MNAR &lt;lgl&gt;, passed_filter &lt;lgl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   anova_pval &lt;dbl&gt;, anova_adj_pval &lt;dbl&gt;, score &lt;dbl&gt;</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

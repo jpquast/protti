@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -94,13 +94,14 @@
 
       
 
-      </header><script src="quality_control_workflow_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Qualtiy Control (QC) Workflow</h1>
-                        <h4 data-toc-skip class="author">Dina Schuster</h4>
+                        <h4 data-toc-skip class="author">Dina
+Schuster</h4>
             
-            <h4 data-toc-skip class="date">2023-02-21</h4>
+            <h4 data-toc-skip class="date">2024-02-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/HEAD/vignettes/quality_control_workflow.Rmd" class="external-link"><code>vignettes/quality_control_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>quality_control_workflow.Rmd</code></div>
@@ -116,25 +117,77 @@ text-align: justify}
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This vignette will give you an overview of how you can perform quality control of your bottom-up proteomics or LiP-MS data. For help with data input and to make sure that you are using the right format please check out the <a href="https://jpquast.github.io/protti/articles/input_preparation_workflow.html" class="external-link">input preparation vignette</a>. For help with data analysis you can check out our <a href="https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html" class="external-link">single dose treatment vignette</a> and our <a href="https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html" class="external-link">data analysis vignette for dose-response data</a>.</p>
-<p>When working with proteomics and limited proteolysis-coupled mass spectrometry (<a href="https://doi.org/10.1038/nprot.2017.100" class="external-link">LiP-MS</a>) data, it is important to ensure that the data is of sufficient quality before inferring biological meaning from it. The goal is to assess if the data quality is homogenous among the different measurements (i.e. samples) of an experiment and if there are outliers that should be excluded.</p>
+<p>This vignette will give you an overview of how you can perform
+quality control of your bottom-up proteomics or LiP-MS data. For help
+with data input and to make sure that you are using the right format
+please check out the <a href="https://jpquast.github.io/protti/articles/input_preparation_workflow.html" class="external-link">input
+preparation vignette</a>. For help with data analysis you can check out
+our <a href="https://jpquast.github.io/protti/articles/data_analysis_single_dose_treatment_workflow.html" class="external-link">single
+dose treatment vignette</a> and our <a href="https://jpquast.github.io/protti/articles/data_analysis_dose_response_workflow.html" class="external-link">data
+analysis vignette for dose-response data</a>.</p>
+<p>When working with proteomics and limited proteolysis-coupled mass
+spectrometry (<a href="https://doi.org/10.1038/nprot.2017.100" class="external-link">LiP-MS</a>) data, it is
+important to ensure that the data is of sufficient quality before
+inferring biological meaning from it. The goal is to assess if the data
+quality is homogenous among the different measurements (i.e. samples) of
+an experiment and if there are outliers that should be excluded.</p>
 <p>In general, there are several ways in which this can be done:</p>
 <ul>
-<li>Inspection of .raw files acquired directly on the mass spectrometer (e.g. using vendor specific applications to visualize mass spectrometry data, such as the Thermo Scientific applications XCalibur™ and FreeStyle™)</li>
-<li>Different search engines and software offer quality control functionalities (e.g. <a href="https://biognosys.com/software/spectronaut/" class="external-link">Spectronaut™</a> offers a lot of QC options)</li>
-<li>R packages (e.g. <a href="https://pubmed.ncbi.nlm.nih.gov/26653327/" class="external-link">PTXQC</a> which runs on MaxQuant output or <a href="https://pubmed.ncbi.nlm.nih.gov/29978702/" class="external-link">rawDiag</a> which can be used directly on raw files)</li>
+<li>Inspection of .raw files acquired directly on the mass spectrometer
+(e.g. using vendor specific applications to visualize mass spectrometry
+data, such as the Thermo Scientific applications XCalibur™ and
+FreeStyle™)</li>
+<li>Different search engines and software offer quality control
+functionalities (e.g. <a href="https://biognosys.com/software/spectronaut/" class="external-link">Spectronaut™</a>
+offers a lot of QC options)</li>
+<li>R packages (e.g. <a href="https://pubmed.ncbi.nlm.nih.gov/26653327/" class="external-link">PTXQC</a> which runs on
+MaxQuant output or <a href="https://pubmed.ncbi.nlm.nih.gov/29978702/" class="external-link">rawDiag</a> which can
+be used directly on raw files)</li>
 </ul>
-<p><em>Please note that this is not a complete list, it is just intended to give you an idea of the different possibilities. There are many more software options and R packages for quality control published to date.</em></p>
+<p><em>Please note that this is not a complete list, it is just intended
+to give you an idea of the different possibilities. There are many more
+software options and R packages for quality control published to
+date.</em></p>
 </div>
 <div class="section level2">
 <h2 id="protti">protti<a class="anchor" aria-label="anchor" href="#protti"></a>
 </h2>
-<p><strong>protti</strong> includes several functions that make it easy for the user to compare the different samples in one experiment. Some functions in this R package are specific for LiP-MS data analyses, whereas others can also be used for general proteomics analyses.</p>
-<p>You can read more about specific functions and how to use them by calling e.g. <code><a href="../reference/qc_cvs.html">?qc_cvs</a></code> (for the <code><a href="../reference/qc_cvs.html">qc_cvs()</a></code> function). Calling <code>?</code> followed by the function name will display the function documentation and give you more detailed information about the function. This can be done for any of the functions included in the package.</p>
-<p>This document will give you an overview of QC functions included in <strong>protti</strong> and will show you how they can be applied to your data. The examples in this file are run on synthetic data, which is created with the function <code><a href="../reference/create_synthetic_data.html">create_synthetic_data()</a></code>.</p>
-<p>The functions in <strong>protti</strong> are tailored towards the analysis of DIA data, based on the output of the search engine <a href="https://biognosys.com/software/spectronaut/" class="external-link">Spectronaut™</a>. However, if you have any other data, such as DDA data that was searched with a different search engine, you can still apply <strong>protti</strong>’s functions. Just make sure that your data frame contains <a href="https://r4ds.had.co.nz/tidy-data.html" class="external-link">tidy data</a>. That means data should be contained in a long format (e.g. all sample names in one column) rather than a wide format (e.g. each sample name in its own column). You can easily achieve this by using the <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer()</a></code> function from the <code>tidyr</code> package. If you are unsure about what your input data should look like, please use the <code><a href="../reference/create_synthetic_data.html">create_synthetic_data()</a></code> function and compare this to your data. You can read more about all of this <a href="https://jpquast.github.io/protti/articles/input_preparation_workflow.html" class="external-link">here</a>.</p>
+<p><strong>protti</strong> includes several functions that make it easy
+for the user to compare the different samples in one experiment. Some
+functions in this R package are specific for LiP-MS data analyses,
+whereas others can also be used for general proteomics analyses.</p>
+<p>You can read more about specific functions and how to use them by
+calling e.g. <code><a href="../reference/qc_cvs.html">?qc_cvs</a></code> (for the <code><a href="../reference/qc_cvs.html">qc_cvs()</a></code>
+function). Calling <code>?</code> followed by the function name will
+display the function documentation and give you more detailed
+information about the function. This can be done for any of the
+functions included in the package.</p>
+<p>This document will give you an overview of QC functions included in
+<strong>protti</strong> and will show you how they can be applied to
+your data. The examples in this file are run on synthetic data, which is
+created with the function <code><a href="../reference/create_synthetic_data.html">create_synthetic_data()</a></code>.</p>
+<p>The functions in <strong>protti</strong> are tailored towards the
+analysis of DIA data, based on the output of the search engine <a href="https://biognosys.com/software/spectronaut/" class="external-link">Spectronaut™</a>.
+However, if you have any other data, such as DDA data that was searched
+with a different search engine, you can still apply
+<strong>protti</strong>’s functions. Just make sure that your data frame
+contains <a href="https://r4ds.had.co.nz/tidy-data.html" class="external-link">tidy data</a>.
+That means data should be contained in a long format (e.g. all sample
+names in one column) rather than a wide format (e.g. each sample name in
+its own column). You can easily achieve this by using the
+<code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer()</a></code> function from the <code>tidyr</code>
+package. If you are unsure about what your input data should look like,
+please use the <code><a href="../reference/create_synthetic_data.html">create_synthetic_data()</a></code> function and compare
+this to your data. You can read more about all of this <a href="https://jpquast.github.io/protti/articles/input_preparation_workflow.html" class="external-link">here</a>.</p>
 <p>The input data should have a similar structure to this example:</p>
 <table class="table">
+<colgroup>
+<col width="12%">
+<col width="16%">
+<col width="28%">
+<col width="16%">
+<col width="25%">
+</colgroup>
 <thead><tr class="header">
 <th align="center">Sample</th>
 <th align="center">Replicate</th>
@@ -190,25 +243,45 @@ text-align: justify}
 <div class="section level3">
 <h3 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h3>
-<p>Before we can start analysing our data, we need to load the <strong>protti</strong> package. This is done by using the base R function <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code>. In addition, we are also loading the packages <code>magrittr</code> and <code>dplyr</code>. Both <code>magrittr</code> and <code>dplyr</code> are part of the <a href="https://www.tidyverse.org" class="external-link">tidyverse</a>, a collection of packages that provide useful functionalities for data processing and visualisation. If you use many tidyverse packages in your workflow you can easily load all at once by calling <code><a href="https://tidyverse.tidyverse.org" class="external-link">library(tidyverse)</a></code>.</p>
+<p>Before we can start analysing our data, we need to load the
+<strong>protti</strong> package. This is done by using the base R
+function <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code>. In addition, we are also loading the
+packages <code>magrittr</code> and <code>dplyr</code>. Both
+<code>magrittr</code> and <code>dplyr</code> are part of the <a href="https://www.tidyverse.org" class="external-link">tidyverse</a>, a collection of packages
+that provide useful functionalities for data processing and
+visualisation. If you use many tidyverse packages in your workflow you
+can easily load all at once by calling
+<code><a href="https://tidyverse.tidyverse.org" class="external-link">library(tidyverse)</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jpquast/protti" class="external-link">protti</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
-<p>After having loaded the required packages we can create a synthetic dataset, that contains data similar to data obtained from a treatment experiment with e.g. a protein, metabolite or small-molecule. You can skip this step if you have your own data ready.</p>
-<p>We are creating a random dataset with 100 different proteins, out of which 5 % are significantly changing upon treatment. The dataset includes 3 replicates for 2 different conditions (treated and untreated).</p>
-<p>The output of the <code><a href="../reference/create_synthetic_data.html">create_synthetic_data()</a></code> function is modeled after real LiP-MS data and its commonly observed data distributions.</p>
-<p>Please note that generally, quality control should be conducted on raw unfiltered data (the direct output of your search engine of choice).</p>
+<p>After having loaded the required packages we can create a synthetic
+dataset, that contains data similar to data obtained from a treatment
+experiment with e.g. a protein, metabolite or small-molecule. You can
+skip this step if you have your own data ready.</p>
+<p>We are creating a random dataset with 100 different proteins, out of
+which 5 % are significantly changing upon treatment. The dataset
+includes 3 replicates for 2 different conditions (treated and
+untreated).</p>
+<p>The output of the <code><a href="../reference/create_synthetic_data.html">create_synthetic_data()</a></code> function is
+modeled after real LiP-MS data and its commonly observed data
+distributions.</p>
+<p>Please note that generally, quality control should be conducted on
+raw unfiltered data (the direct output of your search engine of
+choice).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># by setting the seed we are making sure that the random object generation can be reproduced</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> </span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span>n_proteins <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>                              frac_change <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>                              n_replicates <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                              n_conditions <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                              method <span class="op">=</span> <span class="st">"effect_random"</span>,</span>
-<span>                              additional_metadata <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span>
+<span>  n_proteins <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  frac_change <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  n_replicates <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  n_conditions <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"effect_random"</span>,</span>
+<span>  additional_metadata <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="quality-control">Quality control<a class="anchor" aria-label="anchor" href="#quality-control"></a>
@@ -216,55 +289,106 @@ text-align: justify}
 <div class="section level4">
 <h4 id="coefficients-of-variation">Coefficients of variation<a class="anchor" aria-label="anchor" href="#coefficients-of-variation"></a>
 </h4>
-<p>A good first step of quality control is to check if coefficients of variation between replicates are in a reasonable range. Ideally, these should be below 15-20 %. If you see groups with higher CVs, there might have been a sample preparation error or the instrument performance was not ideal at the time of measurement. You can check if after <code><a href="../reference/normalise.html">normalise()</a></code> (depending on whether your search engine has performed normalisation already) your CVs improve.</p>
-<p>To conduct the CV-based quality control, we make use of the function <code><a href="../reference/qc_cvs.html">qc_cvs()</a></code>. This function calculates the coefficients of variation. The output can either be a table or a plot of coefficients of variations for each condition. Below we are returning a CV table and a violin plot, showing the CVs for different conditions.</p>
+<p>A good first step of quality control is to check if coefficients of
+variation between replicates are in a reasonable range. Ideally, these
+should be below 15-20 %. If you see groups with higher CVs, there might
+have been a sample preparation error or the instrument performance was
+not ideal at the time of measurement. You can check if after
+<code><a href="../reference/normalise.html">normalise()</a></code> (depending on whether your search engine has
+performed normalisation already) your CVs improve.</p>
+<p>To conduct the CV-based quality control, we make use of the function
+<code><a href="../reference/qc_cvs.html">qc_cvs()</a></code>. This function calculates the coefficients of
+variation. The output can either be a table or a plot of coefficients of
+variations for each condition. Below we are returning a CV table and a
+violin plot, showing the CVs for different conditions.</p>
 <p>The CVs (in percent) are calculated with the following formula:</p>
 <div class="blackbox">
 <p>
-<span class="math display"><span class="math display">\[CV = \frac{standard ~ deviation}{mean} * 100\]</span></span>
+<span class="math display"><span class="math display">\[CV =
+\frac{standard ~ deviation}{mean} *
+100\]</span></span>
 </p>
 </div>
-<p>Since the CV function works only with raw values, we will backtransform our log2 transformed data and create a new column called <code>raw_intensity</code> from the <code>peptide_intensity_missing</code> column which contains peptide intensities. To create the new column, we are using the function <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code> from the R package <code>dplyr</code>. We also make use of the pipe operator <code>%&gt;%</code> included in the R package <code>magrittr</code> which takes the output of the preceding function and supplies it as the first argument of the following function. Using <code>%&gt;%</code> makes code easier to read and follow.</p>
-<p>The “combined” group of CVs contains CVs across all samples and not only across the replicates of a certain condition. Ideally the combined CVs should always be the group with the highest CV. This would indicates that CVs within conditions are low and the treatment had and effect that causes an increase in overall CVs. If the treatment did not have an effect or only a very small one then the combined CV could be as high as the CVs of individual conditions. If an individual condition has a higher CV than the combined CV then there was potentially a problem with one or multiple of the samples. You can check if there are suspicious samples behaving differently from the rest in the other quality control metrics. If there is a consistent different behaviour these samples should potentially be excluded for analysis. Sometimes a condition can also just be noisy because of the treatment in this condition that causes a larger variation. Therefore comparing individual CVs with the combined CV should only be done with caution.</p>
+<p>Since the CV function works only with raw values, we will
+backtransform our log2 transformed data and create a new column called
+<code>raw_intensity</code> from the
+<code>peptide_intensity_missing</code> column which contains peptide
+intensities. To create the new column, we are using the function
+<code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code> from the R package <code>dplyr</code>. We also
+make use of the pipe operator <code>%&gt;%</code> included in the R
+package <code>magrittr</code> which takes the output of the preceding
+function and supplies it as the first argument of the following
+function. Using <code>%&gt;%</code> makes code easier to read and
+follow.</p>
+<p>The “combined” group of CVs contains CVs across all samples and not
+only across the replicates of a certain condition. Ideally the combined
+CVs should always be the group with the highest CV. This would indicates
+that CVs within conditions are low and the treatment had and effect that
+causes an increase in overall CVs. If the treatment did not have an
+effect or only a very small one then the combined CV could be as high as
+the CVs of individual conditions. If an individual condition has a
+higher CV than the combined CV then there was potentially a problem with
+one or multiple of the samples. You can check if there are suspicious
+samples behaving differently from the rest in the other quality control
+metrics. If there is a consistent different behaviour these samples
+should potentially be excluded for analysis. Sometimes a condition can
+also just be noisy because of the treatment in this condition that
+causes a larger variation. Therefore comparing individual CVs with the
+combined CV should only be done with caution.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">input</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="co"># as the data is log2 transformed, we need to transform it back before calculating the CVs</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>raw_intensity <span class="op">=</span> <span class="fl">2</span><span class="op">^</span><span class="va">peptide_intensity_missing</span><span class="op">)</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>raw_intensity <span class="op">=</span> <span class="fl">2</span><span class="op">^</span><span class="va">peptide_intensity_missing</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/qc_cvs.html">qc_cvs</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,</span>
-<span>       grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span>       condition <span class="op">=</span> <span class="va">condition</span>,</span>
-<span>       intensity <span class="op">=</span> <span class="va">raw_intensity</span>, </span>
-<span>       plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/qc_cvs.html">qc_cvs</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>  condition <span class="op">=</span> <span class="va">condition</span>,</span>
+<span>  intensity <span class="op">=</span> <span class="va">raw_intensity</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 3</span></span></span>
 <span><span class="co">#&gt;   condition   median_cv median_cv_combined</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> condition_2      6.06               7.49</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> condition_1      6.07               7.49</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/qc_cvs.html">qc_cvs</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,</span>
-<span>       grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span>       condition <span class="op">=</span> <span class="va">condition</span>,</span>
-<span>       intensity <span class="op">=</span> <span class="va">raw_intensity</span>, </span>
-<span>       plot <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>       plot_style <span class="op">=</span> <span class="st">"violin"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/qc_cvs.html">qc_cvs</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>  condition <span class="op">=</span> <span class="va">condition</span>,</span>
+<span>  intensity <span class="op">=</span> <span class="va">raw_intensity</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  plot_style <span class="op">=</span> <span class="st">"violin"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_cvs-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="number-of-identifications-ids">Number of identifications (IDs)<a class="anchor" aria-label="anchor" href="#number-of-identifications-ids"></a>
 </h4>
-<p>The number of protein or peptide identifications should be similar for different samples. If there are significanlty less observations in one sample, this might indicate a sample preparation or measurement error.</p>
-<p>For the analysis of the number of identifications of precursors, peptides or proteins we use the function <code><a href="../reference/qc_ids.html">qc_ids()</a></code>. This function can return either a table or a plot. The output of this function - and also of a lot of other <strong>protti</strong> functions - can be plotted in an interactive plot that makes use of the R package <code>plotly</code>. You can plot an interactive version of the plot by setting <code>interactive = TRUE</code> within the function call.</p>
+<p>The number of protein or peptide identifications should be similar
+for different samples. If there are significanlty less observations in
+one sample, this might indicate a sample preparation or measurement
+error.</p>
+<p>For the analysis of the number of identifications of precursors,
+peptides or proteins we use the function <code><a href="../reference/qc_ids.html">qc_ids()</a></code>. This
+function can return either a table or a plot. The output of this
+function - and also of a lot of other <strong>protti</strong> functions
+- can be plotted in an interactive plot that makes use of the R package
+<code>plotly</code>. You can plot an interactive version of the plot by
+setting <code>interactive = TRUE</code> within the function call.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_ids.html">qc_ids</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,</span>
-<span>       sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span>       grouping <span class="op">=</span> <span class="va">protein</span>,</span>
-<span>       intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span>       condition <span class="op">=</span> <span class="va">condition</span>, </span>
-<span>       plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_ids.html">qc_ids</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>  grouping <span class="op">=</span> <span class="va">protein</span>,</span>
+<span>  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
+<span>  condition <span class="op">=</span> <span class="va">condition</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
 <span><span class="co">#&gt;   sample   condition   count</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> sample_3 condition_1    98</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> sample_4 condition_2    97</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> sample_5 condition_2    99</span></span>
@@ -272,169 +396,274 @@ text-align: justify}
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> sample_2 condition_1    99</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> sample_1 condition_1    98</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/qc_ids.html">qc_ids</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,</span>
-<span>       sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span>       grouping <span class="op">=</span> <span class="va">protein</span>,</span>
-<span>       intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span>       condition <span class="op">=</span> <span class="va">condition</span>, </span>
-<span>       title <span class="op">=</span> <span class="st">"Protein identifications per sample"</span>,</span>
-<span>       plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/qc_ids.html">qc_ids</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>  grouping <span class="op">=</span> <span class="va">protein</span>,</span>
+<span>  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
+<span>  condition <span class="op">=</span> <span class="va">condition</span>,</span>
+<span>  title <span class="op">=</span> <span class="st">"Protein identifications per sample"</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_ids-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="peptide-types">Peptide types<a class="anchor" aria-label="anchor" href="#peptide-types"></a>
 </h4>
-<p>Now that we had a look at protein IDs, we should also check peptide identifications for homogeneity across samples. An important factor to take into account when analysing LiP-MS data are peptide types (tryptic, semi-tryptic, non-tryptic). They can give us an idea about the reproducibility of cleavage events in the experiment and if our treatment influenced protease activity or the digest in general.</p>
+<p>Now that we had a look at protein IDs, we should also check peptide
+identifications for homogeneity across samples. An important factor to
+take into account when analysing LiP-MS data are peptide types (tryptic,
+semi-tryptic, non-tryptic). They can give us an idea about the
+reproducibility of cleavage events in the experiment and if our
+treatment influenced protease activity or the digest in general.</p>
 <p>In a standard LiP-MS experiment we use 3 different proteases:</p>
 <ul>
 <li>Proteinase K (unspecific, cleaves accessible protein regions)</li>
 <li>Trypsin (specific, cleaves after lysines or arginines)</li>
 <li>Lys-C (specific, cleaves after lysines)</li>
 </ul>
-<p>Peptide types can be assessed in Spectronaut directly or by using the <strong>protti</strong> function <code><a href="../reference/assign_peptide_type.html">assign_peptide_type()</a></code>. This function takes amino acids before and after the first and last amino acid in the peptide into account. A peptide that starts after a lysine or arginine and ends with a lysine or arginine is a <em>tryptic</em> peptide. A peptide that has one proteinase K cleavage site (not lysine or arginine) and one trypsin cleavage site either at the beginning or at the end of the peptide is a <em>semi-tryptic</em> peptide. A peptide that does not have any trypsin cleavage sites is a <em>non-tryptic</em> peptide. If information about the amino acid before and the last amino acid of a peptide are not available in your data you can use the <code>find_peptide</code> function from the <strong>protti</strong> package to create it.</p>
-<p>We are going to use the function <code><a href="../reference/qc_peptide_type.html">qc_peptide_type()</a></code> to evaluate the distribution of peptide types between our samples. The function can return a plot or a table, based on either peptide type counts or intensities. Both are equally important when assessing how homogenous the samples are. For <code>method = intensity</code> the function uses raw intensity values, so we are going to use the column <code>raw_intensity</code> which we added previously.</p>
-<p>In a typical LiP-MS experiment, there should be few non-tryptic peptides. The peptide type distribution for fully- and semi-, and non-tryptic peptides depends on your digestion conditions (i.e. temperature, duration, concentration).</p>
+<p>Peptide types can be assessed in Spectronaut directly or by using the
+<strong>protti</strong> function <code><a href="../reference/assign_peptide_type.html">assign_peptide_type()</a></code>.
+This function takes amino acids before and after the first and last
+amino acid in the peptide into account. A peptide that starts after a
+lysine or arginine and ends with a lysine or arginine is a
+<em>tryptic</em> peptide. A peptide that has one proteinase K cleavage
+site (not lysine or arginine) and one trypsin cleavage site either at
+the beginning or at the end of the peptide is a <em>semi-tryptic</em>
+peptide. A peptide that does not have any trypsin cleavage sites is a
+<em>non-tryptic</em> peptide. If information about the amino acid before
+and the last amino acid of a peptide are not available in your data you
+can use the <code>find_peptide</code> function from the
+<strong>protti</strong> package to create it.</p>
+<p>We are going to use the function <code><a href="../reference/qc_peptide_type.html">qc_peptide_type()</a></code> to
+evaluate the distribution of peptide types between our samples. The
+function can return a plot or a table, based on either peptide type
+counts or intensities. Both are equally important when assessing how
+homogenous the samples are. For <code>method = intensity</code> the
+function uses raw intensity values, so we are going to use the column
+<code>raw_intensity</code> which we added previously.</p>
+<p>In a typical LiP-MS experiment, there should be few non-tryptic
+peptides. The peptide type distribution for fully- and semi-, and
+non-tryptic peptides depends on your digestion conditions
+(i.e. temperature, duration, concentration).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_peptide_type.html">qc_peptide_type</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,</span>
-<span>                sample <span class="op">=</span> <span class="va">sample</span>, </span>
-<span>                peptide <span class="op">=</span> <span class="va">peptide</span>, </span>
-<span>                pep_type <span class="op">=</span> <span class="va">pep_type</span>, </span>
-<span>                method <span class="op">=</span> <span class="st">"intensity"</span>, </span>
-<span>                intensity <span class="op">=</span> <span class="va">raw_intensity</span>, </span>
-<span>                plot <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>                interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_peptide_type.html">qc_peptide_type</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>  peptide <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>  pep_type <span class="op">=</span> <span class="va">pep_type</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"intensity"</span>,</span>
+<span>  intensity <span class="op">=</span> <span class="va">raw_intensity</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_peptide_type-1.png" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="../reference/qc_peptide_type.html">qc_peptide_type</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,</span>
-<span>                sample <span class="op">=</span> <span class="va">sample</span>, </span>
-<span>                peptide <span class="op">=</span> <span class="va">peptide</span>, </span>
-<span>                pep_type <span class="op">=</span> <span class="va">pep_type</span>, </span>
-<span>                method <span class="op">=</span> <span class="st">"count"</span>, </span>
-<span>                plot <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>                interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/qc_peptide_type.html">qc_peptide_type</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>  peptide <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>  pep_type <span class="op">=</span> <span class="va">pep_type</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"count"</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_peptide_type-2.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="run-intensities">Run intensities<a class="anchor" aria-label="anchor" href="#run-intensities"></a>
 </h4>
-<p>The function <code><a href="../reference/qc_intensity_distribution.html">qc_intensity_distribution()</a></code> plots all precursor, peptide or protein intensities for each sample as a boxplot if method “boxplot” is selected. This is helpful for quick assessment of any major sample losses or measurement issues.</p>
-<p>Rrun intensities can also be assessed by plotting the median run intensities as a line plot. This helps you quickly assess if there are any trends in your data. The function to use for this analysis is <code><a href="../reference/qc_median_intensities.html">qc_median_intensities()</a></code>.</p>
+<p>The function <code><a href="../reference/qc_intensity_distribution.html">qc_intensity_distribution()</a></code> plots all
+precursor, peptide or protein intensities for each sample as a boxplot
+if method “boxplot” is selected. This is helpful for quick assessment of
+any major sample losses or measurement issues.</p>
+<p>Rrun intensities can also be assessed by plotting the median run
+intensities as a line plot. This helps you quickly assess if there are
+any trends in your data. The function to use for this analysis is
+<code><a href="../reference/qc_median_intensities.html">qc_median_intensities()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="../reference/qc_intensity_distribution.html">qc_intensity_distribution</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,</span>
-<span>                          sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span>                          grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span>                          intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span>                          plot_style <span class="op">=</span> <span class="st">"boxplot"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_intensity_distribution.html">qc_intensity_distribution</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>  intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
+<span>  plot_style <span class="op">=</span> <span class="st">"boxplot"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_intensity_distribution_boxplot-1.png" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="../reference/qc_median_intensities.html">qc_median_intensities</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,</span>
-<span>                      sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span>                      grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span>                      intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/qc_median_intensities.html">qc_median_intensities</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_intensity_distribution_boxplot-2.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="charge-states">Charge states<a class="anchor" aria-label="anchor" href="#charge-states"></a>
 </h4>
-<p>The charge state distibution of the detected peptides can be assessed with <code><a href="../reference/qc_charge_states.html">qc_charge_states()</a></code>. Similar to the peptide types, this should also be homogenous for the different samples. The function can return either a plot or a table based on counts of peptides with a specific charge state or the intensities of these peptides. For <code>method = "intensity"</code> the function requires the raw intensity values created previously as its input.</p>
+<p>The charge state distibution of the detected peptides can be assessed
+with <code><a href="../reference/qc_charge_states.html">qc_charge_states()</a></code>. Similar to the peptide types, this
+should also be homogenous for the different samples. The function can
+return either a plot or a table based on counts of peptides with a
+specific charge state or the intensities of these peptides. For
+<code>method = "intensity"</code> the function requires the raw
+intensity values created previously as its input.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_charge_states.html">qc_charge_states</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>, </span>
-<span>                 sample <span class="op">=</span> <span class="va">sample</span>, </span>
-<span>                 grouping <span class="op">=</span> <span class="va">peptide</span>, </span>
-<span>                 charge_states <span class="op">=</span> <span class="va">charge</span>, </span>
-<span>                 method <span class="op">=</span> <span class="st">"intensity"</span>,</span>
-<span>                 intensity <span class="op">=</span> <span class="va">raw_intensity</span>, </span>
-<span>                 plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in</span></span>
-<span><span class="co">#&gt; dplyr 1.1.0.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `reframe()` instead.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> When switching from `summarise()` to `reframe()`, remember that `reframe()`</span></span>
-<span><span class="co">#&gt;   always returns an ungrouped data frame and adjust accordingly.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">protti</span> package.</span></span>
-<span><span class="co">#&gt;   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/jpquast/protti/issues&gt;</span>.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_charge_states.html">qc_charge_states</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>  charge_states <span class="op">=</span> <span class="va">charge</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"intensity"</span>,</span>
+<span>  intensity <span class="op">=</span> <span class="va">raw_intensity</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_charge_states-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="missed-cleavages">Missed cleavages<a class="anchor" aria-label="anchor" href="#missed-cleavages"></a>
 </h4>
-<p>An important measure of efficient digests with e.g. trypsin are the number of missed cleavages. The proteases trypsin and Lys-C both cleave after positively charged amino acids lysine (K) and arginine (R). If a measured peptide includes either K or R within its sequence, i.e. not at the last position, it contains a missed cleavage site. These peptides are important to take into account because they can tell you if your tryptic digest was inefficient. The number of missed cleavages should generally be low in a proteomics or LiP-MS dataset.</p>
-<p>We are going to check the numbers of missed cleavages in our dataset by using the function <code><a href="../reference/qc_missed_cleavages.html">qc_missed_cleavages()</a></code>. It can assess missed cleavages based on the count of peptides with missed cleavages or the intensities of the corresponding peptides. For <code>method = "intensity"</code> the function uses the raw (not log2 transformed) intensity values. You can have the function either return a plot or a table.</p>
+<p>An important measure of efficient digests with e.g. trypsin are the
+number of missed cleavages. The proteases trypsin and Lys-C both cleave
+after positively charged amino acids lysine (K) and arginine (R). If a
+measured peptide includes either K or R within its sequence, i.e. not at
+the last position, it contains a missed cleavage site. These peptides
+are important to take into account because they can tell you if your
+tryptic digest was inefficient. The number of missed cleavages should
+generally be low in a proteomics or LiP-MS dataset.</p>
+<p>We are going to check the numbers of missed cleavages in our dataset
+by using the function <code><a href="../reference/qc_missed_cleavages.html">qc_missed_cleavages()</a></code>. It can assess
+missed cleavages based on the count of peptides with missed cleavages or
+the intensities of the corresponding peptides. For
+<code>method = "intensity"</code> the function uses the raw (not log2
+transformed) intensity values. You can have the function either return a
+plot or a table.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_missed_cleavages.html">qc_missed_cleavages</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>, </span>
-<span>                    sample <span class="op">=</span> <span class="va">sample</span>, </span>
-<span>                    grouping <span class="op">=</span> <span class="va">peptide</span>, </span>
-<span>                    missed_cleavages <span class="op">=</span> <span class="va">n_missed_cleavage</span>, </span>
-<span>                    method <span class="op">=</span> <span class="st">"intensity"</span>,</span>
-<span>                    intensity <span class="op">=</span> <span class="va">raw_intensity</span>, </span>
-<span>                    plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_missed_cleavages.html">qc_missed_cleavages</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>  missed_cleavages <span class="op">=</span> <span class="va">n_missed_cleavage</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"intensity"</span>,</span>
+<span>  intensity <span class="op">=</span> <span class="va">raw_intensity</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_missed_cleavages-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="sequence-coverage">Sequence coverage<a class="anchor" aria-label="anchor" href="#sequence-coverage"></a>
 </h4>
-<p>The following function gives you insight into the protein coverage (i.e. what percentage of the protein sequence is covered by the identified peptides) in the dataset. For a LiP-MS experiment, or any other peptide-centric proteomics experiment, high sequence coverages are desirable.</p>
-<p>To assess the protein coverage distribution, we are going to use the function <code>qc_protein_coverage()</code>. If you do not have a column containing the protein coverages in your data, you can use the function <code><a href="../reference/calculate_sequence_coverage.html">calculate_sequence_coverage()</a></code> to obtain this information.</p>
+<p>The following function gives you insight into the protein coverage
+(i.e. what percentage of the protein sequence is covered by the
+identified peptides) in the dataset. For a LiP-MS experiment, or any
+other peptide-centric proteomics experiment, high sequence coverages are
+desirable.</p>
+<p>To assess the protein coverage distribution, we are going to use the
+function <code>qc_protein_coverage()</code>. If you do not have a column
+containing the protein coverages in your data, you can use the function
+<code><a href="../reference/calculate_sequence_coverage.html">calculate_sequence_coverage()</a></code> to obtain this
+information.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_sequence_coverage.html">qc_sequence_coverage</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>, </span>
-<span>                     protein_identifier <span class="op">=</span> <span class="va">protein</span>, </span>
-<span>                     coverage <span class="op">=</span> <span class="va">coverage</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_sequence_coverage.html">qc_sequence_coverage</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  protein_identifier <span class="op">=</span> <span class="va">protein</span>,</span>
+<span>  coverage <span class="op">=</span> <span class="va">coverage</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_sequence_coverage-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="peak-width">Peak width<a class="anchor" aria-label="anchor" href="#peak-width"></a>
 </h4>
-<p>In order to identify potential chromatographic issues that might have occurred during the measurement we can have a look at the chromatographic median peak widths over the complete chromatogram. To do this we are going to use the function <code><a href="../reference/qc_peak_width.html">qc_peak_width()</a></code>. This function requires either the peak start and end times or the retention time and peak width. This information can be obtained from Spectronaut (or any other search engine of your choice). The peak widths should be similar for all the measured samples of the experiment.</p>
+<p>In order to identify potential chromatographic issues that might have
+occurred during the measurement we can have a look at the
+chromatographic median peak widths over the complete chromatogram. To do
+this we are going to use the function <code><a href="../reference/qc_peak_width.html">qc_peak_width()</a></code>. This
+function requires either the peak start and end times or the retention
+time and peak width. This information can be obtained from Spectronaut
+(or any other search engine of your choice). The peak widths should be
+similar for all the measured samples of the experiment.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_peak_width.html">qc_peak_width</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,</span>
-<span>              sample <span class="op">=</span> <span class="va">sample</span>, </span>
-<span>              intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span>              retention_time <span class="op">=</span> <span class="va">retention_time</span>, </span>
-<span>              peak_width <span class="op">=</span> <span class="va">peak_width</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_peak_width.html">qc_peak_width</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
+<span>  retention_time <span class="op">=</span> <span class="va">retention_time</span>,</span>
+<span>  peak_width <span class="op">=</span> <span class="va">peak_width</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_peak_width-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="data-completeness">Data completeness<a class="anchor" aria-label="anchor" href="#data-completeness"></a>
 </h4>
-<p>The function <code><a href="../reference/qc_data_completeness.html">qc_data_completeness()</a></code> checks how many of all detected precursors, peptides or proteins were identified in each sample. The function can return either a plot or a table.</p>
+<p>The function <code><a href="../reference/qc_data_completeness.html">qc_data_completeness()</a></code> checks how many of
+all detected precursors, peptides or proteins were identified in each
+sample. The function can return either a plot or a table.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_data_completeness.html">qc_data_completeness</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>, </span>
-<span>                     sample <span class="op">=</span> <span class="va">sample</span>, </span>
-<span>                     grouping <span class="op">=</span> <span class="va">peptide</span>, </span>
-<span>                     intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>, </span>
-<span>                     plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_data_completeness.html">qc_data_completeness</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_data_completeness-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="log2-intensity-distribution">Log2 Intensity distribution<a class="anchor" aria-label="anchor" href="#log2-intensity-distribution"></a>
 </h4>
-<p>For different kinds of analyses (e.g. t-tests) it is important that your data intensity follows a normal distribution. To ensure that this is the case, we are going to use the function <code>qc_intensity_distriubution()</code>. The function returns a histogram plot when <code>plot_style = "histogram"</code> showing how the intensities are distributed.</p>
+<p>For different kinds of analyses (e.g. t-tests) it is important that
+your data intensity follows a normal distribution. To ensure that this
+is the case, we are going to use the function
+<code>qc_intensity_distriubution()</code>. The function returns a
+histogram plot when <code>plot_style = "histogram"</code> showing how
+the intensities are distributed.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_intensity_distribution.html">qc_intensity_distribution</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,</span>
-<span>                          grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span>                          intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span>                          plot_style <span class="op">=</span> <span class="st">"histogram"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_intensity_distribution.html">qc_intensity_distribution</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>  intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
+<span>  plot_style <span class="op">=</span> <span class="st">"histogram"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_intensity_distribution_histogram-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="sample-correlation">Sample correlation<a class="anchor" aria-label="anchor" href="#sample-correlation"></a>
 </h4>
-<p>Another approach to quality control is to check the correlation of your samples. Ideally, replicates should cluster together and different treatment conditions should be separated. We are now going to check if this is the case for our data by using the function <code><a href="../reference/qc_sample_correlation.html">qc_sample_correlation()</a></code>. The function will return a correlation heatmap with a comparison of all samples.</p>
+<p>Another approach to quality control is to check the correlation of
+your samples. Ideally, replicates should cluster together and different
+treatment conditions should be separated. We are now going to check if
+this is the case for our data by using the function
+<code><a href="../reference/qc_sample_correlation.html">qc_sample_correlation()</a></code>. The function will return a
+correlation heatmap with a comparison of all samples.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span> <span class="fu"><a href="../reference/qc_sample_correlation.html">qc_sample_correlation</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input</span>,</span>
-<span>                       sample <span class="op">=</span> <span class="va">sample</span>, </span>
-<span>                       grouping <span class="op">=</span> <span class="va">peptide</span>, </span>
-<span>                       intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>, </span>
-<span>                       condition <span class="op">=</span> <span class="va">condition</span>, </span>
-<span>                       interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_sample_correlation.html">qc_sample_correlation</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input</span>,</span>
+<span>  sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>  intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
+<span>  condition <span class="op">=</span> <span class="va">condition</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_sample_correlation-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="principal-component-analysis-pca">Principal component analysis (PCA)<a class="anchor" aria-label="anchor" href="#principal-component-analysis-pca"></a>
 </h4>
-<p>Another popular quality control method (which could also be considered part of data analysis) is the principal component analysis (PCA). Generally, PCA is a method that reduces dimensionality of large datasets. In our case this helps us to quickly assess how similar or different our replicates and conditions are. We are going to use <code><a href="../reference/qc_pca.html">qc_pca()</a></code> to compute and plot a PCA for our data. Before plotting your PCA you can check how much of your variance can be explained with each of the principle components. To do that you can plot a scree-plot using the function <code><a href="../reference/qc_pca.html">qc_pca()</a></code> and setting <code>plot_style = "scree"</code>. In this example we can see that the variance can be best explained with PC1 and PC2 so we can go ahead and plot these.</p>
+<p>Another popular quality control method (which could also be
+considered part of data analysis) is the principal component analysis
+(PCA). Generally, PCA is a method that reduces dimensionality of large
+datasets. In our case this helps us to quickly assess how similar or
+different our replicates and conditions are. We are going to use
+<code><a href="../reference/qc_pca.html">qc_pca()</a></code> to compute and plot a PCA for our data. Before
+plotting your PCA you can check how much of your variance can be
+explained with each of the principle components. To do that you can plot
+a scree-plot using the function <code><a href="../reference/qc_pca.html">qc_pca()</a></code> and setting
+<code>plot_style = "scree"</code>. In this example we can see that the
+variance can be best explained with PC1 and PC2 so we can go ahead and
+plot these.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/qc_pca.html">qc_pca</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">data</span>,</span>
@@ -454,7 +683,7 @@ text-align: justify}
 <span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
 <span>  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
 <span>  condition <span class="op">=</span> <span class="va">condition</span>,</span>
-<span>  components <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PC1"</span>, <span class="st">"PC2"</span><span class="op">)</span>, </span>
+<span>  components <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PC1"</span>, <span class="st">"PC2"</span><span class="op">)</span>,</span>
 <span>  plot_style <span class="op">=</span> <span class="st">"pca"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="quality_control_workflow_files/figure-html/qc_pca-2.png" width="576" style="display: block; margin: auto;"></p>
@@ -462,7 +691,15 @@ text-align: justify}
 <div class="section level4">
 <h4 id="ranked-intensity-distribution">Ranked intensity distribution<a class="anchor" aria-label="anchor" href="#ranked-intensity-distribution"></a>
 </h4>
-<p>It can be useful to check which precursors, peptides or proteins are the most or least abundant in the sample by ranking their intensities. You can create a data frame containing ranked median intensities for the whole experiment or ranked intensities for each sample using the <code><a href="../reference/qc_ranked_intensities.html">qc_ranked_intensities()</a></code> function. In addition you can also create a corresponding plot by setting the <code>plot</code> argument to <code>TRUE</code>. If you would like to axis to not be log10 transformed but rather log2 you can change the <code>y_axis_transformation</code> argument.</p>
+<p>It can be useful to check which precursors, peptides or proteins are
+the most or least abundant in the sample by ranking their intensities.
+You can create a data frame containing ranked median intensities for the
+whole experiment or ranked intensities for each sample using the
+<code><a href="../reference/qc_ranked_intensities.html">qc_ranked_intensities()</a></code> function. In addition you can also
+create a corresponding plot by setting the <code>plot</code> argument to
+<code>TRUE</code>. If you would like to axis to not be log10 transformed
+but rather log2 you can change the <code>y_axis_transformation</code>
+argument.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot ranked peptide intensities</span></span>
 <span><span class="fu"><a href="../reference/qc_ranked_intensities.html">qc_ranked_intensities</a></span><span class="op">(</span></span>
@@ -479,12 +716,19 @@ text-align: justify}
 <div class="section level4">
 <h4 id="additional-qc-functions">Additional QC functions<a class="anchor" aria-label="anchor" href="#additional-qc-functions"></a>
 </h4>
-<p>There are two additional QC functions that are not included in this vignette:</p>
+<p>There are two additional QC functions that are not included in this
+vignette:</p>
 <ul>
 <li>
-<code><a href="../reference/qc_contaminants.html">qc_contaminants()</a></code> is a function that can be used if proteins are assigned as contaminants. This information can for example be exported from MaxQuant. The function calculates the percentage of proteins annotated to be contaminants and returns either a table or a plot.</li>
+<code><a href="../reference/qc_contaminants.html">qc_contaminants()</a></code> is a function that can be used if
+proteins are assigned as contaminants. This information can for example
+be exported from MaxQuant. The function calculates the percentage of
+proteins annotated to be contaminants and returns either a table or a
+plot.</li>
 <li>
-<code><a href="../reference/qc_proteome_coverage.html">qc_proteome_coverage()</a></code> calculates the proteome coverage for each sample and the whole experiment and returns either a plot or a table.</li>
+<code><a href="../reference/qc_proteome_coverage.html">qc_proteome_coverage()</a></code> calculates the proteome coverage
+for each sample and the whole experiment and returns either a plot or a
+table.</li>
 </ul>
 </div>
 </div>

@@ -18,7 +18,7 @@ the function fetch_pdb_structure()."><meta property="og:image" content="/logo.pn
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -136,44 +136,44 @@ contains the original <code>auth_seq_id</code> information that does not have th
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">pdb</span> <span class="op">&lt;-</span> <span class="fu">fetch_pdb</span><span class="op">(</span>pdb_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"6HG1"</span>, <span class="st">"1E9I"</span>, <span class="st">"6D3Q"</span>, <span class="st">"4JHW"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [2/6] Extract experimental conditions ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.17s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.04s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [3/6] Extracting polymer information: </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 1/6 UniProt IDs ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.1s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.02s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 2/6 UniProt alignment ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.15s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.04s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 3/6 Ligand binding sites ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.21s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.05s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 4/6 Modified monomers ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.07s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.01s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 5/6 Secondary structure ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.08s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.02s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 6/6 Unmodeled residues ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.08s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.01s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [4/6] Correct author sequence positions for some PDB IDs ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> None to correct(0.36s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> None to correct(0.03s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [5/6] Extract non-polymer information ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.07s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.01s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [6/6] Combine information ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.21s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.03s)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pdb</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 46</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   pdb_ids auth_…¹ label…² refer…³ prote…⁴ refer…⁵ entit…⁶ ref_b…⁷ length pdb_s…⁸</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 6HG1    A       A       P27708  CAD pr… UniProt     115    <span style="text-decoration: underline;">1</span>571    256 AKLVRL…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 6HG1    A       A       P27708  CAD pr… UniProt     115    <span style="text-decoration: underline;">1</span>571    256 AKLVRL…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 6HG1    A       A       P27708  CAD pr… UniProt       2    <span style="text-decoration: underline;">1</span>460    100 AKLVRL…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> 6HG1    A       A       P27708  CAD pr… UniProt       2    <span style="text-decoration: underline;">1</span>460    100 AKLVRL…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> 6HG1    A       A       P05020  Dihydr… UniProt     102     107     13 AKLVRL…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> 6HG1    A       A       P05020  Dihydr… UniProt     102     107     13 AKLVRL…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 36 more variables: auth_seq_id &lt;chr&gt;, auth_seq_id_original &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   engineered_mutation &lt;chr&gt;, modified_monomer &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ligand_donor_atom_id &lt;chr&gt;, ligand_donor_auth_seq_id &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ligand_donor_label_seq_id &lt;chr&gt;, ligand_donor_id &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ligand_label_asym_id &lt;chr&gt;, ligand_atom_id &lt;chr&gt;, ligand_id &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ligand_entity_id &lt;chr&gt;, ligand_bond_is_covalent_or_coordinating &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   secondary_structure &lt;chr&gt;, unmodeled_structure &lt;chr&gt;, …</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pdb_ids auth_asym_id label_asym_id reference_database_accession protein_name  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 6HG1    A            A             P27708                       Multifunction…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 6HG1    A            A             P27708                       Multifunction…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 6HG1    A            A             P27708                       Multifunction…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> 6HG1    A            A             P27708                       Multifunction…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> 6HG1    A            A             P05020                       Dihydroorotase</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> 6HG1    A            A             P05020                       Dihydroorotase</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 41 more variables: reference_database_name &lt;chr&gt;, entity_beg_seq_id &lt;int&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ref_beg_seq_id &lt;int&gt;, length &lt;int&gt;, pdb_sequence &lt;chr&gt;, auth_seq_id &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   auth_seq_id_original &lt;chr&gt;, engineered_mutation &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   modified_monomer &lt;chr&gt;, ligand_donor_atom_id &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ligand_donor_auth_seq_id &lt;chr&gt;, ligand_donor_label_seq_id &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ligand_donor_id &lt;chr&gt;, ligand_label_asym_id &lt;chr&gt;, ligand_atom_id &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ligand_id &lt;chr&gt;, ligand_entity_id &lt;chr&gt;, …</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

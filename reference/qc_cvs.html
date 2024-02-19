@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -81,7 +81,8 @@
 <span>  <span class="va">condition</span>,</span>
 <span>  <span class="va">intensity</span>,</span>
 <span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  plot_style <span class="op">=</span> <span class="st">"density"</span></span>
+<span>  plot_style <span class="op">=</span> <span class="st">"density"</span>,</span>
+<span>  max_cv <span class="op">=</span> <span class="fl">200</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -115,6 +116,11 @@ raw or untransformed normalised intensity values for each peptide or precursor.<
 <dd><p>a character value that indicates the plotting style. <code>plot_style = "boxplot"</code>
 plots a boxplot, whereas <code>plot_style = "density"</code> plots the CV density distribution.
 <code>plot_style = "violin"</code> returns a violin plot. Default is <code>plot_style = "density"</code>.</p></dd>
+
+
+<dt>max_cv</dt>
+<dd><p>a numeric value that specifies the maximum percentage of CVs that should be included
+in the returned plot. The default value is <code>max_cv = 200</code>.</p></dd>
 
 </dl></div>
     <div id="value">

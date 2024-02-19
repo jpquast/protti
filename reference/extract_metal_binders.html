@@ -18,7 +18,7 @@ fetch_uniprot as well as QuickGO data retrieved with fetch_quickgo."><meta prope
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -196,12 +196,6 @@ unnested by first splitting data for ";;" and then for ";".</p>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following IDs have not been retrieved correctly.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 2</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   id            error                                           </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                           </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> IDs: 1 to 200 Client error: (429) Too Many Requests (RFC 6585)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No valid information was retrieved!</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## QuickGO data</span></span></span>
 <span class="r-in"><span><span class="va">data_quickgo</span> <span class="op">&lt;-</span> <span class="fu"><a href="fetch_quickgo.html">fetch_quickgo</a></span><span class="op">(</span></span></span>
@@ -209,7 +203,7 @@ unnested by first splitting data for ";;" and then for ";".</p>
 <span class="r-in"><span>  ontology_annotations <span class="op">=</span> <span class="st">"molecular_function"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving GO annotations ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE(2.57s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE(1.21s)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ChEBI data (2 and 3 star entries)</span></span></span>
 <span class="r-in"><span><span class="va">data_chebi</span> <span class="op">&lt;-</span> <span class="fu"><a href="fetch_chebi.html">fetch_chebi</a></span><span class="op">(</span>stars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -228,12 +222,41 @@ unnested by first splitting data for ";;" and then for ";".</p>
 <span class="r-in"><span>  data_eco <span class="op">=</span> <span class="va">eco</span>,</span></span>
 <span class="r-in"><span>  data_eco_relation <span class="op">=</span> <span class="va">eco_relation</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The provided "data_uniprot", "data_quickgo", "data_chebi", "data_eco"</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> or "data_eco_relation" is NULL.  Please check that there was no</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> connection problem when you retrieved this data and try again.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing annotation data frames ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (3.95s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Extract ft_binding information from UniProt ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.14s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Extract cc_cofactor information from UniProt ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.06s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Extract cc_catalytic_activity information from UniProt ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.08s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Extract molecular_function information from QuickGO ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.03s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Find ChEBI sub IDs ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.9s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Combine data ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.32s)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">metal_info</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 35 × 20</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    accession  most_specific_id most_specific_id_name ligand_identifier</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> A0A0C5Q309 29033,29034      iron(2+)||iron(3+)    1(Fe cation)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> A0A0C5Q309 29033,29034      iron(2+)||iron(3+)    1(Fe cation)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> A0A0C5Q309 29033,29034      iron(2+)||iron(3+)    1(Fe cation)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> A0A0C5Q309 29033,29034      iron(2+)||iron(3+)    2(Fe cation)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> A0A0C5Q309 29033,29034      iron(2+)||iron(3+)    1(Fe cation)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> A0A0C5Q309 29033,29034      iron(2+)||iron(3+)    2(Fe cation)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> A0A0C5Q309 29033,29034      iron(2+)||iron(3+)    2(Fe cation)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> A0A0C5Q309 29033,29034      iron(2+)||iron(3+)    1(Fe cation)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> A0A0C5Q309 29033,29034      iron(2+)||iron(3+)    2(Fe cation)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> A0A0C9VD04 18420            magnesium(2+)         1(Mg(2+))        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 25 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 16 more variables: ligand_position &lt;dbl&gt;, binding_mode &lt;lgl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   metal_function &lt;lgl&gt;, metal_id_part &lt;chr&gt;, metal_id_part_name &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   note &lt;chr&gt;, chebi_id &lt;chr&gt;, source &lt;chr&gt;, eco &lt;chr&gt;, eco_type &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   evidence_source &lt;chr&gt;, reaction &lt;chr&gt;, go_term &lt;chr&gt;, go_name &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   assigned_by &lt;chr&gt;, database &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

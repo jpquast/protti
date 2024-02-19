@@ -18,7 +18,7 @@ peptide and protein abundance changes in different samples and conditions."><met
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -84,6 +84,7 @@ peptide and protein abundance changes in different samples and conditions.</p>
 <span>  <span class="va">intensity_log2</span>,</span>
 <span>  <span class="va">grouping</span>,</span>
 <span>  <span class="va">targets</span>,</span>
+<span>  complete_sample <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  protein_abundance_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  interactive <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  export <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -122,6 +123,11 @@ be plotted. This can also be <code>"all"</code> if plots for all groups should b
 on the number of elements in your grouping column this can be many plots.</p></dd>
 
 
+<dt>complete_sample</dt>
+<dd><p>a logical value that indicates if samples that are completely missing for
+a given protein should be shown on the x-axis of the plot anyway. The default value is <code>FALSE</code>.</p></dd>
+
+
 <dt>protein_abundance_plot</dt>
 <dd><p>a logical value. If the input for this plot comes directly from
 <code>calculate_protein_abundance</code> this argument can be set to <code>TRUE</code>. This displays all
@@ -141,7 +147,7 @@ directory will be the current working directory. The name of the file can be cho
 
 
 <dt>export_name</dt>
-<dd><p>A character vector that provides the name of the exported file if
+<dd><p>a character vector that provides the name of the exported file if
 <code>export = TRUE</code>.</p></dd>
 
 </dl></div>

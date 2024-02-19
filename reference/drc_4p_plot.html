@@ -18,7 +18,7 @@ protein), based on output from fit_drc_4p function."><meta property="og:image" c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -197,12 +197,12 @@ maximally 20 facets.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ rank             : num [1:39] 1 2 3 4 NA NA NA NA NA NA ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ protein          : chr [1:39] "protein_2" "protein_2" "protein_1" "protein_2" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ peptide          : chr [1:39] "peptide_2_1" "peptide_2_3" "peptide_1_1" "peptide_2_2" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ hill_coefficient : num [1:39] 2.23 3.28 1.95 -3.31 -4.79 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ hill_coefficient : num [1:39] 2.23 3.28 1.91 -3.31 -4.79 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ min_model        : num [1:39] 14.9 12.5 16 19.1 17.4 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ max_model        : num [1:39] 19.1 16.2 17.1 19.8 17.9 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ec_50            : num [1:39] 245.4 141.8 94.3 629.3 202.4 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ec_50            : num [1:39] 245.4 141.8 95.2 629.3 202.4 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ correlation      : num [1:39] 0.999 0.994 0.967 0.928 0.77 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pval             : num [1:39] 1.13e-29 8.42e-15 1.58e-14 6.63e-11 1.75e-05 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pval             : num [1:39] 1.13e-29 8.42e-15 1.60e-14 6.63e-11 1.75e-05 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ plot_curve       :List of 39</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [100 × 4] (S3: tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num [1:100] 5000 4588 4210 3863 3544 ...</span>
@@ -242,8 +242,8 @@ maximally 20 facets.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [100 × 4] (S3: tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num [1:100] 5000 4588 4210 3863 3544 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num [1:100] 16.8 16.8 16.8 16.8 16.8 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Lower     : num [1:100] 16.5 16.5 16.5 16.5 16.4 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Upper     : num [1:100] 17.1 17.1 17.1 17.1 17.1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Lower     : num [1:100] 16.4 16.5 16.5 16.5 NaN ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Upper     : num [1:100] 17.1 17.1 17 17 NaN ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [100 × 4] (S3: tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num [1:100] 5000 4588 4210 3863 3544 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num [1:100] 15.7 15.7 15.7 15.7 15.7 ...</span>
@@ -296,14 +296,14 @@ maximally 20 facets.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Upper     : num [1:100] 19.9 19.9 19.9 19.9 19.9 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [100 × 4] (S3: tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num [1:100] 5000 4588 4210 3863 3544 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num [1:100] 17.9 17.9 17.9 17.9 17.9 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Lower     : num [1:100] 17.6 17.6 17.6 17.6 17.6 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Upper     : num [1:100] 18.1 18.1 18.1 18.1 18.1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [100 × 4] (S3: tbl_df/tbl/data.frame)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num [1:100] 5000 4588 4210 3863 3544 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num [1:100] 16.5 16.5 16.5 16.5 16.5 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Lower     : num [1:100] 16.2 16.2 16.2 16.2 16.2 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Upper     : num [1:100] 16.8 16.8 16.8 16.7 16.7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [100 × 4] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num [1:100] 5000 4588 4210 3863 3544 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num [1:100] 17.9 17.9 17.9 17.9 17.9 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Lower     : num [1:100] 17.6 17.6 17.6 17.6 17.6 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Upper     : num [1:100] 18.1 18.1 18.1 18.1 18.1 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [100 × 4] (S3: tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num [1:100] 5000 4588 4210 3863 3544 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num [1:100] 15 15 15 15 15 ...</span>
@@ -312,7 +312,7 @@ maximally 20 facets.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [100 × 4] (S3: tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num [1:100] 5000 4588 4210 3863 3544 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num [1:100] 16 16 16 16 16 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Lower     : num [1:100] 15.7 15.7 15.7 15.7 15.7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Lower     : num [1:100] 15.6 15.6 15.7 15.7 15.7 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Upper     : num [1:100] 16.4 16.4 16.4 16.4 16.4 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [100 × 4] (S3: tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num [1:100] 5000 4588 4210 3863 3544 ...</span>
@@ -454,12 +454,12 @@ maximally 20 facets.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [24 × 2] (S3: tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ peptide_intensity_missing: num [1:24] 20 19.9 19.8 20 20 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ concentration            : num [1:24] 0 50 50 50 100 100 100 500 500 500 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [24 × 2] (S3: tbl_df/tbl/data.frame)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ peptide_intensity_missing: num [1:24] 17.7 17.9 18.1 18 18.1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ concentration            : num [1:24] 0 50 50 50 100 100 100 500 500 500 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [23 × 2] (S3: tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ peptide_intensity_missing: num [1:23] 16.1 16.3 16.1 16.7 15.9 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ concentration            : num [1:23] 0 50 50 50 100 100 100 500 500 500 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [24 × 2] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ peptide_intensity_missing: num [1:24] 17.7 17.9 18.1 18 18.1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ concentration            : num [1:24] 0 50 50 50 100 100 100 500 500 500 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [21 × 2] (S3: tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ peptide_intensity_missing: num [1:21] 14.9 15.5 15 15.3 15 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ concentration            : num [1:21] 50 50 50 100 100 100 500 500 1000 0 ...</span>
@@ -523,7 +523,7 @@ maximally 20 facets.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ passed_filter    : logi [1:39] TRUE TRUE TRUE TRUE FALSE FALSE ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ anova_pval       : num [1:39] 3.67e-20 1.47e-05 1.97e-08 2.86e-07 1.21e-04 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ anova_adj_pval   : num [1:39] 1.61e-18 1.62e-04 4.33e-07 4.19e-06 1.06e-03 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ score            : num [1:39] 1 0.4664 0.3732 0.0586 NA ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ score            : num [1:39] 1 0.4664 0.373 0.0586 NA ...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot dose response curves</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">drc_fit</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>

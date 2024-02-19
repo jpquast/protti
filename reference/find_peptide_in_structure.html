@@ -22,7 +22,7 @@ peptide is present in a PDB structure."><meta property="og:image" content="/logo
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -198,46 +198,45 @@ the current structure.</p></li>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [2/6] Extract experimental conditions ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.13s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.03s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [3/6] Extracting polymer information: </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 1/6 UniProt IDs ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.27s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.42s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 2/6 UniProt alignment ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.32s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.45s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 3/6 Ligand binding sites ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (2.21s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (2.64s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 4/6 Modified monomers ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.2s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.69s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 5/6 Secondary structure ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.77s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (1.06s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 6/6 Unmodeled residues ... </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.26s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [4/6] Correct author sequence positions for some PDB IDs ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> None to correct(0.59s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> None to correct(0.39s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [5/6] Extract non-polymer information ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.06s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.02s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [6/6] Combine information ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.76s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.87s)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">peptide_in_structure</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 16</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    uniprot…¹ pdb_ids auth_…² label…³ pepti…⁴ pepti…⁵ fit_t…⁶ start   end label…⁷</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> P0A8T7    3LU0    D       D       SGIVSF… SGIVSF… fully    <span style="text-decoration: underline;">1</span>160  <span style="text-decoration: underline;">1</span>198    <span style="text-decoration: underline;">1</span>160</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> P0A8T7    3LU0    D       D       NVFEGE… NVFEGE… fully    <span style="text-decoration: underline;">1</span>197  <span style="text-decoration: underline;">1</span>206    <span style="text-decoration: underline;">1</span>197</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> P0A8T7    4IQZ    A       A       SGIVSF… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>       <span style="text-decoration: underline;">1</span>160  <span style="text-decoration: underline;">1</span>198      <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> P0A8T7    4IQZ    A       A       NVFEGE… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>       <span style="text-decoration: underline;">1</span>197  <span style="text-decoration: underline;">1</span>206      <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> P0A8T7    4IQZ    B       B       SGIVSF… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>       <span style="text-decoration: underline;">1</span>160  <span style="text-decoration: underline;">1</span>198      <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> P0A8T7    4IQZ    B       B       NVFEGE… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>       <span style="text-decoration: underline;">1</span>197  <span style="text-decoration: underline;">1</span>206      <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> P0A8T7    4IQZ    C       C       SGIVSF… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>       <span style="text-decoration: underline;">1</span>160  <span style="text-decoration: underline;">1</span>198      <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> P0A8T7    4IQZ    C       C       NVFEGE… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>       <span style="text-decoration: underline;">1</span>197  <span style="text-decoration: underline;">1</span>206      <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> P0A8T7    4IQZ    D       D       SGIVSF… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>       <span style="text-decoration: underline;">1</span>160  <span style="text-decoration: underline;">1</span>198      <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> P0A8T7    4IQZ    D       D       NVFEGE… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>       <span style="text-decoration: underline;">1</span>197  <span style="text-decoration: underline;">1</span>206      <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 6 more variables: label_seq_id_end &lt;dbl&gt;, auth_seq_id_start &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   auth_seq_id_end &lt;chr&gt;, auth_seq_id &lt;chr&gt;, n_peptides &lt;int&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_peptides_in_structure &lt;int&gt;, and abbreviated variable names ¹​uniprot_id,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ²​auth_asym_id, ³​label_asym_id, ⁴​peptide_sequence, ⁵​peptide_seq_in_pdb,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ⁶​fit_type, ⁷​label_seq_id_start</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    uniprot_id pdb_ids auth_asym_id label_asym_id peptide_sequence               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> P0A8T7     3LU0    D            D             SGIVSFGKETKGKRRLVITPVDGSDPYEEM…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> P0A8T7     3LU0    D            D             NVFEGERVER                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> P0A8T7     4IQZ    A            A             SGIVSFGKETKGKRRLVITPVDGSDPYEEM…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> P0A8T7     4IQZ    A            A             NVFEGERVER                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> P0A8T7     4IQZ    B            B             SGIVSFGKETKGKRRLVITPVDGSDPYEEM…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> P0A8T7     4IQZ    B            B             NVFEGERVER                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> P0A8T7     4IQZ    C            C             SGIVSFGKETKGKRRLVITPVDGSDPYEEM…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> P0A8T7     4IQZ    C            C             NVFEGERVER                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> P0A8T7     4IQZ    D            D             SGIVSFGKETKGKRRLVITPVDGSDPYEEM…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> P0A8T7     4IQZ    D            D             NVFEGERVER                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 11 more variables: peptide_seq_in_pdb &lt;chr&gt;, fit_type &lt;chr&gt;, start &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   end &lt;dbl&gt;, label_seq_id_start &lt;dbl&gt;, label_seq_id_end &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   auth_seq_id_start &lt;chr&gt;, auth_seq_id_end &lt;chr&gt;, auth_seq_id &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_peptides &lt;int&gt;, n_peptides_in_structure &lt;int&gt;</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

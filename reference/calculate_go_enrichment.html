@@ -22,7 +22,7 @@ by the function by providing ontology_type and organism_id."><meta property="og:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -120,10 +120,10 @@ protein level information from this.</p></dd>
 
 
 <dt>group</dt>
-<dd><p>a character column in the <code>data</code> data frame that contains information by
+<dd><p>optional, character column in the <code>data</code> data frame that contains information by
 which the analysis should be grouped. The analysis will be performed separately for each of the
 groups. This is most likely a column that labels separate comparisons of different conditions.
-In protti the <code>asign_missingness()</code> function creates such a column automatically.</p></dd>
+In protti the <code><a href="assign_missingness.html">assign_missingness()</a></code> function creates such a column automatically.</p></dd>
 
 
 <dt>y_axis_free</dt>
@@ -175,7 +175,8 @@ significant proteins (p-value or adjusted p-value), or if a significance cutoff 
 to determine the number of GO terms in the plot. This information should be provided with the
 type first followed by the threshold separated by a space. Example are
 <code>plot_cutoff = "adj_pval top10"</code>, <code>plot_cutoff = "pval 0.05"</code> or
-<code>plot_cutoff = "adj_pval 0.01"</code>. The threshold can be chosen freely.</p></dd>
+<code>plot_cutoff = "adj_pval 0.01"</code>. The threshold can be chosen freely. The default value is
+<code>"adj_pval top10"</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -214,44 +215,59 @@ depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individu
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu">is</span><span class="op">(</span><span class="va">data</span>, <span class="st">"character"</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu">is</span><span class="op">(</span><span class="va">uniprot_go_data</span>, <span class="st">"character"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="va">uniprot_go_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="fl">1000</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        <span class="va">go_f</span>,</span></span>
+<span class="r-in"><span>        pattern <span class="op">=</span> <span class="st">"ribosome"</span></span></span>
+<span class="r-in"><span>      <span class="op">)</span>,</span></span>
+<span class="r-in"><span>      <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>      <span class="va">significant</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">uniprot_go_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="fl">1000</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1000</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>      <span class="va">go_f</span>,</span></span>
-<span class="r-in"><span>      pattern <span class="op">=</span> <span class="st">"ribosome"</span></span></span>
-<span class="r-in"><span>    <span class="op">)</span>,</span></span>
-<span class="r-in"><span>    <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>    <span class="va">significant</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># Plot gene ontology enrichment</span></span></span>
+<span class="r-in"><span>  <span class="fu">calculate_go_enrichment</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">data</span>,</span></span>
+<span class="r-in"><span>    protein_id <span class="op">=</span> <span class="va">accession</span>,</span></span>
+<span class="r-in"><span>    go_annotations_uniprot <span class="op">=</span> <span class="va">go_f</span>,</span></span>
+<span class="r-in"><span>    is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
+<span class="r-in"><span>    plot <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    plot_cutoff <span class="op">=</span> <span class="st">"pval 0.01"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Plot gene ontology enrichment</span></span></span>
-<span class="r-in"><span><span class="fu">calculate_go_enrichment</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">data</span>,</span></span>
-<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">accession</span>,</span></span>
-<span class="r-in"><span>  go_annotations_uniprot <span class="op">=</span> <span class="va">go_f</span>,</span></span>
-<span class="r-in"><span>  is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
-<span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>  plot_cutoff <span class="op">=</span> <span class="st">"pval 0.01"</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># Calculate gene ontology enrichment</span></span></span>
+<span class="r-in"><span>  <span class="va">go_enrichment</span> <span class="op">&lt;-</span> <span class="fu">calculate_go_enrichment</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">data</span>,</span></span>
+<span class="r-in"><span>    protein_id <span class="op">=</span> <span class="va">accession</span>,</span></span>
+<span class="r-in"><span>    go_annotations_uniprot <span class="op">=</span> <span class="va">go_f</span>,</span></span>
+<span class="r-in"><span>    is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
+<span class="r-in"><span>    plot <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Calculate gene ontology enrichment</span></span></span>
-<span class="r-in"><span><span class="va">go_enrichment</span> <span class="op">&lt;-</span> <span class="fu">calculate_go_enrichment</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">data</span>,</span></span>
-<span class="r-in"><span>  protein_id <span class="op">=</span> <span class="va">accession</span>,</span></span>
-<span class="r-in"><span>  go_annotations_uniprot <span class="op">=</span> <span class="va">go_f</span>,</span></span>
-<span class="r-in"><span>  is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
-<span class="r-in"><span>  plot <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">go_enrichment</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">go_enrichment</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in UseMethod("mutate"):</span> no applicable method for 'mutate' applied to an object of class "character"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    term       go_id     pval adj_pval n_detected_proteins n_detected_proteins_…¹</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> <span style="color: #949494;">"</span>identica… [GO:… 4.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-31</span> 8.40<span style="color: #949494;">e</span><span style="color: #BB0000;">-28</span>                <span style="text-decoration: underline;">3</span>287                    475</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> <span style="color: #949494;">"</span>protein … [GO:… 5.55<span style="color: #949494;">e</span><span style="color: #BB0000;">-17</span> 4.62<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span>                <span style="text-decoration: underline;">3</span>287                    314</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> <span style="color: #949494;">"</span>magnesiu… [GO:… 6.68<span style="color: #949494;">e</span><span style="color: #BB0000;">-17</span> 4.62<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span>                <span style="text-decoration: underline;">3</span>287                    193</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> <span style="color: #949494;">"</span>ATP bind… [GO:… 3.00<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span> 1.56<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>                <span style="text-decoration: underline;">3</span>287                    449</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> <span style="color: #949494;">"</span>transpos… [GO:… 1.54<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span> 6.40<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span>                <span style="text-decoration: underline;">3</span>287                     63</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> <span style="color: #949494;">"</span>structur… [GO:… 1.16<span style="color: #949494;">e</span><span style="color: #BB0000;">- 8</span> 3.99<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span>                <span style="text-decoration: underline;">3</span>287                     57</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> <span style="color: #949494;">"</span>NADP bin… [GO:… 1.52<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span> 4.50<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>                <span style="text-decoration: underline;">3</span>287                     27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> <span style="color: #949494;">"</span>guanosin… [GO:… 1.73<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span> 4.50<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span>                <span style="text-decoration: underline;">3</span>287                     35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> <span style="color: #949494;">"</span>DNA-bind… [GO:… 5.27<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span> 1.22<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>                <span style="text-decoration: underline;">3</span>287                    182</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> <span style="color: #949494;">"</span>protein … [GO:… 9.56<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span> 1.98<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span>                <span style="text-decoration: underline;">3</span>287                     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ abbreviated name: ¹​n_detected_proteins_in_process</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 more variables: n_significant_proteins &lt;int&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_significant_proteins_in_process &lt;int&gt;, n_proteins_expected &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   direction &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

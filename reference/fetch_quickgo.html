@@ -21,7 +21,7 @@ GO dataset that considers all child terms of the supplied IDs."><meta property="
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -152,40 +152,38 @@ depending on what the input "type" was.</p>
 <span class="r-in"><span>  ontology <span class="op">=</span> <span class="st">"molecular_function"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving GO annotations ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE(7.21s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE(1.49s)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">annotations</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 15</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   gene_p…¹ gene_…² go_name symbol quali…³ go_term go_as…⁴ eco_id go_ev…⁵ refer…⁶</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> UniProt… P63328  calmod… Ppp3ca enables GO:000… molecu… ECO:0… IBA     PMID:2…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> UniProt… P63328  calmod… Ppp3ca enables GO:003… molecu… ECO:0… IBA     PMID:2…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> UniProt… P63328  protei… Ppp3ca enables GO:000… molecu… ECO:0… IPI     PMID:3…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> UniProt… P63328  protei… Ppp3ca enables GO:000… molecu… ECO:0… IPI     PMID:1…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> UniProt… P63328  calmod… Ppp3ca enables GO:003… molecu… ECO:0… ISS     GO_REF…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> UniProt… P63328  hydrol… Ppp3ca enables GO:001… molecu… ECO:0… IEA     GO_REF…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 5 more variables: with_from &lt;chr&gt;, taxon_id &lt;dbl&gt;, assigned_by &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   annotation_extension &lt;lgl&gt;, date &lt;dbl&gt;, and abbreviated variable names</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ¹​gene_product_db, ²​gene_product_id, ³​qualifier, ⁴​go_aspect,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ⁵​go_evidence_code, ⁶​reference</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   gene_product_db gene_product_id go_name     symbol qualifier go_term go_aspect</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> UniProtKB       P63328          phosphopro… Ppp3ca enables   GO:000… molecula…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> UniProtKB       P63328          phosphopro… Ppp3ca enables   GO:000… molecula…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> UniProtKB       P63328          phosphopro… Ppp3ca enables   GO:000… molecula…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> UniProtKB       P63328          phosphopro… Ppp3ca enables   GO:000… molecula…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> UniProtKB       P63328          protein se… Ppp3ca enables   GO:000… molecula…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> UniProtKB       P63328          protein se… Ppp3ca enables   GO:000… molecula…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 more variables: eco_id &lt;chr&gt;, go_evidence_code &lt;chr&gt;, reference &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   with_from &lt;chr&gt;, taxon_id &lt;dbl&gt;, assigned_by &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   annotation_extension &lt;chr&gt;, date &lt;dbl&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Terms</span></span></span>
 <span class="r-in"><span><span class="va">terms</span> <span class="op">&lt;-</span> <span class="fu">fetch_quickgo</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"terms"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">terms</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 13</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   main_id  is_ob…¹ main_…² defin…³ ontol…⁴ usage child…⁵ child…⁶ chebi…⁷ relat…⁸</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> GO:0006… FALSE   creati… The ch… biolog… Unre… GO:001… is_a;i… CHEBI:… creati…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> GO:0006… FALSE   creati… The ch… biolog… Unre… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      CHEBI:… creati…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> GO:0006… FALSE   protei… The di… biolog… Unre… GO:004… regula… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> GO:0006… FALSE   protei… The pr… biolog… Unre… GO:004… is_a;i… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> GO:0006… FALSE   riboso… The di… biolog… Unre… <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> GO:0006… FALSE   phosph… The ch… biolog… Unre… GO:004… is_a;i… CHEBI:… N(omeg…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 3 more variables: database &lt;chr&gt;, relations_url &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   relations_relation &lt;chr&gt;, and abbreviated variable names ¹​is_obsolete,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ²​main_name, ³​definition, ⁴​ontology, ⁵​child_id, ⁶​children_relation,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ⁷​chebi_id, ⁸​relations_term</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   main_id    is_obsolete main_name            definition ontology usage child_id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> GO:0006600 FALSE       creatine metabolic … The chemi… biologi… Unre… GO:0019…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> GO:0006601 FALSE       creatine biosynthet… The chemi… biologi… Unre… <span style="color: #BB0000;">NA</span>      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> GO:0006611 FALSE       protein export from… The direc… biologi… Unre… GO:0046…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> GO:0006612 FALSE       protein targeting t… The proce… biologi… Unre… GO:0090…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> GO:0006610 FALSE       ribosomal protein i… The direc… biologi… Unre… <span style="color: #BB0000;">NA</span>      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> GO:0006604 FALSE       phosphoarginine met… The chemi… biologi… Unre… GO:0046…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 6 more variables: children_relation &lt;chr&gt;, chebi_id &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   relations_term &lt;chr&gt;, database &lt;chr&gt;, relations_url &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   relations_relation &lt;chr&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Slims</span></span></span>
 <span class="r-in"><span><span class="va">slims</span> <span class="op">&lt;-</span> <span class="fu">fetch_quickgo</span><span class="op">(</span></span></span>

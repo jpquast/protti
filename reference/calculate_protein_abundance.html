@@ -19,7 +19,7 @@ sample independently."><meta property="og:image" content="/logo.png"><!-- mathja
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -135,7 +135,7 @@ used. Default is <code>"iq"</code>.</p></dd>
 <dt>for_plot</dt>
 <dd><p>a logical value indicating whether the result should be only protein intensities
 or protein intensities together with precursor intensities that can be used for plotting using
-<code>qc_protein_abundance</code>. Default is <code>FALSE</code>.</p></dd>
+<code><a href="peptide_profile_plot.html">peptide_profile_plot()</a></code>. Default is <code>FALSE</code>.</p></dd>
 
 
 <dt>retain_columns</dt>
@@ -153,7 +153,7 @@ column names, but in a vector).</p></dd>
 
 
 <p>also precursor intensities are returned in a data frame. The later output is ideal for plotting
-with <code>qc_protein_abundance</code> and can be filtered to only include protein abundances.</p>
+with <code><a href="peptide_profile_plot.html">peptide_profile_plot()</a></code> and can be filtered to only include protein abundances.</p>
     </div>
 
     <div id="ref-examples">
@@ -189,22 +189,22 @@ with <code>qc_protein_abundance</code> and can be filtered to only include prote
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">data</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    sample protein_id precursor peptide intensity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      S1         P1        A1       A  14.20492</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      S1         P1        A2       A  13.51658</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      S1         P1        B1       B  11.04089</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      S1         P1        B2       B  16.44220</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      S1         P1        C1       C  17.08002</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      S1         P1        D1       D  13.22116</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7      S2         P1        A1       A  22.24450</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8      S2         P1        A2       A  21.01026</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9      S2         P1        B1       B  21.39718</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10     S2         P1        B2       B  22.23732</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11     S2         P1        C1       C  20.34894</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12     S2         P1        D1       D  21.83152</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13     S1         P2        E1       E  15.95050</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14     S1         P2        F1       F  16.58652</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15     S2         P2        E1       E  18.10713</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16     S2         P2        F1       F  17.29689</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      S1         P1        A1       A  13.22116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      S1         P1        A2       A  17.48899</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      S1         P1        B1       B  15.02052</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      S1         P1        B2       B  15.79435</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      S1         P1        C1       C  17.47465</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      S1         P1        D1       D  13.69787</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      S2         P1        A1       A  21.83152</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8      S2         P1        A2       A  21.95050</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      S2         P1        B1       B  22.58652</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     S2         P1        B2       B  22.55356</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     S2         P1        C1       C  22.14845</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12     S2         P1        D1       D  19.71673</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13     S1         P2        E1       E  15.58946</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14     S1         P2        F1       F  14.70163</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15     S2         P2        E1       E  15.10756</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16     S2         P2        F1       F  17.40262</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Calculate protein abundances</span></span></span>
 <span class="r-in"><span><span class="va">protein_abundance</span> <span class="op">&lt;-</span> <span class="fu">calculate_protein_abundance</span><span class="op">(</span></span></span>
@@ -222,8 +222,8 @@ with <code>qc_protein_abundance</code> and can be filtered to only include prote
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   sample protein_id intensity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> S1     P1              18.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> S2     P1              24.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> S1     P1              18.9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> S2     P1              24.6</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Calculate protein abundances and retain precursor</span></span></span>
 <span class="r-in"><span><span class="co"># abundances that can be used in a peptide profile plot</span></span></span>
@@ -242,20 +242,20 @@ with <code>qc_protein_abundance</code> and can be filtered to only include prote
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 14 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    sample protein_id intensity precursor         peptide</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> S1     P1              18.0 protein_intensity <span style="color: #BB0000;">NA</span>     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> S2     P1              24.2 protein_intensity <span style="color: #BB0000;">NA</span>     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> S1     P1              14.2 A1                A      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> S1     P1              13.5 A2                A      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> S1     P1              11.0 B1                B      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> S1     P1              16.4 B2                B      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> S1     P1              17.1 C1                C      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> S1     P1              13.2 D1                D      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> S2     P1              22.2 A1                A      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> S2     P1              21.0 A2                A      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> S2     P1              21.4 B1                B      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> S2     P1              22.2 B2                B      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> S2     P1              20.3 C1                C      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> S2     P1              21.8 D1                D      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> S1     P1              18.9 protein_intensity <span style="color: #BB0000;">NA</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> S2     P1              24.6 protein_intensity <span style="color: #BB0000;">NA</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> S1     P1              13.2 A1                A      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> S1     P1              17.5 A2                A      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> S1     P1              15.0 B1                B      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> S1     P1              15.8 B2                B      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> S1     P1              17.5 C1                C      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> S1     P1              13.7 D1                D      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> S2     P1              21.8 A1                A      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> S2     P1              22.0 A2                A      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> S2     P1              22.6 B1                B      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> S2     P1              22.6 B2                B      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> S2     P1              22.1 C1                C      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> S2     P1              19.7 D1                D      </span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
