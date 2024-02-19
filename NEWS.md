@@ -1,3 +1,9 @@
+# protti 0.7.0.9000
+
+## Bug fixes
+
+* `normalise()` now correctly works with grouped data. Previously it would only correctly work with ungrouped data frames. Now you can group the data to calculate group specific normalisations. If you want to compute a global normalisation for the dataset, you need to ungroup the data before using the function as usual.
+
 # protti 0.7.0
 
 ## New features
