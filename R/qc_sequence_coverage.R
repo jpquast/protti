@@ -49,7 +49,7 @@ qc_sequence_coverage <- function(data,
                                  interactive = FALSE) {
 
   # Validate inputs
-  if (!all(c(protein_identifier, coverage) %in% colnames(data))) {
+  if (!all(c({{ protein_identifier }},{{ coverage }}) %in% colnames(data))) {
     stop("Column names for protein_identifier and coverage must exist in the dataset.")
   }
   
