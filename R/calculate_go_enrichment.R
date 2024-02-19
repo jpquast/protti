@@ -68,13 +68,13 @@ go_enrichment <- function(...) {
 #' because otherwise it is not possible to distinguish between enrichment and deenrichment in the plot.
 #' @param plot_title a character value that specifies the title of the plot. The default is "Gene ontology
 #' enrichment of significant proteins".
-#' @param barplot_fill_col a vector that contains two colours that should be used as the fill colours for
+#' @param barplot_fill_colour a vector that contains two colours that should be used as the fill colours for
 #' deenriched and enriched GO terms, respectively. If `enrichment_type = "enriched"` or `"deenriched`, please
 #' still provide two values in the vector, the colour not used for the plot can be `NA` in this case. E.g.
 #' `c(NA, "red")` for `enrichment_type = "enriched"`.
-#' @param heatmap_fill_col a vector that contains colours that should be used to create the gradient in the
+#' @param heatmap_fill_colour a vector that contains colours that should be used to create the gradient in the
 #' heatmap plot. Default is `mako_colours`.
-#' @param heatmap_fill_col_rev a logical value that specifies if the provided colours in `heatmap_fill_col`
+#' @param heatmap_fill_colour_rev a logical value that specifies if the provided colours in `heatmap_fill_colour`
 #' should be reversed in order. Default is `TRUE`.
 #' @param label a logical argument indicating whether labels should be added to the plot.
 #' Default is TRUE.
@@ -210,9 +210,9 @@ calculate_go_enrichment <- function(data,
                                     plot = TRUE,
                                     plot_style = "barplot",
                                     plot_title = "Gene ontology enrichment of significant proteins",
-                                    barplot_fill_col = c("#56B4E9", "#E76145"),
-                                    heatmap_fill_col = protti::mako_colours,
-                                    heatmap_fill_col_rev = TRUE,
+                                    barplot_fill_colour = c("#56B4E9", "#E76145"),
+                                    heatmap_fill_colour = protti::mako_colours,
+                                    heatmap_fill_colour_rev = TRUE,
                                     label = TRUE,
                                     enrichment_type = "all",
                                     min_n_detected_proteins_in_process = 1,
@@ -233,7 +233,7 @@ calculate_go_enrichment <- function(data,
 
   if (!(plot_style %in% c("barplot", "heatmap"))) stop("Invalid plot_style. Available styles: barplot, heatmap")
 
-  if(length(barplot_fill_col) < 2) stop('Please provide at least two colours to "barplot_fill_col"!')
+  if(length(barplot_fill_colour) < 2) stop('Please provide at least two colours to "barplot_fill_colour"!')
 
   if (length(unique(dplyr::pull(data, {{ protein_id }}))) != nrow(data)) {
     data <- data %>%
@@ -499,7 +499,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
           )
         }
       } +
-      ggplot2::scale_fill_manual(values = c(Deenriched = barplot_fill_col[1], Enriched = barplot_fill_col[2])) +
+      ggplot2::scale_fill_manual(values = c(Deenriched = barplot_fill_colour[1], Enriched = barplot_fill_colour[2])) +
       ggplot2::scale_y_continuous(breaks = seq(0, 100, 1)) +
       ggplot2::coord_flip() +
       {
@@ -572,10 +572,10 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       }
 
     # Setup colour gradient colours
-    if (heatmap_fill_col_rev) {
-      colours <- rev(heatmap_fill_col)
+    if (heatmap_fill_colour_rev) {
+      colours <- rev(heatmap_fill_colour)
     } else {
-      colours <- heatmap_fill_col
+      colours <- heatmap_fill_colour
     }
 
     # Make gradient

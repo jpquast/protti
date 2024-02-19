@@ -18,9 +18,9 @@ calculate_go_enrichment(
   plot = TRUE,
   plot_style = "barplot",
   plot_title = "Gene ontology enrichment of significant proteins",
-  barplot_fill_col = c("#56B4E9", "#E76145"),
-  heatmap_fill_col = protti::mako_colours,
-  heatmap_fill_col_rev = TRUE,
+  barplot_fill_colour = c("#56B4E9", "#E76145"),
+  heatmap_fill_colour = protti::mako_colours,
+  heatmap_fill_colour_rev = TRUE,
   label = TRUE,
   enrichment_type = "all",
   min_n_detected_proteins_in_process = 1,
@@ -80,15 +80,15 @@ because otherwise it is not possible to distinguish between enrichment and deenr
 \item{plot_title}{a character value that specifies the title of the plot. The default is "Gene ontology
 enrichment of significant proteins".}
 
-\item{barplot_fill_col}{a vector that contains two colours that should be used as the fill colours for
+\item{barplot_fill_colour}{a vector that contains two colours that should be used as the fill colours for
 deenriched and enriched GO terms, respectively. If \code{enrichment_type = "enriched"} or \verb{"deenriched}, please
 still provide two values in the vector, the colour not used for the plot can be \code{NA} in this case. E.g.
 \code{c(NA, "red")} for \code{enrichment_type = "enriched"}.}
 
-\item{heatmap_fill_col}{a vector that contains colours that should be used to create the gradient in the
+\item{heatmap_fill_colour}{a vector that contains colours that should be used to create the gradient in the
 heatmap plot. Default is \code{mako_colours}.}
 
-\item{heatmap_fill_col_rev}{a logical value that specifies if the provided colours in \code{heatmap_fill_col}
+\item{heatmap_fill_colour_rev}{a logical value that specifies if the provided colours in \code{heatmap_fill_colour}
 should be reversed in order. Default is \code{TRUE}.}
 
 \item{label}{a logical argument indicating whether labels should be added to the plot.

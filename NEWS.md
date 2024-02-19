@@ -7,10 +7,10 @@
   * `plot_title`: specifies the title of the plot.
   * `min_n_detected_proteins_in_process`: argument for plotting that specifies the minimum number of proteins a GO term needs to be detected for.
   * `enrichment_type`: specifies what kind of enrichment should be calculated. It can be "all", "enrichment" or "deenrichment". This argument affects how the `fisher.test()` calculates the enrichment. A two-sided test will be used for "all", while a one-sided test in the specific direction will be used for "enriched" or "deenriched".
-  * `barplot_fill_col`: specifies the colours used to fill the bars in the barplot. Needs always at least two values one for deenriched the other for enriched.
+  * `barplot_fill_colour`: specifies the colours used to fill the bars in the barplot. Needs always at least two values one for deenriched the other for enriched.
   * `plot_style`: We added a new plot type to the function. The standard plot is still the default and is called "barplot", while the new plot type is "heatmap". The heatmap plot is especially useful for comparing GO enrichments of multiple groups.
-  * `heatmap_fill_col`: specifies the colours used for the colour gradient of heatmap plots.
-  * `heatmap_fill_col_rev`: a logical value that specifies if the colour gradient should be reversed.
+  * `heatmap_fill_colour`: specifies the colours used for the colour gradient of heatmap plots.
+  * `heatmap_fill_colour_rev`: a logical value that specifies if the colour gradient should be reversed.
 * Added `mako_colours` to the package that contain 256 colours of the "mako" colour gradient.
 
 # protti 0.7.0
