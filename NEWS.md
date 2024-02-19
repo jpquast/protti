@@ -13,6 +13,11 @@
   * `heatmap_fill_colour_rev`: a logical value that specifies if the colour gradient should be reversed.
 * Added `mako_colours` to the package that contain 256 colours of the "mako" colour gradient.
 
+## Bug fixes
+
+* `normalise()` now correctly works with grouped data. Previously it would only correctly work with ungrouped data frames. Now you can group the data to calculate group specific normalisations. If you want to compute a global normalisation for the dataset, you need to ungroup the data before using the function as usual. This fixes issue #209.
+* `qc_sequence_coverage()` now correctly displays medians in faceted plot. This fixes issue #202 and #213. 
+
 # protti 0.7.0
 
 ## New features
