@@ -47,6 +47,12 @@ qc_sequence_coverage <- function(data,
                                  coverage,
                                  sample = NULL,
                                  interactive = FALSE) {
+
+  # Validate inputs
+  if (!all(c(protein_identifier, coverage) %in% colnames(data))) {
+    stop("Column names for protein_identifier and coverage must exist in the dataset.")
+  }
+  
   result <- data %>%
     dplyr::distinct({{ protein_identifier }}, {{ coverage }}, {{ sample }}) %>%
     tidyr::drop_na({{ coverage }}) %>%
