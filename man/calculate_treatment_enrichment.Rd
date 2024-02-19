@@ -11,7 +11,10 @@ calculate_treatment_enrichment(
   binds_treatment,
   group = NULL,
   treatment_name,
-  plot = TRUE
+  plot = TRUE,
+  fill_colours = protti::protti_colours,
+  fill_by_group = FALSE,
+  facet_n_col = 2
 )
 }
 \arguments{
@@ -39,6 +42,14 @@ in the plot title.}
 
 \item{plot}{a logical value indicating whether the result should be plotted or returned as a
 table.}
+
+\item{fill_colours}{a character vector that specifies the fill colours of the plot.}
+
+\item{fill_by_group}{a logical value that specifies if the bars in the plot should be filled by group
+if the group argument is provided. Default is \code{FALSE}.}
+
+\item{facet_n_col}{a numeric value that specifies the number of columns the facet plot should have if
+a \code{group} column was provided.}
 }
 \value{
 A bar plot displaying the percentage of all detect proteins and all significant proteins
@@ -63,6 +74,12 @@ data <- data.frame(
     rep(FALSE, 10),
     rep(TRUE, 5),
     rep(FALSE, 25)
+  ),
+  group = c(
+    rep("A", 5),
+    rep("B", 15),
+    rep("A", 15),
+    rep("B", 15)
   )
 )
 
@@ -74,6 +91,18 @@ calculate_treatment_enrichment(
   binds_treatment = binds_treatment,
   treatment = "Rapamycin",
   plot = TRUE
+)
+
+# Plot treatment enrichment by group
+calculate_treatment_enrichment(
+  data,
+  protein_id = protein_id,
+  group = group,
+  is_significant = significant,
+  binds_treatment = binds_treatment,
+  treatment = "Rapamycin",
+  plot = TRUE,
+  fill_by_group = TRUE
 )
 
 # Calculate treatment enrichment

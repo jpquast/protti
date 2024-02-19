@@ -1,5 +1,12 @@
 # protti 0.7.0.9000
 
+## New features
+
+* `calculate_treatment_enrichment()` recieved additional arguments. 
+  * `fill_colours`: a character value that can be used to provide custom colours to the plot.
+  * `fill_by_group`: a logical value that specifies if the bars in the plot should be filled according to group.
+  * `facet_n_col`: specifies the number of columns in the facet plot if a `group` column was provided.
+
 ## Bug fixes
 
 * `normalise()` now correctly works with grouped data. Previously it would only correctly work with ungrouped data frames. Now you can group the data to calculate group specific normalisations. If you want to compute a global normalisation for the dataset, you need to ungroup the data before using the function as usual.

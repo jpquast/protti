@@ -42,6 +42,11 @@ treatment_enrichment <- function(...) {
 #' in the plot title.
 #' @param plot a logical value indicating whether the result should be plotted or returned as a
 #' table.
+#' @param fill_colours a character vector that specifies the fill colours of the plot.
+#' @param fill_by_group a logical value that specifies if the bars in the plot should be filled by group
+#' if the group argument is provided. Default is `FALSE`.
+#' @param facet_n_col a numeric value that specifies the number of columns the facet plot should have if
+#' a `group` column was provided.
 #'
 #' @return A bar plot displaying the percentage of all detect proteins and all significant proteins
 #' that bind to the treatment. A Fisher's exact test is performed to calculate the significance of
@@ -70,6 +75,12 @@ treatment_enrichment <- function(...) {
 #'     rep(FALSE, 10),
 #'     rep(TRUE, 5),
 #'     rep(FALSE, 25)
+#'   ),
+#'   group = c(
+#'     rep("A", 5),
+#'     rep("B", 15),
+#'     rep("A", 15),
+#'     rep("B", 15)
 #'   )
 #' )
 #'
@@ -81,6 +92,18 @@ treatment_enrichment <- function(...) {
 #'   binds_treatment = binds_treatment,
 #'   treatment = "Rapamycin",
 #'   plot = TRUE
+#' )
+#'
+#' # Plot treatment enrichment by group
+#' calculate_treatment_enrichment(
+#'   data,
+#'   protein_id = protein_id,
+#'   group = group,
+#'   is_significant = significant,
+#'   binds_treatment = binds_treatment,
+#'   treatment = "Rapamycin",
+#'   plot = TRUE,
+#'   fill_by_group = TRUE
 #' )
 #'
 #' # Calculate treatment enrichment
@@ -99,12 +122,17 @@ calculate_treatment_enrichment <- function(data,
                                            binds_treatment,
                                            group = NULL,
                                            treatment_name,
-                                           plot = TRUE) {
+                                           plot = TRUE,
+                                           fill_colours = protti::protti_colours,
+                                           fill_by_group = FALSE,
+                                           facet_n_col = 2) {
   # to avoid note about no global variable binding.
   . <- NULL
 
+  group_missing <- missing(group)
+
   # group by the "group" argument if provided
-  if (!missing(group)) {
+  if (!group_missing) {
     data <- data %>%
       dplyr::ungroup() %>%
       dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ binds_treatment }}, {{ group }}) %>%
@@ -178,7 +206,7 @@ calculate_treatment_enrichment <- function(data,
 
   # Add p-value to group name for plot
   # also group to correctly calculate the total number of proteins in the next step
-  if (!missing(group)) {
+  if (!group_missing) {
     cont_table <- cont_table %>%
       dplyr::mutate(group_pval = paste0(
         {{ group }}, " (p-value: ",
@@ -224,15 +252,23 @@ calculate_treatment_enrichment <- function(data,
       .data$total_interactor,
       .data$sig_interactor
     )) %>%
-    ggplot2::ggplot(ggplot2::aes(.data$name, .data$value)) +
-    ggplot2::geom_col(fill = "cornflowerblue", col = "black", size = 1.2) +
     {
-      if (!missing(group)) {
-        ggplot2::facet_wrap(~ .data$group_pval)
+      if (fill_by_group & !group_missing) {
+        ggplot2::ggplot(., ggplot2::aes(.data$name, .data$value, fill = .data$group)) +
+          ggplot2::geom_col(col = "black", size = 1.2) +
+          scale_fill_manual(values = fill_colours)
+      } else {
+        ggplot2::ggplot(., ggplot2::aes(.data$name, .data$value)) +
+          ggplot2::geom_col(fill = fill_colours[1], col = "black", size = 1.2)
       }
     } +
     {
-      if (!missing(group)) {
+      if (!group_missing) {
+        ggplot2::facet_wrap(~ .data$group_pval, ncol = facet_n_col)
+      }
+    } +
+    {
+      if (!group_missing) {
         ggplot2::labs(
           title = paste0(
             "Proteins interacting with ",
@@ -266,19 +302,13 @@ calculate_treatment_enrichment <- function(data,
     ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
-      plot.title = ggplot2::element_text(
-        size = 20
-      ),
-      axis.text.x = ggplot2::element_text(
-        size = 15
-      ),
-      axis.text.y = ggplot2::element_text(
-        size = 15
-      ),
-      axis.title.y = ggplot2::element_text(
-        size = 15
-      ),
+      plot.title = ggplot2::element_text(size = 20),
+      axis.text.x = ggplot2::element_text(size = 15),
+      axis.text.y = ggplot2::element_text(size = 15),
+      axis.title.y = ggplot2::element_text(size = 15),
       strip.text = ggplot2::element_text(size = 15),
+      legend.title = ggplot2::element_text(size = 15),
+      legend.text = ggplot2::element_text(size = 13),
       strip.background = element_blank()
     )
   if (plot == TRUE) {
