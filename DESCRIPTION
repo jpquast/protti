@@ -64,7 +64,9 @@ Suggests:
     igraph,
     stringi, 
     STRINGdb,
-    iq
+    iq,
+    scales,
+    farver
 Depends: 
     R (>= 4.0)
 URL: https://github.com/jpquast/protti, https://jpquast.github.io/protti/

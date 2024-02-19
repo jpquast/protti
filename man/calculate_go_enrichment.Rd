@@ -16,7 +16,11 @@ calculate_go_enrichment(
   organism_id = NULL,
   go_data = NULL,
   plot = TRUE,
+  plot_style = "barplot",
   plot_title = "Gene ontology enrichment of significant proteins",
+  barplot_fill_col = c("#56B4E9", "#E76145"),
+  heatmap_fill_col = protti::mako_colours,
+  heatmap_fill_col_rev = TRUE,
   label = TRUE,
   enrichment_type = "all",
   min_n_detected_proteins_in_process = 1,
@@ -68,8 +72,24 @@ data not obtained with \code{fetch_go()} make sure column names for protein ID (
 
 \item{plot}{a logical argument indicating whether the result should be plotted or returned as a table.}
 
+\item{plot_style}{a character argument that specifies the plot style. Can be either "barplot" (default)
+or "heatmap". The "heatmap" plot is especially useful for the comparison of multiple groups. We recommend,
+however, that you use it only with \code{enrichment_type = "enriched"} or \verb{enrichment_type = "deenriched},
+because otherwise it is not possible to distinguish between enrichment and deenrichment in the plot.}
+
 \item{plot_title}{a character value that specifies the title of the plot. The default is "Gene ontology
 enrichment of significant proteins".}
+
+\item{barplot_fill_col}{a vector that contains two colours that should be used as the fill colours for
+deenriched and enriched GO terms, respectively. If \code{enrichment_type = "enriched"} or \verb{"deenriched}, please
+still provide two values in the vector, the colour not used for the plot can be \code{NA} in this case. E.g.
+\code{c(NA, "red")} for \code{enrichment_type = "enriched"}.}
+
+\item{heatmap_fill_col}{a vector that contains colours that should be used to create the gradient in the
+heatmap plot. Default is \code{mako_colours}.}
+
+\item{heatmap_fill_col_rev}{a logical value that specifies if the provided colours in \code{heatmap_fill_col}
+should be reversed in order. Default is \code{TRUE}.}
 
 \item{label}{a logical argument indicating whether labels should be added to the plot.
 Default is TRUE.}
@@ -139,10 +159,12 @@ if (!is(uniprot_go_data, "character")) {
       FALSE,
       significant
     )) \%>\%
-    mutate(group = c(rep("A", 500),
-                     rep("B", 500),
-                     rep("A", (n() - 1000)/2),
-                     rep("B", round((n() - 1000)/2))))
+    mutate(group = c(
+      rep("A", 500),
+      rep("B", 500),
+      rep("A", (n() - 1000) / 2),
+      rep("B", round((n() - 1000) / 2))
+    ))
 
   # Plot gene ontology enrichment
   calculate_go_enrichment(
@@ -154,17 +176,32 @@ if (!is(uniprot_go_data, "character")) {
     plot_cutoff = "pval 0.01"
   )
 
- # Plot gene ontology enrichment with group
- calculate_go_enrichment(
-   data,
-   protein_id = accession,
-   go_annotations_uniprot = go_f,
-   is_significant = significant,
-   group = group,
-   facet_n_col = 1,
-   plot = TRUE,
-   plot_cutoff = "pval 0.01"
- )
+  # Plot gene ontology enrichment with group
+  calculate_go_enrichment(
+    data,
+    protein_id = accession,
+    go_annotations_uniprot = go_f,
+    is_significant = significant,
+    group = group,
+    facet_n_col = 1,
+    plot = TRUE,
+    plot_cutoff = "pval 0.01"
+  )
+
+  # Plot gene ontology enrichment with group in a heatmap plot
+  calculate_go_enrichment(
+    data,
+    protein_id = accession,
+    group = group,
+    go_annotations_uniprot = go_f,
+    is_significant = significant,
+    min_n_detected_proteins_in_process = 15,
+    plot = TRUE,
+    label = TRUE,
+    plot_style = "heatmap",
+    enrichment_type = "enriched",
+    plot_cutoff = "pval 0.01"
+  )
 
   # Calculate gene ontology enrichment
   go_enrichment <- calculate_go_enrichment(
