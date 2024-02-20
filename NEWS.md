@@ -6,10 +6,22 @@
   * `fill_colours`: a character value that can be used to provide custom colours to the plot.
   * `fill_by_group`: a logical value that specifies if the bars in the plot should be filled according to group.
   * `facet_n_col`: specifies the number of columns in the facet plot if a `group` column was provided.
+* `calculate_go_enrichment()` got additional arguments.
+  * `facet_n_col`: determines the number of columns the faceted plot should have if a group column is provided.
+  * `plot_title`: specifies the title of the plot.
+  * `min_n_detected_proteins_in_process`: argument for plotting that specifies the minimum number of proteins a GO term needs to be detected for.
+  * `enrichment_type`: specifies what kind of enrichment should be calculated. It can be "all", "enrichment" or "deenrichment". This argument affects how the `fisher.test()` calculates the enrichment. A two-sided test will be used for "all", while a one-sided test in the specific direction will be used for "enriched" or "deenriched".
+  * `barplot_fill_colour`: specifies the colours used to fill the bars in the barplot. Needs always at least two values one for deenriched the other for enriched.
+  * `plot_style`: We added a new plot type to the function. The standard plot is still the default and is called "barplot", while the new plot type is "heatmap". The heatmap plot is especially useful for comparing GO enrichments of multiple groups.
+  * `heatmap_fill_colour`: specifies the colours used for the colour gradient of heatmap plots.
+  * `heatmap_fill_colour_rev`: a logical value that specifies if the colour gradient should be reversed.
+  * `plot_cutoff`: is now more flexible. You can provide any number with the "top" cutoff. E.g. "top10", "top5".
+* Added `mako_colours` to the package that contain 256 colours of the "mako" colour gradient.
 
 ## Bug fixes
 
-* `normalise()` now correctly works with grouped data. Previously it would only correctly work with ungrouped data frames. Now you can group the data to calculate group specific normalisations. If you want to compute a global normalisation for the dataset, you need to ungroup the data before using the function as usual.
+* `normalise()` now correctly works with grouped data. Previously it would only correctly work with ungrouped data frames. Now you can group the data to calculate group specific normalisations. If you want to compute a global normalisation for the dataset, you need to ungroup the data before using the function as usual. This fixes issue #209.
+* `qc_sequence_coverage()` now correctly displays medians in faceted plot. This fixes issue #202 and #213. 
 
 # protti 0.7.0
 

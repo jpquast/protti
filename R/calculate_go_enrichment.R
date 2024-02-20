@@ -5,8 +5,9 @@
 #'
 #' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or
 #' depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individually with the
-#' \code{plot_cutoff} argument. Bars are colored according to the direction of the enrichment. If
-#' \code{plot = FALSE}, a data frame is returned. P-values are adjusted with Benjamini-Hochberg.
+#' \code{plot_cutoff} argument. Bars are colored according to the direction of the enrichment
+#' (enriched or deenriched). If \code{plot = FALSE}, a data frame is returned. P-values are
+#' adjusted with Benjamini-Hochberg.
 #' @keywords internal
 #' @export
 go_enrichment <- function(...) {
@@ -42,6 +43,8 @@ go_enrichment <- function(...) {
 #' @param y_axis_free a logical value that specifies if the y-axis of the plot should be "free"
 #' for each facet if a grouping variable is provided. Default is `TRUE`. If `FALSE` is selected
 #' it is easier to compare GO categories directly with each other.
+#' @param facet_n_col a numeric value that specifies the number of columns the faceted plot should have
+#' if a column name is provided to group. The default is 2.
 #' @param go_annotations_uniprot recommended, a character column in the \code{data} data frame
 #' that contains gene ontology annotations obtained from UniProt using \code{fetch_uniprot}.
 #' These annotations are already separated into the desired ontology type so the argument
@@ -55,28 +58,55 @@ go_enrichment <- function(...) {
 #' organism (TaxId). Possible inputs include only: "9606" (Human), "559292" (Yeast) and "83333"
 #' (E. coli). Is only necessary if GO data is not provided either by \code{go_annotations_uniprot}
 #' or in \code{go_data}.
-#' @param go_data Optional, a data frame that can be obtained with \code{fetch_go}. If you provide
-#' data not obtained with \code{fetch_go} make sure column names for protein ID (db_id) and GO ID
-#' (go_id) are the same as for data obtained with \code{fetch_go}.
+#' @param go_data Optional, a data frame that can be obtained with `fetch_go()`. If you provide
+#' data not obtained with `fetch_go()` make sure column names for protein ID (`db_id`) and GO ID
+#' (`go_id`) are the same as for data obtained with `fetch_go()`.
 #' @param plot a logical argument indicating whether the result should be plotted or returned as a table.
+#' @param plot_style a character argument that specifies the plot style. Can be either "barplot" (default)
+#' or "heatmap". The "heatmap" plot is especially useful for the comparison of multiple groups. We recommend,
+#' however, that you use it only with `enrichment_type = "enriched"` or `enrichment_type = "deenriched`,
+#' because otherwise it is not possible to distinguish between enrichment and deenrichment in the plot.
+#' @param plot_title a character value that specifies the title of the plot. The default is "Gene ontology
+#' enrichment of significant proteins".
+#' @param barplot_fill_colour a vector that contains two colours that should be used as the fill colours for
+#' deenriched and enriched GO terms, respectively. If `enrichment_type = "enriched"` or `"deenriched`, please
+#' still provide two values in the vector, the colour not used for the plot can be `NA` in this case. E.g.
+#' `c(NA, "red")` for `enrichment_type = "enriched"`.
+#' @param heatmap_fill_colour a vector that contains colours that should be used to create the gradient in the
+#' heatmap plot. Default is `mako_colours`.
+#' @param heatmap_fill_colour_rev a logical value that specifies if the provided colours in `heatmap_fill_colour`
+#' should be reversed in order. Default is `TRUE`.
 #' @param label a logical argument indicating whether labels should be added to the plot.
 #' Default is TRUE.
-#' @param plot_cutoff a character value indicating if the plot should contain the top 10 most
+#' @param enrichment_type a character argument that is either "all", "enriched" or "deenriched". This
+#' determines if the enrichment analysis should be performed in order to check for both enrichemnt and
+#' deenrichemnt or only one of the two. This affects the statistics performed and therefore also the displayed
+#' plot.
+#' @param min_n_detected_proteins_in_process is a numeric argument that specifies the minimum number of
+#' detected proteins required for a GO term to be displayed in the plot. The default is 1, meaning
+#' no filtering of the plotted data is performed. This argument does not affect any computations or
+#' the returned data if `plot = FALSE`. This argument is useful in order to remove terms that were only
+#' detected in for example 1 protein. Even though these terms are sometimes significant, they are not
+#' really relevant.
+#' @param plot_cutoff a character value indicating if the plot should contain the top n (e.g. top10) most
 #' significant proteins (p-value or adjusted p-value), or if a significance cutoff should be used
 #' to determine the number of GO terms in the plot. This information should be provided with the
 #' type first followed by the threshold separated by a space. Example are
-#' \code{plot_cutoff = "adj_pval top10"}, \code{plot_cutoff = "pval 0.05"} or
-#' \code{plot_cutoff = "adj_pval 0.01"}. The threshold can be chosen freely. The default value is
-#' \code{"adj_pval top10"}.
+#' `plot_cutoff = "adj_pval top10"`, `plot_cutoff = "pval 0.05"` or
+#' `plot_cutoff = "adj_pval 0.01"`. The threshold can be chosen freely. The default value is
+#' `"adj_pval top10"`.
 #'
-#' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or
-#' depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individually with the
-#' \code{plot_cutoff} argument. Bars are colored according to the direction of the enrichment. If
-#' \code{plot = FALSE}, a data frame is returned. P-values are adjusted with Benjamini-Hochberg.
+#' @return A bar plot or heatmap (depending on `plot_style`). By default the bar plot displays negative log10
+#' adjusted p-values for the top 10 enriched or deenriched gene ontology terms. Alternatively, plot cutoffs
+#' can be chosen individually with the `plot_cutoff` argument. Bars are colored according to the direction
+#' of the enrichment (enriched or deenriched). If a heatmap is returned, terms are organised on the y-axis, while
+#' the colour of each tile represents the negative log10 adjusted p-value (default). If a `group` column
+#' is provided the x-axis contains all groups. If `plot = FALSE`, a data frame is returned. P-values are adjusted with
+#' Benjamini-Hochberg.
 #'
 #' @import dplyr
 #' @import ggplot2
-#' @importFrom stringr str_replace str_split str_detect
+#' @importFrom stringr str_replace str_split str_detect str_extract
 #' @importFrom tidyr drop_na
 #' @importFrom rlang .data !! ensym
 #' @importFrom magrittr %>%
@@ -112,6 +142,12 @@ go_enrichment <- function(...) {
 #'       ),
 #'       FALSE,
 #'       significant
+#'     )) %>%
+#'     mutate(group = c(
+#'       rep("A", 500),
+#'       rep("B", 500),
+#'       rep("A", (n() - 1000) / 2),
+#'       rep("B", round((n() - 1000) / 2))
 #'     ))
 #'
 #'   # Plot gene ontology enrichment
@@ -121,6 +157,33 @@ go_enrichment <- function(...) {
 #'     go_annotations_uniprot = go_f,
 #'     is_significant = significant,
 #'     plot = TRUE,
+#'     plot_cutoff = "pval 0.01"
+#'   )
+#'
+#'   # Plot gene ontology enrichment with group
+#'   calculate_go_enrichment(
+#'     data,
+#'     protein_id = accession,
+#'     go_annotations_uniprot = go_f,
+#'     is_significant = significant,
+#'     group = group,
+#'     facet_n_col = 1,
+#'     plot = TRUE,
+#'     plot_cutoff = "pval 0.01"
+#'   )
+#'
+#'   # Plot gene ontology enrichment with group in a heatmap plot
+#'   calculate_go_enrichment(
+#'     data,
+#'     protein_id = accession,
+#'     group = group,
+#'     go_annotations_uniprot = go_f,
+#'     is_significant = significant,
+#'     min_n_detected_proteins_in_process = 15,
+#'     plot = TRUE,
+#'     label = TRUE,
+#'     plot_style = "heatmap",
+#'     enrichment_type = "enriched",
 #'     plot_cutoff = "pval 0.01"
 #'   )
 #'
@@ -141,40 +204,64 @@ calculate_go_enrichment <- function(data,
                                     is_significant,
                                     group = NULL,
                                     y_axis_free = TRUE,
+                                    facet_n_col = 2,
                                     go_annotations_uniprot = NULL,
                                     ontology_type,
                                     organism_id = NULL,
                                     go_data = NULL,
                                     plot = TRUE,
+                                    plot_style = "barplot",
+                                    plot_title = "Gene ontology enrichment of significant proteins",
+                                    barplot_fill_colour = c("#56B4E9", "#E76145"),
+                                    heatmap_fill_colour = protti::mako_colours,
+                                    heatmap_fill_colour_rev = TRUE,
                                     label = TRUE,
+                                    enrichment_type = "all",
+                                    min_n_detected_proteins_in_process = 1,
                                     plot_cutoff = "adj_pval top10") {
   # to avoid note about no global variable binding. Usually this can be avoided with
   # .data$ but not in nesting in complete function.
   . <- NULL
   n_sig <- NULL
+  group_missing <- missing(group)
+  alternative_test <- switch(enrichment_type,
+    "all" = "two.sided",
+    "enriched" = "greater",
+    "deenriched" = "less",
+    "none"
+  )
+
+  if (alternative_test == "none") stop("Please provide a valid enrichment_type! Can be 'all', 'enriched', 'deenriched'.")
+
+  if (!(plot_style %in% c("barplot", "heatmap"))) stop("Invalid plot_style. Available styles: barplot, heatmap")
+
+  if(length(barplot_fill_colour) < 2) stop('Please provide at least two colours to "barplot_fill_colour"!')
+
+  if (!stringr::str_detect(plot_cutoff, pattern = "^(pval|adj_pval) (top\\d+|\\d+(\\.\\d+)?)$")) {
+    stop("Invalid format for plot_cutoff. Please provide the type (pval or adj_pval) followed by
+         e.g. 'top10' or a numeric threshold within the range (0, 1]. Valid formats are for instance:
+         'adj_pval top5', 'pval 0.05'")
+  }
 
   if (length(unique(dplyr::pull(data, {{ protein_id }}))) != nrow(data)) {
-    # group by the "group" argument if provided
-    if (!missing(group)) {
-      data <- data %>%
-        dplyr::ungroup() %>%
-        dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}, {{ group }}) %>%
-        dplyr::group_by({{ protein_id }}, {{ group }}) %>%
-        dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
-        # do this to remove accidental double annotations
-        dplyr::ungroup() %>%
-        dplyr::distinct()
-    } else {
-      data <- data %>%
-        dplyr::ungroup() %>%
-        dplyr::distinct({{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}) %>%
-        dplyr::group_by({{ protein_id }}) %>%
-        dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
-        # do this to remove accidental double annotations
-        dplyr::ungroup() %>%
-        dplyr::distinct()
-    }
+    data <- data %>%
+      dplyr::ungroup() %>%
+      {
+        # conditional grouping
+        if (!group_missing) {
+          dplyr::distinct(., {{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}, {{ group }}) %>%
+            dplyr::group_by({{ protein_id }}, {{ group }})
+        } else {
+          dplyr::distinct(., {{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}) %>%
+            dplyr::group_by({{ protein_id }})
+        }
+      } %>%
+      dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
+      # do this to remove accidental double annotations
+      dplyr::ungroup() %>%
+      dplyr::distinct()
   }
+
   if (!missing(go_annotations_uniprot)) {
     if (!stringr::str_detect(
       dplyr::pull(
@@ -242,25 +329,42 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
 
   if (!missing(go_annotations_uniprot)) go_data <- input
 
-  if (missing(group)) {
-    # group argument is missing
-    cont_table <- go_data %>%
-      tidyr::drop_na(.data$go_id, {{ is_significant }}) %>%
-      dplyr::group_by({{ is_significant }}) %>%
-      dplyr::mutate(n_sig = dplyr::n_distinct(.data$protein_id)) %>%
-      dplyr::group_by(.data$go_id, {{ is_significant }}) %>%
-      dplyr::mutate(n_has_process = dplyr::n_distinct(.data$protein_id)) %>%
-      # count number of proteins with process for sig and non-sig proteins
-      dplyr::distinct(.data$go_id, {{ is_significant }}, .data$n_sig, .data$n_has_process) %>%
-      dplyr::ungroup() %>%
-      tidyr::complete(.data$go_id, tidyr::nesting(!!rlang::ensym(is_significant), n_sig), fill = list(n_has_process = 0))
+  # group argument is not missing
+  cont_table <- go_data %>%
+    tidyr::drop_na(.data$go_id, {{ is_significant }}) %>%
+    { # group argument is missing
+      if (group_missing) {
+        dplyr::group_by(., {{ is_significant }})
+      } else {
+        # group argument is not missing
+        dplyr::group_by(., {{ is_significant }}, {{ group }})
+      }
+    } %>%
+    dplyr::mutate(n_sig = dplyr::n_distinct(.data$protein_id)) %>%
+    dplyr::group_by(.data$go_id, .add = TRUE) %>%
+    dplyr::mutate(n_has_process = dplyr::n_distinct(.data$protein_id)) %>%
+    # count number of proteins with process for sig and non-sig proteins
+    { # group argument is missing
+      if (group_missing) {
+        dplyr::distinct(., .data$go_id, {{ is_significant }}, .data$n_sig, .data$n_has_process) %>%
+          dplyr::ungroup()
+      } else {
+        # group argument is not missing
+        dplyr::distinct(., .data$go_id, {{ is_significant }}, .data$n_sig, .data$n_has_process, {{ group }}) %>%
+          dplyr::group_by({{ group }})
+      }
+    } %>%
+    tidyr::complete(.data$go_id, tidyr::nesting(!!rlang::ensym(is_significant), n_sig), fill = list(n_has_process = 0)) %>%
+    dplyr::ungroup()
 
+
+  if (group_missing) {
     fisher_test <- cont_table %>%
       split(dplyr::pull(., .data$go_id)) %>%
       purrr::map(.f = ~ dplyr::select(.x, -.data$go_id) %>%
         tibble::column_to_rownames(var = rlang::as_name(enquo(is_significant))) %>%
         as.matrix() %>%
-        fisher.test()) %>%
+        fisher.test(alternative = alternative_test)) %>%
       purrr::map2_df(
         .y = names(.),
         .f = ~ tibble::tibble(
@@ -268,39 +372,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
           go_id = .y
         )
       )
-
-    result_table <- cont_table %>%
-      dplyr::left_join(fisher_test, by = "go_id") %>%
-      dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
-      dplyr::group_by(.data$go_id) %>%
-      dplyr::mutate(
-        n_detected_proteins = sum(.data$n_sig),
-        n_detected_proteins_in_process = sum(.data$n_has_process),
-        n_significant_proteins = ifelse({{ is_significant }} == TRUE, .data$n_sig, NA),
-        n_significant_proteins_in_process = ifelse({{ is_significant }} == TRUE, .data$n_has_process, NA)
-      ) %>%
-      tidyr::drop_na() %>%
-      dplyr::select(-c({{ is_significant }}, .data$n_sig, .data$n_has_process)) %>%
-      dplyr::mutate(n_proteins_expected = round(
-        .data$n_significant_proteins / .data$n_detected_proteins * .data$n_detected_proteins_in_process,
-        digits = 2
-      )) %>%
-      dplyr::mutate(direction = ifelse(.data$n_proteins_expected < .data$n_significant_proteins_in_process, "Up", "Down")) %>%
-      dplyr::arrange(.data$pval)
   } else {
-    # group argument is not missing
-    cont_table <- go_data %>%
-      tidyr::drop_na(.data$go_id, {{ is_significant }}) %>%
-      dplyr::group_by({{ is_significant }}, {{ group }}) %>%
-      dplyr::mutate(n_sig = dplyr::n_distinct(.data$protein_id)) %>%
-      dplyr::group_by(.data$go_id, {{ is_significant }}, {{ group }}) %>%
-      dplyr::mutate(n_has_process = dplyr::n_distinct(.data$protein_id)) %>%
-      # count number of proteins with process for sig and non-sig proteins
-      dplyr::distinct(.data$go_id, {{ is_significant }}, .data$n_sig, .data$n_has_process, {{ group }}) %>%
-      dplyr::group_by({{ group }}) %>%
-      tidyr::complete(.data$go_id, tidyr::nesting(!!rlang::ensym(is_significant), n_sig), fill = list(n_has_process = 0)) %>%
-      dplyr::ungroup()
-
     fisher_test <- cont_table %>%
       split(dplyr::pull(., {{ group }})) %>%
       purrr::map2_dfr(
@@ -313,7 +385,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
               dplyr::select(.x, -c(.data$go_id)) %>%
                 tibble::column_to_rownames(var = rlang::as_name(enquo(is_significant))) %>%
                 as.matrix() %>%
-                fisher.test()
+                fisher.test(alternative = alternative_test)
             }) %>%
             purrr::map2_dfr(
               .y = names(.),
@@ -325,27 +397,34 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
             mutate({{ group }} := .y)
         }
       )
-
-    result_table <- cont_table %>%
-      dplyr::left_join(fisher_test, by = c("go_id", rlang::as_name(enquo(group)))) %>%
-      dplyr::group_by({{ group }}) %>%
-      dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
-      dplyr::group_by(.data$go_id, {{ group }}) %>%
-      dplyr::mutate(
-        n_detected_proteins = sum(.data$n_sig),
-        n_detected_proteins_in_process = sum(.data$n_has_process),
-        n_significant_proteins = ifelse({{ is_significant }} == TRUE, .data$n_sig, NA),
-        n_significant_proteins_in_process = ifelse({{ is_significant }} == TRUE, .data$n_has_process, NA)
-      ) %>%
-      tidyr::drop_na() %>%
-      dplyr::select(-c({{ is_significant }}, .data$n_sig, .data$n_has_process)) %>%
-      dplyr::mutate(n_proteins_expected = round(
-        .data$n_significant_proteins / .data$n_detected_proteins * .data$n_detected_proteins_in_process,
-        digits = 2
-      )) %>%
-      dplyr::mutate(direction = ifelse(.data$n_proteins_expected < .data$n_significant_proteins_in_process, "Up", "Down")) %>%
-      dplyr::arrange(.data$pval)
   }
+
+  result_table <- cont_table %>%
+    { # group argument is missing
+      if (group_missing) {
+        dplyr::left_join(., fisher_test, by = "go_id")
+      } else {
+        # group argument is not missing
+        dplyr::left_join(., fisher_test, by = c("go_id", rlang::as_name(enquo(group)))) %>%
+          dplyr::group_by({{ group }})
+      }
+    } %>%
+    dplyr::mutate(adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
+    dplyr::group_by(.data$go_id, .add = TRUE) %>%
+    dplyr::mutate(
+      n_detected_proteins = sum(.data$n_sig),
+      n_detected_proteins_in_process = sum(.data$n_has_process),
+      n_significant_proteins = ifelse({{ is_significant }} == TRUE, .data$n_sig, NA),
+      n_significant_proteins_in_process = ifelse({{ is_significant }} == TRUE, .data$n_has_process, NA)
+    ) %>%
+    tidyr::drop_na() %>%
+    dplyr::select(-c({{ is_significant }}, .data$n_sig, .data$n_has_process)) %>%
+    dplyr::mutate(n_proteins_expected = round(
+      .data$n_significant_proteins / .data$n_detected_proteins * .data$n_detected_proteins_in_process,
+      digits = 2
+    )) %>%
+    dplyr::mutate(enrichment_type = ifelse(.data$n_proteins_expected < .data$n_significant_proteins_in_process, "Enriched", "Deenriched")) %>%
+    dplyr::arrange(.data$pval)
 
   if (stringr::str_detect(result_table$go_id[1], pattern = "\\[GO:")) {
     result_table <- suppressWarnings(tidyr::separate(result_table, .data$go_id, c("term", "go_id"), "(?=\\[GO:)"))
@@ -355,117 +434,231 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     return(result_table)
   }
 
-  if (!missing(group) & y_axis_free) {
+  filtered_result_table <- result_table %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(.data$n_detected_proteins_in_process >= min_n_detected_proteins_in_process)
+
+  if (!missing(group) & y_axis_free & plot_style == "barplot") {
     # arrange table by group and go term for plot
     # this ensures that the terms are in the right order for a facet plot with a free axis
-    result_table <- result_table %>%
-      dplyr::ungroup() %>%
+    filtered_result_table <- filtered_result_table %>%
       dplyr::mutate(term = paste(.data$term, {{ group }}, sep = "__"))
   }
 
   # add cutoff for plot
-  if (stringr::str_detect(plot_cutoff, pattern = "top10")) {
+  if (stringr::str_detect(plot_cutoff, pattern = "top")) {
     split_cutoff <- stringr::str_split(plot_cutoff, pattern = " ", simplify = TRUE)
     type <- split_cutoff[1]
-    plot_input <- result_table %>%
+    top <- stringr::str_extract(split_cutoff[2], pattern = "\\d+")
+    plot_input <- filtered_result_table %>%
       dplyr::ungroup() %>%
       dplyr::mutate(neg_log_sig = -log10(!!rlang::ensym(type))) %>%
-      dplyr::slice(1:10)
+      dplyr::slice(1:top)
   } else {
     split_cutoff <- stringr::str_split(plot_cutoff, pattern = " ", simplify = TRUE)
     type <- split_cutoff[1]
     threshold <- as.numeric(split_cutoff[2])
-    plot_input <- result_table %>%
+    plot_input <- filtered_result_table %>%
       dplyr::ungroup() %>%
       dplyr::mutate(neg_log_sig = -log10(!!rlang::ensym(type))) %>%
       dplyr::filter(!!rlang::ensym(type) <= threshold)
   }
 
-  # plot
-  enrichment_plot <-
-    {
-      if ("term" %in% colnames(plot_input)) {
-        ggplot2::ggplot(
-          plot_input,
-          ggplot2::aes(stats::reorder(.data$term, .data$neg_log_sig),
-            .data$neg_log_sig,
-            fill = .data$direction
+  if (plot_style == "barplot") {
+    # barplot
+    enrichment_plot <-
+      {
+        if ("term" %in% colnames(plot_input)) {
+          ggplot2::ggplot(
+            plot_input,
+            ggplot2::aes(
+              x = stats::reorder(.data$term, .data$neg_log_sig),
+              y = .data$neg_log_sig,
+              fill = .data$enrichment_type
+            )
           )
-        )
-      } else {
-        ggplot2::ggplot(
-          plot_input,
-          ggplot2::aes(stats::reorder(.data$go_id, .data$neg_log_sig),
-            .data$neg_log_sig,
-            fill = .data$direction
-          )
-        )
-      }
-    } +
-    ggplot2::geom_col(col = "black", size = 1.5) +
-    {
-      if (label == TRUE & nrow(plot_input) > 0) {
-        geom_text(
-          data = plot_input,
-          aes(
-            label = paste0(
-              .data$n_significant_proteins_in_process,
-              "/",
-              .data$n_detected_proteins_in_process,
-              "(",
-              round(.data$n_significant_proteins_in_process / .data$n_detected_proteins_in_process * 100, digits = 1),
-              "%)"
-            ),
-            y = .data$neg_log_sig - 0.1,
-            hjust = 1
-          )
-        )
-      }
-    } +
-    ggplot2::scale_fill_manual(values = c(Down = "#56B4E9", Up = "#E76145")) +
-    ggplot2::scale_y_continuous(breaks = seq(0, 100, 1)) +
-    ggplot2::coord_flip() +
-    {
-      if (!missing(group)) {
-        if (y_axis_free) {
-          ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)), scales = "free_y")
         } else {
-          ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)))
+          ggplot2::ggplot(
+            plot_input,
+            ggplot2::aes(
+              x = stats::reorder(.data$go_id, .data$neg_log_sig),
+              y = .data$neg_log_sig,
+              fill = .data$enrichment_type
+            )
+          )
+        }
+      } +
+      ggplot2::geom_col(col = "black", size = 1) +
+      {
+        if (label == TRUE & nrow(plot_input) > 0) {
+          geom_text(
+            data = plot_input,
+            aes(
+              label = paste0(
+                .data$n_significant_proteins_in_process,
+                "/",
+                .data$n_detected_proteins_in_process,
+                "(",
+                round(.data$n_significant_proteins_in_process / .data$n_detected_proteins_in_process * 100, digits = 1),
+                "%)"
+              ),
+              y = .data$neg_log_sig - 0.1,
+              hjust = 1
+            )
+          )
+        }
+      } +
+      ggplot2::scale_fill_manual(values = c(Deenriched = barplot_fill_colour[1], Enriched = barplot_fill_colour[2])) +
+      ggplot2::scale_y_continuous(breaks = seq(0, 100, 1)) +
+      ggplot2::coord_flip() +
+      {
+        if (!missing(group)) {
+          if (y_axis_free) {
+            ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)), scales = "free_y", ncol = facet_n_col)
+          } else {
+            ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)), ncol = facet_n_col)
+          }
+        }
+      } +
+      {
+        if (!missing(group)) {
+          # if axis were free then the special naming that ensures the right order needs to be removed again
+          scale_x_discrete(labels = function(x) gsub("__.+$", "", x))
+        }
+      } +
+      ggplot2::labs(
+        title = plot_title,
+        y = paste0("-log10 ", type),
+        fill = "Enrichment Type"
+      ) +
+      ggplot2::theme_bw() +
+      ggplot2::theme(
+        plot.title = ggplot2::element_text(size = 20),
+        axis.text.x = ggplot2::element_text(size = 15),
+        axis.text.y = ggplot2::element_text(size = 15),
+        axis.title.x = ggplot2::element_text(size = 15),
+        axis.title.y = ggplot2::element_blank(),
+        legend.title = ggplot2::element_text(size = 15),
+        legend.text = ggplot2::element_text(size = 13),
+        strip.text = ggplot2::element_text(size = 15),
+        strip.background = element_blank()
+      )
+  }
+
+  if (plot_style == "heatmap") {
+    # Check if farver package is available. If not prompt user to install it.
+    if (!requireNamespace("farver", quietly = TRUE)) {
+      message("Package \"farver\" is needed for this function to work. Please install it.", call. = FALSE)
+      return(invisible(NULL))
+    }
+    # Check if scales package is available. If not prompt user to install it.
+    if (!requireNamespace("scales", quietly = TRUE)) {
+      message("Package \"scales\" is needed for this function to work. Please install it.", call. = FALSE)
+      return(invisible(NULL))
+    }
+
+    # Return message warning the use of the use of enrichment_type = "all" in combination with plot_style = "heatmap".
+    if (enrichment_type == "all") message('The plot includes both enriched and deenriched terms, which cannot be visually distinguished.
+                                         We recommend using enrichment_type = "enriched" or "deenriched".')
+
+    # Prepare data for heatmap plot
+    plot_input_heatmap <- plot_input %>%
+      {
+        if (!("term" %in% colnames(plot_input))) dplyr::mutate(., term = .data$go_id) else .
+      } %>%
+      dplyr::group_by(.data$term) %>%
+      dplyr::mutate(n_groups = dplyr::n()) %>%
+      dplyr::ungroup() %>%
+      dplyr::arrange(dplyr::desc(.data$n_groups)) %>%
+      dplyr::arrange(dplyr::desc(.data$neg_log_sig)) %>%
+      dplyr::mutate(term = forcats::fct_rev(forcats::fct_inorder(.data$term))) %>%
+      {
+        if (group_missing) {
+          dplyr::mutate(., grouping = "")
+        } else {
+          dplyr::mutate(., grouping = forcats::fct_inorder({{ group }}))
         }
       }
-    } +
-    {
-      if (!missing(group)) {
-        # if axis were free then the special naming that ensures the right order needs to be removed again
-        scale_x_discrete(labels = function(x) gsub("__.+$", "", x))
-      }
-    } +
-    {
-      if (type == "adj_pval") {
-        ggplot2::labs(
-          title = "Gene ontology enrichment of significant proteins",
-          y = "-log10 adjusted p-value"
+
+    # Setup colour gradient colours
+    if (heatmap_fill_colour_rev) {
+      colours <- rev(heatmap_fill_colour)
+    } else {
+      colours <- heatmap_fill_colour
+    }
+
+    # Make gradient
+    colfunc <- scales::gradient_n_pal(colours, values = c(
+      min(plot_input_heatmap$neg_log_sig),
+      max(plot_input_heatmap$neg_log_sig)
+    ))
+
+    # Add colours to data
+    plot_input_heatmap <- plot_input_heatmap %>%
+      dplyr::mutate(col = colfunc(.data$neg_log_sig))
+
+    # Determine the text colour based on the fill colour for each value
+    hcl <- farver::decode_colour(plot_input_heatmap$col, "rgb", "hcl")
+
+    # Add text colours to data
+    plot_input_heatmap <- plot_input_heatmap %>%
+      dplyr::mutate(text_col = ifelse(hcl[, "l"] > 50, "#000000", "#FFFFFF"))
+
+    # Heatmap Plot
+    enrichment_plot <-
+      ggplot2::ggplot(
+        plot_input_heatmap,
+        ggplot2::aes(
+          x = grouping,
+          y = .data$term,
+          fill = .data$neg_log_sig
         )
-      }
-    } +
-    {
-      if (type == "pval") {
-        ggplot2::labs(
-          title = "Gene ontology enrichment of significant proteins",
-          y = "-log10 p-value"
-        )
-      }
-    } +
-    ggplot2::theme_bw() +
-    ggplot2::theme(
-      plot.title = ggplot2::element_text(size = 20),
-      axis.text.x = ggplot2::element_text(size = 15),
-      axis.text.y = ggplot2::element_text(size = 15),
-      axis.title.x = ggplot2::element_text(size = 15),
-      axis.title.y = ggplot2::element_blank(),
-      strip.text = ggplot2::element_text(size = 15),
-      strip.background = element_blank()
-    )
+      ) +
+      ggplot2::geom_tile() +
+      {
+        if (label == TRUE & nrow(plot_input_heatmap) > 0) {
+          ggplot2::geom_text(
+            data = plot_input_heatmap,
+            aes(
+              y = .data$term,
+              x = .data$grouping,
+              label = ifelse(!is.na(.data$n_significant_proteins_in_process), paste0(
+                .data$n_significant_proteins_in_process, "/",
+                .data$n_detected_proteins_in_process, " (",
+                round(.data$n_significant_proteins_in_process / .data$n_detected_proteins_in_process * 100), "%)"
+              ),
+              NA
+              )
+            ),
+            colour = plot_input_heatmap$text_col
+          )
+        }
+      } +
+      ggplot2::scale_fill_gradientn(colours = colours) +
+      ggplot2::labs(
+        title = plot_title,
+        fill = paste0("-log10 ", type)
+      ) +
+      ggplot2::theme_bw() +
+      ggplot2::theme(
+        plot.title = ggplot2::element_text(size = 20),
+        axis.title.x = ggplot2::element_blank(),
+        axis.text.x = ggplot2::element_text(
+          size = 12,
+          angle = 35,
+          hjust = 1
+        ),
+        axis.ticks = ggplot2::element_line(linewidth = 0.75),
+        axis.title.y = ggplot2::element_blank(),
+        axis.text.y = ggplot2::element_text(size = 13),
+        legend.title = ggplot2::element_text(size = 12),
+        legend.text = ggplot2::element_text(size = 11),
+        legend.key.size = unit(1.5, "lines"),
+        panel.grid.major = ggplot2::element_blank(),
+        panel.grid.minor = ggplot2::element_blank(),
+        panel.border = ggplot2::element_rect(linewidth = 0.75)
+      )
+  }
 
   return(enrichment_plot)
 }
