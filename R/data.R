@@ -11,8 +11,16 @@
 #' A colour scheme by the viridis colour scheme from the viridis R package.
 #'
 #' @format A vector containing 256 colours
-#' @source viridis R package
+#' @source viridis R package, created by Stéfan van der Walt (stefanv) and Nathaniel Smith (njsmith)
 "viridis_colours"
+
+#' Viridis colour scheme
+#'
+#' A perceptually uniform colour scheme originally created for the Seaborn python package.
+#'
+#' @format A vector containing 256 colours
+#' @source created for the Seaborn statistical data visualization package for Python
+"mako_colours"
 
 #' Rapamycin 10 uM example data
 #'
