@@ -115,10 +115,12 @@ type first followed by the threshold separated by a space. Example are
 \code{"adj_pval top10"}.}
 }
 \value{
-A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or
-depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individually with the
-\code{plot_cutoff} argument. Bars are colored according to the direction of the enrichment (enriched
-or deenriched). If \code{plot = FALSE}, a data frame is returned. P-values are adjusted with
+A bar plot or heatmap (depending on \code{plot_style}). By default the bar plot displays negative log10
+adjusted p-values for the top 10 enriched or deenriched gene ontology terms. Alternatively, plot cutoffs
+can be chosen individually with the \code{plot_cutoff} argument. Bars are colored according to the direction
+of the enrichment (enriched or deenriched). If a heatmap is returned, terms are organised on the y-axis, while
+the colour of each tile represents the negative log10 adjusted p-value (default). If a \code{group} column
+is provided the x-axis contains all groups. If \code{plot = FALSE}, a data frame is returned. P-values are adjusted with
 Benjamini-Hochberg.
 }
 \description{

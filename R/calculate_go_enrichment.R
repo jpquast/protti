@@ -96,10 +96,12 @@ go_enrichment <- function(...) {
 #' `plot_cutoff = "adj_pval 0.01"`. The threshold can be chosen freely. The default value is
 #' `"adj_pval top10"`.
 #'
-#' @return A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or
-#' depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individually with the
-#' `plot_cutoff` argument. Bars are colored according to the direction of the enrichment (enriched
-#' or deenriched). If `plot = FALSE`, a data frame is returned. P-values are adjusted with
+#' @return A bar plot or heatmap (depending on `plot_style`). By default the bar plot displays negative log10
+#' adjusted p-values for the top 10 enriched or deenriched gene ontology terms. Alternatively, plot cutoffs
+#' can be chosen individually with the `plot_cutoff` argument. Bars are colored according to the direction
+#' of the enrichment (enriched or deenriched). If a heatmap is returned, terms are organised on the y-axis, while
+#' the colour of each tile represents the negative log10 adjusted p-value (default). If a `group` column
+#' is provided the x-axis contains all groups. If `plot = FALSE`, a data frame is returned. P-values are adjusted with
 #' Benjamini-Hochberg.
 #'
 #' @import dplyr
