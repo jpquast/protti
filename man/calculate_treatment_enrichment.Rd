@@ -52,7 +52,7 @@ if the group argument is provided. Default is \code{FALSE}.}
 a \code{group} column was provided.}
 }
 \value{
-A bar plot displaying the percentage of all detect proteins and all significant proteins
+A bar plot displaying the percentage of all detected proteins and all significant proteins
 that bind to the treatment. A Fisher's exact test is performed to calculate the significance of
 the enrichment in significant proteins compared to all proteins. The result is reported as a
 p-value. If \code{plot = FALSE} a contingency table in long format is returned.
@@ -89,7 +89,7 @@ calculate_treatment_enrichment(
   protein_id = protein_id,
   is_significant = significant,
   binds_treatment = binds_treatment,
-  treatment = "Rapamycin",
+  treatment_name = "Rapamycin",
   plot = TRUE
 )
 
@@ -100,7 +100,7 @@ calculate_treatment_enrichment(
   group = group,
   is_significant = significant,
   binds_treatment = binds_treatment,
-  treatment = "Rapamycin",
+  treatment_name = "Rapamycin",
   plot = TRUE,
   fill_by_group = TRUE
 )

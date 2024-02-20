@@ -48,7 +48,7 @@ treatment_enrichment <- function(...) {
 #' @param facet_n_col a numeric value that specifies the number of columns the facet plot should have if
 #' a `group` column was provided.
 #'
-#' @return A bar plot displaying the percentage of all detect proteins and all significant proteins
+#' @return A bar plot displaying the percentage of all detected proteins and all significant proteins
 #' that bind to the treatment. A Fisher's exact test is performed to calculate the significance of
 #' the enrichment in significant proteins compared to all proteins. The result is reported as a
 #' p-value. If \code{plot = FALSE} a contingency table in long format is returned.
@@ -90,7 +90,7 @@ treatment_enrichment <- function(...) {
 #'   protein_id = protein_id,
 #'   is_significant = significant,
 #'   binds_treatment = binds_treatment,
-#'   treatment = "Rapamycin",
+#'   treatment_name = "Rapamycin",
 #'   plot = TRUE
 #' )
 #'
@@ -101,7 +101,7 @@ treatment_enrichment <- function(...) {
 #'   group = group,
 #'   is_significant = significant,
 #'   binds_treatment = binds_treatment,
-#'   treatment = "Rapamycin",
+#'   treatment_name = "Rapamycin",
 #'   plot = TRUE,
 #'   fill_by_group = TRUE
 #' )
