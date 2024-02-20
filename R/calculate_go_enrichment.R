@@ -465,6 +465,12 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
   }
 
   if (plot_style == "barplot") {
+    # Check if ggforce package is available. If not prompt user to install it.
+    if (!requireNamespace("ggforce", quietly = TRUE)) {
+      message("Package \"ggforce\" is needed for this function to work. Please install it.", call. = FALSE)
+      return(invisible(NULL))
+    }
+
     # barplot
     enrichment_plot <-
       {
@@ -514,7 +520,11 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       {
         if (!missing(group)) {
           if (y_axis_free) {
-            ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)), scales = "free_y", ncol = facet_n_col)
+            if(facet_n_col == 1){
+              ggforce::facet_col(rlang::new_formula(NULL, rlang::enquo(group)), scales = "free_y", space = "free")
+            } else {
+              ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)), scales = "free_y", ncol = facet_n_col)
+            }
           } else {
             ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)), ncol = facet_n_col)
           }
