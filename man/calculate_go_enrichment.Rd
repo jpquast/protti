@@ -99,14 +99,14 @@ determines if the enrichment analysis should be performed in order to check for 
 deenrichemnt or only one of the two. This affects the statistics performed and therefore also the displayed
 plot.}
 
-\item{min_n_detected_proteins_in_process}{is a numeric argument that specifies the minimal number
-of detected proteins a GO term needs to have to be displayed in the plot. The default is 1, meaning
+\item{min_n_detected_proteins_in_process}{is a numeric argument that specifies the minimum number of
+detected proteins required for a GO term to be displayed in the plot. The default is 1, meaning
 no filtering of the plotted data is performed. This argument does not affect any computations or
 the returned data if \code{plot = FALSE}. This argument is useful in order to remove terms that were only
 detected in for example 1 protein. Even though these terms are sometimes significant, they are not
 really relevant.}
 
-\item{plot_cutoff}{a character value indicating if the plot should contain the top 10 most
+\item{plot_cutoff}{a character value indicating if the plot should contain the top n (e.g. top10) most
 significant proteins (p-value or adjusted p-value), or if a significance cutoff should be used
 to determine the number of GO terms in the plot. This information should be provided with the
 type first followed by the threshold separated by a space. Example are

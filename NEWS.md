@@ -11,6 +11,7 @@
   * `plot_style`: We added a new plot type to the function. The standard plot is still the default and is called "barplot", while the new plot type is "heatmap". The heatmap plot is especially useful for comparing GO enrichments of multiple groups.
   * `heatmap_fill_colour`: specifies the colours used for the colour gradient of heatmap plots.
   * `heatmap_fill_colour_rev`: a logical value that specifies if the colour gradient should be reversed.
+  * `plot_cutoff`: is now more flexible. You can provide any number with the "top" cutoff. E.g. "top10", "top5".
 * Added `mako_colours` to the package that contain 256 colours of the "mako" colour gradient.
 
 ## Bug fixes

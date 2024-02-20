@@ -82,13 +82,13 @@ go_enrichment <- function(...) {
 #' determines if the enrichment analysis should be performed in order to check for both enrichemnt and
 #' deenrichemnt or only one of the two. This affects the statistics performed and therefore also the displayed
 #' plot.
-#' @param min_n_detected_proteins_in_process is a numeric argument that specifies the minimal number
-#' of detected proteins a GO term needs to have to be displayed in the plot. The default is 1, meaning
+#' @param min_n_detected_proteins_in_process is a numeric argument that specifies the minimum number of
+#' detected proteins required for a GO term to be displayed in the plot. The default is 1, meaning
 #' no filtering of the plotted data is performed. This argument does not affect any computations or
 #' the returned data if `plot = FALSE`. This argument is useful in order to remove terms that were only
 #' detected in for example 1 protein. Even though these terms are sometimes significant, they are not
 #' really relevant.
-#' @param plot_cutoff a character value indicating if the plot should contain the top 10 most
+#' @param plot_cutoff a character value indicating if the plot should contain the top n (e.g. top10) most
 #' significant proteins (p-value or adjusted p-value), or if a significance cutoff should be used
 #' to determine the number of GO terms in the plot. This information should be provided with the
 #' type first followed by the threshold separated by a space. Example are
@@ -104,7 +104,7 @@ go_enrichment <- function(...) {
 #'
 #' @import dplyr
 #' @import ggplot2
-#' @importFrom stringr str_replace str_split str_detect
+#' @importFrom stringr str_replace str_split str_detect str_extract
 #' @importFrom tidyr drop_na
 #' @importFrom rlang .data !! ensym
 #' @importFrom magrittr %>%
@@ -234,6 +234,12 @@ calculate_go_enrichment <- function(data,
   if (!(plot_style %in% c("barplot", "heatmap"))) stop("Invalid plot_style. Available styles: barplot, heatmap")
 
   if(length(barplot_fill_colour) < 2) stop('Please provide at least two colours to "barplot_fill_colour"!')
+
+  if (!stringr::str_detect(plot_cutoff, pattern = "^(pval|adj_pval) (top\\d+|\\d+(\\.\\d+)?)$")) {
+    stop("Invalid format for plot_cutoff. Please provide the type (pval or adj_pval) followed by
+         e.g. 'top10' or a numeric threshold within the range (0, 1]. Valid formats are for instance:
+         'adj_pval top5', 'pval 0.05'")
+  }
 
   if (length(unique(dplyr::pull(data, {{ protein_id }}))) != nrow(data)) {
     data <- data %>%
@@ -438,13 +444,14 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
   }
 
   # add cutoff for plot
-  if (stringr::str_detect(plot_cutoff, pattern = "top10")) {
+  if (stringr::str_detect(plot_cutoff, pattern = "top")) {
     split_cutoff <- stringr::str_split(plot_cutoff, pattern = " ", simplify = TRUE)
     type <- split_cutoff[1]
+    top <- stringr::str_extract(split_cutoff[2], pattern = "\\d+")
     plot_input <- filtered_result_table %>%
       dplyr::ungroup() %>%
       dplyr::mutate(neg_log_sig = -log10(!!rlang::ensym(type))) %>%
-      dplyr::slice(1:10)
+      dplyr::slice(1:top)
   } else {
     split_cutoff <- stringr::str_split(plot_cutoff, pattern = " ", simplify = TRUE)
     type <- split_cutoff[1]
