@@ -1,41 +1,49 @@
 #' Fitting four-parameter dose response curves
 #'
 #' Function for fitting four-parameter dose response curves for each group (precursor, peptide or
-#' protein). In addition it can filter data based on completeness, the completeness distribution
-#' and statistical testing using ANOVA.
+#' protein). In addition it can annotate data based on completeness, the completeness distribution
+#' and statistical testing using ANOVA. Filtering by the function is only performed based on completeness
+#' if selected.
 #'
-#' @details If data filtering options are selected, data is filtered based on multiple criteria.
-#' In general, curves are only fitted if there are at least 5 conditions with data points present
-#' to ensure that there is potential for a good curve fit. Therefore, this is also the case if no
-#' filtering option is selected. Furthermore, a completeness cutoff is defined for filtering. By
-#' default each entity (e.g. precursor) is filtered to contain at least 70% of total replicates
-#' (adjusted downward) for at least 50% of all conditions (adjusted downward). This can be adjusted
-#' with the according arguments. In addition to the completeness cutoff, also a significance cutoff
-#' is applied. ANOVA is used to compute the statistical significance of the change for each entity.
-#' The resulting p-value is adjusted using the Benjamini-Hochberg method and a cutoff of q <= 0.05
-#' is applied. Curve fits that have a minimal value that is higher than the maximal value are
-#' excluded as they were likely wrongly fitted. Curves with a correlation below 0.8 are not passing
-#' the filtering. If a fit does not fulfill the significance or completeness cutoff, it has a chance
-#' to still be considered if half of its values (+/-1 value) pass the replicate completeness
-#' criteria and half do not pass it. In order to fall into this category, the values that fulfill t
-#' he completeness cutoff and the ones that do not fulfill it need to be consecutive, meaning
-#' located next to each other based on their concentration values. Furthermore, the values that
-#' do not pass the completeness cutoff need to be lower in intensity. Lastly, the difference
+#' @details If data filtering options are selected, data is annotated based on multiple criteria.
+#' If `"post"` is selected the data is annotated based on completeness, the completeness distribution, the
+#' adjusted ANOVA p-value cutoff and a correlation cutoff. Completeness of features is determined based on
+#' the `replicate_completeness` and `condition_completeness` arguments. The completeness distribution determines
+#' if there is a distribution of not random missingness of data along the dose. For this it is checked if half of a
+#' features values (+/-1 value) pass the replicate completeness criteria and half do not pass it. In order to fall into
+#' this category, the values that fulfill the completeness cutoff and the ones that do not fulfill it
+#' need to be consecutive, meaning located next to each other based on their concentration values. Furthermore,
+#' the values that do not pass the completeness cutoff need to be lower in intensity. Lastly, the difference
 #' between the two groups is tested for statistical significance using a Welch's t-test and a
-#' cutoff of p <= 0.1 (we want to mainly discard curves that falsly fit the other criteria but that
+#' cutoff of p <= 0.1 (we want to mainly discard curves that falsely fit the other criteria but that
 #' have clearly non-significant differences in mean). This allows curves to be considered that have
 #' missing values in half of their observations due to a decrease in intensity. It can be thought
 #' of as conditions that are missing not at random (MNAR). It is often the case that those entities
 #' do not have a significant p-value since half of their conditions are not considered due to data
-#' missingness.
+#' missingness. The ANOVA test is performed on the features by concentration. If it is significant it is
+#' likely that there is some response. However, this test would also be significant even if there is one
+#' outlier concentration so it should only be used only in combination with other cutoffs to determine
+#' if a feature is significant. The `passed_filter` column is `TRUE` for all the
+#' features that pass the above mentioned criteria and that have a correlation greater than the cutoff
+#' (default is 0.8) and the adjusted ANOVA p-value below the cutoff (default is 0.05).
 #'
-#' The final filtered list is ranked based on a score calculated on entities that pass the filter.
+#' The final list is ranked based on a score calculated on entities that pass the filter.
 #' The score is the negative log10 of the adjusted ANOVA p-value scaled between 0 and 1 and the
 #' correlation scaled between 0 and 1 summed up and divided by 2. Thus, the highest score an
 #' entity can have is 1 with both the highest correlation and adjusted p-value. The rank is
 #' corresponding to this score. Please note, that entities with MNAR conditions might have a
-#' lower score due to the missing or non-significant ANOVA p-value. You should have a look at
-#' curves that are TRUE for \code{dose_MNAR} in more detail.
+#' lower score due to the missing or non-significant ANOVA p-value. If no score could be calculated
+#' the usual way these cases receive a score of 0. You should have a look at curves that are TRUE
+#' for \code{dose_MNAR} in more detail.
+#'
+#' If the `"pre"` option is selected for the `filter` argument then the data is filtered for completeness
+#' prior to curve fitting and the ANOVA test. Otherwise annotation is performed exactly as mentioned above.
+#' We recommend the `"pre"` option because it leaves you with not only the likely hits of your treatment, but
+#' also with rather high confidence true negative results. This is because the filtered data has a high
+#' degree of completeness making it unlikely that a real dose-response curve is missed due to data missingness.
+#'
+#' Please note that in general, curves are only fitted if there are at least 5 conditions with data points present
+#' to ensure that there is potential for a good curve fit. This is done independent of the selected filtering option.
 #'
 #' @param data a data frame that contains at least the input variables.
 #' @param sample  a character column in the \code{data} data frame that contains the sample names.
@@ -45,17 +53,15 @@
 #' values, e.g. log2 transformed intensities.
 #' @param dose  a numeric column in the \code{data} data frame that contains the dose values, e.g.
 #' the treatment concentrations.
-#' @param filter a character value that determines if models should be filtered and if they should
-#' be filtered before or after the curve fits. Filtering of models can be skipped with
-#' \code{filter = "none"}. Data can be filtered prior to model fitting with \code{filter = "pre"}.
-#' In that case models will only be fitted for data that passed the filtering step. This will
-#' allow for faster model fitting since only fewer models will be fit. If you plan on performing
-#' an enrichment analysis you have to choose \code{filter = "post"}. All models will be fit (even
-#' the ones that do not pass the filtering criteria). For enrichment analysis you should use both
-#' good (i.e. models that pass the filtering) and bad (i.e. models that do not pass the filtering)
-#' models. Therefore, for post-filtering the full list is returned and it will only contain
-#' annotations that indicate (\code{passed_filter}) if the filtering was passed or not. Default is
-#' "post". For ANOVA an adjusted p-value of 0.05 is used as a cutoff.
+#' @param filter a character value that can either be `"pre"`, `"post"` or `"none"`. The data is
+#' annotated for completeness, ANOVA significance and the completeness distribution along
+#' the doses (`"pre"` and `"post"`). The combined output of this filtering step can be found in
+#' the `passed_filter` column and depends on the cutoffs provided to the function. Note that this
+#' is only an annotation and nothing is removed from the output. If `"pre"` is selected then, in
+#' addition to the annotation, the data is filtered for completeness based on the condition completeness
+#' prior to the curve fitting and ANOVA calculation and p-value adjustment. This has the benefit that less
+#' curves need to be fitted and that the ANOVA p-value adjustment is done only on the relevant set of tests.
+#' If `"none"` is selected the data will be neither annotated nor filtered.
 #' @param replicate_completeness a numeric value which similar to \code{completenss_MAR} of the
 #' \code{assign_missingness} function sets a threshold for the completeness of data. In contrast
 #' to \code{assign_missingness} it only determines the completeness for one condition and not the
@@ -70,8 +76,11 @@
 #' the number of conditions and then adjusted downward. The resulting number is the minimal number
 #' of conditions that need to fulfill the \code{replicate_completeness} argument for a peptide to
 #' pass the filtering.
-#' @param correlation_cutoff a numeric vector that specifies the correlation cutoff used for data
-#' filtering.
+#' @param anova_cutoff a numeric value that specifies the ANOVA adjusted p-value cutoff used for
+#' data filtering. Any fits with an adjusted ANOVA p-value bellow the cutoff will be considered
+#' for scoring.
+#' @param correlation_cutoff a numeric value that specifies the correlation cutoff used for data
+#' filtering. Any fits with a correlation above the cutoff will be considered for scoring.
 #' @param log_logarithmic a logical value that indicates if a logarithmic or log-logarithmic model
 #' is fitted. If response values form a symmetric curve for non-log transformed dose values, a
 #' logarithmic model instead of a log-logarithmic model should be used. Usually biological dose
@@ -143,6 +152,7 @@ fit_drc_4p <- function(data,
                        filter = "post",
                        replicate_completeness = 0.7,
                        condition_completeness = 0.5,
+                       anova_cutoff = 0.05,
                        correlation_cutoff = 0.8,
                        log_logarithmic = TRUE,
                        include_models = FALSE,
@@ -173,27 +183,6 @@ fit_drc_4p <- function(data,
     n_replicates_completeness <- floor(replicate_completeness * n_replicates)
     n_conditions_completeness <- floor(condition_completeness * n_conditions)
 
-    # perform anova on groups
-    anova <- data_prep %>%
-      dplyr::group_by({{ grouping }}, {{ dose }}) %>%
-      dplyr::mutate(
-        n = n_replicates,
-        mean_ratio = mean({{ response }}, na.rm = TRUE),
-        sd = sd({{ response }}, na.rm = TRUE)
-      ) %>%
-      dplyr::distinct({{ grouping }}, {{ dose }}, .data$mean_ratio, .data$sd, .data$n) %>%
-      tidyr::drop_na("mean_ratio", "sd") %>%
-      anova_protti({{ grouping }}, {{ dose }}, .data$mean_ratio, .data$sd, .data$n) %>%
-      dplyr::distinct({{ grouping }}, .data$pval) %>%
-      tidyr::drop_na("pval") %>% # remove NA pvalues before adjustment!
-      dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
-      dplyr::rename(anova_pval = "pval")
-
-    # extract elements that pass anova significant threshold
-    anova_filtered <- anova %>%
-      dplyr::filter(.data$anova_adj_pval <= 0.05) %>%
-      dplyr::pull({{ grouping }})
-
     # filter for data completeness based on replicates and conditions
     # and based on the distribution of condition missingness
     up <- ceiling(n_conditions * 0.5)
@@ -211,12 +200,11 @@ fit_drc_4p <- function(data,
     filter_completeness <- data_prep %>%
       dplyr::group_by({{ grouping }}, {{ dose }}) %>%
       dplyr::mutate(enough_replicates = sum(!is.na({{ response }}))
-      >= n_replicates_completeness) %>%
+                    >= n_replicates_completeness) %>%
       dplyr::group_by({{ grouping }}) %>%
       dplyr::mutate(enough_conditions = sum(.data$enough_replicates) /
-        n_replicates
-      >= n_conditions_completeness) %>%
-      dplyr::mutate(anova_significant = {{ grouping }} %in% anova_filtered) %>%
+                      n_replicates
+                    >= n_conditions_completeness) %>%
       dplyr::mutate(
         lower_vector = {{ dose }} %in% concentrations[1:vector[1]],
         lower_vector_rev = {{ dose }} %in% concentrations[1:vector_rev[1]],
@@ -283,37 +271,37 @@ fit_drc_4p <- function(data,
       dplyr::ungroup() %>%
       dplyr::mutate(
         pval_vector = ifelse(is.na(.data$pval_vector),
-          TRUE,
-          .data$pval_vector
+                             TRUE,
+                             .data$pval_vector
         ),
         pval_vector_rev = ifelse(is.na(.data$pval_vector_rev),
-          TRUE,
-          .data$pval_vector_rev
+                                 TRUE,
+                                 .data$pval_vector_rev
         ),
         pval_vector_add = ifelse(is.na(.data$pval_vector_add),
-          TRUE,
-          .data$pval_vector_add
+                                 TRUE,
+                                 .data$pval_vector_add
         ),
         pval_vector_add_rev = ifelse(is.na(.data$pval_vector_add_rev),
-          TRUE,
-          .data$pval_vector_add_rev
+                                     TRUE,
+                                     .data$pval_vector_add_rev
         )
       ) %>%
       dplyr::mutate(mean_vector = ifelse(is.na(.data$mean_vector),
-        0,
-        .data$mean_vector
+                                         0,
+                                         .data$mean_vector
       )) %>%
       dplyr::mutate(mean_vector_rev = ifelse(is.na(.data$mean_vector_rev),
-        0,
-        .data$mean_vector_rev
+                                             0,
+                                             .data$mean_vector_rev
       )) %>%
       dplyr::mutate(mean_vector_add = ifelse(is.na(.data$mean_vector_add),
-        0,
-        .data$mean_vector_add
+                                             0,
+                                             .data$mean_vector_add
       )) %>%
       dplyr::mutate(mean_vector_add_rev = ifelse(is.na(.data$mean_vector_add_rev),
-        0,
-        .data$mean_vector_add_rev
+                                                 0,
+                                                 .data$mean_vector_add_rev
       )) %>%
       dplyr::group_by({{ grouping }}) %>%
       dplyr::mutate(mean_vector = min(.data$mean_vector) == .data$mean_vector) %>%
@@ -321,53 +309,79 @@ fit_drc_4p <- function(data,
       dplyr::mutate(mean_vector_add = min(.data$mean_vector_add) == .data$mean_vector_add) %>%
       dplyr::mutate(mean_vector_add_rev = min(.data$mean_vector_add_rev) == .data$mean_vector_add_rev) %>%
       dplyr::mutate(dose_MNAR = ifelse((all((.data$lower_vector & .data$enough_replicates == FALSE & .data$mean_vector) |
-        (!.data$lower_vector & .data$enough_replicates == TRUE & !.data$mean_vector)) &
-        .data$pval_vector) |
-        (all((.data$lower_vector & .data$enough_replicates == TRUE & !.data$mean_vector) |
-          (!.data$lower_vector & .data$enough_replicates == FALSE & .data$mean_vector)) &
-          .data$pval_vector) |
-        (all((.data$lower_vector_rev & .data$enough_replicates == FALSE & .data$mean_vector_rev) |
-          (!.data$lower_vector_rev & .data$enough_replicates == TRUE & !.data$mean_vector_rev)) &
-          .data$pval_vector_rev) |
-        (all((.data$lower_vector_rev & .data$enough_replicates == TRUE & !.data$mean_vector_rev) |
-          (!.data$lower_vector_rev & .data$enough_replicates == FALSE & .data$mean_vector_rev)) &
-          .data$pval_vector_rev) |
-        (all((.data$lower_vector_add & .data$enough_replicates == FALSE & .data$mean_vector_add) |
-          (!.data$lower_vector_add & .data$enough_replicates == TRUE & !.data$mean_vector_add)) &
-          .data$pval_vector_add) |
-        (all((.data$lower_vector_add & .data$enough_replicates == TRUE & !.data$mean_vector_add) |
-          (!.data$lower_vector_add & .data$enough_replicates == FALSE & .data$mean_vector_add)) &
-          .data$pval_vector_add) |
-        (all((.data$lower_vector_add_rev & .data$enough_replicates == FALSE & .data$mean_vector_add_rev) |
-          (!.data$lower_vector_add_rev & .data$enough_replicates == TRUE & !.data$mean_vector_add_rev)) &
-          .data$pval_vector_add_rev) |
-        (all((.data$lower_vector_add_rev & .data$enough_replicates == TRUE & !.data$mean_vector_add_rev) |
-          (!.data$lower_vector_add_rev & .data$enough_replicates == FALSE & .data$mean_vector_add_rev)) &
-          .data$pval_vector_add_rev),
-      TRUE,
-      FALSE
+                                              (!.data$lower_vector & .data$enough_replicates == TRUE & !.data$mean_vector)) &
+                                          .data$pval_vector) |
+                                         (all((.data$lower_vector & .data$enough_replicates == TRUE & !.data$mean_vector) |
+                                                (!.data$lower_vector & .data$enough_replicates == FALSE & .data$mean_vector)) &
+                                            .data$pval_vector) |
+                                         (all((.data$lower_vector_rev & .data$enough_replicates == FALSE & .data$mean_vector_rev) |
+                                                (!.data$lower_vector_rev & .data$enough_replicates == TRUE & !.data$mean_vector_rev)) &
+                                            .data$pval_vector_rev) |
+                                         (all((.data$lower_vector_rev & .data$enough_replicates == TRUE & !.data$mean_vector_rev) |
+                                                (!.data$lower_vector_rev & .data$enough_replicates == FALSE & .data$mean_vector_rev)) &
+                                            .data$pval_vector_rev) |
+                                         (all((.data$lower_vector_add & .data$enough_replicates == FALSE & .data$mean_vector_add) |
+                                                (!.data$lower_vector_add & .data$enough_replicates == TRUE & !.data$mean_vector_add)) &
+                                            .data$pval_vector_add) |
+                                         (all((.data$lower_vector_add & .data$enough_replicates == TRUE & !.data$mean_vector_add) |
+                                                (!.data$lower_vector_add & .data$enough_replicates == FALSE & .data$mean_vector_add)) &
+                                            .data$pval_vector_add) |
+                                         (all((.data$lower_vector_add_rev & .data$enough_replicates == FALSE & .data$mean_vector_add_rev) |
+                                                (!.data$lower_vector_add_rev & .data$enough_replicates == TRUE & !.data$mean_vector_add_rev)) &
+                                            .data$pval_vector_add_rev) |
+                                         (all((.data$lower_vector_add_rev & .data$enough_replicates == TRUE & !.data$mean_vector_add_rev) |
+                                                (!.data$lower_vector_add_rev & .data$enough_replicates == FALSE & .data$mean_vector_add_rev)) &
+                                            .data$pval_vector_add_rev),
+                                       TRUE,
+                                       FALSE
       )) %>%
-      dplyr::distinct({{ grouping }}, .data$enough_conditions, .data$anova_significant, .data$dose_MNAR) %>%
-      dplyr::mutate(passed_filter = (.data$enough_conditions == TRUE & .data$anova_significant == TRUE) |
-        .data$dose_MNAR == TRUE)
+      dplyr::distinct({{ grouping }}, .data$enough_conditions, .data$dose_MNAR)
 
     if (filter == "pre") {
       filtered_vector <- filter_completeness %>%
-        dplyr::filter(.data$passed_filter == TRUE) %>%
+        dplyr::filter(.data$enough_conditions | .data$dose_MNAR) %>%
         dplyr::pull({{ grouping }})
 
       data_prep <- data_prep %>%
         filter({{ grouping }} %in% filtered_vector)
     }
+
+    # perform anova on groups
+    anova <- data_prep %>%
+      dplyr::group_by({{ grouping }}, {{ dose }}) %>%
+      dplyr::mutate(
+        n = n_replicates,
+        mean_ratio = mean({{ response }}, na.rm = TRUE),
+        sd = sd({{ response }}, na.rm = TRUE)
+      ) %>%
+      dplyr::distinct({{ grouping }}, {{ dose }}, .data$mean_ratio, .data$sd, .data$n) %>%
+      tidyr::drop_na("mean_ratio", "sd") %>%
+      anova_protti({{ grouping }}, {{ dose }}, .data$mean_ratio, .data$sd, .data$n) %>%
+      dplyr::distinct({{ grouping }}, .data$pval) %>%
+      tidyr::drop_na("pval") %>% # remove NA pvalues before adjustment!
+      dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$pval, method = "BH")) %>%
+      dplyr::rename(anova_pval = "pval")
+
+    # extract elements that pass anova significant threshold
+    anova_filtered <- anova %>%
+      dplyr::filter(.data$anova_adj_pval <= anova_cutoff) %>%
+      dplyr::pull({{ grouping }})
+
+    filter_completeness <- filter_completeness %>%
+      dplyr::mutate(anova_significant = {{ grouping }} %in% anova_filtered) %>%
+      dplyr::mutate(passed_filter = (.data$enough_conditions == TRUE & .data$anova_significant == TRUE) |
+                      .data$dose_MNAR == TRUE)
   }
   # prepare data
 
-  input <- data_prep %>%
+  input_prep <- data_prep %>%
     tidyr::drop_na({{ response }}) %>%
     dplyr::group_by({{ grouping }}) %>%
     dplyr::mutate(n_concentrations = dplyr::n_distinct(!!ensym(dose))) %>%
     dplyr::ungroup() %>%
-    split(dplyr::pull(., !!ensym(grouping))) %>%
+    split(dplyr::pull(., !!ensym(grouping)))
+
+  input <- input_prep %>%
     # make sure that there are enough data points to even fit a curve. This is not really filtering.
     purrr::keep(.p = ~ unique(.x$n_concentrations) > 4)
 
@@ -512,7 +526,7 @@ fit_drc_4p <- function(data,
       .f = ~ dplyr::mutate(.x, {{ grouping }} := .y)
     )
 
-  plot_points <- input[unique(dplyr::pull(line_fit, {{ grouping }}))] %>%
+  plot_points <- input_prep %>%
     purrr::map2_df(
       .y = names(.),
       .f = ~ dplyr::mutate(.x, {{ grouping }} := .y) %>%
@@ -521,7 +535,11 @@ fit_drc_4p <- function(data,
 
   # combining correlations with information for plot
 
+  no_fits <- as.data.frame(names(input_prep)[!names(input_prep) %in% pull(correlation_output, {{ grouping }})])
+  colnames(no_fits) <- rlang::as_name(rlang::enquo(grouping))
+
   output <- correlation_output %>%
+    bind_rows(no_fits) %>%
     dplyr::left_join(line_fit, by = rlang::as_name(rlang::enquo(grouping))) %>%
     dplyr::group_by({{ grouping }}) %>%
     tidyr::nest(plot_curve = c("dose", "Prediction", "Lower", "Upper")) %>%
@@ -541,22 +559,18 @@ fit_drc_4p <- function(data,
     output <- output %>%
       dplyr::left_join(filter_completeness, by = rlang::as_name(rlang::enquo(grouping))) %>%
       dplyr::left_join(anova, by = rlang::as_name(rlang::enquo(grouping))) %>%
-      dplyr::mutate(passed_filter = .data$passed_filter &
+      dplyr::mutate(passed_filter = (.data$passed_filter &
         .data$correlation >= correlation_cutoff &
-        .data$min_model < .data$max_model) %>%
+        .data$min_model < .data$max_model) |
+          .data$dose_MNAR) %>%
       dplyr::group_by(.data$passed_filter) %>%
-      dplyr::mutate(score = ifelse(.data$passed_filter,
+      dplyr::mutate(score = ifelse(.data$passed_filter & !.data$dose_MNAR,
         (scale_protti(-log10(.data$anova_pval), method = "01") + scale_protti(.data$correlation, method = "01")) / 2,
         NA
       )) %>%
-      dplyr::ungroup()
+      dplyr::ungroup() %>%
+      dplyr::mutate(score = ifelse(is.na(.data$score) & .data$passed_filter == TRUE, 0, .data$score))
   }
-
-  if (filter == "pre") {
-    output <- output %>%
-      filter(.data$passed_filter)
-  }
-  # return result
 
   if (!missing(retain_columns)) {
     output <- data %>%

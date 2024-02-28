@@ -17,6 +17,10 @@
   * `heatmap_fill_colour_rev`: a logical value that specifies if the colour gradient should be reversed.
   * `plot_cutoff`: is now more flexible. You can provide any number with the "top" cutoff. E.g. "top10", "top5".
 * Added `mako_colours` to the package that contain 256 colours of the "mako" colour gradient.
+* `fit_drc_4p()` and `parallel_fit_drc_4p()` have been reworked and you will now likely have a different output than in previous versions of *protti*. We added a new argument (`anova_cutoff`) that lets you define the ANOVA adjusted p-value cutoff (default 0.05). In addition, curves that were previously annotated in the `dose_MNAR` column are now part of the hits. To get back to the old output you can just exclude them again from the ranked results. The major change is that now all provided features (e.g. peptides) are also part of the output no matter if a curve was fit or not. To get back to the original output you can remove all features without a fit, but please note that statistics such as the ANOVA p-value adjustment were computed on the complete dataset and might need to be readjusted by running the p-value adjustment again. Another major change to the function was the way the `filter` argument works. This argument controls if significance statistics should be annotated in the data. 
+  * `"pre"`: This prevously filtered curves by the completeness as well as the ANOVA adjusted p-value prior to fitting curves. Now it only filters by completeness. This also allows it to be an option for the `parallel_fit_drc_4p()` function. 
+  * `"post"`: Is still the default value and still just annotates the data without any filtering.
+  * In general we would now recommend using `"pre"` to remove usually not trustworthy features with too few complete concentrations from the data before p-value adjustment and curve fittings. This will solidify your confidence that features without a dose-response behavior are true negative. The point is that it is better to not include any features with too few values because they are potentially false negative.
 
 ## Bug fixes
 
