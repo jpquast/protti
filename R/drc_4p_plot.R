@@ -134,10 +134,10 @@ drc_4p_plot <- function(data,
       round(.data$ec_50),
       ")"
     )) %>%
+    dplyr::mutate(correlation = ifelse(is.na(.data$correlation), 0, .data$correlation)) %>%
     dplyr::mutate(name = forcats::fct_reorder(.data$name, dplyr::desc(.data$correlation))) %>%
     dplyr::mutate(
-      group_number = 1,
-      group_number = ceiling(cumsum(.data$group_number) / 20)
+      group_number = ceiling(1:dplyr::n() / 20)
     ) # we do this in preparation for faceting later.
 
   input_points <- data %>%
@@ -164,25 +164,33 @@ drc_4p_plot <- function(data,
         )
       ) +
         ggplot2::geom_point(size = 2, col = "#5680C1") +
-        ggplot2::geom_ribbon(
-          data = input_curve_plot,
-          ggplot2::aes(
-            x = .data$dose,
-            y = .data$Prediction,
-            ymin = .data$Lower,
-            ymax = .data$Upper
-          ),
-          alpha = 0.2,
-          fill = "#B96DAD"
-        ) +
-        ggplot2::geom_line(
-          data = input_curve_plot,
-          ggplot2::aes(
-            x = .data$dose,
-            y = .data$Prediction
-          ),
-          size = 1.2
-        ) +
+        {
+          if(nrow(input_curve_plot) != 1) {
+            ggplot2::geom_ribbon(
+              data = input_curve_plot,
+              ggplot2::aes(
+                x = .data$dose,
+                y = .data$Prediction,
+                ymin = .data$Lower,
+                ymax = .data$Upper
+              ),
+              alpha = 0.2,
+              fill = "#B96DAD"
+            )
+          }
+        } +
+        {
+          if(nrow(input_curve_plot) != 1) {
+            ggplot2::geom_line(
+              data = input_curve_plot,
+              ggplot2::aes(
+                x = .data$dose,
+                y = .data$Prediction
+              ),
+              size = 1.2
+            )
+          }
+        } +
         ggplot2::labs(
           title = unique(input_points_plot$name),
           x = paste0("Concentration [", unit, "]"),
@@ -269,24 +277,33 @@ drc_4p_plot <- function(data,
       pb$tick()
       ggplot2::ggplot(data = x, ggplot2::aes(x = {{ dose }}, y = {{ response }})) +
         ggplot2::geom_point(size = 2, col = "#5680C1") +
-        ggplot2::geom_ribbon(
-          data = y,
-          ggplot2::aes(
-            x = .data$dose,
-            y = .data$Prediction,
-            ymin = .data$Lower,
-            ymax = .data$Upper
-          ),
-          alpha = 0.2,
-          fill = "#B96DAD"
-        ) +
-        ggplot2::geom_line(
-          data = y, ggplot2::aes(
-            x = dose,
-            y = .data$Prediction
-          ),
-          size = 1.2
-        ) +
+        {
+          if(nrow(y) != 1) {
+            ggplot2::geom_ribbon(
+              data = y,
+              ggplot2::aes(
+                x = .data$dose,
+                y = .data$Prediction,
+                ymin = .data$Lower,
+                ymax = .data$Upper
+              ),
+              alpha = 0.2,
+              fill = "#B96DAD"
+            )
+          }
+        } +
+        {
+          if(nrow(y) != 1) {
+            ggplot2::geom_line(
+              data = y,
+              ggplot2::aes(
+                x = .data$dose,
+                y = .data$Prediction
+              ),
+              size = 1.2
+            )
+          }
+        } +
         {
           if (facet == FALSE) {
             ggplot2::labs(
