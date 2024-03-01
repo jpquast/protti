@@ -564,7 +564,7 @@ fit_drc_4p <- function(data,
         .data$min_model < .data$max_model) |
           .data$dose_MNAR) %>%
       dplyr::group_by(.data$passed_filter) %>%
-      dplyr::mutate(score = ifelse(.data$passed_filter & !is.na(.data$anova_pval) & !is.na(.data$correlation),
+      dplyr::mutate(score = ifelse(.data$passed_filter & .data$anova_significant & .data$correlation >= correlation_cutoff,
         (scale_protti(-log10(.data$anova_pval), method = "01") + scale_protti(.data$correlation, method = "01")) / 2,
         NA
       )) %>%
