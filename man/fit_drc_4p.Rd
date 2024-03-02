@@ -13,6 +13,8 @@ fit_drc_4p(
   filter = "post",
   replicate_completeness = 0.7,
   condition_completeness = 0.5,
+  n_replicate_completeness = NULL,
+  n_condition_completeness = NULL,
   anova_cutoff = 0.05,
   correlation_cutoff = 0.8,
   log_logarithmic = TRUE,
@@ -44,7 +46,8 @@ prior to the curve fitting and ANOVA calculation and p-value adjustment. This ha
 curves need to be fitted and that the ANOVA p-value adjustment is done only on the relevant set of tests.
 If \code{"none"} is selected the data will be neither annotated nor filtered.}
 
-\item{replicate_completeness}{a numeric value which similar to \code{completenss_MAR} of the
+\item{replicate_completeness}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} please use \code{n_replicate_completeness} instead.
+A numeric value which similar to \code{completenss_MAR} of the
 \code{assign_missingness} function sets a threshold for the completeness of data. In contrast
 to \code{assign_missingness} it only determines the completeness for one condition and not the
 comparison of two conditions. The threshold is used to calculate a minimal degree of data
@@ -53,12 +56,23 @@ It is multiplied with the number of replicates and then adjusted downward. The r
 is the minimal number of observations that a condition needs to have to be considered "complete
 enough" for the \code{condition_completeness} argument.}
 
-\item{condition_completeness}{a numeric value which determines how many conditions need to at
+\item{condition_completeness}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} please use \code{n_condition_completeness} instead.
+A numeric value which determines how many conditions need to at
 least fulfill the "complete enough" criteria set with \code{replicate_completeness}. The
 value provided to this argument has to be between 0 and 1, default is 0.5. It is multiplied with
 the number of conditions and then adjusted downward. The resulting number is the minimal number
 of conditions that need to fulfill the \code{replicate_completeness} argument for a peptide to
 pass the filtering.}
+
+\item{n_replicate_completeness}{a numeric value that defines the minimal number of observations that a
+condition (concentration) needs to have to be considered "complete enough" for the \code{n_condition_completeness}
+argument. E.g. if each concentration has 4 replicates this argument could be set to 3 to allow for one
+replicate to be missing for the completeness criteria.}
+
+\item{n_condition_completeness}{a numeric value that defines the minimal number
+of conditions that need to fulfill the \code{n_replicate_completeness} argument for a feature to
+pass the filtering. E.g. if an experiment has 12 concentrations, this argument could be set
+to 6 to define that at least 6 of 12 concentrations need to make the replicate completeness cutoff.}
 
 \item{anova_cutoff}{a numeric value that specifies the ANOVA adjusted p-value cutoff used for
 data filtering. Any fits with an adjusted ANOVA p-value bellow the cutoff will be considered
@@ -102,7 +116,7 @@ if selected.
 If data filtering options are selected, data is annotated based on multiple criteria.
 If \code{"post"} is selected the data is annotated based on completeness, the completeness distribution, the
 adjusted ANOVA p-value cutoff and a correlation cutoff. Completeness of features is determined based on
-the \code{replicate_completeness} and \code{condition_completeness} arguments. The completeness distribution determines
+the \code{n_replicate_completeness} and \code{n_condition_completeness} arguments. The completeness distribution determines
 if there is a distribution of not random missingness of data along the dose. For this it is checked if half of a
 features values (+/-1 value) pass the replicate completeness criteria and half do not pass it. In order to fall into
 this category, the values that fulfill the completeness cutoff and the ones that do not fulfill it
@@ -164,6 +178,8 @@ drc_fit <- fit_drc_4p(
   grouping = peptide,
   response = peptide_intensity_missing,
   dose = concentration,
+  n_replicate_completeness = 2,
+  n_condition_completeness = 5,
   retain_columns = c(protein, change_peptide)
 )
 

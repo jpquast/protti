@@ -643,6 +643,8 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     grouping = peptide,
     response = normalised_intensity_log2,
     dose = concentration,
+    n_replicate_completeness = 2,
+    n_condition_completeness = 4,
     log_logarithmic = TRUE,
     retain_columns = c(protein)
   )
