@@ -15,6 +15,7 @@ parallel_fit_drc_4p(
   condition_completeness = 0.5,
   n_replicate_completeness = NULL,
   n_condition_completeness = NULL,
+  complete_doses = NULL,
   anova_cutoff = 0.05,
   correlation_cutoff = 0.8,
   log_logarithmic = TRUE,
@@ -73,6 +74,13 @@ replicate to be missing for the completeness criteria.}
 of conditions that need to fulfill the \code{n_replicate_completeness} argument for a feature to
 pass the filtering. E.g. if an experiment has 12 concentrations, this argument could be set
 to 6 to define that at least 6 of 12 concentrations need to make the replicate completeness cutoff.}
+
+\item{complete_doses}{an optional numeric vector that supplies all the actually used doses (concentrations)
+to the function. Usually the function extracts this information from the supplied data. However,
+for incomplete datasets the total number of assumed doses might be wrong. This might especially affect
+parallel fitting of curves since the dataset is split up into smaller pieces. Therefore, it becomes
+important to provide this argument especially when the dataset is small and potentially incomplete. This
+information is only used for the missing not at random (MNAR) estimations.}
 
 \item{anova_cutoff}{a numeric value that specifies the ANOVA adjusted p-value cutoff used for
 data filtering. Any fits with an adjusted ANOVA p-value bellow the cutoff will be considered

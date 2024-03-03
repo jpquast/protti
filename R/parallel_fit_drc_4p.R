@@ -90,6 +90,12 @@
 #' of conditions that need to fulfill the `n_replicate_completeness` argument for a feature to
 #' pass the filtering. E.g. if an experiment has 12 concentrations, this argument could be set
 #' to 6 to define that at least 6 of 12 concentrations need to make the replicate completeness cutoff.
+#' @param complete_doses an optional numeric vector that supplies all the actually used doses (concentrations) 
+#' to the function. Usually the function extracts this information from the supplied data. However,
+#' for incomplete datasets the total number of assumed doses might be wrong. This might especially affect
+#' parallel fitting of curves since the dataset is split up into smaller pieces. Therefore, it becomes 
+#' important to provide this argument especially when the dataset is small and potentially incomplete. This 
+#' information is only used for the missing not at random (MNAR) estimations.
 #' @param anova_cutoff a numeric value that specifies the ANOVA adjusted p-value cutoff used for
 #' data filtering. Any fits with an adjusted ANOVA p-value bellow the cutoff will be considered
 #' for scoring.
@@ -162,6 +168,7 @@ parallel_fit_drc_4p <- function(data,
                                 condition_completeness = 0.5,
                                 n_replicate_completeness = NULL,
                                 n_condition_completeness = NULL,
+                                complete_doses = NULL,
                                 anova_cutoff = 0.05,
                                 correlation_cutoff = 0.8,
                                 log_logarithmic = TRUE,
@@ -193,6 +200,25 @@ parallel_fit_drc_4p <- function(data,
   }
   . <- NULL
   terminate <- FALSE
+  # This prevents bug, if a variable is supplied to complete_doses.
+  # It would not be available on the workers for parallel processing.
+  complete_doses_parallel <- complete_doses 
+  
+  if(!missing(condition_completeness) & !missing(n_condition_completeness) & !is.null(n_condition_completeness) & !is.null(condition_completeness)){
+    warning("The condition_completeness argument will not be used in favor of using n_condition_completeness")
+  }
+  
+  if(!missing(n_condition_completeness) & !is.null(n_condition_completeness)) {
+    condition_completeness <- NULL
+  }
+  
+  if(!missing(replicate_completeness) & !missing(n_replicate_completeness) & !is.null(n_replicate_completeness) & !is.null(replicate_completeness)){
+    warning("The replicate_completeness argument will not be used in favor of using n_replicate_completeness.")
+  }
+  
+  if(!missing(n_replicate_completeness) & !is.null(n_replicate_completeness)){
+    replicate_completeness <- NULL
+  }
 
   if (missing(n_cores)) {
     message("Setting up workers ... ", appendLF = FALSE)
@@ -233,6 +259,7 @@ parallel_fit_drc_4p <- function(data,
       condition_completeness = condition_completeness,
       n_replicate_completeness = n_replicate_completeness,
       n_condition_completeness = n_condition_completeness,
+      complete_doses = complete_doses_parallel,
       anova_cutoff = anova_cutoff,
       correlation_cutoff = correlation_cutoff,
       log_logarithmic = log_logarithmic,
@@ -263,7 +290,7 @@ parallel_fit_drc_4p <- function(data,
         .data$dose_MNAR == TRUE) &
         .data$correlation >= correlation_cutoff &
         .data$min_model < .data$max_model) |
-          .data$dose_MNAR) %>%
+          (.data$dose_MNAR & .data$enough_conditions)) %>%
       dplyr::group_by(.data$passed_filter) %>%
       dplyr::mutate(score = ifelse(.data$passed_filter & .data$anova_significant & .data$correlation >= correlation_cutoff,
         (scale_protti(-log10(.data$anova_pval), method = "01") + scale_protti(.data$correlation, method = "01")) / 2,

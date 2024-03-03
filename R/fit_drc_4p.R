@@ -86,6 +86,11 @@
 #' of conditions that need to fulfill the `n_replicate_completeness` argument for a feature to
 #' pass the filtering. E.g. if an experiment has 12 concentrations, this argument could be set
 #' to 6 to define that at least 6 of 12 concentrations need to make the replicate completeness cutoff.
+#' @param complete_doses an optional numeric vector that supplies all the actually used doses (concentrations) 
+#' to the function. Usually the function extracts this information from the supplied data. However,
+#' for incomplete datasets the total number of assumed doses might be wrong. Therefore, it becomes 
+#' important to provide this argument when the dataset is small and potentially incomplete. This 
+#' information is only used for the missing not at random (MNAR) estimations.
 #' @param anova_cutoff a numeric value that specifies the ANOVA adjusted p-value cutoff used for
 #' data filtering. Any fits with an adjusted ANOVA p-value bellow the cutoff will be considered
 #' for scoring.
@@ -166,6 +171,7 @@ fit_drc_4p <- function(data,
                        condition_completeness = 0.5,
                        n_replicate_completeness = NULL,
                        n_condition_completeness = NULL,
+                       complete_doses = NULL,
                        anova_cutoff = 0.05,
                        correlation_cutoff = 0.8,
                        log_logarithmic = TRUE,
@@ -192,24 +198,19 @@ fit_drc_4p <- function(data,
   }
 
   if (filter != "none") {
-    n_conditions <- length(unique(dplyr::pull(data_prep, {{ dose }})))
-    n_replicates <- length(unique(dplyr::pull(data_prep, {{ sample }}))) / n_conditions
-    
-    if(!missing(replicate_completeness) & !missing(n_replicate_completeness) & !is.null(n_replicate_completeness)){
-      warning("The replicate_completeness argument will not be used in favor of using n_replicate_completeness.")
-    }
-    
-    if (missing(n_replicate_completeness) | is.null(n_replicate_completeness)){
+    if(!missing(complete_doses) & !is.null(complete_doses)){
       
-      lifecycle::deprecate_warn("0.8.0", 
-                                "fit_drc_4p(replicate_completeness = )", 
-                                "fit_drc_4p(n_replicate_completeness = )")
+      n_conditions <- length(complete_doses)
+      concentrations <- sort(complete_doses)
       
-      n_replicate_completeness <- floor(replicate_completeness * n_replicates)
+    } else {
+      
+      n_conditions <- length(unique(dplyr::pull(data_prep, {{ dose }})))
+      concentrations <- sort(unique(dplyr::pull(data_prep, {{ dose }})))
       
     }
     
-    if(!missing(condition_completeness) & !missing(n_condition_completeness) & !is.null(n_condition_completeness)){
+    if(!missing(condition_completeness) & !missing(n_condition_completeness) & !is.null(n_condition_completeness) & !is.null(condition_completeness)){
       warning("The condition_completeness argument will not be used in favor of using n_condition_completeness")
     }
     
@@ -220,6 +221,21 @@ fit_drc_4p <- function(data,
                                 "fit_drc_4p(n_condition_completeness = )")
       
       n_condition_completeness <- floor(condition_completeness * n_conditions)
+      
+    }
+    
+    if(!missing(replicate_completeness) & !missing(n_replicate_completeness) & !is.null(n_replicate_completeness) & !is.null(replicate_completeness)){
+      warning("The replicate_completeness argument will not be used in favor of using n_replicate_completeness.")
+    }
+    
+    if (missing(n_replicate_completeness) | is.null(n_replicate_completeness)){
+      
+      lifecycle::deprecate_warn("0.8.0", 
+                                "fit_drc_4p(replicate_completeness = )", 
+                                "fit_drc_4p(n_replicate_completeness = )")
+      
+      n_replicates <- length(unique(dplyr::pull(data_prep, {{ sample }}))) / n_conditions
+      n_replicate_completeness <- floor(replicate_completeness * n_replicates)
       
     }
     
@@ -235,16 +251,16 @@ fit_drc_4p <- function(data,
     vector_add <- c(vector[1] + 1, vector[2] - 1)
     vector_add_rev <- rev(vector_add)
 
-    concentrations <- sort(unique(dplyr::pull(data_prep, {{ dose }})))
-
     filter_completeness <- data_prep %>%
       dplyr::group_by({{ grouping }}, {{ dose }}) %>%
       dplyr::mutate(enough_replicates = sum(!is.na({{ response }}))
                     >= n_replicate_completeness) %>%
-      dplyr::group_by({{ grouping }}) %>%
-      dplyr::mutate(enough_conditions = sum(.data$enough_replicates) /
-                      n_replicates
-                    >= n_condition_completeness) %>%
+      dplyr::group_by({{ grouping }}, .data$enough_replicates) %>%
+      dplyr::mutate(n_condition_enough = n_distinct({{ dose }})) %>% 
+      dplyr::group_by({{ grouping }}) %>% 
+      dplyr::mutate(enough_conditions = any(ifelse(.data$n_condition_enough >= n_condition_completeness & 
+                                                     .data$enough_replicates, TRUE, FALSE))) %>% 
+      dplyr::select(-"n_condition_enough") %>% 
       dplyr::mutate(
         lower_vector = {{ dose }} %in% concentrations[1:vector[1]],
         lower_vector_rev = {{ dose }} %in% concentrations[1:vector_rev[1]],
@@ -390,7 +406,7 @@ fit_drc_4p <- function(data,
     anova <- data_prep %>%
       dplyr::group_by({{ grouping }}, {{ dose }}) %>%
       dplyr::mutate(
-        n = n_replicates,
+        n = sum(!is.na({{ response }})),
         mean_ratio = mean({{ response }}, na.rm = TRUE),
         sd = sd({{ response }}, na.rm = TRUE)
       ) %>%
@@ -410,7 +426,7 @@ fit_drc_4p <- function(data,
     filter_completeness <- filter_completeness %>%
       dplyr::mutate(anova_significant = {{ grouping }} %in% anova_filtered) %>%
       dplyr::mutate(passed_filter = (.data$enough_conditions == TRUE & .data$anova_significant == TRUE) |
-                      .data$dose_MNAR == TRUE)
+                      (.data$dose_MNAR == TRUE & .data$enough_conditions == TRUE))
   }
   # prepare data
 
@@ -623,7 +639,7 @@ fit_drc_4p <- function(data,
       dplyr::mutate(passed_filter = (.data$passed_filter &
         .data$correlation >= correlation_cutoff &
         .data$min_model < .data$max_model) |
-          .data$dose_MNAR) %>%
+          (.data$dose_MNAR & .data$enough_conditions)) %>%
       dplyr::group_by(.data$passed_filter) %>%
       dplyr::mutate(score = ifelse(.data$passed_filter & .data$anova_significant & .data$correlation >= correlation_cutoff,
         (scale_protti(-log10(.data$anova_pval), method = "01") + scale_protti(.data$correlation, method = "01")) / 2,

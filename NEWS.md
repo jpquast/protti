@@ -22,6 +22,7 @@
     * `anova_cutoff` lets you define the ANOVA adjusted p-value cutoff (default 0.05). 
     * `n_replicate_completeness` replaces `replicate_completeness`. Now we encourage you to provide a discrete number of minimal replicates instead of a fraction that is multiplied with the total number of replicates. This is particularly important to ensure that thresholds between different datasets and data completeness levels are reproducible.
     * `n_condition_completeness` replaces `condition_completeness`. Same as above, we encourage you to provide the minimal number of conditions that need to meet the replicate completeness criteria as a number instead of a fraction.
+    * `complete_doses` is a new optional argument that should be provided if the dataset is small and potentially incomplete. This ensures that no matter if any doses are missing from the provided data or not, the MNAR of the curve is calculated correctly. We would recommend always providing it to ensure proper reproducibility.
   * Curves that were previously annotated in the `dose_MNAR` column are now part of the hits. To get back to the old output you can just exclude them again from the ranked results. 
   * The major change to the function is that now all provided features (e.g. peptides) are also part of the output no matter if a curve was fit or not. To get back to the original output you can remove all features without a fit, but please note that statistics such as the ANOVA p-value adjustment were computed on the complete dataset and might need to be readjusted by running the p-value adjustment again. 
   * Another major change to the function was the way the `filter` argument works. This argument controls if significance statistics should be annotated in the data. 
@@ -33,6 +34,7 @@
 
 * `normalise()` now correctly works with grouped data. Previously it would only correctly work with ungrouped data frames. Now you can group the data to calculate group specific normalisations. If you want to compute a global normalisation for the dataset, you need to ungroup the data before using the function as usual. This fixes issue #209.
 * `qc_sequence_coverage()` now correctly displays medians in faceted plot. This fixes issue #202 and #213. 
+* `fit_drc_4p()` and `parallel_fit_drc_4p()` now correctly calculates the ANOVA p-value. Previously the number of observations for each concentration was not provided correctly.
 
 ## Additional Changes
 
