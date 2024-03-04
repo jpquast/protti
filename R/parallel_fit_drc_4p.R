@@ -66,7 +66,7 @@
 #' prior to the curve fitting and ANOVA calculation and p-value adjustment. This has the benefit that less
 #' curves need to be fitted and that the ANOVA p-value adjustment is done only on the relevant set of tests.
 #' If `"none"` is selected the data will be neither annotated nor filtered.
-#' @param replicate_completeness `r lifecycle::badge("deprecated")` please use `n_replicate_completeness` instead. 
+#' @param replicate_completeness `r lifecycle::badge("deprecated")` please use `n_replicate_completeness` instead.
 #' A numeric value which similar to \code{completenss_MAR} of the
 #' \code{assign_missingness} function sets a threshold for the completeness of data. In contrast
 #' to \code{assign_missingness} it only determines the completeness for one condition and not the
@@ -75,26 +75,26 @@
 #' It is multiplied with the number of replicates and then adjusted downward. The resulting number
 #' is the minimal number of observations that a condition needs to have to be considered "complete
 #' enough" for the \code{condition_completeness} argument.
-#' @param condition_completeness `r lifecycle::badge("deprecated")` please use `n_condition_completeness` instead. 
+#' @param condition_completeness `r lifecycle::badge("deprecated")` please use `n_condition_completeness` instead.
 #' A numeric value which determines how many conditions need to at
 #' least fulfill the "complete enough" criteria set with \code{replicate_completeness}. The
 #' value provided to this argument has to be between 0 and 1, default is 0.5. It is multiplied with
 #' the number of conditions and then adjusted downward. The resulting number is the minimal number
 #' of conditions that need to fulfill the \code{replicate_completeness} argument for a peptide to
 #' pass the filtering.
-#' @param n_replicate_completeness a numeric value that defines the minimal number of observations that a 
-#' condition (concentration) needs to have to be considered "complete enough" for the `n_condition_completeness` 
-#' argument. E.g. if each concentration has 4 replicates this argument could be set to 3 to allow for one 
+#' @param n_replicate_completeness a numeric value that defines the minimal number of observations that a
+#' condition (concentration) needs to have to be considered "complete enough" for the `n_condition_completeness`
+#' argument. E.g. if each concentration has 4 replicates this argument could be set to 3 to allow for one
 #' replicate to be missing for the completeness criteria.
 #' @param n_condition_completeness a numeric value that defines the minimal number
 #' of conditions that need to fulfill the `n_replicate_completeness` argument for a feature to
 #' pass the filtering. E.g. if an experiment has 12 concentrations, this argument could be set
 #' to 6 to define that at least 6 of 12 concentrations need to make the replicate completeness cutoff.
-#' @param complete_doses an optional numeric vector that supplies all the actually used doses (concentrations) 
+#' @param complete_doses an optional numeric vector that supplies all the actually used doses (concentrations)
 #' to the function. Usually the function extracts this information from the supplied data. However,
 #' for incomplete datasets the total number of assumed doses might be wrong. This might especially affect
-#' parallel fitting of curves since the dataset is split up into smaller pieces. Therefore, it becomes 
-#' important to provide this argument especially when the dataset is small and potentially incomplete. This 
+#' parallel fitting of curves since the dataset is split up into smaller pieces. Therefore, it becomes
+#' important to provide this argument especially when the dataset is small and potentially incomplete. This
 #' information is only used for the missing not at random (MNAR) estimations.
 #' @param anova_cutoff a numeric value that specifies the ANOVA adjusted p-value cutoff used for
 #' data filtering. Any fits with an adjusted ANOVA p-value bellow the cutoff will be considered
@@ -202,21 +202,21 @@ parallel_fit_drc_4p <- function(data,
   terminate <- FALSE
   # This prevents bug, if a variable is supplied to complete_doses.
   # It would not be available on the workers for parallel processing.
-  complete_doses_parallel <- complete_doses 
-  
-  if(!missing(condition_completeness) & !missing(n_condition_completeness) & !is.null(n_condition_completeness) & !is.null(condition_completeness)){
+  complete_doses_parallel <- complete_doses
+
+  if (!missing(condition_completeness) & !missing(n_condition_completeness) & !is.null(n_condition_completeness) & !is.null(condition_completeness)) {
     warning("The condition_completeness argument will not be used in favor of using n_condition_completeness")
   }
-  
-  if(!missing(n_condition_completeness) & !is.null(n_condition_completeness)) {
+
+  if (!missing(n_condition_completeness) & !is.null(n_condition_completeness)) {
     condition_completeness <- NULL
   }
-  
-  if(!missing(replicate_completeness) & !missing(n_replicate_completeness) & !is.null(n_replicate_completeness) & !is.null(replicate_completeness)){
+
+  if (!missing(replicate_completeness) & !missing(n_replicate_completeness) & !is.null(n_replicate_completeness) & !is.null(replicate_completeness)) {
     warning("The replicate_completeness argument will not be used in favor of using n_replicate_completeness.")
   }
-  
-  if(!missing(n_replicate_completeness) & !is.null(n_replicate_completeness)){
+
+  if (!missing(n_replicate_completeness) & !is.null(n_replicate_completeness)) {
     replicate_completeness <- NULL
   }
 
@@ -280,17 +280,18 @@ parallel_fit_drc_4p <- function(data,
 
   if (filter != "none") {
     result <- result %>%
-      dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$anova_pval, method = "BH")) %>%
+      dplyr::mutate(anova_pval_fit = ifelse(is.na(.data$correlation), NA, .data$anova_pval)) %>%
+      dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$anova_pval_fit, method = "BH")) %>%
+      dplyr::select(-"anova_pval_fit") %>%
       dplyr::mutate(anova_significant = ifelse(.data$anova_adj_pval > anova_cutoff | is.na(.data$anova_adj_pval),
         FALSE,
         TRUE
       )) %>%
-      dplyr::mutate(passed_filter = (((.data$enough_conditions == TRUE &
-        .data$anova_significant == TRUE) |
-        .data$dose_MNAR == TRUE) &
+      dplyr::mutate(passed_filter = (((.data$enough_conditions == TRUE & .data$anova_significant == TRUE) |
+        (.data$dose_MNAR == TRUE & .data$enough_conditions == TRUE)) &
         .data$correlation >= correlation_cutoff &
         .data$min_model < .data$max_model) |
-          (.data$dose_MNAR & .data$enough_conditions)) %>%
+        (.data$dose_MNAR & .data$enough_conditions)) %>%
       dplyr::group_by(.data$passed_filter) %>%
       dplyr::mutate(score = ifelse(.data$passed_filter & .data$anova_significant & .data$correlation >= correlation_cutoff,
         (scale_protti(-log10(.data$anova_pval), method = "01") + scale_protti(.data$correlation, method = "01")) / 2,
