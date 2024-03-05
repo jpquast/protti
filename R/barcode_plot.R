@@ -3,19 +3,25 @@
 #' Plots a "barcode plot" - a vertical line for each identified peptide. Peptides can be colored based on an additional variable. Also differential
 #' abundance can be displayed.
 #'
-#' @param data Data frame containing differential abundance, start and end peptide or precursor positions and protein length.
-#' @param start_position Column in the data frame containing the start positions for each peptide or precursor.
-#' @param end_position Column in the data frame containing the end positions for each peptide or precursor.
-#' @param protein_length Column in the data frame containing the length of the protein.
-#' @param coverage Optional, column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.
-#' @param colouring Optional argument, column in the data frame containing information by which peptide or precursors should
+#' @param data a data frame containing differential abundance, start and end peptide or precursor positions and protein length.
+#' @param start_position a numeric olumn in the data frame containing the start positions for each peptide or precursor.
+#' @param end_position a numeric column in the data frame containing the end positions for each peptide or precursor.
+#' @param protein_length a numeric column in the data frame containing the length of the protein.
+#' @param coverage optional, numeric column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.
+#' @param colouring optional, column in the data frame containing information by which peptide or precursors should
 #' be colored.
-#' @param protein_id Optional argument, column in the data frame containing protein identifiers. Required if only one protein
+#' @param fill_colour_gradient a vector that contains colours that should be used to create a colour gradient
+#' for the barcode plot bars if the `colouring` argument is continuous. Default is `mako_colours`.
+#' @param fill_colour_discrete a vector that contains colours that should be used to fill the barcode plot bars
+#' if the `colouring` argument is discrete. Default is `protti_colours`.
+#' @param protein_id optional, column in the data frame containing protein identifiers. Required if only one protein
 #' should be plotted and the data frame contains only information for this protein.
-#' @param facet Optional argument, column in the data frame containing information by which data should be faceted. This can be
+#' @param facet optional, column in the data frame containing information by which data should be faceted. This can be
 #' protein identifiers. Only 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a
 #' subsetted data frame should be created.
-#' @param cutoffs Optional argument specifying the log2 fold change and significance cutoffs used for highlighting peptides.
+#' @param facet_n_col a numeric value that specifies the number of columns the faceted plot should have
+#' if a column name is provided to group. The default is 4.
+#' @param cutoffs optional argument specifying the log2 fold change and significance cutoffs used for highlighting peptides.
 #' If this argument is provided colouring information will be overwritten with peptides that fulfill this condition.
 #' The cutoff should be provided in a vector of the form c(diff = 2, pval = 0.05). The name of the cutoff should reflect the
 #' column name that contains this information (log2 fold changes, p-values or adjusted p-values).
@@ -53,8 +59,11 @@ barcode_plot <- function(data,
                          protein_length,
                          coverage = NULL,
                          colouring = NULL,
+                         fill_colour_gradient = protti::mako_colours,
+                         fill_colour_discrete = c("#999999", protti::protti_colours),
                          protein_id = NULL,
                          facet = NULL,
+                         facet_n_col = 4,
                          cutoffs = NULL) {
   # Check if there is more than one protein even though protein_id was specified.
   if (!missing(protein_id)) {
@@ -83,7 +92,7 @@ barcode_plot <- function(data,
     fc <- cutoffs[1]
     sig <- cutoffs[2]
 
-    colouring <- sym("change")
+    colouring <- sym("Change")
 
     data <- data %>%
       dplyr::mutate({{ colouring }} := ifelse(((!!ensym(fc_name) >= fc | !!ensym(fc_name) <= -fc) & !!ensym(sig_name) <= sig), "Changed", "Unchanged")) %>%
@@ -99,6 +108,7 @@ barcode_plot <- function(data,
     data <- data %>%
       mutate({{ protein_id }} := paste0({{ protein_id }}, " (", round({{ coverage }}, digits = 1), "%)"))
   }
+
   # Create plot
   data %>%
     ggplot2::ggplot() +
@@ -112,17 +122,22 @@ barcode_plot <- function(data,
       ),
       size = 0.7
     ) +
-    ggplot2::scale_fill_manual(values = c(
-      "#999999", "#5680C1", "#B96DAD", "#64CACA", "#81ABE9", "#F6B8D1", "#99F1E4", "#9AD1FF", "#548BDF", "#A55098", "#3EB6B6",
-      "#87AEE8", "#CA91C1", "#A4E0E0", "#1D4F9A", "#D7ACD2", "#49C1C1"
-    )) +
+    {
+      if (is.numeric(dplyr::pull(data, {{ colouring }}))){
+        ggplot2::scale_fill_gradientn(colours = fill_colour_gradient)
+      } else {
+        ggplot2::scale_fill_manual(values = c(
+          fill_colour_discrete
+        ))
+      }
+    } +
     ggplot2::scale_x_continuous(limits = c(0, 100), expand = c(0, 0)) +
     ggplot2::scale_y_continuous(limits = NULL, expand = c(0, 0)) +
     ggplot2::labs(x = "Protein Sequence", title = {
       if (!missing(protein_id)) unique(dplyr::pull(data, {{ protein_id }}))
     }) +
     {
-      if (!missing(facet)) ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet)))
+      if (!missing(facet)) ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(facet)), ncol = facet_n_col)
     } +
     ggplot2::theme(
       plot.title = ggplot2::element_text(size = 20),

@@ -2,7 +2,7 @@
 
 ## New features
 
-* `calculate_treatment_enrichment()` recieved additional arguments. 
+* `calculate_treatment_enrichment()` received additional arguments. 
   * `fill_colours`: a character value that can be used to provide custom colours to the plot.
   * `fill_by_group`: a logical value that specifies if the bars in the plot should be filled according to group.
   * `facet_n_col`: specifies the number of columns in the facet plot if a `group` column was provided.
@@ -17,6 +17,11 @@
   * `heatmap_fill_colour_rev`: a logical value that specifies if the colour gradient should be reversed.
   * `plot_cutoff`: is now more flexible. You can provide any number with the "top" cutoff. E.g. "top10", "top5".
 * Added `mako_colours` to the package that contain 256 colours of the "mako" colour gradient.
+* `barcode_plot()` received additional arguments.
+  * `facet_n_col`: determines the number of columns the faceted plot.
+  * `fill_colour_gradient`: specifies the colours used for the colour gradient if the `colouring` column is continous.
+  * `fill_colour_discrete`: specifies the colours used for the fill colours if the `colouring` column is discrete.
+
 
 ## Bug fixes
 
