@@ -280,9 +280,7 @@ parallel_fit_drc_4p <- function(data,
 
   if (filter != "none") {
     result <- result %>%
-      dplyr::mutate(anova_pval_fit = ifelse(is.na(.data$correlation), NA, .data$anova_pval)) %>%
-      dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$anova_pval_fit, method = "BH")) %>%
-      dplyr::select(-"anova_pval_fit") %>%
+      dplyr::mutate(anova_adj_pval = stats::p.adjust(.data$anova_pval, method = "BH")) %>%
       dplyr::mutate(anova_significant = ifelse(.data$anova_adj_pval > anova_cutoff | is.na(.data$anova_adj_pval),
         FALSE,
         TRUE
