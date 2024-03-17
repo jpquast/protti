@@ -84,7 +84,7 @@ information is only used for the missing not at random (MNAR) estimations.}
 
 \item{anova_cutoff}{a numeric value that specifies the ANOVA adjusted p-value cutoff used for
 data filtering. Any fits with an adjusted ANOVA p-value bellow the cutoff will be considered
-for scoring.}
+for scoring. The default is \code{0.05}.}
 
 \item{correlation_cutoff}{a numeric value that specifies the correlation cutoff used for data
 filtering. Any fits with a correlation above the cutoff will be considered for scoring.}

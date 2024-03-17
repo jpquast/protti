@@ -93,7 +93,7 @@
 #' information is only used for the missing not at random (MNAR) estimations.
 #' @param anova_cutoff a numeric value that specifies the ANOVA adjusted p-value cutoff used for
 #' data filtering. Any fits with an adjusted ANOVA p-value bellow the cutoff will be considered
-#' for scoring.
+#' for scoring. The default is `0.05`.
 #' @param correlation_cutoff a numeric value that specifies the correlation cutoff used for data
 #' filtering. Any fits with a correlation above the cutoff will be considered for scoring.
 #' @param log_logarithmic a logical value that indicates if a logarithmic or log-logarithmic model
@@ -254,8 +254,8 @@ fit_drc_4p <- function(data,
       dplyr::group_by({{ grouping }}, .data$enough_replicates) %>%
       dplyr::mutate(n_condition_enough = n_distinct({{ dose }})) %>%
       dplyr::group_by({{ grouping }}) %>%
-      dplyr::mutate(enough_conditions = any(ifelse(.data$n_condition_enough >= n_condition_completeness &
-        .data$enough_replicates, TRUE, FALSE))) %>%
+      dplyr::mutate(enough_conditions = any(.data$n_condition_enough >= n_condition_completeness &
+        .data$enough_replicates)) %>%
       dplyr::select(-"n_condition_enough") %>%
       dplyr::mutate(
         lower_vector = {{ dose }} %in% concentrations[1:vector[1]],
@@ -321,45 +321,19 @@ fit_drc_4p <- function(data,
         list(unique(.data$n_vector_add_rev))[[1]][2]
       )$pval <= 0.1) %>%
       dplyr::ungroup() %>%
-      dplyr::mutate(
-        pval_vector = ifelse(is.na(.data$pval_vector),
-          TRUE,
-          .data$pval_vector
-        ),
-        pval_vector_rev = ifelse(is.na(.data$pval_vector_rev),
-          TRUE,
-          .data$pval_vector_rev
-        ),
-        pval_vector_add = ifelse(is.na(.data$pval_vector_add),
-          TRUE,
-          .data$pval_vector_add
-        ),
-        pval_vector_add_rev = ifelse(is.na(.data$pval_vector_add_rev),
-          TRUE,
-          .data$pval_vector_add_rev
-        )
-      ) %>%
-      dplyr::mutate(mean_vector = ifelse(is.na(.data$mean_vector),
-        0,
-        .data$mean_vector
-      )) %>%
-      dplyr::mutate(mean_vector_rev = ifelse(is.na(.data$mean_vector_rev),
-        0,
-        .data$mean_vector_rev
-      )) %>%
-      dplyr::mutate(mean_vector_add = ifelse(is.na(.data$mean_vector_add),
-        0,
-        .data$mean_vector_add
-      )) %>%
-      dplyr::mutate(mean_vector_add_rev = ifelse(is.na(.data$mean_vector_add_rev),
-        0,
-        .data$mean_vector_add_rev
-      )) %>%
+      tidyr::replace_na(list("pval_vector" = TRUE,
+                             "pval_vector_rev" = TRUE,
+                             "pval_vector_add" = TRUE,
+                             "pval_vector_add_rev" = TRUE,
+                             "mean_vector" = 0,
+                             "mean_vector_rev" = 0,
+                             "mean_vector_add" = 0,
+                             "mean_vector_add_rev" = 0)) %>%
       dplyr::group_by({{ grouping }}) %>%
-      dplyr::mutate(mean_vector = min(.data$mean_vector) == .data$mean_vector) %>%
-      dplyr::mutate(mean_vector_rev = min(.data$mean_vector_rev) == .data$mean_vector_rev) %>%
-      dplyr::mutate(mean_vector_add = min(.data$mean_vector_add) == .data$mean_vector_add) %>%
-      dplyr::mutate(mean_vector_add_rev = min(.data$mean_vector_add_rev) == .data$mean_vector_add_rev) %>%
+      dplyr::mutate(mean_vector = min(.data$mean_vector) == .data$mean_vector,
+                    mean_vector_rev = min(.data$mean_vector_rev) == .data$mean_vector_rev,
+                    mean_vector_add = min(.data$mean_vector_add) == .data$mean_vector_add,
+                    mean_vector_add_rev = min(.data$mean_vector_add_rev) == .data$mean_vector_add_rev) %>%
       dplyr::mutate(dose_MNAR = ifelse((all((.data$lower_vector & .data$enough_replicates == FALSE & .data$mean_vector) |
         (!.data$lower_vector & .data$enough_replicates == TRUE & !.data$mean_vector)) &
         .data$pval_vector) |

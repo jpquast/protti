@@ -17,7 +17,7 @@
   * `heatmap_fill_colour_rev`: a logical value that specifies if the colour gradient should be reversed.
   * `plot_cutoff`: is now more flexible. You can provide any number with the "top" cutoff. E.g. "top10", "top5".
 * Added `mako_colours` to the package that contain 256 colours of the "mako" colour gradient.
-* `fit_drc_4p()` and `parallel_fit_drc_4p()` have been reworked and you will now likely have a different output than in previous versions of *protti*. 
+* `fit_drc_4p()` and `parallel_fit_drc_4p()` have been updated in the latest version of **protti**, leading to slight adjustments in their computational results compared to previous versions. 
   * We added new arguments: 
     * `anova_cutoff` lets you define the ANOVA adjusted p-value cutoff (default 0.05). 
     * `n_replicate_completeness` replaces `replicate_completeness`. Now we encourage you to provide a discrete number of minimal replicates instead of a fraction that is multiplied with the total number of replicates. This is particularly important to ensure that thresholds between different datasets and data completeness levels are reproducible.
