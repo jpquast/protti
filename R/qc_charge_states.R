@@ -114,6 +114,12 @@ qc_charge_states <-
           ))
       }
 
+      label_positions <- result %>%
+        dplyr::group_by({{ sample }}) %>%
+        dplyr::arrange(desc({{ charge_states }})) %>%
+        dplyr::mutate(label_y = cumsum(.data$charge_per)) %>%
+        dplyr::filter(.data$charge_per > 5)
+
       if (plot == FALSE) {
         return(result)
       } else {
@@ -123,9 +129,10 @@ qc_charge_states <-
           {
             if (interactive == FALSE) {
               geom_text(
-                data = result %>% dplyr::filter(.data$charge_per > 5),
-                aes(label = round(.data$charge_per, digits = 1)),
-                position = position_stack(vjust = 0.9)
+                data = label_positions,
+                aes(y = label_y,
+                    label = round(.data$charge_per, digits = 1)),
+                    vjust = 1.5
               )
             }
           } +
@@ -139,7 +146,7 @@ qc_charge_states <-
           theme_bw() +
           theme(
             plot.title = ggplot2::element_text(size = 20),
-            axis.title.x = ggplot2::element_text(size = 15),
+            axis.title.x = ggplot2::element_blank(),
             axis.text.y = ggplot2::element_text(size = 15),
             axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
             axis.title.y = ggplot2::element_text(size = 15),
@@ -169,6 +176,12 @@ qc_charge_states <-
           ))
       }
 
+      label_positions <- result %>%
+        dplyr::group_by({{ sample }}) %>%
+        dplyr::arrange(desc({{ charge_states }})) %>%
+        dplyr::mutate(label_y = cumsum(.data$charge_per)) %>%
+        dplyr::filter(.data$charge_per > 5)
+
       if (plot == FALSE) {
         return(result)
       } else {
@@ -178,23 +191,23 @@ qc_charge_states <-
           {
             if (interactive == FALSE) {
               geom_text(
-                data = result %>% dplyr::filter(.data$charge_per > 5),
-                aes(label = round(.data$charge_per, digits = 1)),
-                position = position_stack(vjust = 0.9)
+                data = label_positions,
+                aes(y = label_y,
+                    label = round(.data$charge_per, digits = 1)),
+                    vjust = 1.5
               )
             }
           } +
           labs(
             title = "Charge distribution per .raw file",
             subtitle = "By percent of total intensity",
-            x = "Sample",
             y = "% of total intensity",
             fill = "Charge"
           ) +
           theme_bw() +
           theme(
             plot.title = ggplot2::element_text(size = 20),
-            axis.title.x = ggplot2::element_text(size = 15),
+            axis.title.x = ggplot2::element_blank(),
             axis.text.y = ggplot2::element_text(size = 15),
             axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
             axis.title.y = ggplot2::element_text(size = 15),
