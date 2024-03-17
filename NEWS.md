@@ -17,6 +17,10 @@
   * `heatmap_fill_colour_rev`: a logical value that specifies if the colour gradient should be reversed.
   * `plot_cutoff`: is now more flexible. You can provide any number with the "top" cutoff. E.g. "top10", "top5".
 * Added `mako_colours` to the package that contain 256 colours of the "mako" colour gradient.
+* `drc_4p_plot()` got additional arguments.
+  * `facet_title_size`: determines the size of the facet titles.
+  * `export_height`: determines the output height of an exported plot in inches.
+  * `export_width`: determines the output width of an exported plot in inches.
 * `fit_drc_4p()` and `parallel_fit_drc_4p()` have been updated in the latest version of **protti**, leading to slight adjustments in their computational results compared to previous versions. 
   * We added new arguments: 
     * `anova_cutoff` lets you define the ANOVA adjusted p-value cutoff (default 0.05). 
