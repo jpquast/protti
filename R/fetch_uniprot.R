@@ -54,9 +54,6 @@ fetch_uniprot <-
       return(invisible(NULL))
     }
     . <- NULL
-    if (show_progress) {
-      message("Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.")
-    }
     if (batchsize > 500) {
       stop("Please provide a batchsize that is smaller or equal to 500!")
     }
@@ -145,6 +142,11 @@ They were fetched and the original input ID can be found in the "input_id" colum
 
     if (length(result) == 0) {
       message("No valid information was retrieved!")
+      return(invisible(NULL))
+    }
+
+    if (length(error_list) != 0) {
+      message("Not all of the requested information could be retrieved. Nothing instead of a partial output is returned.")
       return(invisible(NULL))
     }
 
