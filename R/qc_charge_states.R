@@ -125,10 +125,10 @@ qc_charge_states <-
       } else {
         plot <- result %>%
           ggplot2::ggplot(aes(x = {{ sample }}, y = .data$charge_per, fill = {{ charge_states }})) +
-          geom_col(col = "black", size = 1) +
+          ggplot2::geom_col(col = "black", size = 1) +
           {
             if (interactive == FALSE) {
-              geom_text(
+              ggplot2::geom_text(
                 data = label_positions,
                 aes(y = label_y,
                     label = round(.data$charge_per, digits = 1)),
@@ -136,15 +136,15 @@ qc_charge_states <-
               )
             }
           } +
-          labs(
+          ggplot2::labs(
             title = "Charge distribution per .raw file",
             subtitle = "By percent of total peptide count",
             x = "",
             y = "% of total peptide count",
             fill = "Charge"
           ) +
-          theme_bw() +
-          theme(
+          ggplot2::theme_bw() +
+          ggplot2::theme(
             plot.title = ggplot2::element_text(size = 20),
             axis.title.x = ggplot2::element_blank(),
             axis.text.y = ggplot2::element_text(size = 15),
@@ -187,10 +187,10 @@ qc_charge_states <-
       } else {
         plot <- result %>%
           ggplot2::ggplot(aes(x = {{ sample }}, y = .data$charge_per, fill = {{ charge_states }})) +
-          geom_col(col = "black", size = 1) +
+          ggplot2::geom_col(col = "black", size = 1) +
           {
             if (interactive == FALSE) {
-              geom_text(
+              ggplot2::geom_text(
                 data = label_positions,
                 aes(y = label_y,
                     label = round(.data$charge_per, digits = 1)),
@@ -198,14 +198,14 @@ qc_charge_states <-
               )
             }
           } +
-          labs(
+          ggplot2::labs(
             title = "Charge distribution per .raw file",
             subtitle = "By percent of total intensity",
             y = "% of total intensity",
             fill = "Charge"
           ) +
-          theme_bw() +
-          theme(
+          ggplot2::theme_bw() +
+          ggplot2::theme(
             plot.title = ggplot2::element_text(size = 20),
             axis.title.x = ggplot2::element_blank(),
             axis.text.y = ggplot2::element_text(size = 15),

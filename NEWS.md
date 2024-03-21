@@ -23,6 +23,10 @@
 * `normalise()` now correctly works with grouped data. Previously it would only correctly work with ungrouped data frames. Now you can group the data to calculate group specific normalisations. If you want to compute a global normalisation for the dataset, you need to ungroup the data before using the function as usual. This fixes issue #209.
 * `qc_sequence_coverage()` now correctly displays medians in faceted plot. This fixes issue #202 and #213. 
 
+## Additional changes
+
+* Improved label positions of `qc_charge_states()`, `qc_peptide_type()` and `qc_missed_cleavages()`. Also made appearance more uniform between methods `"count"` and `"intensity"`.
+
 # protti 0.7.0
 
 ## New features
