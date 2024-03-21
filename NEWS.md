@@ -23,6 +23,10 @@
 * `normalise()` now correctly works with grouped data. Previously it would only correctly work with ungrouped data frames. Now you can group the data to calculate group specific normalisations. If you want to compute a global normalisation for the dataset, you need to ungroup the data before using the function as usual. This fixes issue #209.
 * `qc_sequence_coverage()` now correctly displays medians in faceted plot. This fixes issue #202 and #213. 
 
+## Additional changes
+
+* `fetch_uniprot()` now returns nothing instead of a partial output if some of the requested batches could not be retrieved due to database issues (e.g. timeout because of too many requests). This addresses issue #203, which requests this change, because the warning message regarding the partial output can be easily missed and users might wrongfully assume that all information was retrieved successfully from UniProt.
+
 # protti 0.7.0
 
 ## New features

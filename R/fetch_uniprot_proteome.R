@@ -28,7 +28,6 @@ fetch_uniprot_proteome <-
     if (length(organism_id) == 0) {
       stop("No valid organism ID found.")
     }
-    message("Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.")
     if (length(columns) > 4) {
       warning(strwrap("We suggest to use the fetch_uniprot function to fetch more than four columns.",
         prefix = "\n", initial = ""
