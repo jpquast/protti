@@ -25,6 +25,7 @@
 
 ## Additional changes
 
+* Improved label positions of `qc_charge_states()`, `qc_peptide_type()` and `qc_missed_cleavages()`. Also made appearance more uniform between methods `"count"` and `"intensity"`.
 * `fetch_uniprot()` now returns nothing instead of a partial output if some of the requested batches could not be retrieved due to database issues (e.g. timeout because of too many requests). This addresses issue #203, which requests this change, because the warning message regarding the partial output can be easily missed and users might wrongfully assume that all information was retrieved successfully from UniProt.
 
 # protti 0.7.0
