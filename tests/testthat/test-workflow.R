@@ -643,6 +643,8 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     grouping = peptide,
     response = normalised_intensity_log2,
     dose = concentration,
+    n_replicate_completeness = 2,
+    n_condition_completeness = 4,
     log_logarithmic = TRUE,
     retain_columns = c(protein)
   )
@@ -650,7 +652,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("fit_drc_4p works", {
     # did not test the argument include_models = TRUE
     expect_is(drc_fit, "data.frame")
-    expect_equal(nrow(drc_fit), 282)
+    expect_equal(nrow(drc_fit), 306)
     expect_equal(ncol(drc_fit), 18)
     expect_equal(round(max(drc_fit$correlation, na.rm = TRUE), digits = 3), 0.876)
     expect_equal(round(min(drc_fit$anova_pval, na.rm = TRUE), digits = 6), 0.007297)
@@ -786,3 +788,4 @@ test_that("calculate_aa_scores works", {
   expect_equal(nrow(aa_fingerprint), 45)
   expect_equal(ncol(aa_fingerprint), 3)
 })
+

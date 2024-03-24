@@ -17,11 +17,32 @@
   * `heatmap_fill_colour_rev`: a logical value that specifies if the colour gradient should be reversed.
   * `plot_cutoff`: is now more flexible. You can provide any number with the "top" cutoff. E.g. "top10", "top5".
 * Added `mako_colours` to the package that contain 256 colours of the "mako" colour gradient.
+* `drc_4p_plot()` got additional arguments.
+  * `facet_title_size`: determines the size of the facet titles.
+  * `export_height`: determines the output height of an exported plot in inches.
+  * `export_width`: determines the output width of an exported plot in inches.
+* `fit_drc_4p()` and `parallel_fit_drc_4p()` have been updated in the latest version of **protti**, leading to slight adjustments in their computational results compared to previous versions. 
+  * We added new arguments: 
+    * `anova_cutoff` lets you define the ANOVA adjusted p-value cutoff (default 0.05). 
+    * `n_replicate_completeness` replaces `replicate_completeness`. Now we encourage you to provide a discrete number of minimal replicates instead of a fraction that is multiplied with the total number of replicates. This is particularly important to ensure that thresholds between different datasets and data completeness levels are reproducible.
+    * `n_condition_completeness` replaces `condition_completeness`. Same as above, we encourage you to provide the minimal number of conditions that need to meet the replicate completeness criteria as a number instead of a fraction.
+    * `complete_doses` is a new optional argument that should be provided if the dataset is small and potentially incomplete. This ensures that no matter if any doses are missing from the provided data or not, the MNAR of the curve is calculated correctly. We would recommend always providing it to ensure proper reproducibility.
+  * Curves that were previously annotated in the `dose_MNAR` column are now part of the hits. To get back to the old output you can just exclude them again from the ranked results. 
+  * The major change to the function is that now all provided features (e.g. peptides) are also part of the output no matter if a curve was fit or not. To get back to the original output you can remove all features without a fit, but please note that statistics such as the ANOVA p-value adjustment were computed on the complete dataset and might need to be readjusted by running the p-value adjustment again. 
+  * Another major change to the function was the way the `filter` argument works. This argument controls if significance statistics should be annotated in the data. 
+    * `"pre"`: This previously filtered curves by the completeness as well as the ANOVA adjusted p-value prior to fitting curves. Now it only filters by completeness. This also allows it to be an option for the `parallel_fit_drc_4p()` function. 
+    * `"post"`: Is still the default value and still just annotates the data without any filtering.
+  * In general we would now recommend using `"pre"` to remove usually not trustworthy features with too few complete concentrations from the data before p-value adjustment and curve fittings. This will solidify your confidence that features without a dose-response behavior are true negative. The point is that it is better to not include any features with too few values because they are potentially false negative.
 
 ## Bug fixes
 
 * `normalise()` now correctly works with grouped data. Previously it would only correctly work with ungrouped data frames. Now you can group the data to calculate group specific normalisations. If you want to compute a global normalisation for the dataset, you need to ungroup the data before using the function as usual. This fixes issue #209.
 * `qc_sequence_coverage()` now correctly displays medians in faceted plot. This fixes issue #202 and #213. 
+* `fit_drc_4p()` and `parallel_fit_drc_4p()` now correctly calculates the ANOVA p-value. Previously the number of observations for each concentration was not provided correctly.
+
+## Additional Changes
+
+* For `fit_drc_4p()` and `parallel_fit_drc_4p()` the arguments `replicate_completeness` and `condition_completeness` are now deprecated. Please use `n_replicate_completeness` and `n_condition_completeness` instead.
 
 ## Additional changes
 
