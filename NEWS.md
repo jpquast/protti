@@ -25,6 +25,8 @@
   * `facet_title_size`: determines the size of the facet titles.
   * `export_height`: determines the output height of an exported plot in inches.
   * `export_width`: determines the output width of an exported plot in inches.
+  * `x_axis_limits`: user supplied x-axis limits for each plot.
+  * `colours`: determines colours used for the plot.
 * `fit_drc_4p()` and `parallel_fit_drc_4p()` have been updated in the latest version of **protti**, leading to slight adjustments in their computational results compared to previous versions. 
   * We added new arguments: 
     * `anova_cutoff` lets you define the ANOVA adjusted p-value cutoff (default 0.05). 

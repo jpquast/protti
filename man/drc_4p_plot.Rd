@@ -16,9 +16,11 @@ drc_4p_plot(
   facet = TRUE,
   scales = "free",
   x_axis_scale_log10 = TRUE,
+  x_axis_limits = c(NA, NA),
+  colours = NULL,
   export = FALSE,
-  export_height = 37.5,
-  export_width = 45,
+  export_height = 25,
+  export_width = 30,
   export_name = "dose-response_curves"
 )
 }
@@ -55,16 +57,23 @@ target was provided) should be \code{"free"} or \code{"fixed"}.}
 \item{x_axis_scale_log10}{a logical value that indicates if the x-axis scale should be log10
 transformed.}
 
+\item{x_axis_limits}{a numeric vector of length 2, defining the lower and uper x-axis limit. The
+default is \code{c(NA, NA)}, meaning the limits are not defined by the user but by the data.}
+
+\item{colours}{a character vector containing at least three colours. The first is used for the points,
+the second for the confidence interval and the third for the curve. By default the first two
+protti colours are used for the points and confidence interval and the curve is black.}
+
 \item{export}{a logical value that indicates if plots should be exported as PDF. The output
 directory will be the current working directory. The name of the file can be chosen using the
 \code{export_name} argument. If only one target is selected and \code{export = TRUE},
 the plot is exported and in addition returned in R.}
 
 \item{export_height}{a numeric value that specifies the plot height in inches for an exported plot.
-The default is \code{37.5}. For a non-facet plot we recommend using 6.}
+The default is \code{25}. For a non-facet plot we recommend using 8.}
 
 \item{export_width}{a numeric value that specifies the plot height in inches for an exported plot.
-The default is \code{45}. For a non-facet plot we recommend using 8.}
+The default is \code{30}. For a non-facet plot we recommend using 12.}
 
 \item{export_name}{a character value providing the name of the exported file if
 \code{export = TRUE}.}
