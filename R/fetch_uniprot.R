@@ -75,15 +75,20 @@ fetch_uniprot <-
     contains_valid_id <- non_conform_ids[stringr::str_detect(non_conform_ids,
       pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
     )]
+
     uniprot_ids_contain_valid <- uniprot_ids[stringr::str_detect(uniprot_ids,
       pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
     )]
+
     valid_id_annotations <- tibble::tibble(input_id = contains_valid_id) %>%
       dplyr::mutate(accession = stringr::str_extract_all(.data$input_id,
         pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
       )) %>%
-      tidyr::unnest("accession")
+      tidyr::unnest("accession") %>%
+      dplyr::distinct()
+
     uniprot_ids_filtered <- c(uniprot_ids_filtered, valid_id_annotations$accession)
+
     non_identifiable_id <- non_conform_ids[!stringr::str_detect(non_conform_ids,
       pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
     )]
@@ -92,13 +97,13 @@ fetch_uniprot <-
       warning(strwrap("These UniProt accession numbers did not conform
 to uniprot standards and were skipped from importing: ",
         prefix = "\n", initial = ""
-      ), " ", paste(non_identifiable_id, collapse = ", "))
+      ), " ", paste(non_identifiable_id, collapse = ", "), "\n")
     }
     if (length(contains_valid_id) != 0) {
       warning(strwrap('The following input IDs were found to contain valid uniprot accession numbers.
 They were fetched and the original input ID can be found in the "input_id" column: ',
         prefix = "\n", initial = ""
-      ), " ", paste(contains_valid_id, collapse = ", "))
+      ), " ", paste(contains_valid_id, collapse = ", "), "\n")
     }
     if (length(uniprot_ids_filtered) == 0) {
       stop("No valid UniProt accession numbers found.")
