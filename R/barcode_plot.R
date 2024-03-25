@@ -4,7 +4,7 @@
 #' abundance can be displayed.
 #'
 #' @param data a data frame containing differential abundance, start and end peptide or precursor positions and protein length.
-#' @param start_position a numeric olumn in the data frame containing the start positions for each peptide or precursor.
+#' @param start_position a numeric column in the data frame containing the start positions for each peptide or precursor.
 #' @param end_position a numeric column in the data frame containing the end positions for each peptide or precursor.
 #' @param protein_length a numeric column in the data frame containing the length of the protein.
 #' @param coverage optional, numeric column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.
@@ -102,11 +102,11 @@ barcode_plot <- function(data,
   # Add coverage to protein ID name if present.
   if (!missing(coverage) & !missing(facet)) {
     data <- data %>%
-      mutate({{ facet }} := paste0({{ facet }}, " (", round({{ coverage }}, digits = 1), "%)"))
+      dplyr::mutate({{ facet }} := paste0({{ facet }}, " (", round({{ coverage }}, digits = 1), "%)"))
   }
   if (!missing(coverage) & !missing(protein_id)) {
     data <- data %>%
-      mutate({{ protein_id }} := paste0({{ protein_id }}, " (", round({{ coverage }}, digits = 1), "%)"))
+      dplyr::mutate({{ protein_id }} := paste0({{ protein_id }}, " (", round({{ coverage }}, digits = 1), "%)"))
   }
 
   # Create plot
