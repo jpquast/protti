@@ -235,7 +235,7 @@ calculate_go_enrichment <- function(data,
 
   if (!(plot_style %in% c("barplot", "heatmap"))) stop("Invalid plot_style. Available styles: barplot, heatmap")
 
-  if(length(barplot_fill_colour) < 2) stop('Please provide at least two colours to "barplot_fill_colour"!')
+  if (length(barplot_fill_colour) < 2) stop('Please provide at least two colours to "barplot_fill_colour"!')
 
   if (!stringr::str_detect(plot_cutoff, pattern = "^(pval|adj_pval) (top\\d+|\\d+(\\.\\d+)?)$")) {
     stop("Invalid format for plot_cutoff. Please provide the type (pval or adj_pval) followed by
@@ -520,7 +520,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       {
         if (!missing(group)) {
           if (y_axis_free) {
-            if(facet_n_col == 1){
+            if (facet_n_col == 1) {
               ggforce::facet_col(rlang::new_formula(NULL, rlang::enquo(group)), scales = "free_y", space = "free")
             } else {
               ggplot2::facet_wrap(rlang::new_formula(NULL, rlang::enquo(group)), scales = "free_y", ncol = facet_n_col)

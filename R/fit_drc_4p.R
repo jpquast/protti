@@ -321,19 +321,23 @@ fit_drc_4p <- function(data,
         list(unique(.data$n_vector_add_rev))[[1]][2]
       )$pval <= 0.1) %>%
       dplyr::ungroup() %>%
-      tidyr::replace_na(list("pval_vector" = TRUE,
-                             "pval_vector_rev" = TRUE,
-                             "pval_vector_add" = TRUE,
-                             "pval_vector_add_rev" = TRUE,
-                             "mean_vector" = 0,
-                             "mean_vector_rev" = 0,
-                             "mean_vector_add" = 0,
-                             "mean_vector_add_rev" = 0)) %>%
+      tidyr::replace_na(list(
+        "pval_vector" = TRUE,
+        "pval_vector_rev" = TRUE,
+        "pval_vector_add" = TRUE,
+        "pval_vector_add_rev" = TRUE,
+        "mean_vector" = 0,
+        "mean_vector_rev" = 0,
+        "mean_vector_add" = 0,
+        "mean_vector_add_rev" = 0
+      )) %>%
       dplyr::group_by({{ grouping }}) %>%
-      dplyr::mutate(mean_vector = min(.data$mean_vector) == .data$mean_vector,
-                    mean_vector_rev = min(.data$mean_vector_rev) == .data$mean_vector_rev,
-                    mean_vector_add = min(.data$mean_vector_add) == .data$mean_vector_add,
-                    mean_vector_add_rev = min(.data$mean_vector_add_rev) == .data$mean_vector_add_rev) %>%
+      dplyr::mutate(
+        mean_vector = min(.data$mean_vector) == .data$mean_vector,
+        mean_vector_rev = min(.data$mean_vector_rev) == .data$mean_vector_rev,
+        mean_vector_add = min(.data$mean_vector_add) == .data$mean_vector_add,
+        mean_vector_add_rev = min(.data$mean_vector_add_rev) == .data$mean_vector_add_rev
+      ) %>%
       dplyr::mutate(dose_MNAR = ifelse((all((.data$lower_vector & .data$enough_replicates == FALSE & .data$mean_vector) |
         (!.data$lower_vector & .data$enough_replicates == TRUE & !.data$mean_vector)) &
         .data$pval_vector) |

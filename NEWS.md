@@ -128,6 +128,7 @@
 * The default batchsize of `fetch_pdb()` was changed to 100 (from 200). This was done since more information is retrieved now, which slows to function down and is slightly improved when batch sizes are smaller.
 * `try_query()` now only retries to retrieve information once if the returned message was "Timeout was reached". In addition, a `timeout` and `accept` argument have been added.
 * The UniProt database has changed its API, therefore column names have changed as well as the format of data. We adjusted the `fetch_uniprot()` and `fetch_uniprot_proteome()` function accordingly. Please be aware that some columns names might have changed and your code might throw error messages if you did not adjust it accordingly. 
+* Some typo fixes. Thank you Steffi!
 
 # protti 0.3.1
 

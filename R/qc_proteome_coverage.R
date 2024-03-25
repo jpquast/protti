@@ -66,7 +66,7 @@ qc_proteome_coverage <- function(data,
 
   proteome <- fetch_uniprot_proteome(organism_id, reviewed = reviewed)
 
-  if(is(proteome, "character")){
+  if (is(proteome, "character")) {
     # UniProt information could not be fetched.
     message("UniProt information could not be fetched")
     return(NULL)

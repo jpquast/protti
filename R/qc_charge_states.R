@@ -130,9 +130,11 @@ qc_charge_states <-
             if (interactive == FALSE) {
               ggplot2::geom_text(
                 data = label_positions,
-                aes(y = label_y,
-                    label = round(.data$charge_per, digits = 1)),
-                    vjust = 1.5
+                aes(
+                  y = label_y,
+                  label = round(.data$charge_per, digits = 1)
+                ),
+                vjust = 1.5
               )
             }
           } +
@@ -192,9 +194,11 @@ qc_charge_states <-
             if (interactive == FALSE) {
               ggplot2::geom_text(
                 data = label_positions,
-                aes(y = label_y,
-                    label = round(.data$charge_per, digits = 1)),
-                    vjust = 1.5
+                aes(
+                  y = label_y,
+                  label = round(.data$charge_per, digits = 1)
+                ),
+                vjust = 1.5
               )
             }
           } +

@@ -22,7 +22,7 @@ barcode_plot(
 \arguments{
 \item{data}{a data frame containing differential abundance, start and end peptide or precursor positions and protein length.}
 
-\item{start_position}{a numeric olumn in the data frame containing the start positions for each peptide or precursor.}
+\item{start_position}{a numeric column in the data frame containing the start positions for each peptide or precursor.}
 
 \item{end_position}{a numeric column in the data frame containing the end positions for each peptide or precursor.}
 

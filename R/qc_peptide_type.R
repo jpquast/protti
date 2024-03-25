@@ -126,9 +126,11 @@ qc_peptide_type <- function(data,
         ggplot2::geom_col(col = "black", size = 1) +
         ggplot2::geom_text(
           data = label_positions,
-          aes(y = label_y,
-              label = round(.data$peptide_type_percent, digits = 1)),
-              vjust = 1.5
+          aes(
+            y = label_y,
+            label = round(.data$peptide_type_percent, digits = 1)
+          ),
+          vjust = 1.5
         ) +
         ggplot2::labs(
           title = "Peptide types per .raw file",
@@ -221,9 +223,11 @@ qc_peptide_type <- function(data,
         ggplot2::geom_col(col = "black", size = 1) +
         ggplot2::geom_text(
           data = label_positions,
-          aes(y = label_y,
-              label = round(.data$peptide_type_percent, digits = 1)),
-              vjust = 1.5
+          aes(
+            y = label_y,
+            label = round(.data$peptide_type_percent, digits = 1)
+          ),
+          vjust = 1.5
         ) +
         ggplot2::labs(
           title = "Peptide type intensity per .raw file",
