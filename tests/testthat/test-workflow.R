@@ -677,7 +677,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       ))
     })
 
-    expect_is(p, "ggplot")
+    expect_is(p, "list")
     expect_warning(print(p), NA)
 
     rlang::with_options(lifecycle_verbosity = "warning", {
