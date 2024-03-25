@@ -87,7 +87,7 @@ fetch_uniprot <-
       tidyr::unnest("accession") %>%
       dplyr::distinct()
 
-    uniprot_ids_filtered <- c(uniprot_ids_filtered, valid_id_annotations$accession)
+    uniprot_ids_filtered <- unique(c(uniprot_ids_filtered, valid_id_annotations$accession))
 
     non_identifiable_id <- non_conform_ids[!stringr::str_detect(non_conform_ids,
       pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
