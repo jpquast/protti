@@ -12,10 +12,13 @@ drc_4p_plot(
   targets,
   unit = "uM",
   y_axis_name = "Response",
+  facet_title_size = 15,
   facet = TRUE,
   scales = "free",
   x_axis_scale_log10 = TRUE,
   export = FALSE,
+  export_height = 37.5,
+  export_width = 45,
   export_name = "dose-response_curves"
 )
 }
@@ -41,6 +44,8 @@ if plots for all curve fits should be created.}
 
 \item{y_axis_name}{a character value specifying the name of the y-axis of the plot.}
 
+\item{facet_title_size}{a numeric value that specifies the size of the facet title. Default is 15.}
+
 \item{facet}{a logical value that indicates if plots should be summarised into facets of 20
 plots. This is recommended for many plots.}
 
@@ -54,6 +59,12 @@ transformed.}
 directory will be the current working directory. The name of the file can be chosen using the
 \code{export_name} argument. If only one target is selected and \code{export = TRUE},
 the plot is exported and in addition returned in R.}
+
+\item{export_height}{a numeric value that specifies the plot height in inches for an exported plot.
+The default is \code{37.5}. For a non-facet plot we recommend using 6.}
+
+\item{export_width}{a numeric value that specifies the plot height in inches for an exported plot.
+The default is \code{45}. For a non-facet plot we recommend using 8.}
 
 \item{export_name}{a character value providing the name of the exported file if
 \code{export = TRUE}.}

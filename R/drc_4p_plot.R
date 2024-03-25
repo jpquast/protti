@@ -37,6 +37,7 @@ plot_drc_4p <- function(...) {
 #' if plots for all curve fits should be created.
 #' @param unit a character value specifying the unit of the concentration.
 #' @param y_axis_name a character value specifying the name of the y-axis of the plot.
+#' @param facet_title_size a numeric value that specifies the size of the facet title. Default is 15.
 #' @param facet a logical value that indicates if plots should be summarised into facets of 20
 #' plots. This is recommended for many plots.
 #' @param scales a character value that specifies if the scales in faceted plots (if more than one
@@ -47,6 +48,10 @@ plot_drc_4p <- function(...) {
 #' directory will be the current working directory. The name of the file can be chosen using the
 #' \code{export_name} argument. If only one target is selected and \code{export = TRUE},
 #' the plot is exported and in addition returned in R.
+#' @param export_height a numeric value that specifies the plot height in inches for an exported plot.
+#' The default is `37.5`. For a non-facet plot we recommend using 6.
+#' @param export_width a numeric value that specifies the plot height in inches for an exported plot.
+#' The default is `45`. For a non-facet plot we recommend using 8.
 #' @param export_name a character value providing the name of the exported file if
 #' \code{export = TRUE}.
 #'
@@ -110,10 +115,13 @@ drc_4p_plot <- function(data,
                         targets,
                         unit = "uM",
                         y_axis_name = "Response",
+                        facet_title_size = 15,
                         facet = TRUE,
                         scales = "free",
                         x_axis_scale_log10 = TRUE,
                         export = FALSE,
+                        export_height = 37.5,
+                        export_width = 45,
                         export_name = "dose-response_curves") {
   . <- NULL
 
@@ -134,10 +142,10 @@ drc_4p_plot <- function(data,
       round(.data$ec_50),
       ")"
     )) %>%
+    dplyr::mutate(correlation = ifelse(is.na(.data$correlation), 0, .data$correlation)) %>%
     dplyr::mutate(name = forcats::fct_reorder(.data$name, dplyr::desc(.data$correlation))) %>%
     dplyr::mutate(
-      group_number = 1,
-      group_number = ceiling(cumsum(.data$group_number) / 20)
+      group_number = ceiling(1:dplyr::n() / 20)
     ) # we do this in preparation for faceting later.
 
   input_points <- data %>%
@@ -164,25 +172,33 @@ drc_4p_plot <- function(data,
         )
       ) +
         ggplot2::geom_point(size = 2, col = "#5680C1") +
-        ggplot2::geom_ribbon(
-          data = input_curve_plot,
-          ggplot2::aes(
-            x = .data$dose,
-            y = .data$Prediction,
-            ymin = .data$Lower,
-            ymax = .data$Upper
-          ),
-          alpha = 0.2,
-          fill = "#B96DAD"
-        ) +
-        ggplot2::geom_line(
-          data = input_curve_plot,
-          ggplot2::aes(
-            x = .data$dose,
-            y = .data$Prediction
-          ),
-          size = 1.2
-        ) +
+        {
+          if(nrow(input_curve_plot) != 1) {
+            ggplot2::geom_ribbon(
+              data = input_curve_plot,
+              ggplot2::aes(
+                x = .data$dose,
+                y = .data$Prediction,
+                ymin = .data$Lower,
+                ymax = .data$Upper
+              ),
+              alpha = 0.2,
+              fill = "#B96DAD"
+            )
+          }
+        } +
+        {
+          if(nrow(input_curve_plot) != 1) {
+            ggplot2::geom_line(
+              data = input_curve_plot,
+              ggplot2::aes(
+                x = .data$dose,
+                y = .data$Prediction
+              ),
+              size = 1.2
+            )
+          }
+        } +
         ggplot2::labs(
           title = unique(input_points_plot$name),
           x = paste0("Concentration [", unit, "]"),
@@ -269,24 +285,33 @@ drc_4p_plot <- function(data,
       pb$tick()
       ggplot2::ggplot(data = x, ggplot2::aes(x = {{ dose }}, y = {{ response }})) +
         ggplot2::geom_point(size = 2, col = "#5680C1") +
-        ggplot2::geom_ribbon(
-          data = y,
-          ggplot2::aes(
-            x = .data$dose,
-            y = .data$Prediction,
-            ymin = .data$Lower,
-            ymax = .data$Upper
-          ),
-          alpha = 0.2,
-          fill = "#B96DAD"
-        ) +
-        ggplot2::geom_line(
-          data = y, ggplot2::aes(
-            x = dose,
-            y = .data$Prediction
-          ),
-          size = 1.2
-        ) +
+        {
+          if(nrow(y) != 1) {
+            ggplot2::geom_ribbon(
+              data = y,
+              ggplot2::aes(
+                x = .data$dose,
+                y = .data$Prediction,
+                ymin = .data$Lower,
+                ymax = .data$Upper
+              ),
+              alpha = 0.2,
+              fill = "#B96DAD"
+            )
+          }
+        } +
+        {
+          if(nrow(y) != 1) {
+            ggplot2::geom_line(
+              data = y,
+              ggplot2::aes(
+                x = .data$dose,
+                y = .data$Prediction
+              ),
+              size = 1.2
+            )
+          }
+        } +
         {
           if (facet == FALSE) {
             ggplot2::labs(
@@ -335,10 +360,7 @@ drc_4p_plot <- function(data,
             size = 15
           ),
           strip.text.x = ggplot2::element_text(
-            size = 15
-          ),
-          strip.text = ggplot2::element_text(
-            size = 15
+            size = facet_title_size
           ),
           strip.background = element_blank()
         )
@@ -350,16 +372,16 @@ drc_4p_plot <- function(data,
     if (facet == TRUE) {
       grDevices::pdf(
         file = paste0(export_name, ".pdf"),
-        width = 45,
-        height = 37.5
+        width = export_width,
+        height = export_height
       )
       suppressWarnings(print(plots))
       grDevices::dev.off()
     } else {
       grDevices::pdf(
         file = paste0(export_name, ".pdf"),
-        width = 8,
-        height = 6
+        width = export_width,
+        height = export_height
       )
       suppressWarnings(print(plots))
       grDevices::dev.off()
