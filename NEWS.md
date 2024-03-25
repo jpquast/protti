@@ -50,6 +50,8 @@
 * For `fit_drc_4p()` and `parallel_fit_drc_4p()` the arguments `replicate_completeness` and `condition_completeness` are now deprecated. Please use `n_replicate_completeness` and `n_condition_completeness` instead.
 * Improved label positions of `qc_charge_states()`, `qc_peptide_type()` and `qc_missed_cleavages()`. Also made appearance more uniform between methods `"count"` and `"intensity"`.
 * `fetch_uniprot()` now returns nothing instead of a partial output if some of the requested batches could not be retrieved due to database issues (e.g. timeout because of too many requests). This addresses issue #203, which requests this change, because the warning message regarding the partial output can be easily missed and users might wrongfully assume that all information was retrieved successfully from UniProt.
+* `find_peptide()` now preserves the groups of the original data. This does not affect any of the calculations.
+* `calculate_sequence_coverage()` now works on grouped data.
 
 # protti 0.7.0
 
