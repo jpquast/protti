@@ -60,7 +60,7 @@ normalise <-
     if (!(method %in% c("median"))) {
       stop("Invalid method. Available methods: median")
     }
-    
+
     if (method == "median") {
       median_normalised <- data %>%
         dplyr::distinct() %>%

@@ -47,7 +47,6 @@ qc_sequence_coverage <- function(data,
                                  coverage,
                                  sample = NULL,
                                  interactive = FALSE) {
-
   # Validate inputs
   if (!all(c(rlang::as_name(rlang::enquo(protein_identifier)), rlang::as_name(rlang::enquo(coverage))) %in% colnames(data))) {
     stop("Column names for protein_identifier and coverage must exist in the dataset.")
@@ -76,10 +75,12 @@ qc_sequence_coverage <- function(data,
       boundary = 0,
       size = 1
     ) +
-    ggplot2::geom_vline(data = result %>% dplyr::distinct(.data$median_coverage, {{ sample }}),
-                        mapping = aes(xintercept = .data$median_coverage),
-                        linewidth = 1,
-                        linetype = "dashed") +
+    ggplot2::geom_vline(
+      data = result %>% dplyr::distinct(.data$median_coverage, {{ sample }}),
+      mapping = aes(xintercept = .data$median_coverage),
+      linewidth = 1,
+      linetype = "dashed"
+    ) +
     ggplot2::labs(
       title = "Protein coverage distribution",
       x = "Coverage [%]",

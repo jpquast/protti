@@ -173,7 +173,7 @@ drc_4p_plot <- function(data,
       ) +
         ggplot2::geom_point(size = 2, col = "#5680C1") +
         {
-          if(nrow(input_curve_plot) != 1) {
+          if (nrow(input_curve_plot) != 1) {
             ggplot2::geom_ribbon(
               data = input_curve_plot,
               ggplot2::aes(
@@ -188,7 +188,7 @@ drc_4p_plot <- function(data,
           }
         } +
         {
-          if(nrow(input_curve_plot) != 1) {
+          if (nrow(input_curve_plot) != 1) {
             ggplot2::geom_line(
               data = input_curve_plot,
               ggplot2::aes(
@@ -286,7 +286,7 @@ drc_4p_plot <- function(data,
       ggplot2::ggplot(data = x, ggplot2::aes(x = {{ dose }}, y = {{ response }})) +
         ggplot2::geom_point(size = 2, col = "#5680C1") +
         {
-          if(nrow(y) != 1) {
+          if (nrow(y) != 1) {
             ggplot2::geom_ribbon(
               data = y,
               ggplot2::aes(
@@ -301,7 +301,7 @@ drc_4p_plot <- function(data,
           }
         } +
         {
-          if(nrow(y) != 1) {
+          if (nrow(y) != 1) {
             ggplot2::geom_line(
               data = y,
               ggplot2::aes(

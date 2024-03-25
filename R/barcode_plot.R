@@ -123,7 +123,7 @@ barcode_plot <- function(data,
       size = 0.7
     ) +
     {
-      if (is.numeric(dplyr::pull(data, {{ colouring }}))){
+      if (is.numeric(dplyr::pull(data, {{ colouring }}))) {
         ggplot2::scale_fill_gradientn(colours = fill_colour_gradient)
       } else {
         ggplot2::scale_fill_manual(values = c(

@@ -762,7 +762,8 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
           purrr::map_dfr(~ dplyr::mutate(.x, adj_pval = p.adjust(.data$pval, method = p_adj_method))) %>%
           dplyr::select(-"n_obs", -"n_approx") %>%
           dplyr::rename({{ grouping }} := "name",
-                        std_error = "se") %>%
+            std_error = "se"
+          ) %>%
           dplyr::left_join(proDA_missingness, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison"))
 
         message("DONE", appendLF = TRUE)

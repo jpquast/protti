@@ -136,9 +136,11 @@ intensities or set remove_na_intensities to FALSE",
             if (interactive == FALSE) {
               ggplot2::geom_text(
                 data = label_positions,
-                aes(y = .data$label_y,
-                  label = round(.data$mc_percent, digits = 1)),
-                  vjust = 1.5
+                aes(
+                  y = .data$label_y,
+                  label = round(.data$mc_percent, digits = 1)
+                ),
+                vjust = 1.5
               )
             }
           } +
@@ -206,9 +208,11 @@ intensities or set remove_na_intensities to FALSE",
             if (interactive == FALSE) {
               ggplot2::geom_text(
                 data = label_positions,
-                aes(y = .data$label_y,
-                    label = round(.data$mc_percent, digits = 1)),
-                    vjust = 1.5
+                aes(
+                  y = .data$label_y,
+                  label = round(.data$mc_percent, digits = 1)
+                ),
+                vjust = 1.5
               )
             }
           } +
