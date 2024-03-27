@@ -10,20 +10,12 @@ calculate_go_enrichment(
   is_significant,
   group = NULL,
   y_axis_free = TRUE,
-  facet_n_col = 2,
   go_annotations_uniprot = NULL,
   ontology_type,
   organism_id = NULL,
   go_data = NULL,
   plot = TRUE,
-  plot_style = "barplot",
-  plot_title = "Gene ontology enrichment of significant proteins",
-  barplot_fill_colour = c("#56B4E9", "#E76145"),
-  heatmap_fill_colour = protti::mako_colours,
-  heatmap_fill_colour_rev = TRUE,
   label = TRUE,
-  enrichment_type = "all",
-  min_n_detected_proteins_in_process = 1,
   plot_cutoff = "adj_pval top10"
 )
 }
@@ -47,9 +39,6 @@ In protti the \code{assign_missingness()} function creates such a column automat
 for each facet if a grouping variable is provided. Default is \code{TRUE}. If \code{FALSE} is selected
 it is easier to compare GO categories directly with each other.}
 
-\item{facet_n_col}{a numeric value that specifies the number of columns the faceted plot should have
-if a column name is provided to group. The default is 2.}
-
 \item{go_annotations_uniprot}{recommended, a character column in the \code{data} data frame
 that contains gene ontology annotations obtained from UniProt using \code{fetch_uniprot}.
 These annotations are already separated into the desired ontology type so the argument
@@ -66,47 +55,16 @@ organism (TaxId). Possible inputs include only: "9606" (Human), "559292" (Yeast)
 (E. coli). Is only necessary if GO data is not provided either by \code{go_annotations_uniprot}
 or in \code{go_data}.}
 
-\item{go_data}{Optional, a data frame that can be obtained with \code{fetch_go()}. If you provide
-data not obtained with \code{fetch_go()} make sure column names for protein ID (\code{db_id}) and GO ID
-(\code{go_id}) are the same as for data obtained with \code{fetch_go()}.}
+\item{go_data}{Optional, a data frame that can be obtained with \code{fetch_go}. If you provide
+data not obtained with \code{fetch_go} make sure column names for protein ID (db_id) and GO ID
+(go_id) are the same as for data obtained with \code{fetch_go}.}
 
 \item{plot}{a logical argument indicating whether the result should be plotted or returned as a table.}
-
-\item{plot_style}{a character argument that specifies the plot style. Can be either "barplot" (default)
-or "heatmap". The "heatmap" plot is especially useful for the comparison of multiple groups. We recommend,
-however, that you use it only with \code{enrichment_type = "enriched"} or \verb{enrichment_type = "deenriched},
-because otherwise it is not possible to distinguish between enrichment and deenrichment in the plot.}
-
-\item{plot_title}{a character value that specifies the title of the plot. The default is "Gene ontology
-enrichment of significant proteins".}
-
-\item{barplot_fill_colour}{a vector that contains two colours that should be used as the fill colours for
-deenriched and enriched GO terms, respectively. If \code{enrichment_type = "enriched"} or \verb{"deenriched}, please
-still provide two values in the vector, the colour not used for the plot can be \code{NA} in this case. E.g.
-\code{c(NA, "red")} for \code{enrichment_type = "enriched"}.}
-
-\item{heatmap_fill_colour}{a vector that contains colours that should be used to create the gradient in the
-heatmap plot. Default is \code{mako_colours}.}
-
-\item{heatmap_fill_colour_rev}{a logical value that specifies if the provided colours in \code{heatmap_fill_colour}
-should be reversed in order. Default is \code{TRUE}.}
 
 \item{label}{a logical argument indicating whether labels should be added to the plot.
 Default is TRUE.}
 
-\item{enrichment_type}{a character argument that is either "all", "enriched" or "deenriched". This
-determines if the enrichment analysis should be performed in order to check for both enrichemnt and
-deenrichemnt or only one of the two. This affects the statistics performed and therefore also the displayed
-plot.}
-
-\item{min_n_detected_proteins_in_process}{is a numeric argument that specifies the minimum number of
-detected proteins required for a GO term to be displayed in the plot. The default is 1, meaning
-no filtering of the plotted data is performed. This argument does not affect any computations or
-the returned data if \code{plot = FALSE}. This argument is useful in order to remove terms that were only
-detected in for example 1 protein. Even though these terms are sometimes significant, they are not
-really relevant.}
-
-\item{plot_cutoff}{a character value indicating if the plot should contain the top n (e.g. top10) most
+\item{plot_cutoff}{a character value indicating if the plot should contain the top 10 most
 significant proteins (p-value or adjusted p-value), or if a significance cutoff should be used
 to determine the number of GO terms in the plot. This information should be provided with the
 type first followed by the threshold separated by a space. Example are
@@ -115,13 +73,10 @@ type first followed by the threshold separated by a space. Example are
 \code{"adj_pval top10"}.}
 }
 \value{
-A bar plot or heatmap (depending on \code{plot_style}). By default the bar plot displays negative log10
-adjusted p-values for the top 10 enriched or deenriched gene ontology terms. Alternatively, plot cutoffs
-can be chosen individually with the \code{plot_cutoff} argument. Bars are colored according to the direction
-of the enrichment (enriched or deenriched). If a heatmap is returned, terms are organised on the y-axis, while
-the colour of each tile represents the negative log10 adjusted p-value (default). If a \code{group} column
-is provided the x-axis contains all groups. If \code{plot = FALSE}, a data frame is returned. P-values are adjusted with
-Benjamini-Hochberg.
+A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or
+depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individually with the
+\code{plot_cutoff} argument. Bars are colored according to the direction of the enrichment. If
+\code{plot = FALSE}, a data frame is returned. P-values are adjusted with Benjamini-Hochberg.
 }
 \description{
 Analyses enrichment of gene ontology terms associated with proteins in the fraction of
@@ -160,12 +115,6 @@ if (!is(uniprot_go_data, "character")) {
       ),
       FALSE,
       significant
-    )) \%>\%
-    mutate(group = c(
-      rep("A", 500),
-      rep("B", 500),
-      rep("A", (n() - 1000) / 2),
-      rep("B", round((n() - 1000) / 2))
     ))
 
   # Plot gene ontology enrichment
@@ -175,33 +124,6 @@ if (!is(uniprot_go_data, "character")) {
     go_annotations_uniprot = go_f,
     is_significant = significant,
     plot = TRUE,
-    plot_cutoff = "pval 0.01"
-  )
-
-  # Plot gene ontology enrichment with group
-  calculate_go_enrichment(
-    data,
-    protein_id = accession,
-    go_annotations_uniprot = go_f,
-    is_significant = significant,
-    group = group,
-    facet_n_col = 1,
-    plot = TRUE,
-    plot_cutoff = "pval 0.01"
-  )
-
-  # Plot gene ontology enrichment with group in a heatmap plot
-  calculate_go_enrichment(
-    data,
-    protein_id = accession,
-    group = group,
-    go_annotations_uniprot = go_f,
-    is_significant = significant,
-    min_n_detected_proteins_in_process = 15,
-    plot = TRUE,
-    label = TRUE,
-    plot_style = "heatmap",
-    enrichment_type = "enriched",
     plot_cutoff = "pval 0.01"
   )
 

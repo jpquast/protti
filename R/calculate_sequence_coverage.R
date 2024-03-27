@@ -49,13 +49,12 @@ sequence_coverage <- function(...) {
 #' )
 calculate_sequence_coverage <-
   function(data, protein_sequence, peptides) {
-    groups <- dplyr::group_vars(data)
-
     result <- data %>%
+      dplyr::ungroup() %>%
       # drop_na prevents function from failing if a protein group contains only NA peptide sequences.
       tidyr::drop_na({{ peptides }}) %>%
       dplyr::distinct({{ protein_sequence }}, {{ peptides }}) %>%
-      dplyr::group_by({{ protein_sequence }}, .add = TRUE) %>%
+      dplyr::group_by({{ protein_sequence }}) %>%
       find_peptide({{ protein_sequence }}, {{ peptides }}) %>%
       dplyr::mutate(sequence_length = nchar({{ protein_sequence }})) %>%
       dplyr::mutate(modified_sequence = replace_identified_by_x({{ protein_sequence }}, .data$start, .data$end)) %>%
@@ -75,7 +74,9 @@ calculate_sequence_coverage <-
       dplyr::distinct() %>%
       dplyr::ungroup()
 
-    data %>%
-      dplyr::left_join(result, by = c(rlang::as_name(rlang::enquo(protein_sequence)), groups))
 
+    result <- data %>%
+      dplyr::left_join(result, by = rlang::as_name(rlang::enquo(protein_sequence)))
+
+    result
   }
