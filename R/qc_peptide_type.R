@@ -127,7 +127,7 @@ qc_peptide_type <- function(data,
         ggplot2::geom_text(
           data = label_positions,
           aes(
-            y = label_y,
+            y = .data$label_y,
             label = round(.data$peptide_type_percent, digits = 1)
           ),
           vjust = 1.5
@@ -224,7 +224,7 @@ qc_peptide_type <- function(data,
         ggplot2::geom_text(
           data = label_positions,
           aes(
-            y = label_y,
+            y = .data$label_y,
             label = round(.data$peptide_type_percent, digits = 1)
           ),
           vjust = 1.5
