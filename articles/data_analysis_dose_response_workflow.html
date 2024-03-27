@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -366,18 +366,6 @@ failed the filtering step (<code>passed_filter</code>).</p>
 <span>    filter <span class="op">=</span> <span class="st">"post"</span>,</span>
 <span>    retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pg_protein_accessions</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: The `condition_completeness` argument of `fit_drc_4p()` is deprecated as of</span></span>
-<span><span class="co">#&gt; protti 0.8.0.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use the `n_condition_completeness` argument instead.</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
-<span><span class="co">#&gt; Warning: The `replicate_completeness` argument of `fit_drc_4p()` is deprecated as of</span></span>
-<span><span class="co">#&gt; protti 0.8.0.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use the `n_replicate_completeness` argument instead.</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
 <span></span>
 <span><span class="co"># make sure to retain columns that you need later but that are not part of the function</span></span></code></pre></div>
 <p>If you have to fit many models this function may take about an hour
@@ -441,7 +429,17 @@ effect.</p>
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="left">0.911</td>
+<td align="left">0.919</td>
+<td align="left">
+<em>VFDVELLKLE</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">3.98e-13</td>
+<td align="left">0.967</td>
+<td align="left">3.6e+06</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">0.914</td>
 <td align="left">
 <em>RGQTC[Carbamidomethyl (C)]VVHYTGMLEDGK</em>.3</td>
 <td align="left">P62942</td>
@@ -449,9 +447,9 @@ effect.</p>
 <td align="left">0.947</td>
 <td align="left">3.0e+05</td>
 </tr>
-<tr class="even">
-<td align="right">2</td>
-<td align="left">0.885</td>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">0.888</td>
 <td align="left">
 <em>GWEEGVAQMSVGQR</em>.2</td>
 <td align="left">P62942</td>
@@ -459,166 +457,166 @@ effect.</p>
 <td align="left">0.947</td>
 <td align="left">4.7e+05</td>
 </tr>
-<tr class="odd">
-<td align="right">3</td>
-<td align="left">0.884</td>
-<td align="left">
-<em>VFDVELLKLE</em>.2</td>
-<td align="left">P62942</td>
-<td align="left">2.26e-12</td>
-<td align="left">0.967</td>
-<td align="left">3.6e+06</td>
-</tr>
 <tr class="even">
 <td align="right">4</td>
-<td align="left">0.797</td>
-<td align="left">
-<em>LVFDVELLK</em>.2</td>
-<td align="left">P62942</td>
-<td align="left">7.20e-11</td>
-<td align="left">0.959</td>
-<td align="left">4.4e+06</td>
-</tr>
-<tr class="odd">
-<td align="right">5</td>
-<td align="left">0.783</td>
+<td align="left">0.823</td>
 <td align="left">
 <em>GWEEGVAQ</em>.1</td>
 <td align="left">P62942</td>
-<td align="left">2.55e-09</td>
+<td align="left">2.47e-10</td>
 <td align="left">0.976</td>
 <td align="left">7.8e+06</td>
 </tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">0.798</td>
+<td align="left">
+<em>LVFDVELLK</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">6.00e-11</td>
+<td align="left">0.959</td>
+<td align="left">4.4e+06</td>
+</tr>
 <tr class="even">
 <td align="right">6</td>
-<td align="left">0.770</td>
+<td align="left">0.778</td>
 <td align="left">
-<em>RGQTC[Carbamidomethyl (C)]VVHYTGMLEDGK</em>.4</td>
+<em>GWEEGVAQMSVGQR</em>.3</td>
 <td align="left">P62942</td>
-<td align="left">1.40e-12</td>
-<td align="left">0.926</td>
-<td align="left">5.7e+05</td>
+<td align="left">1.71e-11</td>
+<td align="left">0.944</td>
+<td align="left">7.7e+05</td>
 </tr>
 <tr class="odd">
 <td align="right">7</td>
-<td align="left">0.703</td>
+<td align="left">0.775</td>
 <td align="left">
-<em>YTGMLEDGK</em>.2</td>
+<em>RGQTC[Carbamidomethyl (C)]VVHYTGMLEDGK</em>.4</td>
 <td align="left">P62942</td>
-<td align="left">1.32e-09</td>
-<td align="left">0.945</td>
-<td align="left">3.5e+06</td>
+<td align="left">1.05e-12</td>
+<td align="left">0.926</td>
+<td align="left">5.7e+05</td>
 </tr>
 <tr class="even">
 <td align="right">8</td>
-<td align="left">0.691</td>
+<td align="left">0.719</td>
+<td align="left">
+<em>YTGMLEDGK</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">4.19e-10</td>
+<td align="left">0.945</td>
+<td align="left">3.5e+06</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">0.703</td>
+<td align="left">
+<em>LTISPDYAYGAT</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">1.02e-09</td>
+<td align="left">0.946</td>
+<td align="left">3.0e+06</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">0.693</td>
 <td align="left">
 <em>RGQTC[Carbamidomethyl (C)]VVH</em>.2</td>
 <td align="left">P62942</td>
-<td align="left">1.45e-09</td>
+<td align="left">1.02e-09</td>
 <td align="left">0.943</td>
 <td align="left">7.6e+06</td>
 </tr>
 <tr class="odd">
-<td align="right">9</td>
-<td align="left">0.681</td>
-<td align="left">
-<em>GWEEGVAQMSVGQR</em>.3</td>
-<td align="left">P62942</td>
-<td align="left">2.67e-09</td>
-<td align="left">0.944</td>
-<td align="left">7.7e+05</td>
-</tr>
-<tr class="even">
-<td align="right">10</td>
-<td align="left">0.673</td>
-<td align="left">
-<em>LTISPDYAYGAT</em>.2</td>
-<td align="left">P62942</td>
-<td align="left">5.22e-09</td>
-<td align="left">0.946</td>
-<td align="left">3.0e+06</td>
-</tr>
-<tr class="odd">
 <td align="right">11</td>
-<td align="left">0.621</td>
+<td align="left">0.623</td>
 <td align="left">
 <em>LVFDVELLKLE</em>.2</td>
 <td align="left">P62942</td>
-<td align="left">1.30e-08</td>
+<td align="left">1.19e-08</td>
 <td align="left">0.934</td>
 <td align="left">5.2e+06</td>
 </tr>
 <tr class="even">
 <td align="right">12</td>
-<td align="left">0.491</td>
-<td align="left">
-<em>VVHYTGMLEDGK</em>.3</td>
-<td align="left">P62942</td>
-<td align="left">4.25e-08</td>
-<td align="left">0.900</td>
-<td align="left">6.7e+06</td>
-</tr>
-<tr class="odd">
-<td align="right">13</td>
-<td align="left">0.436</td>
+<td align="left">0.550</td>
 <td align="left">
 <em>VFDVELLK</em>.2</td>
 <td align="left">P62942</td>
-<td align="left">4.70e-06</td>
+<td align="left">8.99e-09</td>
 <td align="left">0.908</td>
 <td align="left">3.0e+06</td>
 </tr>
+<tr class="odd">
+<td align="right">13</td>
+<td align="left">0.500</td>
+<td align="left">
+<em>VVHYTGMLEDGK</em>.3</td>
+<td align="left">P62942</td>
+<td align="left">3.26e-08</td>
+<td align="left">0.900</td>
+<td align="left">6.7e+06</td>
+</tr>
 <tr class="even">
 <td align="right">14</td>
-<td align="left">0.367</td>
-<td align="left">
-<em>VVHYTGMLEDGK</em>.2</td>
-<td align="left">P62942</td>
-<td align="left">1.63e-06</td>
-<td align="left">0.880</td>
-<td align="left">7.4e+06</td>
-</tr>
-<tr class="odd">
-<td align="right">15</td>
-<td align="left">0.364</td>
+<td align="left">0.438</td>
 <td align="left">
 <em>RGQTC[Carbamidomethyl (C)]VVHYTGM[Oxidation
 (M)]LEDGK</em>.3</td>
 <td align="left">P62942</td>
-<td align="left">9.10e-03</td>
+<td align="left">1.37e-04</td>
 <td align="left">0.927</td>
 <td align="left">7.1e+05</td>
 </tr>
+<tr class="odd">
+<td align="right">15</td>
+<td align="left">0.381</td>
+<td align="left">
+<em>VVHYTGMLEDGK</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">9.64e-07</td>
+<td align="left">0.880</td>
+<td align="left">7.4e+06</td>
+</tr>
 <tr class="even">
 <td align="right">16</td>
-<td align="left">0.154</td>
+<td align="left">0.230</td>
 <td align="left">
 <em>GWEEGVAQM</em>.2</td>
 <td align="left">P62942</td>
-<td align="left">4.14e-04</td>
+<td align="left">8.26e-06</td>
 <td align="left">0.843</td>
 <td align="left">1.6e+06</td>
 </tr>
 <tr class="odd">
 <td align="right">17</td>
-<td align="left">0.132</td>
+<td align="left">0.143</td>
 <td align="left">
 <em>DTVATQLSEAVDATR</em>.2</td>
 <td align="left">O60664</td>
-<td align="left">5.80e-04</td>
+<td align="left">4.89e-04</td>
 <td align="left">0.838</td>
 <td align="left">4.8e+07</td>
 </tr>
 <tr class="even">
 <td align="right">18</td>
-<td align="left">0.000</td>
+<td align="left">0.100</td>
 <td align="left">
 <em>DYFEEYGKIDTIEIITDR</em>.3</td>
 <td align="left">P22626</td>
-<td align="left">2.27e-02</td>
+<td align="left">1.39e-04</td>
 <td align="left">0.816</td>
 <td align="left">3.2e+07</td>
+</tr>
+<tr class="odd">
+<td align="right">19</td>
+<td align="left">0.000</td>
+<td align="left">
+<em>RGQTC[Carbamidomethyl (C)]VVHYTGMLEDGK</em>.2</td>
+<td align="left">P62942</td>
+<td align="left">1.24e-02</td>
+<td align="left">0.811</td>
+<td align="left">1.3e+05</td>
 </tr>
 </tbody>
 </table>
@@ -701,6 +699,7 @@ function. This is the case if the peptide was assigned a rank.</p>
 <code class="sourceCode R"><span><span class="co"># fetching of UniProt information</span></span>
 <span><span class="va">unis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">pg_protein_accessions</span><span class="op">)</span></span>
 <span><span class="va">uniprot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_uniprot.html">fetch_uniprot</a></span><span class="op">(</span><span class="va">unis</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.</span></span>
 <span></span>
 <span><span class="co"># annotation of fit data based on information from UniProt</span></span>
 <span><span class="va">fit_annotated</span> <span class="op">&lt;-</span> <span class="va">fit</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
