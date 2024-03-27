@@ -3,38 +3,38 @@
 #' `r lifecycle::badge('deprecated')`
 #' This function was deprecated due to its name changing to `calculate_diff_abundance()`.
 #'
-#' @return A data frame that contains differential abundances (\code{diff}), p-values (\code{pval})
-#' and adjusted p-values (\code{adj_pval}) for each protein, peptide or precursor (depending on
-#' the \code{grouping} variable) and the associated treatment/reference pair. Depending on the
+#' @return A data frame that contains differential abundances (`diff`), p-values (`pval`)
+#' and adjusted p-values (`adj_pval`) for each protein, peptide or precursor (depending on
+#' the `grouping` variable) and the associated treatment/reference pair. Depending on the
 #' method the data frame contains additional columns:
 #'
-#' * "t-test": The \code{std_error} column contains the standard error of the differential
-#' abundances. \code{n_obs} contains the number of observations for the specific protein, peptide
-#' or precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.
+#' * "t-test": The `std_error` column contains the standard error of the differential
+#' abundances. `n_obs` contains the number of observations for the specific protein, peptide
+#' or precursor (depending on the `grouping` variable) and the associated treatment/reference pair.
 #' * "t-test_mean_sd": Columns labeled as control refer to the second condition of the
-#' comparison pairs. Treated refers to the first condition. \code{mean_control} and \code{mean_treated}
-#' columns contain the means for the reference and treatment condition, respectively. \code{sd_control}
-#' and \code{sd_treated} columns contain the standard deviations for the reference and treatment
-#' condition, respectively. \code{n_control} and \code{n_treated} columns contain the numbers of
-#' samples for the reference and treatment condition, respectively. The \code{std_error} column
-#' contains the standard error of the differential abundances. \code{t_statistic} contains the
+#' comparison pairs. Treated refers to the first condition. `mean_control` and `mean_treated`
+#' columns contain the means for the reference and treatment condition, respectively. `sd_control`
+#' and `sd_treated` columns contain the standard deviations for the reference and treatment
+#' condition, respectively. `n_control` and `n_treated` columns contain the numbers of
+#' samples for the reference and treatment condition, respectively. The `std_error` column
+#' contains the standard error of the differential abundances. `t_statistic` contains the
 #' t_statistic for the t-test.
-#' * "moderated_t-test": \code{CI_2.5} and \code{CI_97.5} contain the 2.5% and 97.5%
-#' confidence interval borders for differential abundances. \code{avg_abundance} contains average
-#' abundances for treatment/reference pairs (mean of the two group means). \code{t_statistic}
-#' contains the t_statistic for the t-test. \code{B} The B-statistic is the log-odds that the
-#' protein, peptide or precursor (depending on \code{grouping}) has a differential abundance
+#' * "moderated_t-test": `CI_2.5` and `CI_97.5` contain the 2.5% and 97.5%
+#' confidence interval borders for differential abundances. `avg_abundance` contains average
+#' abundances for treatment/reference pairs (mean of the two group means). `t_statistic`
+#' contains the t_statistic for the t-test. `B` The B-statistic is the log-odds that the
+#' protein, peptide or precursor (depending on `grouping`) has a differential abundance
 #' between the two groups. Suppose B=1.5. The odds of differential abundance is exp(1.5)=4.48, i.e,
 #' about four and a half to one. The probability that there is a differential abundance is
 #' 4.48/(1+4.48)=0.82, i.e., the probability is about 82% that this group is differentially
 #' abundant. A B-statistic of zero corresponds to a 50-50 chance that the group is differentially
-#' abundant.\code{n_obs} contains the number of observations for the specific protein, peptide or
-#' precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.
-#' * "proDA": The \code{std_error} column contains the standard error of the differential
-#' abundances. \code{avg_abundance} contains average abundances for treatment/reference pairs
-#' (mean of the two group means). \code{t_statistic} contains the t_statistic for the t-test.
-#' \code{n_obs} contains the number of observations for the specific protein, peptide or precursor
-#' (depending on the \code{grouping} variable) and the associated treatment/reference pair.
+#' abundant.`n_obs` contains the number of observations for the specific protein, peptide or
+#' precursor (depending on the `grouping` variable) and the associated treatment/reference pair.
+#' * "proDA": The `std_error` column contains the standard error of the differential
+#' abundances. `avg_abundance` contains average abundances for treatment/reference pairs
+#' (mean of the two group means). `t_statistic` contains the t_statistic for the t-test.
+#' `n_obs` contains the number of observations for the specific protein, peptide or precursor
+#' (depending on the `grouping` variable) and the associated treatment/reference pair.
 #'
 #' @keywords internal
 #' @export
@@ -55,101 +55,101 @@ diff_abundance <-
 #' with protein, peptide or precursor data. Different methods for statistical testing are available.
 #'
 #' @param data a data frame containing at least the input variables that are required for the
-#' selected method. Ideally the output of \code{assign_missingness} or \code{impute} is used.
-#' @param sample a character column in the \code{data} data frame that contains the sample name.
-#' Is not required if \code{method = "t-test_mean_sd"}.
-#' @param condition a character or numeric column in the \code{data} data frame that contains the
+#' selected method. Ideally the output of `assign_missingness` or `impute` is used.
+#' @param sample a character column in the `data` data frame that contains the sample name.
+#' Is not required if `method = "t-test_mean_sd"`.
+#' @param condition a character or numeric column in the `data` data frame that contains the
 #' conditions.
-#' @param grouping a character column in the \code{data} data frame that contains precursor,
+#' @param grouping a character column in the `data` data frame that contains precursor,
 #' peptide or protein identifiers.
-#' @param intensity_log2 a numeric column in the \code{data} data frame that contains intensity
+#' @param intensity_log2 a numeric column in the `data` data frame that contains intensity
 #' values. The intensity values need to be log2 transformed. Is not required if
-#' \code{method = "t-test_mean_sd"}.
-#' @param missingness a character column in the \code{data} data frame that contains missingness
-#' information. Can be obtained by calling \code{assign_missingness()}. Is not required if
-#' \code{method = "t-test_mean_sd"}. The type of missingness assigned to a comparison does not have
-#' any influence on the statistical test. However, if \code{filter_NA_missingness = TRUE} and
-#' \code{method = "proDA"}, then comparisons with missingness \code{NA} are filtered out prior
+#' `method = "t-test_mean_sd"`.
+#' @param missingness a character column in the `data` data frame that contains missingness
+#' information. Can be obtained by calling `assign_missingness()`. Is not required if
+#' `method = "t-test_mean_sd"`. The type of missingness assigned to a comparison does not have
+#' any influence on the statistical test. However, if `filter_NA_missingness = TRUE` and
+#' `method = "proDA"`, then comparisons with missingness `NA` are filtered out prior
 #' to p-value adjustment.
-#' @param comparison a character column in the \code{data} data frame that contains information of
-#' treatment/reference condition pairs. Can be obtained by calling \code{assign_missingness}.
+#' @param comparison a character column in the `data` data frame that contains information of
+#' treatment/reference condition pairs. Can be obtained by calling `assign_missingness`.
 #' Comparisons need to be in the form condition1_vs_condition2, meaning two compared conditions are
-#' separated by \code{"_vs_"}. This column determines for which condition pairs differential
-#' abundances are calculated. Is not required if \code{method = "t-test_mean_sd"}, in that case
+#' separated by `"_vs_"`. This column determines for which condition pairs differential
+#' abundances are calculated. Is not required if `method = "t-test_mean_sd"`, in that case
 #' please provide a reference condition with the ref_condition argument.
-#' @param mean a numeric column in the \code{data} data frame that contains mean values for two
-#' conditions. Is only required if \code{method = "t-test_mean_sd"}.
-#' @param sd a numeric column in the \code{data} data frame that contains standard deviations for
-#' two conditions. Is only required if \code{method = "t-test_mean_sd"}.
-#' @param n_samples a numeric column in the \code{data} data frame that contains the number of
-#' samples per condition for two conditions. Is only required if \code{method = "t-test_mean_sd"}.
+#' @param mean a numeric column in the `data` data frame that contains mean values for two
+#' conditions. Is only required if `method = "t-test_mean_sd"`.
+#' @param sd a numeric column in the `data` data frame that contains standard deviations for
+#' two conditions. Is only required if `method = "t-test_mean_sd"`.
+#' @param n_samples a numeric column in the `data` data frame that contains the number of
+#' samples per condition for two conditions. Is only required if `method = "t-test_mean_sd"`.
 #' @param ref_condition optional, character value providing the condition that is used as a
-#' reference for differential abundance calculation. Only required for \code{method = "t-test_mean_sd"}.
+#' reference for differential abundance calculation. Only required for `method = "t-test_mean_sd"`.
 #' Instead of providing one reference condition, "all" can be supplied, which will create all
-#' pairwise condition pairs. By default \code{ref_condition = "all"}.
-#' @param filter_NA_missingness a logical value, default is \code{TRUE}. For all methods except
-#' \code{"t-test_mean_sd"} missingness information has to be provided. This information can be
-#' for example obtained by calling \code{assign_missingness()}. If a reference/treatment pair has
-#' too few samples to be considered robust based on user defined cutoffs, it is annotated with \code{NA}
-#' as missingness by the \code{assign_missingness()} function. If this argument is \code{TRUE},
-#' these \code{NA} reference/treatment pairs are filtered out. For \code{method = "proDA"} this
+#' pairwise condition pairs. By default `ref_condition = "all"`.
+#' @param filter_NA_missingness a logical value, default is `TRUE`. For all methods except
+#' `"t-test_mean_sd"` missingness information has to be provided. This information can be
+#' for example obtained by calling `assign_missingness()`. If a reference/treatment pair has
+#' too few samples to be considered robust based on user defined cutoffs, it is annotated with `NA`
+#' as missingness by the `assign_missingness()` function. If this argument is `TRUE`,
+#' these `NA` reference/treatment pairs are filtered out. For `method = "proDA"` this
 #' is done before the p-value adjustment.
 #' @param method a character value, specifies the method used for statistical hypothesis testing.
-#' Methods include Welch test (\code{"t-test"}), a Welch test on means, standard deviations and
-#' number of replicates ("\code{"t-test_mean_sd"}) and a moderated t-test based on the \code{limma}
-#' package (\code{"moderated_t-test"}). More information on the moderated t-test can be found in
-#' the \code{limma} documentation. Furthermore, the \code{proDA} package specific method (\code{"proDA"})
+#' Methods include Welch test (`"t-test"`), a Welch test on means, standard deviations and
+#' number of replicates (`"t-test_mean_sd"`) and a moderated t-test based on the `limma`
+#' package (`"moderated_t-test"`). More information on the moderated t-test can be found in
+#' the `limma` documentation. Furthermore, the `proDA` package specific method (`"proDA"`)
 #' can be used to infer means across samples based on a probabilistic dropout model. This
 #' eliminates the need for data imputation since missing values are inferred from the model. More
-#' information can be found in the \code{proDA} documentation. We do not recommend using the
-#' \code{moderated_t-test} or \code{proDA} method if the data was filtered for low CVs or imputation
-#' was performed. Default is \code{method = "moderated_t-test"}.
+#' information can be found in the `proDA` documentation. We do not recommend using the
+#' `moderated_t-test` or `proDA` method if the data was filtered for low CVs or imputation
+#' was performed. Default is `method = "moderated_t-test"`.
 #' @param p_adj_method a character value, specifies the p-value correction method. Possible
 #' methods are c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). Default
-#' method is \code{"BH"}.
+#' method is `"BH"`.
 #' @param retain_columns a vector indicating if certain columns should be retained from the input
-#' data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
+#' data frame. Default is not retaining additional columns `retain_columns = NULL`. Specific
 #' columns can be retained by providing their names (not in quotations marks, just like other
 #' column names, but in a vector). Please note that if you retain columns that have multiple
 #' rows per grouped variable there will be duplicated rows in the output.
 #'
-#' @return A data frame that contains differential abundances (\code{diff}), p-values (\code{pval})
-#' and adjusted p-values (\code{adj_pval}) for each protein, peptide or precursor (depending on
-#' the \code{grouping} variable) and the associated treatment/reference pair. Depending on the
+#' @return A data frame that contains differential abundances (`diff`), p-values (`pval`)
+#' and adjusted p-values (`adj_pval`) for each protein, peptide or precursor (depending on
+#' the `grouping` variable) and the associated treatment/reference pair. Depending on the
 #' method the data frame contains additional columns:
 #'
-#' * "t-test": The \code{std_error} column contains the standard error of the differential
-#' abundances. \code{n_obs} contains the number of observations for the specific protein, peptide
-#' or precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.
+#' * "t-test": The `std_error` column contains the standard error of the differential
+#' abundances. `n_obs` contains the number of observations for the specific protein, peptide
+#' or precursor (depending on the `grouping` variable) and the associated treatment/reference pair.
 #' * "t-test_mean_sd": Columns labeled as control refer to the second condition of the
-#' comparison pairs. Treated refers to the first condition. \code{mean_control} and \code{mean_treated}
-#' columns contain the means for the reference and treatment condition, respectively. \code{sd_control}
-#' and \code{sd_treated} columns contain the standard deviations for the reference and treatment
-#' condition, respectively. \code{n_control} and \code{n_treated} columns contain the numbers of
-#' samples for the reference and treatment condition, respectively. The \code{std_error} column
-#' contains the standard error of the differential abundances. \code{t_statistic} contains the
+#' comparison pairs. Treated refers to the first condition. `mean_control` and `mean_treated`
+#' columns contain the means for the reference and treatment condition, respectively. `sd_control`
+#' and `sd_treated` columns contain the standard deviations for the reference and treatment
+#' condition, respectively. `n_control` and `n_treated` columns contain the numbers of
+#' samples for the reference and treatment condition, respectively. The `std_error` column
+#' contains the standard error of the differential abundances. `t_statistic` contains the
 #' t_statistic for the t-test.
-#' * "moderated_t-test": \code{CI_2.5} and \code{CI_97.5} contain the 2.5% and 97.5%
-#' confidence interval borders for differential abundances. \code{avg_abundance} contains average
-#' abundances for treatment/reference pairs (mean of the two group means). \code{t_statistic}
-#' contains the t_statistic for the t-test. \code{B} The B-statistic is the log-odds that the
-#' protein, peptide or precursor (depending on \code{grouping}) has a differential abundance
+#' * "moderated_t-test": `CI_2.5` and `CI_97.5` contain the 2.5% and 97.5%
+#' confidence interval borders for differential abundances. `avg_abundance` contains average
+#' abundances for treatment/reference pairs (mean of the two group means). `t_statistic`
+#' contains the t_statistic for the t-test. `B` The B-statistic is the log-odds that the
+#' protein, peptide or precursor (depending on `grouping`) has a differential abundance
 #' between the two groups. Suppose B=1.5. The odds of differential abundance is exp(1.5)=4.48, i.e,
 #' about four and a half to one. The probability that there is a differential abundance is
 #' 4.48/(1+4.48)=0.82, i.e., the probability is about 82% that this group is differentially
 #' abundant. A B-statistic of zero corresponds to a 50-50 chance that the group is differentially
-#' abundant.\code{n_obs} contains the number of observations for the specific protein, peptide or
-#' precursor (depending on the \code{grouping} variable) and the associated treatment/reference pair.
-#' * "proDA": The \code{std_error} column contains the standard error of the differential
-#' abundances. \code{avg_abundance} contains average abundances for treatment/reference pairs
-#' (mean of the two group means). \code{t_statistic} contains the t_statistic for the t-test.
-#' \code{n_obs} contains the number of observations for the specific protein, peptide or precursor
-#' (depending on the \code{grouping} variable) and the associated treatment/reference pair.
+#' abundant.`n_obs` contains the number of observations for the specific protein, peptide or
+#' precursor (depending on the `grouping` variable) and the associated treatment/reference pair.
+#' * "proDA": The `std_error` column contains the standard error of the differential
+#' abundances. `avg_abundance` contains average abundances for treatment/reference pairs
+#' (mean of the two group means). `t_statistic` contains the t_statistic for the t-test.
+#' `n_obs` contains the number of observations for the specific protein, peptide or precursor
+#' (depending on the `grouping` variable) and the associated treatment/reference pair.
 #'
-#' For all methods execept \code{"proDA"}, the p-value adjustment is performed only on the
-#' proportion of data that contains a p-value that is not \code{NA}. For \code{"proDA"} the
-#' p-value adjustment is either performed on the complete dataset (\code{filter_NA_missingness = TRUE})
-#' or on the subset of the dataset with missingness that is not \code{NA} (\code{filter_NA_missingness = FALSE}).
+#' For all methods execept `"proDA"`, the p-value adjustment is performed only on the
+#' proportion of data that contains a p-value that is not `NA`. For `"proDA"` the
+#' p-value adjustment is either performed on the complete dataset (`filter_NA_missingness = TRUE`)
+#' or on the subset of the dataset with missingness that is not `NA` (`filter_NA_missingness = FALSE`).
 #' @import dplyr
 #' @import tidyr
 #' @importFrom rlang .data enquo ensym as_name as_label expr := !!
@@ -762,7 +762,8 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
           purrr::map_dfr(~ dplyr::mutate(.x, adj_pval = p.adjust(.data$pval, method = p_adj_method))) %>%
           dplyr::select(-"n_obs", -"n_approx") %>%
           dplyr::rename({{ grouping }} := "name",
-                        std_error = "se") %>%
+            std_error = "se"
+          ) %>%
           dplyr::left_join(proDA_missingness, by = c(rlang::as_name(rlang::enquo(grouping)), "comparison"))
 
         message("DONE", appendLF = TRUE)

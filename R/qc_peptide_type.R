@@ -110,6 +110,12 @@ qc_peptide_type <- function(data,
         ))
     }
 
+    label_positions <- result %>%
+      dplyr::group_by({{ sample }}) %>%
+      dplyr::arrange(desc(.data$pep_type)) %>%
+      dplyr::mutate(label_y = cumsum(.data$peptide_type_percent)) %>%
+      dplyr::filter(.data$peptide_type_percent > 5)
+
     if (plot == TRUE & interactive == FALSE) {
       plot <- result %>%
         ggplot2::ggplot(ggplot2::aes(
@@ -118,10 +124,13 @@ qc_peptide_type <- function(data,
           fill = .data$pep_type
         )) +
         ggplot2::geom_col(col = "black", size = 1) +
-        geom_text(
-          data = result %>% dplyr::filter(.data$peptide_type_percent > 10),
-          aes(label = round(.data$peptide_type_percent, digits = 1)),
-          position = position_stack(vjust = 0.9)
+        ggplot2::geom_text(
+          data = label_positions,
+          aes(
+            y = label_y,
+            label = round(.data$peptide_type_percent, digits = 1)
+          ),
+          vjust = 1.5
         ) +
         ggplot2::labs(
           title = "Peptide types per .raw file",
@@ -198,6 +207,12 @@ qc_peptide_type <- function(data,
         ))
     }
 
+    label_positions <- result %>%
+      dplyr::group_by({{ sample }}) %>%
+      dplyr::arrange(desc(.data$pep_type)) %>%
+      dplyr::mutate(label_y = cumsum(.data$peptide_type_percent)) %>%
+      dplyr::filter(.data$peptide_type_percent > 5)
+
     if (plot == TRUE & interactive == FALSE) {
       plot <- result %>%
         ggplot2::ggplot(ggplot2::aes(
@@ -206,21 +221,23 @@ qc_peptide_type <- function(data,
           fill = .data$pep_type
         )) +
         ggplot2::geom_col(col = "black", size = 1) +
-        geom_text(
-          data = result %>% dplyr::filter(.data$peptide_type_percent > 10),
-          aes(label = round(.data$peptide_type_percent, digits = 1)),
-          position = position_stack(vjust = 0.9)
+        ggplot2::geom_text(
+          data = label_positions,
+          aes(
+            y = label_y,
+            label = round(.data$peptide_type_percent, digits = 1)
+          ),
+          vjust = 1.5
         ) +
         ggplot2::labs(
           title = "Peptide type intensity per .raw file",
-          x = "Sample",
           y = "Percentage of total peptide intensity",
           fill = "Type"
         ) +
         ggplot2::theme_bw() +
         ggplot2::theme(
           plot.title = ggplot2::element_text(size = 20),
-          axis.title.x = ggplot2::element_text(size = 15),
+          axis.title.x = ggplot2::element_blank(),
           axis.text.y = ggplot2::element_text(size = 15),
           axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
           axis.title.y = ggplot2::element_text(size = 15),
@@ -240,14 +257,13 @@ qc_peptide_type <- function(data,
         ggplot2::geom_col(col = "black", size = 1) +
         ggplot2::labs(
           title = "Peptide type intensity per .raw file",
-          x = "Sample",
           y = "Percentage of total peptide intensity",
           fill = "Type"
         ) +
         ggplot2::theme_bw() +
         ggplot2::theme(
           plot.title = ggplot2::element_text(size = 20),
-          axis.title.x = ggplot2::element_text(size = 15),
+          axis.title.x = ggplot2::element_blank(),
           axis.text.y = ggplot2::element_text(size = 15),
           axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
           axis.title.y = ggplot2::element_text(size = 15),
