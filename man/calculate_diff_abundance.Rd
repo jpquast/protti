@@ -77,7 +77,7 @@ is done before the p-value adjustment.}
 
 \item{method}{a character value, specifies the method used for statistical hypothesis testing.
 Methods include Welch test (\code{"t-test"}), a Welch test on means, standard deviations and
-number of replicates (\code{"t-test_mean_sd"}) and a moderated t-test based on the \code{limma}
+number of replicates ("\code{"t-test_mean_sd"}) and a moderated t-test based on the \code{limma}
 package (\code{"moderated_t-test"}). More information on the moderated t-test can be found in
 the \code{limma} documentation. Furthermore, the \code{proDA} package specific method (\code{"proDA"})
 can be used to infer means across samples based on a probabilistic dropout model. This

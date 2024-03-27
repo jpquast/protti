@@ -12,7 +12,6 @@ drc_4p_plot(
   targets,
   unit = "uM",
   y_axis_name = "Response",
-  facet_title_size = 15,
   facet = TRUE,
   scales = "free",
   x_axis_scale_log10 = TRUE,
@@ -45,8 +44,6 @@ if plots for all curve fits should be created.}
 \item{unit}{a character value specifying the unit of the concentration.}
 
 \item{y_axis_name}{a character value specifying the name of the y-axis of the plot.}
-
-\item{facet_title_size}{a numeric value that specifies the size of the facet title. Default is 15.}
 
 \item{facet}{a logical value that indicates if plots should be summarised into facets of 20
 plots. This is recommended for many plots.}
