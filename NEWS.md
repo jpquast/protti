@@ -45,12 +45,15 @@
 * `normalise()` now correctly works with grouped data. Previously it would only correctly work with ungrouped data frames. Now you can group the data to calculate group specific normalisations. If you want to compute a global normalisation for the dataset, you need to ungroup the data before using the function as usual. This fixes issue #209.
 * `qc_sequence_coverage()` now correctly displays medians in faceted plot. This fixes issue #202 and #213. 
 * `fit_drc_4p()` and `parallel_fit_drc_4p()` now correctly calculates the ANOVA p-value. Previously the number of observations for each concentration was not provided correctly.
+* `fetch_uniprot()` now correctly retrieves information if an input ID was also part of a non-conform input ID combination. When e.g. `c("P02545", "P02545;P20700")` was provided, previously the `"P02545"` accession was dropped from the `input_id` column even though it is also present on its own and not only in combination with `"P20700"`. The new output now contains 3 rows, one for each ID, with `"P02545"` having one row with the `input_id` ``"P02545"` and one with the `input_id` `"P02545;P20700"`. This also means that the `input_id` column now always contains the provided input IDs and not only if they were non-conform input ID combinations.
 
 ## Additional Changes
 
 * For `fit_drc_4p()` and `parallel_fit_drc_4p()` the arguments `replicate_completeness` and `condition_completeness` are now deprecated. Please use `n_replicate_completeness` and `n_condition_completeness` instead.
 * Improved label positions of `qc_charge_states()`, `qc_peptide_type()` and `qc_missed_cleavages()`. Also made appearance more uniform between methods `"count"` and `"intensity"`.
 * `fetch_uniprot()` now returns nothing instead of a partial output if some of the requested batches could not be retrieved due to database issues (e.g. timeout because of too many requests). This addresses issue #203, which requests this change, because the warning message regarding the partial output can be easily missed and users might wrongfully assume that all information was retrieved successfully from UniProt.
+* `find_peptide()` now preserves the groups of the original data. This does not affect any of the calculations.
+* `calculate_sequence_coverage()` now works on grouped data.
 
 # protti 0.7.0
 

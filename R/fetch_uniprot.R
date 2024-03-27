@@ -5,15 +5,17 @@
 #' @param uniprot_ids a character vector of UniProt accession numbers.
 #' @param columns a character vector of metadata columns that should be imported from UniProt (all
 #' possible columns can be found \href{https://www.uniprot.org/help/return_fields}{here}. For
-#' cross-referenced database provide the database name with the prefix "xref_", e.g. \code{"xref_pdb"})
+#' cross-referenced database provide the database name with the prefix "xref_", e.g. `"xref_pdb"`)
 #' @param batchsize a numeric value that specifies the number of proteins processed in a single
 #' single query. Default and max value is 200.
 #' @param show_progress a logical value that determines if a progress bar will be shown. Default
 #' is TRUE.
 #'
-#' @return A data frame that contains all protein metadata specified in \code{columns} for the
-#' proteins provided. If an invalid ID was provided that contains a valid UniProt ID, the valid
-#' portion of the ID is fetched and the invalid input ID is saved in a column called \code{input_id}.
+#' @return A data frame that contains all protein metadata specified in `columns` for the
+#' proteins provided. The `input_id` column contains the provided UniProt IDs. If an invalid ID
+#' was provided that contains a valid UniProt ID, the valid portion of the ID is still fetched and
+#' present in the `accession` column, while the `input_id` column contains the original not completely
+#' valid ID.
 #' @import dplyr
 #' @importFrom janitor make_clean_names
 #' @import progress
@@ -27,6 +29,9 @@
 #' @examples
 #' \donttest{
 #' fetch_uniprot(c("P36578", "O43324", "Q00796"))
+#'
+#' # Not completely valid ID
+#' fetch_uniprot(c("P02545", "P02545;P20700"))
 #' }
 fetch_uniprot <-
   function(uniprot_ids,
@@ -70,12 +75,20 @@ fetch_uniprot <-
     contains_valid_id <- non_conform_ids[stringr::str_detect(non_conform_ids,
       pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
     )]
+
+    uniprot_ids_contain_valid <- uniprot_ids[stringr::str_detect(uniprot_ids,
+      pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
+    )]
+
     valid_id_annotations <- tibble::tibble(input_id = contains_valid_id) %>%
       dplyr::mutate(accession = stringr::str_extract_all(.data$input_id,
         pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
       )) %>%
-      tidyr::unnest("accession")
-    uniprot_ids_filtered <- c(uniprot_ids_filtered, valid_id_annotations$accession)
+      tidyr::unnest("accession") %>%
+      dplyr::distinct()
+
+    uniprot_ids_filtered <- unique(c(uniprot_ids_filtered, valid_id_annotations$accession))
+
     non_identifiable_id <- non_conform_ids[!stringr::str_detect(non_conform_ids,
       pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
     )]
@@ -84,13 +97,13 @@ fetch_uniprot <-
       warning(strwrap("These UniProt accession numbers did not conform
 to uniprot standards and were skipped from importing: ",
         prefix = "\n", initial = ""
-      ), paste(non_identifiable_id, collapse = ", "))
+      ), " ", paste(non_identifiable_id, collapse = ", "), "\n")
     }
     if (length(contains_valid_id) != 0) {
       warning(strwrap('The following input IDs were found to contain valid uniprot accession numbers.
 They were fetched and the original input ID can be found in the "input_id" column: ',
         prefix = "\n", initial = ""
-      ), paste(contains_valid_id, collapse = ", "))
+      ), " ", paste(contains_valid_id, collapse = ", "), "\n")
     }
     if (length(uniprot_ids_filtered) == 0) {
       stop("No valid UniProt accession numbers found.")
@@ -171,11 +184,14 @@ They were fetched and the original input ID can be found in the "input_id" colum
     new_ids <- new$new
 
     if (length(new_ids) == 0) {
-      if (length(contains_valid_id) != 0) {
+        original_ids <- data.frame(input_id = uniprot_ids_contain_valid) %>%
+          dplyr::left_join(valid_id_annotations, by = "input_id") %>%
+          dplyr::mutate(accession = ifelse(is.na(.data$accession), .data$input_id, .data$accession))
+
         result <- result %>%
-          dplyr::left_join(valid_id_annotations, by = "accession") %>%
+          dplyr::right_join(original_ids, by = "accession") %>%
           dplyr::relocate(.data$accession, .data$input_id)
-      }
+
       return(result)
     }
     new_id_query <- paste(paste0("accession_id:", new_ids), collapse = "+OR+")
@@ -200,11 +216,13 @@ They were fetched and the original input ID can be found in the "input_id" colum
       dplyr::filter(!stringr::str_detect(.[[2]], pattern = "Merged")) %>%
       dplyr::bind_rows(new_result)
 
-    if (length(contains_valid_id) != 0) {
-      result <- result %>%
-        dplyr::left_join(valid_id_annotations, by = "accession") %>%
-        dplyr::relocate(.data$accession, .data$input_id)
-    }
+    original_ids <- data.frame(input_id = uniprot_ids_contain_valid) %>%
+      dplyr::left_join(valid_id_annotations, by = "input_id") %>%
+      dplyr::mutate(accession = ifelse(is.na(.data$accession), .data$input_id, .data$accession))
+
+    result <- result %>%
+      dplyr::right_join(original_ids, by = "accession") %>%
+      dplyr::relocate(.data$accession, .data$input_id)
 
     result
   }
