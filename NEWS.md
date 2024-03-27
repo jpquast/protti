@@ -54,6 +54,7 @@
 * `fetch_uniprot()` now returns nothing instead of a partial output if some of the requested batches could not be retrieved due to database issues (e.g. timeout because of too many requests). This addresses issue #203, which requests this change, because the warning message regarding the partial output can be easily missed and users might wrongfully assume that all information was retrieved successfully from UniProt.
 * `find_peptide()` now preserves the groups of the original data. This does not affect any of the calculations.
 * `calculate_sequence_coverage()` now works on grouped data.
+* Some typo fixes. Thank you Steffi!
 
 # protti 0.7.0
 
@@ -133,7 +134,6 @@
 * The default batchsize of `fetch_pdb()` was changed to 100 (from 200). This was done since more information is retrieved now, which slows to function down and is slightly improved when batch sizes are smaller.
 * `try_query()` now only retries to retrieve information once if the returned message was "Timeout was reached". In addition, a `timeout` and `accept` argument have been added.
 * The UniProt database has changed its API, therefore column names have changed as well as the format of data. We adjusted the `fetch_uniprot()` and `fetch_uniprot_proteome()` function accordingly. Please be aware that some columns names might have changed and your code might throw error messages if you did not adjust it accordingly. 
-* Some typo fixes. Thank you Steffi!
 
 # protti 0.3.1
 
