@@ -40,6 +40,8 @@
 #' @export
 #'
 #' @examples
+#' library(dplyr)
+#'
 #' set.seed(123) # Makes example reproducible
 #'
 #' # Create example data
@@ -49,7 +51,8 @@
 #'   n_replicates = 3,
 #'   n_conditions = 2,
 #'   method = "effect_random"
-#' )
+#' ) %>%
+#'   mutate(intensity_non_log2 = 2^peptide_intensity_missing)
 #'
 #' # Calculate missed cleavage percentages
 #' qc_missed_cleavages(
@@ -57,7 +60,7 @@
 #'   sample = sample,
 #'   grouping = peptide,
 #'   missed_cleavages = n_missed_cleavage,
-#'   intensity = peptide_intensity_missing,
+#'   intensity = intensity_non_log2,
 #'   method = "intensity",
 #'   plot = FALSE
 #' )
@@ -68,7 +71,7 @@
 #'   sample = sample,
 #'   grouping = peptide,
 #'   missed_cleavages = n_missed_cleavage,
-#'   intensity = peptide_intensity_missing,
+#'   intensity = intensity_non_log2,
 #'   method = "intensity",
 #'   plot = TRUE
 #' )
@@ -113,6 +116,12 @@ intensities or set remove_na_intensities to FALSE",
           ))
       }
 
+      label_positions <- result %>%
+        dplyr::group_by({{ sample }}) %>%
+        dplyr::arrange(desc({{ missed_cleavages }})) %>%
+        dplyr::mutate(label_y = cumsum(.data$mc_percent)) %>%
+        dplyr::filter(.data$mc_percent > 5)
+
       if (plot == FALSE) {
         return(result)
       } else {
@@ -122,34 +131,36 @@ intensities or set remove_na_intensities to FALSE",
             y = .data$mc_percent,
             fill = {{ missed_cleavages }}
           )) +
-          geom_col(col = "black", size = 1) +
+          ggplot2::geom_col(col = "black", size = 1) +
           {
             if (interactive == FALSE) {
-              geom_text(
-                data = result %>% dplyr::filter(.data$mc_percent > 5),
-                aes(label = round(.data$mc_percent, digits = 1)),
-                position = position_stack(vjust = 0.9)
+              ggplot2::geom_text(
+                data = label_positions,
+                aes(
+                  y = .data$label_y,
+                  label = round(.data$mc_percent, digits = 1)
+                ),
+                vjust = 1.5
               )
             }
           } +
-          labs(
+          ggplot2::labs(
             title = "Missed cleavages per .raw file",
             subtitle = "By percent of total peptide count",
-            x = "Sample",
             y = "% of total peptide count",
             fill = "Missed cleavages"
           ) +
-          theme_bw() +
-          theme(
+          ggplot2::theme_bw() +
+          ggplot2::theme(
             plot.title = ggplot2::element_text(size = 20),
-            axis.title.x = ggplot2::element_text(size = 15),
+            axis.title.x = ggplot2::element_blank(),
             axis.text.y = ggplot2::element_text(size = 15),
             axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
             axis.title.y = ggplot2::element_text(size = 15),
             legend.title = ggplot2::element_text(size = 15),
             legend.text = ggplot2::element_text(size = 15)
           ) +
-          scale_fill_manual(values = protti_colours)
+          ggplot2::scale_fill_manual(values = protti_colours)
       }
     }
 
@@ -177,6 +188,12 @@ intensities or set remove_na_intensities to FALSE",
           ))
       }
 
+      label_positions <- result %>%
+        dplyr::group_by({{ sample }}) %>%
+        dplyr::arrange(desc({{ missed_cleavages }})) %>%
+        dplyr::mutate(label_y = cumsum(.data$mc_percent)) %>%
+        dplyr::filter(.data$mc_percent > 5)
+
       if (plot == FALSE) {
         return(result)
       } else {
@@ -186,34 +203,36 @@ intensities or set remove_na_intensities to FALSE",
             y = .data$mc_percent,
             fill = {{ missed_cleavages }}
           )) +
-          geom_col(col = "black", size = 1) +
+          ggplot2::geom_col(col = "black", size = 1) +
           {
             if (interactive == FALSE) {
-              geom_text(
-                data = result %>% dplyr::filter(.data$mc_percent > 5),
-                aes(label = round(.data$mc_percent, digits = 1)),
-                position = position_stack(vjust = 0.9)
+              ggplot2::geom_text(
+                data = label_positions,
+                aes(
+                  y = .data$label_y,
+                  label = round(.data$mc_percent, digits = 1)
+                ),
+                vjust = 1.5
               )
             }
           } +
-          labs(
+          ggplot2::labs(
             title = "Missed cleavages per .raw file",
             subtitle = "By percent of total intensity",
-            x = "",
             y = "% of total intensity",
             fill = "Missed cleavages"
           ) +
-          theme_bw() +
-          theme(
+          ggplot2::theme_bw() +
+          ggplot2::theme(
             plot.title = ggplot2::element_text(size = 20),
-            axis.title.x = ggplot2::element_text(size = 15),
+            axis.title.x = ggplot2::element_blank(),
             axis.text.y = ggplot2::element_text(size = 15),
             axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
             axis.title.y = ggplot2::element_text(size = 15),
             legend.title = ggplot2::element_text(size = 15),
             legend.text = ggplot2::element_text(size = 15)
           ) +
-          scale_fill_manual(values = protti_colours)
+          ggplot2::scale_fill_manual(values = protti_colours)
       }
     }
     if (interactive == TRUE) {
