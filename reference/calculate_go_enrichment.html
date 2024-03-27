@@ -22,7 +22,7 @@ by the function by providing ontology_type and organism_id."><meta property="og:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0.9000</span>
       </span>
     </div>
 
@@ -91,12 +91,20 @@ by the function by providing <code>ontology_type</code> and <code>organism_id</c
 <span>  <span class="va">is_significant</span>,</span>
 <span>  group <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  y_axis_free <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  facet_n_col <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  go_annotations_uniprot <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">ontology_type</span>,</span>
 <span>  organism_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  go_data <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  plot_style <span class="op">=</span> <span class="st">"barplot"</span>,</span>
+<span>  plot_title <span class="op">=</span> <span class="st">"Gene ontology enrichment of significant proteins"</span>,</span>
+<span>  barplot_fill_colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#56B4E9"</span>, <span class="st">"#E76145"</span><span class="op">)</span>,</span>
+<span>  heatmap_fill_colour <span class="op">=</span> <span class="fu">protti</span><span class="fu">::</span><span class="va"><a href="mako_colours.html">mako_colours</a></span>,</span>
+<span>  heatmap_fill_colour_rev <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  enrichment_type <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  min_n_detected_proteins_in_process <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  plot_cutoff <span class="op">=</span> <span class="st">"adj_pval top10"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -132,6 +140,11 @@ for each facet if a grouping variable is provided. Default is <code>TRUE</code>.
 it is easier to compare GO categories directly with each other.</p></dd>
 
 
+<dt>facet_n_col</dt>
+<dd><p>a numeric value that specifies the number of columns the faceted plot should have
+if a column name is provided to group. The default is 2.</p></dd>
+
+
 <dt>go_annotations_uniprot</dt>
 <dd><p>recommended, a character column in the <code>data</code> data frame
 that contains gene ontology annotations obtained from UniProt using <code>fetch_uniprot</code>.
@@ -155,13 +168,42 @@ or in <code>go_data</code>.</p></dd>
 
 
 <dt>go_data</dt>
-<dd><p>Optional, a data frame that can be obtained with <code>fetch_go</code>. If you provide
-data not obtained with <code>fetch_go</code> make sure column names for protein ID (db_id) and GO ID
-(go_id) are the same as for data obtained with <code>fetch_go</code>.</p></dd>
+<dd><p>Optional, a data frame that can be obtained with <code><a href="fetch_go.html">fetch_go()</a></code>. If you provide
+data not obtained with <code><a href="fetch_go.html">fetch_go()</a></code> make sure column names for protein ID (<code>db_id</code>) and GO ID
+(<code>go_id</code>) are the same as for data obtained with <code><a href="fetch_go.html">fetch_go()</a></code>.</p></dd>
 
 
 <dt>plot</dt>
 <dd><p>a logical argument indicating whether the result should be plotted or returned as a table.</p></dd>
+
+
+<dt>plot_style</dt>
+<dd><p>a character argument that specifies the plot style. Can be either "barplot" (default)
+or "heatmap". The "heatmap" plot is especially useful for the comparison of multiple groups. We recommend,
+however, that you use it only with <code>enrichment_type = "enriched"</code> or <code>enrichment_type = "deenriched</code>,
+because otherwise it is not possible to distinguish between enrichment and deenrichment in the plot.</p></dd>
+
+
+<dt>plot_title</dt>
+<dd><p>a character value that specifies the title of the plot. The default is "Gene ontology
+enrichment of significant proteins".</p></dd>
+
+
+<dt>barplot_fill_colour</dt>
+<dd><p>a vector that contains two colours that should be used as the fill colours for
+deenriched and enriched GO terms, respectively. If <code>enrichment_type = "enriched"</code> or <code>"deenriched</code>, please
+still provide two values in the vector, the colour not used for the plot can be <code>NA</code> in this case. E.g.
+<code>c(NA, "red")</code> for <code>enrichment_type = "enriched"</code>.</p></dd>
+
+
+<dt>heatmap_fill_colour</dt>
+<dd><p>a vector that contains colours that should be used to create the gradient in the
+heatmap plot. Default is <code>mako_colours</code>.</p></dd>
+
+
+<dt>heatmap_fill_colour_rev</dt>
+<dd><p>a logical value that specifies if the provided colours in <code>heatmap_fill_colour</code>
+should be reversed in order. Default is <code>TRUE</code>.</p></dd>
 
 
 <dt>label</dt>
@@ -169,8 +211,24 @@ data not obtained with <code>fetch_go</code> make sure column names for protein 
 Default is TRUE.</p></dd>
 
 
+<dt>enrichment_type</dt>
+<dd><p>a character argument that is either "all", "enriched" or "deenriched". This
+determines if the enrichment analysis should be performed in order to check for both enrichemnt and
+deenrichemnt or only one of the two. This affects the statistics performed and therefore also the displayed
+plot.</p></dd>
+
+
+<dt>min_n_detected_proteins_in_process</dt>
+<dd><p>is a numeric argument that specifies the minimum number of
+detected proteins required for a GO term to be displayed in the plot. The default is 1, meaning
+no filtering of the plotted data is performed. This argument does not affect any computations or
+the returned data if <code>plot = FALSE</code>. This argument is useful in order to remove terms that were only
+detected in for example 1 protein. Even though these terms are sometimes significant, they are not
+really relevant.</p></dd>
+
+
 <dt>plot_cutoff</dt>
-<dd><p>a character value indicating if the plot should contain the top 10 most
+<dd><p>a character value indicating if the plot should contain the top n (e.g. top10) most
 significant proteins (p-value or adjusted p-value), or if a significance cutoff should be used
 to determine the number of GO terms in the plot. This information should be provided with the
 type first followed by the threshold separated by a space. Example are
@@ -183,10 +241,13 @@ type first followed by the threshold separated by a space. Example are
     <h2>Value</h2>
     
 
-<p>A bar plot displaying negative log10 adjusted p-values for the top 10 enriched or
-depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individually with the
-<code>plot_cutoff</code> argument. Bars are colored according to the direction of the enrichment. If
-<code>plot = FALSE</code>, a data frame is returned. P-values are adjusted with Benjamini-Hochberg.</p>
+<p>A bar plot or heatmap (depending on <code>plot_style</code>). By default the bar plot displays negative log10
+adjusted p-values for the top 10 enriched or deenriched gene ontology terms. Alternatively, plot cutoffs
+can be chosen individually with the <code>plot_cutoff</code> argument. Bars are colored according to the direction
+of the enrichment (enriched or deenriched). If a heatmap is returned, terms are organised on the y-axis, while
+the colour of each tile represents the negative log10 adjusted p-value (default). If a <code>group</code> column
+is provided the x-axis contains all groups. If <code>plot = FALSE</code>, a data frame is returned. P-values are adjusted with
+Benjamini-Hochberg.</p>
     </div>
 
     <div id="ref-examples">
@@ -213,7 +274,6 @@ depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individu
 <span class="r-in"><span>    <span class="st">"go_f"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu">is</span><span class="op">(</span><span class="va">uniprot_go_data</span>, <span class="st">"character"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="va">uniprot_go_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
@@ -228,6 +288,12 @@ depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individu
 <span class="r-in"><span>      <span class="op">)</span>,</span></span>
 <span class="r-in"><span>      <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>      <span class="va">significant</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">500</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"B"</span>, <span class="fl">500</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1000</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"B"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1000</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># Plot gene ontology enrichment</span></span></span>
@@ -237,6 +303,33 @@ depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individu
 <span class="r-in"><span>    go_annotations_uniprot <span class="op">=</span> <span class="va">go_f</span>,</span></span>
 <span class="r-in"><span>    is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
 <span class="r-in"><span>    plot <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    plot_cutoff <span class="op">=</span> <span class="st">"pval 0.01"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># Plot gene ontology enrichment with group</span></span></span>
+<span class="r-in"><span>  <span class="fu">calculate_go_enrichment</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">data</span>,</span></span>
+<span class="r-in"><span>    protein_id <span class="op">=</span> <span class="va">accession</span>,</span></span>
+<span class="r-in"><span>    go_annotations_uniprot <span class="op">=</span> <span class="va">go_f</span>,</span></span>
+<span class="r-in"><span>    is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
+<span class="r-in"><span>    group <span class="op">=</span> <span class="va">group</span>,</span></span>
+<span class="r-in"><span>    facet_n_col <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>    plot <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    plot_cutoff <span class="op">=</span> <span class="st">"pval 0.01"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># Plot gene ontology enrichment with group in a heatmap plot</span></span></span>
+<span class="r-in"><span>  <span class="fu">calculate_go_enrichment</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">data</span>,</span></span>
+<span class="r-in"><span>    protein_id <span class="op">=</span> <span class="va">accession</span>,</span></span>
+<span class="r-in"><span>    group <span class="op">=</span> <span class="va">group</span>,</span></span>
+<span class="r-in"><span>    go_annotations_uniprot <span class="op">=</span> <span class="va">go_f</span>,</span></span>
+<span class="r-in"><span>    is_significant <span class="op">=</span> <span class="va">significant</span>,</span></span>
+<span class="r-in"><span>    min_n_detected_proteins_in_process <span class="op">=</span> <span class="fl">15</span>,</span></span>
+<span class="r-in"><span>    plot <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    label <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    plot_style <span class="op">=</span> <span class="st">"heatmap"</span>,</span></span>
+<span class="r-in"><span>    enrichment_type <span class="op">=</span> <span class="st">"enriched"</span>,</span></span>
 <span class="r-in"><span>    plot_cutoff <span class="op">=</span> <span class="st">"pval 0.01"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -267,7 +360,7 @@ depleted gene ontology terms. Alternatively, plot cutoffs can be chosen individu
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ abbreviated name: ¹​n_detected_proteins_in_process</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 more variables: n_significant_proteins &lt;int&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_significant_proteins_in_process &lt;int&gt;, n_proteins_expected &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   direction &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   enrichment_type &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

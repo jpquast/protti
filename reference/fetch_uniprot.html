@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0.9000</span>
       </span>
     </div>
 
@@ -112,24 +112,40 @@ is TRUE.</p></dd>
     
 
 <p>A data frame that contains all protein metadata specified in <code>columns</code> for the
-proteins provided. If an invalid ID was provided that contains a valid UniProt ID, the valid
-portion of the ID is fetched and the invalid input ID is saved in a column called <code>input_id</code>.</p>
+proteins provided. The <code>input_id</code> column contains the provided UniProt IDs. If an invalid ID
+was provided that contains a valid UniProt ID, the valid portion of the ID is still fetched and
+present in the <code>accession</code> column, while the <code>input_id</code> column contains the original not completely
+valid ID.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu">fetch_uniprot</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P36578"</span>, <span class="st">"O43324"</span>, <span class="st">"Q00796"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 16</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   accession protein_name      length sequence gene_names xref_geneid xref_string</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> O43324    Eukaryotic trans…    174 MAAAAEL… EEF1E1 AI… 9521;       9606.ENSP0…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> P36578    Large ribosomal …    427 MACARPL… RPL4 RPL1  6124;       9606.ENSP0…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Q00796    Sorbitol dehydro…    357 MAAAAKP… SORD       6652;       9606.ENSP0…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 9 more variables: go_f &lt;chr&gt;, go_p &lt;chr&gt;, go_c &lt;chr&gt;, cc_interaction &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ft_act_site &lt;lgl&gt;, ft_binding &lt;chr&gt;, cc_cofactor &lt;chr&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   cc_catalytic_activity &lt;chr&gt;, xref_pdb &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 17</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   accession input_id protein_name         length sequence gene_names xref_geneid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> O43324    O43324   Eukaryotic translat…    174 MAAAAEL… EEF1E1 AI… 9521;      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> P36578    P36578   Large ribosomal sub…    427 MACARPL… RPL4 RPL1  6124;      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Q00796    Q00796   Sorbitol dehydrogen…    357 MAAAAKP… SORD       6652;      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 10 more variables: xref_string &lt;chr&gt;, go_f &lt;chr&gt;, go_p &lt;chr&gt;, go_c &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   cc_interaction &lt;chr&gt;, ft_act_site &lt;lgl&gt;, ft_binding &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   cc_cofactor &lt;chr&gt;, cc_catalytic_activity &lt;chr&gt;, xref_pdb &lt;chr&gt;</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Not completely valid ID</span></span></span>
+<span class="r-in"><span><span class="fu">fetch_uniprot</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P02545"</span>, <span class="st">"P02545;P20700"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following input IDs were found to contain valid uniprot accession</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> numbers. They were fetched and the original input ID can be found in</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> the "input_id" column: P02545;P20700</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 17</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   accession input_id      protein_name    length sequence gene_names xref_geneid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> P02545    P02545        Prelamin-A/C […    664 METPSQR… LMNA LMN1  4000;      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> P02545    P02545;P20700 Prelamin-A/C […    664 METPSQR… LMNA LMN1  4000;      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> P20700    P02545;P20700 Lamin-B1           586 MATATPV… LMNB1 LMN… 4001;      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 10 more variables: xref_string &lt;chr&gt;, go_f &lt;chr&gt;, go_p &lt;chr&gt;, go_c &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   cc_interaction &lt;chr&gt;, ft_act_site &lt;lgl&gt;, ft_binding &lt;lgl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   cc_cofactor &lt;lgl&gt;, cc_catalytic_activity &lt;lgl&gt;, xref_pdb &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
