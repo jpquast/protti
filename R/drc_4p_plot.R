@@ -44,7 +44,7 @@ plot_drc_4p <- function(...) {
 #' target was provided) should be \code{"free"} or \code{"fixed"}.
 #' @param x_axis_scale_log10 a logical value that indicates if the x-axis scale should be log10
 #' transformed.
-#' @param x_axis_limits a numeric vector of length 2, defining the lower and uper x-axis limit. The
+#' @param x_axis_limits a numeric vector of length 2, defining the lower and upper x-axis limit. The
 #' default is `c(NA, NA)`, meaning the limits are not defined by the user but by the data.
 #' @param colours a character vector containing at least three colours. The first is used for the points,
 #' the second for the confidence interval and the third for the curve. By default the first two

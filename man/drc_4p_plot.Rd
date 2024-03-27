@@ -57,7 +57,7 @@ target was provided) should be \code{"free"} or \code{"fixed"}.}
 \item{x_axis_scale_log10}{a logical value that indicates if the x-axis scale should be log10
 transformed.}
 
-\item{x_axis_limits}{a numeric vector of length 2, defining the lower and uper x-axis limit. The
+\item{x_axis_limits}{a numeric vector of length 2, defining the lower and upper x-axis limit. The
 default is \code{c(NA, NA)}, meaning the limits are not defined by the user but by the data.}
 
 \item{colours}{a character vector containing at least three colours. The first is used for the points,
