@@ -8,7 +8,7 @@
 A vector containing 256 colours
 }
 \source{
-viridis R package, created by Stéfan van der Walt (stefanv) and Nathaniel Smith (njsmith)
+viridis R package
 }
 \usage{
 viridis_colours

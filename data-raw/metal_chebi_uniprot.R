@@ -80,8 +80,7 @@ metal_chebi_uniprot <- chebi %>%
 
 # In version 1 there were 147 metal related ChEBI IDs
 # In version 2 there were 188 metal related ChEBI IDs
-# In version 3 there were 188 metal related ChEBI IDs (11/08/2022)
-# In version 4 there were 193 metal related ChEBI IDs (19/02/2024)
+# In version 3 there were 188 metal related ChEBI IDs
 length(unique(metal_chebi_uniprot$id))
 
 usethis::use_data(metal_chebi_uniprot, overwrite = TRUE)

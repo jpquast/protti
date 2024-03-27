@@ -11,45 +11,33 @@ barcode_plot(
   protein_length,
   coverage = NULL,
   colouring = NULL,
-  fill_colour_gradient = protti::mako_colours,
-  fill_colour_discrete = c("#999999", protti::protti_colours),
   protein_id = NULL,
   facet = NULL,
-  facet_n_col = 4,
   cutoffs = NULL
 )
 }
 \arguments{
-\item{data}{a data frame containing differential abundance, start and end peptide or precursor positions and protein length.}
+\item{data}{Data frame containing differential abundance, start and end peptide or precursor positions and protein length.}
 
-\item{start_position}{a numeric column in the data frame containing the start positions for each peptide or precursor.}
+\item{start_position}{Column in the data frame containing the start positions for each peptide or precursor.}
 
-\item{end_position}{a numeric column in the data frame containing the end positions for each peptide or precursor.}
+\item{end_position}{Column in the data frame containing the end positions for each peptide or precursor.}
 
-\item{protein_length}{a numeric column in the data frame containing the length of the protein.}
+\item{protein_length}{Column in the data frame containing the length of the protein.}
 
-\item{coverage}{optional, numeric column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.}
+\item{coverage}{Optional, column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.}
 
-\item{colouring}{optional, column in the data frame containing information by which peptide or precursors should
+\item{colouring}{Optional argument, column in the data frame containing information by which peptide or precursors should
 be colored.}
 
-\item{fill_colour_gradient}{a vector that contains colours that should be used to create a colour gradient
-for the barcode plot bars if the \code{colouring} argument is continuous. Default is \code{mako_colours}.}
-
-\item{fill_colour_discrete}{a vector that contains colours that should be used to fill the barcode plot bars
-if the \code{colouring} argument is discrete. Default is \code{protti_colours}.}
-
-\item{protein_id}{optional, column in the data frame containing protein identifiers. Required if only one protein
+\item{protein_id}{Optional argument, column in the data frame containing protein identifiers. Required if only one protein
 should be plotted and the data frame contains only information for this protein.}
 
-\item{facet}{optional, column in the data frame containing information by which data should be faceted. This can be
+\item{facet}{Optional argument, column in the data frame containing information by which data should be faceted. This can be
 protein identifiers. Only 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a
 subsetted data frame should be created.}
 
-\item{facet_n_col}{a numeric value that specifies the number of columns the faceted plot should have
-if a column name is provided to group. The default is 4.}
-
-\item{cutoffs}{optional argument specifying the log2 fold change and significance cutoffs used for highlighting peptides.
+\item{cutoffs}{Optional argument specifying the log2 fold change and significance cutoffs used for highlighting peptides.
 If this argument is provided colouring information will be overwritten with peptides that fulfill this condition.
 The cutoff should be provided in a vector of the form c(diff = 2, pval = 0.05). The name of the cutoff should reflect the
 column name that contains this information (log2 fold changes, p-values or adjusted p-values).}

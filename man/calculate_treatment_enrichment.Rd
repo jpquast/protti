@@ -11,10 +11,7 @@ calculate_treatment_enrichment(
   binds_treatment,
   group = NULL,
   treatment_name,
-  plot = TRUE,
-  fill_colours = protti::protti_colours,
-  fill_by_group = FALSE,
-  facet_n_col = 2
+  plot = TRUE
 )
 }
 \arguments{
@@ -42,17 +39,9 @@ in the plot title.}
 
 \item{plot}{a logical value indicating whether the result should be plotted or returned as a
 table.}
-
-\item{fill_colours}{a character vector that specifies the fill colours of the plot.}
-
-\item{fill_by_group}{a logical value that specifies if the bars in the plot should be filled by group
-if the group argument is provided. Default is \code{FALSE}.}
-
-\item{facet_n_col}{a numeric value that specifies the number of columns the facet plot should have if
-a \code{group} column was provided.}
 }
 \value{
-A bar plot displaying the percentage of all detected proteins and all significant proteins
+A bar plot displaying the percentage of all detect proteins and all significant proteins
 that bind to the treatment. A Fisher's exact test is performed to calculate the significance of
 the enrichment in significant proteins compared to all proteins. The result is reported as a
 p-value. If \code{plot = FALSE} a contingency table in long format is returned.
@@ -74,12 +63,6 @@ data <- data.frame(
     rep(FALSE, 10),
     rep(TRUE, 5),
     rep(FALSE, 25)
-  ),
-  group = c(
-    rep("A", 5),
-    rep("B", 15),
-    rep("A", 15),
-    rep("B", 15)
   )
 )
 
@@ -89,20 +72,8 @@ calculate_treatment_enrichment(
   protein_id = protein_id,
   is_significant = significant,
   binds_treatment = binds_treatment,
-  treatment_name = "Rapamycin",
+  treatment = "Rapamycin",
   plot = TRUE
-)
-
-# Plot treatment enrichment by group
-calculate_treatment_enrichment(
-  data,
-  protein_id = protein_id,
-  group = group,
-  is_significant = significant,
-  binds_treatment = binds_treatment,
-  treatment_name = "Rapamycin",
-  plot = TRUE,
-  fill_by_group = TRUE
 )
 
 # Calculate treatment enrichment
