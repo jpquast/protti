@@ -18,7 +18,7 @@ fetch_uniprot as well as QuickGO data retrieved with fetch_quickgo."><meta prope
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
       </span>
     </div>
 
@@ -195,7 +195,6 @@ unnested by first splitting data for ";;" and then for ";".</p>
 <span class="r-in"><span>    <span class="st">"cc_catalytic_activity"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## QuickGO data</span></span></span>
 <span class="r-in"><span><span class="va">data_quickgo</span> <span class="op">&lt;-</span> <span class="fu"><a href="fetch_quickgo.html">fetch_quickgo</a></span><span class="op">(</span></span></span>
@@ -203,7 +202,7 @@ unnested by first splitting data for ";;" and then for ";".</p>
 <span class="r-in"><span>  ontology_annotations <span class="op">=</span> <span class="st">"molecular_function"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Retrieving GO annotations ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE(1.92s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE(4.69s)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ChEBI data (2 and 3 star entries)</span></span></span>
 <span class="r-in"><span><span class="va">data_chebi</span> <span class="op">&lt;-</span> <span class="fu"><a href="fetch_chebi.html">fetch_chebi</a></span><span class="op">(</span>stars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -223,19 +222,19 @@ unnested by first splitting data for ";;" and then for ";".</p>
 <span class="r-in"><span>  data_eco_relation <span class="op">=</span> <span class="va">eco_relation</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing annotation data frames ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (3.37s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (4.67s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Extract ft_binding information from UniProt ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.15s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.24s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Extract cc_cofactor information from UniProt ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.07s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.09s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Extract cc_catalytic_activity information from UniProt ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.08s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.13s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Extract molecular_function information from QuickGO ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.03s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.05s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Find ChEBI sub IDs ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (1.19s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (1.35s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Combine data ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.29s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.67s)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">metal_info</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 35 × 20</span></span>

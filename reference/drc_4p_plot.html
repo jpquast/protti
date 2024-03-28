@@ -18,7 +18,7 @@ protein), based on output from fit_drc_4p function."><meta property="og:image" c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
       </span>
     </div>
 
@@ -85,10 +85,15 @@ protein), based on output from <code>fit_drc_4p</code> function.</p>
 <span>  <span class="va">targets</span>,</span>
 <span>  unit <span class="op">=</span> <span class="st">"uM"</span>,</span>
 <span>  y_axis_name <span class="op">=</span> <span class="st">"Response"</span>,</span>
+<span>  facet_title_size <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>  facet <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  scales <span class="op">=</span> <span class="st">"free"</span>,</span>
 <span>  x_axis_scale_log10 <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  x_axis_limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>  colours <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  export <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  export_height <span class="op">=</span> <span class="fl">25</span>,</span>
+<span>  export_width <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>  export_name <span class="op">=</span> <span class="st">"dose-response_curves"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -130,6 +135,10 @@ if plots for all curve fits should be created.</p></dd>
 <dd><p>a character value specifying the name of the y-axis of the plot.</p></dd>
 
 
+<dt>facet_title_size</dt>
+<dd><p>a numeric value that specifies the size of the facet title. Default is 15.</p></dd>
+
+
 <dt>facet</dt>
 <dd><p>a logical value that indicates if plots should be summarised into facets of 20
 plots. This is recommended for many plots.</p></dd>
@@ -145,11 +154,32 @@ target was provided) should be <code>"free"</code> or <code>"fixed"</code>.</p><
 transformed.</p></dd>
 
 
+<dt>x_axis_limits</dt>
+<dd><p>a numeric vector of length 2, defining the lower and upper x-axis limit. The
+default is <code>c(NA, NA)</code>, meaning the limits are not defined by the user but by the data.</p></dd>
+
+
+<dt>colours</dt>
+<dd><p>a character vector containing at least three colours. The first is used for the points,
+the second for the confidence interval and the third for the curve. By default the first two
+protti colours are used for the points and confidence interval and the curve is black.</p></dd>
+
+
 <dt>export</dt>
 <dd><p>a logical value that indicates if plots should be exported as PDF. The output
 directory will be the current working directory. The name of the file can be chosen using the
 <code>export_name</code> argument. If only one target is selected and <code>export = TRUE</code>,
 the plot is exported and in addition returned in R.</p></dd>
+
+
+<dt>export_height</dt>
+<dd><p>a numeric value that specifies the plot height in inches for an exported plot.
+The default is <code>25</code>. For a non-facet plot we recommend using 8.</p></dd>
+
+
+<dt>export_width</dt>
+<dd><p>a numeric value that specifies the plot height in inches for an exported plot.
+The default is <code>30</code>. For a non-facet plot we recommend using 12.</p></dd>
 
 
 <dt>export_name</dt>
@@ -191,19 +221,25 @@ maximally 20 facets.</p>
 <span class="r-in"><span>  dose <span class="op">=</span> <span class="va">concentration</span>,</span></span>
 <span class="r-in"><span>  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The `condition_completeness` argument of `fit_drc_4p()` is deprecated as of</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> protti 0.8.0.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use the `n_condition_completeness` argument instead.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The `replicate_completeness` argument of `fit_drc_4p()` is deprecated as of</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> protti 0.8.0.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use the `n_replicate_completeness` argument instead.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">drc_fit</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tibble [39 × 18] (S3: tbl_df/tbl/data.frame)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ rank             : num [1:39] 1 2 3 4 NA NA NA NA NA NA ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ protein          : chr [1:39] "protein_2" "protein_2" "protein_1" "protein_2" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ peptide          : chr [1:39] "peptide_2_1" "peptide_2_3" "peptide_1_1" "peptide_2_2" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ hill_coefficient : num [1:39] 2.23 3.28 1.91 -3.31 -4.79 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ min_model        : num [1:39] 14.9 12.5 16 19.1 17.4 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ max_model        : num [1:39] 19.1 16.2 17.1 19.8 17.9 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ec_50            : num [1:39] 245.4 141.8 95.2 629.3 202.4 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ correlation      : num [1:39] 0.999 0.994 0.967 0.928 0.77 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pval             : num [1:39] 1.13e-29 8.42e-15 1.60e-14 6.63e-11 1.75e-05 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ plot_curve       :List of 39</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tibble [45 × 18] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ rank             : num [1:45] 1 2 3 4 NA NA NA NA NA NA ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ protein          : chr [1:45] "protein_2" "protein_2" "protein_1" "protein_2" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ peptide          : chr [1:45] "peptide_2_1" "peptide_2_3" "peptide_1_1" "peptide_2_2" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ hill_coefficient : num [1:45] 2.23 3.28 1.91 -3.31 -4.79 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ min_model        : num [1:45] 14.9 12.5 16 19.1 17.4 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ max_model        : num [1:45] 19.1 16.2 17.1 19.8 17.9 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ec_50            : num [1:45] 245.4 141.8 95.2 629.3 202.4 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ correlation      : num [1:45] 0.999 0.994 0.967 0.928 0.77 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ pval             : num [1:45] 1.13e-29 8.42e-15 1.60e-14 6.63e-11 1.75e-05 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ plot_curve       :List of 45</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [100 × 4] (S3: tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num [1:100] 5000 4588 4210 3863 3544 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num [1:100] 14.9 14.9 14.9 14.9 14.9 ...</span>
@@ -399,7 +435,37 @@ maximally 20 facets.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num [1:100] 15.8 15.8 15.8 15.8 15.8 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Lower     : num [1:100] 15.8 15.8 15.8 15.8 15.8 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Upper     : num [1:100] 15.9 15.9 15.9 15.9 15.9 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ plot_points      :List of 39</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [1 × 4] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Lower     : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Upper     : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [1 × 4] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Lower     : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Upper     : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [1 × 4] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Lower     : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Upper     : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [1 × 4] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Lower     : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Upper     : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [1 × 4] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Lower     : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Upper     : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [1 × 4] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ dose      : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Prediction: num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Lower     : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ Upper     : num NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ plot_points      :List of 45</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [24 × 2] (S3: tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ peptide_intensity_missing: num [1:24] 19.2 18.9 19.1 19 18.7 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ concentration            : num [1:24] 0 50 50 50 100 100 100 500 500 500 ...</span>
@@ -517,13 +583,31 @@ maximally 20 facets.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [23 × 2] (S3: tbl_df/tbl/data.frame)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ peptide_intensity_missing: num [1:23] 15.9 15.9 15.9 15.7 15.8 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ concentration            : num [1:23] 0 50 50 100 100 100 500 500 500 1000 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ enough_conditions: logi [1:39] TRUE TRUE TRUE TRUE TRUE TRUE ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ anova_significant: logi [1:39] TRUE TRUE TRUE TRUE TRUE FALSE ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ dose_MNAR        : logi [1:39] FALSE TRUE FALSE FALSE FALSE FALSE ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ passed_filter    : logi [1:39] TRUE TRUE TRUE TRUE FALSE FALSE ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ anova_pval       : num [1:39] 3.67e-20 1.47e-05 1.97e-08 2.86e-07 1.21e-04 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ anova_adj_pval   : num [1:39] 1.61e-18 1.62e-04 4.33e-07 4.19e-06 1.06e-03 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ score            : num [1:39] 1 0.4664 0.373 0.0586 NA ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [16 × 2] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ peptide_intensity_missing: num [1:16] 14.9 14.7 14.9 15 14.7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ concentration            : num [1:16] 50 100 500 500 1000 0 1000 1000 5000 5000 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [24 × 2] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ peptide_intensity_missing: num [1:24] 17.1 17.5 16.6 17 16.8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ concentration            : num [1:24] 0 50 50 50 100 100 100 500 500 500 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [16 × 2] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ peptide_intensity_missing: num [1:16] 13.8 15.2 14.2 14.8 14.5 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ concentration            : num [1:16] 0 50 50 50 100 100 500 500 1000 1000 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [22 × 2] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ peptide_intensity_missing: num [1:22] 15.6 15.3 15.9 15.7 15.3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ concentration            : num [1:22] 0 50 50 50 100 100 100 500 500 500 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [24 × 2] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ peptide_intensity_missing: num [1:24] 15.7 15.7 15.8 16 15.6 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ concentration            : num [1:24] 0 50 50 50 100 100 100 500 500 500 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : tibble [2 × 2] (S3: tbl_df/tbl/data.frame)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ peptide_intensity_missing: num [1:2] 12.7 12.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ concentration            : num [1:2] 100 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ enough_conditions: logi [1:45] TRUE TRUE TRUE TRUE TRUE TRUE ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ dose_MNAR        : logi [1:45] FALSE TRUE FALSE FALSE FALSE FALSE ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ anova_pval       : num [1:45] 3.67e-20 1.47e-05 1.97e-08 2.86e-07 3.84e-04 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ anova_adj_pval   : num [1:45] 1.61e-18 1.62e-04 4.33e-07 4.19e-06 3.38e-03 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ anova_significant: logi [1:45] TRUE TRUE TRUE TRUE TRUE FALSE ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ passed_filter    : logi [1:45] TRUE TRUE TRUE TRUE FALSE FALSE ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ score            : num [1:45] 1 0.4664 0.373 0.0586 NA ...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot dose response curves</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">drc_fit</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>

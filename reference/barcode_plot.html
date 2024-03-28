@@ -18,7 +18,7 @@ abundance can be displayed.'><meta property="og:image" content="/logo.png"><!-- 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
       </span>
     </div>
 
@@ -84,8 +84,11 @@ abundance can be displayed.</p>
 <span>  <span class="va">protein_length</span>,</span>
 <span>  coverage <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  colouring <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fill_colour_gradient <span class="op">=</span> <span class="fu">protti</span><span class="fu">::</span><span class="va"><a href="mako_colours.html">mako_colours</a></span>,</span>
+<span>  fill_colour_discrete <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#999999"</span>, <span class="fu">protti</span><span class="fu">::</span><span class="va"><a href="protti_colours.html">protti_colours</a></span><span class="op">)</span>,</span>
 <span>  protein_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  facet <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  facet_n_col <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  cutoffs <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -93,43 +96,58 @@ abundance can be displayed.</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
-<dd><p>Data frame containing differential abundance, start and end peptide or precursor positions and protein length.</p></dd>
+<dd><p>a data frame containing differential abundance, start and end peptide or precursor positions and protein length.</p></dd>
 
 
 <dt>start_position</dt>
-<dd><p>Column in the data frame containing the start positions for each peptide or precursor.</p></dd>
+<dd><p>a numeric column in the data frame containing the start positions for each peptide or precursor.</p></dd>
 
 
 <dt>end_position</dt>
-<dd><p>Column in the data frame containing the end positions for each peptide or precursor.</p></dd>
+<dd><p>a numeric column in the data frame containing the end positions for each peptide or precursor.</p></dd>
 
 
 <dt>protein_length</dt>
-<dd><p>Column in the data frame containing the length of the protein.</p></dd>
+<dd><p>a numeric column in the data frame containing the length of the protein.</p></dd>
 
 
 <dt>coverage</dt>
-<dd><p>Optional, column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.</p></dd>
+<dd><p>optional, numeric column in the data frame containing coverage in percent. Will appear in the title of the barcode if provided.</p></dd>
 
 
 <dt>colouring</dt>
-<dd><p>Optional argument, column in the data frame containing information by which peptide or precursors should
+<dd><p>optional, column in the data frame containing information by which peptide or precursors should
 be colored.</p></dd>
 
 
+<dt>fill_colour_gradient</dt>
+<dd><p>a vector that contains colours that should be used to create a colour gradient
+for the barcode plot bars if the <code>colouring</code> argument is continuous. Default is <code>mako_colours</code>.</p></dd>
+
+
+<dt>fill_colour_discrete</dt>
+<dd><p>a vector that contains colours that should be used to fill the barcode plot bars
+if the <code>colouring</code> argument is discrete. Default is <code>protti_colours</code>.</p></dd>
+
+
 <dt>protein_id</dt>
-<dd><p>Optional argument, column in the data frame containing protein identifiers. Required if only one protein
+<dd><p>optional, column in the data frame containing protein identifiers. Required if only one protein
 should be plotted and the data frame contains only information for this protein.</p></dd>
 
 
 <dt>facet</dt>
-<dd><p>Optional argument, column in the data frame containing information by which data should be faceted. This can be
+<dd><p>optional, column in the data frame containing information by which data should be faceted. This can be
 protein identifiers. Only 20 proteins are plotted at a time, the rest is ignored. If more should be plotted, a mapper over a
 subsetted data frame should be created.</p></dd>
 
 
+<dt>facet_n_col</dt>
+<dd><p>a numeric value that specifies the number of columns the faceted plot should have
+if a column name is provided to group. The default is 4.</p></dd>
+
+
 <dt>cutoffs</dt>
-<dd><p>Optional argument specifying the log2 fold change and significance cutoffs used for highlighting peptides.
+<dd><p>optional argument specifying the log2 fold change and significance cutoffs used for highlighting peptides.
 If this argument is provided colouring information will be overwritten with peptides that fulfill this condition.
 The cutoff should be provided in a vector of the form c(diff = 2, pval = 0.05). The name of the cutoff should reflect the
 column name that contains this information (log2 fold changes, p-values or adjusted p-values).</p></dd>

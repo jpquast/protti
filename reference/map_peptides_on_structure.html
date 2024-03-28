@@ -22,7 +22,7 @@ structure as a colour gradient."><meta property="og:image" content="/logo.png"><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
       </span>
     </div>
 
@@ -234,28 +234,27 @@ replaced with scaled (50-100) values provided in the <code>map_value</code> colu
 <span class="r-in"><span>  uniprot_id <span class="op">=</span> <span class="va">uniprot_id</span>,</span></span>
 <span class="r-in"><span>  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">map_value</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pdb_ids</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"6UU2"</span>, <span class="st">"2EL9"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please note that some column names have changed due to UniProt updating its API! This might cause errors in your code. You can fix it by replacing the old column names with new ones.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [2/6] Extract experimental conditions ... </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.03s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [3/6] Extracting polymer information: </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 1/6 UniProt IDs ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.42s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.41s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 2/6 UniProt alignment ... </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.43s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 3/6 Ligand binding sites ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (2.68s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (2.64s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 4/6 Modified monomers ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.2s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.19s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 5/6 Secondary structure ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (1.13s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (1.08s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; 6/6 Unmodeled residues ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.27s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.24s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [4/6] Correct author sequence positions for some PDB IDs ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> None to correct(0.4s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> None to correct(0.43s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [5/6] Extract non-polymer information ... </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.01s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [6/6] Combine information ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.83s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> DONE (0.92s)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Map peptides on structures</span></span></span>
 <span class="r-in"><span><span class="co"># You can determine the preferred output location</span></span></span>

@@ -24,7 +24,7 @@ they are too large for efficient export from the workers."><meta property="og:im
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.0</span>
       </span>
     </div>
 
@@ -98,6 +98,10 @@ they are too large for efficient export from the workers.</p>
 <span>  filter <span class="op">=</span> <span class="st">"post"</span>,</span>
 <span>  replicate_completeness <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>  condition_completeness <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  n_replicate_completeness <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_condition_completeness <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  complete_doses <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  anova_cutoff <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  correlation_cutoff <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>  log_logarithmic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  retain_columns <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -131,16 +135,20 @@ the treatment concentrations.</p></dd>
 
 
 <dt>filter</dt>
-<dd><p>a character value that determines if models should be filtered and if they should
-be filtered. The option <code>"pre"</code> is not available for parallel fitting of models. This is
-because ANOVA adjusted p-values would be wrongly calculated because the dataset is split onto
-multiple cores. Default is "post" and we recommend always using "post" because compared to
-"none" only some additional columns are added that contain the filter information. For ANOVA
-an adjusted p-value of 0.05 is used as a cutoff.</p></dd>
+<dd><p>a character value that can either be <code>"pre"</code>, <code>"post"</code> or <code>"none"</code>. The data is
+annotated for completeness, ANOVA significance and the completeness distribution along
+the doses (<code>"pre"</code> and <code>"post"</code>). The combined output of this filtering step can be found in
+the <code>passed_filter</code> column and depends on the cutoffs provided to the function. Note that this
+is only an annotation and nothing is removed from the output. If <code>"pre"</code> is selected then, in
+addition to the annotation, the data is filtered for completeness based on the condition completeness
+prior to the curve fitting and ANOVA calculation and p-value adjustment. This has the benefit that less
+curves need to be fitted and that the ANOVA p-value adjustment is done only on the relevant set of tests.
+If <code>"none"</code> is selected the data will be neither annotated nor filtered.</p></dd>
 
 
 <dt>replicate_completeness</dt>
-<dd><p>a numeric value which similar to <code>completenss_MAR</code> of the
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> please use <code>n_replicate_completeness</code> instead.
+A numeric value which similar to <code>completenss_MAR</code> of the
 <code>assign_missingness</code> function sets a threshold for the completeness of data. In contrast
 to <code>assign_missingness</code> it only determines the completeness for one condition and not the
 comparison of two conditions. The threshold is used to calculate a minimal degree of data
@@ -151,7 +159,8 @@ enough" for the <code>condition_completeness</code> argument.</p></dd>
 
 
 <dt>condition_completeness</dt>
-<dd><p>a numeric value which determines how many conditions need to at
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> please use <code>n_condition_completeness</code> instead.
+A numeric value which determines how many conditions need to at
 least fulfill the "complete enough" criteria set with <code>replicate_completeness</code>. The
 value provided to this argument has to be between 0 and 1, default is 0.5. It is multiplied with
 the number of conditions and then adjusted downward. The resulting number is the minimal number
@@ -159,9 +168,38 @@ of conditions that need to fulfill the <code>replicate_completeness</code> argum
 pass the filtering.</p></dd>
 
 
+<dt>n_replicate_completeness</dt>
+<dd><p>a numeric value that defines the minimal number of observations that a
+condition (concentration) needs to have to be considered "complete enough" for the <code>n_condition_completeness</code>
+argument. E.g. if each concentration has 4 replicates this argument could be set to 3 to allow for one
+replicate to be missing for the completeness criteria.</p></dd>
+
+
+<dt>n_condition_completeness</dt>
+<dd><p>a numeric value that defines the minimal number
+of conditions that need to fulfill the <code>n_replicate_completeness</code> argument for a feature to
+pass the filtering. E.g. if an experiment has 12 concentrations, this argument could be set
+to 6 to define that at least 6 of 12 concentrations need to make the replicate completeness cutoff.</p></dd>
+
+
+<dt>complete_doses</dt>
+<dd><p>an optional numeric vector that supplies all the actually used doses (concentrations)
+to the function. Usually the function extracts this information from the supplied data. However,
+for incomplete datasets the total number of assumed doses might be wrong. This might especially affect
+parallel fitting of curves since the dataset is split up into smaller pieces. Therefore, it becomes
+important to provide this argument especially when the dataset is small and potentially incomplete. This
+information is only used for the missing not at random (MNAR) estimations.</p></dd>
+
+
+<dt>anova_cutoff</dt>
+<dd><p>a numeric value that specifies the ANOVA adjusted p-value cutoff used for
+data filtering. Any fits with an adjusted ANOVA p-value bellow the cutoff will be considered
+for scoring. The default is <code>0.05</code>.</p></dd>
+
+
 <dt>correlation_cutoff</dt>
-<dd><p>a numeric vector that specifies the correlation cutoff used for data
-filtering.</p></dd>
+<dd><p>a numeric value that specifies the correlation cutoff used for data
+filtering. Any fits with a correlation above the cutoff will be considered for scoring.</p></dd>
 
 
 <dt>log_logarithmic</dt>
@@ -197,37 +235,42 @@ the model for each group. Furthermore, input data for plots is returned in the c
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>If data filtering options are selected, data is filtered based on multiple criteria.
-In general, curves are only fitted if there are at least 5 conditions with data points present
-to ensure that there is potential for a good curve fit. Therefore, this is also the case if no
-filtering option is selected. Furthermore, a completeness cutoff is defined for filtering. By
-default each entity (e.g. precursor) is filtered to contain at least 70% of total replicates
-(adjusted downward) for at least 50% of all conditions (adjusted downward). This can be adjusted
-with the according arguments. In addition to the completeness cutoff, also a significance cutoff
-is applied. ANOVA is used to compute the statistical significance of the change for each entity.
-The resulting p-value is adjusted using the Benjamini-Hochberg method and a cutoff of q &lt;= 0.05
-is applied. Curve fits that have a minimal value that is higher than the maximal value are
-excluded as they were likely wrongly fitted. Curves with a correlation below 0.8 are not passing
-the filtering. If a fit does not fulfill the significance or completeness cutoff, it has a
-chance to still be considered if half of its values (+/-1 value) pass the replicate completeness
-criteria and half do not pass it. In order to fall into this category, the values that fulfill
-the completeness cutoff and the ones that do not fulfill it need to be consecutive, meaning
-located next to each other based on their concentration values. Furthermore, the values that
-do not pass the completeness cutoff need to be lower in intensity. Lastly, the difference
+    <p>If data filtering options are selected, data is annotated based on multiple criteria.
+If <code>"post"</code> is selected the data is annotated based on completeness, the completeness distribution, the
+adjusted ANOVA p-value cutoff and a correlation cutoff. Completeness of features is determined based on
+the <code>n_replicate_completeness</code> and <code>n_condition_completeness</code> arguments. The completeness distribution determines
+if there is a distribution of not random missingness of data along the dose. For this it is checked if half of a
+features values (+/-1 value) pass the replicate completeness criteria and half do not pass it. In order to fall into
+this category, the values that fulfill the completeness cutoff and the ones that do not fulfill it
+need to be consecutive, meaning located next to each other based on their concentration values. Furthermore,
+the values that do not pass the completeness cutoff need to be lower in intensity. Lastly, the difference
 between the two groups is tested for statistical significance using a Welch's t-test and a
-cutoff of p &lt;= 0.1 (we want to mainly discard curves that falsly fit the other criteria
-but that have clearly non-significant differences in mean). This allows curves to be considered
-that have missing values in half of their observations due to a decrease in intensity. It can
-be thought of as conditions that are missing not at random (MNAR). It is often the case that
-those entities do not have a significant p-value since half of their conditions are not
-considered due to data missingness.</p>
-<p>The final filtered list is ranked based on a score calculated on entities that pass the filter.
+cutoff of p &lt;= 0.1 (we want to mainly discard curves that falsely fit the other criteria but that
+have clearly non-significant differences in mean). This allows curves to be considered that have
+missing values in half of their observations due to a decrease in intensity. It can be thought
+of as conditions that are missing not at random (MNAR). It is often the case that those entities
+do not have a significant p-value since half of their conditions are not considered due to data
+missingness. The ANOVA test is performed on the features by concentration. If it is significant it is
+likely that there is some response. However, this test would also be significant even if there is one
+outlier concentration so it should only be used only in combination with other cutoffs to determine
+if a feature is significant. The <code>passed_filter</code> column is <code>TRUE</code> for all the
+features that pass the above mentioned criteria and that have a correlation greater than the cutoff
+(default is 0.8) and the adjusted ANOVA p-value below the cutoff (default is 0.05).</p>
+<p>The final list is ranked based on a score calculated on entities that pass the filter.
 The score is the negative log10 of the adjusted ANOVA p-value scaled between 0 and 1 and the
 correlation scaled between 0 and 1 summed up and divided by 2. Thus, the highest score an
 entity can have is 1 with both the highest correlation and adjusted p-value. The rank is
 corresponding to this score. Please note, that entities with MNAR conditions might have a
-lower score due to the missing or non-significant ANOVA p-value. You should have a look at
-curves that are TRUE for <code>dose_MNAR</code> in more detail.</p>
+lower score due to the missing or non-significant ANOVA p-value. If no score could be calculated
+the usual way these cases receive a score of 0. You should have a look at curves that are TRUE
+for <code>dose_MNAR</code> in more detail.</p>
+<p>If the <code>"pre"</code> option is selected for the <code>filter</code> argument then the data is filtered for completeness
+prior to curve fitting and the ANOVA test. Otherwise annotation is performed exactly as mentioned above.
+We recommend the <code>"pre"</code> option because it leaves you with not only the likely hits of your treatment, but
+also with rather high confidence true negative results. This is because the filtered data has a high
+degree of completeness making it unlikely that a real dose-response curve is missed due to data missingness.</p>
+<p>Please note that in general, curves are only fitted if there are at least 5 conditions with data points present
+to ensure that there is potential for a good curve fit. This is done independent of the selected filtering option.</p>
     </div>
 
     <div id="ref-examples">
@@ -256,6 +299,8 @@ curves that are TRUE for <code>dose_MNAR</code> in more detail.</p>
 <span class="r-in"><span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span></span>
 <span class="r-in"><span>  response <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span></span>
 <span class="r-in"><span>  dose <span class="op">=</span> <span class="va">concentration</span>,</span></span>
+<span class="r-in"><span>  n_replicate_completeness <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  n_condition_completeness <span class="op">=</span> <span class="fl">5</span>,</span></span>
 <span class="r-in"><span>  retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
