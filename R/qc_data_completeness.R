@@ -78,7 +78,7 @@ qc_data_completeness <- function(data,
           dplyr::group_by({{ sample }}) %>%
           dplyr::summarise(completeness = sum(!is.na({{ intensity }})) / dplyr::n() * 100, .groups = "drop") %>%
           dplyr::mutate({{ digestion }} := .y)
-      ) %>% 
+      ) %>%
       filter(.data$completeness > 0)
   } else {
     result <- data %>%

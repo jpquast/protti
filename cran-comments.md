@@ -1,11 +1,11 @@
 ## Submission 
 
-* We have fixed a few bugs and added a new functions.
+* We added new features and fixed bugs.
 
 ## Test environments
-* macOS-latest (on GitHub actions), R 4.3.2
-* windows-latest (on GitHub actions), R 4.3.2
-* ubuntu-20.04 (on GitHub actions), R 4.3.2
+* macOS-latest (on GitHub actions), R 4.3.3
+* windows-latest (on GitHub actions), R 4.3.3
+* ubuntu-20.04 (on GitHub actions), R 4.3.3
 * ubuntu-20.04 (on GitHub actions), r-devel
 * windows-ix86+x86_64 (win-builder), r-devel
 * fedora-clang-devel (R-hub), r-devel

@@ -37,16 +37,26 @@ plot_drc_4p <- function(...) {
 #' if plots for all curve fits should be created.
 #' @param unit a character value specifying the unit of the concentration.
 #' @param y_axis_name a character value specifying the name of the y-axis of the plot.
+#' @param facet_title_size a numeric value that specifies the size of the facet title. Default is 15.
 #' @param facet a logical value that indicates if plots should be summarised into facets of 20
 #' plots. This is recommended for many plots.
 #' @param scales a character value that specifies if the scales in faceted plots (if more than one
 #' target was provided) should be \code{"free"} or \code{"fixed"}.
 #' @param x_axis_scale_log10 a logical value that indicates if the x-axis scale should be log10
 #' transformed.
+#' @param x_axis_limits a numeric vector of length 2, defining the lower and upper x-axis limit. The
+#' default is `c(NA, NA)`, meaning the limits are not defined by the user but by the data.
+#' @param colours a character vector containing at least three colours. The first is used for the points,
+#' the second for the confidence interval and the third for the curve. By default the first two
+#' protti colours are used for the points and confidence interval and the curve is black.
 #' @param export a logical value that indicates if plots should be exported as PDF. The output
 #' directory will be the current working directory. The name of the file can be chosen using the
 #' \code{export_name} argument. If only one target is selected and \code{export = TRUE},
 #' the plot is exported and in addition returned in R.
+#' @param export_height a numeric value that specifies the plot height in inches for an exported plot.
+#' The default is `25`. For a non-facet plot we recommend using 8.
+#' @param export_width a numeric value that specifies the plot height in inches for an exported plot.
+#' The default is `30`. For a non-facet plot we recommend using 12.
 #' @param export_name a character value providing the name of the exported file if
 #' \code{export = TRUE}.
 #'
@@ -110,10 +120,15 @@ drc_4p_plot <- function(data,
                         targets,
                         unit = "uM",
                         y_axis_name = "Response",
+                        facet_title_size = 15,
                         facet = TRUE,
                         scales = "free",
                         x_axis_scale_log10 = TRUE,
+                        x_axis_limits = c(NA, NA),
+                        colours = NULL,
                         export = FALSE,
+                        export_height = 25,
+                        export_width = 30,
                         export_name = "dose-response_curves") {
   . <- NULL
 
@@ -122,6 +137,24 @@ drc_4p_plot <- function(data,
     data <- data %>%
       dplyr::filter({{ grouping }} %in% targets)
     if (nrow(data) == 0) stop("Target not found in data!")
+  }
+
+  if (missing(colours)) {
+    protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
+    utils::data("protti_colours", envir = environment()) # then overwrite it with real data
+    colours <- c(protti_colours[1:2], "black")
+  } else {
+    if (length(colours) < 3) stop("Please provide at least three colours for the plot!")
+  }
+
+  if (facet == FALSE) {
+    # If the plot is not faceted and the user didn't provide heights and widths set them here
+    if (missing(export_height)) {
+      export_height <- 8
+    }
+    if (missing(export_width)) {
+      export_width <- 12
+    }
   }
 
   data <- data %>%
@@ -134,10 +167,10 @@ drc_4p_plot <- function(data,
       round(.data$ec_50),
       ")"
     )) %>%
+    dplyr::mutate(correlation = ifelse(is.na(.data$correlation), 0, .data$correlation)) %>%
     dplyr::mutate(name = forcats::fct_reorder(.data$name, dplyr::desc(.data$correlation))) %>%
     dplyr::mutate(
-      group_number = 1,
-      group_number = ceiling(cumsum(.data$group_number) / 20)
+      group_number = ceiling(1:dplyr::n() / 20)
     ) # we do this in preparation for faceting later.
 
   input_points <- data %>%
@@ -148,97 +181,11 @@ drc_4p_plot <- function(data,
     dplyr::select({{ grouping }}, .data$name, .data$group_number, .data$plot_curve) %>%
     tidyr::unnest(.data$plot_curve)
 
-  if (!"all" %in% targets) {
-    if (length(targets) == 1) {
-      input_points_plot <- input_points %>%
-        dplyr::filter({{ grouping }} == targets)
-
-      input_curve_plot <- input_curve %>%
-        dplyr::filter({{ grouping }} == targets)
-
-      plot <- ggplot2::ggplot(
-        data = input_points_plot,
-        ggplot2::aes(
-          x = {{ dose }},
-          y = {{ response }}
-        )
-      ) +
-        ggplot2::geom_point(size = 2, col = "#5680C1") +
-        ggplot2::geom_ribbon(
-          data = input_curve_plot,
-          ggplot2::aes(
-            x = .data$dose,
-            y = .data$Prediction,
-            ymin = .data$Lower,
-            ymax = .data$Upper
-          ),
-          alpha = 0.2,
-          fill = "#B96DAD"
-        ) +
-        ggplot2::geom_line(
-          data = input_curve_plot,
-          ggplot2::aes(
-            x = .data$dose,
-            y = .data$Prediction
-          ),
-          size = 1.2
-        ) +
-        ggplot2::labs(
-          title = unique(input_points_plot$name),
-          x = paste0("Concentration [", unit, "]"),
-          y = y_axis_name
-        ) +
-        ggplot2::scale_x_log10() +
-        ggplot2::theme_bw() +
-        ggplot2::theme(
-          plot.title = ggplot2::element_text(
-            size = 18
-          ),
-          axis.text.x = ggplot2::element_text(
-            size = 15
-          ),
-          axis.text.y = ggplot2::element_text(
-            size = 15
-          ),
-          axis.title.y = ggplot2::element_text(
-            size = 15
-          ),
-          axis.title.x = ggplot2::element_text(
-            size = 15
-          ),
-          legend.title = ggplot2::element_text(
-            size = 15
-          ),
-          legend.text = ggplot2::element_text(
-            size = 15
-          ),
-          strip.text.x = ggplot2::element_text(
-            size = 15
-          ),
-          strip.text = ggplot2::element_text(
-            size = 15
-          ),
-          strip.background = element_blank()
-        )
-
-      if (export == FALSE) {
-        return(plot)
-      } else {
-        grDevices::pdf(
-          file = paste0(export_name, ".pdf"),
-          width = 8,
-          height = 6
-        )
-        suppressWarnings(print(plot))
-        grDevices::dev.off()
-        return(plot)
-      }
-    } else {
-      input_points <- input_points %>%
-        dplyr::filter({{ grouping }} %in% targets)
-
-      input_curve <- input_curve %>%
-        dplyr::filter({{ grouping }} %in% targets)
+  if (length(targets) == 1) {
+    # If the facet argument was not defined set it to FALSE
+    # because there is just one plot
+    if (missing(facet)) {
+      facet <- FALSE
     }
   }
 
@@ -268,25 +215,35 @@ drc_4p_plot <- function(data,
     function(x, y, z) {
       pb$tick()
       ggplot2::ggplot(data = x, ggplot2::aes(x = {{ dose }}, y = {{ response }})) +
-        ggplot2::geom_point(size = 2, col = "#5680C1") +
-        ggplot2::geom_ribbon(
-          data = y,
-          ggplot2::aes(
-            x = .data$dose,
-            y = .data$Prediction,
-            ymin = .data$Lower,
-            ymax = .data$Upper
-          ),
-          alpha = 0.2,
-          fill = "#B96DAD"
-        ) +
-        ggplot2::geom_line(
-          data = y, ggplot2::aes(
-            x = dose,
-            y = .data$Prediction
-          ),
-          size = 1.2
-        ) +
+        ggplot2::geom_point(size = 2, col = colours[1]) +
+        {
+          if (nrow(y) != 1) {
+            ggplot2::geom_ribbon(
+              data = y,
+              ggplot2::aes(
+                x = .data$dose,
+                y = .data$Prediction,
+                ymin = .data$Lower,
+                ymax = .data$Upper
+              ),
+              alpha = 0.2,
+              fill = colours[2]
+            )
+          }
+        } +
+        {
+          if (nrow(y) != 1) {
+            ggplot2::geom_line(
+              data = y,
+              ggplot2::aes(
+                x = .data$dose,
+                y = .data$Prediction
+              ),
+              size = 1.2,
+              col = colours[3]
+            )
+          }
+        } +
         {
           if (facet == FALSE) {
             ggplot2::labs(
@@ -306,60 +263,46 @@ drc_4p_plot <- function(data,
           }
         } +
         {
-          if (x_axis_scale_log10 == TRUE) ggplot2::scale_x_log10()
+          if (x_axis_scale_log10 == TRUE) {
+            ggplot2::scale_x_log10(limits = x_axis_limits)
+          } else {
+            ggplot2::scale_x_continuous(limits = x_axis_limits)
+          }
         } +
         {
           if (facet == TRUE) ggplot2::facet_wrap(~ .data$name, scales = scales, ncol = 4)
         } +
         ggplot2::theme_bw() +
         ggplot2::theme(
-          plot.title = ggplot2::element_text(
-            size = 18
-          ),
-          axis.text.x = ggplot2::element_text(
-            size = 15
-          ),
-          axis.text.y = ggplot2::element_text(
-            size = 15
-          ),
-          axis.title.y = ggplot2::element_text(
-            size = 15
-          ),
-          axis.title.x = ggplot2::element_text(
-            size = 15
-          ),
-          legend.title = ggplot2::element_text(
-            size = 15
-          ),
-          legend.text = ggplot2::element_text(
-            size = 15
-          ),
-          strip.text.x = ggplot2::element_text(
-            size = 15
-          ),
-          strip.text = ggplot2::element_text(
-            size = 15
-          ),
+          plot.title = ggplot2::element_text(size = 18),
+          axis.text.x = ggplot2::element_text(size = 15),
+          axis.text.y = ggplot2::element_text(size = 15),
+          axis.title.y = ggplot2::element_text(size = 15),
+          axis.title.x = ggplot2::element_text(size = 15),
+          legend.title = ggplot2::element_text(size = 15),
+          legend.text = ggplot2::element_text(size = 15),
+          strip.text.x = ggplot2::element_text(size = facet_title_size),
           strip.background = element_blank()
         )
     }
   )
+
   if (export == FALSE) {
     plots
   } else {
     if (facet == TRUE) {
       grDevices::pdf(
         file = paste0(export_name, ".pdf"),
-        width = 45,
-        height = 37.5
+        width = export_width,
+        height = export_height
       )
       suppressWarnings(print(plots))
       grDevices::dev.off()
     } else {
       grDevices::pdf(
         file = paste0(export_name, ".pdf"),
-        width = 8,
-        height = 6
+        width = export_width,
+        height = export_height
       )
       suppressWarnings(print(plots))
       grDevices::dev.off()

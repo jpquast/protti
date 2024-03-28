@@ -1,3 +1,61 @@
+# protti 0.8.0
+
+## New features
+
+* `calculate_treatment_enrichment()` received additional arguments. 
+  * `fill_colours`: a character value that can be used to provide custom colours to the plot.
+  * `fill_by_group`: a logical value that specifies if the bars in the plot should be filled according to group.
+  * `facet_n_col`: specifies the number of columns in the facet plot if a `group` column was provided.
+* `calculate_go_enrichment()` got additional arguments.
+  * `facet_n_col`: determines the number of columns the faceted plot should have if a group column is provided.
+  * `plot_title`: specifies the title of the plot.
+  * `min_n_detected_proteins_in_process`: argument for plotting that specifies the minimum number of proteins a GO term needs to be detected for.
+  * `enrichment_type`: specifies what kind of enrichment should be calculated. It can be "all", "enrichment" or "deenrichment". This argument affects how the `fisher.test()` calculates the enrichment. A two-sided test will be used for "all", while a one-sided test in the specific direction will be used for "enriched" or "deenriched".
+  * `barplot_fill_colour`: specifies the colours used to fill the bars in the barplot. Needs always at least two values one for deenriched the other for enriched.
+  * `plot_style`: We added a new plot type to the function. The standard plot is still the default and is called "barplot", while the new plot type is "heatmap". The heatmap plot is especially useful for comparing GO enrichments of multiple groups.
+  * `heatmap_fill_colour`: specifies the colours used for the colour gradient of heatmap plots.
+  * `heatmap_fill_colour_rev`: a logical value that specifies if the colour gradient should be reversed.
+  * `plot_cutoff`: is now more flexible. You can provide any number with the "top" cutoff. E.g. "top10", "top5".
+* `barcode_plot()` received additional arguments.
+  * `facet_n_col`: determines the number of columns the faceted plot.
+  * `fill_colour_gradient`: specifies the colours used for the colour gradient if the `colouring` column is continous.
+  * `fill_colour_discrete`: specifies the colours used for the fill colours if the `colouring` column is discrete.
+* Added `mako_colours` to the package that contain 256 colours of the "mako" colour gradient.
+* `drc_4p_plot()` received additional arguments.
+  * `facet_title_size`: determines the size of the facet titles.
+  * `export_height`: determines the output height of an exported plot in inches.
+  * `export_width`: determines the output width of an exported plot in inches.
+  * `x_axis_limits`: user supplied x-axis limits for each plot.
+  * `colours`: determines colours used for the plot.
+* `fit_drc_4p()` and `parallel_fit_drc_4p()` have been updated in the latest version of **protti**, leading to slight adjustments in their computational results compared to previous versions. 
+  * We added new arguments: 
+    * `anova_cutoff` lets you define the ANOVA adjusted p-value cutoff (default 0.05). 
+    * `n_replicate_completeness` replaces `replicate_completeness`. Now we encourage you to provide a discrete number of minimal replicates instead of a fraction that is multiplied with the total number of replicates. This is particularly important to ensure that thresholds between different datasets and data completeness levels are reproducible.
+    * `n_condition_completeness` replaces `condition_completeness`. Same as above, we encourage you to provide the minimal number of conditions that need to meet the replicate completeness criteria as a number instead of a fraction.
+    * `complete_doses` is a new optional argument that should be provided if the dataset is small and potentially incomplete. This ensures that no matter if any doses are missing from the provided data or not, the MNAR of the curve is calculated correctly. We would recommend always providing it to ensure proper reproducibility.
+  * Curves that were previously annotated in the `dose_MNAR` column are now part of the hits. To get back to the old output you can just exclude them again from the ranked results. 
+  * The major change to the function is that now all provided features (e.g. peptides) are also part of the output no matter if a curve was fit or not. To get back to the original output you can remove all features without a fit, but please note that statistics such as the ANOVA p-value adjustment were computed on the complete dataset and might need to be readjusted by running the p-value adjustment again. 
+  * Another major change to the function was the way the `filter` argument works. This argument controls if significance statistics should be annotated in the data. 
+    * `"pre"`: This previously filtered curves by the completeness as well as the ANOVA adjusted p-value prior to fitting curves. Now it only filters by completeness. This also allows it to be an option for the `parallel_fit_drc_4p()` function. 
+    * `"post"`: Is still the default value and still just annotates the data without any filtering.
+  * In general we would now recommend using `"pre"` to remove usually not trustworthy features with too few complete concentrations from the data before p-value adjustment and curve fittings. This will solidify your confidence that features without a dose-response behavior are true negative. The point is that it is better to not include any features with too few values because they are potentially false negative.
+
+## Bug fixes
+
+* `normalise()` now correctly works with grouped data. Previously it would only correctly work with ungrouped data frames. Now you can group the data to calculate group specific normalisations. If you want to compute a global normalisation for the dataset, you need to ungroup the data before using the function as usual. This fixes issue #209.
+* `qc_sequence_coverage()` now correctly displays medians in faceted plot. This fixes issue #202 and #213. 
+* `fit_drc_4p()` and `parallel_fit_drc_4p()` now correctly calculates the ANOVA p-value. Previously the number of observations for each concentration was not provided correctly.
+* `fetch_uniprot()` now correctly retrieves information if an input ID was also part of a non-conform input ID combination. When e.g. `c("P02545", "P02545;P20700")` was provided, previously the `"P02545"` accession was dropped from the `input_id` column even though it is also present on its own and not only in combination with `"P20700"`. The new output now contains 3 rows, one for each ID, with `"P02545"` having one row with the `input_id` ``"P02545"` and one with the `input_id` `"P02545;P20700"`. This also means that the `input_id` column now always contains the provided input IDs and not only if they were non-conform input ID combinations.
+
+## Additional Changes
+
+* For `fit_drc_4p()` and `parallel_fit_drc_4p()` the arguments `replicate_completeness` and `condition_completeness` are now deprecated. Please use `n_replicate_completeness` and `n_condition_completeness` instead.
+* Improved label positions of `qc_charge_states()`, `qc_peptide_type()` and `qc_missed_cleavages()`. Also made appearance more uniform between methods `"count"` and `"intensity"`.
+* `fetch_uniprot()` now returns nothing instead of a partial output if some of the requested batches could not be retrieved due to database issues (e.g. timeout because of too many requests). This addresses issue #203, which requests this change, because the warning message regarding the partial output can be easily missed and users might wrongfully assume that all information was retrieved successfully from UniProt.
+* `find_peptide()` now preserves the groups of the original data. This does not affect any of the calculations.
+* `calculate_sequence_coverage()` now works on grouped data.
+* Some typo fixes. Thank you Steffi!
+
 # protti 0.7.0
 
 ## New features

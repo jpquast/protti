@@ -57,6 +57,8 @@ default settings remove grouping variables without quantitative information (int
 These will not be used for the calculation of missed cleavage percentages.
 }
 \examples{
+library(dplyr)
+
 set.seed(123) # Makes example reproducible
 
 # Create example data
@@ -66,7 +68,8 @@ data <- create_synthetic_data(
   n_replicates = 3,
   n_conditions = 2,
   method = "effect_random"
-)
+) \%>\%
+  mutate(intensity_non_log2 = 2^peptide_intensity_missing)
 
 # Calculate missed cleavage percentages
 qc_missed_cleavages(
@@ -74,7 +77,7 @@ qc_missed_cleavages(
   sample = sample,
   grouping = peptide,
   missed_cleavages = n_missed_cleavage,
-  intensity = peptide_intensity_missing,
+  intensity = intensity_non_log2,
   method = "intensity",
   plot = FALSE
 )
@@ -85,7 +88,7 @@ qc_missed_cleavages(
   sample = sample,
   grouping = peptide,
   missed_cleavages = n_missed_cleavage,
-  intensity = peptide_intensity_missing,
+  intensity = intensity_non_log2,
   method = "intensity",
   plot = TRUE
 )

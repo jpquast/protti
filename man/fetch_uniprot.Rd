@@ -28,8 +28,10 @@ is TRUE.}
 }
 \value{
 A data frame that contains all protein metadata specified in \code{columns} for the
-proteins provided. If an invalid ID was provided that contains a valid UniProt ID, the valid
-portion of the ID is fetched and the invalid input ID is saved in a column called \code{input_id}.
+proteins provided. The \code{input_id} column contains the provided UniProt IDs. If an invalid ID
+was provided that contains a valid UniProt ID, the valid portion of the ID is still fetched and
+present in the \code{accession} column, while the \code{input_id} column contains the original not completely
+valid ID.
 }
 \description{
 Fetches protein metadata from UniProt.
@@ -37,5 +39,8 @@ Fetches protein metadata from UniProt.
 \examples{
 \donttest{
 fetch_uniprot(c("P36578", "O43324", "Q00796"))
+
+# Not completely valid ID
+fetch_uniprot(c("P02545", "P02545;P20700"))
 }
 }
