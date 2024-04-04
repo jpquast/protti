@@ -3,6 +3,8 @@ on:
     paths: ["**.[rR]", "**.[qrR]md", "**.[rR]markdown", "**.[rR]nw", "**.[rR]profile"]
 
 name: Style
+env:
+  GITHUB_ACTOR: "elena-krismer"
 
 jobs:
   style:
