@@ -4,7 +4,7 @@ on:
 
 name: Style
 env:
-  GITHUB_ACTOR: "elena-krismer"
+  GITHUB_ACTOR: "actions-user"
 
 jobs:
   style:
