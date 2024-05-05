@@ -366,7 +366,8 @@ fit_drc_4p <- function(data,
       FALSE
       )) %>%
       dplyr::distinct({{ grouping }}, .data$enough_conditions, .data$dose_MNAR)
-
+      # dplyr::distinct({{ grouping }}, .data$enough_conditions, .data$dose_MNAR, {{sample}}, concentration, normalised_intensity_log2)
+    
     if (filter == "pre") {
       filtered_vector <- filter_completeness %>%
         dplyr::filter(.data$enough_conditions) %>%
@@ -374,6 +375,11 @@ fit_drc_4p <- function(data,
 
       data_prep <- data_prep %>%
         filter({{ grouping }} %in% filtered_vector)
+    }
+    
+    if (nrow(data_prep) == 0){
+      # if there is nothing left after the filtering then just return NULL
+      return(NULL)
     }
 
     # perform anova on groups
