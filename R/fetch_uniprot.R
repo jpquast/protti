@@ -184,13 +184,13 @@ They were fetched and the original input ID can be found in the "input_id" colum
     new_ids <- new$new
 
     if (length(new_ids) == 0) {
-        original_ids <- data.frame(input_id = uniprot_ids_contain_valid) %>%
-          dplyr::left_join(valid_id_annotations, by = "input_id") %>%
-          dplyr::mutate(accession = ifelse(is.na(.data$accession), .data$input_id, .data$accession))
+      original_ids <- data.frame(input_id = uniprot_ids_contain_valid) %>%
+        dplyr::left_join(valid_id_annotations, by = "input_id") %>%
+        dplyr::mutate(accession = ifelse(is.na(.data$accession), .data$input_id, .data$accession))
 
-        result <- result %>%
-          dplyr::right_join(original_ids, by = "accession") %>%
-          dplyr::relocate(.data$accession, .data$input_id)
+      result <- result %>%
+        dplyr::right_join(original_ids, by = "accession") %>%
+        dplyr::relocate(.data$accession, .data$input_id)
 
       return(result)
     }
