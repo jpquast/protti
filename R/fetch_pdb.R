@@ -741,18 +741,18 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     left_join(secondary_structures, by = c("pdb_ids", "auth_asym_id")) %>%
     left_join(unmodeled_residues, by = c("pdb_ids", "auth_asym_id")) %>%
     select(-c("rcsb_polymer_instance_feature", "rcsb_polymer_entity_feature"))
-  
+
   # extract info about binding-sites
   if (show_progress == TRUE) {
     message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
     message("-> 7/7 Ligand Binding ... ", appendLF = FALSE)
     start_time <- Sys.time()
   }
-  
+
   # Ligand-binding information is joined to the non-polymer ligand info later on based on the ligands name
   ligand_binding <- rcsb_polymer_instance_feature_data %>%
     dplyr::filter(stringr::str_detect(.data$name, pattern = "ligand")) %>%
-    dplyr::mutate(ligand = str_extract(.data$name, pattern = "(?<=ligand ).+")) %>% 
+    dplyr::mutate(ligand = str_extract(.data$name, pattern = "(?<=ligand ).+")) %>%
     dplyr::group_by(.data$pdb_ids, .data$auth_asym_id, .data$ligand) %>%
     dplyr::mutate(ligand_donor_seq_id_2 = paste0(.data$beg_seq_id, collapse = ";")) %>%
     dplyr::ungroup() %>%
@@ -880,7 +880,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
         formula_weight_nonpolymer = "formula_weight",
         type_nonpolymer = "type",
         id_nonpolymer = "id"
-      ) %>% 
+      ) %>%
       dplyr::left_join(ligand_binding, by = c("id_nonpolymer" = "ligand", "auth_asym_ids" = "auth_asym_id", "pdb_ids"))
   } else {
     nonpolymer_entities <- polymer_entities %>%
