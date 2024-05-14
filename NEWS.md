@@ -1,3 +1,9 @@
+# protti 0.8.9000
+
+## Bug fixes
+
+* `fetch_uniprot()` was incorrectly identifying UniProt IDs in e.g. ENSEMBLE IDs (`"CON_ENSEMBL:ENSBTAP00000037665"` -> `"P00000"`). Now there is an additional identification requirement for UniProt IDs to not be followed or preceded by letters or digits. This means that in `"P02545;P20700"` both UniProt IDs are still identified correctly.
+
 # protti 0.8.0
 
 ## New features

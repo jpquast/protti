@@ -73,16 +73,16 @@ fetch_uniprot <-
     non_conform_ids <- uniprot_ids[!id_test]
     # if non_conform_ids contain IDs they are extracted and fetched.
     contains_valid_id <- non_conform_ids[stringr::str_detect(non_conform_ids,
-      pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
+      pattern = "(?<!\\w)[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}(?!\\w)"
     )]
 
     uniprot_ids_contain_valid <- uniprot_ids[stringr::str_detect(uniprot_ids,
-      pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
+      pattern = "(?<!\\w)[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}(?!\\w)"
     )]
 
     valid_id_annotations <- tibble::tibble(input_id = contains_valid_id) %>%
       dplyr::mutate(accession = stringr::str_extract_all(.data$input_id,
-        pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
+        pattern = "(?<!\\w)[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}(?!\\w)"
       )) %>%
       tidyr::unnest("accession") %>%
       dplyr::distinct()
@@ -90,7 +90,7 @@ fetch_uniprot <-
     uniprot_ids_filtered <- unique(c(uniprot_ids_filtered, valid_id_annotations$accession))
 
     non_identifiable_id <- non_conform_ids[!stringr::str_detect(non_conform_ids,
-      pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
+      pattern = "(?<!\\w)[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}(?!\\w)"
     )]
 
     if (length(non_identifiable_id) != 0) {
