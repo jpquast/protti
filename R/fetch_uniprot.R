@@ -190,7 +190,7 @@ They were fetched and the original input ID can be found in the "input_id" colum
 
       result <- result %>%
         dplyr::right_join(original_ids, by = "accession") %>%
-        dplyr::relocate(.data$accession, .data$input_id)
+        dplyr::relocate("accession", "input_id")
 
       return(result)
     }
@@ -222,7 +222,7 @@ They were fetched and the original input ID can be found in the "input_id" colum
 
     result <- result %>%
       dplyr::right_join(original_ids, by = "accession") %>%
-      dplyr::relocate(.data$accession, .data$input_id)
+      dplyr::relocate("accession", "input_id")
 
     result
   }
