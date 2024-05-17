@@ -52,8 +52,8 @@ find_peptide <-
         end = .data$end + 1
       ))
 
-      data %>% dplyr::left_join(result, c(
-        rlang::as_name(rlang::enquo(protein_sequence)),
-        rlang::as_name(rlang::enquo(peptide_sequence))
-      ))
+    data %>% dplyr::left_join(result, c(
+      rlang::as_name(rlang::enquo(protein_sequence)),
+      rlang::as_name(rlang::enquo(peptide_sequence))
+    ))
   }

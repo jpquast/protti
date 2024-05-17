@@ -8,6 +8,7 @@
 
 ## Bug fixes
 
+* `fetch_uniprot()` previously had an issue where it incorrectly identified certain IDs as UniProt IDs, such as ENSEMBL IDs. For example, it would incorrectly interpret `"CON_ENSEMBL:ENSBTAP00000037665"` as `"P00000"`. To address this, the function now requires that UniProt IDs are not preceded or followed by letters or digits. This means that UniProt IDs should be recognized only if they stand alone or are separated by non-alphanumeric characters. For instance, in the string `"P02545;P20700"`, both `"P02545"` and `"P20700"` are correctly identified as UniProt IDs because they are separated by a semicolon and not attached to any other letters or digits.
 * `calculate_go_enrichment()` now correctly uses to total number of provided proteins for the contingency table. Previously it falsely only considered proteins with a GO annotation for the enrichment analysis.
 
 # protti 0.8.0
