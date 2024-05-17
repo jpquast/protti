@@ -471,7 +471,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       dplyr::group_by({{ group }}) %>%
       dplyr::mutate(n = 1:dplyr::n()) %>%
       dplyr::filter(n <= top)
-    # dplyr::slice(1:top)
+
   } else {
     split_cutoff <- stringr::str_split(plot_cutoff, pattern = " ", simplify = TRUE)
     type <- split_cutoff[1]
