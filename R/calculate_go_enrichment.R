@@ -118,7 +118,6 @@ go_enrichment <- function(...) {
 #' @importFrom rlang .data !! ensym
 #' @importFrom magrittr %>%
 #' @importFrom purrr map
-#' @importFrom scales number_format
 #' @export
 #'
 #' @examples
