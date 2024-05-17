@@ -1,3 +1,15 @@
+# protti 0.8.0.9000
+
+## New features 
+
+* `calculate_go_enrichment()` got additional arguments.
+  * `replace_long_name`: a logical argument that specifies if GO term names above 50 characters should be replaced by the GO ID instead for the plot. This ensures that the plotting area doesn't become too small due to the long name. The default is `TRUE`.
+  * `label_move_frac`: a numeric argument between 0 and 1 that specifies which labels should be moved outside of the bar. The default is 0.2, which means that the labels of all bars that have a size of 20% or less of the largest bar are moved to the right of the bar. This prevents labels from  overlapping with the bar boundaries.
+
+## Bug fixes
+
+* `calculate_go_enrichment()` now correctly uses to total number of provided proteins for the contingency table. Previously it falsely only considered proteins with a GO annotation for the enrichment analysis.
+
 # protti 0.8.0
 
 ## New features

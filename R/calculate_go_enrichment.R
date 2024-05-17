@@ -82,6 +82,13 @@ go_enrichment <- function(...) {
 #' determines if the enrichment analysis should be performed in order to check for both enrichemnt and
 #' deenrichemnt or only one of the two. This affects the statistics performed and therefore also the displayed
 #' plot.
+#' @param replace_long_name a logical argument that specifies if GO term names above 50 characters should 
+#' be replaced by the GO ID instead for the plot. This ensures that the plotting area doesn't become 
+#' too small due to the long name. The default is `TRUE`.
+#' @param label_move_frac a numeric argument between 0 and 1 that specifies which labels should be 
+#' moved outside of the bar. The default is 0.2, which means that the labels of all bars that have a size
+#' of 20% or less of the largest bar are moved to the right of the bar. This prevents labels from 
+#' overlapping with the bar boundaries.
 #' @param min_n_detected_proteins_in_process is a numeric argument that specifies the minimum number of
 #' detected proteins required for a GO term to be displayed in the plot. The default is 1, meaning
 #' no filtering of the plotted data is performed. This argument does not affect any computations or
@@ -111,6 +118,7 @@ go_enrichment <- function(...) {
 #' @importFrom rlang .data !! ensym
 #' @importFrom magrittr %>%
 #' @importFrom purrr map
+#' @importFrom scales number_format
 #' @export
 #'
 #' @examples
@@ -217,6 +225,8 @@ calculate_go_enrichment <- function(data,
                                     heatmap_fill_colour_rev = TRUE,
                                     label = TRUE,
                                     enrichment_type = "all",
+                                    replace_long_name = TRUE,
+                                    label_move_frac = 0.2,
                                     min_n_detected_proteins_in_process = 1,
                                     plot_cutoff = "adj_pval top10") {
   # to avoid note about no global variable binding. Usually this can be avoided with
@@ -331,7 +341,6 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
 
   # group argument is not missing
   cont_table <- go_data %>%
-    tidyr::drop_na(.data$go_id, {{ is_significant }}) %>%
     { # group argument is missing
       if (group_missing) {
         dplyr::group_by(., {{ is_significant }})
@@ -355,7 +364,8 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       }
     } %>%
     tidyr::complete(.data$go_id, tidyr::nesting(!!rlang::ensym(is_significant), n_sig), fill = list(n_has_process = 0)) %>%
-    dplyr::ungroup()
+    dplyr::ungroup() %>% 
+    tidyr::drop_na(.data$go_id)
 
 
   if (group_missing) {
@@ -437,6 +447,11 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
   filtered_result_table <- result_table %>%
     dplyr::ungroup() %>%
     dplyr::filter(.data$n_detected_proteins_in_process >= min_n_detected_proteins_in_process)
+  
+  if(replace_long_name){
+    filtered_result_table <- filtered_result_table %>% 
+      mutate(term = ifelse(nchar(.data$term) > 50, .data$go_id, .data$term))
+  }
 
   if (!missing(group) & y_axis_free & plot_style == "barplot") {
     # arrange table by group and go term for plot
@@ -449,11 +464,14 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
   if (stringr::str_detect(plot_cutoff, pattern = "top")) {
     split_cutoff <- stringr::str_split(plot_cutoff, pattern = " ", simplify = TRUE)
     type <- split_cutoff[1]
-    top <- stringr::str_extract(split_cutoff[2], pattern = "\\d+")
+    top <- as.numeric(stringr::str_extract(split_cutoff[2], pattern = "\\d+"))
     plot_input <- filtered_result_table %>%
       dplyr::ungroup() %>%
       dplyr::mutate(neg_log_sig = -log10(!!rlang::ensym(type))) %>%
-      dplyr::slice(1:top)
+      dplyr::group_by({{ group }}) %>% 
+      dplyr::mutate(n = 1:dplyr::n()) %>% 
+      dplyr::filter(n <= top)
+      # dplyr::slice(1:top)
   } else {
     split_cutoff <- stringr::str_split(plot_cutoff, pattern = " ", simplify = TRUE)
     type <- split_cutoff[1]
@@ -463,6 +481,10 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       dplyr::mutate(neg_log_sig = -log10(!!rlang::ensym(type))) %>%
       dplyr::filter(!!rlang::ensym(type) <= threshold)
   }
+  
+  # move label if bar is less than 20% (default) of largest bar
+  plot_input <- plot_input %>% 
+    mutate(hjust = ifelse((.data$neg_log_sig / max(.data$neg_log_sig)) < label_move_frac, -0.15, 1.05))
 
   if (plot_style == "barplot") {
     # Check if ggforce package is available. If not prompt user to install it.
@@ -509,13 +531,13 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
                 "%)"
               ),
               y = .data$neg_log_sig - 0.1,
-              hjust = 1
+              hjust = .data$hjust
             )
           )
         }
       } +
       ggplot2::scale_fill_manual(values = c(Deenriched = barplot_fill_colour[1], Enriched = barplot_fill_colour[2])) +
-      ggplot2::scale_y_continuous(breaks = seq(0, 100, 1)) +
+      ggplot2::scale_y_continuous(labels = scales::number_format(accuracy = 1)) +
       ggplot2::coord_flip() +
       {
         if (!missing(group)) {
