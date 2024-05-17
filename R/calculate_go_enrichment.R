@@ -447,7 +447,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     dplyr::ungroup() %>%
     dplyr::filter(.data$n_detected_proteins_in_process >= min_n_detected_proteins_in_process)
 
-  if (replace_long_name & missing(go_data) & !missing(go_annotations_uniprot)) {
+  if (replace_long_name & !missing(go_annotations_uniprot)) {
     filtered_result_table <- filtered_result_table %>%
       mutate(term = ifelse(nchar(.data$term) > 50, .data$go_id, .data$term))
   }
