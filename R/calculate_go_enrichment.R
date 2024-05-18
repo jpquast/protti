@@ -252,24 +252,23 @@ calculate_go_enrichment <- function(data,
          'adj_pval top5', 'pval 0.05'")
   }
 
-  if (length(unique(dplyr::pull(data, {{ protein_id }}))) != nrow(data)) {
-    data <- data %>%
-      dplyr::ungroup() %>%
-      {
-        # conditional grouping
-        if (!group_missing) {
-          dplyr::distinct(., {{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}, {{ group }}) %>%
-            dplyr::group_by({{ protein_id }}, {{ group }})
-        } else {
-          dplyr::distinct(., {{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}) %>%
-            dplyr::group_by({{ protein_id }})
-        }
-      } %>%
-      dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
-      # do this to remove accidental double annotations
-      dplyr::ungroup() %>%
-      dplyr::distinct()
-  }
+  # Clean-up data
+  data <- data %>%
+    dplyr::ungroup() %>%
+    {
+      # conditional grouping
+      if (!group_missing) {
+        dplyr::distinct(., {{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}, {{ group }}) %>%
+          dplyr::group_by({{ protein_id }}, {{ group }})
+      } else {
+        dplyr::distinct(., {{ protein_id }}, {{ is_significant }}, {{ go_annotations_uniprot }}) %>%
+          dplyr::group_by({{ protein_id }})
+      }
+    } %>%
+    dplyr::mutate({{ is_significant }} := ifelse(sum({{ is_significant }}, na.rm = TRUE) > 0, TRUE, FALSE)) %>%
+    # do this to remove accidental double annotations
+    dplyr::ungroup() %>%
+    dplyr::distinct()
 
   if (!missing(go_annotations_uniprot)) {
     if (!stringr::str_detect(
