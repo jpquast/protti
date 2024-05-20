@@ -880,28 +880,29 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
         formula_weight_nonpolymer = "formula_weight",
         type_nonpolymer = "type",
         id_nonpolymer = "id"
-      ) %>% 
+      ) %>%
       # Fix "SODIUM ION" IDs
-      dplyr::mutate(id_nonpolymer = ifelse(.data$name_nonpolymer == "SODIUM ION", "NA", .data$id_nonpolymer)) 
-    
+      dplyr::mutate(id_nonpolymer = ifelse(.data$name_nonpolymer == "SODIUM ION", "NA", .data$id_nonpolymer))
+
     # Create an annotation data frame for ligand_binding data
-    np_annotation <- nonpolymer_entities %>% 
-      dplyr::select(-c("pdb_ids", "auth_asym_ids")) %>% 
+    np_annotation <- nonpolymer_entities %>%
+      dplyr::select(-c("pdb_ids", "auth_asym_ids")) %>%
       dplyr::distinct()
-    
+
     # annotate ligand_binding
-    ligand_binding <- ligand_binding %>% 
+    ligand_binding <- ligand_binding %>%
       left_join(np_annotation, by = c("ligand" = "id_nonpolymer"))
-    
+
     nonpolymer_entities <- nonpolymer_entities %>%
-      dplyr::full_join(ligand_binding, by = c("id_nonpolymer" = "ligand", 
-                                              "auth_asym_ids" = "auth_asym_id", 
-                                              "pdb_ids",
-                                              "formula_nonpolymer",
-                                              "formula_weight_nonpolymer",
-                                              "name_nonpolymer",
-                                              "type_nonpolymer"))
-      
+      dplyr::full_join(ligand_binding, by = c(
+        "id_nonpolymer" = "ligand",
+        "auth_asym_ids" = "auth_asym_id",
+        "pdb_ids",
+        "formula_nonpolymer",
+        "formula_weight_nonpolymer",
+        "name_nonpolymer",
+        "type_nonpolymer"
+      ))
   } else {
     nonpolymer_entities <- polymer_entities %>%
       dplyr::select("pdb_ids", "auth_asym_ids") %>%
