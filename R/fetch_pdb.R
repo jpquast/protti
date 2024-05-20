@@ -754,9 +754,9 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     dplyr::filter(stringr::str_detect(.data$name, pattern = "ligand")) %>%
     dplyr::mutate(ligand = str_extract(.data$name, pattern = "(?<=ligand ).+")) %>%
     dplyr::group_by(.data$pdb_ids, .data$auth_asym_id, .data$ligand) %>%
-    dplyr::mutate(ligand_donor_seq_id_2 = paste0(.data$beg_seq_id, collapse = ";")) %>%
+    dplyr::mutate(nonpolymer_donor_label_seq_id = paste0(.data$beg_seq_id, collapse = ";")) %>%
     dplyr::ungroup() %>%
-    dplyr::distinct(.data$ligand_donor_seq_id_2, .data$pdb_ids, .data$auth_asym_id, .data$ligand)
+    dplyr::distinct(.data$nonpolymer_donor_label_seq_id, .data$pdb_ids, .data$auth_asym_id, .data$ligand)
 
   # Modify auth_seq_id positions that are either duplicated or missing.
   # Missing or duplicated entries are identified by comparing the length of auth_seq_id to the length of the sequence.
@@ -880,8 +880,11 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
         formula_weight_nonpolymer = "formula_weight",
         type_nonpolymer = "type",
         id_nonpolymer = "id"
-      ) %>%
+      ) %>% 
+      # Fix "SODIUM ION" IDs
+      dplyr::mutate(id_nonpolymer = ifelse(.data$name_nonpolymer == "SODIUM ION", "NA", .data$id_nonpolymer)) %>%
       dplyr::left_join(ligand_binding, by = c("id_nonpolymer" = "ligand", "auth_asym_ids" = "auth_asym_id", "pdb_ids"))
+      
   } else {
     nonpolymer_entities <- polymer_entities %>%
       dplyr::select("pdb_ids", "auth_asym_ids") %>%
@@ -891,7 +894,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
         formula_weight_nonpolymer = NA,
         type_nonpolymer = NA,
         id_nonpolymer = NA,
-        ligand_donor_seq_id_2 = NA
+        nonpolymer_donor_label_seq_id = NA
       )
   }
 
@@ -974,7 +977,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       "secondary_structure",
       "unmodeled_structure",
       "id_nonpolymer",
-      "ligand_donor_seq_id_2",
+      "nonpolymer_donor_label_seq_id",
       "type_nonpolymer",
       "formula_weight_nonpolymer",
       "name_nonpolymer",
