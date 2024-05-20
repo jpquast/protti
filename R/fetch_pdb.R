@@ -880,11 +880,10 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
         formula_weight_nonpolymer = "formula_weight",
         type_nonpolymer = "type",
         id_nonpolymer = "id"
-      ) %>% 
+      ) %>%
       # Fix "SODIUM ION" IDs
       dplyr::mutate(id_nonpolymer = ifelse(.data$name_nonpolymer == "SODIUM ION", "NA", .data$id_nonpolymer)) %>%
       dplyr::left_join(ligand_binding, by = c("id_nonpolymer" = "ligand", "auth_asym_ids" = "auth_asym_id", "pdb_ids"))
-      
   } else {
     nonpolymer_entities <- polymer_entities %>%
       dplyr::select("pdb_ids", "auth_asym_ids") %>%
