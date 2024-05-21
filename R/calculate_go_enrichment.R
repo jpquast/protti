@@ -481,7 +481,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
 
   # move label if bar is less than 20% (default) of largest bar
   plot_input <- plot_input %>%
-    mutate(hjust = ifelse((.data$neg_log_sig / max(.data$neg_log_sig)) < label_move_frac, -0.15, 1.05))
+    dplyr::mutate(hjust = ifelse((.data$neg_log_sig / max(.data$neg_log_sig)) < label_move_frac, -0.15, 1.05))
 
   if (plot_style == "barplot") {
     # Check if ggforce package is available. If not prompt user to install it.
