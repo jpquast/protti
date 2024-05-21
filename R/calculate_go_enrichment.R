@@ -402,7 +402,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
                 go_id = .y
               )
             ) %>%
-            mutate({{ group }} := .y)
+            dplyr::mutate({{ group }} := .y)
         }
       )
   }
@@ -448,7 +448,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
 
   if (replace_long_name & !missing(go_annotations_uniprot)) {
     filtered_result_table <- filtered_result_table %>%
-      mutate(term = ifelse(nchar(.data$term) > 50, .data$go_id, .data$term))
+      dplyr::mutate(term = ifelse(nchar(.data$term) > 50, .data$go_id, .data$term))
   }
 
   if (!missing(group) & y_axis_free & plot_style == "barplot") {
