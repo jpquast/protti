@@ -7,7 +7,11 @@
 #' @param url a character value of an URL to the website that contains the table that should be
 #' downloaded.
 #' @param max_tries a numeric value that specifies the number of times the function tries to download
-#' the data in case an error occurs.
+#' the data in case an error occurs. By default does not try again if database times out see `try_if_timout`.
+#' @param try_if_timeout a logical value specifying if the function should try again in case of a timeout.
+#' The default is `FALSE`, which prevents queries from taking very long even though the database is not
+#' responding at the time. In some cases it makes sense to set this to `TRUE`, increase the number
+#' of tries and reduce the timeout time.
 #' @param silent a logical value that specifies if individual messages are printed after each try
 #' that failed.
 #' @param type a character value that specifies the type of data at the target URL. Options are
@@ -25,7 +29,7 @@
 #'
 #' @return A data frame that contains the table from the url.
 try_query <-
-  function(url, max_tries = 5, silent = TRUE, type = "text/tab-separated-values", timeout = 60, accept = NULL, ...) {
+  function(url, max_tries = 5, try_if_timeout = FALSE, silent = TRUE, type = "text/tab-separated-values", timeout = 60, accept = NULL, ...) {
     # Check if there is an internet connection first
     if (!curl::has_internet()) {
       if (!silent) message("No internet connection.")
@@ -34,12 +38,18 @@ try_query <-
 
     query_result <- "empty"
     try_n <- 0
+    # Note: The handling of retries in case of a timeout could be adjusted in the future.
+    # For now I introduced try_if_timeout, but potentially it makes sense to always retry even
+    # in case of a timeout. Then however, the number of retries needs to be adjusted for some
+    # functions that retrieve a lot of data.
     while (!is(query_result, "response") &
       try_n < max_tries &
+      # this ifelse stops requery if they timeout except for if try_if_timeout is TRUE
       !ifelse(is(query_result, "character"),
-        stringr::str_detect(query_result, pattern = "Timeout was reached"),
+        stringr::str_detect(query_result, pattern = "Timeout was reached") & !try_if_timeout,
         FALSE
-      )) { # this ifelse stops requery if the timeout is too low.
+      )
+      ) {
       if (!missing(accept)) {
         # with accept set
         query_result <- tryCatch(httr::GET(url, httr::accept(accept), httr::timeout(timeout)),

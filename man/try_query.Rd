@@ -19,7 +19,9 @@ try_query(
 downloaded.}
 
 \item{max_tries}{a numeric value that specifies the number of times the function tries to download
-the data in case an error occurs.}
+the data in case an error occurs. If a timeout occurs the function will not try again. This prevents
+queries from taking very long even though the database is slow or not responding at the time. In this
+case it is better to increase the timeout time.}
 
 \item{silent}{a logical value that specifies if individual messages are printed after each try
 that failed.}

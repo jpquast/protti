@@ -10,6 +10,8 @@ fetch_uniprot(
     "xref_string", "go_f", "go_p", "go_c", "cc_interaction", "ft_act_site", "ft_binding",
     "cc_cofactor", "cc_catalytic_activity", "xref_pdb"),
   batchsize = 200,
+  max_tries = 5,
+  timeout = 60,
   show_progress = TRUE
 )
 }

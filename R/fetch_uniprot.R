@@ -53,6 +53,8 @@ fetch_uniprot <-
              "xref_pdb"
            ),
            batchsize = 200,
+           max_tries = 10,
+           timeout = 10,
            show_progress = TRUE) {
     if (!curl::has_internet()) {
       message("No internet connection.")
@@ -125,7 +127,12 @@ They were fetched and the original input ID can be found in the "input_id" colum
         collapsed_columns
       ))
 
-      query <- try_query(query_url, progress = FALSE, show_col_types = FALSE)
+      query <- try_query(query_url,
+                         max_tries = max_tries,
+                         try_if_timeout = TRUE,
+                         timeout = timeout,
+                         progress = FALSE,
+                         show_col_types = FALSE)
 
       if (show_progress == TRUE) {
         pb$tick()
@@ -200,7 +207,12 @@ They were fetched and the original input ID can be found in the "input_id" colum
       collapsed_columns
     ))
 
-    new_result <- try_query(new_query_url, progress = FALSE, show_col_types = FALSE)
+    new_result <- try_query(new_query_url,
+                            max_tries = max_tries,
+                            try_if_timeout = TRUE,
+                            timeout = timeout,
+                            progress = FALSE,
+                            show_col_types = FALSE)
     # If a problem occurs at this step NULL is returned.
     if (!methods::is(new_result, "data.frame")) {
       message(new_result)
