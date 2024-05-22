@@ -49,7 +49,7 @@ try_query <-
         stringr::str_detect(query_result, pattern = "Timeout was reached") & !try_if_timeout,
         FALSE
       )
-      ) {
+    ) {
       if (!missing(accept)) {
         # with accept set
         query_result <- tryCatch(httr::GET(url, httr::accept(accept), httr::timeout(timeout)),

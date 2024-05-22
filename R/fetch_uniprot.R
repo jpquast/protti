@@ -128,11 +128,12 @@ They were fetched and the original input ID can be found in the "input_id" colum
       ))
 
       query <- try_query(query_url,
-                         max_tries = max_tries,
-                         try_if_timeout = TRUE,
-                         timeout = timeout,
-                         progress = FALSE,
-                         show_col_types = FALSE)
+        max_tries = max_tries,
+        try_if_timeout = TRUE,
+        timeout = timeout,
+        progress = FALSE,
+        show_col_types = FALSE
+      )
 
       if (show_progress == TRUE) {
         pb$tick()
@@ -208,11 +209,12 @@ They were fetched and the original input ID can be found in the "input_id" colum
     ))
 
     new_result <- try_query(new_query_url,
-                            max_tries = max_tries,
-                            try_if_timeout = TRUE,
-                            timeout = timeout,
-                            progress = FALSE,
-                            show_col_types = FALSE)
+      max_tries = max_tries,
+      try_if_timeout = TRUE,
+      timeout = timeout,
+      progress = FALSE,
+      show_col_types = FALSE
+    )
     # If a problem occurs at this step NULL is returned.
     if (!methods::is(new_result, "data.frame")) {
       message(new_result)
