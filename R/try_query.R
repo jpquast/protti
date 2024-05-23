@@ -43,7 +43,6 @@ try_query <-
     retry_delay <- 3
 
     while (!is(query_result, "response") && try_n < max_tries) {
-
       query_result <- tryCatch(
         {
           if (!missing(accept)) {
@@ -67,7 +66,7 @@ try_query <-
 
       try_n <- try_n + 1
       Sys.sleep(retry_delay)
-      retry_delay <- retry_delay * 2  # Exponential backoff
+      retry_delay <- retry_delay * 2 # Exponential backoff
     }
 
 
