@@ -25,7 +25,13 @@
 #'
 #' @return A data frame that contains the table from the url.
 try_query <-
-  function(url, max_tries = 5, silent = TRUE, type = "text/tab-separated-values", timeout = 60, accept = NULL, ...) {
+  function(url,
+           max_tries = 5,
+           silent = FALSE,
+           type = "text/tab-separated-values",
+           timeout = 60,
+           accept = NULL,
+           ...) {
     # Check if there is an internet connection first
     if (!curl::has_internet()) {
       if (!silent) message("No internet connection.")
@@ -34,33 +40,36 @@ try_query <-
 
     query_result <- "empty"
     try_n <- 0
-    while (!is(query_result, "response") &
-      try_n < max_tries &
-      !ifelse(is(query_result, "character"),
-        stringr::str_detect(query_result, pattern = "Timeout was reached"),
-        FALSE
-      )) { # this ifelse stops requery if the timeout is too low.
-      if (!missing(accept)) {
-        # with accept set
-        query_result <- tryCatch(httr::GET(url, httr::accept(accept), httr::timeout(timeout)),
-          error = function(e) conditionMessage(e),
-          warning = function(w) conditionMessage(w)
-        )
+    retry_delay <- 3
+
+    while (!is(query_result, "response") && try_n < max_tries) {
+
+      query_result <- tryCatch(
+        {
+          if (!missing(accept)) {
+            httr::GET(url, httr::accept(accept), httr::timeout(timeout))
+          } else {
+            httr::GET(url, httr::timeout(timeout))
+          }
+        },
+        error = function(e) conditionMessage(e),
+        warning = function(w) conditionMessage(w)
+      )
+
+
+      if (inherits(query_result, "response")) {
+        break
+      } else if (stringr::str_detect(query_result, "Timeout was reached")) {
+        if (!silent) message(paste0("Attempt ", try_n + 1, ": Timeout was reached. Retrying..."))
       } else {
-        # without accept set (the usual case)
-        query_result <- tryCatch(httr::GET(url, httr::timeout(timeout)),
-          error = function(e) conditionMessage(e),
-          warning = function(w) conditionMessage(w)
-        )
+        if (!silent) message(paste0("Attempt ", try_n + 1, " failed: ", query_result))
       }
+
       try_n <- try_n + 1
-      if (!silent & !is(query_result, "response")) {
-        message(paste0(try_n, ". try failed!"))
-      }
-      if (!is(query_result, "response")) {
-        Sys.sleep(3)
-      }
+      Sys.sleep(retry_delay)
+      retry_delay <- retry_delay * 2  # Exponential backoff
     }
+
 
     # Check again if there is an internet connection, if not then the correct error is returned
     if (!curl::has_internet()) {
