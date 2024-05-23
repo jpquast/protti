@@ -140,7 +140,7 @@ to uniprot standards and were skipped from fetching: ",
     ) %>%
       dplyr::distinct()
 
-    if (any(stringr::str_detect(error_table$error, pattern = "Timeout"))){
+    if (any(stringr::str_detect(error_table$error, pattern = "Timeout"))) {
       message('Consider increasing the "timeout" or "max_tries" argument. \n')
     }
 

@@ -26,9 +26,8 @@
 #' @return A data frame that contains the table from the url.
 try_query <-
   function(url, max_tries = 5, silent = TRUE, type = "text/tab-separated-values", timeout = 60, accept = NULL, ...) {
-
     # Check timeout time
-    if (timeout < 1){
+    if (timeout < 1) {
       stop("The timeout cannot be less than 1 second.")
     }
 

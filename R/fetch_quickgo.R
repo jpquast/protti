@@ -133,7 +133,7 @@ fetch_quickgo <- function(type = "annotations",
 
     if (methods::is(query_result, "character")) {
       message(query_result)
-      if (stringr::str_detect(query_result, pattern = "Timeout")){
+      if (stringr::str_detect(query_result, pattern = "Timeout")) {
         message('Consider increasing the "timeout" or "max_tries" argument. \n')
       }
       return(invisible(NULL))
@@ -183,7 +183,7 @@ fetch_quickgo <- function(type = "annotations",
 
     if (methods::is(test_query, "character")) {
       message(test_query, "\n")
-      if (stringr::str_detect(test_query, pattern = "Timeout")){
+      if (stringr::str_detect(test_query, pattern = "Timeout")) {
         message('Consider increasing the "timeout" or "max_tries" argument. \n')
       }
       return(invisible(NULL))
@@ -230,7 +230,7 @@ fetch_quickgo <- function(type = "annotations",
     if (!is.null(error_vector)) {
       message(paste(unique(error_vector), collapse = ", "))
 
-      if (any(stringr::str_detect(unique(error_vector), pattern = "Timeout"))){
+      if (any(stringr::str_detect(unique(error_vector), pattern = "Timeout"))) {
         message('Consider increasing the "timeout" or "max_tries" argument. \n')
       }
 
@@ -349,7 +349,7 @@ fetch_quickgo <- function(type = "annotations",
 
     if (methods::is(query_result, "character")) {
       message(query_result)
-      if (stringr::str_detect(query_result, pattern = "Timeout")){
+      if (stringr::str_detect(query_result, pattern = "Timeout")) {
         message('Consider increasing the "timeout" or "max_tries" argument. \n')
       }
       return(invisible(NULL))

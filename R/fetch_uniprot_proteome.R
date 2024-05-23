@@ -31,7 +31,6 @@ fetch_uniprot_proteome <-
            reviewed = TRUE,
            timeout = 120,
            max_tries = 2) {
-
     if (!curl::has_internet()) {
       message("No internet connection.")
       return(invisible(NULL))
@@ -62,7 +61,7 @@ fetch_uniprot_proteome <-
     result <- try_query(query_url, timeout = timeout, max_tries = max_tries, progress = FALSE, show_col_types = FALSE)
     # result can either be a data.frame or it is a character string with the error message
     if (!methods::is(result, "data.frame")) {
-      if (stringr::str_detect(result, pattern = "Timeout")){
+      if (stringr::str_detect(result, pattern = "Timeout")) {
         message('The data retrieval timed out. Consider increasing the "timeout" or "max_tries" argument. \n')
       }
       return(invisible(result))

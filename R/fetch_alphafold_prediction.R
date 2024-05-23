@@ -439,7 +439,7 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
     ) %>%
       dplyr::distinct()
 
-    if (any(stringr::str_detect(unique(error_table$error), pattern = "Timeout"))){
+    if (any(stringr::str_detect(unique(error_table$error), pattern = "Timeout"))) {
       message('The retrieval of data timed out. Consider increasing the "timeout" or "max_tries" argument. \n')
     }
 

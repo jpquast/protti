@@ -157,7 +157,7 @@ They were fetched and the original input ID can be found in the "input_id" colum
 
       message("The following IDs have not been retrieved correctly.")
       message(paste0(utils::capture.output(error_table), collapse = "\n"))
-      if (any(stringr::str_detect(error_table$error, pattern = "Timeout"))){
+      if (any(stringr::str_detect(error_table$error, pattern = "Timeout"))) {
         message('Consider increasing the "timeout" or "max_tries" argument. \n')
       }
     }
