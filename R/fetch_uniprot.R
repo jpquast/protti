@@ -8,6 +8,9 @@
 #' cross-referenced database provide the database name with the prefix "xref_", e.g. `"xref_pdb"`)
 #' @param batchsize a numeric value that specifies the number of proteins processed in a single
 #' single query. Default and max value is 200.
+#' @param max_tries a numeric value that specifies the number of times the function tries to download
+#' the data in case an error occurs.
+#' @param timeout a numeric value that specifies the maximum request time per try. Default is 20 seconds.
 #' @param show_progress a logical value that determines if a progress bar will be shown. Default
 #' is TRUE.
 #'
@@ -54,7 +57,7 @@ fetch_uniprot <-
            ),
            batchsize = 200,
            max_tries = 10,
-           timeout = 10,
+           timeout = 20,
            show_progress = TRUE) {
     if (!curl::has_internet()) {
       message("No internet connection.")
@@ -129,7 +132,6 @@ They were fetched and the original input ID can be found in the "input_id" colum
 
       query <- try_query(query_url,
         max_tries = max_tries,
-        try_if_timeout = TRUE,
         timeout = timeout,
         progress = FALSE,
         show_col_types = FALSE
@@ -155,6 +157,9 @@ They were fetched and the original input ID can be found in the "input_id" colum
 
       message("The following IDs have not been retrieved correctly.")
       message(paste0(utils::capture.output(error_table), collapse = "\n"))
+      if (any(stringr::str_detect(error_table$error, pattern = "Timeout"))){
+        message('Consider increasing the "timeout" or "max_tries" argument. \n')
+      }
     }
 
     # only keep data in output and transform to data.frame
@@ -210,7 +215,6 @@ They were fetched and the original input ID can be found in the "input_id" colum
 
     new_result <- try_query(new_query_url,
       max_tries = max_tries,
-      try_if_timeout = TRUE,
       timeout = timeout,
       progress = FALSE,
       show_col_types = FALSE

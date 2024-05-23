@@ -7,7 +7,8 @@
 fetch_alphafold_aligned_error(
   uniprot_ids = NULL,
   error_cutoff = 20,
-  timeout = 3600,
+  timeout = 30,
+  max_tries = 1,
   return_data_frame = FALSE,
   show_progress = TRUE
 )
@@ -19,8 +20,11 @@ should be fetched.}
 \item{error_cutoff}{a numeric value specifying the maximum position error (in Angstroms) that should be retained.
 setting this value to a low number reduces the size of the retrieved data. Default is 20.}
 
-\item{timeout}{a numeric value specifying the time in seconds until the download of an organism
-archive times out. The default is 3600 seconds.}
+\item{timeout}{a numeric value specifying the time in seconds until the download times out.
+The default is 30 seconds.}
+
+\item{max_tries}{a numeric value that specifies the number of times the function tries to download
+the data in case an error occurs. The default is 1.}
 
 \item{return_data_frame}{a logical value; if \code{TRUE} a data frame instead of a list
 is returned. It is recommended to only use this if information for few proteins is retrieved.

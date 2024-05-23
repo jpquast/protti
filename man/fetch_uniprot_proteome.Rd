@@ -4,7 +4,13 @@
 \alias{fetch_uniprot_proteome}
 \title{Fetch proteome data from UniProt}
 \usage{
-fetch_uniprot_proteome(organism_id, columns = c("accession"), reviewed = TRUE)
+fetch_uniprot_proteome(
+  organism_id,
+  columns = c("accession"),
+  reviewed = TRUE,
+  timeout = 120,
+  max_tries = 2
+)
 }
 \arguments{
 \item{organism_id}{a numeric value that specifies the NCBI taxonomy identifier (TaxId) for an
@@ -18,6 +24,12 @@ able to efficiently retrieve the information. If more information is needed, \co
 can be used with the IDs retrieved by this function.}
 
 \item{reviewed}{a logical value that determines if only reviewed protein entries will be retrieved.}
+
+\item{timeout}{a numeric value specifying the time in seconds until the download times out.
+The default is 60 seconds.}
+
+\item{max_tries}{a numeric value that specifies the number of times the function tries to download
+the data in case an error occurs. The default is 2.}
 }
 \value{
 A data frame that contains all protein metadata specified in \code{columns} for the

@@ -9,8 +9,10 @@
 #' should be fetched.
 #' @param error_cutoff a numeric value specifying the maximum position error (in Angstroms) that should be retained.
 #' setting this value to a low number reduces the size of the retrieved data. Default is 20.
-#' @param timeout a numeric value specifying the time in seconds until the download of an organism
-#' archive times out. The default is 3600 seconds.
+#' @param timeout a numeric value specifying the time in seconds until the download times out.
+#' The default is 30 seconds.
+#' @param max_tries a numeric value that specifies the number of times the function tries to download
+#' the data in case an error occurs. The default is 1.
 #' @param return_data_frame a logical value; if `TRUE` a data frame instead of a list
 #' is returned. It is recommended to only use this if information for few proteins is retrieved.
 #' Default is `FALSE`.
@@ -49,7 +51,8 @@
 #' }
 fetch_alphafold_aligned_error <- function(uniprot_ids = NULL,
                                           error_cutoff = 20,
-                                          timeout = 3600,
+                                          timeout = 30,
+                                          max_tries = 1,
                                           return_data_frame = FALSE,
                                           show_progress = TRUE) {
   if (!curl::has_internet()) {
@@ -62,7 +65,7 @@ fetch_alphafold_aligned_error <- function(uniprot_ids = NULL,
 
   batches <- purrr::map(
     .x = uniprot_ids,
-    .f = ~ paste0("https://alphafold.ebi.ac.uk/files/AF-", .x, "-F1-predicted_aligned_error_v3.json")
+    .f = ~ paste0("https://alphafold.ebi.ac.uk/files/AF-", .x, "-F1-predicted_aligned_error_v4.json")
   )
 
   names(batches) <- uniprot_ids
@@ -79,11 +82,17 @@ fetch_alphafold_aligned_error <- function(uniprot_ids = NULL,
     .f = ~ {
       # query information from database
       query <- try_query(.x,
-        type = "application/json"
+        type = "application/json",
+        timeout = timeout,
+        max_tries = max_tries
       )
 
       if (show_progress == TRUE) {
         pb$tick()
+      }
+
+      if (methods::is(query, "character")) {
+        return(invisible(query))
       }
 
       initial_result <- query[[1]][["predicted_aligned_error"]]
@@ -113,6 +122,10 @@ fetch_alphafold_aligned_error <- function(uniprot_ids = NULL,
       error = unlist(error_list)
     ) %>%
       dplyr::distinct()
+
+    if (any(stringr::str_detect(error_table$error, pattern = "Timeout"))){
+      message('Consider increasing the "timeout" or "max_tries" argument. \n')
+    }
 
     message("The following IDs have not been retrieved correctly:")
     message(paste0(utils::capture.output(error_table), collapse = "\n"))

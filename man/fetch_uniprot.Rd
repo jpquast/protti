@@ -10,8 +10,8 @@ fetch_uniprot(
     "xref_string", "go_f", "go_p", "go_c", "cc_interaction", "ft_act_site", "ft_binding",
     "cc_cofactor", "cc_catalytic_activity", "xref_pdb"),
   batchsize = 200,
-  max_tries = 5,
-  timeout = 60,
+  max_tries = 10,
+  timeout = 20,
   show_progress = TRUE
 )
 }
@@ -24,6 +24,11 @@ cross-referenced database provide the database name with the prefix "xref_", e.g
 
 \item{batchsize}{a numeric value that specifies the number of proteins processed in a single
 single query. Default and max value is 200.}
+
+\item{max_tries}{a numeric value that specifies the number of times the function tries to download
+the data in case an error occurs.}
+
+\item{timeout}{a numeric value that specifies the maximum request time per try. Default is 20 seconds.}
 
 \item{show_progress}{a logical value that determines if a progress bar will be shown. Default
 is TRUE.}
