@@ -24,7 +24,8 @@
 fetch_uniprot_proteome <-
   function(organism_id,
            columns = c("accession"),
-           reviewed = TRUE) {
+           reviewed = TRUE,
+           ...) {
     if (length(organism_id) == 0) {
       stop("No valid organism ID found.")
     }
@@ -47,7 +48,7 @@ fetch_uniprot_proteome <-
         "&format=tsv&fields=",
         collapsed_columns
       ))
-    result <- try_query(query_url, progress = FALSE, show_col_types = FALSE)
+    result <- try_query(query_url, progress = FALSE, show_col_types = FALSE, ...)
     # result can either be a data.frame or it is a character string with the error message
     if (!methods::is(result, "data.frame")) {
       return(invisible(result))

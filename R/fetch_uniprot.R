@@ -53,7 +53,8 @@ fetch_uniprot <-
              "xref_pdb"
            ),
            batchsize = 200,
-           show_progress = TRUE) {
+           show_progress = TRUE,
+           ...) {
     if (!curl::has_internet()) {
       message("No internet connection.")
       return(invisible(NULL))
@@ -125,7 +126,7 @@ They were fetched and the original input ID can be found in the "input_id" colum
         collapsed_columns
       ))
 
-      query <- try_query(query_url, progress = FALSE, show_col_types = FALSE)
+      query <- try_query(query_url, progress = FALSE, show_col_types = FALSE, ...)
 
       if (show_progress == TRUE) {
         pb$tick()
