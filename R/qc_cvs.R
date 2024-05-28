@@ -120,7 +120,7 @@ The function does not handle log2 transformed data.",
         tidyr::drop_na() %>%
         tidyr::pivot_longer(cols = starts_with("cv"), names_to = "type", values_to = "values") %>%
         dplyr::mutate({{ condition }} := forcats::fct_expand({{ condition }}, "combined")) %>%
-        dplyr::mutate({{ condition }} := replace({{ condition }}, .data$type == "cv_combined", "combined")) %>% 
+        dplyr::mutate({{ condition }} := replace({{ condition }}, .data$type == "cv_combined", "combined")) %>%
         dplyr::mutate({{ condition }} := forcats::fct_relevel({{ condition }}, "combined")) %>%
         dplyr::select(-.data$type) %>%
         dplyr::group_by({{ condition }}) %>%
