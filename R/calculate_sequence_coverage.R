@@ -77,4 +77,5 @@ calculate_sequence_coverage <-
 
     data %>%
       dplyr::left_join(result, by = c(rlang::as_name(rlang::enquo(protein_sequence)), groups))
+
   }
