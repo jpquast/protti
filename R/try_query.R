@@ -33,12 +33,13 @@ try_query <-
 
     # Check if there is an internet connection first
     if (!curl::has_internet()) {
-      if (!silent) message("No internet connection.")
+      if (!silent) message("\nNo internet connection.")
       return(invisible("No internet connection"))
     }
 
     query_result <- "empty"
     try_n <- 0
+    retry_delay <- 3 # seconds
     while (!is(query_result, "response") &
       try_n < max_tries
     ) {
@@ -55,24 +56,25 @@ try_query <-
           warning = function(w) conditionMessage(w)
         )
       }
+
+      if (inherits(query_result, "response")) {
+        break
+      } else if (stringr::str_detect(query_result, "Timeout was reached")) {
+        if (!silent) message(paste0("\nAttempt ", try_n + 1, "/", max_tries, " failed: Timeout was reached. Retrying..."))
+      } else {
+        if (!silent) message(paste0("\nAttempt ", try_n + 1, "/", max_tries, " failed: ", query_result, ". Retrying..."))
+      }
+
       try_n <- try_n + 1
-      if (!silent & !is(query_result, "response")) {
-        message(paste0(try_n, ". try failed!"))
-      }
-      if (!is(query_result, "response")) {
-        Sys.sleep(3)
-      }
+
+      Sys.sleep(retry_delay)
+      retry_delay <- retry_delay * 2 # Exponential backoff
     }
 
     # Check again if there is an internet connection, if not then the correct error is returned
     if (!curl::has_internet()) {
-      if (!silent) message("No internet connection.")
+      if (!silent) message("\nNo internet connection.")
       return(invisible("No internet connection"))
-    }
-
-    if (!is(query_result, "response")) {
-      if (!silent) message(query_result)
-      return(invisible(query_result))
     }
 
     if (httr::http_error(query_result)) {
