@@ -9,7 +9,7 @@ fetch_alphafold_prediction(
   organism_name = NULL,
   version = "v4",
   timeout = 3600,
-  max_tries = 1,
+  max_tries = 5,
   return_data_frame = FALSE,
   show_progress = TRUE
 )
@@ -33,7 +33,7 @@ Available version can be found here: https://ftp.ebi.ac.uk/pub/databases/alphafo
 archive times out. The default is 3600 seconds.}
 
 \item{max_tries}{a numeric value that specifies the number of times the function tries to download
-the data in case an error occurs. The default is 1.}
+the data in case an error occurs. The default is 5. This only applies if \code{uniprot_ids} were provided.}
 
 \item{return_data_frame}{a logical value that specifies if true, a data frame instead of a list
 is returned. It is recommended to only use this if information for few proteins is retrieved.

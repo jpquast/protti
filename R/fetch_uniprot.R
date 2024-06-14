@@ -133,6 +133,7 @@ They were fetched and the original input ID can be found in the "input_id" colum
       query <- try_query(query_url,
         max_tries = max_tries,
         timeout = timeout,
+        silent = FALSE,
         progress = FALSE,
         show_col_types = FALSE
       )
@@ -216,6 +217,7 @@ They were fetched and the original input ID can be found in the "input_id" colum
     new_result <- try_query(new_query_url,
       max_tries = max_tries,
       timeout = timeout,
+      silent = FALSE,
       progress = FALSE,
       show_col_types = FALSE
     )

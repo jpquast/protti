@@ -9,7 +9,7 @@ fetch_uniprot_proteome(
   columns = c("accession"),
   reviewed = TRUE,
   timeout = 120,
-  max_tries = 2
+  max_tries = 5
 )
 }
 \arguments{
