@@ -11,6 +11,7 @@ calculate_protein_abundance(
   precursor,
   peptide,
   intensity_log2,
+  min_n_peptides = 3,
   method = "sum",
   for_plot = FALSE,
   retain_columns = NULL
@@ -32,6 +33,10 @@ to more than three precursors. The quantification is done on the precursor level
 
 \item{intensity_log2}{a numeric column in the \code{data} data frame that contains log2
 transformed precursor intensities.}
+
+\item{min_n_peptides}{An integer specifying the minimum number of peptides required
+for a protein to be included in the analysis. The default value is 3, which means
+proteins with fewer than three unique peptides will be excluded from the analysis.}
 
 \item{method}{a character value specifying with which method protein quantities should be
 calculated. Possible options include \code{"sum"}, which takes the sum of all precursor
