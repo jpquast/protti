@@ -35,7 +35,7 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
   if (relation == TRUE) {
     chebi_relation_result <- tryCatch(
       httr::GET(
-        "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv",
+        "https://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/relation.tsv",
         httr::timeout(timeout)
       ),
       error = function(e) conditionMessage(e),
@@ -76,7 +76,7 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
   # Download compound data
   chebi_chemical_data_result <- tryCatch(
     httr::GET(
-      "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv",
+      "https://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/chemical_data.tsv",
       httr::timeout(timeout)
     ),
     error = function(e) conditionMessage(e),
@@ -100,7 +100,7 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
     show_col_types = FALSE
   ))
 
-  chebi_compounds_download <- tryCatch(readLines(con <- gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/compounds.tsv.gz", method = "libcurl"))),
+  chebi_compounds_download <- tryCatch(readLines(con <- gzcon(url("https://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/compounds.tsv.gz", method = "libcurl"))),
     error = function(e) conditionMessage(e),
     warning = function(w) conditionMessage(w)
   )
@@ -118,7 +118,7 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
     return(invisible(NULL))
   }
 
-  chebi_names_download <- tryCatch(readLines(con <- gzcon(url("ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/names.tsv.gz", method = "libcurl"))),
+  chebi_names_download <- tryCatch(readLines(con <- gzcon(url("https://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/names.tsv.gz", method = "libcurl"))),
     error = function(e) conditionMessage(e),
     warning = function(w) conditionMessage(w)
   )
@@ -138,7 +138,7 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
 
   chebi_accession_result <- tryCatch(
     httr::GET(
-      "ftp://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv",
+      "https://ftp.ebi.ac.uk/pub/databases/chebi/Flat_file_tab_delimited/database_accession.tsv",
       httr::timeout(timeout)
     ),
     error = function(e) conditionMessage(e),
