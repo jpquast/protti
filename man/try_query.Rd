@@ -19,7 +19,7 @@ try_query(
 downloaded.}
 
 \item{max_tries}{a numeric value that specifies the number of times the function tries to download
-the data in case an error occurs.}
+the data in case an error occurs. Default is 5.}
 
 \item{silent}{a logical value that specifies if individual messages are printed after each try
 that failed.}
