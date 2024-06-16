@@ -8,9 +8,6 @@
 * `fetch_alphafold_aligned_error()`, `fetch_alphafold_prediction()`, `fetch_mobidb()`, `fetch_quickgo()`, `fetch_uniprot()` and `fetch_uniprot_proteome()` got additional arguments:
  * `timeout`: a numeric value specifying the time in seconds until the download times out.
  * `max_tries`: a numeric value that specifies the number of times the function tries to download the data in case an error occurs.
-
-
-## New features
 * Enhanced Flexibility in Protein Quantification: Introduced the `min_n_peptides` parameter to the `calculate_protein_abundance()` function. This allows users to specify the minimum number of peptides per protein needed for analysis. Default is set at three peptides.
 
 ## Bug fixes
