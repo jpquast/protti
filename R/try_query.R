@@ -7,7 +7,7 @@
 #' @param url a character value of an URL to the website that contains the table that should be
 #' downloaded.
 #' @param max_tries a numeric value that specifies the number of times the function tries to download
-#' the data in case an error occurs.
+#' the data in case an error occurs. Default is 5.
 #' @param silent a logical value that specifies if individual messages are printed after each try
 #' that failed.
 #' @param type a character value that specifies the type of data at the target URL. Options are
@@ -26,20 +26,23 @@
 #' @return A data frame that contains the table from the url.
 try_query <-
   function(url, max_tries = 5, silent = TRUE, type = "text/tab-separated-values", timeout = 60, accept = NULL, ...) {
+    # Check timeout time
+    if (timeout < 1) {
+      stop("The timeout cannot be less than 1 second.")
+    }
+
     # Check if there is an internet connection first
     if (!curl::has_internet()) {
-      if (!silent) message("No internet connection.")
+      if (!silent) message("\nNo internet connection.")
       return(invisible("No internet connection"))
     }
 
     query_result <- "empty"
     try_n <- 0
+    retry_delay <- 3 # seconds
     while (!is(query_result, "response") &
-      try_n < max_tries &
-      !ifelse(is(query_result, "character"),
-        stringr::str_detect(query_result, pattern = "Timeout was reached"),
-        FALSE
-      )) { # this ifelse stops requery if the timeout is too low.
+      try_n < max_tries
+    ) {
       if (!missing(accept)) {
         # with accept set
         query_result <- tryCatch(httr::GET(url, httr::accept(accept), httr::timeout(timeout)),
@@ -53,24 +56,25 @@ try_query <-
           warning = function(w) conditionMessage(w)
         )
       }
+
+      if (inherits(query_result, "response")) {
+        break
+      } else if (stringr::str_detect(query_result, "Timeout was reached")) {
+        if (!silent) message(paste0("\nAttempt ", try_n + 1, "/", max_tries, " failed: Timeout was reached. Retrying..."))
+      } else {
+        if (!silent) message(paste0("\nAttempt ", try_n + 1, "/", max_tries, " failed: ", query_result, ". Retrying..."))
+      }
+
       try_n <- try_n + 1
-      if (!silent & !is(query_result, "response")) {
-        message(paste0(try_n, ". try failed!"))
-      }
-      if (!is(query_result, "response")) {
-        Sys.sleep(3)
-      }
+
+      Sys.sleep(retry_delay)
+      retry_delay <- retry_delay * 2 # Exponential backoff
     }
 
     # Check again if there is an internet connection, if not then the correct error is returned
     if (!curl::has_internet()) {
-      if (!silent) message("No internet connection.")
+      if (!silent) message("\nNo internet connection.")
       return(invisible("No internet connection"))
-    }
-
-    if (!is(query_result, "response")) {
-      if (!silent) message(query_result)
-      return(invisible(query_result))
     }
 
     if (httr::http_error(query_result)) {

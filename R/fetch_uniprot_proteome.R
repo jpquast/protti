@@ -11,6 +11,10 @@
 #' able to efficiently retrieve the information. If more information is needed, \code{fetch_uniprot()}
 #' can be used with the IDs retrieved by this function.
 #' @param reviewed a logical value that determines if only reviewed protein entries will be retrieved.
+#' @param timeout a numeric value specifying the time in seconds until the download times out.
+#' The default is 60 seconds.
+#' @param max_tries a numeric value that specifies the number of times the function tries to download
+#' the data in case an error occurs. The default is 2.
 #'
 #' @return A data frame that contains all protein metadata specified in \code{columns} for the
 #' organism of choice.
@@ -24,7 +28,14 @@
 fetch_uniprot_proteome <-
   function(organism_id,
            columns = c("accession"),
-           reviewed = TRUE) {
+           reviewed = TRUE,
+           timeout = 120,
+           max_tries = 5) {
+    if (!curl::has_internet()) {
+      message("No internet connection.")
+      return(invisible(NULL))
+    }
+
     if (length(organism_id) == 0) {
       stop("No valid organism ID found.")
     }
@@ -47,9 +58,12 @@ fetch_uniprot_proteome <-
         "&format=tsv&fields=",
         collapsed_columns
       ))
-    result <- try_query(query_url, progress = FALSE, show_col_types = FALSE)
+    result <- try_query(query_url, timeout = timeout, max_tries = max_tries, silent = FALSE, progress = FALSE, show_col_types = FALSE)
     # result can either be a data.frame or it is a character string with the error message
     if (!methods::is(result, "data.frame")) {
+      if (stringr::str_detect(result, pattern = "Timeout")) {
+        message('The data retrieval timed out. Consider increasing the "timeout" or "max_tries" argument. \n')
+      }
       return(invisible(result))
     }
     colnames(result) <- column_names

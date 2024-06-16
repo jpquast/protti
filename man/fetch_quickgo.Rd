@@ -11,6 +11,8 @@ fetch_quickgo(
   ontology_annotations = "all",
   go_id_slims = NULL,
   relations_slims = c("is_a", "part_of", "regulates", "occurs_in"),
+  timeout = 1200,
+  max_tries = 2,
   show_progress = TRUE
 )
 }
@@ -35,6 +37,12 @@ a slim go set should be generated. This argument should only be provided if slim
 
 \item{relations_slims}{an optional character vector that specifies the relations of GO IDs that should be
 considered for the generation of the slim dataset. This argument should only be provided if slims are retrieved.}
+
+\item{timeout}{a numeric value specifying the time in seconds until the download times out.
+The default is 1200 seconds.}
+
+\item{max_tries}{a numeric value that specifies the number of times the function tries to download
+the data in case an error occurs. The default is 2.}
 
 \item{show_progress}{a logical value that indicates if a progress bar will be shown.
 Default is TRUE.}

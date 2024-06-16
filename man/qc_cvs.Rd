@@ -21,7 +21,7 @@ information on conditions and intensity values for each peptide, precursor or pr
 \item{grouping}{a character column in the \code{data} data frame that contains the grouping
 variables (e.g. peptides, precursors or proteins).}
 
-\item{condition}{a column in the \code{data} data frame that contains condition information
+\item{condition}{a character or factor column in the \code{data} data frame that contains condition information
 (e.g. "treated" and "control").}
 
 \item{intensity}{a numeric column in the \code{data} data frame that contains the corresponding

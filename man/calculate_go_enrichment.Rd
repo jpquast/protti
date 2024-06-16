@@ -23,6 +23,8 @@ calculate_go_enrichment(
   heatmap_fill_colour_rev = TRUE,
   label = TRUE,
   enrichment_type = "all",
+  replace_long_name = TRUE,
+  label_move_frac = 0.2,
   min_n_detected_proteins_in_process = 1,
   plot_cutoff = "adj_pval top10"
 )
@@ -98,6 +100,15 @@ Default is TRUE.}
 determines if the enrichment analysis should be performed in order to check for both enrichemnt and
 deenrichemnt or only one of the two. This affects the statistics performed and therefore also the displayed
 plot.}
+
+\item{replace_long_name}{a logical argument that specifies if GO term names above 50 characters should
+be replaced by the GO ID instead for the plot. This ensures that the plotting area doesn't become
+too small due to the long name. The default is \code{TRUE}.}
+
+\item{label_move_frac}{a numeric argument between 0 and 1 that specifies which labels should be
+moved outside of the bar. The default is 0.2, which means that the labels of all bars that have a size
+of 20\% or less of the largest bar are moved to the right of the bar. This prevents labels from
+overlapping with the bar boundaries.}
 
 \item{min_n_detected_proteins_in_process}{is a numeric argument that specifies the minimum number of
 detected proteins required for a GO term to be displayed in the plot. The default is 1, meaning
