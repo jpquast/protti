@@ -21,7 +21,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_is(positions_structure, "data.frame")
     # test if position structure is in certain range as db can be updated
     expect_gte(nrow(positions_structure), 569)
-    expect_lte(nrow(positions_structure), 600)
+    expect_lte(nrow(positions_structure), 700)
     expect_equal(ncol(positions_structure), 17)
   })
 

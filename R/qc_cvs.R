@@ -6,7 +6,7 @@
 #' information on conditions and intensity values for each peptide, precursor or protein.
 #' @param grouping a character column in the \code{data} data frame that contains the grouping
 #' variables (e.g. peptides, precursors or proteins).
-#' @param condition a column in the \code{data} data frame that contains condition information
+#' @param condition a character or factor column in the \code{data} data frame that contains condition information
 #' (e.g. "treated" and "control").
 #' @param intensity a numeric column in the \code{data} data frame that contains the corresponding
 #' raw or untransformed normalised intensity values for each peptide or precursor.
@@ -119,10 +119,11 @@ The function does not handle log2 transformed data.",
         dplyr::distinct({{ condition }}, {{ grouping }}, .data$cv_combined, .data$cv) %>%
         tidyr::drop_na() %>%
         tidyr::pivot_longer(cols = starts_with("cv"), names_to = "type", values_to = "values") %>%
-        dplyr::mutate(type = ifelse(.data$type == "cv", {{ condition }}, "combined")) %>%
-        dplyr::mutate(type = forcats::fct_relevel(as.factor(.data$type), "combined")) %>%
-        dplyr::select(-{{ condition }}) %>%
-        dplyr::group_by(.data$type) %>%
+        dplyr::mutate({{ condition }} := forcats::fct_expand({{ condition }}, "combined")) %>%
+        dplyr::mutate({{ condition }} := replace({{ condition }}, .data$type == "cv_combined", "combined")) %>%
+        dplyr::mutate({{ condition }} := forcats::fct_relevel({{ condition }}, "combined")) %>%
+        dplyr::select(-.data$type) %>%
+        dplyr::group_by({{ condition }}) %>%
         dplyr::mutate(median = stats::median(.data$values)) %>%
         dplyr::distinct()
 
@@ -137,9 +138,9 @@ The function does not handle log2 transformed data.",
         plot <- ggplot2::ggplot(result) +
           ggplot2::geom_boxplot(
             aes(
-              x = .data$type,
+              x = {{ condition }},
               y = .data$values,
-              fill = .data$type
+              fill = {{ condition }}
             ),
             na.rm = TRUE
           ) +
@@ -165,7 +166,7 @@ The function does not handle log2 transformed data.",
       }
       if (plot_style == "density") {
         plot <- ggplot2::ggplot(result) +
-          ggplot2::geom_density(ggplot2::aes(x = .data$values, col = .data$type), size = 1, na.rm = TRUE) +
+          ggplot2::geom_density(ggplot2::aes(x = .data$values, col = {{ condition }}), size = 1, na.rm = TRUE) +
           ggplot2::labs(
             title = "Coefficients of variation",
             x = "Coefficient of variation [%]",
@@ -174,10 +175,10 @@ The function does not handle log2 transformed data.",
           ) +
           ggplot2::scale_x_continuous(limits = c(0, max_cv)) +
           geom_vline(
-            data = dplyr::distinct(result, .data$median, .data$type),
+            data = dplyr::distinct(result, .data$median, {{ condition }}),
             ggplot2::aes(
               xintercept = median,
-              col = .data$type
+              col = {{ condition }}
             ),
             size = 1,
             linetype = "dashed",
@@ -198,7 +199,7 @@ The function does not handle log2 transformed data.",
         return(plot)
       }
       if (plot_style == "violin") {
-        plot <- ggplot2::ggplot(result, aes(x = .data$type, y = .data$values, fill = .data$type)) +
+        plot <- ggplot2::ggplot(result, aes(x = {{ condition }}, y = .data$values, fill = {{ condition }})) +
           ggplot2::geom_violin(na.rm = TRUE) +
           ggplot2::geom_boxplot(width = 0.15, fill = "white", na.rm = TRUE, alpha = 0.6) +
           ggplot2::labs(

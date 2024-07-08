@@ -21,6 +21,10 @@
 #' a slim go set should be generated. This argument should only be provided if slims are retrieved.
 #' @param relations_slims an optional character vector that specifies the relations of GO IDs that should be
 #' considered for the generation of the slim dataset. This argument should only be provided if slims are retrieved.
+#' @param timeout a numeric value specifying the time in seconds until the download times out.
+#' The default is 1200 seconds.
+#' @param max_tries a numeric value that specifies the number of times the function tries to download
+#' the data in case an error occurs. The default is 2.
 #' @param show_progress a logical value that indicates if a progress bar will be shown.
 #' Default is TRUE.
 #'
@@ -67,6 +71,8 @@ fetch_quickgo <- function(type = "annotations",
                           ontology_annotations = "all",
                           go_id_slims = NULL,
                           relations_slims = c("is_a", "part_of", "regulates", "occurs_in"),
+                          timeout = 1200,
+                          max_tries = 2,
                           show_progress = TRUE) {
   type <- match.arg(type, c("annotations", "terms", "slims"))
 
@@ -119,7 +125,7 @@ fetch_quickgo <- function(type = "annotations",
       start_time <- Sys.time()
     }
 
-    query_result <- try_query(url, timeout = 1200, accept = "text/tsv")
+    query_result <- try_query(url, timeout = timeout, max_tries = max_tries, accept = "text/tsv")
 
     if (show_progress == TRUE) {
       message("DONE", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
@@ -127,6 +133,9 @@ fetch_quickgo <- function(type = "annotations",
 
     if (methods::is(query_result, "character")) {
       message(query_result)
+      if (stringr::str_detect(query_result, pattern = "Timeout")) {
+        message('Consider increasing the "timeout" or "max_tries" argument. \n')
+      }
       return(invisible(NULL))
     }
 
@@ -167,11 +176,16 @@ fetch_quickgo <- function(type = "annotations",
     url <- paste0(base_url, page)
 
     test_query <- try_query(url,
-      type = "application/json"
+      type = "application/json",
+      timeout = timeout,
+      max_tries = max_tries
     )
 
     if (methods::is(test_query, "character")) {
-      message(test_query)
+      message(test_query, "\n")
+      if (stringr::str_detect(test_query, pattern = "Timeout")) {
+        message('Consider increasing the "timeout" or "max_tries" argument. \n')
+      }
       return(invisible(NULL))
     }
 
@@ -195,6 +209,8 @@ fetch_quickgo <- function(type = "annotations",
         )
         query <- try_query(query_url,
           type = "application/json",
+          timeout = timeout,
+          max_tries = max_tries,
           simplifyDataFrame = TRUE
         )
 
@@ -213,6 +229,11 @@ fetch_quickgo <- function(type = "annotations",
 
     if (!is.null(error_vector)) {
       message(paste(unique(error_vector), collapse = ", "))
+
+      if (any(stringr::str_detect(unique(error_vector), pattern = "Timeout"))) {
+        message('Consider increasing the "timeout" or "max_tries" argument. \n')
+      }
+
       return(invisible(NULL))
     } else {
       query_result <- query_result_list %>%
@@ -321,12 +342,16 @@ fetch_quickgo <- function(type = "annotations",
 
     query_result <- try_query(url,
       type = "application/json",
-      timeout = 1200,
+      timeout = timeout,
+      max_tries = max_tries,
       simplifyDataFrame = TRUE
     )
 
     if (methods::is(query_result, "character")) {
       message(query_result)
+      if (stringr::str_detect(query_result, pattern = "Timeout")) {
+        message('Consider increasing the "timeout" or "max_tries" argument. \n')
+      }
       return(invisible(NULL))
     } else {
       query_result <- query_result[["results"]] %>%

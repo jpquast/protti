@@ -14,6 +14,9 @@
 #' to more than three precursors. The quantification is done on the precursor level.
 #' @param intensity_log2 a numeric column in the \code{data} data frame that contains log2
 #' transformed precursor intensities.
+#' @param min_n_peptides An integer specifying the minimum number of peptides required
+#' for a protein to be included in the analysis. The default value is 3, which means
+#' proteins with fewer than three unique peptides will be excluded from the analysis.
 #' @param method a character value specifying with which method protein quantities should be
 #' calculated. Possible options include \code{"sum"}, which takes the sum of all precursor
 #' intensities as the protein abundance. Another option is \code{"iq"}, which performs protein
@@ -109,6 +112,7 @@ calculate_protein_abundance <- function(data,
                                         precursor,
                                         peptide,
                                         intensity_log2,
+                                        min_n_peptides = 3,
                                         method = "sum",
                                         for_plot = FALSE,
                                         retain_columns = NULL) {
@@ -127,7 +131,7 @@ calculate_protein_abundance <- function(data,
     tidyr::drop_na() %>%
     dplyr::group_by({{ protein_id }}, {{ sample }}) %>%
     dplyr::mutate(n_peptides = dplyr::n_distinct(!!rlang::ensym(peptide))) %>%
-    dplyr::filter(.data$n_peptides > 2) %>%
+    dplyr::filter(.data$n_peptides >= min_n_peptides) %>%
     dplyr::select(-"n_peptides") %>%
     dplyr::ungroup()
 

@@ -44,7 +44,7 @@ A typical dose-response experiment contains multiple samples that were treated w
 
 For limited proteolysis-coupled to mass spectrometry ([LiP-MS](https://www.nature.com/articles/nbt.2999)) data, dose-response curves have been used previously for the identification of drug binding sites in complex proteomes ([Piazza 2020](https://www.nature.com/articles/s41467-020-18071-x)). Since LiP-MS data is analysed on the peptide or precursor* level, using additional information about peptide behaviour from multiple conditions reduces false discovery rate. 
 
-_*A peptide precursor is the actual molecular unit that was detected on the mass spectrometer. This is a peptide with one specific charge state and its modification(s)._
+_A peptide precursor is the actual molecular unit that was detected on the mass spectrometer. This is a peptide with one specific charge state and its modification(s)._
 
 # Getting started
 
@@ -166,6 +166,8 @@ $b$ is the Hill's coefficient (e.g. the negative slope at the inflection point)
 
 The output of `fit_drc_4p()` provides extensive information on the goodness of fit. Furthermore, the function filters and ranks fits based on several criteria which include completeness of data and a significance cutoff based on an adjusted p-value obtained from ANOVA. For details about the filtering steps you can read the function documentation by calling `?fit_drc_4p`. If you only care about your potential hits (and exclude precursors/peptides/proteins that do not pass the filtering e.g. due to too few observations), you can choose `filter = "pre"`, which filters the data before model fitting. This speeds up the process because less models need to be fit. If you want to perform enrichment analysis later on you should keep the default `filter = "post"`. This will fit all possible models and then only annotate models based on whether they passed or failed the filtering step (`passed_filter`). 
 
+Since **protti** version `0.8.0` we recommend you use the `n_replicate_completeness` and `n_condition_completeness` arguments in order to define cutoffs for completeness of replicates in a given number of conditions. This makes the output of the function reproducible independent of the input data. With the provided cutoffs below we define that at least 2 replicates need to be detected in 4 conditions. Any precursor with less completeness than that will not be considered and removed from the data.
+
 ```{r model_fit, eval = test_protti}
 fit <- data_normalised %>%
   fit_drc_4p(
@@ -174,6 +176,8 @@ fit <- data_normalised %>%
     response = normalised_intensity_log2,
     dose = r_condition,
     filter = "post",
+    n_replicate_completeness = 2, # specifiy this based on your data and cutoff criteria
+    n_condition_completeness = 4, # specifiy this based on your data and cutoff criteria
     retain_columns = c(pg_protein_accessions)
   )
 
@@ -196,7 +200,9 @@ parallel_fit <- data_normalised %>%
     response = normalised_intensity_log2,
     dose = r_condition,
     retain_columns = c(pg_protein_accessions),
-    n_cores = 3
+    n_cores = 3,
+    n_replicate_completeness = 2, # specifiy this based on your data and cutoff criteria
+    n_condition_completeness = 4, # specifiy this based on your data and cutoff criteria
   )
 
 # remove workers again after you are done
@@ -230,7 +236,7 @@ fit %>%
 
 After model fitting, you can easily visualise model fits by plotting them with the `drc_4p_plot()` function. You can provide one or more precursor IDs to the `targets` argument or just return plots for all precursors with `targets = "all"`. Make sure that the number of plots is reasonable to return within R. You can also directly export your plots by setting `export = TRUE`. 
 
-Note: The output of `fit_drc_4p()` includes two columns with data frames containing the model and original data points required for the plot. These data frames contain the original names for `dose` and `response` that you provided to `fit_drc_4p()`. 
+_Note: The output of `fit_drc_4p()` includes two columns with data frames containing the model and original data points required for the plot. These data frames contain the original names for `dose` and `response` that you provided to `fit_drc_4p()`._
 
 ```{r model_plot, eval = test_protti, fig.align = "center", fig.width = 7, fig.height = 5, message = FALSE, warning = FALSE}
 # Model plotting
@@ -240,9 +246,12 @@ drc_4p_plot(fit,
   response = normalised_intensity_log2,
   targets = "_VFDVELLKLE_.2",
   unit = "pM",
+  x_axis_limits = c(10, 1e+08),
   export = FALSE
 )
 ```
+
+There are additional arguments that help you customise your plot. You can for example specify the axis limits with `x_axis_limits`. This should generally always be set to the lowest non-zero and highest concentration `x_axis_limits = c(10, 1e+08)`. Like this you can more easily see if extreme concentrations are completely missing from the curve. The `colours` argument allows you to specify your own colours for the points, confidence interval and curve.
 
 # Further analysis
 

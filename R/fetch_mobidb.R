@@ -9,6 +9,10 @@
 #' argument is mutually exclusive to the \code{uniprot_ids} argument.
 #' @param show_progress a logical value; if `TRUE` a progress bar will be shown.
 #' Default is `TRUE`.
+#' @param timeout a numeric value specifying the time in seconds until the download of an organism
+#' archive times out. The default is 60 seconds.
+#' @param max_tries a numeric value that specifies the number of times the function tries to download
+#' the data in case an error occurs. The default is 2.
 #'
 #' @return A data frame that contains start and end positions for disordered and flexible protein
 #' regions. The \code{feature} column contains information on the source of this
@@ -30,7 +34,7 @@
 #'   uniprot_ids = c("P0A799", "P62707")
 #' )
 #' }
-fetch_mobidb <- function(uniprot_ids = NULL, organism_id = NULL, show_progress = TRUE) {
+fetch_mobidb <- function(uniprot_ids = NULL, organism_id = NULL, show_progress = TRUE, timeout = 60, max_tries = 2) {
   if (!curl::has_internet()) {
     message("No internet connection.")
     return(invisible(NULL))
@@ -113,7 +117,8 @@ to uniprot standards and were skipped from fetching: ",
       # query information from database
       query <- try_query(
         url = .x,
-        timeout = 60
+        timeout = timeout,
+        max_tries = max_tries
       )
 
       if (show_progress == TRUE) {
@@ -134,6 +139,10 @@ to uniprot standards and were skipped from fetching: ",
       error = unlist(error_list)
     ) %>%
       dplyr::distinct()
+
+    if (any(stringr::str_detect(error_table$error, pattern = "Timeout"))) {
+      message('Consider increasing the "timeout" or "max_tries" argument. \n')
+    }
 
     message("The following IDs have not been retrieved correctly.")
     message(paste0(utils::capture.output(error_table), collapse = "\n"))

@@ -4,7 +4,13 @@
 \alias{fetch_mobidb}
 \title{Fetch protein disorder and mobility information from MobiDB}
 \usage{
-fetch_mobidb(uniprot_ids = NULL, organism_id = NULL, show_progress = TRUE)
+fetch_mobidb(
+  uniprot_ids = NULL,
+  organism_id = NULL,
+  show_progress = TRUE,
+  timeout = 60,
+  max_tries = 2
+)
 }
 \arguments{
 \item{uniprot_ids}{optional, a character vector of UniProt identifiers for which information
@@ -16,6 +22,12 @@ argument is mutually exclusive to the \code{uniprot_ids} argument.}
 
 \item{show_progress}{a logical value; if \code{TRUE} a progress bar will be shown.
 Default is \code{TRUE}.}
+
+\item{timeout}{a numeric value specifying the time in seconds until the download of an organism
+archive times out. The default is 60 seconds.}
+
+\item{max_tries}{a numeric value that specifies the number of times the function tries to download
+the data in case an error occurs. The default is 2.}
 }
 \value{
 A data frame that contains start and end positions for disordered and flexible protein
