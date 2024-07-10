@@ -40,7 +40,7 @@ network_analysis <-
 #' \href{https://string-db.org/cgi/input?sessionId=bpvps5GS2As6&input_page_show_search=on}{here}.
 #' H. sapiens: 9606, S. cerevisiae: 4932, E. coli: 511145.
 #' @param version a character value that specifies the version of STRINGdb to be used.
-#' Default is 11.5.
+#' Default is 12.0.
 #' @param score_threshold a numeric value specifying the interaction score that based on
 #' \href{https://string-db.org/cgi/info?sessionId=bBP5N4cIf0PA&footer_active_subpage=scores}{STRING}
 #' has to be between 0 and 1000. A score closer to 1000 is related to a higher confidence for the
@@ -109,7 +109,7 @@ analyse_functional_network <- function(data,
                                        protein_id,
                                        string_id,
                                        organism_id,
-                                       version = "11.5",
+                                       version = "12.0",
                                        score_threshold = 900,
                                        binds_treatment = NULL,
                                        halo_color = NULL,
