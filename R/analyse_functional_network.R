@@ -114,7 +114,6 @@ analyse_functional_network <- function(data,
                                        binds_treatment = NULL,
                                        halo_color = NULL,
                                        plot = TRUE) {
-
   if (!requireNamespace("STRINGdb", quietly = TRUE)) {
     message(strwrap("Package \"STRINGdb\" is needed for this function to work. Please install it.",
       prefix = "\n", initial = ""
@@ -130,8 +129,10 @@ analyse_functional_network <- function(data,
   required_columns <- c(ensym(protein_id), ensym(string_id))
   missing_columns <- required_columns[!required_columns %in% colnames(data)]
   if (length(missing_columns) > 0) {
-    stop("The following required columns are missing from the input data frame: ",
-         paste(missing_columns, collapse = ", "))
+    stop(
+      "The following required columns are missing from the input data frame: ",
+      paste(missing_columns, collapse = ", ")
+    )
   }
 
   if (plot && nrow(data) > 400) {
@@ -168,27 +169,31 @@ analyse_functional_network <- function(data,
       dplyr::filter({{ binds_treatment }}) %>%
       dplyr::mutate(color = if (missing(halo_color)) "#5680C1" else halo_color)
     payload_id <- string_db$post_payload(dplyr::pull(coloring, {{ string_id }}),
-                                         colors = coloring$color)
+      colors = coloring$color
+    )
   }
 
 
-  tryCatch({
-    if (plot) {
-      string_db$plot_network(string_ids, payload_id = payload_id)
-    } else {
-      mapping <- input %>%
-        dplyr::distinct({{ protein_id }}, {{ string_id }})
+  tryCatch(
+    {
+      if (plot) {
+        string_db$plot_network(string_ids, payload_id = payload_id)
+      } else {
+        mapping <- input %>%
+          dplyr::distinct({{ protein_id }}, {{ string_id }})
 
-      interactions <- string_db$get_interactions(string_ids) %>%
-        dplyr::left_join(mapping, by = c("from" = rlang::as_name(rlang::enquo(string_id)))) %>%
-        dplyr::rename(from_protein = {{ protein_id }}) %>%
-        dplyr::left_join(mapping, by = c("to" = rlang::as_name(rlang::enquo(string_id)))) %>%
-        dplyr::rename(to_protein = {{ protein_id }}) %>%
-        dplyr::distinct()
-      return(interactions)
+        interactions <- string_db$get_interactions(string_ids) %>%
+          dplyr::left_join(mapping, by = c("from" = rlang::as_name(rlang::enquo(string_id)))) %>%
+          dplyr::rename(from_protein = {{ protein_id }}) %>%
+          dplyr::left_join(mapping, by = c("to" = rlang::as_name(rlang::enquo(string_id)))) %>%
+          dplyr::rename(to_protein = {{ protein_id }}) %>%
+          dplyr::distinct()
+        return(interactions)
       }
-    }, error = function(e) {
+    },
+    error = function(e) {
       message("An error occurred during the interaction network analysis: ", e$message)
       return(invisible(NULL))
-  })
+    }
+  )
 }
