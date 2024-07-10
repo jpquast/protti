@@ -114,6 +114,7 @@ analyse_functional_network <- function(data,
                                        binds_treatment = NULL,
                                        halo_color = NULL,
                                        plot = TRUE) {
+
   if (!requireNamespace("STRINGdb", quietly = TRUE)) {
     message(strwrap("Package \"STRINGdb\" is needed for this function to work. Please install it.",
       prefix = "\n", initial = ""
@@ -121,15 +122,31 @@ analyse_functional_network <- function(data,
     return(invisible(NULL))
   }
 
-  STRINGdb <- get("STRINGdb", envir = loadNamespace("STRINGdb"))
+  # Ensure data frame is not empty and columns exist
+  if (nrow(data) == 0) {
+    stop("The input data frame is empty.")
+  }
+
+  required_columns <- c(ensym(protein_id), ensym(string_id))
+  missing_columns <- required_columns[!required_columns %in% colnames(data)]
+  if (length(missing_columns) > 0) {
+    stop("The following required columns are missing from the input data frame: ",
+         paste(missing_columns, collapse = ", "))
+  }
+
+  if (plot && nrow(data) > 400) {
+    stop("Please only provide the top 400 significant proteins for plots! STRING cannot plot more at once.")
+  }
+
 
   data <- data %>%
     dplyr::distinct({{ protein_id }}, {{ string_id }}, {{ binds_treatment }})
-
   if (length(unique(dplyr::pull(data, !!ensym(protein_id)))) != nrow(data)) {
     stop(strwrap("Please provide unique annotations for each protein! The number of proteins
-does not match the number of rows in your data.", prefix = "\n", initial = ""))
+    does not match the number of rows in your data.", prefix = "\n", initial = ""))
   }
+
+  STRINGdb <- get("STRINGdb", envir = loadNamespace("STRINGdb"))
 
   string_db <- STRINGdb$new(
     version = version,
@@ -147,36 +164,31 @@ does not match the number of rows in your data.", prefix = "\n", initial = ""))
   payload_id <- NULL
 
   if (!missing(binds_treatment)) {
-    if (missing(halo_color)) {
-      coloring <- input %>%
-        dplyr::filter({{ binds_treatment }}) %>%
-        dplyr::mutate(color = "#5680C1")
-    } else {
-      coloring <- input %>%
-        dplyr::filter({{ binds_treatment }}) %>%
-        dplyr::mutate(color = halo_color)
-    }
+    coloring <- input %>%
+      dplyr::filter({{ binds_treatment }}) %>%
+      dplyr::mutate(color = if (missing(halo_color)) "#5680C1" else halo_color)
     payload_id <- string_db$post_payload(dplyr::pull(coloring, {{ string_id }}),
-      colors = coloring$color
-    )
+                                         colors = coloring$color)
   }
-  if (plot == TRUE) {
-    if (length(unique(dplyr::pull(data, !!ensym(protein_id)))) > 400) {
-      stop(strwrap("Please only provide the top 400 significant proteins for plots! String
-cannot plot more at once.", prefix = "\n", initial = ""))
-    }
-    string_db$plot_network(string_ids, payload_id = payload_id)
-  } else {
-    mapping <- input %>%
-      dplyr::distinct({{ protein_id }}, {{ string_id }})
 
-    interactions <- string_db$get_interactions(string_ids) %>%
-      dplyr::left_join(mapping, by = c("from" = rlang::as_name(rlang::enquo(string_id)))) %>%
-      dplyr::rename(from_protein = {{ protein_id }}) %>%
-      dplyr::left_join(mapping, by = c("to" = rlang::as_name(rlang::enquo(string_id)))) %>%
-      dplyr::rename(to_protein = {{ protein_id }}) %>%
-      dplyr::distinct()
 
-    return(interactions)
-  }
+  tryCatch({
+    if (plot) {
+      string_db$plot_network(string_ids, payload_id = payload_id)
+    } else {
+      mapping <- input %>%
+        dplyr::distinct({{ protein_id }}, {{ string_id }})
+
+      interactions <- string_db$get_interactions(string_ids) %>%
+        dplyr::left_join(mapping, by = c("from" = rlang::as_name(rlang::enquo(string_id)))) %>%
+        dplyr::rename(from_protein = {{ protein_id }}) %>%
+        dplyr::left_join(mapping, by = c("to" = rlang::as_name(rlang::enquo(string_id)))) %>%
+        dplyr::rename(to_protein = {{ protein_id }}) %>%
+        dplyr::distinct()
+      return(interactions)
+      }
+    }, error = function(e) {
+      message("An error occurred during the interaction network analysis: ", e$message)
+      return(invisible(NULL))
+  })
 }
