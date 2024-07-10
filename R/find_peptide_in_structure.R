@@ -38,6 +38,10 @@
 #' returned.
 #' * fit_type: The fit type is either "partial" or "fully" and it indicates if the complete
 #' peptide or only part of it was found in the structure.
+#' * start_adjusted: The adjusted start position of the peptide if the peptide was only partially
+#' covered by the structure. If the peptide is fully covered it is just the provided start position.
+#' * end_adjusted: The adjusted end position of the peptide if the peptide was only partially
+#' covered by the structure. If the peptide is fully covered it is just the provided end position.
 #' * label_seq_id_start: Contains the first residue position of the peptide in the structure
 #' following the standardised convention for mmCIF files.
 #' * label_seq_id_end: Contains the last residue position of the peptide in the structure
@@ -58,6 +62,8 @@
 #' current structure.
 #' * n_peptides_in_structure: The number of peptides from one protein that were found within
 #' the current structure.
+#' * percentage_covered_peptides: The percentage of all provided peptides that were at least
+#' partially found in the structure.
 #'
 #' @import dplyr
 #' @import tidyr
@@ -135,6 +141,8 @@ find_peptide_in_structure <- function(peptide_data,
         auth_asym_id = NA,
         label_asym_id = NA,
         peptide_seq_in_pdb = NA,
+        start_adjusted = NA,
+        end_adjusted = NA,
         fit_type = NA,
         label_seq_id_start = {{ start }},
         label_seq_id_end = {{ end }},
@@ -205,6 +213,15 @@ find_peptide_in_structure <- function(peptide_data,
       "partial",
       "fully"
       )) %>%
+      # find the actual start and end if the coverage is only partial
+      dplyr::mutate(start_adjusted = ifelse(.data$label_seq_id_start < .data$entity_beg_seq_id,
+                                      {{ start }} - (.data$label_seq_id_start - .data$entity_beg_seq_id),
+                                      {{ start }}
+      ),
+      end_adjusted = ifelse((.data$label_seq_id_end > .data$entity_end_seq_id),
+                            {{ end }} - (.data$label_seq_id_end - .data$entity_end_seq_id),
+                            {{ end }}
+      )) %>% 
       dplyr::mutate(
         label_seq_id_end = ifelse(.data$label_seq_id_end > .data$length_pdb_sequence,
           .data$length_pdb_sequence,
@@ -248,8 +265,13 @@ find_peptide_in_structure <- function(peptide_data,
       dplyr::ungroup() %>%
       dplyr::mutate(
         label_seq_id_start = ifelse(.data$label_seq_id_start != Inf, .data$label_seq_id_start, NA),
-        label_seq_id_end = ifelse(.data$label_seq_id_end != Inf, .data$label_seq_id_end, NA)
+        label_seq_id_end = ifelse(.data$label_seq_id_end != Inf, .data$label_seq_id_end, NA),
+        start_adjusted = ifelse(.data$label_seq_id_start != Inf, .data$start_adjusted, NA),
+        end_adjusted = ifelse(.data$label_seq_id_end != Inf, .data$end_adjusted, NA)
       ) %>%
+      # calculate percentage of detected peptides that are present in structure
+      # can be over 100% if the peptide is found multiple times
+      dplyr::mutate(percentage_covered_peptides = .data$n_peptides_in_structure / .data$n_peptides * 100) %>% 
       dplyr::select(
         {{ uniprot_id }},
         "pdb_ids",
@@ -259,14 +281,17 @@ find_peptide_in_structure <- function(peptide_data,
         "peptide_seq_in_pdb",
         "fit_type",
         {{ start }},
+        "start_adjusted",
         {{ end }},
+        "end_adjusted",
         "label_seq_id_start",
         "label_seq_id_end",
         "auth_seq_id_start",
         "auth_seq_id_end",
         "auth_seq_id",
         "n_peptides",
-        "n_peptides_in_structure"
+        "n_peptides_in_structure",
+        "percentage_covered_peptides"
       )
   }
   # Retain also peptides in the data frame that were not found in any pdb structure or of
@@ -320,7 +345,10 @@ find_peptide_in_structure <- function(peptide_data,
         "auth_seq_id_end",
         "auth_seq_id",
         "n_peptides",
-        "n_peptides_in_structure"
+        "n_peptides_in_structure",
+        "start_adjusted",
+        "end_adjusted",
+        "percentage_covered_peptides"
       )]) %>%
       dplyr::distinct() %>%
       dplyr::right_join(output, by = colnames(output)[!colnames(output) %in% c(
@@ -335,7 +363,10 @@ find_peptide_in_structure <- function(peptide_data,
         "auth_seq_id_end",
         "auth_seq_id",
         "n_peptides",
-        "n_peptides_in_structure"
+        "n_peptides_in_structure",
+        "start_adjusted",
+        "end_adjusted",
+        "percentage_covered_peptides"
       )])
   }
 
