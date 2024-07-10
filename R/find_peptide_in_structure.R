@@ -214,14 +214,16 @@ find_peptide_in_structure <- function(peptide_data,
       "fully"
       )) %>%
       # find the actual start and end if the coverage is only partial
-      dplyr::mutate(start_adjusted = ifelse(.data$label_seq_id_start < .data$entity_beg_seq_id,
-                                      {{ start }} - (.data$label_seq_id_start - .data$entity_beg_seq_id),
-                                      {{ start }}
-      ),
-      end_adjusted = ifelse((.data$label_seq_id_end > .data$entity_end_seq_id),
-                            {{ end }} - (.data$label_seq_id_end - .data$entity_end_seq_id),
-                            {{ end }}
-      )) %>% 
+      dplyr::mutate(
+        start_adjusted = ifelse(.data$label_seq_id_start < .data$entity_beg_seq_id,
+          {{ start }} - (.data$label_seq_id_start - .data$entity_beg_seq_id),
+          {{ start }}
+        ),
+        end_adjusted = ifelse((.data$label_seq_id_end > .data$entity_end_seq_id),
+          {{ end }} - (.data$label_seq_id_end - .data$entity_end_seq_id),
+          {{ end }}
+        )
+      ) %>%
       dplyr::mutate(
         label_seq_id_end = ifelse(.data$label_seq_id_end > .data$length_pdb_sequence,
           .data$length_pdb_sequence,
@@ -271,7 +273,7 @@ find_peptide_in_structure <- function(peptide_data,
       ) %>%
       # calculate percentage of detected peptides that are present in structure
       # can be over 100% if the peptide is found multiple times
-      dplyr::mutate(percentage_covered_peptides = .data$n_peptides_in_structure / .data$n_peptides * 100) %>% 
+      dplyr::mutate(percentage_covered_peptides = .data$n_peptides_in_structure / .data$n_peptides * 100) %>%
       dplyr::select(
         {{ uniprot_id }},
         "pdb_ids",
