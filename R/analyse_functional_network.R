@@ -165,11 +165,16 @@ analyse_functional_network <- function(data,
   payload_id <- NULL
 
   if (!missing(binds_treatment)) {
+    if (is.null(halo_color)) {
+      halo_color <- "#5680C1"
+    }
+
     coloring <- input %>%
       dplyr::filter({{ binds_treatment }}) %>%
-      dplyr::mutate(color = if (missing(halo_color)) "#5680C1" else halo_color)
+      dplyr::mutate(color = halo_color)
+
     payload_id <- string_db$post_payload(dplyr::pull(coloring, {{ string_id }}),
-      colors = coloring$color
+                                         colors = coloring$color
     )
   }
 
