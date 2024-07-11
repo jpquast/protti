@@ -174,7 +174,7 @@ analyse_functional_network <- function(data,
       dplyr::mutate(color = halo_color)
 
     payload_id <- string_db$post_payload(dplyr::pull(coloring, {{ string_id }}),
-                                         colors = coloring$color
+      colors = coloring$color
     )
   }
 
