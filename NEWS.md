@@ -19,6 +19,8 @@
 
 * `fetch_uniprot()` and `fetch_uniprot_proteome()` are more resistant to database connection issues. They also give more informative messages as to why the data could not be retrieved. Fixes issue #252.
 * `qc_csv()` now properly works if the column supplied to the `condition` argument is a factor. Fixes issue #254.
+* The `analyse_functional_network()` function now includes enhanced error handling to ensure it fails gracefully in case of any issues.  Fixes issue #259.
+* The default `version` parameter for `analyse_functional_network()` has been updated to 12.0, aligning with the latest STRINGdb version. Fixes issue #244.
 
 # protti 0.8.0
 
