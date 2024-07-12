@@ -193,7 +193,7 @@ find_peptide_in_structure <- function(peptide_data,
           {{ end }} > .data$ref_end_seq_id)) %>%
       dplyr::group_by(.data$pdb_ids, .data$auth_asym_id) %>%
       dplyr::mutate(n_peptides = dplyr::n_distinct({{ peptide }})) %>%
-      tidyr::drop_na("pdb_ids") %>%
+      tidyr::drop_na(.data$pdb_ids) %>%
       dplyr::mutate(n_peptides_in_structure = sum(.data$peptide_in_pdb)) %>%
       dplyr::ungroup() %>%
       dplyr::mutate(

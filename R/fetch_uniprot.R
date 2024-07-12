@@ -78,16 +78,16 @@ fetch_uniprot <-
     non_conform_ids <- uniprot_ids[!id_test]
     # if non_conform_ids contain IDs they are extracted and fetched.
     contains_valid_id <- non_conform_ids[stringr::str_detect(non_conform_ids,
-      pattern = "(?<![:alnum:])[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}(?![:alnum:])"
+      pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
     )]
 
     uniprot_ids_contain_valid <- uniprot_ids[stringr::str_detect(uniprot_ids,
-      pattern = "(?<![:alnum:])[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}(?![:alnum:])"
+      pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
     )]
 
     valid_id_annotations <- tibble::tibble(input_id = contains_valid_id) %>%
       dplyr::mutate(accession = stringr::str_extract_all(.data$input_id,
-        pattern = "(?<![:alnum:])[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}(?![:alnum:])"
+        pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
       )) %>%
       tidyr::unnest("accession") %>%
       dplyr::distinct()
@@ -95,7 +95,7 @@ fetch_uniprot <-
     uniprot_ids_filtered <- unique(c(uniprot_ids_filtered, valid_id_annotations$accession))
 
     non_identifiable_id <- non_conform_ids[!stringr::str_detect(non_conform_ids,
-      pattern = "(?<![:alnum:])[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}(?![:alnum:])"
+      pattern = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}"
     )]
 
     if (length(non_identifiable_id) != 0) {
@@ -198,13 +198,13 @@ They were fetched and the original input ID can be found in the "input_id" colum
     new_ids <- new$new
 
     if (length(new_ids) == 0) {
-      original_ids <- data.frame(input_id = uniprot_ids_contain_valid) %>%
-        dplyr::left_join(valid_id_annotations, by = "input_id") %>%
-        dplyr::mutate(accession = ifelse(is.na(.data$accession), .data$input_id, .data$accession))
+        original_ids <- data.frame(input_id = uniprot_ids_contain_valid) %>%
+          dplyr::left_join(valid_id_annotations, by = "input_id") %>%
+          dplyr::mutate(accession = ifelse(is.na(.data$accession), .data$input_id, .data$accession))
 
-      result <- result %>%
-        dplyr::right_join(original_ids, by = "accession") %>%
-        dplyr::relocate("accession", "input_id")
+        result <- result %>%
+          dplyr::right_join(original_ids, by = "accession") %>%
+          dplyr::relocate(.data$accession, .data$input_id)
 
       return(result)
     }
@@ -242,7 +242,7 @@ They were fetched and the original input ID can be found in the "input_id" colum
 
     result <- result %>%
       dplyr::right_join(original_ids, by = "accession") %>%
-      dplyr::relocate("accession", "input_id")
+      dplyr::relocate(.data$accession, .data$input_id)
 
     result
   }
