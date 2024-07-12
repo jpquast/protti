@@ -159,18 +159,25 @@ analyse_functional_network <- function(data,
 
   string_db <- tryCatch(
     {
-      STRINGdb$new(
-        version = version,
-        species = organism_id, # Check on String database to get the right code (E.coli K12: 511145)
-        score_threshold = score_threshold, # Cutoff score to consider something an interaction
-        input_directory = ""
+      withCallingHandlers(
+        expr = {
+          STRINGdb$new(
+            version = version,
+            species = organism_id, # Check on String database to get the right code (E.coli K12: 511145)
+            score_threshold = score_threshold, # Cutoff score to consider something an interaction
+            input_directory = ""
+          )
+        },
+        warning = function(w) {
+          message("A warning occurred during STRINGdb object creation: ", conditionMessage(w))
+          invokeRestart("muffleWarning")
+        }
       )
     },
     error = function(e) {
       e$message
     }
   )
-
   if (is.character(string_db)) {
     message("An error occurred during the interaction network analysis: ", string_db)
     return(invisible(NULL))
@@ -201,19 +208,27 @@ analyse_functional_network <- function(data,
 
   interactions <- tryCatch(
     {
-      if (plot) {
-        string_db$plot_network(string_ids, payload_id = payload_id)
-      } else {
-        mapping <- input %>%
-          dplyr::distinct({{ protein_id }}, {{ string_id }})
+      withCallingHandlers(
+        expr = {
+          if (plot) {
+            string_db$plot_network(string_ids, payload_id = payload_id)
+          } else {
+            mapping <- input %>%
+              dplyr::distinct({{ protein_id }}, {{ string_id }})
 
-        interactions <- string_db$get_interactions(string_ids) %>%
-          dplyr::left_join(mapping, by = c("from" = rlang::as_name(rlang::enquo(string_id)))) %>%
-          dplyr::rename(from_protein = {{ protein_id }}) %>%
-          dplyr::left_join(mapping, by = c("to" = rlang::as_name(rlang::enquo(string_id)))) %>%
-          dplyr::rename(to_protein = {{ protein_id }}) %>%
-          dplyr::distinct()
-      }
+            interactions <- string_db$get_interactions(string_ids) %>%
+              dplyr::left_join(mapping, by = c("from" = rlang::as_name(rlang::enquo(string_id)))) %>%
+              dplyr::rename(from_protein = {{ protein_id }}) %>%
+              dplyr::left_join(mapping, by = c("to" = rlang::as_name(rlang::enquo(string_id)))) %>%
+              dplyr::rename(to_protein = {{ protein_id }}) %>%
+              dplyr::distinct()
+          }
+        },
+        warning = function(w) {
+          message("A warning occurred during the interaction network analysis: ", conditionMessage(w))
+          invokeRestart("muffleWarning")
+        }
+      )
     },
     error = function(e) {
       e$message
