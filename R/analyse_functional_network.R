@@ -114,6 +114,7 @@ analyse_functional_network <- function(data,
                                        binds_treatment = NULL,
                                        halo_color = NULL,
                                        plot = TRUE) {
+
   if (!requireNamespace("STRINGdb", quietly = TRUE)) {
     message(strwrap("Package \"STRINGdb\" is needed for this function to work. Please install it.",
       prefix = "\n", initial = ""
@@ -128,6 +129,7 @@ analyse_functional_network <- function(data,
 
   required_columns <- c(ensym(protein_id), ensym(string_id))
   missing_columns <- required_columns[!required_columns %in% colnames(data)]
+
   if (length(missing_columns) > 0) {
     stop(
       "The following required columns are missing from the input data frame: ",
@@ -142,19 +144,37 @@ analyse_functional_network <- function(data,
 
   data <- data %>%
     dplyr::distinct({{ protein_id }}, {{ string_id }}, {{ binds_treatment }})
+
   if (length(unique(dplyr::pull(data, !!ensym(protein_id)))) != nrow(data)) {
     stop(strwrap("Please provide unique annotations for each protein! The number of proteins
     does not match the number of rows in your data.", prefix = "\n", initial = ""))
   }
 
+  if (!curl::has_internet()) {
+    message("No internet connection.")
+    return(invisible(NULL))
+  }
+
   STRINGdb <- get("STRINGdb", envir = loadNamespace("STRINGdb"))
 
-  string_db <- STRINGdb$new(
-    version = version,
-    species = organism_id, # Check on String database to get the right code (E.coli K12: 511145)
-    score_threshold = score_threshold, # Cutoff score to consider something an interaction
-    input_directory = ""
+  string_db <- tryCatch(
+    {
+      STRINGdb$new(
+        version = version,
+        species = organism_id, # Check on String database to get the right code (E.coli K12: 511145)
+        score_threshold = score_threshold, # Cutoff score to consider something an interaction
+        input_directory = ""
+      )
+    },
+    error = function(e) {
+      e$message
+    }
   )
+
+  if (is.character(string_db)) {
+    message("An error occurred during the interaction network analysis: ", string_db)
+    return(invisible(NULL))
+  }
 
   input <- data %>%
     dplyr::mutate({{ string_id }} := stringr::str_extract({{ string_id }}, pattern = ".+[^;]")) %>%
@@ -165,7 +185,7 @@ analyse_functional_network <- function(data,
   payload_id <- NULL
 
   if (!missing(binds_treatment)) {
-    if (is.null(halo_color)) {
+    if (missing(halo_color)) {
       halo_color <- "#5680C1"
     }
 
@@ -179,7 +199,7 @@ analyse_functional_network <- function(data,
   }
 
 
-  tryCatch(
+  interactions <- tryCatch(
     {
       if (plot) {
         string_db$plot_network(string_ids, payload_id = payload_id)
@@ -193,12 +213,17 @@ analyse_functional_network <- function(data,
           dplyr::left_join(mapping, by = c("to" = rlang::as_name(rlang::enquo(string_id)))) %>%
           dplyr::rename(to_protein = {{ protein_id }}) %>%
           dplyr::distinct()
-        return(interactions)
       }
     },
     error = function(e) {
-      message("An error occurred during the interaction network analysis: ", e$message)
-      return(invisible(NULL))
+      e$message
     }
   )
+
+  if (is.character(interactions)) {
+    message("An error occurred during the interaction network analysis: ", interactions)
+    return(invisible(NULL))
+  } else {
+    return(interactions)
+  }
 }
