@@ -16,6 +16,8 @@
 #' Available version can be found here: https://ftp.ebi.ac.uk/pub/databases/alphafold/
 #' @param timeout a numeric value specifying the time in seconds until the download of an organism
 #' archive times out. The default is 3600 seconds.
+#' @param max_tries a numeric value that specifies the number of times the function tries to download
+#' the data in case an error occurs. The default is 5. This only applies if `uniprot_ids` were provided.
 #' @param return_data_frame a logical value that specifies if true, a data frame instead of a list
 #' is returned. It is recommended to only use this if information for few proteins is retrieved.
 #' Default is FALSE.
@@ -74,6 +76,7 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
                                        organism_name = NULL,
                                        version = "v4",
                                        timeout = 3600,
+                                       max_tries = 5,
                                        return_data_frame = FALSE,
                                        show_progress = TRUE) {
   if (!curl::has_internet()) {
@@ -205,6 +208,10 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
     old <- options(timeout = timeout)
     on.exit(options(old))
 
+    # This does not fail gracefully. I could not figure out how to
+    # catch the error and the two warnings in case of a timeout.
+    # The error would not be caught while only the first warning that does not
+    # contain the timeout information was caught.
     utils::download.file(url, destfile = paste0(tempdir(), "/alphafold.tar"))
 
     utils::untar(
@@ -338,6 +345,8 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
         # query information from database
         query <- try_query(.x,
           type = "text/tab-separated-values",
+          timeout = timeout,
+          max_tries = max_tries,
           col_names = FALSE,
           quote = "",
           show_col_types = FALSE,
@@ -429,6 +438,10 @@ fetch_alphafold_prediction <- function(uniprot_ids = NULL,
       error = unlist(error_list)
     ) %>%
       dplyr::distinct()
+
+    if (any(stringr::str_detect(unique(error_table$error), pattern = "Timeout"))) {
+      message('The retrieval of data timed out. Consider increasing the "timeout" or "max_tries" argument. \n')
+    }
 
     message("The following IDs have not been retrieved correctly.")
     message(paste0(utils::capture.output(error_table), collapse = "\n"))

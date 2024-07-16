@@ -9,7 +9,7 @@ analyse_functional_network(
   protein_id,
   string_id,
   organism_id,
-  version = "11.5",
+  version = "12.0",
   score_threshold = 900,
   binds_treatment = NULL,
   halo_color = NULL,
@@ -34,7 +34,7 @@ obtained from
 H. sapiens: 9606, S. cerevisiae: 4932, E. coli: 511145.}
 
 \item{version}{a character value that specifies the version of STRINGdb to be used.
-Default is 11.5.}
+Default is 12.0.}
 
 \item{score_threshold}{a numeric value specifying the interaction score that based on
 \href{https://string-db.org/cgi/info?sessionId=bBP5N4cIf0PA&footer_active_subpage=scores}{STRING}

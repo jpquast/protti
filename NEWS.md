@@ -1,3 +1,27 @@
+# protti 0.9.0
+
+## New features 
+
+* `calculate_go_enrichment()` got additional arguments.
+  * `replace_long_name`: a logical argument that specifies if GO term names above 50 characters should be replaced by the GO ID instead for the plot. This ensures that the plotting area doesn't become too small due to the long name. The default is `TRUE`.
+  * `label_move_frac`: a numeric argument between 0 and 1 that specifies which labels should be moved outside of the bar. The default is 0.2, which means that the labels of all bars that have a size of 20% or less of the largest bar are moved to the right of the bar. This prevents labels from  overlapping with the bar boundaries.
+* `fetch_alphafold_aligned_error()`, `fetch_alphafold_prediction()`, `fetch_mobidb()`, `fetch_quickgo()`, `fetch_uniprot()` and `fetch_uniprot_proteome()` got additional arguments:
+ * `timeout`: a numeric value specifying the time in seconds until the download times out.
+ * `max_tries`: a numeric value that specifies the number of times the function tries to download the data in case an error occurs.
+* Enhanced Flexibility in Protein Quantification: Introduced the `min_n_peptides` parameter to the `calculate_protein_abundance()` function. This allows users to specify the minimum number of peptides per protein needed for analysis. Default is set at three peptides.
+
+## Bug fixes
+
+* `fetch_uniprot()` previously had an issue where it incorrectly identified certain IDs as UniProt IDs, such as ENSEMBL IDs. For example, it would incorrectly interpret `"CON_ENSEMBL:ENSBTAP00000037665"` as `"P00000"`. To address this, the function now requires that UniProt IDs are not preceded or followed by letters or digits. This means that UniProt IDs should be recognized only if they stand alone or are separated by non-alphanumeric characters. For instance, in the string `"P02545;P20700"`, both `"P02545"` and `"P20700"` are correctly identified as UniProt IDs because they are separated by a semicolon and not attached to any other letters or digits. Fixes issue #245.
+* `calculate_go_enrichment()` now correctly uses the total number of provided proteins for the contingency table. Previously it falsely only considered proteins with a GO annotation for the enrichment analysis.
+
+## Additional Changes
+
+* `fetch_uniprot()` and `fetch_uniprot_proteome()` are more resistant to database connection issues. They also give more informative messages as to why the data could not be retrieved. Fixes issue #252.
+* `qc_csv()` now properly works if the column supplied to the `condition` argument is a factor. Fixes issue #254.
+* The `analyse_functional_network()` function now includes enhanced error handling to ensure it fails gracefully in case of any issues.  Fixes issue #259.
+* The default `version` parameter for `analyse_functional_network()` has been updated to 12.0, aligning with the latest STRINGdb version. Fixes issue #244.
+
 # protti 0.8.0
 
 ## New features

@@ -40,7 +40,7 @@ network_analysis <-
 #' \href{https://string-db.org/cgi/input?sessionId=bpvps5GS2As6&input_page_show_search=on}{here}.
 #' H. sapiens: 9606, S. cerevisiae: 4932, E. coli: 511145.
 #' @param version a character value that specifies the version of STRINGdb to be used.
-#' Default is 11.5.
+#' Default is 12.0.
 #' @param score_threshold a numeric value specifying the interaction score that based on
 #' \href{https://string-db.org/cgi/info?sessionId=bBP5N4cIf0PA&footer_active_subpage=scores}{STRING}
 #' has to be between 0 and 1000. A score closer to 1000 is related to a higher confidence for the
@@ -109,7 +109,7 @@ analyse_functional_network <- function(data,
                                        protein_id,
                                        string_id,
                                        organism_id,
-                                       version = "11.5",
+                                       version = "12.0",
                                        score_threshold = 900,
                                        binds_treatment = NULL,
                                        halo_color = NULL,
@@ -121,22 +121,66 @@ analyse_functional_network <- function(data,
     return(invisible(NULL))
   }
 
-  STRINGdb <- get("STRINGdb", envir = loadNamespace("STRINGdb"))
+  # Ensure data frame is not empty and columns exist
+  if (nrow(data) == 0) {
+    stop("The input data frame is empty.")
+  }
+
+  required_columns <- c(ensym(protein_id), ensym(string_id))
+  missing_columns <- required_columns[!required_columns %in% colnames(data)]
+
+  if (length(missing_columns) > 0) {
+    stop(
+      "The following required columns are missing from the input data frame: ",
+      paste(missing_columns, collapse = ", ")
+    )
+  }
+
+  if (plot && nrow(data) > 400) {
+    stop("Please only provide the top 400 significant proteins for plots! STRING cannot plot more at once.")
+  }
+
 
   data <- data %>%
     dplyr::distinct({{ protein_id }}, {{ string_id }}, {{ binds_treatment }})
 
   if (length(unique(dplyr::pull(data, !!ensym(protein_id)))) != nrow(data)) {
     stop(strwrap("Please provide unique annotations for each protein! The number of proteins
-does not match the number of rows in your data.", prefix = "\n", initial = ""))
+    does not match the number of rows in your data.", prefix = "\n", initial = ""))
   }
 
-  string_db <- STRINGdb$new(
-    version = version,
-    species = organism_id, # Check on String database to get the right code (E.coli K12: 511145)
-    score_threshold = score_threshold, # Cutoff score to consider something an interaction
-    input_directory = ""
+  if (!curl::has_internet()) {
+    message("No internet connection.")
+    return(invisible(NULL))
+  }
+
+  STRINGdb <- get("STRINGdb", envir = loadNamespace("STRINGdb"))
+
+  string_db <- tryCatch(
+    {
+      withCallingHandlers(
+        expr = {
+          STRINGdb$new(
+            version = version,
+            species = organism_id, # Check on String database to get the right code (E.coli K12: 511145)
+            score_threshold = score_threshold, # Cutoff score to consider something an interaction
+            input_directory = ""
+          )
+        },
+        warning = function(w) {
+          message("A warning occurred during STRINGdb object creation: ", conditionMessage(w))
+          invokeRestart("muffleWarning")
+        }
+      )
+    },
+    error = function(e) {
+      e$message
+    }
   )
+  if (is.character(string_db)) {
+    message("An error occurred during the interaction network analysis: ", string_db)
+    return(invisible(NULL))
+  }
 
   input <- data %>%
     dplyr::mutate({{ string_id }} := stringr::str_extract({{ string_id }}, pattern = ".+[^;]")) %>%
@@ -148,35 +192,52 @@ does not match the number of rows in your data.", prefix = "\n", initial = ""))
 
   if (!missing(binds_treatment)) {
     if (missing(halo_color)) {
-      coloring <- input %>%
-        dplyr::filter({{ binds_treatment }}) %>%
-        dplyr::mutate(color = "#5680C1")
-    } else {
-      coloring <- input %>%
-        dplyr::filter({{ binds_treatment }}) %>%
-        dplyr::mutate(color = halo_color)
+      halo_color <- "#5680C1"
     }
+
+    coloring <- input %>%
+      dplyr::filter({{ binds_treatment }}) %>%
+      dplyr::mutate(color = halo_color)
+
     payload_id <- string_db$post_payload(dplyr::pull(coloring, {{ string_id }}),
       colors = coloring$color
     )
   }
-  if (plot == TRUE) {
-    if (length(unique(dplyr::pull(data, !!ensym(protein_id)))) > 400) {
-      stop(strwrap("Please only provide the top 400 significant proteins for plots! String
-cannot plot more at once.", prefix = "\n", initial = ""))
+
+
+  interactions <- tryCatch(
+    {
+      withCallingHandlers(
+        expr = {
+          if (plot) {
+            string_db$plot_network(string_ids, payload_id = payload_id)
+          } else {
+            mapping <- input %>%
+              dplyr::distinct({{ protein_id }}, {{ string_id }})
+
+            interactions <- string_db$get_interactions(string_ids) %>%
+              dplyr::left_join(mapping, by = c("from" = rlang::as_name(rlang::enquo(string_id)))) %>%
+              dplyr::rename(from_protein = {{ protein_id }}) %>%
+              dplyr::left_join(mapping, by = c("to" = rlang::as_name(rlang::enquo(string_id)))) %>%
+              dplyr::rename(to_protein = {{ protein_id }}) %>%
+              dplyr::distinct()
+          }
+        },
+        warning = function(w) {
+          message("A warning occurred during the interaction network analysis: ", conditionMessage(w))
+          invokeRestart("muffleWarning")
+        }
+      )
+    },
+    error = function(e) {
+      e$message
     }
-    string_db$plot_network(string_ids, payload_id = payload_id)
+  )
+
+  if (is.character(interactions)) {
+    message("An error occurred during the interaction network analysis: ", interactions)
+    return(invisible(NULL))
   } else {
-    mapping <- input %>%
-      dplyr::distinct({{ protein_id }}, {{ string_id }})
-
-    interactions <- string_db$get_interactions(string_ids) %>%
-      dplyr::left_join(mapping, by = c("from" = rlang::as_name(rlang::enquo(string_id)))) %>%
-      dplyr::rename(from_protein = {{ protein_id }}) %>%
-      dplyr::left_join(mapping, by = c("to" = rlang::as_name(rlang::enquo(string_id)))) %>%
-      dplyr::rename(to_protein = {{ protein_id }}) %>%
-      dplyr::distinct()
-
     return(interactions)
   }
 }
