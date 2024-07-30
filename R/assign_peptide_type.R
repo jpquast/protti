@@ -58,25 +58,24 @@ assign_peptide_type <- function(data,
                                 last_aa = last_aa,
                                 aa_after = aa_after,
                                 protein_id = protein_id) {
-
   summary_data <- data %>%
     dplyr::group_by({{ protein_id }}) %>%
-    dplyr::summarize(missing_methionine = !any({{ aa_before }} == "M"), .groups = 'drop')
+    dplyr::summarize(missing_methionine = !any({{ aa_before }} == "M"), .groups = "drop")
 
-  peptide_data <-  data %>%
+  peptide_data <- data %>%
     dplyr::distinct({{ aa_before }}, {{ last_aa }}, {{ aa_after }}, {{ protein_id }}, .keep_all = TRUE) %>%
     dplyr::left_join(summary_data, by = rlang::as_name(rlang::enquo(protein_id))) %>%
     dplyr::mutate(N_term_tryp = dplyr::if_else(
       {{ aa_before }} == "" |
-      {{ aa_before }} == "K" |
-      {{ aa_before }} == "R",
+        {{ aa_before }} == "K" |
+        {{ aa_before }} == "R",
       TRUE,
       FALSE
     )) %>%
     dplyr::mutate(C_term_tryp = dplyr::if_else(
       {{ last_aa }} == "K" |
-      {{ last_aa }} == "R" |
-      {{ aa_after }} == "",
+        {{ last_aa }} == "R" |
+        {{ aa_after }} == "",
       TRUE,
       FALSE
     )) %>%
@@ -87,9 +86,9 @@ assign_peptide_type <- function(data,
     )) %>%
     # Check if initial methionine is missing and reassign semi-tryptic to fully-tryptic
     dplyr::mutate(pep_type = dplyr::if_else(
-        pep_type == "semi-tryptic" & missing_methionine,
-        "fully-tryptic",
-        pep_type
+      pep_type == "semi-tryptic" & missing_methionine,
+      "fully-tryptic",
+      pep_type
     )) %>%
     dplyr::select(-N_term_tryp, -C_term_tryp, -missing_methionine)
 
