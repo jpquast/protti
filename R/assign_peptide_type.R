@@ -69,11 +69,11 @@ assign_peptide_type <- function(data,
     FALSE
     )) %>%
     dplyr::mutate(pep_type = dplyr::case_when(
-      .data$N_term_tryp + .data$C_term_tryp == 2 ~ "fully-tryptic",
-      .data$N_term_tryp + .data$C_term_tryp == 1 ~ "semi-tryptic",
-      .data$N_term_tryp + .data$C_term_tryp == 0 ~ "non-tryptic"
+      N_term_tryp + C_term_tryp == 2 ~ "fully-tryptic",
+      N_term_tryp + C_term_tryp == 1 ~ "semi-tryptic",
+      N_term_tryp + C_term_tryp == 0 ~ "non-tryptic"
     )) %>%
-    dplyr::select(-.data$N_term_tryp, -.data$C_term_tryp) %>%
+    dplyr::select(-N_term_tryp, -C_term_tryp) %>%
     dplyr::right_join(data, by = c(
       rlang::as_name(rlang::enquo(aa_before)),
       rlang::as_name(rlang::enquo(last_aa)),
