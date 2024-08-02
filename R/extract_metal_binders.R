@@ -3,8 +3,8 @@
 #' Information of metal binding proteins is extracted from UniProt data retrieved with
 #' \code{fetch_uniprot} as well as QuickGO data retrieved with \code{fetch_quickgo}.
 #'
-#' @param data_uniprot a data frame containing at least the \code{ft_binding}, \code{cc_cofactor}
-#' and \code{cc_catalytic_activity} columns.
+#' @param data_uniprot a data frame containing at least the `ft_binding`, `cc_cofactor`,
+#' `cc_catalytic_activity` and `keyword` columns.
 #' @param data_quickgo a data frame containing molecular function gene ontology information for at
 #' least the proteins of interest. This data should be obtained by calling \code{fetch_quickgo()}.
 #' @param data_chebi optional, a data frame that can be manually obtained with \code{fetch_chebi(stars = c(2, 3))}.
@@ -54,6 +54,7 @@
 #' * \code{go_name}: Contains gene ontology names if there are any metal related ones associated with the annotation.
 #' * \code{assigned_by}: Contains information about the source of the gene ontology term assignment.
 #' * \code{database}: Contains information about the source of the ChEBI annotation associated with gene ontology terms.
+#' * `keyword`: Contains keywords if they were annotated in UniProt.
 #'
 #' For each protein identifier the data frame contains information on the bound ligand as well as on its position if it is known.
 #' Since information about metal ligands can come from multiple sources, additional information (e.g. evidence) is nested in the returned
@@ -154,8 +155,9 @@ extract_metal_binders <- function(data_uniprot,
   # data_uniprot
   if (!("ft_binding" %in% colnames(data_uniprot) &
     "cc_cofactor" %in% colnames(data_uniprot) &
+    "keyword" %in% colnames(data_uniprot) &
     "cc_catalytic_activity" %in% colnames(data_uniprot))) {
-    stop('Please include at least the columns "ft_binding", "cc_cofactor" and "cc_catalytic_activity" in "data_uniprot"!')
+    stop('Please include at least the columns "ft_binding", "cc_cofactor", "cc_catalytic_activity" and "keyword" in "data_uniprot"!')
   }
   # data_quickgo
   if (!("gene_product_db" %in% colnames(data_quickgo) &
@@ -652,6 +654,52 @@ extract_metal_binders <- function(data_uniprot,
     message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
   }
 
+  # Extract keyword information from UniProt
+  if (show_progress == TRUE) {
+    message("Extract keyword information from UniProt ... ", appendLF = FALSE)
+    start_time <- Sys.time()
+  }
+
+  # Define additional metal names that cannot be found just based on the metal name from the element list
+  additional_metal_names <- c("Metal-binding", "Metalloprotease", "2Fe-2S", "3Fe-4S", "4Fe-4S", "4Fe-4S", "Heme")
+
+  unlisted_metal_list <- metal_list %>%
+    dplyr::mutate(chebi_ion_id = stringr::str_split(.data$chebi_ion_id, pattern = ";")) %>%
+    tidyr::unnest("chebi_ion_id")
+
+  keyword_uniprot <- data_uniprot %>%
+    dplyr::distinct(.data$accession, .data$keyword) %>%
+    tidyr::drop_na("keyword") %>%
+    dplyr::mutate(keyword = stringr::str_split(
+      .data$keyword,
+      pattern = ";"
+    )) %>%
+    tidyr::unnest("keyword") %>%
+    dplyr::filter(.data$keyword %in% c(metal_list$name, additional_metal_names)) %>%
+    # annotate metal_id_part and chebi_id
+    dplyr::mutate(chebi_id = stats::setNames(metal_list$chebi_ion_id, metal_list$name)[.data$keyword]) %>%
+    dplyr::mutate(chebi_id = dplyr::case_when(.data$keyword == "Metal-binding" ~ "25213",
+                                              .data$keyword == "Metalloprotease" ~ "60240",
+                                              .data$keyword == "2Fe-2S" ~ "190135",
+                                              .data$keyword == "3Fe-4S" ~ "47402",
+                                              .data$keyword == "4Fe-4S" ~ "49883",
+                                              .data$keyword == "Heme" ~ "30413",
+                                              TRUE ~ .data$chebi_id)) %>%
+    dplyr::mutate(chebi_id = str_split(.data$chebi_id, pattern = ";")) %>%
+    tidyr::unnest("chebi_id") %>%
+    dplyr::mutate(chebi_id = ifelse(is.na(.data$chebi_id),
+                                    stats::setNames(metal_list$chebi_id, metal_list$name)[.data$keyword],
+                                    .data$chebi_id)) %>%
+    dplyr::mutate(metal_id_part = stats::setNames(metal_chebi_uniprot$metal_atom_id, as.character(metal_chebi_uniprot$id))[.data$chebi_id]) %>%
+    dplyr::mutate(metal_id_part = ifelse(is.na(.data$metal_id_part),
+                                         stats::setNames(unlisted_metal_list$chebi_id, as.character(unlisted_metal_list$chebi_ion_id))[.data$chebi_id],
+                                         .data$metal_id_part)) %>%
+    dplyr::mutate(source = "Keyword")
+
+  if (show_progress == TRUE) {
+    message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+  }
+
   # Check if there are any metal containing entries that are not yet part of the ChEBI dataset provided by protti
   # This could be an indirect indication that some of the manually added ChEBI entries (without formula but metal related)
   # are also missing.
@@ -757,7 +805,7 @@ extract_metal_binders <- function(data_uniprot,
   }
 
   # Metal sub IDs
-  chebi_ids <- unique(c(b_uniprot$chebi_id, cofactor_uniprot$chebi_id, catalytic_activity_uniprot$chebi_id, mf_quickgo$chebi_id))
+  chebi_ids <- unique(c(b_uniprot$chebi_id, cofactor_uniprot$chebi_id, catalytic_activity_uniprot$chebi_id, mf_quickgo$chebi_id, keyword_uniprot$chebi_id))
   chebi_sub_id_mapping <- tibble::tibble(chebi_id = chebi_ids) %>%
     dplyr::mutate(chebi_sub_id = purrr::map_chr(find_all_subs(data_chebi_relation, .data$chebi_id, accepted_types = c("is_a", "is_conjugate_acid_of", "is_conjugate_base_of")),
       .f = ~ paste0(.x, collapse = ",")
@@ -773,7 +821,7 @@ extract_metal_binders <- function(data_uniprot,
     start_time <- Sys.time()
   }
 
-  combined <- dplyr::bind_rows(b_uniprot, cofactor_uniprot, catalytic_activity_uniprot, mf_quickgo) %>%
+  combined <- dplyr::bind_rows(b_uniprot, cofactor_uniprot, catalytic_activity_uniprot, mf_quickgo, keyword_uniprot) %>%
     dplyr::left_join(chebi_sub_id_mapping, by = "chebi_id") %>%
     dplyr::mutate(chebi_sub_id = ifelse(.data$chebi_sub_id == "", .data$chebi_id, .data$chebi_sub_id)) %>%
     dplyr::mutate(most_specific_id = stringr::str_split(.data$chebi_sub_id, pattern = ",")) %>%
@@ -832,7 +880,8 @@ extract_metal_binders <- function(data_uniprot,
       go_term = paste0(stats::na.omit(.data$go_term), collapse = "|"),
       go_name = paste0(stats::na.omit(.data$go_name), collapse = "|"),
       assigned_by = paste0(stats::na.omit(.data$assigned_by), collapse = "|"),
-      database = paste0(stats::na.omit(.data$database), collapse = "|")
+      database = paste0(stats::na.omit(.data$database), collapse = "|"),
+      keyword = paste0(stats::na.omit(.data$keyword), collapse = "|")
     ) %>%
     dplyr::ungroup() %>%
     dplyr::filter(!.data$appears) %>%
@@ -917,7 +966,8 @@ extract_metal_binders <- function(data_uniprot,
       go_term = ifelse(.data$go_term == "NA" | .data$go_term == "", NA, .data$go_term),
       go_name = ifelse(.data$go_name == "NA" | .data$go_name == "", NA, .data$go_name),
       assigned_by = ifelse(.data$assigned_by == "NA" | .data$assigned_by == "", NA, .data$assigned_by),
-      database = ifelse(.data$database == "NA" | .data$database == "", NA, .data$database)
+      database = ifelse(.data$database == "NA" | .data$database == "", NA, .data$database),
+      keyword = ifelse(.data$keyword == "NA" | .data$keyword == "", NA, .data$keyword)
     ) %>%
     dplyr::mutate(binding_temp_1 = stringr::str_split(.data$metal_id_part, pattern = ",")) %>%
     tidyr::unnest("binding_temp_1") %>%
@@ -955,6 +1005,7 @@ extract_metal_binders <- function(data_uniprot,
       go_name = paste0(.data$go_name, collapse = "||"),
       assigned_by = paste0(.data$assigned_by, collapse = "||"),
       database = paste0(.data$database, collapse = "||"),
+      keyword = paste0(.data$keyword, collapse = "||"),
       metal_id_part = paste0(unique(.data$metal_id_part), collapse = ","),
       metal_id_part_name = paste0(unique(.data$metal_id_part_name), collapse = ",")
     ) %>%
@@ -966,7 +1017,8 @@ extract_metal_binders <- function(data_uniprot,
       go_term = ifelse(.data$go_term == "NA" | .data$go_term == "", NA, .data$go_term),
       go_name = ifelse(.data$go_name == "NA" | .data$go_name == "", NA, .data$go_name),
       assigned_by = ifelse(.data$assigned_by == "NA" | .data$assigned_by == "", NA, .data$assigned_by),
-      database = ifelse(.data$database == "NA" | .data$database == "", NA, .data$database)
+      database = ifelse(.data$database == "NA" | .data$database == "", NA, .data$database),
+      keyword = ifelse(.data$keyword == "NA" | .data$keyword == "", NA, .data$keyword),
     ) %>%
     dplyr::mutate(
       metal_id_part_binding = ifelse(.data$metal_id_part_binding == "NA" | .data$metal_id_part_binding == "", NA, .data$metal_id_part_binding),
@@ -1028,7 +1080,8 @@ extract_metal_binders <- function(data_uniprot,
       "go_term",
       "go_name",
       "assigned_by",
-      "database"
+      "database",
+      "keyword"
     )
 
   if (show_progress == TRUE) {

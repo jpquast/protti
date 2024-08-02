@@ -78,7 +78,7 @@
 #' A list of all metals and metalloids in the periodic table.
 #'
 #' @format A data.frame containing the columns \code{atomic_number}, \code{symbol}, \code{name},
-#' \code{type}, \code{chebi_id}.
+#' \code{type}, \code{chebi_id}, \code{chebi_ion_id}.
 #' @source https://en.wikipedia.org/wiki/Metal and https://en.wikipedia.org/wiki/Metalloid
 "metal_list"
 
