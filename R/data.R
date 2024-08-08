@@ -86,7 +86,7 @@
 #'
 #' A list that contains all ChEBI IDs that appear in UniProt and that contain either a metal atom
 #' in their formula or that do not have a formula but the ChEBI term is related to metals.
-#' This was last updated on the 19/02/24.
+#' This was last updated on the 08/08/24.
 #'
 #' @format A data.frame containing information retrieved from ChEBI using `fetch_chebi(stars = c(2, 3))`,
 #' filtered using symbols in the `metal_list` and manual annotation of metal related ChEBI IDs that do not

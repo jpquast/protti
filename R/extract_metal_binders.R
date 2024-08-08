@@ -36,13 +36,13 @@
 #' * \code{binding_mode}: Contains information about the way the amino acid residue interacts with the ligand. If it is
 #' "covalent" then the residue is not in contact with the metal directly but only the cofactor that binds the metal.
 #' * \code{metal_function}: Contains information about the function of the metal. E.g. "catalytic".
-#' * \code{metal_id_part}: Contains a ChEBI ID that identifiers the metal part of the ligand. This is always the metal atom.
+#' * \code{metal_id_part}: Contains a ChEBI ID that identifies the metal part of the ligand. This is always the metal atom.
 #' * \code{metal_id_part_name}: The name of the ID in the \code{metal_id_part} column. This information is based on
 #' ChEBI.
 #' * \code{note}: Contains notes associated with information based on cofactors.
 #' * \code{chebi_id}: Contains the original ChEBI IDs the information is based on.
-#' * \code{source}: Contains the sources of the information. This can consist of "binding", "cofactor", "catalytic_activity"
-#' and "go_term".
+#' * \code{source}: Contains the sources of the information. This can consist of "binding", "cofactor", "catalytic_activity",
+#' "Keyword" and "go_term".
 #' * \code{eco}: If there is evidence the annotation is based on it is annotated with an ECO ID, which is split by source.
 #' * \code{eco_type}: The ECO identifier can fall into the "manual_assertion" group for manually curated annotations or the
 #' "automatic_assertion" group for automatically generated annotations. If there is no evidence it is annotated as

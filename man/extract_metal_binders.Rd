@@ -15,8 +15,8 @@ extract_metal_binders(
 )
 }
 \arguments{
-\item{data_uniprot}{a data frame containing at least the \code{ft_binding}, \code{cc_cofactor}
-and \code{cc_catalytic_activity} columns.}
+\item{data_uniprot}{a data frame containing at least the \code{ft_binding}, \code{cc_cofactor},
+\code{cc_catalytic_activity} and \code{keyword} columns.}
 
 \item{data_quickgo}{a data frame containing molecular function gene ontology information for at
 least the proteins of interest. This data should be obtained by calling \code{fetch_quickgo()}.}
@@ -55,13 +55,13 @@ ligand name. The ligand ID counts the number of ligands of the same type per pro
 \item \code{binding_mode}: Contains information about the way the amino acid residue interacts with the ligand. If it is
 "covalent" then the residue is not in contact with the metal directly but only the cofactor that binds the metal.
 \item \code{metal_function}: Contains information about the function of the metal. E.g. "catalytic".
-\item \code{metal_id_part}: Contains a ChEBI ID that identifiers the metal part of the ligand. This is always the metal atom.
+\item \code{metal_id_part}: Contains a ChEBI ID that identifies the metal part of the ligand. This is always the metal atom.
 \item \code{metal_id_part_name}: The name of the ID in the \code{metal_id_part} column. This information is based on
 ChEBI.
 \item \code{note}: Contains notes associated with information based on cofactors.
 \item \code{chebi_id}: Contains the original ChEBI IDs the information is based on.
-\item \code{source}: Contains the sources of the information. This can consist of "binding", "cofactor", "catalytic_activity"
-and "go_term".
+\item \code{source}: Contains the sources of the information. This can consist of "binding", "cofactor", "catalytic_activity",
+"Keyword" and "go_term".
 \item \code{eco}: If there is evidence the annotation is based on it is annotated with an ECO ID, which is split by source.
 \item \code{eco_type}: The ECO identifier can fall into the "manual_assertion" group for manually curated annotations or the
 "automatic_assertion" group for automatically generated annotations. If there is no evidence it is annotated as
@@ -73,6 +73,7 @@ Can contain the EC ID, Rhea ID, direction specific Rhea ID, direction of the rea
 \item \code{go_name}: Contains gene ontology names if there are any metal related ones associated with the annotation.
 \item \code{assigned_by}: Contains information about the source of the gene ontology term assignment.
 \item \code{database}: Contains information about the source of the ChEBI annotation associated with gene ontology terms.
+\item \code{keyword}: Contains keywords if they were annotated in UniProt.
 }
 
 For each protein identifier the data frame contains information on the bound ligand as well as on its position if it is known.
