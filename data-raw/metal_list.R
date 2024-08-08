@@ -555,7 +555,7 @@ metal_list <- data.frame(
     NA, # no Promethium ion
     "49890",
     "49588;49591",
-    "37285", #elemental
+    "37285", # elemental
     "49902",
     NA, # no Dysprosium ion
     "49650",

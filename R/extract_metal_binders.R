@@ -678,22 +678,26 @@ extract_metal_binders <- function(data_uniprot,
     dplyr::filter(.data$keyword %in% c(metal_list$name, additional_metal_names)) %>%
     # annotate metal_id_part and chebi_id
     dplyr::mutate(chebi_id = stats::setNames(metal_list$chebi_ion_id, metal_list$name)[.data$keyword]) %>%
-    dplyr::mutate(chebi_id = dplyr::case_when(.data$keyword == "Metal-binding" ~ "25213",
-                                              .data$keyword == "Metalloprotease" ~ "60240",
-                                              .data$keyword == "2Fe-2S" ~ "190135",
-                                              .data$keyword == "3Fe-4S" ~ "47402",
-                                              .data$keyword == "4Fe-4S" ~ "49883",
-                                              .data$keyword == "Heme" ~ "30413",
-                                              TRUE ~ .data$chebi_id)) %>%
+    dplyr::mutate(chebi_id = dplyr::case_when(
+      .data$keyword == "Metal-binding" ~ "25213",
+      .data$keyword == "Metalloprotease" ~ "60240",
+      .data$keyword == "2Fe-2S" ~ "190135",
+      .data$keyword == "3Fe-4S" ~ "47402",
+      .data$keyword == "4Fe-4S" ~ "49883",
+      .data$keyword == "Heme" ~ "30413",
+      TRUE ~ .data$chebi_id
+    )) %>%
     dplyr::mutate(chebi_id = str_split(.data$chebi_id, pattern = ";")) %>%
     tidyr::unnest("chebi_id") %>%
     dplyr::mutate(chebi_id = ifelse(is.na(.data$chebi_id),
-                                    stats::setNames(metal_list$chebi_id, metal_list$name)[.data$keyword],
-                                    .data$chebi_id)) %>%
+      stats::setNames(metal_list$chebi_id, metal_list$name)[.data$keyword],
+      .data$chebi_id
+    )) %>%
     dplyr::mutate(metal_id_part = stats::setNames(metal_chebi_uniprot$metal_atom_id, as.character(metal_chebi_uniprot$id))[.data$chebi_id]) %>%
     dplyr::mutate(metal_id_part = ifelse(is.na(.data$metal_id_part),
-                                         stats::setNames(unlisted_metal_list$chebi_id, as.character(unlisted_metal_list$chebi_ion_id))[.data$chebi_id],
-                                         .data$metal_id_part)) %>%
+      stats::setNames(unlisted_metal_list$chebi_id, as.character(unlisted_metal_list$chebi_ion_id))[.data$chebi_id],
+      .data$metal_id_part
+    )) %>%
     dplyr::mutate(source = "Keyword")
 
   if (show_progress == TRUE) {
