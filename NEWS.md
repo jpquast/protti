@@ -1,3 +1,9 @@
+# protti 0.9.0.9000
+
+## Additional Changes
+
+* `extract_metal_binders()` now uses keywords from UniProt as well. In addition, only "enables" GO terms are considered now.
+
 # protti 0.9.0
 
 ## New features 

@@ -67,7 +67,8 @@
 #' with the \code{"go_term"} source). Values of columns not relevant for a certain source should be replaced with \code{NA}.
 #' Since a \code{most_specific_id} can have multiple \code{chebi_id}s associated with it we need to unnest the \code{chebi_id}
 #' column and associated columns in which information is separated by "|". Afterwards evidence and additional information can be
-#' unnested by first splitting data for ";;" and then for ";".
+#' unnested by first splitting data for ";;" and then for ";". If the "metal_id_part_name" column contains an NA value the indicated
+#' ligand position does not directly contact the metal ion. This is usually the case for ligands such as e.g. heme.
 #' @import dplyr
 #' @import tidyr
 #' @import purrr
