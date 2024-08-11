@@ -735,6 +735,8 @@ extract_metal_binders <- function(data_uniprot,
   }
 
   mf_quickgo <- data_quickgo %>%
+    # make sure to only take enabling IDs
+    dplyr::filter(.data$qualifier == "enables") %>%
     dplyr::filter(.data$gene_product_db == "UniProtKB" &
       .data$go_aspect == "molecular_function") %>%
     # The data that will be used for filtering is a dataset provided with protti
