@@ -90,7 +90,8 @@
 #'   columns = c(
 #'     "ft_binding",
 #'     "cc_cofactor",
-#'     "cc_catalytic_activity"
+#'     "cc_catalytic_activity",
+#'     "keyword"
 #'   )
 #' )
 #'
@@ -690,11 +691,14 @@ extract_metal_binders <- function(data_uniprot,
     )) %>%
     dplyr::mutate(chebi_id = str_split(.data$chebi_id, pattern = ";")) %>%
     tidyr::unnest("chebi_id") %>%
+    # Use the atom id if chebi ion ID is not present
     dplyr::mutate(chebi_id = ifelse(is.na(.data$chebi_id),
       stats::setNames(metal_list$chebi_id, metal_list$name)[.data$keyword],
       .data$chebi_id
     )) %>%
+    # first use uniprot data to directly annotate IDs that don't have a formula with the correct metal
     dplyr::mutate(metal_id_part = stats::setNames(metal_chebi_uniprot$metal_atom_id, as.character(metal_chebi_uniprot$id))[.data$chebi_id]) %>%
+    # then use the metal_list to annotate the rest
     dplyr::mutate(metal_id_part = ifelse(is.na(.data$metal_id_part),
       stats::setNames(unlisted_metal_list$chebi_id, as.character(unlisted_metal_list$chebi_ion_id))[.data$chebi_id],
       .data$metal_id_part
