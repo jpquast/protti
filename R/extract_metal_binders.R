@@ -849,24 +849,27 @@ extract_metal_binders <- function(data_uniprot,
     # keyword_is_not_MC: check if the keyword is not just metal-binding
     dplyr::mutate(keyword_is_not_MC = !all(.data$chebi_id == "25213" | .data$chebi_id == "60240") & .data$is_keyword) %>%
     dplyr::group_by(.data$accession) %>%
-    dplyr::mutate(has_keyword = any(.data$is_keyword),
-                  non_keyword_is_DMC = any(.data$non_keyword_is_DMC),
-                  keyword_is_not_MC = any(.data$keyword_is_not_MC)) %>%
+    dplyr::mutate(
+      has_keyword = any(.data$is_keyword),
+      non_keyword_is_DMC = any(.data$non_keyword_is_DMC),
+      keyword_is_not_MC = any(.data$keyword_is_not_MC)
+    ) %>%
     # Filter for groups that contain a keyword but that do not only contain keywords and
     # of which the non-keyword is DMC and otherwise unspecific and of which the keyword is not just metal-binding
     dplyr::filter(all(.data$has_keyword & !all(.data$is_keyword) &
-                        .data$non_keyword_is_DMC &
-                        .data$keyword_is_not_MC)) %>%
+      .data$non_keyword_is_DMC &
+      .data$keyword_is_not_MC)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(chebi_sub_id = ifelse(.data$chebi_sub_id == "", .data$chebi_id, .data$chebi_sub_id)) %>%
     dplyr::mutate(split_sub_ids = stringr::str_split(.data$chebi_sub_id, pattern = ",")) %>%
     dplyr::group_by(.data$accession) %>%
     dplyr::mutate(chebi_id = unlist(ifelse(.data$is_keyword & .data$keyword != "Metal-binding",
-                                                map(
-                                                  .x = .data$split_sub_ids,
-                                                  .f = ~ .x[.x %in% dmc_chebi_sub_ids]
-                                                ),
-                             .data$chebi_id))) %>%
+      map(
+        .x = .data$split_sub_ids,
+        .f = ~ .x[.x %in% dmc_chebi_sub_ids]
+      ),
+      .data$chebi_id
+    ))) %>%
     dplyr::distinct(.data$accession, .data$chebi_id, .data$keyword) %>%
     tidyr::drop_na("keyword") %>%
     dplyr::rename("new_chebi_id" = .data$chebi_id)
