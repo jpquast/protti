@@ -826,6 +826,55 @@ extract_metal_binders <- function(data_uniprot,
     message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
   }
 
+  # Fix divalent metal cation (DMC) annotation in combination with Keywords
+  # Keywords are "metal_name cation" ChEBI IDs, meaning they cannot be combined with divalent metal cations
+  # Here we check which of the Keyword subterms is the divalent metal cation and combine it with the divalent metal cation annotation
+  if (show_progress == TRUE) {
+    message("Combine divalent metal cation with Keywords ... ", appendLF = FALSE)
+    start_time <- Sys.time()
+  }
+
+  dmc_chebi_sub_ids <- chebi_sub_id_mapping %>%
+    dplyr::filter(.data$chebi_id == "60240") %>%
+    dplyr::pull(.data$chebi_sub_id) %>%
+    stringr::str_split(pattern = ",") %>%
+    unlist()
+
+  keyword_combination <- dplyr::bind_rows(b_uniprot, cofactor_uniprot, catalytic_activity_uniprot, mf_quickgo, keyword_uniprot) %>%
+    dplyr::left_join(chebi_sub_id_mapping, by = "chebi_id") %>%
+    dplyr::mutate(is_keyword = .data$source == "Keyword") %>%
+    dplyr::group_by(.data$accession, .data$is_keyword) %>%
+    # non_keyword_is_DMC: check if the non keyword term contains DMC, while not containing any specific metal annotation
+    dplyr::mutate(non_keyword_is_DMC = any(.data$chebi_id == "60240") & !any(.data$chebi_id != "60240" & .data$chebi_id != "25213") & !.data$is_keyword) %>%
+    # keyword_is_not_MC: check if the keyword is not just metal-binding
+    dplyr::mutate(keyword_is_not_MC = !all(.data$chebi_id == "25213" | .data$chebi_id == "60240") & .data$is_keyword) %>%
+    dplyr::group_by(.data$accession) %>%
+    dplyr::mutate(has_keyword = any(.data$is_keyword),
+                  non_keyword_is_DMC = any(.data$non_keyword_is_DMC),
+                  keyword_is_not_MC = any(.data$keyword_is_not_MC)) %>%
+    # Filter for groups that contain a keyword but that do not only contain keywords and
+    # of which the non-keyword is DMC and otherwise unspecific and of which the keyword is not just metal-binding
+    dplyr::filter(all(.data$has_keyword & !all(.data$is_keyword) &
+                        .data$non_keyword_is_DMC &
+                        .data$keyword_is_not_MC)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(chebi_sub_id = ifelse(.data$chebi_sub_id == "", .data$chebi_id, .data$chebi_sub_id)) %>%
+    dplyr::mutate(split_sub_ids = stringr::str_split(.data$chebi_sub_id, pattern = ",")) %>%
+    dplyr::group_by(.data$accession) %>%
+    dplyr::mutate(chebi_id = unlist(ifelse(.data$is_keyword & .data$keyword != "Metal-binding",
+                                                map(
+                                                  .x = .data$split_sub_ids,
+                                                  .f = ~ .x[.x %in% dmc_chebi_sub_ids]
+                                                ),
+                             .data$chebi_id))) %>%
+    dplyr::distinct(.data$accession, .data$chebi_id, .data$keyword) %>%
+    tidyr::drop_na("keyword") %>%
+    dplyr::rename("new_chebi_id" = .data$chebi_id)
+
+  if (show_progress == TRUE) {
+    message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+  }
+
   # Combine data
   if (show_progress == TRUE) {
     message("Combine data ... ", appendLF = FALSE)
@@ -834,6 +883,9 @@ extract_metal_binders <- function(data_uniprot,
 
   combined <- dplyr::bind_rows(b_uniprot, cofactor_uniprot, catalytic_activity_uniprot, mf_quickgo, keyword_uniprot) %>%
     dplyr::left_join(chebi_sub_id_mapping, by = "chebi_id") %>%
+    dplyr::left_join(keyword_combination, by = c("accession", "keyword")) %>%
+    dplyr::mutate(chebi_id = dplyr::coalesce(.data$new_chebi_id, .data$chebi_id)) %>%
+    dplyr::select(-"new_chebi_id") %>%
     dplyr::mutate(chebi_sub_id = ifelse(.data$chebi_sub_id == "", .data$chebi_id, .data$chebi_sub_id)) %>%
     dplyr::mutate(most_specific_id = stringr::str_split(.data$chebi_sub_id, pattern = ",")) %>%
     dplyr::group_by(.data$accession) %>%
