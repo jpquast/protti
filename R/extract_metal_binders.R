@@ -845,7 +845,9 @@ extract_metal_binders <- function(data_uniprot,
     dplyr::mutate(is_keyword = .data$source == "Keyword") %>%
     dplyr::group_by(.data$accession, .data$is_keyword) %>%
     # non_keyword_is_DMC: check if the non keyword term contains DMC, while not containing any specific metal annotation
-    dplyr::mutate(non_keyword_is_DMC = any(.data$chebi_id == "60240") & !any(.data$chebi_id != "60240" & .data$chebi_id != "25213") & !.data$is_keyword) %>%
+    # dplyr::mutate(non_keyword_is_DMC = any(.data$chebi_id == "60240") & !any(.data$chebi_id != "60240" & .data$chebi_id != "25213") & !.data$is_keyword) %>%
+    # non_keyword_is_DMC: check if the non keyword term contains DMC
+    dplyr::mutate(non_keyword_is_DMC = any(.data$chebi_id == "60240") & !.data$is_keyword) %>%
     # keyword_is_not_MC: check if the keyword is not just metal-binding
     dplyr::mutate(keyword_is_not_MC = !all(.data$chebi_id == "25213" | .data$chebi_id == "60240") & .data$is_keyword) %>%
     dplyr::group_by(.data$accession) %>%
@@ -860,6 +862,8 @@ extract_metal_binders <- function(data_uniprot,
       .data$non_keyword_is_DMC &
       .data$keyword_is_not_MC)) %>%
     dplyr::ungroup() %>%
+    # Filter so that only the non generic metal terms of keywords are left for the reannotation
+    dplyr::filter(.data$source == "Keyword" & !(.data$chebi_id == "25213" | .data$chebi_id == "60240")) %>%
     dplyr::mutate(chebi_sub_id = ifelse(.data$chebi_sub_id == "", .data$chebi_id, .data$chebi_sub_id)) %>%
     dplyr::mutate(split_sub_ids = stringr::str_split(.data$chebi_sub_id, pattern = ",")) %>%
     dplyr::group_by(.data$accession) %>%
