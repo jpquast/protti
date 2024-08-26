@@ -90,5 +90,5 @@ assign_peptide_type <- function(data,
       "fully-tryptic",
       pep_type
     )) %>%
-     dplyr::select(-N_term_tryp, -C_term_tryp, -missing_methionine)
+    dplyr::select(-N_term_tryp, -C_term_tryp, -missing_methionine)
 }
