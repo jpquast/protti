@@ -92,7 +92,6 @@ assign_peptide_type <- function(data,
     )) %>%
     dplyr::select(-N_term_tryp, -C_term_tryp, -missing_methionine)
 
-    # add
     result <- data %>%
       dplyr::left_join(peptide_data %>%
       dplyr::select({{ aa_before }}, {{ last_aa }}, {{ aa_after }}, {{ protein_id }}, pep_type),
@@ -103,4 +102,5 @@ assign_peptide_type <- function(data,
                          rlang::as_name(rlang::enquo(protein_id))
                        ))
   return(result)
+
 }
