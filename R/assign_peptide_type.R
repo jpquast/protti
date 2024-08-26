@@ -62,7 +62,7 @@ assign_peptide_type <- function(data,
     dplyr::group_by({{ protein_id }}) %>%
     dplyr::summarize(missing_methionine = !any({{ aa_before }} == "M"), .groups = "drop")
 
-  data %>%
+  peptide_data <- data %>%
     dplyr::distinct({{ aa_before }}, {{ last_aa }}, {{ aa_after }}, {{ protein_id }}, .keep_all = TRUE) %>%
     dplyr::left_join(summary_data, by = rlang::as_name(rlang::enquo(protein_id))) %>%
     dplyr::mutate(N_term_tryp = dplyr::if_else(
@@ -90,5 +90,17 @@ assign_peptide_type <- function(data,
       "fully-tryptic",
       pep_type
     )) %>%
-     dplyr::select(-N_term_tryp, -C_term_tryp, -missing_methionine)
+    dplyr::select(-N_term_tryp, -C_term_tryp, -missing_methionine)
+
+    # add
+    result <- data %>%
+      dplyr::left_join(peptide_data %>%
+      dplyr::select({{ aa_before }}, {{ last_aa }}, {{ aa_after }}, {{ protein_id }}, pep_type),
+                       by = c(
+                         rlang::as_name(rlang::enquo(aa_before)),
+                         rlang::as_name(rlang::enquo(last_aa)),
+                         rlang::as_name(rlang::enquo(aa_after)),
+                         rlang::as_name(rlang::enquo(protein_id))
+                       ))
+  return(result)
 }
