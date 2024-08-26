@@ -202,7 +202,8 @@ data_filtered_uniprot <- data_filtered_proteotypic %>%
   assign_peptide_type(
     aa_before = aa_before,
     last_aa = last_aa,
-    aa_after = aa_after
+    aa_after = aa_after,
+    protein_id = pg_protein_accessions
   ) %>%
   calculate_sequence_coverage(
     protein_sequence = sequence,
