@@ -8,7 +8,8 @@ assign_peptide_type(
   data,
   aa_before = aa_before,
   last_aa = last_aa,
-  aa_after = aa_after
+  aa_after = aa_after,
+  protein_id = protein_id
 )
 }
 \arguments{
@@ -23,6 +24,9 @@ acid as one letter code.}
 
 \item{aa_after}{a character column in the \code{data} data frame that contains the following amino
 acid as one letter code.}
+
+\item{protein_id}{a character column in the \code{data} data frame that contains the protein
+#' accession numbers.}
 }
 \value{
 A data frame that contains the input data and an additional column with the peptide
@@ -40,8 +44,9 @@ the criteria for both termini are non-tryptic peptides.
 data <- data.frame(
   aa_before = c("K", "S", "T"),
   last_aa = c("R", "K", "Y"),
-  aa_after = c("T", "R", "T")
+  aa_after = c("T", "R", "T"),
+  protein_id = c("P1", "P1", "P2", "P2")
 )
 
-assign_peptide_type(data, aa_before, last_aa, aa_after)
+assign_peptide_type(data, aa_before, last_aa, aa_after, protein_id)
 }

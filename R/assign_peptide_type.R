@@ -80,17 +80,17 @@ assign_peptide_type <- function(data,
       FALSE
     )) %>%
     dplyr::mutate(pep_type = dplyr::case_when(
-      N_term_tryp + C_term_tryp == 2 ~ "fully-tryptic",
-      N_term_tryp + C_term_tryp == 1 ~ "semi-tryptic",
-      N_term_tryp + C_term_tryp == 0 ~ "non-tryptic"
+      .data$N_term_tryp + .data$C_term_tryp == 2 ~ "fully-tryptic",
+      .data$N_term_tryp + .data$C_term_tryp == 1 ~ "semi-tryptic",
+      .data$N_term_tryp + .data$C_term_tryp == 0 ~ "non-tryptic"
     )) %>%
     # Check if initial methionine is missing and reassign semi-tryptic to fully-tryptic
     dplyr::mutate(pep_type = dplyr::if_else(
-      pep_type == "semi-tryptic" & missing_methionine,
+      pep_type == "semi-tryptic" & .data$missing_methionine,
       "fully-tryptic",
-      pep_type
+      .data$pep_type
     )) %>%
-    dplyr::select(-N_term_tryp, -C_term_tryp, -missing_methionine)
+    dplyr::select(-.data$N_term_tryp, -.data$C_term_tryp, -.data$missing_methionine)
 
   result <- data %>%
     dplyr::left_join(
