@@ -42,9 +42,9 @@ the criteria for both termini are non-tryptic peptides.
 }
 \examples{
 data <- data.frame(
-  aa_before = c("K", "S", "T"),
-  last_aa = c("R", "K", "Y"),
-  aa_after = c("T", "R", "T"),
+  aa_before = c("K", "S", "T", "M"),
+  last_aa = c("R", "K", "Y", "K"),
+  aa_after = c("T", "R", "T", "R"),
   protein_id = c("P1", "P1", "P2", "P2")
 )
 
