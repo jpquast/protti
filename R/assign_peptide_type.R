@@ -92,15 +92,16 @@ assign_peptide_type <- function(data,
     )) %>%
     dplyr::select(-N_term_tryp, -C_term_tryp, -missing_methionine)
 
-    result <- data %>%
-      dplyr::left_join(peptide_data %>%
-      dplyr::select({{ aa_before }}, {{ last_aa }}, {{ aa_after }}, {{ protein_id }}, pep_type),
-                       by = c(
-                         rlang::as_name(rlang::enquo(aa_before)),
-                         rlang::as_name(rlang::enquo(last_aa)),
-                         rlang::as_name(rlang::enquo(aa_after)),
-                         rlang::as_name(rlang::enquo(protein_id))
-                       ))
+  result <- data %>%
+    dplyr::left_join(
+      peptide_data %>%
+        dplyr::select({{ aa_before }}, {{ last_aa }}, {{ aa_after }}, {{ protein_id }}, pep_type),
+      by = c(
+        rlang::as_name(rlang::enquo(aa_before)),
+        rlang::as_name(rlang::enquo(last_aa)),
+        rlang::as_name(rlang::enquo(aa_after)),
+        rlang::as_name(rlang::enquo(protein_id))
+      )
+    )
   return(result)
-
 }
