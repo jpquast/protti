@@ -217,7 +217,43 @@ from the conditions and assigned their missingness. The created comparisons are:
       dplyr::distinct() %>%
       dplyr::right_join(result, by = colnames(result)[!colnames(result) %in% c("comparison", "missingness")]) %>%
       # Arrange by grouping but in a numeric order of the character vector.
-      dplyr::arrange(factor({{ grouping }}, levels = unique(stringr::str_sort({{ grouping }}, numeric = TRUE))))
+      dplyr::arrange(factor({{ grouping }}, levels = unique(stringr::str_sort({{ grouping }}, numeric = TRUE)))) %>%
+      # propagation of consistent values to NA places
+      dplyr::group_by({{ grouping }}) %>%
+      dplyr::mutate(dplyr::across(!!enquo(retain_columns), ~ {
+        # Check if all non-NA values are the same
+        if (any(is.na(.x)) & dplyr::n_distinct(na.omit(.x)) == 1 & !any(is.na(.x) & !is.na({{intensity}}))) {
+          # Replace NA with the consistent value
+          tidyr::replace_na(.x, unique(na.omit(.x)))
+        } else {
+          # Leave as is
+          .x
+        }
+      })) %>%
+      dplyr::ungroup()
+
+    # Annotate sample related retained columns. These have a unique value for every sample.
+    # Above we annotated any columns that had a consistent for every group, here the inconsistent ones are annotated
+
+    sample_annotations <- join_result %>%
+      dplyr::select(!!enquo(retain_columns), {{ intensity }}, {{ sample }}) %>%
+      dplyr::select(
+        dplyr::where(~ !any(is.na(.x) & !is.na(dplyr::pull(join_result, {{ intensity }}))) & any(is.na(.x))),
+        {{ sample }},
+        -{{ intensity }}
+        ) %>%
+      tidyr::drop_na() %>%
+      dplyr::distinct() %>%
+      dplyr::group_by({{ sample }}) %>%
+      # drop the columns that contain multiple values per group
+      # grouping doesn't work with selection so first we need to find the columns with the non-distinct values with the summary bellow
+      dplyr::summarise(dplyr::across(dplyr::everything(), ~ if (dplyr::n_distinct(.x) == 1) dplyr::first(.x) else NA), .groups = 'drop') %>%
+      dplyr::select(-dplyr::where(~ any(is.na(.x)))) %>%
+      dplyr::ungroup() %>%
+      dplyr::distinct()
+
+    join_result <- join_result %>%
+      dplyr::rows_update(sample_annotations, by = rlang::as_name(rlang::enquo(sample)))
 
     return(join_result)
   }
