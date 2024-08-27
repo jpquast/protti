@@ -222,7 +222,7 @@ from the conditions and assigned their missingness. The created comparisons are:
       dplyr::group_by({{ grouping }}) %>%
       dplyr::mutate(dplyr::across(!!enquo(retain_columns), ~ {
         # Check if all non-NA values are the same
-        if (any(is.na(.x)) & dplyr::n_distinct(na.omit(.x)) == 1 & !any(is.na(.x) & !is.na({{intensity}}))) {
+        if (any(is.na(.x)) & dplyr::n_distinct(na.omit(.x)) == 1 & !any(is.na(.x) & !is.na({{ intensity }}))) {
           # Replace NA with the consistent value
           tidyr::replace_na(.x, unique(na.omit(.x)))
         } else {
@@ -241,13 +241,13 @@ from the conditions and assigned their missingness. The created comparisons are:
         dplyr::where(~ !any(is.na(.x) & !is.na(dplyr::pull(join_result, {{ intensity }}))) & any(is.na(.x))),
         {{ sample }},
         -{{ intensity }}
-        ) %>%
+      ) %>%
       tidyr::drop_na() %>%
       dplyr::distinct() %>%
       dplyr::group_by({{ sample }}) %>%
       # drop the columns that contain multiple values per group
       # grouping doesn't work with selection so first we need to find the columns with the non-distinct values with the summary bellow
-      dplyr::summarise(dplyr::across(dplyr::everything(), ~ if (dplyr::n_distinct(.x) == 1) dplyr::first(.x) else NA), .groups = 'drop') %>%
+      dplyr::summarise(dplyr::across(dplyr::everything(), ~ if (dplyr::n_distinct(.x) == 1) dplyr::first(.x) else NA), .groups = "drop") %>%
       dplyr::select(-dplyr::where(~ any(is.na(.x)))) %>%
       dplyr::ungroup() %>%
       dplyr::distinct()
