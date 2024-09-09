@@ -9,13 +9,13 @@
 #' @param n_replicates a numeric value that specifies the number of replicates per condition.
 #' @param n_conditions a numeric value that specifies the number of conditions.
 #' @param method a character value that specifies the method type for the random sampling of
-#' significantly changing peptides. If \code{method = "effect_random"}, the effect for each
+#' significantly changing peptides. If `method = "effect_random"`, the effect for each
 #' condition is randomly sampled and conditions do not depend on each other. If
-#' \code{method = "dose_response"}, the effect is sampled based on a dose response curve and
+#' `method = "dose_response"`, the effect is sampled based on a dose response curve and
 #' conditions are related to each other depending on the curve shape. In this case the
 #' concentrations argument needs to be specified.
 #' @param concentrations a numeric vector of length equal to the number of conditions, only needs
-#' to be specified if \code{method = "dose_response"}. This allows equal sampling of peptide
+#' to be specified if `method = "dose_response"`. This allows equal sampling of peptide
 #' intensities. It ensures that the same positions of dose response curves are sampled for each
 #' peptide based on the provided concentrations.
 #' @param median_offset_sd a numeric value that specifies the standard deviation of normal
@@ -28,20 +28,25 @@
 #' Default: 12.75.
 #' @param size_n_peptides a numeric value that specifies the dispersion parameter (the shape
 #' parameter of the gamma mixing distribution). Can be theoretically calculated as
-#' \code{mean + mean^2/variance}, however, it should be rather obtained by fitting the negative
-#' binomial distribution to real data. This can be done by using the \code{optim} function (see
+#' `mean + mean^2/variance`, however, it should be rather obtained by fitting the negative
+#' binomial distribution to real data. This can be done by using the `optim` function (see
 #' Example section). Default: 0.9.
 #' @param mean_sd_peptides a numeric value that specifies the mean of peptide intensity standard
 #' deviations within a protein. Default: 1.7.
 #' @param sd_sd_peptides a numeric value that specifies the standard deviation of peptide intensity
 #' standard deviation within a protein. Default: 0.75.
-#' @param mean_log_replicates,sd_log_replicates a numeric value that specifies the \code{meanlog}
-#' and \code{sdlog} of the log normal distribution of replicate standard deviations. Can be
+#' @param mean_log_replicates,sd_log_replicates a numeric value that specifies the `meanlog`
+#' and `sdlog` of the log normal distribution of replicate standard deviations. Can be
 #' obtained by fitting a log normal distribution to the distribution of replicate standard
-#' deviations from a real dataset. This can be done using the \code{optim} function (see Example
+#' deviations from a real dataset. This can be done using the `optim` function (see Example
 #' section). Default: -2.2 and 1.05.
+#' @param n_sig_peptides_shape,n_sig_peptides_rate a numeric value that specifies the `shape`
+#' and `rate` of the gamma distribution that is used to sample the number of significant peptides
+#' per protein. These parameters can be obtained by fitting a gamma distribution to the fractions
+#' of significantly changing peptides per protein (number of significant peptides / total peptides).
+#' This can be done using the `optim` function (see Example section). Default: 0.75 and 23.
 #' @param effect_sd a numeric value that specifies the standard deviation of a normal distribution
-#' around \code{mean = 0} that is used to sample the effect of significantly changeing peptides.
+#' around `mean = 0` that is used to sample the effect of significantly changeing peptides.
 #' Default: 2.
 #' @param dropout_curve_inflection a numeric value that specifies the intensity inflection point
 #' of a probabilistic dropout curve that is used to sample intensity dependent missing values.
@@ -92,6 +97,18 @@
 #' }
 #' fit2 <- stats::optim(theta2, lognorm)
 #' fit2
+#'
+#' # determination of n_sig_peptides_shape and n_sig_peptides_rate parameters
+#' # based on real data (fraction of significant peptides)
+#'
+#' # example fraction of significant peptides
+#' frac_sig_pep <- c(0.14, 0.01, 0.01, 0.03, 0.01, 0.02, 0.02, 0.03, 0.09, 0.01)
+#' theta3 <- c(shape = 1, rate = 1)
+#' gamma_log_likelihood <- function(theta3) {
+#'   -sum(stats::dgamma(frac_sig_pep, shape = theta3[1], rate = theta3[2], log = TRUE))
+#' }
+#' fit3 <- stats::optim(theta3, gamma_log_likelihood)
+#' fit3
 create_synthetic_data <- function(n_proteins,
                                   frac_change,
                                   n_replicates,
@@ -107,6 +124,8 @@ create_synthetic_data <- function(n_proteins,
                                   sd_sd_peptides = 0.75,
                                   mean_log_replicates = -2.2,
                                   sd_log_replicates = 1.05,
+                                  n_sig_peptides_shape = 0.75,
+                                  n_sig_peptides_rate = 23,
                                   effect_sd = 2,
                                   dropout_curve_inflection = 14,
                                   dropout_curve_sd = -1.2,
@@ -237,9 +256,9 @@ create_synthetic_data <- function(n_proteins,
       dplyr::mutate(change = stringr::str_extract(.data$protein, pattern = "\\d+") %in% 1:n_change) %>%
       dplyr::group_by(.data$protein) %>%
       dplyr::mutate(n_change_peptide = ifelse(.data$change == TRUE, ceiling(stats::rgamma(1,
-        shape = 0.7,
-        rate = 0.4
-      )), 0)) %>%
+        shape = n_sig_peptides_shape,
+        rate = n_sig_peptides_shape_rate
+      ) * dplyr::n()), 0)) %>%
       # sample number of significant peptides based on gamma distribution
       dplyr::mutate(n_change_peptide = ifelse(.data$n_change_peptide >= .data$n,
         .data$n,
