@@ -154,7 +154,7 @@ create_synthetic_data <- function(n_proteins,
   # sample the amount of peptides per protein. There is no relationship
   # between amount of peptides per protein and protein intensity
   sampled_n_peptides <- stats::rnbinom(n = n_proteins * 3, size = size_n_peptides, mu = mean_n_peptides)
-  sampled_n_peptides <- sampled_n_peptides[sampled_n_peptides > 0][1:(n_proteins-n_change)]
+  sampled_n_peptides <- sampled_n_peptides[sampled_n_peptides > 0][1:(n_proteins - n_change)]
   # Since there is a relationship between amount of peptides per protein and if there
   # are significant peptides detected for that protein the number of peptides for proteins
   # with singificant peptides is sampled seperately.
