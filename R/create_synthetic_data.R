@@ -31,6 +31,15 @@
 #' `mean + mean^2/variance`, however, it should be rather obtained by fitting the negative
 #' binomial distribution to real data. This can be done by using the `optim` function (see
 #' Example section). Default: 0.9.
+#' @param mean_n_peptides_sig a numeric value that specifies the mean number of peptides per protein
+#' with significant changes. This is separately specified from `mean_n_peptides` since proteins
+#' with significant peptide changes tend to have more peptides than the standard distribution.
+#' Default: 50.
+#' @param size_n_peptides_sig a numeric value that specifies the dispersion parameter for the negative
+#' binomial distribution of the number of peptides from proteins with significant peptides. It is conceptually
+#' the same as `size_n_peptides` but then just applied to proteins with significant peptides and therefore
+#' linked to `mean_n_peptides_sig`. The parameter can be obtained orthogonal to `size_n_peptides` by using
+#' the `optim` function (see Example section). Default: 2.
 #' @param mean_sd_peptides a numeric value that specifies the mean of peptide intensity standard
 #' deviations within a protein. Default: 1.7.
 #' @param sd_sd_peptides a numeric value that specifies the standard deviation of peptide intensity
@@ -120,6 +129,8 @@ create_synthetic_data <- function(n_proteins,
                                   sd_protein_intensity = 1.4,
                                   mean_n_peptides = 12.75,
                                   size_n_peptides = 0.9,
+                                  mean_n_peptides_sig = 50,
+                                  size_n_peptides_sig = 2,
                                   mean_sd_peptides = 1.7,
                                   sd_sd_peptides = 0.75,
                                   mean_log_replicates = -2.2,
@@ -143,7 +154,12 @@ create_synthetic_data <- function(n_proteins,
   # sample the amount of peptides per protein. There is no relationship
   # between amount of peptides per protein and protein intensity
   sampled_n_peptides <- stats::rnbinom(n = n_proteins * 3, size = size_n_peptides, mu = mean_n_peptides)
-  sampled_n_peptides <- sampled_n_peptides[sampled_n_peptides > 0][1:n_proteins]
+  sampled_n_peptides <- sampled_n_peptides[sampled_n_peptides > 0][1:(n_proteins-n_change)]
+  # Since there is a relationship between amount of peptides per protein and if there
+  # are significant peptides detected for that protein the number of peptides for proteins
+  # with singificant peptides is sampled seperately.
+  sampled_n_peptides_sig <- stats::rnbinom(n = n_change * 3, size = size_n_peptides_sig, mu = mean_n_peptides_sig)
+  sampled_n_peptides <- c(sampled_n_peptides_sig[sampled_n_peptides_sig > 0][1:n_change], sampled_n_peptides)
 
   # sample the standard deviations for the distribution of peptide intensities in a protein
   sampled_peptide_sd <- stats::rnorm(n = n_proteins * 2, mean = mean_sd_peptides, sd = sd_sd_peptides)
@@ -215,7 +231,10 @@ create_synthetic_data <- function(n_proteins,
     proteins_replicates_change <- proteins_replicates %>%
       dplyr::mutate(change = stringr::str_extract(.data$protein, pattern = "\\d+") %in% 1:n_change) %>%
       dplyr::group_by(.data$protein) %>%
-      dplyr::mutate(n_change_peptide = ifelse(.data$change == TRUE, ceiling(stats::rgamma(1, shape = 0.7, rate = 0.4)), 0)) %>%
+      dplyr::mutate(n_change_peptide = ifelse(.data$change == TRUE, ceiling(stats::rgamma(1,
+        shape = n_sig_peptides_shape,
+        rate = n_sig_peptides_rate
+      ) * .data$n), 0)) %>%
       # sample number of significant peptides based on gamma distribution
       dplyr::mutate(n_change_peptide = ifelse(.data$n_change_peptide >= .data$n,
         .data$n,
@@ -257,8 +276,8 @@ create_synthetic_data <- function(n_proteins,
       dplyr::group_by(.data$protein) %>%
       dplyr::mutate(n_change_peptide = ifelse(.data$change == TRUE, ceiling(stats::rgamma(1,
         shape = n_sig_peptides_shape,
-        rate = n_sig_peptides_shape_rate
-      ) * dplyr::n()), 0)) %>%
+        rate = n_sig_peptides_rate
+      ) * .data$n), 0)) %>%
       # sample number of significant peptides based on gamma distribution
       dplyr::mutate(n_change_peptide = ifelse(.data$n_change_peptide >= .data$n,
         .data$n,
