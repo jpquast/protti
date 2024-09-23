@@ -78,6 +78,8 @@ go_enrichment <- function(...) {
 #' should be reversed in order. Default is `TRUE`.
 #' @param label a logical argument indicating whether labels should be added to the plot.
 #' Default is TRUE.
+#' @param label_size a numeric argument that specifies the text size of the labels with the unit "pt".
+#' The default is 5.
 #' @param enrichment_type a character argument that is either "all", "enriched" or "deenriched". This
 #' determines if the enrichment analysis should be performed in order to check for both enrichemnt and
 #' deenrichemnt or only one of the two. This affects the statistics performed and therefore also the displayed
@@ -223,6 +225,7 @@ calculate_go_enrichment <- function(data,
                                     heatmap_fill_colour = protti::mako_colours,
                                     heatmap_fill_colour_rev = TRUE,
                                     label = TRUE,
+                                    label_size = 5,
                                     enrichment_type = "all",
                                     replace_long_name = TRUE,
                                     label_move_frac = 0.2,
@@ -408,12 +411,14 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
   }
 
   result_table <- cont_table %>%
+    dplyr::arrange({{ group }}) %>%
     { # group argument is missing
       if (group_missing) {
         dplyr::left_join(., fisher_test, by = "go_id")
       } else {
         # group argument is not missing
         dplyr::left_join(., fisher_test, by = c("go_id", rlang::as_name(enquo(group)))) %>%
+          dplyr::mutate({{ group }} := forcats::fct_inorder({{ group }})) %>%
           dplyr::group_by({{ group }})
       }
     } %>%
@@ -528,7 +533,8 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
                 "%)"
               ),
               y = .data$neg_log_sig - 0.1,
-              hjust = .data$hjust
+              hjust = .data$hjust,
+              size = label_size/.pt
             )
           )
         }
@@ -605,7 +611,11 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
         if (group_missing) {
           dplyr::mutate(., grouping = "")
         } else {
-          dplyr::mutate(., grouping = forcats::fct_inorder({{ group }}))
+          if(!is(dplyr::pull(plot_input, {{ group }}), "factor")){ # if the column is already a factor do not reorder
+            dplyr::mutate(., grouping = forcats::fct_inorder({{ group }}))
+          } else {
+            dplyr::mutate(., grouping = {{ group }})
+          }
         }
       }
 
@@ -659,7 +669,8 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
               NA
               )
             ),
-            colour = plot_input_heatmap$text_col
+            colour = plot_input_heatmap$text_col,
+            size = label_size/.pt
           )
         }
       } +
