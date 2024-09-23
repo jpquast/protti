@@ -534,7 +534,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
               ),
               y = .data$neg_log_sig - 0.1,
               hjust = .data$hjust,
-              size = label_size/.pt
+              size = label_size / .pt
             )
           )
         }
@@ -611,7 +611,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
         if (group_missing) {
           dplyr::mutate(., grouping = "")
         } else {
-          if(!is(dplyr::pull(plot_input, {{ group }}), "factor")){ # if the column is already a factor do not reorder
+          if (!is(dplyr::pull(plot_input, {{ group }}), "factor")) { # if the column is already a factor do not reorder
             dplyr::mutate(., grouping = forcats::fct_inorder({{ group }}))
           } else {
             dplyr::mutate(., grouping = {{ group }})
@@ -670,7 +670,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
               )
             ),
             colour = plot_input_heatmap$text_col,
-            size = label_size/.pt
+            size = label_size / .pt
           )
         }
       } +
