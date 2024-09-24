@@ -44,7 +44,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       expect_is(assigned_types, "data.frame")
       expect_equal(nrow(assigned_types), 6)
       expect_equal(ncol(assigned_types), 9)
-      expect_equal(assigned_types$pep_type, c("fully-tryptic", "semi-tryptic", "non-tryptic", "non-tryptic", "fully-tryptic","fully-tryptic"))
+      expect_equal(assigned_types$pep_type, c("fully-tryptic", "semi-tryptic", "non-tryptic", "non-tryptic", "fully-tryptic", "fully-tryptic"))
     })
 
     assigned_types <- data %>%

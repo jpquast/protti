@@ -50,11 +50,11 @@ peptide_type <- function(...) {
 #'
 #' @examples
 #' data <- data.frame(
-#' aa_before = c("K", "S", "K", "S", "T", "M"),
-#' last_aa = c("R", "K","R", "K", "Y", "K"),
-#' aa_after = c("T", "R", "T", "R", "T", "R"),
-#' protein_id = c("P1", "P1", "P3", "P3","P2", "P2"),
-#' start_pos = c(2, 2, 1, 2, 1, 2),
+#'   aa_before = c("K", "S", "K", "S", "T", "M"),
+#'   last_aa = c("R", "K", "R", "K", "Y", "K"),
+#'   aa_after = c("T", "R", "T", "R", "T", "R"),
+#'   protein_id = c("P1", "P1", "P3", "P3", "P2", "P2"),
+#'   start_pos = c(2, 2, 1, 2, 1, 2),
 #' )
 #'
 #' assign_peptide_type(data, aa_before, last_aa, aa_after, protein_id, start_pos)
@@ -72,35 +72,30 @@ assign_peptide_type <- function(data,
   peptide_data <- data %>%
     dplyr::distinct({{ aa_before }}, {{ last_aa }}, {{ aa_after }}, {{ protein_id }}, {{ start_pos }}, .keep_all = TRUE) %>%
     dplyr::left_join(start_summary, by = rlang::as_name(rlang::enquo(protein_id))) %>%
-
     # Determine N-terminal trypticity
     dplyr::mutate(N_term_tryp = dplyr::if_else(
       {{ aa_before }} == "" | {{ aa_before }} == "K" | {{ aa_before }} == "R",
       TRUE,
       FALSE
     )) %>%
-
     # Determine C-terminal trypticity
     dplyr::mutate(C_term_tryp = dplyr::if_else(
       {{ last_aa }} == "K" | {{ last_aa }} == "R" | {{ aa_after }} == "",
       TRUE,
       FALSE
     )) %>%
-
     # Assign peptide type based on N-term and C-term trypticity
     dplyr::mutate(pep_type = dplyr::case_when(
       N_term_tryp & C_term_tryp ~ "fully-tryptic",
       N_term_tryp | C_term_tryp ~ "semi-tryptic",
       TRUE ~ "non-tryptic"
     )) %>%
-
     # Reassign semi-tryptic peptides at position 2 to fully-tryptic if no start_pos == 1
     dplyr::mutate(pep_type = dplyr::if_else(
       pep_type == "semi-tryptic" & {{ start_pos }} == 2 & !.data$has_start_pos_1 & C_term_tryp,
       "fully-tryptic",
       .data$pep_type
     )) %>%
-
     # Drop unnecessary columns
     dplyr::select(-N_term_tryp, -C_term_tryp, -has_start_pos_1)
 
