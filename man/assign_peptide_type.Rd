@@ -9,7 +9,8 @@ assign_peptide_type(
   aa_before = aa_before,
   last_aa = last_aa,
   aa_after = aa_after,
-  protein_id = protein_id
+  protein_id = protein_id,
+  start_pos = start_pos
 )
 }
 \arguments{
@@ -26,8 +27,12 @@ acid as one letter code.}
 acid as one letter code.}
 
 \item{protein_id}{a character column in the \code{data} data frame that contains the protein
-#' accession numbers.}
-}
+ accession numbers.}
+
+\item{start_pos}{A numeric column in the \code{data} data frame that contains the start position of
+each peptide within the corresponding protein. This is used to check if the peptide starts at position 1
+or position 2, which affects whether the peptide can be considered fully-tryptic.}
+
 \value{
 A data frame that contains the input data and an additional column with the peptide
 type information.
@@ -42,11 +47,12 @@ the criteria for both termini are non-tryptic peptides.
 }
 \examples{
 data <- data.frame(
-  aa_before = c("K", "S", "T", "M"),
-  last_aa = c("R", "K", "Y", "K"),
-  aa_after = c("T", "R", "T", "R"),
-  protein_id = c("P1", "P1", "P2", "P2")
-)
+ aa_before = c("K", "S", "K", "S", "T", "M"),
+ last_aa = c("R", "K","R", "K", "Y", "K"),
+ aa_after = c("T", "R", "T", "R", "T", "R"),
+ protein_id = c("P1", "P1", "P3", "P3","P2", "P2"),
+ start_pos = c(2, 2, 1, 2, 1, 2),
+ )
 
-assign_peptide_type(data, aa_before, last_aa, aa_after, protein_id)
+assign_peptide_type(data, aa_before, last_aa, aa_after, protein_id, start_pos)
 }
