@@ -91,7 +91,7 @@ try_query <-
     options(readr.show_progress = FALSE)
 
     # Check if the content is gzip compressed
-    if (query_result$headers[["content-encoding"]] == "gzip") {
+    if (!is.null(query_result$headers[["content-encoding"]]) && query_result$headers[["content-encoding"]] == "gzip") {
       # Retrieve the content as raw bytes using httr::content
       raw_content <- httr::content(query_result, type = "raw")
 
