@@ -54,7 +54,7 @@ data <- data.frame(
   aa_after = c("T", "R", "T", "R", "T", "R", "T"),
   protein_id = c("P1", "P1", "P3", "P3", "P2", "P2", "P2"),
   start = c(38, 2, 1, 2, 10, 2, 1)
-  )
+)
 
 assign_peptide_type(data, aa_before, last_aa, aa_after, protein_id, start)
 }

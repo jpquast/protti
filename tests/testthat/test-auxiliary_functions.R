@@ -38,7 +38,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
             last_aa = last_aa,
             aa_after = aa_after,
             protein_id = protein_id,
-            start_pos = start
+            start = start
           ))
       })
       expect_is(assigned_types, "data.frame")
@@ -61,9 +61,9 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
     test_that("find_peptide and assign_peptide_type work", {
       expect_is(assigned_types, "data.frame")
-      expect_equal(nrow(assigned_types), 3)
+      expect_equal(nrow(assigned_types), 6)
       expect_equal(ncol(assigned_types), 9)
-      expect_equal(assigned_types$pep_type, c("fully-tryptic", "fully-tryptic", "non-tryptic"))
+      expect_equal(assigned_types$pep_type, c("fully-tryptic", "semi-tryptic", "non-tryptic", "non-tryptic", "fully-tryptic", "fully-tryptic"))
     })
 
     test_that("deprecated sequence_coverage works", {
@@ -75,9 +75,9 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
         ))
       })
       expect_is(coverage, "data.frame")
-      expect_equal(nrow(coverage), 3)
+      expect_equal(nrow(coverage), 6)
       expect_equal(ncol(coverage), 10)
-      expect_equal(unique(round(coverage$coverage, digits = 1)), 7.7)
+      expect_equal(unique(round(coverage$coverage, digits = 1)), c(7.7, 3.2))
     })
 
     coverage <- calculate_sequence_coverage(
@@ -88,14 +88,14 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
     test_that("calculate_sequence_coverage works", {
       expect_is(coverage, "data.frame")
-      expect_equal(nrow(coverage), 3)
+      expect_equal(nrow(coverage), 6)
       expect_equal(ncol(coverage), 10)
-      expect_equal(unique(round(coverage$coverage, digits = 1)), 7.7)
+      expect_equal(unique(round(coverage$coverage, digits = 1)), c(7.7, 3.2))
     })
 
     plot_data <- coverage %>%
       dplyr::mutate(
-        fold_change = c(3, -0.4, 2.1),
+        fold_change = c(3, -0.4, 2.1, 0.1, -0.1, 0.2),
         protein_length = nchar(protein_sequence)
       )
 
@@ -121,7 +121,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
         end_position = end,
         protein_length = protein_length,
         coverage = coverage,
-        protein_id = protein_id,
+        facet = protein_id,
         colouring = pep_type
       )
       expect_is(p, "ggplot")

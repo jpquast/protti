@@ -94,13 +94,13 @@ assign_peptide_type <- function(data,
     )) %>%
     # Reassign semi-tryptic peptides at position 2 to fully-tryptic if no start == 1
     dplyr::mutate(pep_type = dplyr::if_else(
-      pep_type == "semi-tryptic" & {{ start }} == 2 & !.data$has_start_1 & .data$C_term_tryp,
+      .data$pep_type == "semi-tryptic" & {{ start }} == 2 & !.data$has_start_1 & .data$C_term_tryp,
       "fully-tryptic",
       .data$pep_type
     )) %>%
     # Reassign non-tryptic peptides at position 2 to semi-tryptic if no start == 1
     dplyr::mutate(pep_type = dplyr::if_else(
-      pep_type == "non-tryptic" & {{ start }} == 2 & !.data$has_start_1 & !.data$C_term_tryp,
+      .data$pep_type == "non-tryptic" & {{ start }} == 2 & !.data$has_start_1 & !.data$C_term_tryp,
       "fully-tryptic",
       .data$pep_type
     )) %>%
@@ -111,7 +111,7 @@ assign_peptide_type <- function(data,
   result <- data %>%
     dplyr::left_join(
       peptide_data %>%
-        dplyr::select({{ aa_before }}, {{ last_aa }}, {{ aa_after }}, {{ protein_id }}, {{ start }}, .data$pep_type),
+        dplyr::select({{ aa_before }}, {{ last_aa }}, {{ aa_after }}, {{ protein_id }}, {{ start }}, "pep_type"),
       by = c(
         rlang::as_name(rlang::enquo(aa_before)),
         rlang::as_name(rlang::enquo(last_aa)),
