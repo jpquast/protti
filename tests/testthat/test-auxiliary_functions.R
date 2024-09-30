@@ -33,7 +33,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
             protein_sequence = protein_sequence,
             peptide_sequence = peptide
           ) %>%
-          assign_peptide_type(
+          peptide_type(
             aa_before = aa_before,
             last_aa = last_aa,
             aa_after = aa_after,
