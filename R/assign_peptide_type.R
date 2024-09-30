@@ -79,4 +79,5 @@ assign_peptide_type <- function(data,
       rlang::as_name(rlang::enquo(last_aa)),
       rlang::as_name(rlang::enquo(aa_after))
     ))
+
 }

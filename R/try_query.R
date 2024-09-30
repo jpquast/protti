@@ -22,8 +22,6 @@
 #' @importFrom curl has_internet
 #' @importFrom httr GET timeout http_error message_for_status http_status content accept
 #' @importFrom readr read_tsv read_csv
-#' @importFrom jsonlite fromJSON
-#' @importFrom xml2 read_html read_xml
 #'
 #' @return A data frame that contains the table from the url.
 try_query <-
@@ -90,11 +88,13 @@ try_query <-
     # Change variable to not show progress if readr is used
     options(readr.show_progress = FALSE)
 
-    # Check if the content is gzip compressed
-    if (!is.null(query_result$headers[["content-encoding"]]) && query_result$headers[["content-encoding"]] == "gzip") {
-      # Retrieve the content as raw bytes using httr::content
-      raw_content <- httr::content(query_result, type = "raw")
+    # Retrieve the content as raw bytes using httr::content
+    raw_content <- httr::content(query_result, type = "raw")
+    # Check for gzip magic number (1f 8b) before decompression
+    compressed <- length(raw_content) >= 2 && raw_content[1] == as.raw(0x1f) && raw_content[2] == as.raw(0x8b)
 
+    # Check if the content is gzip compressed
+    if (!is.null(query_result$headers[["content-encoding"]]) && query_result$headers[["content-encoding"]] == "gzip" && compressed) {
       # Decompress the raw content using base R's `memDecompress`
       decompressed_content <- memDecompress(raw_content, type = "gzip")
 
