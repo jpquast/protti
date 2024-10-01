@@ -527,4 +527,19 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(as.data.frame(table(af_domains$domain))$Freq[1], 6)
     expect_equal(as.data.frame(table(af_domains$domain))$Freq[2], 55)
   })
+
+  test_that("fetch_interpro works", {
+    unis <- c("P36578", "O43324", "Q00796", "O32583")
+    domains <- fetch_interpro(unis)
+    residues <- fetch_interpro(unis,
+                               return_residue_info = TRUE)
+    # Test domain info
+    expect_is(domains, "data.frame")
+    expect_equal(nrow(domains), 27)
+    expect_equal(ncol(domains), 13)
+    # Test residue info
+    expect_is(residues, "data.frame")
+    expect_equal(nrow(residues), 129)
+    expect_equal(ncol(residues), 8)
+  })
 }
