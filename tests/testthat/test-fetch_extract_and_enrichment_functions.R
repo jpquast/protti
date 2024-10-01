@@ -532,7 +532,8 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     unis <- c("P36578", "O43324", "Q00796", "O32583")
     domains <- fetch_interpro(unis)
     residues <- fetch_interpro(unis,
-                               return_residue_info = TRUE)
+      return_residue_info = TRUE
+    )
     # Test domain info
     expect_is(domains, "data.frame")
     expect_equal(nrow(domains), 27)
