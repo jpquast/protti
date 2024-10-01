@@ -26,8 +26,7 @@ that failed.}
 
 \item{type}{a character value that specifies the type of data at the target URL. Options are
 all options that can be supplied to httr::content, these include e.g.
-"text/tab-separated-values", "application/json" and "txt/csv". Default is "text/tab-separated-values".
-Default is "tab-separated-values".}
+"text/tab-separated-values", "application/json" and "txt/csv". Default is "text/tab-separated-values".}
 
 \item{timeout}{a numeric value that specifies the maximum request time. Default is 60 seconds.}
 

@@ -26,7 +26,7 @@ cross-referenced database provide the database name with the prefix "xref_", e.g
 single query. Default and max value is 200.}
 
 \item{max_tries}{a numeric value that specifies the number of times the function tries to download
-the data in case an error occurs.}
+the data in case an error occurs. The default is 10.}
 
 \item{timeout}{a numeric value that specifies the maximum request time per try. Default is 20 seconds.}
 

@@ -122,7 +122,7 @@ The function does not handle log2 transformed data.",
         dplyr::mutate({{ condition }} := forcats::fct_expand({{ condition }}, "combined")) %>%
         dplyr::mutate({{ condition }} := replace({{ condition }}, .data$type == "cv_combined", "combined")) %>%
         dplyr::mutate({{ condition }} := forcats::fct_relevel({{ condition }}, "combined")) %>%
-        dplyr::select(-.data$type) %>%
+        dplyr::select(-"type") %>%
         dplyr::group_by({{ condition }}) %>%
         dplyr::mutate(median = stats::median(.data$values)) %>%
         dplyr::distinct()

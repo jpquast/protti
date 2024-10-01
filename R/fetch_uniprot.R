@@ -9,7 +9,7 @@
 #' @param batchsize a numeric value that specifies the number of proteins processed in a single
 #' single query. Default and max value is 200.
 #' @param max_tries a numeric value that specifies the number of times the function tries to download
-#' the data in case an error occurs.
+#' the data in case an error occurs. The default is 10.
 #' @param timeout a numeric value that specifies the maximum request time per try. Default is 20 seconds.
 #' @param show_progress a logical value that determines if a progress bar will be shown. Default
 #' is TRUE.
