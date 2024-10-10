@@ -13,9 +13,10 @@ impute(
   comparison = comparison,
   missingness = missingness,
   noise = NULL,
-  method = "ludovic",
+  method = c("ludovic", "randomforest"),
   skip_log2_transform_error = FALSE,
-  retain_columns = NULL
+  retain_columns = NULL,
+  ...
 )
 }
 \arguments{

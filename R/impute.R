@@ -106,42 +106,6 @@ impute <- function(data,
                    ...) {
   noise_missing <- missing(noise) # check if argument noise was provided or not
 
-  if (method == "randomforest"){
-    data_wide <- data %>%
-      tidyr::pivot_wider(
-        id_cols=sample,
-        names_from =grouping,
-        values_from = intensity_log2) %>%
-      dplyr::select(sample)
-
-    data_wide <- data.frame(lapply(data_wide, function(x) as.numeric(as.character(x))))
-    data_imputed_rf <- missForest(data_wide, ...)
-
-    data_imputed <-data_imputed_rf$ximp
-    data_imputed[sample] <- data %>%
-      tidyr::pivot_wider(
-        id_cols = sample,
-        names_from = grouping,
-        values_from = intensity_log2) %>%
-      dplyr::pull(sample)
-
-    data_imputed <- data_imputed %>%
-      as.data.frame() %>%
-      tidyr::pivot_longer(
-        cols = -sample,
-        names_to = grouping,
-        values_to = intensity_log2
-      )
-
-    result <- data_imputed %>%
-      left_join(
-        synthetic_data %>%
-          dplyr::select(sample, retain_columns) %>%
-          distinct(),
-        by = sample
-      )
-    return(result)
-  }
   result <- data %>%
     dplyr::distinct(
       {{ sample }},

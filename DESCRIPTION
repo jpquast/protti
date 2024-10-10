@@ -42,8 +42,9 @@ Imports:
     httr,
     methods,
     R.utils,
-    stats
-RoxygenNote: 7.3.1
+    stats,
+    missForest
+RoxygenNote: 7.3.2
 Suggests: 
     testthat,
     covr,

@@ -1,3 +1,7 @@
+# protti ***
+## New features
+* `impute_randomforest()` new imputation method random forest using `missForest`.
+
 # protti 0.9.0
 
 ## New features 

@@ -792,3 +792,31 @@ test_that("calculate_aa_scores works", {
   expect_equal(nrow(aa_fingerprint), 45)
   expect_equal(ncol(aa_fingerprint), 3)
 })
+
+# Test for random forest imputation
+test_that("Random Forest imputation works correctly", {
+  set.seed(123)  # Set seed for reproducibility
+
+  # Create synthetic test data
+  test_data <- create_synthetic_data(
+      n_proteins = 10,
+      frac_change = 0.5,
+      n_replicates = 4,
+      n_conditions = 2,
+      method = "effect_random",
+      additional_metadata = FALSE
+   )
+
+  # Perform imputation using the random forest method
+  imputed_data <- impute_randomforest(
+    data = test_data,
+    sample = sample,
+    grouping = peptide,
+    intensity_log2 = peptide_intensity_missing
+  )
+
+
+  # Check that imputed values replace the original NAs and are numeric
+  expect_true(all(!is.na(imputed_data$peptide_intensity_missing)))
+  expect_type(imputed_data$peptide_intensity_missing, "double")
+})
