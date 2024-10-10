@@ -76,8 +76,7 @@ impute_randomforest <- function(
     grouping,
     intensity_log2,
     retain_columns = NULL,
-    ...
-) {
+    ...) {
   # Convert inputs to symbols
   sample_sym <- rlang::ensym(sample)
   grouping_sym <- rlang::ensym(grouping)
@@ -90,7 +89,7 @@ impute_randomforest <- function(
       names_from = !!grouping_sym,
       values_from = !!intensity_sym
     ) %>%
-    dplyr::select(-!!sample_sym)  # Exclude the sample column for imputation
+    dplyr::select(-!!sample_sym) # Exclude the sample column for imputation
 
   # Convert to numeric and suppress warnings for coercion
   data_wide <- suppressWarnings(data.frame(lapply(data_wide, function(x) as.numeric(as.character(x)))))

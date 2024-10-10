@@ -795,17 +795,17 @@ test_that("calculate_aa_scores works", {
 
 # Test for random forest imputation
 test_that("Random Forest imputation works correctly", {
-  set.seed(123)  # Set seed for reproducibility
+  set.seed(123) # Set seed for reproducibility
 
   # Create synthetic test data
   test_data <- create_synthetic_data(
-      n_proteins = 10,
-      frac_change = 0.5,
-      n_replicates = 4,
-      n_conditions = 2,
-      method = "effect_random",
-      additional_metadata = FALSE
-   )
+    n_proteins = 10,
+    frac_change = 0.5,
+    n_replicates = 4,
+    n_conditions = 2,
+    method = "effect_random",
+    additional_metadata = FALSE
+  )
 
   # Perform imputation using the random forest method
   imputed_data <- impute_randomforest(
