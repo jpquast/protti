@@ -29,17 +29,17 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     test_that("deprecated peptide_type works", {
       rlang::with_options(lifecycle_verbosity = "warning", {
         expect_warning(assigned_types <- data %>%
-                         find_peptide(
-                           protein_sequence = protein_sequence,
-                           peptide_sequence = peptide
-                         ) %>%
-                         peptide_type(
-                           aa_before = aa_before,
-                           last_aa = last_aa,
-                           aa_after = aa_after,
-                           protein_id = protein_id,
-                           start = start
-                         ))
+          find_peptide(
+            protein_sequence = protein_sequence,
+            peptide_sequence = peptide
+          ) %>%
+          peptide_type(
+            aa_before = aa_before,
+            last_aa = last_aa,
+            aa_after = aa_after,
+            protein_id = protein_id,
+            start = start
+          ))
       })
       expect_is(assigned_types, "data.frame")
       expect_equal(nrow(assigned_types), 6)
