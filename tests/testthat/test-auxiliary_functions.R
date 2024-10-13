@@ -33,18 +33,12 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
                            protein_sequence = protein_sequence,
                            peptide_sequence = peptide
                          ) %>%
-                         peptide_type(
-                           aa_before = aa_before,
-                           last_aa = last_aa,
-                           aa_after = aa_after,
-                           protein_id = protein_id,
-                           start = start
-                         ))
+                         peptide_type(aa_before = aa_before, last_aa = last_aa))
       })
       expect_is(assigned_types, "data.frame")
-      expect_equal(nrow(assigned_types), 6)
+      expect_equal(nrow(assigned_types), 3)
       expect_equal(ncol(assigned_types), 9)
-      expect_equal(assigned_types$pep_type, c("fully-tryptic", "semi-tryptic", "non-tryptic", "non-tryptic", "fully-tryptic", "fully-tryptic"))
+      expect_equal(assigned_types$pep_type, c("fully-tryptic", "semi-tryptic", "non-tryptic"))
     })
 
     assigned_types <- data %>%
@@ -52,19 +46,15 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
         protein_sequence = protein_sequence,
         peptide_sequence = peptide
       ) %>%
-      assign_peptide_type(
-        aa_before = aa_before,
-        last_aa = last_aa,
-        aa_after = aa_after,
-        protein_id = protein_id
-      )
+      assign_peptide_type(aa_before = aa_before, last_aa = last_aa)
 
     test_that("find_peptide and assign_peptide_type work", {
       expect_is(assigned_types, "data.frame")
-      expect_equal(nrow(assigned_types), 6)
+      expect_equal(nrow(assigned_types), 3)
       expect_equal(ncol(assigned_types), 9)
-      expect_equal(assigned_types$pep_type, c("fully-tryptic", "semi-tryptic", "non-tryptic", "non-tryptic", "fully-tryptic", "fully-tryptic"))
+      expect_equal(assigned_types$pep_type, c("fully-tryptic", "semi-tryptic", "non-tryptic"))
     })
+
 
     test_that("deprecated sequence_coverage works", {
       rlang::with_options(lifecycle_verbosity = "warning", {

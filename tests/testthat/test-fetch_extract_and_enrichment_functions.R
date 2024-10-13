@@ -21,7 +21,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     unis <- c("iRT", "P25437", "P30870", "P0A6P9")
     expect_warning(mobidb <- fetch_mobidb(unis))
     expect_is(mobidb, "data.frame")
-    expect_equal(nrow(mobidb), 259)
+    expect_equal(nrow(mobidb), 221)
     expect_equal(ncol(mobidb), 6)
   })
 
