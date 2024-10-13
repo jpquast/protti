@@ -13,7 +13,7 @@ impute(
   comparison = comparison,
   missingness = missingness,
   noise = NULL,
-  method = c("ludovic", "randomforest"),
+  method = c("ludovic"),
   skip_log2_transform_error = FALSE,
   retain_columns = NULL,
   ...

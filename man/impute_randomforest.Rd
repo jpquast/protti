@@ -41,9 +41,7 @@ and an \code{imputed} column indicating whether each value was imputed (\code{TR
 }
 \description{
 \code{impute_randomforest} performs imputation for missing values in the data using the random
-forest-based method implemented in the \code{missForest} package. This method is particularly
-useful for handling data with a mixture of categorical and continuous variables, as well as
-handling non-linear relationships between variables.
+forest-based method implemented in the \code{missForest} package.
 }
 \details{
 The function imputes missing values by building random forests, where missing values are
@@ -57,6 +55,20 @@ original input data frame that were not part of the imputation process.
 This function allows passing additional parameters to the underlying \code{missForest} function,
 such as controlling the number of trees used in the random forest models or specifying the
 stopping criteria. For a full list of parameters, refer to the \code{missForest} documentation.
+
+To enable parallelization, ensure that the \code{doParallel} package is installed and loaded:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{install.packages("doParallel")
+library(doParallel)
+}\if{html}{\out{</div>}}
+
+Then register the desired number of cores for parallel processing:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{registerDoParallel(cores = 6)
+}\if{html}{\out{</div>}}
+
+To leverage parallelization during the imputation, pass \code{parallelize = "variables"}
+as an argument to the \code{missForest} function.
 
 Stekhoven, D.J., & Bühlmann, P. (2012). MissForest—non-parametric missing value imputation
 for mixed-type data. Bioinformatics, 28(1), 112-118. https://doi.org/10.1093/bioinformatics/btr597
