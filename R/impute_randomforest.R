@@ -26,7 +26,7 @@
 #' ```
 #' To leverage parallelization during the imputation, pass `parallelize = "variables"`
 #' as an argument to the `missForest` function.
-#`
+# `
 #'
 #' Stekhoven, D.J., & Bühlmann, P. (2012). MissForest—non-parametric missing value imputation
 #' for mixed-type data. Bioinformatics, 28(1), 112-118. https://doi.org/10.1093/bioinformatics/btr597
