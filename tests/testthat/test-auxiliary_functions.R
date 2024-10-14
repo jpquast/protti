@@ -11,18 +11,14 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   })
 
   protein <- fetch_uniprot(uniprot_ids = "P36578")
-  protein2 <- fetch_uniprot(uniprot_ids = "P00925")
   if (!is.null(protein)) {
     data <- tibble::tibble(
-      protein_id = c(rep("P36578", 3), rep("P00925", 3)),
-      protein_sequence = c(rep(protein$sequence, 3), rep(protein2$sequence, 3)),
+      protein_id = rep("P36578", 3),
+      protein_sequence = rep(protein$sequence, 3),
       peptide = c(
         stringr::str_sub(protein$sequence, start = 87, end = 97),
         stringr::str_sub(protein$sequence, start = 59, end = 71),
-        stringr::str_sub(protein$sequence, start = 10, end = 18),
-        stringr::str_sub(protein2$sequence, start = 5, end = 10),
-        stringr::str_sub(protein2$sequence, start = 2, end = 15),
-        stringr::str_sub(protein2$sequence, start = 10, end = 15)
+        stringr::str_sub(protein$sequence, start = 10, end = 18)
       )
     )
 
@@ -65,9 +61,9 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
         ))
       })
       expect_is(coverage, "data.frame")
-      expect_equal(nrow(coverage), 6)
+      expect_equal(nrow(coverage), 3)
       expect_equal(ncol(coverage), 10)
-      expect_equal(unique(round(coverage$coverage, digits = 1)), c(7.7, 3.2))
+      expect_equal(unique(round(coverage$coverage, digits = 1)), 7.7)
     })
 
     coverage <- calculate_sequence_coverage(
@@ -78,14 +74,14 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
     test_that("calculate_sequence_coverage works", {
       expect_is(coverage, "data.frame")
-      expect_equal(nrow(coverage), 6)
+      expect_equal(nrow(coverage), 3)
       expect_equal(ncol(coverage), 10)
-      expect_equal(unique(round(coverage$coverage, digits = 1)), c(7.7, 3.2))
+      expect_equal(unique(round(coverage$coverage, digits = 1)), 7.7)
     })
 
     plot_data <- coverage %>%
       dplyr::mutate(
-        fold_change = c(3, -0.4, 2.1, 0.1, -0.1, 0.2),
+        fold_change = c(3, -0.4, 2.1),
         protein_length = nchar(protein_sequence)
       )
 

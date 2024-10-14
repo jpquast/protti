@@ -98,7 +98,8 @@ impute_randomforest <- function(
     tidyr::pivot_wider(
       id_cols = !!sample_sym,
       names_from = !!grouping_sym,
-      values_from = !!intensity_sym
+      values_from = !!intensity_sym,
+      names_repair = "minimal"
     ) %>%
     dplyr::select(-!!sample_sym) # Exclude the sample column for imputation
 

@@ -100,7 +100,7 @@ impute <- function(data,
                    comparison = comparison,
                    missingness = missingness,
                    noise = NULL,
-                   method = c("ludovic"),
+                   method = "ludovic",
                    skip_log2_transform_error = FALSE,
                    retain_columns = NULL,
                    ...) {
