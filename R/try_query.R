@@ -117,9 +117,9 @@ try_query <-
       } else if (type == "text/csv" || type == "txt/csv") {
         result <- readr::read_csv(text_content, ...)
       } else if (type == "application/json") {
-        result <- jsonlite::fromJSON(text_content, ...)  # Using jsonlite for JSON parsing
+        result <- jsonlite::fromJSON(text_content, ...) # Using jsonlite for JSON parsing
       } else if (type == "text") {
-        result <- text_content  # Return raw text as-is
+        result <- text_content # Return raw text as-is
       } else {
         stop("Unsupported content type: ", type)
       }
