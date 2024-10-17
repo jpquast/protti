@@ -51,6 +51,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       expect_equal(assigned_types$pep_type, c("fully-tryptic", "semi-tryptic", "non-tryptic"))
     })
 
+
     test_that("deprecated sequence_coverage works", {
       rlang::with_options(lifecycle_verbosity = "warning", {
         expect_warning(coverage <- sequence_coverage(
@@ -106,7 +107,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
         end_position = end,
         protein_length = protein_length,
         coverage = coverage,
-        protein_id = protein_id,
+        facet = protein_id,
         colouring = pep_type
       )
       expect_is(p, "ggplot")

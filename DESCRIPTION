@@ -42,8 +42,9 @@ Imports:
     httr,
     methods,
     R.utils,
-    stats
-RoxygenNote: 7.3.1
+    stats,
+    missForest
+RoxygenNote: 7.3.2
 Suggests: 
     testthat,
     covr,
@@ -67,7 +68,9 @@ Suggests:
     iq,
     scales,
     farver,
-    ggforce
+    ggforce,
+    xml2,
+    jsonlite
 Depends: 
     R (>= 4.0)
 URL: https://github.com/jpquast/protti, https://jpquast.github.io/protti/
