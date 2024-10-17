@@ -31,6 +31,12 @@ try_query <-
       stop("The timeout cannot be less than 1 second.")
     }
 
+    # Check if the URL is valid
+    parsed_url <- httr::parse_url(url)
+    if (is.null(parsed_url$scheme) || is.null(parsed_url$hostname)) {
+      stop("The provided URL is not valid. Please check the format.")
+    }
+
     # Check if there is an internet connection first
     if (!curl::has_internet()) {
       if (!silent) message("\nNo internet connection.")
