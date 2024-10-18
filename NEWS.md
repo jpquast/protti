@@ -1,3 +1,8 @@
+# protti ***
+
+## Bug fixes
+* `try_query()` now checks if a valid URL is provided before attempting to download data. 
+
 # protti 0.9.0
 
 ## New features 

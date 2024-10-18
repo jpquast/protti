@@ -42,8 +42,10 @@ Imports:
     httr,
     methods,
     R.utils,
-    stats
-RoxygenNote: 7.3.1
+    stats,
+    xml2,
+    jsonlite
+RoxygenNote: 7.3.2
 Suggests: 
     testthat,
     covr,
