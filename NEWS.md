@@ -1,3 +1,8 @@
+# protti ***
+
+## Bug fixes
+* `try_query()` now correctly handles errors that don't return a response object. We also handle gzip decompression problems better since some databases compressed responses were not handled correctly. 
+
 # protti 0.9.0
 
 ## New features 
