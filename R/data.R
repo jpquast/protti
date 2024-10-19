@@ -25,7 +25,7 @@
 #' Rapamycin 10 uM example data
 #'
 #' Rapamycin example data used for the vignette about binary control/treated data. The data was
-#' obtained from \href{https://www.nature.com/articles/s41467-020-18071-x}{Piazza 2020}
+#' obtained from \href{https://doi.org/10.1038/s41467-020-18071-x}{Piazza 2020}
 #' and corresponds to experiment 18. FKBP1A the rapamycin binding protein and 49 other randomly
 #' sampled proteins were used for this example dataset. Furthermore, only the DMSO control and the
 #' 10 uM condition were used.
@@ -53,7 +53,7 @@
 #' Structural analysis example data
 #'
 #' Example data used for the vignette about structural analysis. The data was obtained from
-#' \href{https://www.sciencedirect.com/science/article/pii/S0092867420316913}{Cappelletti 2021}
+#' \href{https://doi.org/10.1016/j.cell.2020.12.021}{Cappelletti 2021}
 #' and corresponds to two separate experiments. Both experiments were limited proteolyis coupled to
 #' mass spectrometry (LiP-MS) experiments conducted on purified proteins. The first protein is
 #' phosphoglycerate kinase 1 (pgk) and it was treated with 25mM 3-phosphoglyceric acid (3PG).

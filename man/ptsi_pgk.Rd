@@ -20,7 +20,7 @@ ptsi_pgk
 }
 \description{
 Example data used for the vignette about structural analysis. The data was obtained from
-\href{https://www.sciencedirect.com/science/article/pii/S0092867420316913}{Cappelletti 2021}
+\href{https://doi.org/10.1016/j.cell.2020.12.021}{Cappelletti 2021}
 and corresponds to two separate experiments. Both experiments were limited proteolyis coupled to
 mass spectrometry (LiP-MS) experiments conducted on purified proteins. The first protein is
 phosphoglycerate kinase 1 (pgk) and it was treated with 25mM 3-phosphoglyceric acid (3PG).
