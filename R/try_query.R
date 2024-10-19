@@ -22,8 +22,6 @@
 #' @importFrom curl has_internet
 #' @importFrom httr GET timeout http_error message_for_status http_status content accept
 #' @importFrom readr read_tsv read_csv
-#' @importFrom jsonlite fromJSON
-#' @importFrom xml2 read_html read_xml
 #'
 #' @return A data frame that contains the table from the url.
 try_query <-
@@ -31,12 +29,6 @@ try_query <-
     # Check timeout time
     if (timeout < 1) {
       stop("The timeout cannot be less than 1 second.")
-    }
-
-    # Check if the URL is valid
-    parsed_url <- httr::parse_url(url)
-    if (is.null(parsed_url$scheme) || is.null(parsed_url$hostname)) {
-      stop("The provided URL is not valid. Please check the format.")
     }
 
     # Check if there is an internet connection first
@@ -85,9 +77,16 @@ try_query <-
       return(invisible("No internet connection"))
     }
 
-    if (httr::http_error(query_result)) {
+    # If response was an error return that error message
+    if (inherits(query_result, "response") && httr::http_error(query_result)) {
       if (!silent) httr::message_for_status(query_result)
       return(invisible(httr::http_status(query_result)$message))
+    }
+
+    # Handle other types of errors separately from query errors
+    if(inherits(query_result, "character")) {
+      if (!silent) message(query_result)
+      return(invisible(query_result))
     }
 
     # Record readr progress variable to set back later
