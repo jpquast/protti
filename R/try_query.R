@@ -84,7 +84,7 @@ try_query <-
     }
 
     # Handle other types of errors separately from query errors
-    if(inherits(query_result, "character")) {
+    if (inherits(query_result, "character")) {
       if (!silent) message(query_result)
       return(invisible(query_result))
     }
