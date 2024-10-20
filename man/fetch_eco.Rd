@@ -48,7 +48,7 @@ essential to navigating the ever-growing (in size and complexity) corpus of scie
 information."
 
 More information can be found in their
-\href{https://doi.org/10.1093/nar/gky1036}{publication}.
+\href{https://academic.oup.com/nar/article/47/D1/D1186/5165344}{publication}.
 }
 \examples{
 \donttest{
