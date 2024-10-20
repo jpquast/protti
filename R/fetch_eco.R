@@ -19,7 +19,7 @@
 #' information."
 #'
 #' More information can be found in their
-#' \href{https://academic.oup.com/nar/article/47/D1/D1186/5165344?login=true}{publication}.
+#' \href{https://academic.oup.com/nar/article/47/D1/D1186/5165344}{publication}.
 #'
 #' @param return_relation a logical value that indicates if relational information should be returned instead
 #' the main descriptive information. This data can be used to check the relations of ECO terms to each other.

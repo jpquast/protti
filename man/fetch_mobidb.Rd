@@ -33,7 +33,7 @@ the data in case an error occurs. The default is 2.}
 A data frame that contains start and end positions for disordered and flexible protein
 regions. The \code{feature} column contains information on the source of this
 annotation. More information on the source can be found
-\href{https://mobidb.bio.unipd.it/about/mobidb}{here}.
+\href{https://mobidb.org/about/mobidb}{here}.
 }
 \description{
 Fetches information about disordered and flexible protein regions from MobiDB.
