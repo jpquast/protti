@@ -47,8 +47,7 @@ retreive, share, and compare data associated with that evidence using computers,
 essential to navigating the ever-growing (in size and complexity) corpus of scientific
 information."
 
-More information can be found in their
-\href{https://academic.oup.com/nar/article/47/D1/D1186/5165344}{publication}.
+More information can be found in their publication (\doi{10.1093/nar/gky1036}).
 }
 \examples{
 \donttest{
