@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1</span>
       </span>
     </div>
 
@@ -99,7 +99,7 @@
                         <h4 data-toc-skip class="author">Jan-Philipp
 Quast</h4>
             
-            <h4 data-toc-skip class="date">2024-07-16</h4>
+            <h4 data-toc-skip class="date">2024-10-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/data_analysis_dose_response_workflow.Rmd" class="external-link"><code>vignettes/data_analysis_dose_response_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_dose_response_workflow.Rmd</code></div>
@@ -149,16 +149,16 @@ rather broad concentration range for an experiment in which you do not
 know what to expect.</p>
 <p><strong>protti</strong> fits four-parameter log-logistic
 dose-response models to your data. It utilizes the <code>drm()</code>
-and <code>LL.4()</code> functions from the <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0146021" class="external-link"><code>drc</code></a>
+and <code>LL.4()</code> functions from the <a href="https://doi.org/10.1371/journal.pone.0146021" class="external-link"><code>drc</code></a>
 package for this. You can also select a non logarithmic model using the
 <code>L.4()</code> function in case your data does not follow a
 log-logistic but a logistic regression.</p>
-<p>For limited proteolysis-coupled to mass spectrometry (<a href="https://www.nature.com/articles/nbt.2999" class="external-link">LiP-MS</a>) data,
-dose-response curves have been used previously for the identification of
-drug binding sites in complex proteomes (<a href="https://www.nature.com/articles/s41467-020-18071-x" class="external-link">Piazza
-2020</a>). Since LiP-MS data is analysed on the peptide or precursor*
-level, using additional information about peptide behaviour from
-multiple conditions reduces false discovery rate.</p>
+<p>For limited proteolysis-coupled to mass spectrometry (<a href="https://doi.org/10.1038/nbt.2999" class="external-link">LiP-MS</a>) data, dose-response
+curves have been used previously for the identification of drug binding
+sites in complex proteomes (<a href="https://doi.org/10.1038/s41467-020-18071-x" class="external-link">Piazza 2020</a>).
+Since LiP-MS data is analysed on the peptide or precursor* level, using
+additional information about peptide behaviour from multiple conditions
+reduces false discovery rate.</p>
 <p><em>A peptide precursor is the actual molecular unit that was
 detected on the mass spectrometer. This is a peptide with one specific
 charge state and its modification(s).</em></p>
@@ -185,9 +185,9 @@ function.</p>
 <p>For this vignette we use a subset of proteins from an experiment of
 HeLa cell lysates treated with 9 doses of rapamycin followed by LiP-MS.
 Rapamycin forms a complex with the FK506-binding protein (FKBP12) that
-binds and allosterically inhibits mTORC1 (<a href="https://www.sciencedirect.com/science/article/pii/0092867494905703?via%3Dihub" class="external-link">Sabatini
-1994</a>). Since rapamycin is known to be a highly specific drug, we
-expect to identify FKBP12 as one of the only interacting proteins.</p>
+binds and allosterically inhibits mTORC1 (<a href="https://doi.org/10.1016/0092-8674(94)90570-3" class="external-link">Sabatini 1994</a>).
+Since rapamycin is known to be a highly specific drug, we expect to
+identify FKBP12 as one of the only interacting proteins.</p>
 <p>We included 39 random proteins and FKBP12 in this sample data set.
 The proteins were sampled using the seed 123.</p>
 <p>If you want to read your data into R, we suggest using the
@@ -683,11 +683,11 @@ the significance of enrichment for a single or even a few proteins is
 not appropriate. However, testing for enrichment is especially useful if
 your treatment affects many proteins, since it can help you to reduce
 the complexity of your result.</p>
-<p>The <a href="https://academic.oup.com/nar/article/47/D1/D607/5198476" class="external-link">STRING</a>
-database provides a good resource for the analysis of protein
-interaction networks. It is often very useful to check for interactions
-within your significant hits. For LiP-MS data this sometimes explains
-why proteins that do not directly interact with your treatment are still
+<p>The <a href="https://doi.org/10.1093/nar/gky1131" class="external-link">STRING</a> database
+provides a good resource for the analysis of protein interaction
+networks. It is often very useful to check for interactions within your
+significant hits. For LiP-MS data this sometimes explains why proteins
+that do not directly interact with your treatment are still
 significantly affected. With <code><a href="../reference/analyse_functional_network.html">analyse_functional_network()</a></code>,
 <strong>protti</strong> provides a useful wrapper around some <a href="https://www.bioconductor.org/packages/release/bioc/html/STRINGdb.html" class="external-link"><code>STRINGdb</code></a>
 package functions.</p>
@@ -800,7 +800,7 @@ additional functions on your own data.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>

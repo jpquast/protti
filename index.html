@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p>The goal of <strong>protti</strong> is to provide flexible functions and workflows for proteomics quality control and data analysis, within a single, user-friendly package. It can be used for label-free DDA, DIA and SRM data generated with search tools and software such as Spectronaut, MaxQuant, Proteome Discoverer and Skyline. Both limited proteolysis mass spectrometry (LiP-MS) and regular bottom-up proteomics experiments can be analysed.</p>
-<p><strong>protti</strong> is developed and maintained by members of the lab of Paola Picotti at ETH Zurich. Our lab is focused on protein structural changes that occur in response to perturbations such as metabolite, drug and protein binding-events, as well as protein aggregation and enzyme activation (<a href="https://www.sciencedirect.com/science/article/pii/S0092867417314484" class="external-link">Piazza 2018</a>, <a href="https://www.nature.com/articles/s41467-020-18071-x#additional-information" class="external-link">Piazza 2020</a>, <a href="https://www.sciencedirect.com/science/article/pii/S0092867420316913" class="external-link">Cappelletti, Hauser &amp; Piazza 2021</a>). We have devoloped mass spectrometry-based structural and chemical proteomic methods aimed at monitoring protein conformational changes in the complex cellular milieu (<a href="https://www.nature.com/articles/nbt.2999" class="external-link">Feng 2014</a>).</p>
+<p><strong>protti</strong> is developed and maintained by members of the lab of Paola Picotti at ETH Zurich. Our lab is focused on protein structural changes that occur in response to perturbations such as metabolite, drug and protein binding-events, as well as protein aggregation and enzyme activation (<a href="https://doi.org/10.1016/j.cell.2017.12.006" class="external-link">Piazza 2018</a>, <a href="https://doi.org/10.1038/s41467-020-18071-x" class="external-link">Piazza 2020</a>, <a href="https://doi.org/10.1016/j.cell.2020.12.021" class="external-link">Cappelletti, Hauser &amp; Piazza 2021</a>). We have devoloped mass spectrometry-based structural and chemical proteomic methods aimed at monitoring protein conformational changes in the complex cellular milieu (<a href="https://doi.org/10.1038/nbt.2999" class="external-link">Feng 2014</a>).</p>
 <p>There is a wide range of functions <strong>protti</strong> provides to the user. The main areas of application are:</p>
 <ul>
 <li>
@@ -191,15 +191,17 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span> <span class="co"># Makes example reproducible</span></span>
 <span></span>
 <span><span class="co"># Create synthetic data</span></span>
-<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span>n_proteins <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>                              frac_change <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>                              n_replicates <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>                              n_conditions <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                              method <span class="op">=</span> <span class="st">"effect_random"</span>,</span>
-<span>                              additional_metadata <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_synthetic_data.html">create_synthetic_data</a></span><span class="op">(</span></span>
+<span>  n_proteins <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  frac_change <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  n_replicates <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  n_conditions <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"effect_random"</span>,</span>
+<span>  additional_metadata <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># The method "effect_random" as opposed to "dose-response" just randomly samples </span></span>
-<span><span class="co"># the extend of the change of significantly changing peptides for each condition. </span></span>
+<span><span class="co"># The method "effect_random" as opposed to "dose-response" just randomly samples</span></span>
+<span><span class="co"># the extend of the change of significantly changing peptides for each condition.</span></span>
 <span><span class="co"># They do not follow any trend and can go in any direction.</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -219,10 +221,12 @@
 <p>In addition to filtering and log2 transformation it is also advised to normalise your data to equal out small differences in overall sample intensities that result from unequal sample concentrations. <strong>protti</strong> provides the <code><a href="reference/normalise.html">normalise()</a></code> function for this purpose. For this example we will use median normalisation (<code>method = "median"</code>). This function generates an additional column called <code>normalised_intensity_log2</code> that contains the normalised intensities.</p>
 <p><em>Note: If your search tool already normalised your data you should not normalise it another time.</em></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">normalised_data</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="reference/normalise.html">normalise</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span>            intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
-<span>            method <span class="op">=</span> <span class="st">"median"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">normalised_data</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/normalise.html">normalise</a></span><span class="op">(</span></span>
+<span>    sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>    intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
+<span>    method <span class="op">=</span> <span class="st">"median"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="assign-missingness">Assign Missingness<a class="anchor" aria-label="anchor" href="#assign-missingness"></a>
@@ -230,16 +234,18 @@
 <p>The next step is to deal with missing data points. You could choose to impute missing data in a later step, but this is only recommended if only a small proportion of your data is missing. In order to calculate statistical significance of differentially abundant peptides or proteins we would like to have at least a minimum number of observations per condition. The <strong>protti</strong> function <code><a href="reference/assign_missingness.html">assign_missingness()</a></code> checks for each treatment-to-reference condition if the defined minimum number of observations is satisfied and assigns a missingness type to each comparison as follows.</p>
 <p>If a certain condition has all replicates while the other one has less than 20% (adjusted downward) of total possible replicates, the case is considered to be “missing not at random” (<code>MNAR</code>). In order to be labeled “missing at random” (<code>MAR</code>) 70% (adjusted downward) of total replicates need to be present in both conditions. If you performed an experiment with 4 replicates that means that both conditions need to contain at least 2 observations. Comparisons that have too few observations are labeled <code>NA</code>. These will not be imputed if imputation is performed later on using the <code><a href="reference/impute.html">impute()</a></code> function. You can read the exact details in the documentation of this function and also adjust the thresholds if you want to be more or less conservative with how many data points to retain.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_missing</span> <span class="op">&lt;-</span> <span class="va">normalised_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="reference/assign_missingness.html">assign_missingness</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span>                     condition <span class="op">=</span> <span class="va">condition</span>,</span>
-<span>                     grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span>                     intensity <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,</span>
-<span>                     ref_condition <span class="op">=</span> <span class="st">"condition_1"</span>,</span>
-<span>                     retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">data_missing</span> <span class="op">&lt;-</span> <span class="va">normalised_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/assign_missingness.html">assign_missingness</a></span><span class="op">(</span></span>
+<span>    sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>    condition <span class="op">=</span> <span class="va">condition</span>,</span>
+<span>    grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>    intensity <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,</span>
+<span>    ref_condition <span class="op">=</span> <span class="st">"condition_1"</span>,</span>
+<span>    retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Next to the columns it generates, assign_missingness only contains the columns </span></span>
-<span><span class="co"># you provide as input in its output. If you want to retain additional columns you </span></span>
+<span><span class="co"># Next to the columns it generates, assign_missingness only contains the columns</span></span>
+<span><span class="co"># you provide as input in its output. If you want to retain additional columns you</span></span>
 <span><span class="co"># can provide them in the retain_columns argument.</span></span></code></pre></div>
 <p><em>Note: Instead of “peptide” in the <code>grouping</code> argument you can provide protein IDs in case you are working with protein abundance data. However, then intensities should be protein intensities and not peptide intensities.</em></p>
 </div>
@@ -249,27 +255,31 @@
 <p>For the calculation of abundance changes and the associated significances <strong>protti</strong> provides the function <code><a href="reference/calculate_diff_abundance.html">calculate_diff_abundance()</a></code>. You can choose between different statistical methods. For this example we will chose a moderated t-test.</p>
 <p>The type of missingness assigned to a comparison does not have any influence on the statistical test. However, by default (can be changed) comparisons with missingness <code>NA</code> are filtered out prior to p-value adjustment. This means that in addition to imputation, the user can use missingness cutoffs also in order to define which comparisons are too incomplete to be trustworthy even if significant.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">data_missing</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="reference/calculate_diff_abundance.html">calculate_diff_abundance</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="va">sample</span>,</span>
-<span>                           condition <span class="op">=</span> <span class="va">condition</span>,</span>
-<span>                           grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span>                           intensity_log2 <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,</span>
-<span>                           missingness <span class="op">=</span> <span class="va">missingness</span>,</span>
-<span>                           comparison <span class="op">=</span> <span class="va">comparison</span>,</span>
-<span>                           filter_NA_missingness <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                           method <span class="op">=</span> <span class="st">"moderated_t-test"</span>,</span>
-<span>                           retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">data_missing</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/calculate_diff_abundance.html">calculate_diff_abundance</a></span><span class="op">(</span></span>
+<span>    sample <span class="op">=</span> <span class="va">sample</span>,</span>
+<span>    condition <span class="op">=</span> <span class="va">condition</span>,</span>
+<span>    grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>    intensity_log2 <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,</span>
+<span>    missingness <span class="op">=</span> <span class="va">missingness</span>,</span>
+<span>    comparison <span class="op">=</span> <span class="va">comparison</span>,</span>
+<span>    filter_NA_missingness <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    method <span class="op">=</span> <span class="st">"moderated_t-test"</span>,</span>
+<span>    retain_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">protein</span>, <span class="va">change_peptide</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p>Next we can use a Volcano plot to visualize significantly changing peptides with the function <code><a href="reference/volcano_plot.html">volcano_plot()</a></code>. You can choose to create an interactive plot with the <code>interactive</code> argument. Please note that this is not recommended for large datasets.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="reference/volcano_plot.html">volcano_plot</a></span><span class="op">(</span>grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
-<span>                 log2FC <span class="op">=</span> <span class="va">diff</span>,</span>
-<span>                 significance <span class="op">=</span> <span class="va">pval</span>,</span>
-<span>                 method <span class="op">=</span> <span class="st">"target"</span>,</span>
-<span>                 target_column <span class="op">=</span> <span class="va">change_peptide</span>,</span>
-<span>                 target <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                 legend_label <span class="op">=</span> <span class="st">"Ground Truth"</span>,</span>
-<span>                 significance_cutoff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="st">"adj_pval"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/volcano_plot.html">volcano_plot</a></span><span class="op">(</span></span>
+<span>    grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
+<span>    log2FC <span class="op">=</span> <span class="va">diff</span>,</span>
+<span>    significance <span class="op">=</span> <span class="va">pval</span>,</span>
+<span>    method <span class="op">=</span> <span class="st">"target"</span>,</span>
+<span>    target_column <span class="op">=</span> <span class="va">change_peptide</span>,</span>
+<span>    target <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    legend_label <span class="op">=</span> <span class="st">"Ground Truth"</span>,</span>
+<span>    significance_cutoff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="st">"adj_pval"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-volcano-1.png" width="100%"></p>
 </div>
 </div>
@@ -333,7 +343,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>

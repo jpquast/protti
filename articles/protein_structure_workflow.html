@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1</span>
       </span>
     </div>
 
@@ -100,7 +100,7 @@
                         <h4 data-toc-skip class="author">Jan-Philipp
 Quast, Patrick Stalder</h4>
             
-            <h4 data-toc-skip class="date">2024-07-16</h4>
+            <h4 data-toc-skip class="date">2024-10-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/protein_structure_workflow.Rmd" class="external-link"><code>vignettes/protein_structure_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>protein_structure_workflow.Rmd</code></div>
@@ -333,12 +333,12 @@ combination of the <code>stringr</code> function
 <span><span class="co">#&gt; [2/6] Extract experimental conditions ... DONE (0.01s)</span></span>
 <span><span class="co">#&gt; [3/6] Extracting polymer information: </span></span>
 <span><span class="co">#&gt; -&gt; 1/6 UniProt IDs ... DONE (0.01s)</span></span>
-<span><span class="co">#&gt; -&gt; 2/6 UniProt alignment ... DONE (0.01s)</span></span>
-<span><span class="co">#&gt; -&gt; 3/6 Ligand binding sites ... DONE (0.02s)</span></span>
+<span><span class="co">#&gt; -&gt; 2/6 UniProt alignment ... DONE (0.02s)</span></span>
+<span><span class="co">#&gt; -&gt; 3/6 Ligand binding sites ... DONE (0.03s)</span></span>
 <span><span class="co">#&gt; -&gt; 4/6 Modified monomers ... DONE (0.01s)</span></span>
 <span><span class="co">#&gt; -&gt; 5/6 Secondary structure ... DONE (0.01s)</span></span>
 <span><span class="co">#&gt; -&gt; 6/6 Unmodeled residues ... DONE (0.01s)</span></span>
-<span><span class="co">#&gt; [4/6] Correct author sequence positions for some PDB IDs ... None to correct(0.01s)</span></span>
+<span><span class="co">#&gt; [4/6] Correct author sequence positions for some PDB IDs ... None to correct(0.02s)</span></span>
 <span><span class="co">#&gt; [5/6] Extract non-polymer information ... DONE (0s)</span></span>
 <span><span class="co">#&gt; [6/6] Combine information ... DONE (0.02s)</span></span></code></pre></div>
 <p>The result of <code><a href="../reference/fetch_pdb.html">fetch_pdb()</a></code> contains a multitude of
@@ -902,13 +902,13 @@ to this site. This observation is also in line with the fact that FBP is
 an inhibitor of ptsI (<a href="https://pubmed.ncbi.nlm.nih.gov/33357446/" class="external-link">Cappelletti
 2021</a>).</p>
 <div class="figure" style="text-align: center">
-<img src="figures/peptide_map_2hwg.png" alt="**ptsI (2HWG) with mapped significantly changing peptides.**" width="100%"><p class="caption">
+<img src="figures%2Fpeptide_map_2hwg.png" alt="**ptsI (2HWG) with mapped significantly changing peptides.**" width="100%"><p class="caption">
 <strong>ptsI (2HWG) with mapped significantly changing
 peptides.</strong>
 </p>
 </div>
 <div class="figure" style="text-align: center">
-<img src="figures/interaction_2hwg.png" alt="**ptsI (2HWG) binding interface of significantly chaging peptide.**" width="60%"><p class="caption">
+<img src="figures%2Finteraction_2hwg.png" alt="**ptsI (2HWG) binding interface of significantly chaging peptide.**" width="60%"><p class="caption">
 <strong>ptsI (2HWG) binding interface of significantly chaging
 peptide.</strong>
 </p>
@@ -924,7 +924,7 @@ compact size of the protein and the even distribution of significant
 peptides it is hard to draw any conclusions about potential structural
 effects of the treatment.</p>
 <div class="figure" style="text-align: center">
-<img src="figures/peptide_map_1zmr.png" alt="**pgk (1ZMR) with mapped significantly changing peptides.**" width="100%"><p class="caption">
+<img src="figures%2Fpeptide_map_1zmr.png" alt="**pgk (1ZMR) with mapped significantly changing peptides.**" width="100%"><p class="caption">
 <strong>pgk (1ZMR) with mapped significantly changing peptides.</strong>
 </p>
 </div>
@@ -1068,7 +1068,7 @@ indicated with a black arrow is now not highlighted anymore, indicating
 that this was likely a false positive hit and that other peptides in the
 same region do not exhibit a strong and significant response.</p>
 <div class="figure" style="text-align: center">
-<img src="figures/peptide_map_2hwg_score.png" alt="**ptsI (2HWG) with mapped amino acid scores.**" width="100%"><p class="caption">
+<img src="figures%2Fpeptide_map_2hwg_score.png" alt="**ptsI (2HWG) with mapped amino acid scores.**" width="100%"><p class="caption">
 <strong>ptsI (2HWG) with mapped amino acid scores.</strong>
 </p>
 </div>
@@ -1078,7 +1078,7 @@ case, the score helped to refine the binding site of the compound since
 previously almost the whole protein was covered with significantly
 changing peptides.</p>
 <div class="figure" style="text-align: center">
-<img src="figures/peptide_map_1zmr_score.png" alt="**pgk (1ZMR) with mapped amino acid scores.**" width="100%"><p class="caption">
+<img src="figures%2Fpeptide_map_1zmr_score.png" alt="**pgk (1ZMR) with mapped amino acid scores.**" width="100%"><p class="caption">
 <strong>pgk (1ZMR) with mapped amino acid scores.</strong>
 </p>
 </div>
@@ -1101,7 +1101,7 @@ changing peptides.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>

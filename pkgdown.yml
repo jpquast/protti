@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   data_analysis_dose_response_workflow: data_analysis_dose_response_workflow.html
@@ -7,4 +7,4 @@ articles:
   input_preparation_workflow: input_preparation_workflow.html
   protein_structure_workflow: protein_structure_workflow.html
   quality_control_workflow: quality_control_workflow.html
-last_built: 2024-07-16T10:08Z
+last_built: 2024-10-22T07:07Z
