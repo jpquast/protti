@@ -1,9 +1,7 @@
 ## Submission 
 
 * We specifically addressed and fixed the issue raised by Prof. Brian Ripley:
-  * The `analyse_functional_network()` function did not fail gracefully.
-  * We implemented a `try_catch()` that specifically rescues the cases in which the `STRINGdb` package does not fail gracefully. This fixes the issue.
-* Additionally we added new features and fixed bugs.
+  * We updated `try_query()` to also handle request unrelated errors successfully. 
 
 ## Test environments
 * macOS-latest (on GitHub actions), R 4.4.1
