@@ -51,5 +51,7 @@ anova_protti <- function(data, grouping, condition, mean_ratio, sd, n) {
     dplyr::distinct({{ grouping }}, .data$ms_group, .data$ms_error, .data$f, .data$pval) %>%
     dplyr::ungroup()
 
+
+  test
   result
 }
