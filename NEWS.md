@@ -1,5 +1,9 @@
 # protti 0.9.1.9000
 
+## Bug fixes
+
+* Fixed issue #193. This makes sure that information in retained columns can be propagated to newly created combinations, which were not present in the original data.
+
 ## Additional Changes
 
 * `assign_peptide_type` now takes the `start` argument, containing the start position of a peptide. If a protein does not have any peptide starting at position `1` and there is a peptide starting at position `2`, this peptide will be considered "tryptic" at the N-terminus. This is because the initial Methionine is likely missing due to processing for every copy of the protein and therefore position `2` is the true N-terminus.
