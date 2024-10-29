@@ -540,8 +540,10 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
         }
       } +
       ggplot2::scale_fill_manual(values = c(Deenriched = barplot_fill_colour[1], Enriched = barplot_fill_colour[2])) +
-      ggplot2::scale_y_continuous(labels = scales::number_format(accuracy = 1),
-                                  expand = expansion(mult=c(0, 0.05))) +
+      ggplot2::scale_y_continuous(
+        labels = scales::number_format(accuracy = 1),
+        expand = expansion(mult = c(0, 0.05))
+      ) +
       ggplot2::coord_flip() +
       {
         if (!missing(group)) {
@@ -675,8 +677,8 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
           )
         }
       } +
-      ggplot2::scale_x_discrete(expand = expansion(mult=c(0, 0))) +
-      ggplot2::scale_y_discrete(expand = expansion(mult=c(0, 0))) +
+      ggplot2::scale_x_discrete(expand = expansion(mult = c(0, 0))) +
+      ggplot2::scale_y_discrete(expand = expansion(mult = c(0, 0))) +
       ggplot2::scale_fill_gradientn(colours = colours) +
       ggplot2::labs(
         title = plot_title,
