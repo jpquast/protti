@@ -233,7 +233,7 @@ from the conditions and assigned their missingness. The created comparisons are:
       dplyr::ungroup()
 
     # Annotate sample related retained columns. These have a unique value for every sample.
-    # Above we annotated any columns that had a consistent for every group, here the inconsistent ones are annotated
+    # Above we annotated any columns that had a consistent value for every group, here the inconsistent ones are annotated
 
     sample_annotations <- join_result %>%
       dplyr::select(!!enquo(retain_columns), {{ intensity }}, {{ sample }}) %>%
@@ -246,7 +246,7 @@ from the conditions and assigned their missingness. The created comparisons are:
       dplyr::distinct() %>%
       dplyr::group_by({{ sample }}) %>%
       # drop the columns that contain multiple values per group
-      # grouping doesn't work with selection so first we need to find the columns with the non-distinct values with the summary bellow
+      # grouping doesn't work with selection so first we need to find the columns with the non-distinct values with the summary below
       dplyr::summarise(dplyr::across(dplyr::everything(), ~ if (dplyr::n_distinct(.x) == 1) dplyr::first(.x) else NA), .groups = "drop") %>%
       dplyr::select(-dplyr::where(~ any(is.na(.x)))) %>%
       dplyr::ungroup() %>%
