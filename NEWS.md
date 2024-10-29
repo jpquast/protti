@@ -1,5 +1,9 @@
 # protti 0.9.1.9000
 
+## New features 
+
+* `calculate_go_enrichment()` received the argument `label_size` that allows the user to specifiy the size of the labels in the plot.
+
 ## Bug fixes
 
 * Fixed issue #193. This makes sure that information in retained columns can be propagated to newly created combinations, which were not present in the original data.
