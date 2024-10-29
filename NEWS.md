@@ -7,6 +7,7 @@
 ## Bug fixes
 
 * Fixed issue #193. This makes sure that information in retained columns can be propagated to newly created combinations, which were not present in the original data.
+* `calculate_go_enrichment()` can now correctly handle groups that are of type factor.
 
 ## Additional Changes
 
