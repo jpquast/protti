@@ -202,7 +202,8 @@ data_filtered_uniprot <- data_filtered_proteotypic %>%
   assign_peptide_type(
     aa_before = aa_before,
     last_aa = last_aa,
-    aa_after = aa_after
+    aa_after = aa_after,
+    protein_id = pg_protein_accessions
   ) %>%
   calculate_sequence_coverage(
     protein_sequence = sequence,
@@ -231,7 +232,7 @@ Before the statistical hypothesis test we have to define the types of missing va
 
 After assigning the types of data missingness we use the function `calculate_diff_abundance()`. By selecting `method = t-test` the function will perform a Welch's t-test. There are also options included to perform a moderated t-test based on the R package `limma` or to detect differential abundances based on the algorithm implemented in the R package `proDA`. The algorithm used for `proDA` is based on a probabilistic dropout model which facilitates hypothesis testing (using a moderated t-test) while eliminating the need for imputation. 
 
-It has been shown that generally moderated t-tests perform much better also in proteomics data, as compared to t-tests ([Kammers et al. 2015](https://www.sciencedirect.com/science/article/pii/S2212968515000069)). Therefore, we will use a moderated t-test in this example.
+It has been shown that generally moderated t-tests perform much better also in proteomics data, as compared to t-tests ([Kammers et al. 2015](https://doi.org/10.1016/j.euprot.2015.02.002)). Therefore, we will use a moderated t-test in this example.
 
 Please note that in this example we are not imputing missing values. You can, however, do so by using the function `impute()`. This function uses the output of `assign_missingness()` as its input. You can use two different imputation methods: 
 
