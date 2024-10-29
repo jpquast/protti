@@ -106,7 +106,8 @@ data_uniprot <- fetch_uniprot(
   columns = c(
     "ft_binding",
     "cc_cofactor",
-    "cc_catalytic_activity"
+    "cc_catalytic_activity",
+    "keyword"
   )
 )
 
