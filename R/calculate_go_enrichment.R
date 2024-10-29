@@ -79,7 +79,7 @@ go_enrichment <- function(...) {
 #' @param label a logical argument indicating whether labels should be added to the plot.
 #' Default is TRUE.
 #' @param label_size a numeric argument that specifies the text size of the labels with the unit "pt".
-#' The default is 5.
+#' The default is 7.
 #' @param enrichment_type a character argument that is either "all", "enriched" or "deenriched". This
 #' determines if the enrichment analysis should be performed in order to check for both enrichemnt and
 #' deenrichemnt or only one of the two. This affects the statistics performed and therefore also the displayed
@@ -225,7 +225,7 @@ calculate_go_enrichment <- function(data,
                                     heatmap_fill_colour = protti::mako_colours,
                                     heatmap_fill_colour_rev = TRUE,
                                     label = TRUE,
-                                    label_size = 5,
+                                    label_size = 7,
                                     enrichment_type = "all",
                                     replace_long_name = TRUE,
                                     label_move_frac = 0.2,
@@ -533,14 +533,15 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
                 "%)"
               ),
               y = .data$neg_log_sig - 0.1,
-              hjust = .data$hjust,
-              size = label_size / .pt
-            )
+              hjust = .data$hjust
+            ),
+            size = label_size / .pt
           )
         }
       } +
       ggplot2::scale_fill_manual(values = c(Deenriched = barplot_fill_colour[1], Enriched = barplot_fill_colour[2])) +
-      ggplot2::scale_y_continuous(labels = scales::number_format(accuracy = 1)) +
+      ggplot2::scale_y_continuous(labels = scales::number_format(accuracy = 1),
+                                  expand = expansion(mult=c(0, 0.05))) +
       ggplot2::coord_flip() +
       {
         if (!missing(group)) {
@@ -674,6 +675,8 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
           )
         }
       } +
+      ggplot2::scale_x_discrete(expand = expansion(mult=c(0, 0))) +
+      ggplot2::scale_y_discrete(expand = expansion(mult=c(0, 0))) +
       ggplot2::scale_fill_gradientn(colours = colours) +
       ggplot2::labs(
         title = plot_title,
