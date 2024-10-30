@@ -486,7 +486,14 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
 
   # move label if bar is less than 20% (default) of largest bar
   plot_input <- plot_input %>%
-    dplyr::mutate(hjust = ifelse((.data$neg_log_sig / max(.data$neg_log_sig)) < label_move_frac, -0.15, 1.05))
+    dplyr::mutate(hjust = ifelse((.data$neg_log_sig / max(.data$neg_log_sig)) < label_move_frac, -0.15, 1.05)) %>%
+    dplyr::mutate(label = ifelse(!is.na(.data$n_significant_proteins_in_process), paste0(
+      .data$n_significant_proteins_in_process, "/",
+      .data$n_detected_proteins_in_process, " (",
+      round(.data$n_significant_proteins_in_process / .data$n_detected_proteins_in_process * 100, digits = 1), "%)"
+    ),
+    NA
+    ))
 
   if (plot_style == "barplot") {
     # Check if ggforce package is available. If not prompt user to install it.
@@ -524,14 +531,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
           geom_text(
             data = plot_input,
             aes(
-              label = paste0(
-                .data$n_significant_proteins_in_process,
-                "/",
-                .data$n_detected_proteins_in_process,
-                "(",
-                round(.data$n_significant_proteins_in_process / .data$n_detected_proteins_in_process * 100, digits = 1),
-                "%)"
-              ),
+              label = label,
               y = .data$neg_log_sig - 0.1,
               hjust = .data$hjust
             ),
@@ -644,7 +644,15 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
 
     # Add text colours to data
     plot_input_heatmap <- plot_input_heatmap %>%
-      dplyr::mutate(text_col = ifelse(hcl[, "l"] > 50, "#000000", "#FFFFFF"))
+      dplyr::mutate(text_col = ifelse(hcl[, "l"] > 50, "#000000", "#FFFFFF")) %>%
+      # Add label names
+      dplyr::mutate(label = ifelse(!is.na(.data$n_significant_proteins_in_process), paste0(
+        .data$n_significant_proteins_in_process, "/",
+        .data$n_detected_proteins_in_process, " (",
+        round(.data$n_significant_proteins_in_process / .data$n_detected_proteins_in_process * 100), "%)"
+      ),
+      NA
+      ))
 
     # Heatmap Plot
     enrichment_plot <-
@@ -664,13 +672,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
             aes(
               y = .data$term,
               x = .data$grouping,
-              label = ifelse(!is.na(.data$n_significant_proteins_in_process), paste0(
-                .data$n_significant_proteins_in_process, "/",
-                .data$n_detected_proteins_in_process, " (",
-                round(.data$n_significant_proteins_in_process / .data$n_detected_proteins_in_process * 100), "%)"
-              ),
-              NA
-              )
+              label = label
             ),
             colour = plot_input_heatmap$text_col,
             size = label_size / .pt
