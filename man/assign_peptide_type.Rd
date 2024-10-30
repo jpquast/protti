@@ -8,7 +8,9 @@ assign_peptide_type(
   data,
   aa_before = aa_before,
   last_aa = last_aa,
-  aa_after = aa_after
+  aa_after = aa_after,
+  protein_id = protein_id,
+  start = start
 )
 }
 \arguments{
@@ -23,6 +25,13 @@ acid as one letter code.}
 
 \item{aa_after}{a character column in the \code{data} data frame that contains the following amino
 acid as one letter code.}
+
+\item{protein_id}{a character column in the \code{data} data frame that contains the protein
+accession numbers.}
+
+\item{start}{a numeric column in the \code{data} data frame that contains the start position of
+each peptide within the corresponding protein. This is used to check if the protein is consistently
+missing the initial Methionine, making peptides starting at position 2 "tryptic" on that site.}
 }
 \value{
 A data frame that contains the input data and an additional column with the peptide
@@ -34,14 +43,18 @@ Peptides with preceeding and C-terminal lysine or arginine are considered fully-
 peptide is located at the N- or C-terminus of a protein and fulfills the criterium to be
 fully-tryptic otherwise, it is also considered as fully-tryptic. Peptides that only fulfill the
 criterium on one terminus are semi-tryptic peptides. Lastly, peptides that are not fulfilling
-the criteria for both termini are non-tryptic peptides.
+the criteria for both termini are non-tryptic peptides. In addition, peptides that miss the initial
+Methionine of a protein are considered "tryptic" at that site if there is no other peptide
+starting at position 1 for that protein.
 }
 \examples{
 data <- data.frame(
-  aa_before = c("K", "S", "T"),
-  last_aa = c("R", "K", "Y"),
-  aa_after = c("T", "R", "T")
+  aa_before = c("K", "M", "", "M", "S", "M", "-"),
+  last_aa = c("R", "K", "R", "R", "Y", "K", "K"),
+  aa_after = c("T", "R", "T", "R", "T", "R", "T"),
+  protein_id = c("P1", "P1", "P3", "P3", "P2", "P2", "P2"),
+  start = c(38, 2, 1, 2, 10, 2, 1)
 )
 
-assign_peptide_type(data, aa_before, last_aa, aa_after)
+assign_peptide_type(data, aa_before, last_aa, aa_after, protein_id, start)
 }

@@ -33,7 +33,7 @@
 #' @format A data frame containing peptide level data from a Spectronaut report.
 #' @source Piazza, I., Beaton, N., Bruderer, R. et al. A machine learning-based chemoproteomic
 #' approach to identify drug targets and binding sites in complex proteomes. Nat Commun 11, 4200
-#' (2020). https://doi.org/10.1038/s41467-020-18071-x
+#' (2020). \doi{10.1038/s41467-020-18071-x}
 "rapamycin_10uM"
 
 #' Rapamycin dose response example data
@@ -47,13 +47,13 @@
 #' @format A data frame containing peptide level data from a Spectronaut report.
 #' @source Piazza, I., Beaton, N., Bruderer, R. et al. A machine learning-based chemoproteomic
 #' approach to identify drug targets and binding sites in complex proteomes. Nat Commun 11, 4200
-#' (2020). https://doi.org/10.1038/s41467-020-18071-x
+#' (2020). \doi{10.1038/s41467-020-18071-x}
 "rapamycin_dose_response"
 
 #' Structural analysis example data
 #'
 #' Example data used for the vignette about structural analysis. The data was obtained from
-#' \href{https://www.sciencedirect.com/science/article/pii/S0092867420316913}{Cappelletti 2021}
+#' Cappelletti et al. 2021 (\doi{10.1016/j.cell.2020.12.021})
 #' and corresponds to two separate experiments. Both experiments were limited proteolyis coupled to
 #' mass spectrometry (LiP-MS) experiments conducted on purified proteins. The first protein is
 #' phosphoglycerate kinase 1 (pgk) and it was treated with 25mM 3-phosphoglyceric acid (3PG).
@@ -69,7 +69,7 @@
 #' @source Cappelletti V, Hauser T, Piazza I, Pepelnjak M, Malinovska L, Fuhrer T, Li Y, Dörig C,
 #' Boersema P, Gillet L, Grossbach J, Dugourd A, Saez-Rodriguez J, Beyer A, Zamboni N, Caflisch A,
 #' de Souza N, Picotti P. Dynamic 3D proteomes reveal protein functional alterations at high
-#' resolution in situ. Cell. 2021 Jan 21;184(2):545-559.e22. doi: 10.1016/j.cell.2020.12.021.
+#' resolution in situ. Cell. 2021 Jan 21;184(2):545-559.e22. \doi{10.1016/j.cell.2020.12.021}.
 #' Epub 2020 Dec 23. PMID: 33357446; PMCID: PMC7836100.
 "ptsi_pgk"
 
@@ -78,7 +78,7 @@
 #' A list of all metals and metalloids in the periodic table.
 #'
 #' @format A data.frame containing the columns \code{atomic_number}, \code{symbol}, \code{name},
-#' \code{type}, \code{chebi_id}.
+#' \code{type}, \code{chebi_id}, \code{chebi_ion_id}.
 #' @source https://en.wikipedia.org/wiki/Metal and https://en.wikipedia.org/wiki/Metalloid
 "metal_list"
 
@@ -86,7 +86,7 @@
 #'
 #' A list that contains all ChEBI IDs that appear in UniProt and that contain either a metal atom
 #' in their formula or that do not have a formula but the ChEBI term is related to metals.
-#' This was last updated on the 19/02/24.
+#' This was last updated on the 08/08/24.
 #'
 #' @format A data.frame containing information retrieved from ChEBI using `fetch_chebi(stars = c(2, 3))`,
 #' filtered using symbols in the `metal_list` and manual annotation of metal related ChEBI IDs that do not

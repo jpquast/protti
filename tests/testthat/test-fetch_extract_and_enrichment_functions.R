@@ -7,7 +7,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_warning(uniprot <- fetch_uniprot(unis))
     expect_is(uniprot, "data.frame")
     expect_equal(nrow(uniprot), 9)
-    expect_equal(ncol(uniprot), 17)
+    expect_equal(ncol(uniprot), 18)
   })
 
   proteome <- fetch_uniprot_proteome(organism_id = "83333", columns = c("accession", "go_f", "xref_string"))
@@ -21,7 +21,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     unis <- c("iRT", "P25437", "P30870", "P0A6P9")
     expect_warning(mobidb <- fetch_mobidb(unis))
     expect_is(mobidb, "data.frame")
-    expect_equal(nrow(mobidb), 259)
+    expect_equal(nrow(mobidb), 221)
     expect_equal(ncol(mobidb), 6)
   })
 
@@ -481,7 +481,8 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       columns = c(
         "ft_binding",
         "cc_cofactor",
-        "cc_catalytic_activity"
+        "cc_catalytic_activity",
+        "keyword"
       )
     )
 
@@ -495,7 +496,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     )
 
     expect_is(metal_info, "data.frame")
-    expect_equal(ncol(metal_info), 20)
+    expect_equal(ncol(metal_info), 21)
     expect_equal(nrow(metal_info), 35)
   })
 

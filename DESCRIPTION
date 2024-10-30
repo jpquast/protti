@@ -1,6 +1,6 @@
 Package: protti
 Title: Bottom-Up Proteomics and LiP-MS Quality Control and Data Analysis Tools
-Version: 0.8.0.9000
+Version: 0.9.1.9000
 Authors@R: 
     c(person(given = "Jan-Philipp",
            family = "Quast",
@@ -43,7 +43,7 @@ Imports:
     methods,
     R.utils,
     stats
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Suggests: 
     testthat,
     covr,
@@ -67,7 +67,9 @@ Suggests:
     iq,
     scales,
     farver,
-    ggforce
+    ggforce,
+    xml2,
+    jsonlite
 Depends: 
     R (>= 4.0)
 URL: https://github.com/jpquast/protti, https://jpquast.github.io/protti/

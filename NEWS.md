@@ -1,4 +1,22 @@
-# protti 0.8.0.9000
+# protti 0.9.1.9000
+
+## Bug fixes
+
+* Fixed issue #193. This makes sure that information in retained columns can be propagated to newly created combinations, which were not present in the original data.
+
+## Additional Changes
+
+* `assign_peptide_type` now takes the `start` argument, containing the start position of a peptide. If a protein does not have any peptide starting at position `1` and there is a peptide starting at position `2`, this peptide will be considered "tryptic" at the N-terminus. This is because the initial Methionine is likely missing due to processing for every copy of the protein and therefore position `2` is the true N-terminus.
+* `extract_metal_binders()` now uses keywords from UniProt as well. In addition, only "enables" GO terms are considered now.
+* `fetch_uniprot()` received another default column "keyword".
+
+# protti 0.9.1
+
+## Bug fixes
+
+* `try_query()` now correctly handles errors that don't return a response object. We also handle gzip decompression problems better since some databases compressed responses were not handled correctly. 
+
+# protti 0.9.0
 
 ## New features 
 
@@ -19,6 +37,8 @@
 
 * `fetch_uniprot()` and `fetch_uniprot_proteome()` are more resistant to database connection issues. They also give more informative messages as to why the data could not be retrieved. Fixes issue #252.
 * `qc_csv()` now properly works if the column supplied to the `condition` argument is a factor. Fixes issue #254.
+* The `analyse_functional_network()` function now includes enhanced error handling to ensure it fails gracefully in case of any issues.  Fixes issue #259.
+* The default `version` parameter for `analyse_functional_network()` has been updated to 12.0, aligning with the latest STRINGdb version. Fixes issue #244.
 
 # protti 0.8.0
 
