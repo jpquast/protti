@@ -9,7 +9,7 @@ assign_peptide_type(
   aa_before = aa_before,
   last_aa = last_aa,
   aa_after = aa_after,
-  protein_id = protein_id,
+  protein_id = NULL,
   start = start
 )
 }
