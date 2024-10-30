@@ -63,8 +63,8 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("fetch_pdb works", {
     pdb <- fetch_pdb(pdb_ids)
     expect_is(pdb, "data.frame")
-    expect_equal(nrow(pdb), 36)
-    expect_equal(ncol(pdb), 46)
+    expect_equal(nrow(pdb), 37)
+    expect_equal(ncol(pdb), 47)
   })
 
   test_that("fetch_pdb_structure works", {
