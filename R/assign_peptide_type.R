@@ -64,7 +64,7 @@ assign_peptide_type <- function(data,
                                 aa_before = aa_before,
                                 last_aa = last_aa,
                                 aa_after = aa_after,
-                                protein_id = protein_id,
+                                protein_id = NULL,
                                 start = start) {
   # Check if there's any peptide starting at position 1 for each protein
   start_summary <- data %>%
@@ -86,23 +86,13 @@ assign_peptide_type <- function(data,
       TRUE,
       FALSE
     )) %>%
+    # Reassign peptides to be N_term_tryp if the protein starts on position 2
+    dplyr::mutate(N_term_tryp = ifelse({{ start }} == 2 & !.data$has_start_1, TRUE, .data$N_term_tryp)) %>%
     # Assign peptide type based on N-term and C-term trypticity
     dplyr::mutate(pep_type = dplyr::case_when(
       .data$N_term_tryp & .data$C_term_tryp ~ "fully-tryptic",
       .data$N_term_tryp | .data$C_term_tryp ~ "semi-tryptic",
       TRUE ~ "non-tryptic"
-    )) %>%
-    # Reassign semi-tryptic peptides at position 2 to fully-tryptic if no start == 1
-    dplyr::mutate(pep_type = dplyr::if_else(
-      .data$pep_type == "semi-tryptic" & {{ start }} == 2 & !.data$has_start_1 & .data$C_term_tryp,
-      "fully-tryptic",
-      .data$pep_type
-    )) %>%
-    # Reassign non-tryptic peptides at position 2 to semi-tryptic if no start == 1
-    dplyr::mutate(pep_type = dplyr::if_else(
-      .data$pep_type == "non-tryptic" & {{ start }} == 2 & !.data$has_start_1 & !.data$C_term_tryp,
-      "fully-tryptic",
-      .data$pep_type
     )) %>%
     # Drop unnecessary columns
     dplyr::select(-c("N_term_tryp", "C_term_tryp", "has_start_1"))
