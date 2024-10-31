@@ -53,6 +53,10 @@ peptide only maps partially, then only the part of the sequence that maps on the
 returned.
 \item fit_type: The fit type is either "partial" or "fully" and it indicates if the complete
 peptide or only part of it was found in the structure.
+\item start_adjusted: The adjusted start position of the peptide if the peptide was only partially
+covered by the structure. If the peptide is fully covered it is just the provided start position.
+\item end_adjusted: The adjusted end position of the peptide if the peptide was only partially
+covered by the structure. If the peptide is fully covered it is just the provided end position.
 \item label_seq_id_start: Contains the first residue position of the peptide in the structure
 following the standardised convention for mmCIF files.
 \item label_seq_id_end: Contains the last residue position of the peptide in the structure
@@ -73,6 +77,8 @@ not need to be numeric and is therefore of type character.
 current structure.
 \item n_peptides_in_structure: The number of peptides from one protein that were found within
 the current structure.
+\item percentage_covered_peptides: The percentage of all provided peptides that were at least
+partially found in the structure.
 }
 }
 \description{

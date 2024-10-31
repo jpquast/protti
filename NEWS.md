@@ -2,11 +2,16 @@
 
 ## New features 
 
+* The `fetch_pdb()` function now reads additional data about non-polymer ligands and the donor ligand positions (`nonpolymer_donor_label_seq_id`).
+* The `find_peptide_in_structure()` function now has additional outputs:
+  * `start_adjusted` and `end_adjusted`: Are the adjusted start and end positions of a peptide if it is only partially covered by the structure.
+  * `percentage_covered_peptides`: Is the percentage of all provided peptides that are at least partially covered by the structure.
 * `calculate_go_enrichment()` received the argument `label_size` that allows the user to specifiy the size of the labels in the plot.
 
 ## Bug fixes
 
 * Fixed issue #193. This makes sure that information in retained columns can be propagated to newly created combinations, which were not present in the original data.
+* Fixed issue #251. Sodium ions (Na) are not read as `NA` anymore, when using the `fetch_pdb()` function.
 * `calculate_go_enrichment()` can now correctly handle groups that are of type factor.
 
 ## Additional Changes
