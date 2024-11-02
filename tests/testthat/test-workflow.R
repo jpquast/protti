@@ -328,7 +328,7 @@ test_that("calculate_diff_abundance works", {
     expect_equal(round(min(diff_mean_sd$adj_pval, na.rm = TRUE), digits = 9), 0.00758761)
     expect_equal(round(min(diff_proDA$adj_pval, na.rm = TRUE), digits = 5), 0.00125)
 
-    if (packageVersion("limma") < "3.61.8") {
+    if (packageVersion("limma") >= "3.61.8") {
       expect_equal(round(min(diff_moderated$adj_pval, na.rm = TRUE), digits = 9), 3.87e-05)
     } else {
       expect_equal(round(min(diff_moderated$adj_pval, na.rm = TRUE), digits = 9), 5.76e-05)
