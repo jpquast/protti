@@ -78,7 +78,7 @@ qc_median_intensities <- function(data,
 
   plot <- table %>%
     ggplot2::ggplot(ggplot2::aes({{ sample }}, .data$median_intensity, group = 1)) +
-    ggplot2::geom_line(size = 1) +
+    ggplot2::geom_line(linewidth = 1) +
     ggplot2::labs(title = "Medians of run intensities", x = "", y = "Intensity") +
     ggplot2::theme_bw() +
     ggplot2::theme(
