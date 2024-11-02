@@ -162,6 +162,7 @@ diff_abundance <-
 #' @importFrom magrittr %>%
 #' @importFrom tibble column_to_rownames rownames_to_column tibble as_tibble
 #' @importFrom stringr str_replace_all str_extract
+#' @importFrom utils packageVersion
 #' @export
 #'
 #' @examples
@@ -365,7 +366,7 @@ Please provide a valid reference condition.", prefix = "\n", initial = ""))
       }
     }
 
-    if (method == "t-test_mean_sd") {
+    if (method == "t-test_mean_sd"){
       if (ref_condition == "all") {
         # creating all pairwise comparisons
         all_conditions <- unique(dplyr::pull(data, {{ condition }}))
@@ -559,7 +560,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
       message("DONE", appendLF = TRUE)
       message("[6/7] Compute empirical Bayes statistics ... ", appendLF = FALSE)
 
-      if (packageVersion("limma") < "3.61.8") {
+      if (utils::packageVersion("limma") < "3.61.8") {
         moderated_t_test_fit3 <- limma::eBayes(moderated_t_test_fit2)
       } else {
         moderated_t_test_fit3 <- limma::eBayes(moderated_t_test_fit2, legacy = limma_legacy_estimation)
@@ -616,7 +617,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
 
       message("DONE", appendLF = TRUE)
       # Check the limma version
-      if (packageVersion("limma") < "3.61.8" & !missing(limma_legacy_estimation)) {
+      if (utils::packageVersion("limma") < "3.61.8" & !missing(limma_legacy_estimation)) {
         warning("You provided the 'limma_legacy_estimation' argument, but your limma version does not support it. Update to a version higher than 3.61.8.")
       }
 
