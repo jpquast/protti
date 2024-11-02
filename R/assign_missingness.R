@@ -128,7 +128,7 @@ from the conditions and assigned their missingness. The created comparisons are:
   # create dataframe that contains all combinations to be tested
   all_combinations <- all_combinations %>%
     tidyr::pivot_longer(cols = c("V1", "V2"), names_to = "name", values_to = rlang::as_name(rlang::enquo(condition))) %>%
-    dplyr::select(-.data$name) %>%
+    dplyr::select(-"name") %>%
     dplyr::group_by({{ condition }}) %>%
     dplyr::mutate(comparison = list(.data$combinations)) %>%
     dplyr::distinct(.data$comparison, {{ condition }})
