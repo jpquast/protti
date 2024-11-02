@@ -4,7 +4,10 @@ on:
   push:
     branches: [main, master]
   pull_request:
-    branches: [main, master]
+  workflow_run:
+    workflows: ["Style"]
+    types:
+      - completed
 
 name: R-CMD-check.yaml
 
