@@ -559,7 +559,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
       message("DONE", appendLF = TRUE)
       message("[6/7] Compute empirical Bayes statistics ... ", appendLF = FALSE)
 
-      if (packageVersion("limma") < "3.61.8"){
+      if (packageVersion("limma") < "3.61.8") {
         moderated_t_test_fit3 <- limma::eBayes(moderated_t_test_fit2)
       } else {
         moderated_t_test_fit3 <- limma::eBayes(moderated_t_test_fit2, legacy = limma_legacy_estimation)
