@@ -16,6 +16,7 @@
 
 ## Additional Changes
 
+* *IMPORTANT!* There has been a change to the hyperparameter estimation of the limma package (3.61.8) in the `eBayes()` function. This leads to a change of results when `method = "moderated_t-test"` is used in the `calculate_diff_abundance()` function. Therefore, we introduced the new argument `limma_legacy_estimation` that allows you to go back to the old method. The default behaviour is the new and improved estimation of parameters.
 * `assign_peptide_type` now takes the `start` argument, containing the start position of a peptide. If a protein does not have any peptide starting at position `1` and there is a peptide starting at position `2`, this peptide will be considered "tryptic" at the N-terminus. This is because the initial Methionine is likely missing due to processing for every copy of the protein and therefore position `2` is the true N-terminus.
 * `extract_metal_binders()` now uses keywords from UniProt as well. In addition, only "enables" GO terms are considered now.
 * `fetch_uniprot()` received another default column "keyword".

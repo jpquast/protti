@@ -19,6 +19,7 @@ calculate_diff_abundance(
   filter_NA_missingness = TRUE,
   method = c("moderated_t-test", "t-test", "t-test_mean_sd", "proDA"),
   p_adj_method = "BH",
+  limma_legacy_estimation = NULL,
   retain_columns = NULL
 )
 }
@@ -89,6 +90,12 @@ was performed. Default is \code{method = "moderated_t-test"}.}
 \item{p_adj_method}{a character value, specifies the p-value correction method. Possible
 methods are c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). Default
 method is \code{"BH"}.}
+
+\item{limma_legacy_estimation}{a logical value, specifying if the new or old hyperparameter
+estimation of the limma package should be used. See the \code{legacy} argument of \code{?limma:eBayes}
+for more information. Our default is the same as for the \code{limma} package, which introduces
+a changed and more robust estimation of hyperparameters. This may cause changes to the
+results when compared to before August 2024 (limma 3.61.8).}
 
 \item{retain_columns}{a vector indicating if certain columns should be retained from the input
 data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
