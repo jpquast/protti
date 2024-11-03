@@ -75,7 +75,6 @@ jobs:
           fi
 
       - name: Comment on PR
-        if: github.event_name == 'pull_request'  # Only run this if it's a PR
         run: |
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
