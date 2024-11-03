@@ -4,10 +4,6 @@ on:
   push:
     branches: [main, master]
   pull_request:
-  workflow_run:
-    workflows: ["Style"]
-    types:
-      - completed
 
 name: R-CMD-check.yaml
 
@@ -15,6 +11,7 @@ permissions: read-all
 
 jobs:
   R-CMD-check:
+    if: startsWith(github.event.comment.body, 'Style workflow completed. Please trigger the check workflow.')
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})

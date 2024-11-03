@@ -73,3 +73,12 @@ jobs:
           else
             echo "No changes to commit."
           fi
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'  # Only run this if it's a PR
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{"body":"Style workflow completed. Please trigger the check workflow."}' \
+            https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments

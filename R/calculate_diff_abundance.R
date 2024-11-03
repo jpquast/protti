@@ -366,7 +366,7 @@ Please provide a valid reference condition.", prefix = "\n", initial = ""))
       }
     }
 
-    if (method == "t-test_mean_sd") {
+    if (method == "t-test_mean_sd"){
       if (ref_condition == "all") {
         # creating all pairwise comparisons
         all_conditions <- unique(dplyr::pull(data, {{ condition }}))
