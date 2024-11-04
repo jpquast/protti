@@ -135,8 +135,8 @@ impute_randomforest <- function(
     result <- data_imputed %>%
       dplyr::left_join(
         data %>%
-          dplyr::select(retain_columns, !!sample_sym),
-        by = as.character(sample_sym)
+          dplyr::select(all_of(retain_columns), !!sample_sym),
+        by = c(as.character(sample_sym), as.character(grouping_sym))
       )
   } else {
     result <- data_imputed
