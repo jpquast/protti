@@ -104,7 +104,10 @@ impute_randomforest <- function(
     dplyr::select(-!!sample_sym) # Exclude the sample column for imputation
 
   # Convert to numeric and suppress warnings for coercion
-  data_wide <- suppressWarnings(data.frame(lapply(data_wide, function(x) as.numeric(as.character(x)))))
+  data_wide <- suppressWarnings(data.frame(
+    lapply(data_wide, function(x) as.numeric(as.character(x))),
+    check.names = FALSE
+  ))
 
   # Perform the random forest imputation
   data_imputed_rf <- missForest::missForest(data_wide, ...)
@@ -117,7 +120,8 @@ impute_randomforest <- function(
     tidyr::pivot_wider(
       id_cols = !!sample_sym,
       names_from = !!grouping_sym,
-      values_from = !!intensity_sym
+      values_from = !!intensity_sym,
+      names_repair = "minimal"
     ) %>%
     dplyr::pull(!!sample_sym)
 
@@ -132,10 +136,13 @@ impute_randomforest <- function(
 
   # Join the retained columns if specified
   if (!is.null(retain_columns)) {
+    data_to_join <- data %>%
+      dplyr::select(all_of(retain_columns), !!grouping_sym, !!sample_sym, -!!intensity_sym) %>%
+      dplyr::distinct()
+
     result <- data_imputed %>%
       dplyr::left_join(
-        data %>%
-          dplyr::select(all_of(retain_columns), !!sample_sym),
+        data_to_join,
         by = c(as.character(sample_sym), as.character(grouping_sym))
       )
   } else {
