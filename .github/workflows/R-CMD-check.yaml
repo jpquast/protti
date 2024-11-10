@@ -4,10 +4,10 @@ on:
   push:
     branches: [main, master]
   pull_request:
-    branches:
-      - '*'
 
-name: R-CMD-check
+name: R-CMD-check.yaml
+
+permissions: read-all
 
 jobs:
   R-CMD-check:
@@ -32,7 +32,7 @@ jobs:
       BUILD_VIGNETTE: true
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -44,15 +44,10 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages:
-              any::rcmdcheck
+          extra-packages: any::rcmdcheck
           needs: check
-
-      #  run: |
-     # - name: Install remotes and lme4 package
-       #   Rscript -e 'install.packages("remotes", lib=Sys.getenv("R_LIB_FOR_PAK"))'
-        #  Rscript -e 'remotes::install_cran("lme4", dependencies = TRUE, upgrade = "always")'
 
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
+          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'

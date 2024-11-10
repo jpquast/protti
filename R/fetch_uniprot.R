@@ -53,7 +53,8 @@ fetch_uniprot <-
              "ft_binding",
              "cc_cofactor",
              "cc_catalytic_activity",
-             "xref_pdb"
+             "xref_pdb",
+             "keyword"
            ),
            batchsize = 200,
            max_tries = 10,

@@ -43,8 +43,7 @@ calculated. Possible options include \code{"sum"}, which takes the sum of all pr
 intensities as the protein abundance. Another option is \code{"iq"}, which performs protein
 quantification based on a maximal peptide ratio extraction algorithm that is adapted from the
 MaxLFQ algorithm of the MaxQuant software. Functions from the
-\href{https://academic.oup.com/bioinformatics/article/36/8/2611/5697917}{\code{iq}} package are
-used. Default is \code{"iq"}.}
+\code{iq} package (\doi{10.1093/bioinformatics/btz961}) are used. Default is \code{"iq"}.}
 
 \item{for_plot}{a logical value indicating whether the result should be only protein intensities
 or protein intensities together with precursor intensities that can be used for plotting using
