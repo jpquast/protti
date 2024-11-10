@@ -109,7 +109,6 @@ fetch_interpro <- function(uniprot_ids = NULL,
       .f = ~ {
         # Initialize the next page URL with the base query URL
         next_url <- paste0("https://www.ebi.ac.uk/interpro/api/", .x, "&page_size=", page_size)
-        attempts <- 0
         all_results <- list()
 
         # progress bar variable
@@ -117,8 +116,7 @@ fetch_interpro <- function(uniprot_ids = NULL,
         current_page <- 1
 
         while (!is.null(next_url)) {
-          result <- tryCatch(
-            {
+
               # Call the protti function to query the API
               query <- protti:::try_query(next_url,
                 type = "application/json",
@@ -129,8 +127,9 @@ fetch_interpro <- function(uniprot_ids = NULL,
               # Store the results from the current page
               all_results[[current_page]] <- query
 
+
               # initialize progress bar
-              if (show_progress == TRUE & current_page == 1 & length(query_url_part) == 1 & !is.null(query$count)) {
+              if (show_progress == TRUE & current_page == 1 & length(query_url_part) == 1 & (!is(query, "character") && !is.null(query$count))) {
                 pb <- progress::progress_bar$new(
                   total = ceiling(query$count / page_size),
                   format = "  Fetching Pages [:bar] :current/:total (:percent) :eta"
@@ -138,35 +137,19 @@ fetch_interpro <- function(uniprot_ids = NULL,
               }
 
               # tick progress bar
-              if (show_progress == TRUE & length(query_url_part) == 1 & !is.null(query$count) && !pb$finished) {
+              if (show_progress == TRUE & length(query_url_part) == 1 & (!is(query, "character") && !is.null(query$count)) && !pb$finished) {
                 pb$tick()
               }
 
-              # Get the next page URL from the "next" field
-              next_url <- query$`next`
+              if (!is(query, "character")) {
+                # Get the next page URL from the "next" field
+                next_url <- query$`next`
+              } else {
+                next_url <- NULL
+              }
 
               # add to page counter
               current_page <- current_page + 1
-
-              attempts <- 0 # Reset attempts counter on successful request
-
-              NULL
-            },
-            error = function(e) {
-              if (grepl("408", e$message)) {
-                Sys.sleep(2) # Sleep and retry for timeout errors (408)
-                NULL
-              } else {
-                attempts <<- attempts + 1
-                if (attempts < max_tries) {
-                  Sys.sleep(2) # Sleep and retry up to "max_tries" times
-                  NULL
-                } else {
-                  stop(paste("Error retrieving data for URL:", next_url, " - ", e$message))
-                }
-              }
-            }
-          )
         }
         all_results
       },
@@ -175,9 +158,30 @@ fetch_interpro <- function(uniprot_ids = NULL,
   }
 
   if (!missing(manual_query)) {
-    # return raw data for manual queries
-    return(query_result)
+    # Check if any element is of type character to report issues with the fetching to the user.
+    if(any(purrr::map_lgl(query_result[[1]], is.character))) {
+
+      issue <- purrr::keep(query_result[[1]], is.character)[[1]]
+
+      message("\nThere was an issue fetching from InterPro:\n", issue)
+      return(NULL)
+    } else {
+      # return raw data for manual queries
+      return(query_result)
+    }
   }
+
+  # If any element is character stop the function and report the issue
+  if (exists("query_result") && any(purrr::map_lgl(query_result, .f = ~ {purrr::map_lgl(.x, is.character)}))) {
+
+    problematic_ids <- uniprot_ids[purrr::map_lgl(query_result, .f = ~ {any(purrr::map_lgl(.x, is.character))})]
+    issue <- purrr::keep(query_result, .p = ~ {purrr::map_lgl(.x, is.character)}) %>%
+      unlist()
+
+    message("\nThere was an issue fetching from InterPro:\n", paste0(problematic_ids, ": ", issue, "\n"))
+    return(NULL)
+  }
+
 
   # if residue level information should be returned, fetch it here
   if (return_residue_info) {
@@ -193,6 +197,10 @@ fetch_interpro <- function(uniprot_ids = NULL,
           timeout = timeout
         )
 
+        if (is(query, "character")){
+          result <- data.frame(accession = .x,
+                               issue = query)
+        } else {
         if (length(query) == 0) {
           result <- data.frame(accession = .x)
         } else {
@@ -231,11 +239,20 @@ fetch_interpro <- function(uniprot_ids = NULL,
           ) %>%
             mutate(accession = .x)
         }
+        }
 
         result
       },
       .progress = progress_option_residue
     )
+
+    if("issue" %in% colnames(query_residue)){
+      problematic_ids <- query_residue %>%
+        dplyr::filter(!is.na(issue))
+
+      message("\nThere was an issue fetching from InterPro:\n", paste0(problematic_ids$accession, ": ", problematic_ids$issue, "\n"))
+      return(NULL)
+    }
 
     return(query_residue)
   }
