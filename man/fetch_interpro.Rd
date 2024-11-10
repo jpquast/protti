@@ -52,8 +52,10 @@ domain_info <- fetch_interpro(uniprot_ids = uniprot_ids)
 
 head(domain_info)
 
-residue_info <- fetch_interpro(uniprot_ids = uniprot_ids,
-                               return_residue_info = TRUE)
+residue_info <- fetch_interpro(
+  uniprot_ids = uniprot_ids,
+  return_residue_info = TRUE
+)
 
 head(residue_info)
 }
