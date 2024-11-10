@@ -116,40 +116,39 @@ fetch_interpro <- function(uniprot_ids = NULL,
         current_page <- 1
 
         while (!is.null(next_url)) {
+          # Call the protti function to query the API
+          query <- protti:::try_query(next_url,
+            type = "application/json",
+            max_tries = max_tries,
+            timeout = timeout
+          )
 
-              # Call the protti function to query the API
-              query <- protti:::try_query(next_url,
-                type = "application/json",
-                max_tries = max_tries,
-                timeout = timeout
-              )
-
-              # Store the results from the current page
-              all_results[[current_page]] <- query
+          # Store the results from the current page
+          all_results[[current_page]] <- query
 
 
-              # initialize progress bar
-              if (show_progress == TRUE & current_page == 1 & length(query_url_part) == 1 & (!is(query, "character") && !is.null(query$count))) {
-                pb <- progress::progress_bar$new(
-                  total = ceiling(query$count / page_size),
-                  format = "  Fetching Pages [:bar] :current/:total (:percent) :eta"
-                )
-              }
+          # initialize progress bar
+          if (show_progress == TRUE & current_page == 1 & length(query_url_part) == 1 & (!is(query, "character") && !is.null(query$count))) {
+            pb <- progress::progress_bar$new(
+              total = ceiling(query$count / page_size),
+              format = "  Fetching Pages [:bar] :current/:total (:percent) :eta"
+            )
+          }
 
-              # tick progress bar
-              if (show_progress == TRUE & length(query_url_part) == 1 & (!is(query, "character") && !is.null(query$count)) && !pb$finished) {
-                pb$tick()
-              }
+          # tick progress bar
+          if (show_progress == TRUE & length(query_url_part) == 1 & (!is(query, "character") && !is.null(query$count)) && !pb$finished) {
+            pb$tick()
+          }
 
-              if (!is(query, "character")) {
-                # Get the next page URL from the "next" field
-                next_url <- query$`next`
-              } else {
-                next_url <- NULL
-              }
+          if (!is(query, "character")) {
+            # Get the next page URL from the "next" field
+            next_url <- query$`next`
+          } else {
+            next_url <- NULL
+          }
 
-              # add to page counter
-              current_page <- current_page + 1
+          # add to page counter
+          current_page <- current_page + 1
         }
         all_results
       },
@@ -159,8 +158,7 @@ fetch_interpro <- function(uniprot_ids = NULL,
 
   if (!missing(manual_query)) {
     # Check if any element is of type character to report issues with the fetching to the user.
-    if(any(purrr::map_lgl(query_result[[1]], is.character))) {
-
+    if (any(purrr::map_lgl(query_result[[1]], is.character))) {
       issue <- purrr::keep(query_result[[1]], is.character)[[1]]
 
       message("\nThere was an issue fetching from InterPro:\n", issue)
@@ -172,10 +170,15 @@ fetch_interpro <- function(uniprot_ids = NULL,
   }
 
   # If any element is character stop the function and report the issue
-  if (exists("query_result") && any(purrr::map_lgl(query_result, .f = ~ {purrr::map_lgl(.x, is.character)}))) {
-
-    problematic_ids <- uniprot_ids[purrr::map_lgl(query_result, .f = ~ {any(purrr::map_lgl(.x, is.character))})]
-    issue <- purrr::keep(query_result, .p = ~ {purrr::map_lgl(.x, is.character)}) %>%
+  if (exists("query_result") && any(purrr::map_lgl(query_result, .f = ~ {
+    purrr::map_lgl(.x, is.character)
+  }))) {
+    problematic_ids <- uniprot_ids[purrr::map_lgl(query_result, .f = ~ {
+      any(purrr::map_lgl(.x, is.character))
+    })]
+    issue <- purrr::keep(query_result, .p = ~ {
+      purrr::map_lgl(.x, is.character)
+    }) %>%
       unlist()
 
     message("\nThere was an issue fetching from InterPro:\n", paste0(problematic_ids, ": ", issue, "\n"))
@@ -197,48 +200,50 @@ fetch_interpro <- function(uniprot_ids = NULL,
           timeout = timeout
         )
 
-        if (is(query, "character")){
-          result <- data.frame(accession = .x,
-                               issue = query)
+        if (is(query, "character")) {
+          result <- data.frame(
+            accession = .x,
+            issue = query
+          )
         } else {
-        if (length(query) == 0) {
-          result <- data.frame(accession = .x)
-        } else {
-          # map for each database accession
-          result <- purrr::map_dfr(
-            .x = query,
-            .f = ~ {
-              # map for each location
-              location <- purrr::map_dfr(
-                .x = .x[["locations"]],
-                .f = ~ {
-                  # map for each fragment
-                  fragment <- purrr::map_dfr(
-                    .x = .x[["fragments"]],
-                    .f = ~ {
-                      # lowest level
-                      data.frame(
-                        start = .x[["start"]],
-                        end = .x[["end"]],
-                        residues = .x[["residues"]]
-                      )
-                    }
-                  )
+          if (length(query) == 0) {
+            result <- data.frame(accession = .x)
+          } else {
+            # map for each database accession
+            result <- purrr::map_dfr(
+              .x = query,
+              .f = ~ {
+                # map for each location
+                location <- purrr::map_dfr(
+                  .x = .x[["locations"]],
+                  .f = ~ {
+                    # map for each fragment
+                    fragment <- purrr::map_dfr(
+                      .x = .x[["fragments"]],
+                      .f = ~ {
+                        # lowest level
+                        data.frame(
+                          start = .x[["start"]],
+                          end = .x[["end"]],
+                          residues = .x[["residues"]]
+                        )
+                      }
+                    )
 
-                  fragment %>%
-                    dplyr::mutate(fragment_description = .x[["description"]])
-                }
-              )
-              location %>%
-                dplyr::mutate(
-                  source_database = .x[["source_database"]],
-                  source_accession = .x[["accession"]],
-                  source_name = .x[["name"]]
+                    fragment %>%
+                      dplyr::mutate(fragment_description = .x[["description"]])
+                  }
                 )
-            }
-          ) %>%
-            mutate(accession = .x)
-        }
+                location %>%
+                  dplyr::mutate(
+                    source_database = .x[["source_database"]],
+                    source_accession = .x[["accession"]],
+                    source_name = .x[["name"]]
+                  )
+              }
+            ) %>%
+              mutate(accession = .x)
+          }
         }
 
         result
@@ -246,7 +251,7 @@ fetch_interpro <- function(uniprot_ids = NULL,
       .progress = progress_option_residue
     )
 
-    if("issue" %in% colnames(query_residue)){
+    if ("issue" %in% colnames(query_residue)) {
       problematic_ids <- query_residue %>%
         dplyr::filter(!is.na(issue))
 
