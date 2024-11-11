@@ -126,7 +126,6 @@ fetch_interpro <- function(uniprot_ids = NULL,
           # Store the results from the current page
           all_results[[current_page]] <- query
 
-
           # initialize progress bar
           if (show_progress == TRUE & current_page == 1 & length(query_url_part) == 1 & (!is(query, "character") && !is.null(query$count))) {
             pb <- progress::progress_bar$new(
@@ -169,22 +168,40 @@ fetch_interpro <- function(uniprot_ids = NULL,
     }
   }
 
+  # check if any querys were not completed and give a message about them
+  if(exists("query_result") && any(purrr::map_lgl(query_result, .f = ~ {length(.x) == 0}))){
+    problematic_ids <- uniprot_ids[purrr::map_lgl(query_result, .f = ~ {length(.x) == 0})]
+
+    message("\nThe following IDs do not exist in the InterPro database:\n", paste0(problematic_ids, collapse = "\n"))
+  }
+
   # If any element is character stop the function and report the issue
   if (exists("query_result") && any(purrr::map_lgl(query_result, .f = ~ {
-    purrr::map_lgl(.x, is.character)
+    if (length(.x) == 0){
+      FALSE
+    } else {
+      purrr::map_lgl(.x, is.character)
+    }
   }))) {
     problematic_ids <- uniprot_ids[purrr::map_lgl(query_result, .f = ~ {
-      any(purrr::map_lgl(.x, is.character))
+      if (length(.x) == 0){
+        FALSE
+      } else {
+        any(purrr::map_lgl(.x, is.character))
+      }
     })]
     issue <- purrr::keep(query_result, .p = ~ {
-      purrr::map_lgl(.x, is.character)
+      if (length(.x) == 0){
+        FALSE
+      } else {
+        purrr::map_lgl(.x, is.character)
+      }
     }) %>%
       unlist()
 
     message("\nThere was an issue fetching from InterPro:\n", paste0(problematic_ids, ": ", issue, "\n"))
     return(NULL)
   }
-
 
   # if residue level information should be returned, fetch it here
   if (return_residue_info) {
@@ -340,5 +357,5 @@ fetch_interpro <- function(uniprot_ids = NULL,
     }
   )
 
-  domain_result
+  return(domain_result)
 }
