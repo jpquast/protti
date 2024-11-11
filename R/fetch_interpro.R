@@ -169,29 +169,33 @@ fetch_interpro <- function(uniprot_ids = NULL,
   }
 
   # check if any querys were not completed and give a message about them
-  if(exists("query_result") && any(purrr::map_lgl(query_result, .f = ~ {length(.x) == 0}))){
-    problematic_ids <- uniprot_ids[purrr::map_lgl(query_result, .f = ~ {length(.x) == 0})]
+  if (exists("query_result") && any(purrr::map_lgl(query_result, .f = ~ {
+    length(.x) == 0
+  }))) {
+    problematic_ids <- uniprot_ids[purrr::map_lgl(query_result, .f = ~ {
+      length(.x) == 0
+    })]
 
     message("\nThe following IDs do not exist in the InterPro database:\n", paste0(problematic_ids, collapse = "\n"))
   }
 
   # If any element is character stop the function and report the issue
   if (exists("query_result") && any(purrr::map_lgl(query_result, .f = ~ {
-    if (length(.x) == 0){
+    if (length(.x) == 0) {
       FALSE
     } else {
       purrr::map_lgl(.x, is.character)
     }
   }))) {
     problematic_ids <- uniprot_ids[purrr::map_lgl(query_result, .f = ~ {
-      if (length(.x) == 0){
+      if (length(.x) == 0) {
         FALSE
       } else {
         any(purrr::map_lgl(.x, is.character))
       }
     })]
     issue <- purrr::keep(query_result, .p = ~ {
-      if (length(.x) == 0){
+      if (length(.x) == 0) {
         FALSE
       } else {
         purrr::map_lgl(.x, is.character)
