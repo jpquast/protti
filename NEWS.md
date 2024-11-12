@@ -7,6 +7,7 @@
   * `start_adjusted` and `end_adjusted`: Are the adjusted start and end positions of a peptide if it is only partially covered by the structure.
   * `percentage_covered_peptides`: Is the percentage of all provided peptides that are at least partially covered by the structure.
 * `calculate_go_enrichment()` received the argument `label_size` that allows the user to specifiy the size of the labels in the plot.
+* Added `fetch_interpro()`. The function allows you to fetch information from the InterPro database. There are two options, either domain level information about the proteins of interest can be retrieved. This includes also e.g. gene ontology terms of the domains as well as their positions within the protein. Second you can retrieve residue level information. These are any annotations of proteins that focus on residues or small stretches, such as active sites, binding sites etc. 
 
 ## Bug fixes
 
