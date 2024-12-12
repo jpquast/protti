@@ -176,14 +176,16 @@ map_peptides_on_structure <- function(peptide_data,
         {{ auth_seq_id }},
         {{ map_value }}
       ) %>%
+      dplyr::mutate(id_for_scaling = ifelse(is.na({{ pdb_id }}), {{ uniprot_id }}, {{ pdb_id }})) %>%
+      # for AF predictions this still needs an ID to properly work
       dplyr::mutate(scaling_info = ifelse(rep(scale_per_structure, dplyr::n()),
-                                          {{ pdb_id }},
+                                          .data$id_for_scaling,
                                           "scale_overall")) %>%
       # determines if scores should by scaled by structure or
       # one scale for the whole data set.
       dplyr::group_by(.data$scaling_info) %>%
       dplyr::mutate({{ map_value }} := round(
-        scale_protti(c({{ map_value }}), method = "01") * 50 + 50,
+        scale_protti(c({{ map_value }}), method = "01", default_to_high = FALSE) * 50 + 50,
         digits = 2
       )) %>%
       # Scale values between 50 and 100
