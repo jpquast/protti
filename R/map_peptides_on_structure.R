@@ -225,7 +225,7 @@ map_peptides_on_structure <- function(peptide_data,
         dplyr::distinct({{ pdb_id }}, {{ uniprot_id }}) %>%
         dplyr::group_by({{ pdb_id }}) %>%
         dplyr::mutate(name = paste({{ uniprot_id }}, collapse = "_")) %>%
-        dplyr::mutate(name = ifelse(nchar(.data$name) >= 240,
+        dplyr::mutate(name = ifelse(nchar(.data$name) >= 50,
                                     paste0(stringr::str_count(.data$name, pattern = "_") + 1, "_proteins"),
                                     .data$name
                                     )
@@ -586,7 +586,7 @@ map_peptides_on_structure <- function(peptide_data,
     peptide_data_filter <- peptide_data %>%
       dplyr::ungroup() %>%
       dplyr::distinct({{ uniprot_id }}, {{ chain }}, {{ auth_seq_id }}, {{ map_value }}) %>%
-      dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01") * 50 + 50, digits = 2)) %>%
+      dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01", default_to_high = FALSE) * 50 + 50, digits = 2)) %>%
       # Scale values between 50 and 100
       group_by({{ chain }}, {{ auth_seq_id }}) %>%
       dplyr::mutate(residue_internal = ifelse(!is.na({{ auth_seq_id }}),
@@ -621,8 +621,12 @@ for the mapping. Make sure to provide a chain identifier if a mapping should be 
         dplyr::mutate(
           # extract b-factor values based on positions
           b_factor = stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+[:space:]+")[[1]][15],
-          chain = stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][19],
-          residue_internal = suppressWarnings(stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][17])
+          chain = ifelse(length(stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]]) == 21, # test if AF prediction
+                         stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][19],
+                         stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][17]),
+          residue_internal = ifelse(length(stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]]) == 21,  # test if AF prediction
+                                    suppressWarnings(stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][17]),
+                                    suppressWarnings(stringr::str_extract_all(.data$atoms, "[\\w[:punct:]]+")[[1]][16]))
         ) %>%
         dplyr::ungroup() %>%
         dplyr::mutate(b_factor = stringr::str_replace(.data$b_factor, pattern = "\\.", replacement = "\\\\\\.")) %>%
