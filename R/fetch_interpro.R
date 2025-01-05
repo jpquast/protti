@@ -342,14 +342,14 @@ fetch_interpro <- function(uniprot_ids = NULL,
                   data.frame(
                     start = .x[["start"]],
                     end = .x[["end"]],
-                    dc_status = .x[["dc-status"]],
-                    representative = .x[["representative"]]
+                    dc_status = .x[["dc-status"]]
                   )
                 }
               ) %>%
                 dplyr::mutate(
                   model = .x[["model"]],
-                  score = .x[["score"]]
+                  score = .x[["score"]],
+                  representative = .x[["representative"]]
                 )
             }
           ) %>%
