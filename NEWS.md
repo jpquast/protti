@@ -21,6 +21,7 @@
 * `assign_peptide_type` now takes the `start` argument, containing the start position of a peptide. If a protein does not have any peptide starting at position `1` and there is a peptide starting at position `2`, this peptide will be considered "tryptic" at the N-terminus. This is because the initial Methionine is likely missing due to processing for every copy of the protein and therefore position `2` is the true N-terminus.
 * `extract_metal_binders()` now uses keywords from UniProt as well. In addition, only "enables" GO terms are considered now.
 * `fetch_uniprot()` received another default column "keyword".
+* `calculate_go_enrichment()` is now more robust for edge cases. A plot, instead of an error, is returned if there is only one significant GO term and `plot_style = "heatmap"` is selected.
 
 # protti 0.9.1
 
