@@ -629,7 +629,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     }
 
     # Make gradient
-    if (diff(range(plot_input_heatmap$neg_log_sig)) != 0){
+    if (diff(range(plot_input_heatmap$neg_log_sig)) != 0) {
       colfunc <- scales::gradient_n_pal(colours, values = c(
         min(plot_input_heatmap$neg_log_sig),
         max(plot_input_heatmap$neg_log_sig)
@@ -639,7 +639,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       # Therefore, we are extending the range in this case to still return a plot
       colfunc <- scales::gradient_n_pal(colours, values = c(
         plot_input_heatmap$neg_log_sig,
-        plot_input_heatmap$neg_log_sig+1
+        plot_input_heatmap$neg_log_sig + 1
       ))
     }
 
