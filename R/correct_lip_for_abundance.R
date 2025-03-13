@@ -34,6 +34,9 @@
 #' equation to estimate the pooled degrees of freedom, as described in https://doi.org/10.1016/j.mcpro.2022.100477 and
 #' implemented in the MSstatsLiP package. This approach respects the number of protein measurements for the degrees of freedom.
 #' \code{no_df_approximation} just takes the number of peptides into account when calculating the degrees of freedom.
+#' @param only_correct_sig_protein logical, whether to use normalization only on significant protein changes. Default is TRUE.
+#' @param p_value_cutoff numeric, p-value threshold for significant protein changes. Default is 0.05.
+#' @param log_2fc_cutoff numeric, log2 fold change threshold for significant protein changes. Default is 1.
 #'
 #' @return a data frame containing corrected differential abundances (\code{adj_diff}, adjusted
 #' standard errors (\code{adj_std_error}), degrees of freedom (\code{df}), pvalues (\code{pval}) and
@@ -129,7 +132,10 @@ correct_lip_for_abundance <- function(
     std_error = std_error,
     p_adj_method = "BH",
     retain_columns = NULL,
-    method = c("satterthwaite", "no_df_approximation")) {
+    method = c("satterthwaite", "no_df_approximation"),
+    only_correct_sig_protein = TRUE,
+    p_value_cutoff = 0.05,
+    log_2fc_cutoff = 1) {
   method <- match.arg(method)
 
   se_pep <- rlang::sym(paste0(rlang::as_name(rlang::enquo(std_error)), "_pep"))
@@ -140,12 +146,20 @@ correct_lip_for_abundance <- function(
   n_prot <- rlang::sym(paste0(rlang::as_name(rlang::enquo(n_obs)), "_prot"))
 
   temp_lip_data <- lip_data %>%
-    dplyr::select(!!enquo(retain_columns), {{ comparison }}, {{ protein_id }}, {{ grouping }}, {{ diff }}, {{ n_obs }}, {{ std_error }}) %>%
+    dplyr::select(!!enquo(retain_columns), {{ comparison }}, {{ protein_id }}, {{ grouping }}, {{ diff }}, {{ n_obs }}, {{ std_error }}, pval) %>%
     dplyr::distinct()
 
   temp_trp_data <- trp_data %>%
-    dplyr::distinct({{ comparison }}, {{ protein_id }}, {{ diff }}, {{ n_obs }}, {{ std_error }})
+    dplyr::distinct({{ comparison }}, {{ protein_id }}, {{ diff }}, {{ n_obs }}, {{ std_error }}, pval)
 
+  # identify significant protein changes and calculate normalization factors
+  temp_trp_data <- temp_trp_data %>%
+    dplyr::mutate(
+      is_significant = (.data$pval < p_value_cutoff) & 
+        (abs({{ diff }}) >= log_2fc_cutoff),
+      # Calculate normalization factor (in log2 space)
+      norm_factor = ifelse(.data$is_significant & only_correct_sig_protein, {{ diff }}, 0)
+    )
 
   test <- temp_lip_data %>%
     dplyr::distinct({{ comparison }}, {{ protein_id }}, {{ grouping }})
@@ -171,11 +185,10 @@ correct_lip_for_abundance <- function(
     message(paste0("No protein data was available for ", n_unmatched, " peptides (", percent_unmatched, "% of dataset)."))
   }
 
-
   if (method == "satterthwaite") {
     corrected_data <- combined_data %>%
       dplyr::mutate(
-        adj_diff = !!diff_pep - !!diff_prot,
+        adj_diff = if (only_correct_sig_protein) !!diff_pep - .data$norm_factor else !!diff_pep - !!diff_prot,
         adj_std_error = sqrt((!!se_pep)**2 + (!!se_prot)**2),
         numer = ((!!se_pep)**2 + (!!se_prot)**2)**2,
         denom = ((!!se_pep)**4 / (!!n_pep - 2) + (!!se_prot)**4 / (!!n_prot - 2)),
@@ -200,7 +213,7 @@ correct_lip_for_abundance <- function(
   if (method == "no_df_approximation") {
     corrected_data <- combined_data %>%
       dplyr::mutate(
-        adj_diff = !!diff_pep - !!diff_prot,
+        adj_diff = if (only_correct_sig_protein) !!diff_pep - .data$norm_factor else !!diff_pep - !!diff_prot,
         adj_std_error = sqrt((!!se_pep)**2 + (!!se_prot)**2),
         df = !!n_pep - 2,
         tval = .data$adj_diff / .data$adj_std_error,
@@ -215,7 +228,6 @@ correct_lip_for_abundance <- function(
       by = colnames(corrected_data)
     ) %>%
       dplyr::select(-"tval")
-
 
     return(adjusted_data)
   }
