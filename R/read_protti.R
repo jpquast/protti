@@ -21,7 +21,7 @@
 #' }
 read_protti <-
   function(filename, ...) {
-    data.table::fread(filename, ...) %>%
+    data.table::fread(file=filename, ...) %>%
       janitor::clean_names() %>%
       tibble::as_tibble()
   }
