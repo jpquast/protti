@@ -247,6 +247,12 @@ calculate_go_enrichment <- function(data,
 
   if (!(plot_style %in% c("barplot", "heatmap"))) stop("Invalid plot_style. Available styles: barplot, heatmap")
 
+  # Check for presence of significant proteins
+  if (sum(data[[rlang::as_name(rlang::enquo(is_significant))]], na.rm = TRUE) == 0) {
+    message("No significant proteins found in the input data. Gene ontology enrichment analysis will not be performed.")
+    return(invisible(NULL))
+  }
+
   if (length(barplot_fill_colour) < 2) stop('Please provide at least two colours to "barplot_fill_colour"!')
 
   if (!stringr::str_detect(plot_cutoff, pattern = "^(pval|adj_pval) (top\\d+|\\d+(\\.\\d+)?)$")) {
