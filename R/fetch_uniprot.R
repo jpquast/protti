@@ -7,7 +7,7 @@
 #' possible columns can be found \href{https://www.uniprot.org/help/return_fields}{here}. For
 #' cross-referenced database provide the database name with the prefix "xref_", e.g. `"xref_pdb"`)
 #' @param batchsize a numeric value that specifies the number of proteins processed in a single
-#' single query. Default and max value is 200.
+#' single query. Default and max value is 100.
 #' @param max_tries a numeric value that specifies the number of times the function tries to download
 #' the data in case an error occurs. The default is 10.
 #' @param timeout a numeric value that specifies the maximum request time per try. Default is 20 seconds.
@@ -56,7 +56,7 @@ fetch_uniprot <-
              "xref_pdb",
              "keyword"
            ),
-           batchsize = 200,
+           batchsize = 100,
            max_tries = 10,
            timeout = 20,
            show_progress = TRUE) {
@@ -65,8 +65,8 @@ fetch_uniprot <-
       return(invisible(NULL))
     }
     . <- NULL
-    if (batchsize > 500) {
-      stop("Please provide a batchsize that is smaller or equal to 500!")
+    if (batchsize > 100) {
+      stop("Please provide a batchsize that is smaller or equal to 100!")
     }
     columns <- c("accession", columns)
     column_names <- janitor::make_clean_names(columns)
