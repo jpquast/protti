@@ -462,7 +462,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
 
     if (method == "moderated_t-test") {
       if (!requireNamespace("limma", quietly = TRUE)) {
-        message("Package \"limma\" is needed for this function to work. Please install it.", call. = FALSE)
+        message("Package \"limma\" is needed for this function to work. Please install it.")
         return(invisible(NULL))
       }
 
@@ -668,7 +668,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
 
     if (method == "proDA") {
       if (!requireNamespace("proDA", quietly = TRUE)) {
-        message("Package \"proDA\" is needed for this function to work. Please install it.", call. = FALSE)
+        message("Package \"proDA\" is needed for this function to work. Please install it.")
         return(invisible(NULL))
       }
       message("[1/5] Creating proDA input data ... ", appendLF = FALSE)

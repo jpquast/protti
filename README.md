@@ -7,7 +7,7 @@
 
 [![R-CMD-check](https://github.com/jpquast/protti/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jpquast/protti/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jpquast/protti?branch=master)
+coverage](https://codecov.io/gh/jpquast/protti/graph/badge.svg)](https://app.codecov.io/gh/jpquast/protti)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/protti)](https://CRAN.R-project.org/package=protti)
 [![DOI:10.1093/bioadv/vbab041](http://img.shields.io/badge/DOI-10.1093/bioadv/vbab041-5680C1.svg)](https://doi.org/10.1093/bioadv/vbab041)
@@ -352,4 +352,4 @@ result %>%
   )
 ```
 
-<img src="man/figures/README-volcano-1.png" width="100%" />
+<img src="man/figures/README-volcano-1.png" alt="" width="100%" />
