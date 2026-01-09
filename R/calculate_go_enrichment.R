@@ -247,6 +247,12 @@ calculate_go_enrichment <- function(data,
 
   if (!(plot_style %in% c("barplot", "heatmap"))) stop("Invalid plot_style. Available styles: barplot, heatmap")
 
+  # Check for presence of significant proteins
+  if (sum(data[[rlang::as_name(rlang::enquo(is_significant))]], na.rm = TRUE) == 0) {
+    message("No significant proteins found in the input data. Gene ontology enrichment analysis will not be performed.")
+    return(invisible(NULL))
+  }
+
   if (length(barplot_fill_colour) < 2) stop('Please provide at least two colours to "barplot_fill_colour"!')
 
   if (!stringr::str_detect(plot_cutoff, pattern = "^(pval|adj_pval) (top\\d+|\\d+(\\.\\d+)?)$")) {
@@ -498,7 +504,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
   if (plot_style == "barplot") {
     # Check if ggforce package is available. If not prompt user to install it.
     if (!requireNamespace("ggforce", quietly = TRUE)) {
-      message("Package \"ggforce\" is needed for this function to work. Please install it.", call. = FALSE)
+      message("Package \"ggforce\" is needed for this function to work. Please install it.")
       return(invisible(NULL))
     }
 
@@ -525,7 +531,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
           )
         }
       } +
-      ggplot2::geom_col(col = "black", size = 1) +
+      ggplot2::geom_col(col = "black") +
       {
         if (label == TRUE & nrow(plot_input) > 0) {
           geom_text(
@@ -585,12 +591,12 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
   if (plot_style == "heatmap") {
     # Check if farver package is available. If not prompt user to install it.
     if (!requireNamespace("farver", quietly = TRUE)) {
-      message("Package \"farver\" is needed for this function to work. Please install it.", call. = FALSE)
+      message("Package \"farver\" is needed for this function to work. Please install it.")
       return(invisible(NULL))
     }
     # Check if scales package is available. If not prompt user to install it.
     if (!requireNamespace("scales", quietly = TRUE)) {
-      message("Package \"scales\" is needed for this function to work. Please install it.", call. = FALSE)
+      message("Package \"scales\" is needed for this function to work. Please install it.")
       return(invisible(NULL))
     }
 
