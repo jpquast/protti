@@ -12,6 +12,7 @@ map_peptides_on_structure(
   auth_seq_id,
   map_value,
   file_format = ".cif",
+  alphafold_version = "v6",
   scale_per_structure = TRUE,
   export_location = NULL,
   structure_file = NULL,
@@ -46,13 +47,13 @@ the author defined chain definitions for both ".cif" and ".pdb" files. When the 
 \code{find_peptide_in_structure} function is used as the input for this function, this
 corresponds to the \code{auth_asym_id} column.}
 
-\item{auth_seq_id}{optional, a character (or numeric) column in the \code{peptide_data} data frame
+\item{auth_seq_id}{a character (or numeric) column in the \code{peptide_data} data frame
 that contains semicolon separated positions of peptides, protein regions or amino acids in the
-corresponding PDB structure or AlphaFold prediction. This information can be obtained from the
-\code{find_peptide_in_structure} function. The corresponding column in the output is called
-\code{auth_seq_id}. In case of AlphaFold predictions, UniProt positions should be used. If
-signal positions and not stretches of amino acids are provided, the column can be numeric and
-does not need to contain the semicolon separator.}
+corresponding PDB structure or AlphaFold prediction. Can be \code{NA} for rows that should not be mapped.
+This information can be obtained from the \code{find_peptide_in_structure} function. The corresponding
+column in the output is called \code{auth_seq_id}. In case of AlphaFold predictions, UniProt positions
+should be used. If signal positions and not stretches of amino acids are provided, the column
+can be numeric and does not need to contain the semicolon separator.}
 
 \item{map_value}{a numeric column in the \code{peptide_data} data frame that contains a value
 associated with each peptide, protein region or amino acid. If one start to end position pair
@@ -72,6 +73,10 @@ since every structure contains a ".cif" file but not every structure contains a 
 Fetching and mapping onto ".cif" files takes longer than for ".pdb" files. If a structure file
 is provided in the \code{structure_file} argument, the file format is detected automatically
 and does not need to be provided.}
+
+\item{alphafold_version}{a character value that specifies the alphafold version that should be
+used. This is regularly updated by the database. We always try to make the current version the
+default version. Available version can be found here: https://ftp.ebi.ac.uk/pub/databases/alphafold/}
 
 \item{scale_per_structure}{a logical value that specifies if scaling should be performed for
 each structure independently (TRUE) or over the whole data set (FALSE). The default is TRUE,

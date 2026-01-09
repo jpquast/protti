@@ -16,6 +16,7 @@
 * `calculate_go_enrichment()` can now correctly handle groups that are of type factor.
 * Fixed an issue in `map_peptides_on_structure()` where `scale_per_structure = TRUE` incorrectly scaled AlphaFold predictions together (because missing `pdb_id` values were grouped as `NA`). AlphaFold predictions are now scaled per UniProt ID, matching per-structure behavior.
 * Fixed issue #279. The x-axis of `calculate_go_enrichment()` is correctly displayed.
+* Fixed issue #285. `map_peptides_on_structure()` now received the `alphafold_version` argument that allows the user to update the AlphaFold database version if the old versions don't work anymore.
 
 ## Additional Changes
 
@@ -26,6 +27,7 @@
 * `calculate_go_enrichment()`: 
 	* got improved error handling and now checks if any significant proteins are present in the input `data`. If none are found (`is_significant == TRUE` for no rows), the function exits early. 
 	* is now more robust for edge cases. A plot, instead of an error, is returned if there is only one significant GO term and `plot_style = "heatmap"` is selected.
+* `fetch_alphafold_prediction()` updated `version` to `"v6"`.
 
 # protti 0.9.1
 

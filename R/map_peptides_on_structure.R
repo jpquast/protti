@@ -10,34 +10,34 @@
 #' @param peptide_data a data frame that contains the input columns to this function. If structure
 #' or prediction files should be fetched automatically, please provide column names to the following
 #' arguments: **uniprot_id**, **pdb_id**, **chain**, **auth_seq_id**,
-#' **map_value**. If no PDB structure for a protein is available the \code{pdb_id} and \code{chain}
+#' **map_value**. If no PDB structure for a protein is available the `pdb_id` and `chain`
 #' column should contain NA at these positions. If a structure or prediction file is provided in the
-#' \code{structure_file} argument, this data frame should only contain information associated with
+#' `structure_file` argument, this data frame should only contain information associated with
 #' the provided structure. In case of a user provided structure, column names should be provided to
 #' the following arguments: **uniprot_id**, **chain**, **auth_seq_id**, **map_value**.
-#' @param uniprot_id a character column in the \code{peptide_data} data frame that contains UniProt
+#' @param uniprot_id a character column in the `peptide_data` data frame that contains UniProt
 #' identifiers for a corresponding peptide, protein region or amino acid.
-#' @param pdb_id a character column in the \code{peptide_data} data frame that contains PDB
+#' @param pdb_id a character column in the `peptide_data` data frame that contains PDB
 #' identifiers for structures in which a corresponding peptide, protein region or amino acid is found.
 #' If a protein prediction should be fetched from AlphaFold, this column should contain NA. This
-#' column is not required if a structure or prediction file is provided in the \code{structure_file}
+#' column is not required if a structure or prediction file is provided in the `structure_file`
 #' argument.
-#' @param chain a character column in the \code{peptide_data} data frame that contains the name of
+#' @param chain a character column in the `peptide_data` data frame that contains the name of
 #' the chain from the PDB structure in which the peptide, protein region or amino acid is found.
 #' If a protein prediction should be fetched from AlphaFold, this column should contain NA. If an
-#' AlphaFold prediction is provided to the \code{structure_file} argument the chain should be
+#' AlphaFold prediction is provided to the `structure_file` argument the chain should be
 #' provided as usual (All AlphaFold predictions only have chain A). **Important:** please provide
 #' the author defined chain definitions for both ".cif" and ".pdb" files. When the output of the
-#' \code{find_peptide_in_structure} function is used as the input for this function, this
-#' corresponds to the \code{auth_asym_id} column.
-#' @param auth_seq_id optional, a character (or numeric) column in the \code{peptide_data} data frame
+#' `find_peptide_in_structure` function is used as the input for this function, this
+#' corresponds to the `auth_asym_id` column.
+#' @param auth_seq_id a character (or numeric) column in the `peptide_data` data frame
 #' that contains semicolon separated positions of peptides, protein regions or amino acids in the
-#' corresponding PDB structure or AlphaFold prediction. This information can be obtained from the
-#' \code{find_peptide_in_structure} function. The corresponding column in the output is called
-#' \code{auth_seq_id}. In case of AlphaFold predictions, UniProt positions should be used. If
-#' signal positions and not stretches of amino acids are provided, the column can be numeric and
-#' does not need to contain the semicolon separator.
-#' @param map_value a numeric column in the \code{peptide_data} data frame that contains a value
+#' corresponding PDB structure or AlphaFold prediction. Can be `NA` for rows that should not be mapped.
+#' This information can be obtained from the `find_peptide_in_structure` function. The corresponding
+#' column in the output is called `auth_seq_id`. In case of AlphaFold predictions, UniProt positions
+#' should be used. If signal positions and not stretches of amino acids are provided, the column
+#' can be numeric and does not need to contain the semicolon separator.
+#' @param map_value a numeric column in the `peptide_data` data frame that contains a value
 #' associated with each peptide, protein region or amino acid. If one start to end position pair
 #' has multiple different map values, the maximum will be used. This value will be displayed as a
 #' colour gradient when mapped onto the structure. The value can for example be the fold change,
@@ -48,12 +48,15 @@
 #' is associated with multiple mapped values, e.g. from different peptides, the maximum mapped
 #' value will be displayed.
 #' @param file_format a character vector containing the file format of the structure that will be
-#' fetched from the database for the PDB identifiers provided in the \code{pdb_id} column. This
-#' can be either ".cif" or ".pdb". The default is \code{".cif"}. We recommend using ".cif" files
+#' fetched from the database for the PDB identifiers provided in the `pdb_id` column. This
+#' can be either ".cif" or ".pdb". The default is `".cif"`. We recommend using ".cif" files
 #' since every structure contains a ".cif" file but not every structure contains a ".pdb" file.
 #' Fetching and mapping onto ".cif" files takes longer than for ".pdb" files. If a structure file
-#' is provided in the \code{structure_file} argument, the file format is detected automatically
+#' is provided in the `structure_file` argument, the file format is detected automatically
 #' and does not need to be provided.
+#' @param alphafold_version a character value that specifies the alphafold version that should be
+#' used. This is regularly updated by the database. We always try to make the current version the
+#' default version. Available version can be found here: https://ftp.ebi.ac.uk/pub/databases/alphafold/
 #' @param scale_per_structure a logical value that specifies if scaling should be performed for
 #' each structure independently (TRUE) or over the whole data set (FALSE). The default is TRUE,
 #' which scales the scores of each structure independently so that each structure has a score
@@ -63,13 +66,13 @@
 #' saved in the current working directory. The location should be provided in the following
 #' format "folderA/folderB".
 #' @param structure_file optional, a character argument specifying the path to the location and
-#' name of a structure file in ".cif" or ".pdb" format. If a structure is provided the \code{peptide_data}
+#' name of a structure file in ".cif" or ".pdb" format. If a structure is provided the `peptide_data`
 #' data frame should only contain mapping information for this structure.
-#' @param show_progress a logical, if \code{show_progress = TRUE}, a progress bar will be shown
+#' @param show_progress a logical, if `show_progress = TRUE`, a progress bar will be shown
 #' (default is TRUE).
 #'
 #' @return The function exports a modified ".pdb" or ".cif" structure file. B-factors have been
-#' replaced with scaled (50-100) values provided in the \code{map_value} column.
+#' replaced with scaled (50-100) values provided in the `map_value` column.
 #' @import dplyr
 #' @import tidyr
 #' @import progress
@@ -137,6 +140,7 @@ map_peptides_on_structure <- function(peptide_data,
                                       auth_seq_id,
                                       map_value,
                                       file_format = ".cif",
+                                      alphafold_version = "v6",
                                       scale_per_structure = TRUE,
                                       export_location = NULL,
                                       structure_file = NULL,
@@ -355,7 +359,7 @@ map_peptides_on_structure <- function(peptide_data,
       if (file_format == ".cif") {
         batches <- purrr::map(
           .x = uniprot_ids,
-          .f = ~ paste0("https://alphafold.ebi.ac.uk/files/AF-", .x, "-F1-model_v3.cif")
+          .f = ~ paste0("https://alphafold.ebi.ac.uk/files/AF-", .x, "-F1-model_", alphafold_version, ".cif")
         )
 
         names(batches) <- paste0(uniprot_ids, "_AlphaFold")
@@ -399,7 +403,7 @@ map_peptides_on_structure <- function(peptide_data,
         # same as above but for .pdb files. Indexing is different.
         batches <- purrr::map(
           .x = uniprot_ids,
-          .f = ~ paste0("https://alphafold.ebi.ac.uk/files/AF-", .x, "-F1-model_v3.pdb")
+          .f = ~ paste0("https://alphafold.ebi.ac.uk/files/AF-", .x, "-F1-model_", alphafold_version, ".pdb")
         )
 
         names(batches) <- paste0(uniprot_ids, "_AlphaFold")
