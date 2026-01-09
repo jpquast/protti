@@ -255,11 +255,11 @@ calculate_treatment_enrichment <- function(data,
     {
       if (fill_by_group & !group_missing) {
         ggplot2::ggplot(., ggplot2::aes(.data$name, .data$value, fill = .data$group)) +
-          ggplot2::geom_col(col = "black", size = 1.2) +
+          ggplot2::geom_col(col = "black") +
           scale_fill_manual(values = fill_colours)
       } else {
         ggplot2::ggplot(., ggplot2::aes(.data$name, .data$value)) +
-          ggplot2::geom_col(fill = fill_colours[1], col = "black", size = 1.2)
+          ggplot2::geom_col(fill = fill_colours[1], col = "black")
       }
     } +
     {

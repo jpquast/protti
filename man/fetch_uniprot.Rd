@@ -9,7 +9,7 @@ fetch_uniprot(
   columns = c("protein_name", "length", "sequence", "gene_names", "xref_geneid",
     "xref_string", "go_f", "go_p", "go_c", "cc_interaction", "ft_act_site", "ft_binding",
     "cc_cofactor", "cc_catalytic_activity", "xref_pdb", "keyword"),
-  batchsize = 200,
+  batchsize = 100,
   max_tries = 10,
   timeout = 20,
   show_progress = TRUE
@@ -23,7 +23,7 @@ possible columns can be found \href{https://www.uniprot.org/help/return_fields}{
 cross-referenced database provide the database name with the prefix "xref_", e.g. \code{"xref_pdb"})}
 
 \item{batchsize}{a numeric value that specifies the number of proteins processed in a single
-single query. Default and max value is 200.}
+single query. Default and max value is 100.}
 
 \item{max_tries}{a numeric value that specifies the number of times the function tries to download
 the data in case an error occurs. The default is 10.}

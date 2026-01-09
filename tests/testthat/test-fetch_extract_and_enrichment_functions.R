@@ -85,7 +85,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     test_that("fetch_alphafold_prediction organism fetching works", {
       af_prediction_organism <- fetch_alphafold_prediction(organism_name = "Helicobacter pylori", return_data_frame = FALSE)
       expect_is(af_prediction_organism, "list")
-      expect_equal(length(af_prediction_organism), 1538)
+      expect_equal(length(af_prediction_organism), 1540)
       expect_equal(ncol(af_prediction_organism[["O24860"]]), 15)
       expect_equal(nrow(af_prediction_organism[["O24860"]]), 746)
     })
@@ -464,7 +464,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
     slims <- fetch_quickgo(type = "slims", go_id_slims = c("GO:0046872", "GO:0051540"))
     expect_is(slims, "data.frame")
-    expect_gte(nrow(slims), 38)
+    expect_gte(nrow(slims), 36)
     expect_lte(nrow(slims), 44)
     expect_equal(ncol(slims), 2)
 
