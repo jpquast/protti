@@ -15,6 +15,7 @@
 * Fixed issue #251. Sodium ions (Na) are not read as `NA` anymore, when using the `fetch_pdb()` function.
 * `calculate_go_enrichment()` can now correctly handle groups that are of type factor.
 * Fixed an issue in `map_peptides_on_structure()` where `scale_per_structure = TRUE` incorrectly scaled AlphaFold predictions together (because missing `pdb_id` values were grouped as `NA`). AlphaFold predictions are now scaled per UniProt ID, matching per-structure behavior.
+* Fixed issue #279. The x-axis of `calculate_go_enrichment()` is correctly displayed.
 
 ## Additional Changes
 
