@@ -547,7 +547,6 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
       } +
       ggplot2::scale_fill_manual(values = c(Deenriched = barplot_fill_colour[1], Enriched = barplot_fill_colour[2])) +
       ggplot2::scale_y_continuous(
-        labels = scales::number_format(accuracy = 1),
         expand = expansion(mult = c(0, 0.05))
       ) +
       ggplot2::coord_flip() +
@@ -636,10 +635,19 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     }
 
     # Make gradient
-    colfunc <- scales::gradient_n_pal(colours, values = c(
-      min(plot_input_heatmap$neg_log_sig),
-      max(plot_input_heatmap$neg_log_sig)
-    ))
+    if (diff(range(plot_input_heatmap$neg_log_sig)) != 0) {
+      colfunc <- scales::gradient_n_pal(colours, values = c(
+        min(plot_input_heatmap$neg_log_sig),
+        max(plot_input_heatmap$neg_log_sig)
+      ))
+    } else {
+      # If there is only one value providing the same value to the values argument causes an error when the colfunc functions is used.
+      # Therefore, we are extending the range in this case to still return a plot
+      colfunc <- scales::gradient_n_pal(colours, values = c(
+        plot_input_heatmap$neg_log_sig,
+        plot_input_heatmap$neg_log_sig + 1
+      ))
+    }
 
     # Add colours to data
     plot_input_heatmap <- plot_input_heatmap %>%

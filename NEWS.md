@@ -8,12 +8,17 @@
   * `percentage_covered_peptides`: Is the percentage of all provided peptides that are at least partially covered by the structure.
 * `calculate_go_enrichment()` received the argument `label_size` that allows the user to specifiy the size of the labels in the plot.
 * Added `fetch_interpro()`. The function allows you to fetch information from the InterPro database. There are two options, either domain level information about the proteins of interest can be retrieved. This includes also e.g. gene ontology terms of the domains as well as their positions within the protein. Second you can retrieve residue level information. These are any annotations of proteins that focus on residues or small stretches, such as active sites, binding sites etc. 
+* `fetch_alphafold_aligned_error()` received a `version` argument that lets the user directly control the AlphaFold database version used.
 
 ## Bug fixes
 
 * Fixed issue #193. This makes sure that information in retained columns can be propagated to newly created combinations, which were not present in the original data.
 * Fixed issue #251. Sodium ions (Na) are not read as `NA` anymore, when using the `fetch_pdb()` function.
 * `calculate_go_enrichment()` can now correctly handle groups that are of type factor.
+* Fixed an issue in `map_peptides_on_structure()` where `scale_per_structure = TRUE` incorrectly scaled AlphaFold predictions together (because missing `pdb_id` values were grouped as `NA`). AlphaFold predictions are now scaled per UniProt ID, matching per-structure behavior.
+* Fixed issue #279. The x-axis of `calculate_go_enrichment()` is correctly displayed.
+* Fixed issue #285. `map_peptides_on_structure()` now received the `alphafold_version` argument that allows the user to update the AlphaFold database version if the old versions don't work anymore.
+* `fetch_uniprot()` received a new default for `batchsize`, which is `100` and dictated by the new limit of UniProt.
 
 ## Additional Changes
 
@@ -21,7 +26,10 @@
 * `assign_peptide_type` now takes the `start` argument, containing the start position of a peptide. If a protein does not have any peptide starting at position `1` and there is a peptide starting at position `2`, this peptide will be considered "tryptic" at the N-terminus. This is because the initial Methionine is likely missing due to processing for every copy of the protein and therefore position `2` is the true N-terminus.
 * `extract_metal_binders()` now uses keywords from UniProt as well. In addition, only "enables" GO terms are considered now.
 * `fetch_uniprot()` received another default column "keyword".
-* `calculate_go_enrichment()` got improved error handling and now checks if any significant proteins are present in the input `data`. If none are found (`is_significant == TRUE` for no rows), the function exits early. 
+* `calculate_go_enrichment()`: 
+	* got improved error handling and now checks if any significant proteins are present in the input `data`. If none are found (`is_significant == TRUE` for no rows), the function exits early. 
+	* is now more robust for edge cases. A plot, instead of an error, is returned if there is only one significant GO term and `plot_style = "heatmap"` is selected.
+* `fetch_alphafold_prediction()` updated `version` to `"v6"`.
 
 # protti 0.9.1
 

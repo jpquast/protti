@@ -9,6 +9,7 @@ fetch_alphafold_aligned_error(
   error_cutoff = 20,
   timeout = 30,
   max_tries = 1,
+  version = "v6",
   return_data_frame = FALSE,
   show_progress = TRUE
 )
@@ -25,6 +26,10 @@ The default is 30 seconds.}
 
 \item{max_tries}{a numeric value that specifies the number of times the function tries to download
 the data in case an error occurs. The default is 1.}
+
+\item{version}{a character value that specifies the alphafold version that should be used. This
+is regularly updated by the database. We always try to make the current version the default version.
+Available version can be found here: https://ftp.ebi.ac.uk/pub/databases/alphafold/}
 
 \item{return_data_frame}{a logical value; if \code{TRUE} a data frame instead of a list
 is returned. It is recommended to only use this if information for few proteins is retrieved.
