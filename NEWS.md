@@ -14,6 +14,7 @@
 * Fixed issue #193. This makes sure that information in retained columns can be propagated to newly created combinations, which were not present in the original data.
 * Fixed issue #251. Sodium ions (Na) are not read as `NA` anymore, when using the `fetch_pdb()` function.
 * `calculate_go_enrichment()` can now correctly handle groups that are of type factor.
+* Fixed an issue in `map_peptides_on_structure()` where `scale_per_structure = TRUE` incorrectly scaled AlphaFold predictions together (because missing `pdb_id` values were grouped as `NA`). AlphaFold predictions are now scaled per UniProt ID, matching per-structure behavior.
 
 ## Additional Changes
 
