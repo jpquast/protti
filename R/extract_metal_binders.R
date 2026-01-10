@@ -876,7 +876,7 @@ extract_metal_binders <- function(data_uniprot,
     ))) %>%
     dplyr::distinct(.data$accession, .data$chebi_id, .data$keyword) %>%
     tidyr::drop_na("keyword") %>%
-    dplyr::rename("new_chebi_id" = .data$chebi_id)
+    dplyr::rename("new_chebi_id" = "chebi_id")
 
   if (show_progress == TRUE) {
     message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))

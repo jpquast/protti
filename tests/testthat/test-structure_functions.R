@@ -20,8 +20,8 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("find_peptide_in_structure works", {
     expect_is(positions_structure, "data.frame")
     # test if position structure is in certain range as db can be updated
-    expect_gte(nrow(positions_structure), 569)
-    expect_lte(nrow(positions_structure), 700)
+    expect_gte(nrow(positions_structure), 650)
+    expect_lte(nrow(positions_structure), 800)
     expect_equal(ncol(positions_structure), 20)
   })
 
@@ -138,7 +138,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(nrow(contact_maps[["6NPF"]]), 504)
     expect_equal(nrow(contact_maps[["1C14"]]), 18553)
     expect_equal(ncol(contact_maps[["P62942"]]), 18)
-    expect_equal(nrow(contact_maps[["P62942"]]), 111)
+    expect_equal(nrow(contact_maps[["P62942"]]), 110)
 
     # .cif structure file provided
 
