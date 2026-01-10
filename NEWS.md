@@ -9,6 +9,9 @@
 * `calculate_go_enrichment()` received the argument `label_size` that allows the user to specifiy the size of the labels in the plot.
 * Added `fetch_interpro()`. The function allows you to fetch information from the InterPro database. There are two options, either domain level information about the proteins of interest can be retrieved. This includes also e.g. gene ontology terms of the domains as well as their positions within the protein. Second you can retrieve residue level information. These are any annotations of proteins that focus on residues or small stretches, such as active sites, binding sites etc. 
 * `fetch_alphafold_aligned_error()` received a `version` argument that lets the user directly control the AlphaFold database version used.
+* `map_peptides_on_structure()` received new arguments (fixes issue #285):
+  * `alphafold_version`: allows the user to control the AlphaFold database version used (useful if older versions no longer work).
+  * `baseline_map_value` (optional): handles constant mappings. If all mapped values for a structure/protein (or the whole dataset when `scale_per_structure = FALSE`) equal this baseline, values are scaled to 50 instead of 100.
 
 ## Bug fixes
 
@@ -17,7 +20,6 @@
 * `calculate_go_enrichment()` can now correctly handle groups that are of type factor.
 * Fixed an issue in `map_peptides_on_structure()` where `scale_per_structure = TRUE` incorrectly scaled AlphaFold predictions together (because missing `pdb_id` values were grouped as `NA`). AlphaFold predictions are now scaled per UniProt ID, matching per-structure behavior.
 * Fixed issue #279. The x-axis of `calculate_go_enrichment()` is correctly displayed.
-* Fixed issue #285. `map_peptides_on_structure()` now received the `alphafold_version` argument that allows the user to update the AlphaFold database version if the old versions don't work anymore.
 * `fetch_uniprot()` received a new default for `batchsize`, which is `100` and dictated by the new limit of UniProt.
 
 ## Additional Changes

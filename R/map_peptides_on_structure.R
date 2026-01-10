@@ -47,6 +47,10 @@
 #' in the structure that do not map any selection receive a value of 0. If an amino acid position
 #' is associated with multiple mapped values, e.g. from different peptides, the maximum mapped
 #' value will be displayed.
+#' @param baseline_map_value optional, a numeric value defining the baseline of the
+#' `map_value`. If, for a given structure or protein or the whole dataset (`scale_per_structure = FALSE`),
+#' all mapped values are equal to this baseline, the scaled values are set to 50, which is the lower
+#' bound of the scaling range. If not provided, constant values are scaled to 100, which is the upper bound.
 #' @param file_format a character vector containing the file format of the structure that will be
 #' fetched from the database for the PDB identifiers provided in the `pdb_id` column. This
 #' can be either ".cif" or ".pdb". The default is `".cif"`. We recommend using ".cif" files
@@ -139,6 +143,7 @@ map_peptides_on_structure <- function(peptide_data,
                                       chain,
                                       auth_seq_id,
                                       map_value,
+                                      baseline_map_value = NULL,
                                       file_format = ".cif",
                                       alphafold_version = "v6",
                                       scale_per_structure = TRUE,
@@ -162,6 +167,9 @@ map_peptides_on_structure <- function(peptide_data,
       message("No internet connection.")
       return(invisible(NULL))
     }
+
+    # Check if the user provided a baseline
+    baseline_provided <- !missing(baseline_map_value)
 
     peptide_data_filter <- peptide_data %>%
       dplyr::ungroup() %>%
@@ -188,10 +196,16 @@ map_peptides_on_structure <- function(peptide_data,
       # determines if scores should by scaled by structure or
       # one scale for the whole data set.
       dplyr::group_by(.data$scaling_info) %>%
+      dplyr::mutate(all_baseline = (
+        baseline_provided &&
+          dplyr::n_distinct({{ map_value }}, na.rm = TRUE) == 1 &&
+          dplyr::first({{ map_value }}) == baseline_map_value
+      )) %>%
       dplyr::mutate({{ map_value }} := round(
-        scale_protti(c({{ map_value }}), method = "01", default_to_high = FALSE) * 50 + 50,
+        scale_protti(c({{ map_value }}), method = "01", default_to_high = !dplyr::first(.data$all_baseline)) * 50 + 50,
         digits = 2
       )) %>%
+      dplyr::select(-"all_baseline") %>%
       # Scale values between 50 and 100
       group_by({{ uniprot_id }}, {{ pdb_id }}, {{ chain }}, {{ auth_seq_id }}) %>%
       dplyr::mutate(residue_internal = stringr::str_split({{ auth_seq_id }}, pattern = ";")) %>%
@@ -590,8 +604,14 @@ map_peptides_on_structure <- function(peptide_data,
     peptide_data_filter <- peptide_data %>%
       dplyr::ungroup() %>%
       dplyr::distinct({{ uniprot_id }}, {{ chain }}, {{ auth_seq_id }}, {{ map_value }}) %>%
-      dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01", default_to_high = FALSE) * 50 + 50, digits = 2)) %>%
+      dplyr::mutate(all_baseline = (
+        baseline_provided &&
+          dplyr::n_distinct({{ map_value }}, na.rm = TRUE) == 1 &&
+          dplyr::first({{ map_value }}) == baseline_map_value
+      )) %>%
       # Scale values between 50 and 100
+      dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01", default_to_high = !dplyr::first(all_baseline)) * 50 + 50, digits = 2)) %>%
+      dplyr::select(-"all_baseline") %>%
       group_by({{ chain }}, {{ auth_seq_id }}) %>%
       dplyr::mutate(residue_internal = ifelse(!is.na({{ auth_seq_id }}),
                                      stringr::str_split({{ auth_seq_id }}, pattern = ";"),

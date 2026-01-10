@@ -11,6 +11,7 @@ map_peptides_on_structure(
   chain,
   auth_seq_id,
   map_value,
+  baseline_map_value = NULL,
   file_format = ".cif",
   alphafold_version = "v6",
   scale_per_structure = TRUE,
@@ -65,6 +66,11 @@ the same for every selection. For the mapping, values are scaled between 50 and 
 in the structure that do not map any selection receive a value of 0. If an amino acid position
 is associated with multiple mapped values, e.g. from different peptides, the maximum mapped
 value will be displayed.}
+
+\item{baseline_map_value}{optional, a numeric value defining the baseline of the
+\code{map_value}. If, for a given structure or protein or the whole dataset (\code{scale_per_structure = FALSE}),
+all mapped values are equal to this baseline, the scaled values are set to 50, which is the lower
+bound of the scaling range. If not provided, constant values are scaled to 100, which is the upper bound.}
 
 \item{file_format}{a character vector containing the file format of the structure that will be
 fetched from the database for the PDB identifiers provided in the \code{pdb_id} column. This

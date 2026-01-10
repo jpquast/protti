@@ -74,7 +74,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_gt(file.info(paste0(tempdir(), "/2EL9_P60906.pdb"))$size, 900000)
     expect_gt(file.info(paste0(tempdir(), "/P37648_AlphaFold.pdb"))$size, 300000)
 
-    file_pdb_6UU2_P0A8T7 <- readr::read_tsv(paste0(tempdir(), "/2EL9_P60906.pdb"), col_names = FALSE, show_col_types = FALSE, progress = FALSE) %>%
+    file_pdb_2EL9_P60906 <- readr::read_tsv(paste0(tempdir(), "/2EL9_P60906.pdb"), col_names = FALSE, show_col_types = FALSE, progress = FALSE) %>%
       dplyr::mutate(atoms = ifelse(stringr::str_detect(.data$X1, pattern = "^ATOM|^HETATM"), .data$X1, NA)) %>%
       dplyr::mutate(
         chain = stringr::str_sub(.data$atoms, start = 22, end = 22),
@@ -84,7 +84,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       dplyr::filter(residue %in% c(50, 55) & chain == "A") %>%
       dplyr::distinct(b_factor, residue, chain)
 
-    expect_equal(file_pdb_6UU2_P0A8T7$b_factor, c("     0", "   100"))
+    expect_equal(file_pdb_2EL9_P60906$b_factor, c("     0", "   100"))
 
     # .cif structure file provided
     positions_structure_filter_provided <- positions_structure_filter %>%
