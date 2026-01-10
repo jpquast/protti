@@ -67,7 +67,7 @@ predict_alphafold_domain <- function(pae_list,
                                      return_data_frame = FALSE,
                                      show_progress = TRUE) {
   if (!requireNamespace("igraph", quietly = TRUE)) {
-    message("Package \"igraph\" is needed for this function to work. Please install it.", call. = FALSE)
+    message("Package \"igraph\" is needed for this function to work. Please install it.")
     return(invisible(NULL))
   }
 

@@ -18,7 +18,7 @@
 #' "no_fit".
 drc_4p <- function(data, response, dose, log_logarithmic = TRUE, pb = NULL) {
   if (!requireNamespace("drc", quietly = TRUE)) {
-    message("Package \"drc\" is needed for this function to work. Please install it.", call. = FALSE)
+    message("Package \"drc\" is needed for this function to work. Please install it.")
     return(invisible(NULL))
   }
   if (!is.null(pb)) pb$tick()

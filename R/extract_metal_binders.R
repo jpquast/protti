@@ -133,11 +133,11 @@ extract_metal_binders <- function(data_uniprot,
   metal_go_slim_subset <- protti::metal_go_slim_subset
   # Check if required R packages are installed
   if (!requireNamespace("igraph", quietly = TRUE)) {
-    message("Package \"igraph\" is needed for this function to work. Please install it.", call. = FALSE)
+    message("Package \"igraph\" is needed for this function to work. Please install it.")
     return(invisible(NULL))
   }
   if (!requireNamespace("stringi", quietly = TRUE)) {
-    message("Package \"stringi\" is needed for this function to work. Please install it.", call. = FALSE)
+    message("Package \"stringi\" is needed for this function to work. Please install it.")
     return(invisible(NULL))
   }
 
