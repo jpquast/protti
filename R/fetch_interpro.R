@@ -117,7 +117,7 @@ fetch_interpro <- function(uniprot_ids = NULL,
 
         while (!is.null(next_url)) {
           # Call the protti function to query the API
-          query <- protti:::try_query(next_url,
+          query <- try_query(next_url,
             type = "application/json",
             max_tries = max_tries,
             timeout = timeout
@@ -215,7 +215,7 @@ fetch_interpro <- function(uniprot_ids = NULL,
         # Initialize the next page URL with the base query URL
         next_url <- paste0("https://www.ebi.ac.uk/interpro/api/protein/uniprot/", .x, "?residues")
 
-        query <- protti:::try_query(next_url,
+        query <- try_query(next_url,
           type = "application/json",
           max_tries = max_tries,
           timeout = timeout

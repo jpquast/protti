@@ -180,7 +180,6 @@ The function does not handle log2 transformed data.",
               xintercept = median,
               col = {{ condition }}
             ),
-            size = 1,
             linetype = "dashed",
             show.legend = FALSE
           ) +
