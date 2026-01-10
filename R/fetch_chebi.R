@@ -106,8 +106,10 @@ fetch_chebi <- function(relation = FALSE, stars = c(3), timeout = 60) {
 
     chebi_relation_type_clean <- chebi_relation_type %>%
       dplyr::select(c("id", "code")) %>%
-      dplyr::rename(type = "code",
-                    relation_type_id = "id")
+      dplyr::rename(
+        type = "code",
+        relation_type_id = "id"
+      )
 
     chebi_relation_clean <- chebi_relation %>%
       dplyr::filter(.data$status_id == 1) %>%
