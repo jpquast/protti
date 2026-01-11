@@ -29,7 +29,7 @@ jobs:
           # use 4.0 or 4.1 to check with rtools40's older compiler
           - {os: windows-latest, r: 'oldrel-4'}
 
-          - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release', bioc: 'devel'}
+          - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release', R_BIOC_VERSION: 'devel'}
           - {os: ubuntu-latest,  r: 'release'}
           - {os: ubuntu-latest,  r: 'oldrel-1'}
 
@@ -38,7 +38,7 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
       TEST_PROTTI: true
       BUILD_VIGNETTE: true
-      R_BIOC_VERSION: ${{ matrix.config.bioc }}
+      R_BIOC_VERSION: ${{ matrix.config.R_BIOC_VERSION }}
 
     steps:
       - uses: actions/checkout@v4
