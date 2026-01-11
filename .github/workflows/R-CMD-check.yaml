@@ -29,7 +29,7 @@ jobs:
           # use 4.0 or 4.1 to check with rtools40's older compiler
           - {os: windows-latest, r: 'oldrel-4'}
 
-          - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release', R_BIOC_VERSION: 'devel'}
+          - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,  r: 'release'}
           - {os: ubuntu-latest,  r: 'oldrel-1'}
 
@@ -38,7 +38,6 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
       TEST_PROTTI: true
       BUILD_VIGNETTE: true
-      R_BIOC_VERSION: ${{ matrix.config.R_BIOC_VERSION }}
 
     steps:
       - uses: actions/checkout@v4
@@ -50,6 +49,16 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+        
+      - name: Set Bioconductor repos for R-devel
+        if: matrix.config.r == 'devel'
+        run: |
+          cat <<'EOF' > ~/.Rprofile
+          if (!requireNamespace("BiocManager", quietly = TRUE)) {
+            install.packages("BiocManager")
+          }
+          options(repos = BiocManager::repositories())
+          EOF
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
