@@ -45,20 +45,22 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
+        if: matrix.config.r != 'devel'
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-        
-      - name: Set Bioconductor repos for R-devel
+
+      - uses: r-lib/actions/setup-r@v2
         if: matrix.config.r == 'devel'
-        run: |
-          cat <<'EOF' > ~/.Rprofile
-          if (!requireNamespace("BiocManager", quietly = TRUE)) {
-            install.packages("BiocManager")
-          }
-          options(repos = BiocManager::repositories())
-          EOF
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+          extra-repositories: |
+            https://bioconductor.org/packages/devel/bioc
+            https://bioconductor.org/packages/devel/data/annotation
+            https://bioconductor.org/packages/devel/data/experiment
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
