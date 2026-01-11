@@ -161,15 +161,15 @@ map_peptides_on_structure <- function(peptide_data,
     export_location <- paste0(export_location, "/")
   }
 
+  # Check if the user provided a baseline
+  baseline_provided <- !missing(baseline_map_value)
+
   # What to do if no structure file was provided:
   if (missing(structure_file)) {
     if (!curl::has_internet()) {
       message("No internet connection.")
       return(invisible(NULL))
     }
-
-    # Check if the user provided a baseline
-    baseline_provided <- !missing(baseline_map_value)
 
     peptide_data_filter <- peptide_data %>%
       dplyr::ungroup() %>%
@@ -610,7 +610,7 @@ map_peptides_on_structure <- function(peptide_data,
           dplyr::first({{ map_value }}) == baseline_map_value
       )) %>%
       # Scale values between 50 and 100
-      dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01", default_to_high = !dplyr::first(all_baseline)) * 50 + 50, digits = 2)) %>%
+      dplyr::mutate({{ map_value }} := round(scale_protti(c({{ map_value }}), method = "01", default_to_high = !dplyr::first(.data$all_baseline)) * 50 + 50, digits = 2)) %>%
       dplyr::select(-"all_baseline") %>%
       group_by({{ chain }}, {{ auth_seq_id }}) %>%
       dplyr::mutate(residue_internal = ifelse(!is.na({{ auth_seq_id }}),
