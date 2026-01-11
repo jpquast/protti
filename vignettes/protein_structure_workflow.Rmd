@@ -220,7 +220,7 @@ af_domains_res_05 <- predict_alphafold_domain(
 # This code won't be seen in the Vignette
 if (!is.null(af_domains_res_1)) {
   # Fetch structure file for model
-  protti:::try_query("https://alphafold.ebi.ac.uk/files/AF-P08839-F1-model_v3.pdb",
+  protti:::try_query("https://alphafold.ebi.ac.uk/files/AF-P08839-F1-model_v6.pdb",
     type = "text/tab-separated-values",
     col_names = FALSE,
     quote = "",
@@ -228,7 +228,7 @@ if (!is.null(af_domains_res_1)) {
     progress = FALSE
   ) %>%
     readr::write_tsv(
-      file = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"),
+      file = paste0(tempdir(), "/AF-P08839-F1-model_v6.pdb"),
       quote = "none",
       escape = "none",
       col_names = FALSE,
@@ -254,7 +254,7 @@ if (!is.null(af_domains_res_1)) {
 
   # Create model
   r3dmol() %>%
-    m_add_model(data = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"), format = "pdb") %>%
+    m_add_model(data = paste0(tempdir(), "/AF-P08839-F1-model_v6.pdb"), format = "pdb") %>%
     m_set_style(style = m_style_cartoon()) %>%
     m_add_style(
       style = m_style_cartoon(color = "#8047d6"),
@@ -293,7 +293,7 @@ if (!is.null(af_domains_res_1)) {
 
   # Create model
   r3dmol() %>%
-    m_add_model(data = paste0(tempdir(), "/AF-P08839-F1-model_v3.pdb"), format = "pdb") %>%
+    m_add_model(data = paste0(tempdir(), "/AF-P08839-F1-model_v6.pdb"), format = "pdb") %>%
     m_set_style(style = m_style_cartoon()) %>%
     m_add_style(
       style = m_style_cartoon(color = "#8047d6"),
