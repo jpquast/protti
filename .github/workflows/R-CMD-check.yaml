@@ -29,7 +29,7 @@ jobs:
           # use 4.0 or 4.1 to check with rtools40's older compiler
           - {os: windows-latest, r: 'oldrel-4'}
 
-          - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release', rspm: 'https://packagemanager.posit.co/cran/__linux__/noble/latest'}
+          - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,  r: 'release'}
           - {os: ubuntu-latest,  r: 'oldrel-1'}
 
@@ -38,7 +38,6 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
       TEST_PROTTI: true
       BUILD_VIGNETTE: true
-      RSPM: ${{ matrix.config.rspm }}
 
     steps:
       - uses: actions/checkout@v4
@@ -49,11 +48,13 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: ${{ matrix.config.r != 'devel' }}
+          use-public-rspm: true
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
+          extra-packages: |
+            any::rcmdcheck
+            any::BiocManager
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
