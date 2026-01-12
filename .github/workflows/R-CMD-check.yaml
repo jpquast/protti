@@ -56,11 +56,14 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
+          use-public-rspm: false
           extra-repositories: |
             https://bioconductor.org/packages/devel/bioc
             https://bioconductor.org/packages/devel/data/annotation
             https://bioconductor.org/packages/devel/data/experiment
+
+      - if: matrix.config.r == 'devel'
+        run: Rscript -e 'print(getOption("repos"))'
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
