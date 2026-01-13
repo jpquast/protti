@@ -1,6 +1,6 @@
 Package: protti
 Title: Bottom-Up Proteomics and LiP-MS Quality Control and Data Analysis Tools
-Version: 0.9.1.9000
+Version: 1.0.0
 Authors@R: 
     c(person(given = "Jan-Philipp",
            family = "Quast",
