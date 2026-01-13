@@ -11,14 +11,18 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   })
 
   protein <- fetch_uniprot(uniprot_ids = "P36578")
+  protein2 <- fetch_uniprot(uniprot_ids = "P00925")
   if (!is.null(protein)) {
     data <- tibble::tibble(
-      protein_id = rep("P36578", 3),
-      protein_sequence = rep(protein$sequence, 3),
+      protein_id = c(rep("P36578", 3), rep("P00925", 3)),
+      protein_sequence = c(rep(protein$sequence, 3), rep(protein2$sequence, 3)),
       peptide = c(
         stringr::str_sub(protein$sequence, start = 87, end = 97),
         stringr::str_sub(protein$sequence, start = 59, end = 71),
-        stringr::str_sub(protein$sequence, start = 10, end = 18)
+        stringr::str_sub(protein$sequence, start = 10, end = 18),
+        stringr::str_sub(protein2$sequence, start = 5, end = 10),
+        stringr::str_sub(protein2$sequence, start = 2, end = 15),
+        stringr::str_sub(protein2$sequence, start = 10, end = 15)
       )
     )
 
@@ -29,12 +33,18 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
             protein_sequence = protein_sequence,
             peptide_sequence = peptide
           ) %>%
-          peptide_type(aa_before = aa_before, last_aa = last_aa))
+          peptide_type(
+            aa_before = aa_before,
+            last_aa = last_aa,
+            aa_after = aa_after,
+            protein_id = protein_id,
+            start = start
+          ))
       })
       expect_is(assigned_types, "data.frame")
-      expect_equal(nrow(assigned_types), 3)
+      expect_equal(nrow(assigned_types), 6)
       expect_equal(ncol(assigned_types), 9)
-      expect_equal(assigned_types$pep_type, c("fully-tryptic", "semi-tryptic", "non-tryptic"))
+      expect_equal(assigned_types$pep_type, c("fully-tryptic", "semi-tryptic", "non-tryptic", "non-tryptic", "fully-tryptic", "fully-tryptic"))
     })
 
     assigned_types <- data %>%
@@ -42,13 +52,18 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
         protein_sequence = protein_sequence,
         peptide_sequence = peptide
       ) %>%
-      assign_peptide_type(aa_before = aa_before, last_aa = last_aa)
+      assign_peptide_type(
+        aa_before = aa_before,
+        last_aa = last_aa,
+        aa_after = aa_after,
+        protein_id = protein_id
+      )
 
     test_that("find_peptide and assign_peptide_type work", {
       expect_is(assigned_types, "data.frame")
-      expect_equal(nrow(assigned_types), 3)
+      expect_equal(nrow(assigned_types), 6)
       expect_equal(ncol(assigned_types), 9)
-      expect_equal(assigned_types$pep_type, c("fully-tryptic", "semi-tryptic", "non-tryptic"))
+      expect_equal(assigned_types$pep_type, c("fully-tryptic", "semi-tryptic", "non-tryptic", "non-tryptic", "fully-tryptic", "fully-tryptic"))
     })
 
 
@@ -61,9 +76,9 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
         ))
       })
       expect_is(coverage, "data.frame")
-      expect_equal(nrow(coverage), 3)
+      expect_equal(nrow(coverage), 6)
       expect_equal(ncol(coverage), 10)
-      expect_equal(unique(round(coverage$coverage, digits = 1)), 7.7)
+      expect_equal(unique(round(coverage$coverage, digits = 1)), c(7.7, 3.2))
     })
 
     coverage <- calculate_sequence_coverage(
@@ -74,14 +89,14 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
     test_that("calculate_sequence_coverage works", {
       expect_is(coverage, "data.frame")
-      expect_equal(nrow(coverage), 3)
+      expect_equal(nrow(coverage), 6)
       expect_equal(ncol(coverage), 10)
-      expect_equal(unique(round(coverage$coverage, digits = 1)), 7.7)
+      expect_equal(unique(round(coverage$coverage, digits = 1)), c(7.7, 3.2))
     })
 
     plot_data <- coverage %>%
       dplyr::mutate(
-        fold_change = c(3, -0.4, 2.1),
+        fold_change = c(3, -0.4, 2.1, 0.1, -0.1, 0.2),
         protein_length = nchar(protein_sequence)
       )
 

@@ -125,17 +125,17 @@ parallel_create_structure_contact_map <- function(data,
   if (any(dependency_test)) {
     dependency_name <- names(dependency_test[dependency_test == TRUE])
     if (length(dependency_name) == 1) {
-      message("Package \"",
+      message(
+        "Package \"",
         paste(dependency_name),
-        "\" is needed for this function to work. Please install it.",
-        call. = FALSE
+        "\" is needed for this function to work. Please install it."
       )
       return(invisible(NULL))
     } else {
-      message("Packages \"",
+      message(
+        "Packages \"",
         paste(dependency_name, collapse = "\" and \""),
-        "\" are needed for this function to work. Please install them.",
-        call. = FALSE
+        "\" are needed for this function to work. Please install them."
       )
       return(invisible(NULL))
     }

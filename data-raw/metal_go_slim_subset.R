@@ -246,7 +246,17 @@ parent_metal_ids <- c(
   "GO:0140987", # ATP:inorganic phosphate antiporter activity
   "GO:0080049", # L-gulono-1,4-lactone dehydrogenase activity
   "GO:0005227", # calcium-activated cation channel activity
-  "GO:0002935" # tRNA (adenine(37)-C2)-methyltransferase activity
+  "GO:0002935", # tRNA (adenine(37)-C2)-methyltransferase activity
+  "GO:0120520", # free fatty acid 2-hydroxylase activity
+  "GO:0120521", # 4-hydroxysphinganine ceramide fatty acyl 2-hydroxylase activity
+  "GO:0090415", # 7-hydroxymethyl chlorophyll a reductase activity
+  "GO:0043885", # anaerobic carbon-monoxide dehydrogenase activity
+  "GO:0016720", # acyl-lipid Delta(12)-acetylenase
+  "GO:0008403", # 25-hydroxycholecalciferol-24-hydroxylase activity
+  "GO:0045300", # stearoyl-[ACP] desaturase activity
+  "GO:0141118", # nitric oxide dioxygenase activity, heme protein as donor
+  "GO:1901683", # arsenate ion transmembrane transporter activity
+  "GO:0030342" # 1-alpha,25-dihydroxyvitamin D3 24-hydroxylase activity
 )
 
 # Retrieve slim dataset
@@ -275,7 +285,7 @@ metal_chebi_ids_wo_formula <- setNames(
 )
 
 # This vector contains additional ChEBI IDs that are metal related but do not contain a formula.
-# This should be updated if promted bellow (around line 532)
+# This should be updated if prompted bellow (around line 532)
 more_metal_chebi_ids_wo_formula <- c(
   "63063" = "22977", # cadmium cation
   "61345" = "18248", # chrysobactin
@@ -285,7 +295,7 @@ more_metal_chebi_ids_wo_formula <- c(
   "63056" = "27363", # zinc cation
   "64606" = "18248", # Fe3S4 iron-sulfur cluster
   "64607" = "18248", # Fe4S4 iron-sulfur cluster
-  "33731" = "33521", # cluster
+  "33731" = "25213", # cluster
   "5975" = "18248", # iron chelate
   "33515" = "27081", # transition element cation
   "33504" = "22314", # alkali metal cation
@@ -331,6 +341,7 @@ terms_metal_id_name <- terms_metal %>%
   distinct(main_id, main_name)
 
 terms_metal_paste <- paste0(paste0('"', terms_metal_id_name$main_id, '", \\# ', terms_metal_id_name$main_name), collapse = "\n")
+message("Add the following terms:\n", terms_metal_paste)
 # Assign a ChEBI ID to all GO terms.
 # If child terms do not have a ChEBI ID (or ChEBI IDs that are not metals) they take over the ChEBI ID from their parent
 
@@ -531,22 +542,11 @@ non_metal_chebis <- metal_go_slim_subset_pre %>%
   filter(!(slims_from_id %in% metal_chebis$slims_from_id)) # find all entries that are not in the metal_chebis list
 
 message(
-  "If this list is not empty please add to the more_metal_chebi_ids_wo_formula vector in line 279!\n In order for this not to be always empty first comment out the lines around 338.\n",
+  "If this list is not empty and contains metal IDs please add to the more_metal_chebi_ids_wo_formula vector in line 279!\n In order for this not to be always empty first comment out the lines around 351.\n",
   '"', paste0(na.omit(unique(non_metal_chebis$relations_term)), collapse = '",\n"'), '"'
 )
 
-# Manual annotation of remaining GO IDs
-
-message(
-  paste0(
-    paste0(
-      'paste0("',
-      unique(non_metal_chebis$slims_from_id), ";", unique(non_metal_chebis$main_name), '", ";", "CHEBI")'
-    ),
-    collapse = ",\n"
-  )
-)
-
+# Manual list of additional GO chebi annotations
 manual_go_chebi_annotation <- data.frame(name = c(
   paste0("GO:0030946;protein tyrosine phosphatase activity, metal-dependent", ";", "CHEBI:25213"),
   paste0("GO:0061473;murein tripeptide carboxypeptidase activity", ";", "CHEBI:25213"),
@@ -554,20 +554,16 @@ manual_go_chebi_annotation <- data.frame(name = c(
   paste0("GO:0000293;ferric-chelate reductase activity", ";", "CHEBI:29034|CHEBI:29033"),
   paste0("GO:0140487;metal ion sequestering activity", ";", "CHEBI:25213"),
   paste0("GO:0140486;zinc ion sequestering activity", ";", "CHEBI:29105"),
-  paste0("GO:0008823;cupric reductase activity", ";", "CHEBI:49552|CHEBI:29036"),
   paste0("GO:0004222;metalloendopeptidase activity", ";", "CHEBI:25213"),
   paste0("GO:0070006;metalloaminopeptidase activity", ";", "CHEBI:25213"),
   paste0("GO:0015344;siderophore uptake transmembrane transporter activity", ";", "CHEBI:26672"),
   paste0("GO:0015343;siderophore-iron transmembrane transporter activity", ";", "CHEBI:26672"),
-  paste0("GO:0004023;alcohol dehydrogenase activity, metal ion-independent", ";", "CHEBI:25213"),
   paste0("GO:0051002;ligase activity, forming nitrogen-metal bonds", ";", "CHEBI:25213"),
   paste0("GO:0051003;ligase activity, forming nitrogen-metal bonds, forming coordination complexes", ";", "CHEBI:25213"),
   paste0("GO:0046904;calcium oxalate binding", ";", "CHEBI:29108"),
-  paste0("GO:0050184;phosphatidylcholine desaturase activity", ";", "CHEBI:29034|CHEBI:29033"),
   paste0("GO:0004181;metallocarboxypeptidase activity", ";", "CHEBI:25213"),
   paste0("GO:0008235;metalloexopeptidase activity", ";", "CHEBI:25213"),
   paste0("GO:0008237;metallopeptidase activity", ";", "CHEBI:25213"),
-  paste0("GO:0043783;oxidoreductase activity, acting on metal ions, flavin as acceptor", ";", "CHEBI:25213"),
   paste0("GO:0140758;metal-dependent deNEDDylase activity", ";", "CHEBI:25213"),
   paste0("GO:0009046;zinc D-Ala-D-Ala carboxypeptidase activity", ";", "CHEBI:29105"),
   paste0("GO:0008191;metalloendopeptidase inhibitor activity", ";", "CHEBI:25213"),
@@ -580,18 +576,51 @@ manual_go_chebi_annotation <- data.frame(name = c(
   paste0("GO:0140314;calcium ion sequestering activity", ";", "CHEBI:39123"),
   paste0("GO:0106423;tubulin-tyrosine carboxypeptidase", ";", "CHEBI:25213"),
   paste0("GO:0015620;ferric-enterobactin transmembrane transporter activity", ";", "CHEBI:28199"),
-  paste0("GO:1902945;metalloendopeptidase activity involved in amyloid precursor protein catabolic process", ";", "CHEBI:25213")
+  paste0("GO:1902945;metalloendopeptidase activity involved in amyloid precursor protein catabolic process", ";", "CHEBI:25213"),
+  paste0("GO:0052631;sphingolipid 8-(E/Z)-desaturase activity", ";", "CHEBI:29034|CHEBI:29033"),
+  paste0("GO:0043833;[methyl-Co(III) methylamine-specific corrinoid protein]:coenzyme M methyltransferase activity", ";", "CHEBI:85033|85035"),
+  paste0("GO:0102985;delta12-fatty-acid desaturase activity", ";", "CHEBI:29034|CHEBI:29033"),
+  paste0("GO:0102866;acyl-lipid (8-3)-desaturase activity", ";", "CHEBI:29034|CHEBI:29033"),
+  paste0("GO:0102993;sn-2 acyl-lipid omega-3 desaturase (ferredoxin) activity", ";", "CHEBI:33737|CHEBI:33738")
 )) %>%
   separate(name, into = c("slims_from_id", "main_name", "chebi_id"), sep = ";") %>%
   mutate(chebi_id = str_split(chebi_id, pattern = "\\|")) %>%
   unnest(chebi_id) %>%
   left_join(distinct(non_metal_chebis, slims_from_id, slims_to_ids), by = "slims_from_id", relationship = "many-to-many")
 
+# Please add the following terms to the list
+new_terms <- non_metal_chebis %>%
+  filter(!slims_from_id %in% manual_go_chebi_annotation$slims_from_id)
+
+message(
+  paste0(
+    paste0(
+      'paste0("',
+      unique(new_terms$slims_from_id), ";", unique(new_terms$main_name), '", ";", "CHEBI")'
+    ),
+    collapse = ",\n"
+  )
+)
+
+# Please remove the now obsolete terms from the list
+obsolete_manual_terms <- manual_go_chebi_annotation %>%
+  filter(!slims_from_id %in% non_metal_chebis$slims_from_id)
+
+message(
+  paste0(
+    paste0(
+      'paste0("',
+      unique(obsolete_manual_terms$slims_from_id), ";", unique(obsolete_manual_terms$main_name), '", ";", "CHEBI")'
+    ),
+    collapse = ",\n"
+  )
+)
+
 metal_go_slim_subset <- metal_chebis %>%
   bind_rows(manual_go_chebi_annotation) %>%
   distinct(slims_from_id, slims_to_ids, main_name, chebi_id, relations_relation, relations_term, database) %>%
   mutate(database = ifelse(is.na(database), "manual", database)) %>%
-  left_join(distinct(metal_chebi, chebi_accession, metal_atom_id), by = c("chebi_id" = "chebi_accession")) %>%
+  left_join(distinct(metal_chebi, chebi_accession, metal_atom_id), by = c("chebi_id" = "chebi_accession"), relationship = "many-to-many") %>%
   mutate(chebi_id = str_remove(chebi_id, pattern = "CHEBI:"))
 
 usethis::use_data(metal_go_slim_subset, overwrite = TRUE)

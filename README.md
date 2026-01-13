@@ -7,7 +7,7 @@
 
 [![R-CMD-check](https://github.com/jpquast/protti/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jpquast/protti/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jpquast/protti?branch=master)
+coverage](https://codecov.io/gh/jpquast/protti/graph/badge.svg)](https://app.codecov.io/gh/jpquast/protti)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/protti)](https://CRAN.R-project.org/package=protti)
 [![DOI:10.1093/bioadv/vbab041](http://img.shields.io/badge/DOI-10.1093/bioadv/vbab041-5680C1.svg)](https://doi.org/10.1093/bioadv/vbab041)
@@ -27,16 +27,12 @@ be analysed.
 Picotti at ETH Zurich. Our lab is focused on protein structural changes
 that occur in response to perturbations such as metabolite, drug and
 protein binding-events, as well as protein aggregation and enzyme
-activation ([Piazza
-2018](https://www.sciencedirect.com/science/article/pii/S0092867417314484),
-[Piazza
-2020](https://www.nature.com/articles/s41467-020-18071-x#additional-information),
-[Cappelletti, Hauser & Piazza
-2021](https://www.sciencedirect.com/science/article/pii/S0092867420316913)).
-We have devoloped mass spectrometry-based structural and chemical
-proteomic methods aimed at monitoring protein conformational changes in
-the complex cellular milieu ([Feng
-2014](https://www.nature.com/articles/nbt.2999)).
+activation ([Piazza 2018](https://doi.org/10.1016/j.cell.2017.12.006),
+[Piazza 2020](https://doi.org/10.1038/s41467-020-18071-x), [Cappelletti,
+Hauser & Piazza 2021](https://doi.org/10.1016/j.cell.2020.12.021)). We
+have devoloped mass spectrometry-based structural and chemical proteomic
+methods aimed at monitoring protein conformational changes in the
+complex cellular milieu ([Feng 2014](https://doi.org/10.1038/nbt.2999)).
 
 There is a wide range of functions **protti** provides to the user. The
 main areas of application are:
@@ -153,7 +149,7 @@ In this example we are going to analyse synthetic data of which we know
 the ground truth. The same principles would apply to any real data.
 Before you start analysing your data you should load all required
 packages. **protti** is designed to work well with the
-[`tidyverse`](https://www.tidyverse.org) package family and we will use
+[`tidyverse`](https://tidyverse.org/) package family and we will use
 them for this example. Therefore, you should also load them before you
 get started. Note: If you do not have the `tidyverse` installed you can
 do so by removing the comment sign (#) in front of the
@@ -201,15 +197,17 @@ protein intensities.
 set.seed(42) # Makes example reproducible
 
 # Create synthetic data
-data <- create_synthetic_data(n_proteins = 100,
-                              frac_change = 0.05,
-                              n_replicates = 4,
-                              n_conditions = 2,
-                              method = "effect_random",
-                              additional_metadata = FALSE)
+data <- create_synthetic_data(
+  n_proteins = 100,
+  frac_change = 0.05,
+  n_replicates = 4,
+  n_conditions = 2,
+  method = "effect_random",
+  additional_metadata = FALSE
+)
 
-# The method "effect_random" as opposed to "dose-response" just randomly samples 
-# the extend of the change of significantly changing peptides for each condition. 
+# The method "effect_random" as opposed to "dose-response" just randomly samples
+# the extend of the change of significantly changing peptides for each condition.
 # They do not follow any trend and can go in any direction.
 ```
 
@@ -252,10 +250,12 @@ contains the normalised intensities.
 normalise it another time.*
 
 ``` r
-normalised_data <- data %>% 
-  normalise(sample = sample,
-            intensity_log2 = peptide_intensity_missing,
-            method = "median")
+normalised_data <- data %>%
+  normalise(
+    sample = sample,
+    intensity_log2 = peptide_intensity_missing,
+    method = "median"
+  )
 ```
 
 #### Assign Missingness
@@ -284,16 +284,18 @@ thresholds if you want to be more or less conservative with how many
 data points to retain.
 
 ``` r
-data_missing <- normalised_data %>% 
-  assign_missingness(sample = sample,
-                     condition = condition,
-                     grouping = peptide,
-                     intensity = normalised_intensity_log2,
-                     ref_condition = "condition_1",
-                     retain_columns = c(protein, change_peptide))
+data_missing <- normalised_data %>%
+  assign_missingness(
+    sample = sample,
+    condition = condition,
+    grouping = peptide,
+    intensity = normalised_intensity_log2,
+    ref_condition = "condition_1",
+    retain_columns = c(protein, change_peptide)
+  )
 
-# Next to the columns it generates, assign_missingness only contains the columns 
-# you provide as input in its output. If you want to retain additional columns you 
+# Next to the columns it generates, assign_missingness only contains the columns
+# you provide as input in its output. If you want to retain additional columns you
 # can provide them in the retain_columns argument.
 ```
 
@@ -317,16 +319,18 @@ missingness cutoffs also in order to define which comparisons are too
 incomplete to be trustworthy even if significant.
 
 ``` r
-result <- data_missing %>% 
-  calculate_diff_abundance(sample = sample,
-                           condition = condition,
-                           grouping = peptide,
-                           intensity_log2 = normalised_intensity_log2,
-                           missingness = missingness,
-                           comparison = comparison,
-                           filter_NA_missingness = TRUE,
-                           method = "moderated_t-test",
-                           retain_columns = c(protein, change_peptide))
+result <- data_missing %>%
+  calculate_diff_abundance(
+    sample = sample,
+    condition = condition,
+    grouping = peptide,
+    intensity_log2 = normalised_intensity_log2,
+    missingness = missingness,
+    comparison = comparison,
+    filter_NA_missingness = TRUE,
+    method = "moderated_t-test",
+    retain_columns = c(protein, change_peptide)
+  )
 ```
 
 Next we can use a Volcano plot to visualize significantly changing
@@ -335,15 +339,17 @@ interactive plot with the `interactive` argument. Please note that this
 is not recommended for large datasets.
 
 ``` r
-result %>% 
-  volcano_plot(grouping = peptide,
-                 log2FC = diff,
-                 significance = pval,
-                 method = "target",
-                 target_column = change_peptide,
-                 target = TRUE,
-                 legend_label = "Ground Truth",
-                 significance_cutoff = c(0.05, "adj_pval"))
+result %>%
+  volcano_plot(
+    grouping = peptide,
+    log2FC = diff,
+    significance = pval,
+    method = "target",
+    target_column = change_peptide,
+    target = TRUE,
+    legend_label = "Ground Truth",
+    significance_cutoff = c(0.05, "adj_pval")
+  )
 ```
 
-<img src="man/figures/README-volcano-1.png" width="100%" />
+<img src="man/figures/README-volcano-1.png" alt="" width="100%" />

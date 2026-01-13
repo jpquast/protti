@@ -10,7 +10,7 @@ A data frame containing peptide level data from a Spectronaut report.
 \source{
 Piazza, I., Beaton, N., Bruderer, R. et al. A machine learning-based chemoproteomic
 approach to identify drug targets and binding sites in complex proteomes. Nat Commun 11, 4200
-(2020). https://doi.org/10.1038/s41467-020-18071-x
+(2020). \doi{10.1038/s41467-020-18071-x}
 }
 \usage{
 rapamycin_dose_response

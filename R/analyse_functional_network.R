@@ -117,7 +117,7 @@ analyse_functional_network <- function(data,
   if (!requireNamespace("STRINGdb", quietly = TRUE)) {
     message(strwrap("Package \"STRINGdb\" is needed for this function to work. Please install it.",
       prefix = "\n", initial = ""
-    ), call. = FALSE)
+    ))
     return(invisible(NULL))
   }
 

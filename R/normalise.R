@@ -69,7 +69,7 @@ normalise <-
         dplyr::mutate(run_median = stats::median({{ intensity_log2 }}, na.rm = TRUE)) %>%
         dplyr::ungroup({{ sample }}) %>%
         dplyr::mutate(normalised_intensity_log2 = {{ intensity_log2 }} - .data$run_median + .data$global_median) %>%
-        dplyr::select(-.data$run_median, -.data$global_median)
+        dplyr::select(-c("run_median", "global_median"))
 
       return(median_normalised)
     }

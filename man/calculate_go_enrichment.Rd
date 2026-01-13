@@ -22,6 +22,7 @@ calculate_go_enrichment(
   heatmap_fill_colour = protti::mako_colours,
   heatmap_fill_colour_rev = TRUE,
   label = TRUE,
+  label_size = 7,
   enrichment_type = "all",
   replace_long_name = TRUE,
   label_move_frac = 0.2,
@@ -95,6 +96,9 @@ should be reversed in order. Default is \code{TRUE}.}
 
 \item{label}{a logical argument indicating whether labels should be added to the plot.
 Default is TRUE.}
+
+\item{label_size}{a numeric argument that specifies the text size of the labels with the unit "pt".
+The default is 7.}
 
 \item{enrichment_type}{a character argument that is either "all", "enriched" or "deenriched". This
 determines if the enrichment analysis should be performed in order to check for both enrichemnt and

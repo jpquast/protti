@@ -11,7 +11,9 @@ map_peptides_on_structure(
   chain,
   auth_seq_id,
   map_value,
+  baseline_map_value = NULL,
   file_format = ".cif",
+  alphafold_version = "v6",
   scale_per_structure = TRUE,
   export_location = NULL,
   structure_file = NULL,
@@ -46,13 +48,13 @@ the author defined chain definitions for both ".cif" and ".pdb" files. When the 
 \code{find_peptide_in_structure} function is used as the input for this function, this
 corresponds to the \code{auth_asym_id} column.}
 
-\item{auth_seq_id}{optional, a character (or numeric) column in the \code{peptide_data} data frame
+\item{auth_seq_id}{a character (or numeric) column in the \code{peptide_data} data frame
 that contains semicolon separated positions of peptides, protein regions or amino acids in the
-corresponding PDB structure or AlphaFold prediction. This information can be obtained from the
-\code{find_peptide_in_structure} function. The corresponding column in the output is called
-\code{auth_seq_id}. In case of AlphaFold predictions, UniProt positions should be used. If
-signal positions and not stretches of amino acids are provided, the column can be numeric and
-does not need to contain the semicolon separator.}
+corresponding PDB structure or AlphaFold prediction. Can be \code{NA} for rows that should not be mapped.
+This information can be obtained from the \code{find_peptide_in_structure} function. The corresponding
+column in the output is called \code{auth_seq_id}. In case of AlphaFold predictions, UniProt positions
+should be used. If signal positions and not stretches of amino acids are provided, the column
+can be numeric and does not need to contain the semicolon separator.}
 
 \item{map_value}{a numeric column in the \code{peptide_data} data frame that contains a value
 associated with each peptide, protein region or amino acid. If one start to end position pair
@@ -65,6 +67,11 @@ in the structure that do not map any selection receive a value of 0. If an amino
 is associated with multiple mapped values, e.g. from different peptides, the maximum mapped
 value will be displayed.}
 
+\item{baseline_map_value}{optional, a numeric value defining the baseline of the
+\code{map_value}. If, for a given structure or protein or the whole dataset (\code{scale_per_structure = FALSE}),
+all mapped values are equal to this baseline, the scaled values are set to 50, which is the lower
+bound of the scaling range. If not provided, constant values are scaled to 100, which is the upper bound.}
+
 \item{file_format}{a character vector containing the file format of the structure that will be
 fetched from the database for the PDB identifiers provided in the \code{pdb_id} column. This
 can be either ".cif" or ".pdb". The default is \code{".cif"}. We recommend using ".cif" files
@@ -72,6 +79,10 @@ since every structure contains a ".cif" file but not every structure contains a 
 Fetching and mapping onto ".cif" files takes longer than for ".pdb" files. If a structure file
 is provided in the \code{structure_file} argument, the file format is detected automatically
 and does not need to be provided.}
+
+\item{alphafold_version}{a character value that specifies the alphafold version that should be
+used. This is regularly updated by the database. We always try to make the current version the
+default version. Available version can be found here: https://ftp.ebi.ac.uk/pub/databases/alphafold/}
 
 \item{scale_per_structure}{a logical value that specifies if scaling should be performed for
 each structure independently (TRUE) or over the whole data set (FALSE). The default is TRUE,

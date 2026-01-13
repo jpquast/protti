@@ -101,7 +101,7 @@ qc_data_completeness <- function(data,
 
   completeness_plot <- result %>%
     ggplot2::ggplot(ggplot2::aes({{ sample }}, .data$completeness)) +
-    ggplot2::geom_col(fill = "#5680C1", col = "black", size = 1) +
+    ggplot2::geom_col(fill = "#5680C1", col = "black", linewidth = 1) +
     {
       if (interactive == FALSE) {
         geom_text(

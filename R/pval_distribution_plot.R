@@ -63,8 +63,7 @@ pval_distribution_plot <- function(data, grouping, pval, facet_by = NULL) {
       binwidth = 0.05,
       boundary = 0,
       color = "black",
-      fill = "#5680C1",
-      size = 1
+      fill = "#5680C1"
     ) +
     ggplot2::labs(title = "P-Value Distribution", x = "P-Value", y = "Frequency") +
     {

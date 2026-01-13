@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/jpquast/protti/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jpquast/protti/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jpquast/protti?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/jpquast/protti/graph/badge.svg)](https://app.codecov.io/gh/jpquast/protti)
 [![CRAN status](https://www.r-pkg.org/badges/version/protti)](https://CRAN.R-project.org/package=protti)
 [![DOI:10.1093/bioadv/vbab041](http://img.shields.io/badge/DOI-10.1093/bioadv/vbab041-5680C1.svg)](https://doi.org/10.1093/bioadv/vbab041)
 <!-- badges: end -->
@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 The goal of **protti** is to provide flexible functions and workflows for proteomics quality control and data analysis, within a single, user-friendly package. It can be used for label-free DDA, DIA and SRM data generated with search tools and software such as Spectronaut, MaxQuant, Proteome Discoverer and Skyline. Both limited proteolysis mass spectrometry (LiP-MS) and regular bottom-up proteomics experiments can be analysed.
 
-**protti** is developed  and maintained by members of the lab of Paola Picotti at ETH Zurich. Our lab is focused on protein structural changes that occur in response to perturbations such as metabolite, drug and protein binding-events, as well as protein aggregation and enzyme activation ([Piazza 2018](https://www.sciencedirect.com/science/article/pii/S0092867417314484), [Piazza 2020](https://www.nature.com/articles/s41467-020-18071-x#additional-information), [Cappelletti, Hauser & Piazza 2021](https://www.sciencedirect.com/science/article/pii/S0092867420316913)). We have devoloped mass spectrometry-based structural and chemical proteomic methods aimed at monitoring protein conformational changes in the complex cellular milieu ([Feng 2014](https://www.nature.com/articles/nbt.2999)). 
+**protti** is developed  and maintained by members of the lab of Paola Picotti at ETH Zurich. Our lab is focused on protein structural changes that occur in response to perturbations such as metabolite, drug and protein binding-events, as well as protein aggregation and enzyme activation ([Piazza 2018](https://doi.org/10.1016/j.cell.2017.12.006), [Piazza 2020](https://doi.org/10.1038/s41467-020-18071-x), [Cappelletti, Hauser & Piazza 2021](https://doi.org/10.1016/j.cell.2020.12.021)). We have devoloped mass spectrometry-based structural and chemical proteomic methods aimed at monitoring protein conformational changes in the complex cellular milieu ([Feng 2014](https://doi.org/10.1038/nbt.2999)). 
 
 There is a wide range of functions **protti** provides to the user. The main areas of application are:
 
@@ -88,7 +88,7 @@ For more in detail workflow suggestions and demonstrations of various functions,
 
 ### Data analysis
 
-In this example we are going to analyse synthetic data of which we know the ground truth. The same principles would apply to any real data. Before you start analysing your data you should load all required packages. **protti** is designed to work well with the [`tidyverse`](https://www.tidyverse.org) package family and we will use them for this example. Therefore, you should also load them before you get started. Note: If you do not have the `tidyverse` installed you can do so by removing the comment sign (#) in front of the `install.packages()` function. This will install them directly from CRAN.
+In this example we are going to analyse synthetic data of which we know the ground truth. The same principles would apply to any real data. Before you start analysing your data you should load all required packages. **protti** is designed to work well with the [`tidyverse`](https://tidyverse.org/) package family and we will use them for this example. Therefore, you should also load them before you get started. Note: If you do not have the `tidyverse` installed you can do so by removing the comment sign (#) in front of the `install.packages()` function. This will install them directly from CRAN.
 
 ```{r load_package, message=FALSE, warning=FALSE}
 # Load protti

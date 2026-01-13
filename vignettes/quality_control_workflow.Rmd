@@ -61,7 +61,7 @@ The input data should have a similar structure to this example:
 
 ## Getting started
 
-Before we can start analysing our data, we need to load the **protti** package. This is done by using the base R function `library()`. In addition, we are also loading the packages `magrittr` and `dplyr`. Both `magrittr` and `dplyr` are part of the [tidyverse](https://www.tidyverse.org), a collection of packages that provide useful functionalities for data processing and visualisation. If you use many tidyverse packages in your workflow you can easily load all at once by calling `library(tidyverse)`.
+Before we can start analysing our data, we need to load the **protti** package. This is done by using the base R function `library()`. In addition, we are also loading the packages `magrittr` and `dplyr`. Both `magrittr` and `dplyr` are part of the [tidyverse](https://tidyverse.org/), a collection of packages that provide useful functionalities for data processing and visualisation. If you use many tidyverse packages in your workflow you can easily load all at once by calling `library(tidyverse)`.
 
 ```{r setup, eval = test_protti, message = FALSE, warning = FALSE}
 library(protti)

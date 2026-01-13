@@ -506,6 +506,107 @@ metal_list <- data.frame(
     NA,
     NA,
     NA
+  ),
+  chebi_ion_id = c(
+    "49713",
+    "39132",
+    "33610",
+    "29101",
+    "39127",
+    "63062",
+    "37763", # elemental
+    "29103",
+    "39123",
+    "155869", # elemental
+    "190496",
+    "35172",
+    "33516",
+    "25155",
+    "24875",
+    "23336",
+    "25516",
+    "23378",
+    "63056",
+    "84043",
+    "30549;30550",
+    "35826", # elemental
+    "49847",
+    "39129",
+    "49978;49962",
+    NA, # no zirconium ion
+    "155922", # elemental
+    "37239",
+    NA, # no technetium ion
+    "30686;49862",
+    NA, # no Rhodium ion
+    NA, # no Palladium ion
+    "60253",
+    "63063",
+    "49664",
+    "30475;30476",
+    "49867",
+    "36660", # elemental
+    "60270",
+    "39125",
+    "37317;49701",
+    "37265", # elemental submitted: CHEBI:231845
+    "229784",
+    "229785",
+    NA, # no Promethium ion
+    "49890",
+    "49588;49591",
+    "37285", # elemental submitted: CHEBI:231846
+    "49902",
+    NA, # no Dysprosium ion
+    "49650",
+    NA, # no Erbium ion
+    NA, # no Thulium ion
+    "49980",
+    "49746",
+    NA, # no Hafnium ion
+    NA, # no Tantalum ion
+    "60401",
+    NA, # no Rhenium ion
+    "30691;49812;49789",
+    "49704",
+    "63526",
+    "33970", # elemental
+    "25197",
+    "49920;30439",
+    "60252",
+    "85544",
+    NA, # no Polonium ion
+    NA, # no Astatine ion
+    "33502",
+    NA, # no Radium ion
+    NA, # no Actinium ion
+    NA, # no Thorium ion
+    NA, # no Protactinium ion
+    "33500",
+    NA, # no Neptunium ion
+    NA, # no Plutonium ion
+    NA, # no Americium ion
+    NA, # no Curium ion
+    NA, # no Berkelium ion
+    NA, # no Californium ion
+    NA, # no Einsteinium ion
+    NA, # no Fermium ion
+    NA, # no Mendelevium ion
+    NA, # no Nobelium ion
+    NA, # no Lawrencium ion
+    NA, # no Rutherfordium ion
+    NA, # no Dubnium ion
+    NA, # no Seaborgium ion
+    NA, # no Bohrium ion
+    NA, # no Hassium ion
+    NA, # no Meitnerium ion
+    NA, # no Darmstadtium ion
+    NA, # no Roentgenium ion
+    NA, # no Copernicium ion
+    NA, # no Nihonium ion
+    NA, # no Flerovium ion
+    NA, # no Moscovium ion
+    NA # no Livermorium ion
   )
 )
 

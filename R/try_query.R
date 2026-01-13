@@ -77,9 +77,16 @@ try_query <-
       return(invisible("No internet connection"))
     }
 
-    if (httr::http_error(query_result)) {
+    # If response was an error return that error message
+    if (inherits(query_result, "response") && httr::http_error(query_result)) {
       if (!silent) httr::message_for_status(query_result)
       return(invisible(httr::http_status(query_result)$message))
+    }
+
+    # Handle other types of errors separately from query errors
+    if (inherits(query_result, "character")) {
+      if (!silent) message(query_result)
+      return(invisible(query_result))
     }
 
     # Record readr progress variable to set back later

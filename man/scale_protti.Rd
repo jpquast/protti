@@ -4,7 +4,7 @@
 \alias{scale_protti}
 \title{Scaling a vector}
 \usage{
-scale_protti(x, method)
+scale_protti(x, method, default_to_high = TRUE)
 }
 \arguments{
 \item{x}{a numeric vector}
@@ -13,6 +13,9 @@ scale_protti(x, method)
 the vector between 0 and 1. "center" scales the vector equal to \code{base::scale} around a
 center. This is done by subtracting the mean from every value and then deviding them by the
 standard deviation.}
+
+\item{default_to_high}{if there is only one number in the vector the "01" method will
+default to scale this to 1. If this argument is set to FALSE it will be scaled to 0 instead.}
 }
 \value{
 A scaled numeric vector.

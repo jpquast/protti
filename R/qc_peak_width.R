@@ -109,7 +109,6 @@ retention_time_start and retention_time_end columns.",
     )) %>%
     ggplot2::ggplot(ggplot2::aes({{ retention_time }}, .data$peak_width)) +
     ggplot2::stat_summary_bin(aes(col = {{ sample }}),
-      size = 1,
       geom = "line",
       binwidth = 1,
       fun = median

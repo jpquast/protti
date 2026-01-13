@@ -1,16 +1,16 @@
 Package: protti
 Title: Bottom-Up Proteomics and LiP-MS Quality Control and Data Analysis Tools
-Version: 0.9.0
+Version: 0.9.1.9000
 Authors@R: 
     c(person(given = "Jan-Philipp",
            family = "Quast",
            role = c("aut", "cre"),
-           email = "quast@imsb.biol.ethz.ch",
+           email = "jpquast.software@gmail.com",
            comment = c(ORCID = "0000-0003-2713-778X")),
 	person(given = "Dina",
            family = "Schuster",
            role = c("aut"),
-           email = "dschuster@ethz.ch",
+           email = "dina.schuster@outlook.com",
            comment = c(ORCID = "0000-0001-6611-8237")),
 	person(given = "ETH Zurich",
            role = c("cph", "fnd")))
@@ -43,8 +43,8 @@ Imports:
     methods,
     R.utils,
     stats,
-    missForest
-RoxygenNote: 7.3.2
+	missForest
+RoxygenNote: 7.3.3
 Suggests: 
     testthat,
     covr,

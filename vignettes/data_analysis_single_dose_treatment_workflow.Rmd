@@ -73,7 +73,7 @@ The input data should have a similar structure to this example:
   
 ## Getting started
   
-  Before we can start analysing our data, we need to load the **protti** package. This is done by using the base R function `library()`. In addition, we are also loading the packages `magrittr` and `dplyr`. Both `magrittr` and `dplyr` are part of the [tidyverse](https://www.tidyverse.org), a collection of packages that provide useful functionalities for data processing and visualisation. If you use many tidyverse packages in your workflow you can easily load all at once by calling `library(tidyverse)`.
+  Before we can start analysing our data, we need to load the **protti** package. This is done by using the base R function `library()`. In addition, we are also loading the packages `magrittr` and `dplyr`. Both `magrittr` and `dplyr` are part of the [tidyverse](https://tidyverse.org/), a collection of packages that provide useful functionalities for data processing and visualisation. If you use many tidyverse packages in your workflow you can easily load all at once by calling `library(tidyverse)`.
 
 ```{r setup, eval = test_protti, message = FALSE, warning = FALSE}
 library(protti)
@@ -202,7 +202,8 @@ data_filtered_uniprot <- data_filtered_proteotypic %>%
   assign_peptide_type(
     aa_before = aa_before,
     last_aa = last_aa,
-    aa_after = aa_after
+    aa_after = aa_after,
+    protein_id = pg_protein_accessions
   ) %>%
   calculate_sequence_coverage(
     protein_sequence = sequence,
@@ -231,7 +232,7 @@ Before the statistical hypothesis test we have to define the types of missing va
 
 After assigning the types of data missingness we use the function `calculate_diff_abundance()`. By selecting `method = t-test` the function will perform a Welch's t-test. There are also options included to perform a moderated t-test based on the R package `limma` or to detect differential abundances based on the algorithm implemented in the R package `proDA`. The algorithm used for `proDA` is based on a probabilistic dropout model which facilitates hypothesis testing (using a moderated t-test) while eliminating the need for imputation. 
 
-It has been shown that generally moderated t-tests perform much better also in proteomics data, as compared to t-tests ([Kammers et al. 2015](https://www.sciencedirect.com/science/article/pii/S2212968515000069)). Therefore, we will use a moderated t-test in this example.
+It has been shown that generally moderated t-tests perform much better also in proteomics data, as compared to t-tests ([Kammers et al. 2015](https://doi.org/10.1016/j.euprot.2015.02.002)). Therefore, we will use a moderated t-test in this example.
 
 Please note that in this example we are not imputing missing values. You can, however, do so by using the function `impute()`. This function uses the output of `assign_missingness()` as its input. You can use two different imputation methods: 
 
@@ -240,7 +241,7 @@ Please note that in this example we are not imputing missing values. You can, ho
 
 Both methods impute MAR data using the mean and variance of the condition with the missing data. Missingness assigned as `NA` will not be imputed.
 
-_Note: If data is imputed this can lead to invalid inferential conclusions due to underestimating statistical uncertainty or it can cause loss of statistical power ([Ahlmann-Eltze et al. 2020](https://www.biorxiv.org/content/10.1101/661496v1.full.pdf)). Therefore, we do not recommend using a moderated t-test or the proDA algorithm after imputation._
+_Note: If data is imputed this can lead to invalid inferential conclusions due to underestimating statistical uncertainty or it can cause loss of statistical power ([Ahlmann-Eltze et al. 2020](https://doi.org/10.1101/661496)). Therefore, we do not recommend using a moderated t-test or the proDA algorithm after imputation._
 
 Since we are dealing with a LiP-MS data set we perform the statistical analysis on the precursor* level. For protein abundance data you can simply use protein abundances as your intensities and select your protein groups column for the grouping argument. Make sure to retain any columns you need for further data analysis with the `retain_columns` argument of both functions.
 
