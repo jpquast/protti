@@ -48,7 +48,7 @@ _A peptide precursor is the actual molecular unit that was detected on the mass 
 
 # Getting started
 
-Before starting the analysis of your data you need to load **protti** and additional packages used for the analysis. As described on the [main page](https://jpquast.github.io/protti/index.html) of **protti**, the [tidyverse](https://www.tidyverse.org) package collection works well together with the rest of the package, by design. You can load packages after you installed them with the `library()` function.
+Before starting the analysis of your data you need to load **protti** and additional packages used for the analysis. As described on the [main page](https://jpquast.github.io/protti/index.html) of **protti**, the [tidyverse](https://tidyverse.org/) package collection works well together with the rest of the package, by design. You can load packages after you installed them with the `library()` function.
 
 ```{r load_packages, eval = test_protti, warning = FALSE, message = FALSE}
 # Load packages
