@@ -69,7 +69,8 @@ Suggests:
     farver,
     ggforce,
     xml2,
-    jsonlite
+    jsonlite,
+    missForest
 Depends: 
     R (>= 4.0)
 URL: https://github.com/jpquast/protti, https://jpquast.github.io/protti/

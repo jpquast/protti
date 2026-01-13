@@ -2,6 +2,7 @@
 
 ## New features 
 
+* `impute_randomforest()` new imputation method random forest using `missForest`.
 * The `fetch_pdb()` function now reads additional data about non-polymer ligands and the donor ligand positions (`nonpolymer_donor_label_seq_id`).
 * The `find_peptide_in_structure()` function now has additional outputs:
   * `start_adjusted` and `end_adjusted`: Are the adjusted start and end positions of a peptide if it is only partially covered by the structure.

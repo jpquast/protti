@@ -66,6 +66,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       expect_equal(assigned_types$pep_type, c("fully-tryptic", "semi-tryptic", "non-tryptic", "non-tryptic", "fully-tryptic", "fully-tryptic"))
     })
 
+
     test_that("deprecated sequence_coverage works", {
       rlang::with_options(lifecycle_verbosity = "warning", {
         expect_warning(coverage <- sequence_coverage(
