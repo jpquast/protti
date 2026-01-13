@@ -23,10 +23,10 @@ MaxQuant, Proteome Discoverer and Skyline. Both limited proteolysis mass
 spectrometry (LiP-MS) and regular bottom-up proteomics experiments can
 be analysed.
 
-**protti** is developed and maintained by members of the lab of Paola
-Picotti at ETH Zurich. Our lab is focused on protein structural changes
-that occur in response to perturbations such as metabolite, drug and
-protein binding-events, as well as protein aggregation and enzyme
+**protti** is developed and maintained by former members of the lab of
+Paola Picotti at ETH Zurich. The Picotti lab studies protein structural
+changes that occur in response to perturbations such as metabolite, drug
+and protein binding-events, as well as protein aggregation and enzyme
 activation ([Piazza 2018](https://doi.org/10.1016/j.cell.2017.12.006),
 [Piazza 2020](https://doi.org/10.1038/s41467-020-18071-x), [Cappelletti,
 Hauser & Piazza 2021](https://doi.org/10.1016/j.cell.2020.12.021)). We
