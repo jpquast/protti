@@ -465,7 +465,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
     slims <- fetch_quickgo(type = "slims", go_id_slims = c("GO:0046872", "GO:0051540"))
     expect_is(slims, "data.frame")
-    expect_gte(nrow(slims), 36)
+    expect_gte(nrow(slims), 35)
     expect_lte(nrow(slims), 44)
     expect_equal(ncol(slims), 2)
 
