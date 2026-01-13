@@ -827,6 +827,6 @@ test_that("Random Forest imputation works correctly", {
 
 
   # Check that imputed values replace the original NAs and are numeric
-  expect_true(all(!is.na(imputed_data$peptide_intensity_missing)))
-  expect_type(imputed_data$peptide_intensity_missing, "double")
+  expect_true(all(!is.na(imputed_data$imputed_intensity)))
+  expect_type(imputed_data$imputed_intensity, "double")
 })
