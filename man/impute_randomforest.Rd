@@ -56,7 +56,7 @@ This function allows passing additional parameters to the underlying \code{missF
 such as controlling the number of trees used in the random forest models or specifying the
 stopping criteria. For a full list of parameters, refer to the \code{missForest} documentation.
 
-To enable parallelization, ensure that the \code{doParallel} package is installed and loaded:
+To enable parallelisation, ensure that the \code{doParallel} package is installed and loaded:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{install.packages("doParallel")
 library(doParallel)
@@ -67,11 +67,8 @@ Then register the desired number of cores for parallel processing:
 \if{html}{\out{<div class="sourceCode">}}\preformatted{registerDoParallel(cores = 6)
 }\if{html}{\out{</div>}}
 
-To leverage parallelization during the imputation, pass \code{parallelize = "variables"}
+To leverage parallelisation during the imputation, pass \code{parallelize = "variables"}
 as an argument to the \code{missForest} function.
-
-Stekhoven, D.J., & Bühlmann, P. (2012). MissForest—non-parametric missing value imputation
-for mixed-type data. Bioinformatics, 28(1), 112-118. https://doi.org/10.1093/bioinformatics/btr597
 }
 \examples{
 set.seed(123) # Makes example reproducible
@@ -97,4 +94,11 @@ data_imputed <- impute_randomforest(
 )
 
 head(data_imputed, n = 24)
+}
+\references{
+Stekhoven, D.J., & Bühlmann, P. (2012). MissForest—non-parametric missing value imputation
+for mixed-type data. Bioinformatics, 28(1), 112-118. https://doi.org/10.1093/bioinformatics/btr597
+}
+\author{
+Elena Krismer
 }

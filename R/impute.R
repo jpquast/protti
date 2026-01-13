@@ -102,8 +102,7 @@ impute <- function(data,
                    noise = NULL,
                    method = "ludovic",
                    skip_log2_transform_error = FALSE,
-                   retain_columns = NULL,
-                   ...) {
+                   retain_columns = NULL) {
   noise_missing <- missing(noise) # check if argument noise was provided or not
 
   result <- data %>%
