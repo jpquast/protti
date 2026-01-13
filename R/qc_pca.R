@@ -167,9 +167,9 @@ qc_pca <-
     if (plot_style == "scree") {
       plot <- pca_sdev_df %>%
         ggplot2::ggplot(aes(x = .data$dimension, y = .data$percent_variance)) +
-        ggplot2::geom_col(col = "black", size = 1, fill = protti_colours[1]) +
+        ggplot2::geom_col(col = "black", fill = protti_colours[1]) +
         ggplot2::geom_point(size = 2) +
-        ggplot2::geom_line(size = 1, group = 1) +
+        ggplot2::geom_line(group = 1) +
         ggplot2::labs(
           title = "Principal component scree plot",
           x = "Dimension",

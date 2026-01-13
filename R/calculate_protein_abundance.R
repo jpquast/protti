@@ -153,7 +153,7 @@ calculate_protein_abundance <- function(data,
   }
   if (method == "iq") {
     if (!requireNamespace("iq", quietly = TRUE)) {
-      message("Package \"iq\" is needed for this function to work. Please install it.", call. = FALSE)
+      message("Package \"iq\" is needed for this function to work. Please install it.")
       return(invisible(NULL))
     }
     pb <- progress::progress_bar$new(

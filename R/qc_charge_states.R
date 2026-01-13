@@ -125,7 +125,7 @@ qc_charge_states <-
       } else {
         plot <- result %>%
           ggplot2::ggplot(aes(x = {{ sample }}, y = .data$charge_per, fill = {{ charge_states }})) +
-          ggplot2::geom_col(col = "black", size = 1) +
+          ggplot2::geom_col(col = "black") +
           {
             if (interactive == FALSE) {
               ggplot2::geom_text(
@@ -189,7 +189,7 @@ qc_charge_states <-
       } else {
         plot <- result %>%
           ggplot2::ggplot(aes(x = {{ sample }}, y = .data$charge_per, fill = {{ charge_states }})) +
-          ggplot2::geom_col(col = "black", size = 1) +
+          ggplot2::geom_col(col = "black") +
           {
             if (interactive == FALSE) {
               ggplot2::geom_text(

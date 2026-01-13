@@ -119,17 +119,18 @@
 #'
 #' head(corrected, n = 10)
 correct_lip_for_abundance <- function(
-    lip_data,
-    trp_data,
-    protein_id,
-    grouping,
-    comparison = comparison,
-    diff = diff,
-    n_obs = n_obs,
-    std_error = std_error,
-    p_adj_method = "BH",
-    retain_columns = NULL,
-    method = c("satterthwaite", "no_df_approximation")) {
+  lip_data,
+  trp_data,
+  protein_id,
+  grouping,
+  comparison = comparison,
+  diff = diff,
+  n_obs = n_obs,
+  std_error = std_error,
+  p_adj_method = "BH",
+  retain_columns = NULL,
+  method = c("satterthwaite", "no_df_approximation")
+) {
   method <- match.arg(method)
 
   se_pep <- rlang::sym(paste0(rlang::as_name(rlang::enquo(std_error)), "_pep"))

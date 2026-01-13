@@ -72,8 +72,7 @@ qc_sequence_coverage <- function(data,
       binwidth = 5,
       col = "black",
       fill = "#5680C1",
-      boundary = 0,
-      size = 1
+      boundary = 0
     ) +
     ggplot2::geom_vline(
       data = result %>% dplyr::distinct(.data$median_coverage, {{ sample }}),

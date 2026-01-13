@@ -438,7 +438,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   if (show_progress == TRUE) {
     message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
     message("[3/6] Extracting polymer information: ")
-    message("-> 1/6 UniProt IDs ... ", appendLF = FALSE)
+    message("-> 1/7 UniProt IDs ... ", appendLF = FALSE)
     start_time <- Sys.time()
   }
 
@@ -481,7 +481,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
 
   if (show_progress == TRUE) {
     message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-    message("-> 2/6 UniProt alignment ... ", appendLF = FALSE)
+    message("-> 2/7 UniProt alignment ... ", appendLF = FALSE)
     start_time <- Sys.time()
   }
 
@@ -584,7 +584,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   # Extract ligand information
   if (show_progress == TRUE) {
     message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-    message("-> 3/6 Ligand binding sites ... ", appendLF = FALSE)
+    message("-> 3/7 Ligand binding sites ... ", appendLF = FALSE)
     start_time <- Sys.time()
   }
 
@@ -675,7 +675,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
 
   if (show_progress == TRUE) {
     message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-    message("-> 4/6 Modified monomers ... ", appendLF = FALSE)
+    message("-> 4/7 Modified monomers ... ", appendLF = FALSE)
     start_time <- Sys.time()
   }
 
@@ -702,7 +702,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   # extract secondary structure information
   if (show_progress == TRUE) {
     message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-    message("-> 5/6 Secondary structure ... ", appendLF = FALSE)
+    message("-> 5/7 Secondary structure ... ", appendLF = FALSE)
     start_time <- Sys.time()
   }
 
@@ -722,7 +722,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
   # extract info about unmodeled residues
   if (show_progress == TRUE) {
     message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
-    message("-> 6/6 Unmodeled residues ... ", appendLF = FALSE)
+    message("-> 6/7 Unmodeled residues ... ", appendLF = FALSE)
     start_time <- Sys.time()
   }
 
@@ -741,6 +741,22 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
     left_join(secondary_structures, by = c("pdb_ids", "auth_asym_id")) %>%
     left_join(unmodeled_residues, by = c("pdb_ids", "auth_asym_id")) %>%
     select(-c("rcsb_polymer_instance_feature", "rcsb_polymer_entity_feature"))
+
+  # extract info about binding-sites
+  if (show_progress == TRUE) {
+    message("DONE ", paste0("(", round(as.numeric(difftime(Sys.time(), start_time, units = "secs")), digits = 2), "s)"))
+    message("-> 7/7 Ligand Binding ... ", appendLF = FALSE)
+    start_time <- Sys.time()
+  }
+
+  # Ligand-binding information is joined to the non-polymer ligand info later on based on the ligands name
+  ligand_binding <- rcsb_polymer_instance_feature_data %>%
+    dplyr::filter(stringr::str_detect(.data$name, pattern = "ligand")) %>%
+    dplyr::mutate(ligand = str_extract(.data$name, pattern = "(?<=ligand ).+")) %>%
+    dplyr::group_by(.data$pdb_ids, .data$auth_asym_id, .data$ligand) %>%
+    dplyr::mutate(nonpolymer_donor_label_seq_id = paste0(.data$beg_seq_id, collapse = ";")) %>%
+    dplyr::ungroup() %>%
+    dplyr::distinct(.data$nonpolymer_donor_label_seq_id, .data$pdb_ids, .data$auth_asym_id, .data$ligand)
 
   # Modify auth_seq_id positions that are either duplicated or missing.
   # Missing or duplicated entries are identified by comparing the length of auth_seq_id to the length of the sequence.
@@ -864,7 +880,29 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
         formula_weight_nonpolymer = "formula_weight",
         type_nonpolymer = "type",
         id_nonpolymer = "id"
-      )
+      ) %>%
+      # Fix "SODIUM ION" IDs
+      dplyr::mutate(id_nonpolymer = ifelse(.data$name_nonpolymer == "SODIUM ION", "NA", .data$id_nonpolymer))
+
+    # Create an annotation data frame for ligand_binding data
+    np_annotation <- nonpolymer_entities %>%
+      dplyr::select(-c("pdb_ids", "auth_asym_ids")) %>%
+      dplyr::distinct()
+
+    # annotate ligand_binding
+    ligand_binding <- ligand_binding %>%
+      left_join(np_annotation, by = c("ligand" = "id_nonpolymer"))
+
+    nonpolymer_entities <- nonpolymer_entities %>%
+      dplyr::full_join(ligand_binding, by = c(
+        "id_nonpolymer" = "ligand",
+        "auth_asym_ids" = "auth_asym_id",
+        "pdb_ids",
+        "formula_nonpolymer",
+        "formula_weight_nonpolymer",
+        "name_nonpolymer",
+        "type_nonpolymer"
+      ))
   } else {
     nonpolymer_entities <- polymer_entities %>%
       dplyr::select("pdb_ids", "auth_asym_ids") %>%
@@ -873,7 +911,8 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
         formula_nonpolymer = NA,
         formula_weight_nonpolymer = NA,
         type_nonpolymer = NA,
-        id_nonpolymer = NA
+        id_nonpolymer = NA,
+        nonpolymer_donor_label_seq_id = NA
       )
   }
 
@@ -956,6 +995,7 @@ fetch_pdb <- function(pdb_ids, batchsize = 100, show_progress = TRUE) {
       "secondary_structure",
       "unmodeled_structure",
       "id_nonpolymer",
+      "nonpolymer_donor_label_seq_id",
       "type_nonpolymer",
       "formula_weight_nonpolymer",
       "name_nonpolymer",

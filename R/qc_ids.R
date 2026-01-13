@@ -109,7 +109,7 @@ or set remove_na_intensities to FALSE",
     if (plot == TRUE) {
       plot <- result %>%
         ggplot2::ggplot(aes(x = {{ sample }}, y = .data$count, fill = {{ condition }})) +
-        ggplot2::geom_col(col = "black", size = 1) +
+        ggplot2::geom_col(col = "black") +
         {
           if (missing(condition)) ggplot2::geom_col(fill = "#5680C1", col = "black")
         } +

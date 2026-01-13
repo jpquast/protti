@@ -29,7 +29,7 @@ find_all_subs <- function(data,
                           accepted_types = "is_a",
                           exclude_parent_id = FALSE) {
   if (!requireNamespace("igraph", quietly = TRUE)) {
-    message("Package \"igraph\" is needed for this function to work. Please install it.", call. = FALSE)
+    message("Package \"igraph\" is needed for this function to work. Please install it.")
     return(invisible(NULL))
   }
   if (ifelse(length(accepted_types) == 1, accepted_types == "all", FALSE)) {
@@ -56,3 +56,5 @@ find_all_subs <- function(data,
   })
   result
 }
+
+utils::globalVariables(c("id", "type"))

@@ -131,7 +131,7 @@ intensities or set remove_na_intensities to FALSE",
             y = .data$mc_percent,
             fill = {{ missed_cleavages }}
           )) +
-          ggplot2::geom_col(col = "black", size = 1) +
+          ggplot2::geom_col(col = "black") +
           {
             if (interactive == FALSE) {
               ggplot2::geom_text(
@@ -203,7 +203,7 @@ intensities or set remove_na_intensities to FALSE",
             y = .data$mc_percent,
             fill = {{ missed_cleavages }}
           )) +
-          ggplot2::geom_col(col = "black", size = 1) +
+          ggplot2::geom_col(col = "black") +
           {
             if (interactive == FALSE) {
               ggplot2::geom_text(

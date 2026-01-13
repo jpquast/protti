@@ -122,7 +122,7 @@ The function does not handle log2 transformed data.",
         dplyr::mutate({{ condition }} := forcats::fct_expand({{ condition }}, "combined")) %>%
         dplyr::mutate({{ condition }} := replace({{ condition }}, .data$type == "cv_combined", "combined")) %>%
         dplyr::mutate({{ condition }} := forcats::fct_relevel({{ condition }}, "combined")) %>%
-        dplyr::select(-.data$type) %>%
+        dplyr::select(-"type") %>%
         dplyr::group_by({{ condition }}) %>%
         dplyr::mutate(median = stats::median(.data$values)) %>%
         dplyr::distinct()
@@ -166,7 +166,7 @@ The function does not handle log2 transformed data.",
       }
       if (plot_style == "density") {
         plot <- ggplot2::ggplot(result) +
-          ggplot2::geom_density(ggplot2::aes(x = .data$values, col = {{ condition }}), size = 1, na.rm = TRUE) +
+          ggplot2::geom_density(ggplot2::aes(x = .data$values, col = {{ condition }}), na.rm = TRUE) +
           ggplot2::labs(
             title = "Coefficients of variation",
             x = "Coefficient of variation [%]",
@@ -180,7 +180,6 @@ The function does not handle log2 transformed data.",
               xintercept = median,
               col = {{ condition }}
             ),
-            size = 1,
             linetype = "dashed",
             show.legend = FALSE
           ) +

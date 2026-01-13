@@ -120,7 +120,7 @@ barcode_plot <- function(data,
         xmin = ({{ start_position }} - 1) / {{ protein_length }} * 100,
         fill = {{ colouring }}
       ),
-      size = 0.7
+      linewidth = 0.7
     ) +
     {
       if (is.numeric(dplyr::pull(data, {{ colouring }}))) {

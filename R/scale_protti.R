@@ -10,21 +10,25 @@
 #' the vector between 0 and 1. "center" scales the vector equal to \code{base::scale} around a
 #' center. This is done by subtracting the mean from every value and then deviding them by the
 #' standard deviation.
+#' @param default_to_high if there is only one number in the vector the "01" method will
+#' default to scale this to 1. If this argument is set to FALSE it will be scaled to 0 instead.
 #'
 #' @return A scaled numeric vector.
 #' @export
 #'
 #' @examples
 #' scale_protti(c(1, 2, 1, 4, 6, 8), method = "01")
-scale_protti <- function(x, method) {
+scale_protti <- function(x, method, default_to_high = TRUE) {
   if (is.numeric(x) == FALSE) {
     stop("x is a ", typeof(x), " vector but needs to be a numeric vector!")
   }
   if (method == "01") {
     result <- (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
 
-    if ((max(x, na.rm = TRUE) - min(x, na.rm = TRUE)) == 0) {
+    if ((max(x, na.rm = TRUE) - min(x, na.rm = TRUE)) == 0 & default_to_high) {
       result <- rep(1, length(x))
+    } else if ((max(x, na.rm = TRUE) - min(x, na.rm = TRUE)) == 0 & !default_to_high) {
+      result <- rep(0, length(x))
     }
   }
   if (method == "center") {

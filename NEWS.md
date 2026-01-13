@@ -1,6 +1,43 @@
+# protti 0.9.1.9000
+
+## New features 
+
+* `impute_randomforest()` new imputation method random forest using `missForest`.
+* The `fetch_pdb()` function now reads additional data about non-polymer ligands and the donor ligand positions (`nonpolymer_donor_label_seq_id`).
+* The `find_peptide_in_structure()` function now has additional outputs:
+  * `start_adjusted` and `end_adjusted`: Are the adjusted start and end positions of a peptide if it is only partially covered by the structure.
+  * `percentage_covered_peptides`: Is the percentage of all provided peptides that are at least partially covered by the structure.
+* `calculate_go_enrichment()` received the argument `label_size` that allows the user to specifiy the size of the labels in the plot.
+* Added `fetch_interpro()`. The function allows you to fetch information from the InterPro database. There are two options, either domain level information about the proteins of interest can be retrieved. This includes also e.g. gene ontology terms of the domains as well as their positions within the protein. Second you can retrieve residue level information. These are any annotations of proteins that focus on residues or small stretches, such as active sites, binding sites etc. 
+* `fetch_alphafold_aligned_error()` received a `version` argument that lets the user directly control the AlphaFold database version used.
+* `map_peptides_on_structure()` received new arguments (fixes issue #285):
+  * `alphafold_version`: allows the user to control the AlphaFold database version used (useful if older versions no longer work).
+  * `baseline_map_value` (optional): handles constant mappings. If all mapped values for a structure/protein (or the whole dataset when `scale_per_structure = FALSE`) equal this baseline, values are scaled to 50 instead of 100.
+
+## Bug fixes
+
+* Fixed issue #193. This makes sure that information in retained columns can be propagated to newly created combinations, which were not present in the original data.
+* Fixed issue #251. Sodium ions (Na) are not read as `NA` anymore, when using the `fetch_pdb()` function.
+* `calculate_go_enrichment()` can now correctly handle groups that are of type factor.
+* Fixed an issue in `map_peptides_on_structure()` where `scale_per_structure = TRUE` incorrectly scaled AlphaFold predictions together (because missing `pdb_id` values were grouped as `NA`). AlphaFold predictions are now scaled per UniProt ID, matching per-structure behavior.
+* Fixed issue #279. The x-axis of `calculate_go_enrichment()` is correctly displayed.
+* `fetch_uniprot()` received a new default for `batchsize`, which is `100` and dictated by the new limit of UniProt.
+
+## Additional Changes
+
+* *IMPORTANT!* There has been a change to the hyperparameter estimation of the limma package (3.61.8) in the `eBayes()` function. This leads to a change of results when `method = "moderated_t-test"` is used in the `calculate_diff_abundance()` function. Therefore, we introduced the new argument `limma_legacy_estimation` that allows you to go back to the old method. The default behaviour is the new and improved estimation of parameters.
+* `assign_peptide_type` now takes the `start` argument, containing the start position of a peptide. If a protein does not have any peptide starting at position `1` and there is a peptide starting at position `2`, this peptide will be considered "tryptic" at the N-terminus. This is because the initial Methionine is likely missing due to processing for every copy of the protein and therefore position `2` is the true N-terminus.
+* `extract_metal_binders()` now uses keywords from UniProt as well. In addition, only "enables" GO terms are considered now.
+* `fetch_uniprot()` received another default column "keyword".
+* `calculate_go_enrichment()`: 
+	* got improved error handling and now checks if any significant proteins are present in the input `data`. If none are found (`is_significant == TRUE` for no rows), the function exits early. 
+	* is now more robust for edge cases. A plot, instead of an error, is returned if there is only one significant GO term and `plot_style = "heatmap"` is selected.
+* `fetch_alphafold_prediction()` updated `version` to `"v6"`.
+
 # protti 0.9.1
 
 ## Bug fixes
+
 * `try_query()` now correctly handles errors that don't return a response object. We also handle gzip decompression problems better since some databases compressed responses were not handled correctly. 
 
 # protti 0.9.0

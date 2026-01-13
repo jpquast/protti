@@ -78,6 +78,8 @@ go_enrichment <- function(...) {
 #' should be reversed in order. Default is `TRUE`.
 #' @param label a logical argument indicating whether labels should be added to the plot.
 #' Default is TRUE.
+#' @param label_size a numeric argument that specifies the text size of the labels with the unit "pt".
+#' The default is 7.
 #' @param enrichment_type a character argument that is either "all", "enriched" or "deenriched". This
 #' determines if the enrichment analysis should be performed in order to check for both enrichemnt and
 #' deenrichemnt or only one of the two. This affects the statistics performed and therefore also the displayed
@@ -223,6 +225,7 @@ calculate_go_enrichment <- function(data,
                                     heatmap_fill_colour = protti::mako_colours,
                                     heatmap_fill_colour_rev = TRUE,
                                     label = TRUE,
+                                    label_size = 7,
                                     enrichment_type = "all",
                                     replace_long_name = TRUE,
                                     label_move_frac = 0.2,
@@ -243,6 +246,12 @@ calculate_go_enrichment <- function(data,
   if (alternative_test == "none") stop("Please provide a valid enrichment_type! Can be 'all', 'enriched', 'deenriched'.")
 
   if (!(plot_style %in% c("barplot", "heatmap"))) stop("Invalid plot_style. Available styles: barplot, heatmap")
+
+  # Check for presence of significant proteins
+  if (sum(data[[rlang::as_name(rlang::enquo(is_significant))]], na.rm = TRUE) == 0) {
+    message("No significant proteins found in the input data. Gene ontology enrichment analysis will not be performed.")
+    return(invisible(NULL))
+  }
 
   if (length(barplot_fill_colour) < 2) stop('Please provide at least two colours to "barplot_fill_colour"!')
 
@@ -408,12 +417,14 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
   }
 
   result_table <- cont_table %>%
+    dplyr::arrange({{ group }}) %>%
     { # group argument is missing
       if (group_missing) {
         dplyr::left_join(., fisher_test, by = "go_id")
       } else {
         # group argument is not missing
         dplyr::left_join(., fisher_test, by = c("go_id", rlang::as_name(enquo(group)))) %>%
+          dplyr::mutate({{ group }} := forcats::fct_inorder({{ group }})) %>%
           dplyr::group_by({{ group }})
       }
     } %>%
@@ -481,12 +492,19 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
 
   # move label if bar is less than 20% (default) of largest bar
   plot_input <- plot_input %>%
-    dplyr::mutate(hjust = ifelse((.data$neg_log_sig / max(.data$neg_log_sig)) < label_move_frac, -0.15, 1.05))
+    dplyr::mutate(hjust = ifelse((.data$neg_log_sig / max(.data$neg_log_sig)) < label_move_frac, -0.15, 1.05)) %>%
+    dplyr::mutate(label = ifelse(!is.na(.data$n_significant_proteins_in_process), paste0(
+      .data$n_significant_proteins_in_process, "/",
+      .data$n_detected_proteins_in_process, " (",
+      round(.data$n_significant_proteins_in_process / .data$n_detected_proteins_in_process * 100, digits = 1), "%)"
+    ),
+    NA
+    ))
 
   if (plot_style == "barplot") {
     # Check if ggforce package is available. If not prompt user to install it.
     if (!requireNamespace("ggforce", quietly = TRUE)) {
-      message("Package \"ggforce\" is needed for this function to work. Please install it.", call. = FALSE)
+      message("Package \"ggforce\" is needed for this function to work. Please install it.")
       return(invisible(NULL))
     }
 
@@ -513,28 +531,24 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
           )
         }
       } +
-      ggplot2::geom_col(col = "black", size = 1) +
+      ggplot2::geom_col(col = "black") +
       {
         if (label == TRUE & nrow(plot_input) > 0) {
           geom_text(
             data = plot_input,
             aes(
-              label = paste0(
-                .data$n_significant_proteins_in_process,
-                "/",
-                .data$n_detected_proteins_in_process,
-                "(",
-                round(.data$n_significant_proteins_in_process / .data$n_detected_proteins_in_process * 100, digits = 1),
-                "%)"
-              ),
+              label = label,
               y = .data$neg_log_sig - 0.1,
               hjust = .data$hjust
-            )
+            ),
+            size = label_size / .pt
           )
         }
       } +
       ggplot2::scale_fill_manual(values = c(Deenriched = barplot_fill_colour[1], Enriched = barplot_fill_colour[2])) +
-      ggplot2::scale_y_continuous(labels = scales::number_format(accuracy = 1)) +
+      ggplot2::scale_y_continuous(
+        expand = expansion(mult = c(0, 0.05))
+      ) +
       ggplot2::coord_flip() +
       {
         if (!missing(group)) {
@@ -577,12 +591,12 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
   if (plot_style == "heatmap") {
     # Check if farver package is available. If not prompt user to install it.
     if (!requireNamespace("farver", quietly = TRUE)) {
-      message("Package \"farver\" is needed for this function to work. Please install it.", call. = FALSE)
+      message("Package \"farver\" is needed for this function to work. Please install it.")
       return(invisible(NULL))
     }
     # Check if scales package is available. If not prompt user to install it.
     if (!requireNamespace("scales", quietly = TRUE)) {
-      message("Package \"scales\" is needed for this function to work. Please install it.", call. = FALSE)
+      message("Package \"scales\" is needed for this function to work. Please install it.")
       return(invisible(NULL))
     }
 
@@ -605,7 +619,11 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
         if (group_missing) {
           dplyr::mutate(., grouping = "")
         } else {
-          dplyr::mutate(., grouping = forcats::fct_inorder({{ group }}))
+          if (!is(dplyr::pull(plot_input, {{ group }}), "factor")) { # if the column is already a factor do not reorder
+            dplyr::mutate(., grouping = forcats::fct_inorder({{ group }}))
+          } else {
+            dplyr::mutate(., grouping = {{ group }})
+          }
         }
       }
 
@@ -617,10 +635,19 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     }
 
     # Make gradient
-    colfunc <- scales::gradient_n_pal(colours, values = c(
-      min(plot_input_heatmap$neg_log_sig),
-      max(plot_input_heatmap$neg_log_sig)
-    ))
+    if (diff(range(plot_input_heatmap$neg_log_sig)) != 0) {
+      colfunc <- scales::gradient_n_pal(colours, values = c(
+        min(plot_input_heatmap$neg_log_sig),
+        max(plot_input_heatmap$neg_log_sig)
+      ))
+    } else {
+      # If there is only one value providing the same value to the values argument causes an error when the colfunc functions is used.
+      # Therefore, we are extending the range in this case to still return a plot
+      colfunc <- scales::gradient_n_pal(colours, values = c(
+        plot_input_heatmap$neg_log_sig,
+        plot_input_heatmap$neg_log_sig + 1
+      ))
+    }
 
     # Add colours to data
     plot_input_heatmap <- plot_input_heatmap %>%
@@ -631,7 +658,15 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
 
     # Add text colours to data
     plot_input_heatmap <- plot_input_heatmap %>%
-      dplyr::mutate(text_col = ifelse(hcl[, "l"] > 50, "#000000", "#FFFFFF"))
+      dplyr::mutate(text_col = ifelse(hcl[, "l"] > 50, "#000000", "#FFFFFF")) %>%
+      # Add label names
+      dplyr::mutate(label = ifelse(!is.na(.data$n_significant_proteins_in_process), paste0(
+        .data$n_significant_proteins_in_process, "/",
+        .data$n_detected_proteins_in_process, " (",
+        round(.data$n_significant_proteins_in_process / .data$n_detected_proteins_in_process * 100), "%)"
+      ),
+      NA
+      ))
 
     # Heatmap Plot
     enrichment_plot <-
@@ -651,18 +686,15 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
             aes(
               y = .data$term,
               x = .data$grouping,
-              label = ifelse(!is.na(.data$n_significant_proteins_in_process), paste0(
-                .data$n_significant_proteins_in_process, "/",
-                .data$n_detected_proteins_in_process, " (",
-                round(.data$n_significant_proteins_in_process / .data$n_detected_proteins_in_process * 100), "%)"
-              ),
-              NA
-              )
+              label = label
             ),
-            colour = plot_input_heatmap$text_col
+            colour = plot_input_heatmap$text_col,
+            size = label_size / .pt
           )
         }
       } +
+      ggplot2::scale_x_discrete(expand = expansion(mult = c(0, 0))) +
+      ggplot2::scale_y_discrete(expand = expansion(mult = c(0, 0))) +
       ggplot2::scale_fill_gradientn(colours = colours) +
       ggplot2::labs(
         title = plot_title,

@@ -1,4 +1,4 @@
-# This is version 3, which was created on 22/08/12
+# This is version 5, which was created on 24/08/08
 
 # This code specificially creates a list of ChEBI IDs that appear in UniProt and that
 # are related to metals.
@@ -42,7 +42,8 @@ chebi <- protti::fetch_chebi(stars = c(2, 3))
 #   dplyr::filter(id %in% extracted_chebi_uniprot$chebi_id) %>%
 #   dplyr::filter(is.na(formula)) %>%
 #   dplyr::filter(.data$type_name == "STANDARD") %>%
-#   dplyr::distinct(.data$id, .data$chebi_accession, .data$star, .data$definition, .data$name)
+#   dplyr::distinct(.data$id, .data$chebi_accession, .data$star, .data$definition, .data$name) %>%
+#   dplyr::filter(!id %in% as.numeric(names(metal_chebi_ids_wo_formula)))
 
 metal_chebi_ids_wo_formula <- c(
   "25213" = "25213", # a metal cation
@@ -82,6 +83,7 @@ metal_chebi_uniprot <- chebi %>%
 # In version 2 there were 188 metal related ChEBI IDs
 # In version 3 there were 188 metal related ChEBI IDs (11/08/2022)
 # In version 4 there were 193 metal related ChEBI IDs (19/02/2024)
+# In version 5 there were 199 metal related ChEBI IDs (08/08/2024)
 length(unique(metal_chebi_uniprot$id))
 
 usethis::use_data(metal_chebi_uniprot, overwrite = TRUE)

@@ -134,7 +134,7 @@ fetch_metal_pdb <- function(id_type = "uniprot",
   }
 
   if (!missing(representative)) {
-    if (representative != TRUE | representative != FALSE) {
+    if (!is.logical(representative) || length(representative) != 1) {
       stop('Please only provide TRUE or FALSE for the "representative" argument')
     }
     if (representative == TRUE) {
@@ -234,7 +234,7 @@ fetch_metal_pdb <- function(id_type = "uniprot",
     ) %>%
       dplyr::distinct()
 
-    if (nrow(error_table) == length(id_value) && str_detect(error_table$error, pattern = "502")) {
+    if (nrow(error_table) == length(id_value) && any(str_detect(error_table$error, pattern = "502"))) {
       message("502 Bad Gateway. The server cannot be reached right now. Try again later!")
       return(invisible(NULL))
     }
