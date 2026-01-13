@@ -91,13 +91,12 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     })
   }
 
-  # Database is currently not accessible
-  # test_that("fetch_metal_pdb works", {
-  #   metal_pdb <- fetch_metal_pdb(id_type = "pdb", id_value = c("1g54"), metal = "Zn")
-  #   expect_is(metal_pdb, "data.frame")
-  #   expect_equal(nrow(metal_pdb), 5)
-  #   expect_equal(ncol(metal_pdb), 25)
-  # })
+  test_that("fetch_metal_pdb works", {
+    metal_pdb <- fetch_metal_pdb(id_type = "pdb", id_value = c("1g54"), metal = "Zn")
+    expect_is(metal_pdb, "data.frame")
+    expect_equal(nrow(metal_pdb), 5)
+    expect_equal(ncol(metal_pdb), 25)
+  })
 
   test_that("deprecated kegg_enrichment works", {
     # first fake significances are generated based on the first 10 rows of every group
