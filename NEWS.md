@@ -1,4 +1,4 @@
-# protti 0.9.1.9000
+# protti 1.0.0
 
 ## New features 
 
