@@ -326,8 +326,13 @@ test_that("calculate_diff_abundance works", {
     expect_equal(ncol(diff_moderated), 13)
     expect_equal(ncol(diff_proDA), 12)
     expect_equal(round(min(diff_mean_sd$adj_pval, na.rm = TRUE), digits = 9), 0.00758761)
-    expect_equal(round(min(diff_moderated$adj_pval, na.rm = TRUE), digits = 9), 5.7616e-05)
     expect_equal(round(min(diff_proDA$adj_pval, na.rm = TRUE), digits = 5), 0.00125)
+
+    if (packageVersion("limma") >= "3.61.8") {
+      expect_equal(round(min(diff_moderated$adj_pval, na.rm = TRUE), digits = 9), 3.87e-05)
+    } else {
+      expect_equal(round(min(diff_moderated$adj_pval, na.rm = TRUE), digits = 9), 5.7616e-05)
+    }
   }
 })
 
@@ -489,8 +494,13 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(diff_moderated_deprecated), 13)
     expect_equal(ncol(diff_proDA_deprecated), 12)
     expect_equal(round(min(diff_mean_sd_deprecated$adj_pval, na.rm = TRUE), digits = 9), 0.00758761)
-    expect_equal(round(min(diff_moderated_deprecated$adj_pval, na.rm = TRUE), digits = 9), 5.7616e-05)
     expect_equal(round(min(diff_proDA_deprecated$adj_pval, na.rm = TRUE), digits = 5), 0.00125)
+
+    if (packageVersion("limma") >= "3.61.8") {
+      expect_equal(round(min(diff_moderated_deprecated$adj_pval, na.rm = TRUE), digits = 9), 3.87e-05)
+    } else {
+      expect_equal(round(min(diff_moderated_deprecated$adj_pval, na.rm = TRUE), digits = 9), 5.7616e-05)
+    }
   })
 }
 
@@ -791,4 +801,32 @@ test_that("calculate_aa_scores works", {
   expect_is(aa_fingerprint, "data.frame")
   expect_equal(nrow(aa_fingerprint), 45)
   expect_equal(ncol(aa_fingerprint), 3)
+})
+
+# Test for random forest imputation
+test_that("Random Forest imputation works correctly", {
+  set.seed(123) # Set seed for reproducibility
+
+  # Create synthetic test data
+  test_data <- create_synthetic_data(
+    n_proteins = 10,
+    frac_change = 0.5,
+    n_replicates = 4,
+    n_conditions = 2,
+    method = "effect_random",
+    additional_metadata = FALSE
+  )
+
+  # Perform imputation using the random forest method
+  imputed_data <- impute_randomforest(
+    data = test_data,
+    sample = sample,
+    grouping = peptide,
+    intensity_log2 = peptide_intensity_missing
+  )
+
+
+  # Check that imputed values replace the original NAs and are numeric
+  expect_true(all(!is.na(imputed_data$imputed_intensity)))
+  expect_type(imputed_data$imputed_intensity, "double")
 })

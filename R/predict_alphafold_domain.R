@@ -67,7 +67,7 @@ predict_alphafold_domain <- function(pae_list,
                                      return_data_frame = FALSE,
                                      show_progress = TRUE) {
   if (!requireNamespace("igraph", quietly = TRUE)) {
-    message("Package \"igraph\" is needed for this function to work. Please install it.", call. = FALSE)
+    message("Package \"igraph\" is needed for this function to work. Please install it.")
     return(invisible(NULL))
   }
 
@@ -119,7 +119,7 @@ predict_alphafold_domain <- function(pae_list,
       g <- igraph::set_edge_attr(g, "weight", value = sel_weight)
 
       # Cluster with "Leiden"
-      vc <- igraph::cluster_leiden(g, weights = NULL, resolution_parameter = graph_resolution / 100)
+      vc <- igraph::cluster_leiden(g, weights = NULL, resolution = graph_resolution / 100)
 
       tibble::tibble(
         residue = 1:dim(aligned_error_matrix)[1],

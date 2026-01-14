@@ -466,7 +466,7 @@ Please always provide a chain ID for your start and end positions."),
       if (show_progress == TRUE) {
         pb <- progress::progress_bar$new(
           total = length(uniprot_ids),
-          format = "Preparing pedictions [:bar] :current/:total (:percent) :eta"
+          format = "Preparing predictions [:bar] :current/:total (:percent) :eta"
         )
       }
 

@@ -208,7 +208,7 @@ volcano_plot <- function(data,
   cutoff_line <- data %>%
     dplyr::mutate(mean_adjusted_cutoff = -log10(.data$mean_adjusted_cutoff)) %>%
     dplyr::distinct({{ facet_by }}, .data$mean_adjusted_cutoff) %>%
-    tidyr::drop_na(.data$mean_adjusted_cutoff)
+    tidyr::drop_na("mean_adjusted_cutoff")
 
   if (method == "target") {
     data <- data %>%

@@ -107,6 +107,11 @@ diff_abundance <-
 #' @param p_adj_method a character value, specifies the p-value correction method. Possible
 #' methods are c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). Default
 #' method is `"BH"`.
+#' @param limma_legacy_estimation a logical value, specifying if the new or old hyperparameter
+#' estimation of the limma package should be used. See the `legacy` argument of `?limma:eBayes`
+#' for more information. Our default is the same as for the `limma` package, which introduces
+#' a changed and more robust estimation of hyperparameters. This may cause changes to the
+#' results when compared to before August 2024 (limma 3.61.8).
 #' @param retain_columns a vector indicating if certain columns should be retained from the input
 #' data frame. Default is not retaining additional columns `retain_columns = NULL`. Specific
 #' columns can be retained by providing their names (not in quotations marks, just like other
@@ -157,6 +162,7 @@ diff_abundance <-
 #' @importFrom magrittr %>%
 #' @importFrom tibble column_to_rownames rownames_to_column tibble as_tibble
 #' @importFrom stringr str_replace_all str_extract
+#' @importFrom utils packageVersion
 #' @export
 #'
 #' @examples
@@ -214,6 +220,7 @@ calculate_diff_abundance <-
            filter_NA_missingness = TRUE,
            method = c("moderated_t-test", "t-test", "t-test_mean_sd", "proDA"),
            p_adj_method = "BH",
+           limma_legacy_estimation = NULL,
            retain_columns = NULL) {
     . <- NULL
     if (!(ref_condition %in% unique(pull(data, {{ condition }}))) & ref_condition != "all") {
@@ -455,7 +462,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
 
     if (method == "moderated_t-test") {
       if (!requireNamespace("limma", quietly = TRUE)) {
-        message("Package \"limma\" is needed for this function to work. Please install it.", call. = FALSE)
+        message("Package \"limma\" is needed for this function to work. Please install it.")
         return(invisible(NULL))
       }
 
@@ -553,7 +560,11 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
       message("DONE", appendLF = TRUE)
       message("[6/7] Compute empirical Bayes statistics ... ", appendLF = FALSE)
 
-      moderated_t_test_fit3 <- limma::eBayes(moderated_t_test_fit2)
+      if (utils::packageVersion("limma") < "3.61.8") {
+        moderated_t_test_fit3 <- limma::eBayes(moderated_t_test_fit2)
+      } else {
+        moderated_t_test_fit3 <- limma::eBayes(moderated_t_test_fit2, legacy = limma_legacy_estimation)
+      }
 
       message("DONE", appendLF = TRUE)
       message("[7/7] Create result table ... ", appendLF = FALSE)
@@ -605,6 +616,10 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
         dplyr::arrange(.data$adj_pval, .data$pval)
 
       message("DONE", appendLF = TRUE)
+      # Check the limma version
+      if (utils::packageVersion("limma") < "3.61.8" & !missing(limma_legacy_estimation)) {
+        warning("You provided the 'limma_legacy_estimation' argument, but your limma version does not support it. Update to a version higher than 3.61.8.")
+      }
 
       if (!missing(retain_columns)) {
         moderated_t_test_adj_pval <- data %>%
@@ -653,7 +668,7 @@ missingness type is assigned.\n The created comparisons are: \n", prefix = "\n",
 
     if (method == "proDA") {
       if (!requireNamespace("proDA", quietly = TRUE)) {
-        message("Package \"proDA\" is needed for this function to work. Please install it.", call. = FALSE)
+        message("Package \"proDA\" is needed for this function to work. Please install it.")
         return(invisible(NULL))
       }
       message("[1/5] Creating proDA input data ... ", appendLF = FALSE)

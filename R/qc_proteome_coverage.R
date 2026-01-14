@@ -95,7 +95,7 @@ qc_proteome_coverage <- function(data,
 
   proteome_coverage_plot <- proteome_coverage %>%
     ggplot2::ggplot(ggplot2::aes({{ sample }}, .data$percentage, fill = .data$type)) +
-    ggplot2::geom_col(col = "black", size = 1) +
+    ggplot2::geom_col(col = "black") +
     ggplot2::labs(
       title = "Proteome coverage per .raw file",
       x = "",
@@ -133,7 +133,7 @@ qc_proteome_coverage <- function(data,
     if (interactive == TRUE) {
       proteome_coverage_plot <- proteome_coverage %>%
         ggplot2::ggplot(ggplot2::aes({{ sample }}, .data$percentage, fill = .data$type)) +
-        ggplot2::geom_col(col = "black", size = 1) +
+        ggplot2::geom_col(col = "black") +
         ggplot2::labs(
           title = "Proteome coverage per .raw file",
           x = "",

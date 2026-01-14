@@ -86,7 +86,7 @@ qc_contaminants <- function(data,
 
   plot_result <- result %>%
     ggplot2::ggplot(ggplot2::aes({{ sample }}, .data$contaminant_percentage, fill = {{ protein }})) +
-    ggplot2::geom_col(col = "black", size = 1) +
+    ggplot2::geom_col(col = "black") +
     ggplot2::labs(
       title = "Contaminants per .raw file",
       x = "Sample",

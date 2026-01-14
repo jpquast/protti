@@ -7,7 +7,7 @@
 
 [![R-CMD-check](https://github.com/jpquast/protti/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jpquast/protti/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jpquast/protti?branch=master)
+coverage](https://codecov.io/gh/jpquast/protti/graph/badge.svg)](https://app.codecov.io/gh/jpquast/protti)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/protti)](https://CRAN.R-project.org/package=protti)
 [![DOI:10.1093/bioadv/vbab041](http://img.shields.io/badge/DOI-10.1093/bioadv/vbab041-5680C1.svg)](https://doi.org/10.1093/bioadv/vbab041)
@@ -23,10 +23,10 @@ MaxQuant, Proteome Discoverer and Skyline. Both limited proteolysis mass
 spectrometry (LiP-MS) and regular bottom-up proteomics experiments can
 be analysed.
 
-**protti** is developed and maintained by members of the lab of Paola
-Picotti at ETH Zurich. Our lab is focused on protein structural changes
-that occur in response to perturbations such as metabolite, drug and
-protein binding-events, as well as protein aggregation and enzyme
+**protti** is developed and maintained by former members of the lab of
+Paola Picotti at ETH Zurich. The Picotti lab studies protein structural
+changes that occur in response to perturbations such as metabolite, drug
+and protein binding-events, as well as protein aggregation and enzyme
 activation ([Piazza 2018](https://doi.org/10.1016/j.cell.2017.12.006),
 [Piazza 2020](https://doi.org/10.1038/s41467-020-18071-x), [Cappelletti,
 Hauser & Piazza 2021](https://doi.org/10.1016/j.cell.2020.12.021)). We
@@ -149,7 +149,7 @@ In this example we are going to analyse synthetic data of which we know
 the ground truth. The same principles would apply to any real data.
 Before you start analysing your data you should load all required
 packages. **protti** is designed to work well with the
-[`tidyverse`](https://www.tidyverse.org) package family and we will use
+[`tidyverse`](https://tidyverse.org/) package family and we will use
 them for this example. Therefore, you should also load them before you
 get started. Note: If you do not have the `tidyverse` installed you can
 do so by removing the comment sign (#) in front of the
@@ -352,4 +352,4 @@ result %>%
   )
 ```
 
-<img src="man/figures/README-volcano-1.png" width="100%" />
+<img src="man/figures/README-volcano-1.png" alt="" width="100%" />

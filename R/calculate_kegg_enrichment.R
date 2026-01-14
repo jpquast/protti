@@ -217,7 +217,7 @@ and not significant.", prefix = "\n", initial = ""))
 
   enrichment_plot <- plot_input %>%
     ggplot2::ggplot(ggplot2::aes(stats::reorder(.data$pathway_name, .data$neg_log_sig), .data$neg_log_sig, fill = .data$direction)) +
-    ggplot2::geom_col(col = "black", size = 1.5) +
+    ggplot2::geom_col(col = "black") +
     ggplot2::scale_fill_manual(values = c(Down = "#56B4E9", Up = "#E76145")) +
     ggplot2::scale_y_continuous(breaks = seq(0, 100, 2)) +
     ggplot2::coord_flip() +

@@ -74,7 +74,7 @@
 #' }
 fetch_alphafold_prediction <- function(uniprot_ids = NULL,
                                        organism_name = NULL,
-                                       version = "v4",
+                                       version = "v6",
                                        timeout = 3600,
                                        max_tries = 5,
                                        return_data_frame = FALSE,

@@ -7,7 +7,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_warning(uniprot <- fetch_uniprot(unis))
     expect_is(uniprot, "data.frame")
     expect_equal(nrow(uniprot), 9)
-    expect_equal(ncol(uniprot), 17)
+    expect_equal(ncol(uniprot), 18)
   })
 
   proteome <- fetch_uniprot_proteome(organism_id = "83333", columns = c("accession", "go_f", "xref_string"))
@@ -63,8 +63,8 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   test_that("fetch_pdb works", {
     pdb <- fetch_pdb(pdb_ids)
     expect_is(pdb, "data.frame")
-    expect_equal(nrow(pdb), 36)
-    expect_equal(ncol(pdb), 46)
+    expect_equal(nrow(pdb), 37)
+    expect_equal(ncol(pdb), 47)
   })
 
   test_that("fetch_pdb_structure works", {
@@ -85,7 +85,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     test_that("fetch_alphafold_prediction organism fetching works", {
       af_prediction_organism <- fetch_alphafold_prediction(organism_name = "Helicobacter pylori", return_data_frame = FALSE)
       expect_is(af_prediction_organism, "list")
-      expect_equal(length(af_prediction_organism), 1538)
+      expect_equal(length(af_prediction_organism), 1540)
       expect_equal(ncol(af_prediction_organism[["O24860"]]), 15)
       expect_equal(nrow(af_prediction_organism[["O24860"]]), 746)
     })
@@ -464,7 +464,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
 
     slims <- fetch_quickgo(type = "slims", go_id_slims = c("GO:0046872", "GO:0051540"))
     expect_is(slims, "data.frame")
-    expect_gte(nrow(slims), 38)
+    expect_gte(nrow(slims), 35)
     expect_lte(nrow(slims), 44)
     expect_equal(ncol(slims), 2)
 
@@ -481,7 +481,8 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
       columns = c(
         "ft_binding",
         "cc_cofactor",
-        "cc_catalytic_activity"
+        "cc_catalytic_activity",
+        "keyword"
       )
     )
 
@@ -495,7 +496,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     )
 
     expect_is(metal_info, "data.frame")
-    expect_equal(ncol(metal_info), 20)
+    expect_equal(ncol(metal_info), 21)
     expect_equal(nrow(metal_info), 35)
   })
 
@@ -526,5 +527,21 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(nrow(af_domains), 61)
     expect_equal(as.data.frame(table(af_domains$domain))$Freq[1], 6)
     expect_equal(as.data.frame(table(af_domains$domain))$Freq[2], 55)
+  })
+
+  test_that("fetch_interpro works", {
+    unis <- c("P36578", "O43324", "Q00796", "O32583")
+    domains <- fetch_interpro(unis)
+    residues <- fetch_interpro(unis,
+      return_residue_info = TRUE
+    )
+    # Test domain info
+    expect_is(domains, "data.frame")
+    expect_equal(nrow(domains), 27)
+    expect_equal(ncol(domains), 13)
+    # Test residue info
+    expect_is(residues, "data.frame")
+    expect_equal(nrow(residues), 129)
+    expect_equal(ncol(residues), 8)
   })
 }
