@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Qualtiy Control (QC) Workflow • protti</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="../favicon-48x48.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -38,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -99,7 +98,7 @@
                         <h4 data-toc-skip class="author">Dina
 Schuster</h4>
             
-            <h4 data-toc-skip class="date">2024-10-22</h4>
+            <h4 data-toc-skip class="date">2026-01-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/quality_control_workflow.Rmd" class="external-link"><code>vignettes/quality_control_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>quality_control_workflow.Rmd</code></div>
@@ -245,7 +244,7 @@ this to your data. You can read more about all of this <a href="https://jpquast.
 <strong>protti</strong> package. This is done by using the base R
 function <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code>. In addition, we are also loading the
 packages <code>magrittr</code> and <code>dplyr</code>. Both
-<code>magrittr</code> and <code>dplyr</code> are part of the <a href="https://www.tidyverse.org" class="external-link">tidyverse</a>, a collection of packages
+<code>magrittr</code> and <code>dplyr</code> are part of the <a href="https://tidyverse.org/" class="external-link">tidyverse</a>, a collection of packages
 that provide useful functionalities for data processing and
 visualisation. If you use many tidyverse packages in your workflow you
 can easily load all at once by calling
@@ -358,7 +357,7 @@ combined CV should only be done with caution.</p>
 <span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  plot_style <span class="op">=</span> <span class="st">"violin"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_cvs-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_cvs-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="number-of-identifications-ids">Number of identifications (IDs)<a class="anchor" aria-label="anchor" href="#number-of-identifications-ids"></a>
@@ -402,7 +401,7 @@ setting <code>interactive = TRUE</code> within the function call.</p>
 <span>  title <span class="op">=</span> <span class="st">"Protein identifications per sample"</span>,</span>
 <span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_ids-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_ids-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="peptide-types">Peptide types<a class="anchor" aria-label="anchor" href="#peptide-types"></a>
@@ -454,7 +453,7 @@ non-tryptic peptides depends on your digestion conditions
 <span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_peptide_type-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_peptide_type-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/qc_peptide_type.html">qc_peptide_type</a></span><span class="op">(</span></span>
@@ -466,7 +465,7 @@ non-tryptic peptides depends on your digestion conditions
 <span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_peptide_type-2.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_peptide_type-2.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="run-intensities">Run intensities<a class="anchor" aria-label="anchor" href="#run-intensities"></a>
@@ -487,7 +486,7 @@ any trends in your data. The function to use for this analysis is
 <span>  intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
 <span>  plot_style <span class="op">=</span> <span class="st">"boxplot"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_intensity_distribution_boxplot-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_intensity_distribution_boxplot-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/qc_median_intensities.html">qc_median_intensities</a></span><span class="op">(</span></span>
@@ -496,7 +495,7 @@ any trends in your data. The function to use for this analysis is
 <span>  grouping <span class="op">=</span> <span class="va">peptide</span>,</span>
 <span>  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_intensity_distribution_boxplot-2.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_intensity_distribution_boxplot-2.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="charge-states">Charge states<a class="anchor" aria-label="anchor" href="#charge-states"></a>
@@ -518,7 +517,7 @@ intensity values created previously as its input.</p>
 <span>  intensity <span class="op">=</span> <span class="va">raw_intensity</span>,</span>
 <span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_charge_states-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_charge_states-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="missed-cleavages">Missed cleavages<a class="anchor" aria-label="anchor" href="#missed-cleavages"></a>
@@ -548,7 +547,7 @@ plot or a table.</p>
 <span>  intensity <span class="op">=</span> <span class="va">raw_intensity</span>,</span>
 <span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_missed_cleavages-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_missed_cleavages-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="sequence-coverage">Sequence coverage<a class="anchor" aria-label="anchor" href="#sequence-coverage"></a>
@@ -569,7 +568,7 @@ information.</p>
 <span>  protein_identifier <span class="op">=</span> <span class="va">protein</span>,</span>
 <span>  coverage <span class="op">=</span> <span class="va">coverage</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_sequence_coverage-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_sequence_coverage-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="peak-width">Peak width<a class="anchor" aria-label="anchor" href="#peak-width"></a>
@@ -590,7 +589,7 @@ similar for all the measured samples of the experiment.</p>
 <span>  retention_time <span class="op">=</span> <span class="va">retention_time</span>,</span>
 <span>  peak_width <span class="op">=</span> <span class="va">peak_width</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_peak_width-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_peak_width-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="data-completeness">Data completeness<a class="anchor" aria-label="anchor" href="#data-completeness"></a>
@@ -606,7 +605,7 @@ sample. The function can return either a plot or a table.</p>
 <span>  intensity <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
 <span>  plot <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_data_completeness-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_data_completeness-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="log2-intensity-distribution">Log2 Intensity distribution<a class="anchor" aria-label="anchor" href="#log2-intensity-distribution"></a>
@@ -624,7 +623,7 @@ the intensities are distributed.</p>
 <span>  intensity_log2 <span class="op">=</span> <span class="va">peptide_intensity_missing</span>,</span>
 <span>  plot_style <span class="op">=</span> <span class="st">"histogram"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_intensity_distribution_histogram-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_intensity_distribution_histogram-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="sample-correlation">Sample correlation<a class="anchor" aria-label="anchor" href="#sample-correlation"></a>
@@ -644,7 +643,7 @@ correlation heatmap with a comparison of all samples.</p>
 <span>  condition <span class="op">=</span> <span class="va">condition</span>,</span>
 <span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_sample_correlation-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_sample_correlation-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="principal-component-analysis-pca">Principal component analysis (PCA)<a class="anchor" aria-label="anchor" href="#principal-component-analysis-pca"></a>
@@ -671,7 +670,7 @@ plot these.</p>
 <span>  digestion <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  plot_style <span class="op">=</span> <span class="st">"scree"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_pca-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_pca-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/qc_pca.html">qc_pca</a></span><span class="op">(</span></span>
@@ -683,7 +682,7 @@ plot these.</p>
 <span>  components <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PC1"</span>, <span class="st">"PC2"</span><span class="op">)</span>,</span>
 <span>  plot_style <span class="op">=</span> <span class="st">"pca"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_pca-2.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_pca-2.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="ranked-intensity-distribution">Ranked intensity distribution<a class="anchor" aria-label="anchor" href="#ranked-intensity-distribution"></a>
@@ -708,7 +707,7 @@ argument.</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: ggrepel: 17 unlabeled data points (too many overlaps). Consider</span></span>
 <span><span class="co">#&gt; increasing max.overlaps</span></span></code></pre></div>
-<p><img src="quality_control_workflow_files/figure-html/qc_ranked_intensities-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="quality_control_workflow_files/figure-html/qc_ranked_intensities-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="additional-qc-functions">Additional QC functions<a class="anchor" aria-label="anchor" href="#additional-qc-functions"></a>
@@ -747,7 +746,7 @@ table.</li>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>

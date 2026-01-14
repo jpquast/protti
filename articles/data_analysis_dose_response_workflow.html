@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dose-Response Data Analysis Workflow • protti</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="../favicon-48x48.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -38,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -99,7 +98,7 @@
                         <h4 data-toc-skip class="author">Jan-Philipp
 Quast</h4>
             
-            <h4 data-toc-skip class="date">2024-10-22</h4>
+            <h4 data-toc-skip class="date">2026-01-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/data_analysis_dose_response_workflow.Rmd" class="external-link"><code>vignettes/data_analysis_dose_response_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_dose_response_workflow.Rmd</code></div>
@@ -169,7 +168,7 @@ charge state and its modification(s).</em></p>
 <p>Before starting the analysis of your data you need to load
 <strong>protti</strong> and additional packages used for the analysis.
 As described on the <a href="https://jpquast.github.io/protti/index.html" class="external-link">main page</a> of
-<strong>protti</strong>, the <a href="https://www.tidyverse.org" class="external-link">tidyverse</a> package collection works
+<strong>protti</strong>, the <a href="https://tidyverse.org/" class="external-link">tidyverse</a> package collection works
 well together with the rest of the package, by design. You can load
 packages after you installed them with the <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code>
 function.</p>
@@ -276,7 +275,7 @@ a log2 intensity of 5, which corresponds to a raw intensity of 32.</p>
 <span>  intensity <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,</span>
 <span>  plot_style <span class="op">=</span> <span class="st">"histogram"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="data_analysis_dose_response_workflow_files/figure-html/intensity_distribution-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="data_analysis_dose_response_workflow_files/figure-html/intensity_distribution-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_normalised</span> <span class="op">&lt;-</span> <span class="va">data_normalised</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">normalised_intensity_log2</span> <span class="op">&gt;</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
@@ -305,7 +304,7 @@ have the option to display an interactive version of the plot with an
 <span>  intensity_log2 <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,</span>
 <span>  condition <span class="op">=</span> <span class="va">r_condition</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="data_analysis_dose_response_workflow_files/figure-html/sample_correlation-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="data_analysis_dose_response_workflow_files/figure-html/sample_correlation-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <p>For our rapamycin data set we cannot identify any clear sample
 clustering based on correlation, because only a small subset of proteins
 was selected for this example. Furthermore, data sets in which only a
@@ -326,7 +325,7 @@ peptides/proteins).</p>
 <span>  intensity <span class="op">=</span> <span class="va">normalised_intensity_log2</span>,</span>
 <span>  condition <span class="op">=</span> <span class="va">r_condition</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="data_analysis_dose_response_workflow_files/figure-html/sample_pca-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="data_analysis_dose_response_workflow_files/figure-html/sample_pca-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2">
@@ -444,13 +443,13 @@ effect.</p>
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="left">0.899</td>
+<td align="left">0.912</td>
 <td align="left">
 <em>RGQTC[Carbamidomethyl (C)]VVHYTGMLEDGK</em>.3</td>
 <td align="left">P62942</td>
 <td align="left">4.73e-14</td>
-<td align="left">0.943</td>
-<td align="left">2.1e+05</td>
+<td align="left">0.948</td>
+<td align="left">3.2e+05</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
@@ -514,13 +513,13 @@ effect.</p>
 </tr>
 <tr class="even">
 <td align="right">8</td>
-<td align="left">0.691</td>
+<td align="left">0.692</td>
 <td align="left">
 <em>RGQTC[Carbamidomethyl (C)]VVH</em>.2</td>
 <td align="left">P62942</td>
 <td align="left">1.45e-09</td>
 <td align="left">0.943</td>
-<td align="left">7.6e+06</td>
+<td align="left">7.7e+06</td>
 </tr>
 <tr class="odd">
 <td align="right">9</td>
@@ -564,16 +563,27 @@ effect.</p>
 </tr>
 <tr class="odd">
 <td align="right">13</td>
+<td align="left">0.449</td>
+<td align="left">
+<em>RGQTC[Carbamidomethyl (C)]VVHYTGM[Oxidation
+(M)]LEDGK</em>.3</td>
+<td align="left">P62942</td>
+<td align="left">9.10e-03</td>
+<td align="left">0.954</td>
+<td align="left">1.2e+06</td>
+</tr>
+<tr class="even">
+<td align="right">14</td>
 <td align="left">0.436</td>
 <td align="left">
 <em>VFDVELLK</em>.2</td>
 <td align="left">P62942</td>
 <td align="left">4.70e-06</td>
 <td align="left">0.908</td>
-<td align="left">3.0e+06</td>
+<td align="left">3.1e+06</td>
 </tr>
-<tr class="even">
-<td align="right">14</td>
+<tr class="odd">
+<td align="right">15</td>
 <td align="left">0.366</td>
 <td align="left">
 <em>VVHYTGMLEDGK</em>.2</td>
@@ -581,17 +591,6 @@ effect.</p>
 <td align="left">1.63e-06</td>
 <td align="left">0.880</td>
 <td align="left">7.4e+06</td>
-</tr>
-<tr class="odd">
-<td align="right">15</td>
-<td align="left">0.328</td>
-<td align="left">
-<em>RGQTC[Carbamidomethyl (C)]VVHYTGM[Oxidation
-(M)]LEDGK</em>.3</td>
-<td align="left">P62942</td>
-<td align="left">9.10e-03</td>
-<td align="left">0.916</td>
-<td align="left">4.1e+05</td>
 </tr>
 <tr class="even">
 <td align="right">16</td>
@@ -652,7 +651,7 @@ required for the plot. These data frames contain the original names for
 <span>  export <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; $`_VFDVELLKLE_.2 (correlation = 0.97, EC50 = 3601983)`</span></span></code></pre></div>
-<p><img src="data_analysis_dose_response_workflow_files/figure-html/model_plot-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="data_analysis_dose_response_workflow_files/figure-html/model_plot-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <p>There are additional arguments that help you customise your plot. You
 can for example specify the axis limits with <code>x_axis_limits</code>.
 This should generally always be set to the lowest non-zero and highest
@@ -800,7 +799,7 @@ additional functions on your own data.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>

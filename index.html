@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bottom-Up Proteomics and LiP-MS Quality Control and Data Analysis Tools • protti</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -40,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -105,7 +104,7 @@
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p>The goal of <strong>protti</strong> is to provide flexible functions and workflows for proteomics quality control and data analysis, within a single, user-friendly package. It can be used for label-free DDA, DIA and SRM data generated with search tools and software such as Spectronaut, MaxQuant, Proteome Discoverer and Skyline. Both limited proteolysis mass spectrometry (LiP-MS) and regular bottom-up proteomics experiments can be analysed.</p>
-<p><strong>protti</strong> is developed and maintained by members of the lab of Paola Picotti at ETH Zurich. Our lab is focused on protein structural changes that occur in response to perturbations such as metabolite, drug and protein binding-events, as well as protein aggregation and enzyme activation (<a href="https://doi.org/10.1016/j.cell.2017.12.006" class="external-link">Piazza 2018</a>, <a href="https://doi.org/10.1038/s41467-020-18071-x" class="external-link">Piazza 2020</a>, <a href="https://doi.org/10.1016/j.cell.2020.12.021" class="external-link">Cappelletti, Hauser &amp; Piazza 2021</a>). We have devoloped mass spectrometry-based structural and chemical proteomic methods aimed at monitoring protein conformational changes in the complex cellular milieu (<a href="https://doi.org/10.1038/nbt.2999" class="external-link">Feng 2014</a>).</p>
+<p><strong>protti</strong> is developed and maintained by former members of the lab of Paola Picotti at ETH Zurich. The Picotti lab studies protein structural changes that occur in response to perturbations such as metabolite, drug and protein binding-events, as well as protein aggregation and enzyme activation (<a href="https://doi.org/10.1016/j.cell.2017.12.006" class="external-link">Piazza 2018</a>, <a href="https://doi.org/10.1038/s41467-020-18071-x" class="external-link">Piazza 2020</a>, <a href="https://doi.org/10.1016/j.cell.2020.12.021" class="external-link">Cappelletti, Hauser &amp; Piazza 2021</a>). We have devoloped mass spectrometry-based structural and chemical proteomic methods aimed at monitoring protein conformational changes in the complex cellular milieu (<a href="https://doi.org/10.1038/nbt.2999" class="external-link">Feng 2014</a>).</p>
 <p>There is a wide range of functions <strong>protti</strong> provides to the user. The main areas of application are:</p>
 <ul>
 <li>
@@ -167,7 +166,7 @@
 <div class="section level3">
 <h3 id="data-analysis">Data analysis<a class="anchor" aria-label="anchor" href="#data-analysis"></a>
 </h3>
-<p>In this example we are going to analyse synthetic data of which we know the ground truth. The same principles would apply to any real data. Before you start analysing your data you should load all required packages. <strong>protti</strong> is designed to work well with the <a href="https://www.tidyverse.org" class="external-link"><code>tidyverse</code></a> package family and we will use them for this example. Therefore, you should also load them before you get started. Note: If you do not have the <code>tidyverse</code> installed you can do so by removing the comment sign (#) in front of the <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> function. This will install them directly from CRAN.</p>
+<p>In this example we are going to analyse synthetic data of which we know the ground truth. The same principles would apply to any real data. Before you start analysing your data you should load all required packages. <strong>protti</strong> is designed to work well with the <a href="https://tidyverse.org/" class="external-link"><code>tidyverse</code></a> package family and we will use them for this example. Therefore, you should also load them before you get started. Note: If you do not have the <code>tidyverse</code> installed you can do so by removing the comment sign (#) in front of the <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> function. This will install them directly from CRAN.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load protti</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jpquast/protti" class="external-link">protti</a></span><span class="op">)</span></span>
@@ -280,7 +279,7 @@
 <span>    legend_label <span class="op">=</span> <span class="st">"Ground Truth"</span>,</span>
 <span>    significance_cutoff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="st">"adj_pval"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-volcano-1.png" width="100%"></p>
+<p><img src="reference/figures/README-volcano-1.png" alt="" width="100%"></p>
 </div>
 </div>
 </div>
@@ -316,9 +315,9 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Jan-Philipp Quast <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-2713-778X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Dina Schuster <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-6611-8237" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>ETH Zurich <br><small class="roles"> Copyright holder, funder </small>  </li>
+<li>Jan-Philipp Quast <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-2713-778X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>Dina Schuster <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-6611-8237" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>ETH Zurich <br><small class="roles"> Copyright holder, funder </small>   </li>
 </ul>
 </div>
 
@@ -326,7 +325,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/jpquast/protti/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/jpquast/protti/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://app.codecov.io/gh/jpquast/protti?branch=master" class="external-link"><img src="https://codecov.io/gh/jpquast/protti/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://app.codecov.io/gh/jpquast/protti" class="external-link"><img src="https://codecov.io/gh/jpquast/protti/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://CRAN.R-project.org/package=protti" class="external-link"><img src="https://www.r-pkg.org/badges/version/protti" alt="CRAN status"></a></li>
 <li><a href="https://doi.org/10.1093/bioadv/vbab041" class="external-link"><img src="http://img.shields.io/badge/DOI-10.1093/bioadv/vbab041-5680C1.svg" alt="DOI:10.1093/bioadv/vbab041"></a></li>
 </ul>
@@ -343,7 +342,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>

@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Single Dose Treatment Data Analysis Workflow • protti</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="../favicon-48x48.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -38,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">protti</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -100,7 +99,7 @@ Workflow</h1>
                         <h4 data-toc-skip class="author">Dina
 Schuster</h4>
             
-            <h4 data-toc-skip class="date">2024-10-22</h4>
+            <h4 data-toc-skip class="date">2026-01-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jpquast/protti/blob/master/vignettes/data_analysis_single_dose_treatment_workflow.Rmd" class="external-link"><code>vignettes/data_analysis_single_dose_treatment_workflow.Rmd</code></a></small>
       <div class="hidden name"><code>data_analysis_single_dose_treatment_workflow.Rmd</code></div>
@@ -263,7 +262,7 @@ information on how to get your data into the correct format.</p>
 <strong>protti</strong> package. This is done by using the base R
 function <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code>. In addition, we are also loading the
 packages <code>magrittr</code> and <code>dplyr</code>. Both
-<code>magrittr</code> and <code>dplyr</code> are part of the <a href="https://www.tidyverse.org" class="external-link">tidyverse</a>, a collection of packages
+<code>magrittr</code> and <code>dplyr</code> are part of the <a href="https://tidyverse.org/" class="external-link">tidyverse</a>, a collection of packages
 that provide useful functionalities for data processing and
 visualisation. If you use many tidyverse packages in your workflow you
 can easily load all at once by calling
@@ -461,7 +460,8 @@ of the protein sequence we identified in our experiment.</p>
 <span>  <span class="fu"><a href="../reference/assign_peptide_type.html">assign_peptide_type</a></span><span class="op">(</span></span>
 <span>    aa_before <span class="op">=</span> <span class="va">aa_before</span>,</span>
 <span>    last_aa <span class="op">=</span> <span class="va">last_aa</span>,</span>
-<span>    aa_after <span class="op">=</span> <span class="va">aa_after</span></span>
+<span>    aa_after <span class="op">=</span> <span class="va">aa_after</span>,</span>
+<span>    protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/calculate_sequence_coverage.html">calculate_sequence_coverage</a></span><span class="op">(</span></span>
 <span>    protein_sequence <span class="op">=</span> <span class="va">sequence</span>,</span>
@@ -478,7 +478,7 @@ sequence coverage is distributed relatively evenly.</p>
 <span>  protein_identifier <span class="op">=</span> <span class="va">pg_protein_accessions</span>,</span>
 <span>  coverage <span class="op">=</span> <span class="va">coverage</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/coverage_plot-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/coverage_plot-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level3">
@@ -543,9 +543,9 @@ condition with the missing data. Missingness assigned as <code>NA</code>
 will not be imputed.</p>
 <p><em>Note: If data is imputed this can lead to invalid inferential
 conclusions due to underestimating statistical uncertainty or it can
-cause loss of statistical power (<a href="https://www.biorxiv.org/content/10.1101/661496v1.full.pdf" class="external-link">Ahlmann-Eltze
-et al. 2020</a>). Therefore, we do not recommend using a moderated
-t-test or the proDA algorithm after imputation.</em></p>
+cause loss of statistical power (<a href="https://doi.org/10.1101/661496" class="external-link">Ahlmann-Eltze et al. 2020</a>).
+Therefore, we do not recommend using a moderated t-test or the proDA
+algorithm after imputation.</em></p>
 <p>Since we are dealing with a LiP-MS data set we perform the
 statistical analysis on the precursor* level. For protein abundance data
 you can simply use protein abundances as your intensities and select
@@ -619,7 +619,7 @@ quantitative experiments.</p>
 <span>  grouping <span class="op">=</span> <span class="va">eg_precursor_id</span>,</span>
 <span>  pval <span class="op">=</span> <span class="va">pval</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/pval_distribution-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/pval_distribution-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 <p>For this subset of data the distribution of p-values is relatively
 flat and there is no large increase in values in the low p-value range
 (the distribution is uniform when a lot of your hypotheses are null).
@@ -672,7 +672,7 @@ cutoff criteria.</p>
 <span>  x_axis_label <span class="op">=</span> <span class="st">"log2(fold change) Rapamycin treated vs. untreated"</span>,</span>
 <span>  significance_cutoff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="st">"adj_pval"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/volcano_plot-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/volcano_plot-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># The significance_cutoff argument can also just be used for a</span></span>
@@ -706,7 +706,7 @@ filtered data frame is then used as the input for the plot.</p>
 <span>  cutoffs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>diff <span class="op">=</span> <span class="fl">1</span>, adj_pval <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>,</span>
 <span>  protein_id <span class="op">=</span> <span class="va">pg_protein_accessions</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/barcode_plot-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/barcode_plot-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="woods-plot">Wood’s plot<a class="anchor" aria-label="anchor" href="#woods-plot"></a>
@@ -741,7 +741,7 @@ logical (binary) variable.</p>
 <span>  highlight <span class="op">=</span> <span class="va">significant</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; $`P62942 (81.5%)`</span></span></code></pre></div>
-<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/woods_plot-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/woods_plot-1.png" class="r-plt" alt="" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="peptide-profile-plots">Peptide profile plots<a class="anchor" aria-label="anchor" href="#peptide-profile-plots"></a>
@@ -768,7 +768,7 @@ can produce the plot for multiple proteins.</p>
 <span>  protein_abundance_plot <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; $P62942</span></span></code></pre></div>
-<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/protile_plot-1.png" width="1920" style="display: block; margin: auto;"></p>
+<p><img src="data_analysis_single_dose_treatment_workflow_files/figure-html/protile_plot-1.png" class="r-plt" alt="" width="1920" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level3">
@@ -886,7 +886,7 @@ proteins.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>

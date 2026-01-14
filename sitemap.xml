@@ -37,6 +37,7 @@
 <url><loc>/reference/fetch_chebi.html</loc></url>
 <url><loc>/reference/fetch_eco.html</loc></url>
 <url><loc>/reference/fetch_go.html</loc></url>
+<url><loc>/reference/fetch_interpro.html</loc></url>
 <url><loc>/reference/fetch_kegg.html</loc></url>
 <url><loc>/reference/fetch_metal_pdb.html</loc></url>
 <url><loc>/reference/fetch_mobidb.html</loc></url>
@@ -53,6 +54,7 @@
 <url><loc>/reference/fit_drc_4p.html</loc></url>
 <url><loc>/reference/go_enrichment.html</loc></url>
 <url><loc>/reference/impute.html</loc></url>
+<url><loc>/reference/impute_randomforest.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/kegg_enrichment.html</loc></url>
 <url><loc>/reference/mako_colours.html</loc></url>
