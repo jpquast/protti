@@ -60,10 +60,18 @@
 #     rep(c("E1", "F1"), 2)
 #   ),
 #   intensity = c(
-#     rnorm(n = 6, mean = 15, sd = 2),
-#     rnorm(n = 6, mean = 21, sd = 1),
+#     rnorm(n = 2, mean = 18, sd = 1),
+#     rnorm(n = 2, mean = 21, sd = 1),
+#     rnorm(n = 1, mean = 21, sd = 1),
+#     rnorm(n = 1, mean = 15, sd = 1),
+#     rnorm(n = 2, mean = 13, sd = 1),
 #     rnorm(n = 2, mean = 15, sd = 1),
-#     rnorm(n = 2, mean = 15, sd = 2)
+#     rnorm(n = 1, mean = 15, sd = 1),
+#     rnorm(n = 1, mean = 18, sd = 1),
+#     rnorm(n = 1, mean = 12, sd = 1),
+#     rnorm(n = 1, mean = 13, sd = 1),
+#     rnorm(n = 1, mean = 15, sd = 1),
+#     rnorm(n = 1, mean = 16, sd = 1)
 #   )
 # )
 #
@@ -249,4 +257,3 @@ calculate_peptide_abundance <- function(data,
 
   return(result)
 }
-
