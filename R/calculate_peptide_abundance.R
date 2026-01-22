@@ -44,49 +44,49 @@
 #' @examples
 #' \donttest{
 #' # Create example data
-# data <- data.frame(
-#   sample = c(
-#     rep("S1", 6),
-#     rep("S2", 6),
-#     rep("S1", 2),
-#     rep("S2", 2)
-#   ),
-#   peptide_id = c(
-#     rep(c("A", "A", "B", "B", "C", "D"), 2),
-#     rep(c("E", "F"), 2)
-#   ),
-#   precursor = c(
-#     rep(c("A1", "A2", "B1", "B2", "C1", "D1"), 2),
-#     rep(c("E1", "F1"), 2)
-#   ),
-#   intensity = c(
-#     rnorm(n = 2, mean = 18, sd = 1),
-#     rnorm(n = 2, mean = 21, sd = 1),
-#     rnorm(n = 1, mean = 21, sd = 1),
-#     rnorm(n = 1, mean = 15, sd = 1),
-#     rnorm(n = 2, mean = 13, sd = 1),
-#     rnorm(n = 2, mean = 15, sd = 1),
-#     rnorm(n = 1, mean = 15, sd = 1),
-#     rnorm(n = 1, mean = 18, sd = 1),
-#     rnorm(n = 1, mean = 12, sd = 1),
-#     rnorm(n = 1, mean = 13, sd = 1),
-#     rnorm(n = 1, mean = 15, sd = 1),
-#     rnorm(n = 1, mean = 16, sd = 1)
-#   )
-# )
-#
-# data
-#
-# # Calculate protein abundances
-# peptide_abundance <- calculate_peptide_abundance(
-#   data,
-#   sample = sample,
-#   peptide_id = peptide_id,
-#   precursor = precursor,
-#   intensity_log2 = intensity,
-#   method = "sum",
-#   for_plot = FALSE
-# )
+#' data <- data.frame(
+#'   sample = c(
+#'     rep("S1", 6),
+#'     rep("S2", 6),
+#'     rep("S1", 2),
+#'     rep("S2", 2)
+#'   ),
+#'   peptide_id = c(
+#'     rep(c("A", "A", "B", "B", "C", "D"), 2),
+#'     rep(c("E", "F"), 2)
+#'   ),
+#'   precursor = c(
+#'     rep(c("A1", "A2", "B1", "B2", "C1", "D1"), 2),
+#'     rep(c("E1", "F1"), 2)
+#'   ),
+#'   intensity = c(
+#'     rnorm(n = 2, mean = 18, sd = 1),
+#'     rnorm(n = 2, mean = 21, sd = 1),
+#'     rnorm(n = 1, mean = 21, sd = 1),
+#'     rnorm(n = 1, mean = 15, sd = 1),
+#'     rnorm(n = 2, mean = 13, sd = 1),
+#'     rnorm(n = 2, mean = 15, sd = 1),
+#'     rnorm(n = 1, mean = 15, sd = 1),
+#'     rnorm(n = 1, mean = 18, sd = 1),
+#'     rnorm(n = 1, mean = 12, sd = 1),
+#'     rnorm(n = 1, mean = 13, sd = 1),
+#'     rnorm(n = 1, mean = 15, sd = 1),
+#'     rnorm(n = 1, mean = 16, sd = 1)
+#'   )
+#' )
+#'
+#' data
+#'
+#' # Calculate peptide abundances
+#' peptide_abundance <- calculate_peptide_abundance(
+#'   data,
+#'   sample = sample,
+#'   peptide_id = peptide_id,
+#'   precursor = precursor,
+#'   intensity_log2 = intensity,
+#'   method = "sum",
+#'   for_plot = FALSE
+#' )
 #'
 #' peptide_abundance
 #'
@@ -257,3 +257,5 @@ calculate_peptide_abundance <- function(data,
 
   return(result)
 }
+
+
