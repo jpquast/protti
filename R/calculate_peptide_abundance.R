@@ -192,8 +192,8 @@ calculate_peptide_abundance <- function(data,
             tibble::as_tibble(rownames = NA) %>%
             tibble::rownames_to_column(var = rlang::as_name(rlang::enquo(precursor))) %>%
             tidyr::pivot_longer(-{{ precursor }},
-                                names_to = rlang::as_name(rlang::enquo(sample)),
-                                values_to = rlang::as_name(rlang::enquo(intensity_log2))
+              names_to = rlang::as_name(rlang::enquo(sample)),
+              values_to = rlang::as_name(rlang::enquo(intensity_log2))
             ) %>%
             dplyr::mutate({{ peptide_id }} := .y)
         }
@@ -214,10 +214,10 @@ calculate_peptide_abundance <- function(data,
       dplyr::select(
         !!enquo(retain_columns),
         colnames(combined)[!colnames(combined) %in%
-                             c(
-                               rlang::as_name(rlang::enquo(intensity_log2)),
-                               rlang::as_name(rlang::enquo(precursor))
-                             )]
+          c(
+            rlang::as_name(rlang::enquo(intensity_log2)),
+            rlang::as_name(rlang::enquo(precursor))
+          )]
       ) %>%
       dplyr::distinct() %>%
       dplyr::mutate({{ precursor }} := "peptide_intensity")
@@ -228,11 +228,11 @@ calculate_peptide_abundance <- function(data,
       dplyr::select(
         !!enquo(retain_columns),
         colnames(result)[!colnames(result) %in%
-                           c(rlang::as_name(rlang::enquo(intensity_log2)))]
+          c(rlang::as_name(rlang::enquo(intensity_log2)))]
       ) %>%
       dplyr::distinct() %>%
       dplyr::right_join(result, by = colnames(result)[!colnames(result) %in%
-                                                        c(rlang::as_name(rlang::enquo(intensity_log2)))])
+        c(rlang::as_name(rlang::enquo(intensity_log2)))])
 
     return(result)
   }
@@ -241,16 +241,16 @@ calculate_peptide_abundance <- function(data,
       dplyr::select(
         !!enquo(retain_columns),
         colnames(combined)[!colnames(combined) %in%
-                             c(
-                               rlang::as_name(rlang::enquo(intensity_log2))
-                             )]
+          c(
+            rlang::as_name(rlang::enquo(intensity_log2))
+          )]
       ) %>%
       dplyr::distinct() %>%
       dplyr::bind_rows(protein_intensity_retain) %>%
       dplyr::right_join(combined, by = colnames(combined)[!colnames(combined) %in%
-                                                            c(
-                                                              rlang::as_name(rlang::enquo(intensity_log2))
-                                                            )])
+        c(
+          rlang::as_name(rlang::enquo(intensity_log2))
+        )])
 
     return(combined)
   }
