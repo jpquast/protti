@@ -141,7 +141,7 @@ calculate_peptide_abundance <- function(data,
     }
 
     combined <- result %>%
-      dplyr::mutate({{ precursor }} := "protein_intensity") %>%
+      dplyr::mutate({{ precursor }} := "peptide_intensity") %>%
       dplyr::bind_rows(input)
 
     if (missing(retain_columns) & for_plot == TRUE) {
@@ -186,7 +186,7 @@ calculate_peptide_abundance <- function(data,
             matrix(
               ncol = ncol(.x),
               nrow = 1,
-              dimnames = list("protein_intensity", colnames(.x))
+              dimnames = list("peptide_intensity", colnames(.x))
             ) %>%
             rbind(.x) %>%
             tibble::as_tibble(rownames = NA) %>%
@@ -205,7 +205,7 @@ calculate_peptide_abundance <- function(data,
     }
 
     result <- combined %>%
-      dplyr::filter({{ precursor }} == "protein_intensity") %>%
+      dplyr::filter({{ precursor }} == "peptide_intensity") %>%
       dplyr::select(-{{ precursor }})
   }
 
@@ -220,7 +220,7 @@ calculate_peptide_abundance <- function(data,
                              )]
       ) %>%
       dplyr::distinct() %>%
-      dplyr::mutate({{ precursor }} := "protein_intensity")
+      dplyr::mutate({{ precursor }} := "peptide_intensity")
   }
 
   if (!missing(retain_columns) & for_plot == FALSE) {
@@ -257,5 +257,3 @@ calculate_peptide_abundance <- function(data,
 
   return(result)
 }
-
-

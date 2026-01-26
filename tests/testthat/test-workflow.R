@@ -184,6 +184,41 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(nrow(protein_abundance_all), 4005)
     expect_equal(ncol(protein_abundance_all), 4)
   })
+
+  peptide_abundance <- calculate_peptide_abundance(
+    data = missing_data,
+    sample = sample,
+    precursor = peptide,
+    peptide_id = protein,
+    intensity_log2 = normalised_intensity_log2,
+    method = "iq",
+    retain_columns = condition
+  )
+  peptide_abundance_all <- calculate_peptide_abundance(
+    data = missing_data,
+    sample = sample,
+    precursor = peptide,
+    peptide_id = protein,
+    intensity_log2 = normalised_intensity_log2,
+    method = "sum",
+    for_plot = TRUE
+  )
+
+  test_that("calculate_peptide_abundance works", {
+    arranged_data <- peptide_abundance %>%
+      dplyr::filter(protein == "protein_1")
+    expect_is(peptide_abundance, "data.frame")
+    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(16.78, 16.94, 16.85, 16.81, 16.83, 16.82))
+    expect_equal(nrow(peptide_abundance), 296)
+    expect_equal(ncol(peptide_abundance), 4)
+
+    arranged_data <- peptide_abundance_all %>%
+      dplyr::filter(protein == "protein_1" & peptide == "peptide_intensity")
+    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(20.87, 20.97, 20.96, 20.81, 20.81, 20.86))
+    expect_is(peptide_abundance_all, "data.frame")
+    expect_equal(nrow(peptide_abundance_all), 4054)
+    expect_equal(ncol(peptide_abundance_all), 4)
+  })
 }
 
 if (Sys.getenv("TEST_PROTTI") == "true") {
