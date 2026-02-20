@@ -185,39 +185,55 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(ncol(protein_abundance_all), 4)
   })
 
+  # We convert the peptide-level data here to fake precursor data for a more accurate test.
+  missing_data_peptide <- missing_data %>%
+    rename(precursor = peptide) %>%
+    mutate(precursor = str_replace(precursor, "peptide", "precursor")) %>%
+    group_by(protein) %>%
+    mutate(
+      peptide = paste0("peptide", str_extract(protein, "_\\d+$"), "_", rep(
+        seq_along(sample(1:3, n_distinct(precursor), replace = TRUE)),
+        sample(1:3, n_distinct(precursor), replace = TRUE)
+      )[seq_len(n_distinct(precursor))][match(precursor, unique(precursor))])
+    ) %>%
+    group_by(protein, peptide) %>%
+    mutate(precursor = paste0("precursor", str_extract(peptide, "_\\d+_\\d+$"), "_", dense_rank(precursor))) %>%
+    ungroup()
+
   peptide_abundance <- calculate_peptide_abundance(
-    data = missing_data,
+    data = missing_data_peptide,
     sample = sample,
-    precursor = peptide,
-    peptide_id = protein,
+    precursor = precursor,
+    peptide = peptide,
     intensity_log2 = normalised_intensity_log2,
     method = "iq",
-    retain_columns = condition
+    retain_columns = c(condition, protein)
   )
   peptide_abundance_all <- calculate_peptide_abundance(
-    data = missing_data,
+    data = missing_data_peptide,
     sample = sample,
-    precursor = peptide,
-    peptide_id = protein,
+    precursor = precursor,
+    peptide = peptide,
     intensity_log2 = normalised_intensity_log2,
     method = "sum",
-    for_plot = TRUE
+    for_plot = TRUE,
+    retain_columns = c(condition, protein)
   )
 
   test_that("calculate_peptide_abundance works", {
     arranged_data <- peptide_abundance %>%
-      dplyr::filter(protein == "protein_1")
+      dplyr::filter(peptide == "peptide_1_2")
     expect_is(peptide_abundance, "data.frame")
-    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(16.78, 16.94, 16.85, 16.81, 16.83, 16.82))
-    expect_equal(nrow(peptide_abundance), 296)
-    expect_equal(ncol(peptide_abundance), 4)
+    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(17.26, 17.48, 17.39, 17.37, 17.40, 17.44))
+    expect_equal(nrow(peptide_abundance), 2117)
+    expect_equal(ncol(peptide_abundance), 5)
 
     arranged_data <- peptide_abundance_all %>%
-      dplyr::filter(protein == "protein_1" & peptide == "peptide_intensity")
-    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(20.87, 20.97, 20.96, 20.81, 20.81, 20.86))
+      dplyr::filter(peptide == "peptide_1_2" & precursor == "peptide_intensity")
+    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(18.26, 18.48, 18.39, 18.37, 18.40, 18.44))
     expect_is(peptide_abundance_all, "data.frame")
-    expect_equal(nrow(peptide_abundance_all), 4054)
-    expect_equal(ncol(peptide_abundance_all), 4)
+    expect_equal(nrow(peptide_abundance_all), 5875)
+    expect_equal(ncol(peptide_abundance_all), 6)
   })
 }
 

@@ -6,13 +6,13 @@
 #'
 #' @param data a data frame that contains at least the input variables.
 #' @param sample a character column in the \code{data} data frame that contains the sample name.
-#' @param peptide_id a character column in the \code{data} data frame that contains the peptide
-#' id.
+#' @param peptide a character column in the \code{data} data frame that contains a unique peptide
+#' id, e.g. sequence.
 #' @param precursor a character column in the \code{data} data frame that contains precursors.
 #' @param intensity_log2 a numeric column in the \code{data} data frame that contains log2
 #' transformed precursor intensities.
 #' @param min_n_precursors An integer specifying the minimum number of precursors required
-#' for a protein to be included in the analysis. The default value is 1, which means
+#' for a peptide to be included in the analysis. The default value is 1, which means
 #' no peptides are filtered.
 #' @param method a character value specifying with which method peptide quantities should be
 #' calculated. Possible options include `"sum"`, which takes the sum of all precursor
@@ -81,7 +81,7 @@
 #' peptide_abundance <- calculate_peptide_abundance(
 #'   data,
 #'   sample = sample,
-#'   peptide_id = peptide_id,
+#'   peptide = peptide_id,
 #'   precursor = precursor,
 #'   intensity_log2 = intensity,
 #'   method = "sum",
@@ -95,7 +95,7 @@
 #' complete_abundances <- calculate_peptide_abundance(
 #'   data,
 #'   sample = sample,
-#'   peptide_id = peptide_id,
+#'   peptide = peptide_id,
 #'   precursor = precursor,
 #'   intensity_log2 = intensity,
 #'   method = "sum",
@@ -106,7 +106,7 @@
 #' }
 calculate_peptide_abundance <- function(data,
                                         sample,
-                                        peptide_id,
+                                        peptide,
                                         precursor,
                                         intensity_log2,
                                         min_n_precursors = 1,
@@ -115,17 +115,17 @@ calculate_peptide_abundance <- function(data,
                                         retain_columns = NULL) {
   . <- NULL
 
-  # Filter out any proteins with less than 3 peptides
+  # Filter out any peptide with less than `min_n_precursors` precursors
   input <- data %>%
     dplyr::ungroup() %>%
     dplyr::distinct(
       {{ sample }},
-      {{ peptide_id }},
+      {{ peptide }},
       {{ precursor }},
       {{ intensity_log2 }}
     ) %>%
     tidyr::drop_na() %>%
-    dplyr::group_by({{ peptide_id }}, {{ sample }}) %>%
+    dplyr::group_by({{ peptide }}, {{ sample }}) %>%
     dplyr::mutate(n_precursors = dplyr::n_distinct(!!rlang::ensym(precursor))) %>%
     dplyr::filter(.data$n_precursors >= min_n_precursors) %>%
     dplyr::select(-"n_precursors") %>%
@@ -133,7 +133,7 @@ calculate_peptide_abundance <- function(data,
 
   if (method == "sum") {
     result <- input %>%
-      dplyr::group_by({{ sample }}, {{ peptide_id }}) %>%
+      dplyr::group_by({{ sample }}, {{ peptide }}) %>%
       dplyr::summarise({{ intensity_log2 }} := log2(sum(2^{{ intensity_log2 }})), .groups = "drop")
 
     if (missing(retain_columns) & for_plot == FALSE) {
@@ -154,18 +154,18 @@ calculate_peptide_abundance <- function(data,
       return(invisible(NULL))
     }
     pb <- progress::progress_bar$new(
-      total = length(unique(dplyr::pull(input, {{ peptide_id }}))),
+      total = length(unique(dplyr::pull(input, {{ peptide }}))),
       format = "Preparing data [:bar] :current/:total (:percent) :eta"
     )
 
     input <- input %>%
-      dplyr::distinct({{ sample }}, {{ peptide_id }}, {{ precursor }}, {{ intensity_log2 }}) %>%
-      tidyr::complete(!!rlang::ensym(sample), nesting(!!rlang::ensym(precursor), !!rlang::ensym(peptide_id))) %>%
-      split(dplyr::pull(., {{ peptide_id }})) %>%
+      dplyr::distinct({{ sample }}, {{ peptide }}, {{ precursor }}, {{ intensity_log2 }}) %>%
+      tidyr::complete(!!rlang::ensym(sample), nesting(!!rlang::ensym(precursor), !!rlang::ensym(peptide))) %>%
+      split(dplyr::pull(., {{ peptide }})) %>%
       purrr::map(.f = ~ {
         pb$tick()
         .x %>%
-          dplyr::select(-{{ peptide_id }}) %>%
+          dplyr::select(-{{ peptide }}) %>%
           tidyr::pivot_wider(names_from = {{ sample }}, values_from = {{ intensity_log2 }}) %>%
           tibble::column_to_rownames(rlang::as_name(rlang::enquo(precursor))) %>%
           as.matrix()
@@ -195,7 +195,7 @@ calculate_peptide_abundance <- function(data,
               names_to = rlang::as_name(rlang::enquo(sample)),
               values_to = rlang::as_name(rlang::enquo(intensity_log2))
             ) %>%
-            dplyr::mutate({{ peptide_id }} := .y)
+            dplyr::mutate({{ peptide }} := .y)
         }
       ) %>%
       tidyr::drop_na()
