@@ -882,4 +882,3 @@ test_that("Random Forest imputation works correctly", {
   expect_true(all(!is.na(imputed_data$imputed_intensity)))
   expect_type(imputed_data$imputed_intensity, "double")
 })
-
