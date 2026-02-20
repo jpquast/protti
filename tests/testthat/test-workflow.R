@@ -186,6 +186,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
   })
 
   # We convert the peptide-level data here to fake precursor data for a more accurate test.
+  set.seed(123) # Set seed for reproducibility
   missing_data_peptide <- missing_data %>%
     rename(precursor = peptide) %>%
     mutate(precursor = str_replace(precursor, "peptide", "precursor")) %>%
@@ -224,15 +225,15 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     arranged_data <- peptide_abundance %>%
       dplyr::filter(peptide == "peptide_1_2")
     expect_is(peptide_abundance, "data.frame")
-    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(17.26, 17.48, 17.39, 17.37, 17.40, 17.44))
-    expect_equal(nrow(peptide_abundance), 2117)
+    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(15.92, 16.04, 15.87, 15.93, 15.92, 15.95))
+    expect_equal(nrow(peptide_abundance), 2089)
     expect_equal(ncol(peptide_abundance), 5)
 
     arranged_data <- peptide_abundance_all %>%
       dplyr::filter(peptide == "peptide_1_2" & precursor == "peptide_intensity")
-    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(18.26, 18.48, 18.39, 18.37, 18.40, 18.44))
+    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(17.43, 17.68, 17.45, 17.38, 17.53, 17.57))
     expect_is(peptide_abundance_all, "data.frame")
-    expect_equal(nrow(peptide_abundance_all), 5875)
+    expect_equal(nrow(peptide_abundance_all), 5847)
     expect_equal(ncol(peptide_abundance_all), 6)
   })
 }
@@ -881,3 +882,4 @@ test_that("Random Forest imputation works correctly", {
   expect_true(all(!is.na(imputed_data$imputed_intensity)))
   expect_type(imputed_data$imputed_intensity, "double")
 })
+
