@@ -7,7 +7,7 @@
 calculate_peptide_abundance(
   data,
   sample,
-  peptide_id,
+  peptide,
   precursor,
   intensity_log2,
   min_n_precursors = 1,
@@ -21,8 +21,8 @@ calculate_peptide_abundance(
 
 \item{sample}{a character column in the \code{data} data frame that contains the sample name.}
 
-\item{peptide_id}{a character column in the \code{data} data frame that contains the peptide
-id.}
+\item{peptide}{a character column in the \code{data} data frame that contains a unique peptide
+id, e.g. sequence.}
 
 \item{precursor}{a character column in the \code{data} data frame that contains precursors.}
 
@@ -30,7 +30,7 @@ id.}
 transformed precursor intensities.}
 
 \item{min_n_precursors}{An integer specifying the minimum number of precursors required
-for a protein to be included in the analysis. The default value is 1, which means
+for a peptide to be included in the analysis. The default value is 1, which means
 no peptides are filtered.}
 
 \item{method}{a character value specifying with which method peptide quantities should be
@@ -99,7 +99,7 @@ data
 peptide_abundance <- calculate_peptide_abundance(
   data,
   sample = sample,
-  peptide_id = peptide_id,
+  peptide = peptide_id,
   precursor = precursor,
   intensity_log2 = intensity,
   method = "sum",
@@ -113,7 +113,7 @@ peptide_abundance
 complete_abundances <- calculate_peptide_abundance(
   data,
   sample = sample,
-  peptide_id = peptide_id,
+  peptide = peptide_id,
   precursor = precursor,
   intensity_log2 = intensity,
   method = "sum",
