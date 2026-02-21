@@ -253,6 +253,12 @@ calculate_go_enrichment <- function(data,
     return(invisible(NULL))
   }
 
+  # Check for presence of significant proteins
+  if (sum(!data[[rlang::as_name(rlang::enquo(is_significant))]], na.rm = TRUE) == 0) {
+    message("No non-significant proteins found in the input data. Gene ontology enrichment analysis will not be performed.")
+    return(invisible(NULL))
+  }
+
   if (length(barplot_fill_colour) < 2) stop('Please provide at least two colours to "barplot_fill_colour"!')
 
   if (!stringr::str_detect(plot_cutoff, pattern = "^(pval|adj_pval) (top\\d+|\\d+(\\.\\d+)?)$")) {
@@ -374,6 +380,33 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     dplyr::ungroup() %>%
     tidyr::drop_na(.data$go_id)
 
+  # Skip groups without significant proteins
+  if (!group_missing) {
+
+    groups_to_skip <- cont_table %>%
+      dplyr::group_by({{ group }}) %>%
+      dplyr::summarise(n_levels = dplyr::n_distinct({{ is_significant }}), .groups = "drop") %>%
+      dplyr::filter(n_levels < 2) %>%
+      dplyr::pull({{ group }})
+
+      cont_table <- cont_table %>%
+        dplyr::filter(!({{ group }} %in% groups_to_skip))
+
+
+      # if everything got skipped, exit early
+      if (nrow(cont_table) == 0) {
+        message("No significant or no non-significant proteins in any of the groups.")
+        return(invisible(NULL))
+      }
+
+      # otherwise inform about specific groups skipped
+      if (length(groups_to_skip) > 0) {
+        message(paste(
+          "Skipping group ", groups_to_skip,
+          ": no significant or no non-significant proteins.", collapse = "\n"
+        ))
+      }
+    }
 
   if (group_missing) {
     fisher_test <- cont_table %>%
