@@ -17,11 +17,13 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_gt(nrow(proteome), 10)
   })
 
+  timeout <- if (identical(Sys.info()[["sysname"]], "Darwin")) 600 else 180
   unis <- c("iRT", "P25437", "P30870", "P0A6P9")
-  mobidb <- fetch_mobidb(unis)
+  mobidb <- fetch_mobidb(unis, timeout = timeout)
   test_that("fetch_mobidb works", {
     unis <- c("iRT", "P25437", "P30870", "P0A6P9")
-    expect_warning(mobidb <- fetch_mobidb(unis))
+    timeout <- if (identical(Sys.info()[["sysname"]], "Darwin")) 600 else 180
+    expect_warning(mobidb <- fetch_mobidb(unis), timeout = timeout)
     expect_is(mobidb, "data.frame")
     expect_equal(nrow(mobidb), 221)
     expect_equal(ncol(mobidb), 6)

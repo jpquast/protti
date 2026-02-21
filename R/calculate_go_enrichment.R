@@ -391,11 +391,13 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     cont_table <- cont_table %>%
       dplyr::filter(!({{ group }} %in% groups_to_skip))
 
-
-    # if everything got skipped, exit early
-    if (nrow(cont_table) == 0) {
-      message("No significant or no non-significant proteins in any of the groups.")
-      return(invisible(NULL))
+      # otherwise inform about specific groups skipped
+      if (length(groups_to_skip) > 0) {
+        message(paste(
+          "Skipping group ", groups_to_skip,
+          ": no significant or no non-significant proteins.", collapse = "\n"
+        ))
+      }
     }
 
     # otherwise inform about specific groups skipped
