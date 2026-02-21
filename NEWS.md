@@ -10,6 +10,7 @@
 * Fixed issue #262. `qc_peptide_type()` consistently has no x-axis title now.
 * The `show_progress` argument of `fetch_interpro()` now works correctly.
 * `calculate_go_enrichment()` now correctly excludes groups that do not contain any significant proteins. This fixes issue #289.
+* Fix issue #271. Improved documentation and behaviour of `normalise()`.
 
 # protti 1.0.0
 
