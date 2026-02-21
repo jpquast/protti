@@ -153,9 +153,12 @@ to uniprot standards and were skipped from fetching: ",
     purrr::keep(.p = ~ !is.character(.x)) %>%
     purrr::map_dfr(.f = ~.x)
 
+  # if (length(query_result) == 0) {
+  #   message("No valid information was retrieved!")
+  #   return(invisible(NULL))
+  # }
   if (length(query_result) == 0) {
-    message("No valid information was retrieved!")
-    return(invisible(NULL))
+    stop(paste0(utils::capture.output(error_table), collapse = "\n"))
   }
 
   result <- query_result %>%

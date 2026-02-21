@@ -17,6 +17,7 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_gt(nrow(proteome), 10)
   })
 
+  mobidb <- fetch_mobidb(unis)
   test_that("fetch_mobidb works", {
     unis <- c("iRT", "P25437", "P30870", "P0A6P9")
     expect_warning(mobidb <- fetch_mobidb(unis))

@@ -3,10 +3,12 @@
 ## New features 
 
 * `calculate_peptide_abundance()` new function to calculate peptide abundances from precursor abundances.
+* `fit_drc_4p()` received the `show_progress` argument that is by default `TRUE` and allows the user to show or hide progress bars. This closes issue #278.
 
 ## Bug fixes
 
 * Fixed issue #262. `qc_peptide_type()` consistently has no x-axis title now.
+* The `show_progress` argument of `fetch_interpro()` now works correctly.
 
 # protti 1.0.0
 
