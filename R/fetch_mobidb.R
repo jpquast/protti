@@ -154,6 +154,10 @@ to uniprot standards and were skipped from fetching: ",
     purrr::map_dfr(.f = ~.x)
 
   if (length(query_result) == 0) {
+    stop(paste0(utils::capture.output(error_table), collapse = "\n"))
+  }
+
+  if (length(query_result) == 0) {
     message("No valid information was retrieved!")
     return(invisible(NULL))
   }
