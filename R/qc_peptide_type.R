@@ -140,7 +140,7 @@ qc_peptide_type <- function(data,
         ggplot2::theme_bw() +
         ggplot2::theme(
           plot.title = ggplot2::element_text(size = 20),
-          axis.title.x =ggplot2::element_blank(),
+          axis.title.x = ggplot2::element_blank(),
           axis.text.y = ggplot2::element_text(size = 15),
           axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
           axis.title.y = ggplot2::element_text(size = 15),
