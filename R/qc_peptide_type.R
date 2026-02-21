@@ -134,14 +134,13 @@ qc_peptide_type <- function(data,
         ) +
         ggplot2::labs(
           title = "Peptide types per .raw file",
-          x = "",
           y = "Percentage of peptides",
           fill = "Type"
         ) +
         ggplot2::theme_bw() +
         ggplot2::theme(
           plot.title = ggplot2::element_text(size = 20),
-          axis.title.x = ggplot2::element_text(size = 15),
+          axis.title.x =ggplot2::element_blank(),
           axis.text.y = ggplot2::element_text(size = 15),
           axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
           axis.title.y = ggplot2::element_text(size = 15),
@@ -158,14 +157,13 @@ qc_peptide_type <- function(data,
         ggplot2::geom_col(col = "black") +
         ggplot2::labs(
           title = "Peptide types per .raw file",
-          x = "Sample",
           y = "Percentage of peptides",
           fill = "Type"
         ) +
         ggplot2::theme_bw() +
         ggplot2::theme(
           plot.title = ggplot2::element_text(size = 20),
-          axis.title.x = ggplot2::element_text(size = 15),
+          axis.title.x = ggplot2::element_blank(),
           axis.text.y = ggplot2::element_text(size = 15),
           axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
           axis.title.y = ggplot2::element_text(size = 15),

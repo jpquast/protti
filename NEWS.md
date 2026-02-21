@@ -4,6 +4,9 @@
 
 * `calculate_peptide_abundance()` new function to calculate peptide abundances from precursor abundances.
 
+## Bug fixes
+
+* Fixed issue #262. `qc_peptide_type()` consistently has no x-axis title now.
 
 # protti 1.0.0
 
