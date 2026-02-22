@@ -14,6 +14,10 @@
 * Fix issue #271. Improved documentation and behaviour of `normalise()`.
 * `assign_missingness()` now correctly handles retained columns that are already part of the data. No more error will be thrown.
 
+## Additional Changes
+
+* `peptide_profile_plot()` now also keeps samples on the x-axis that are part of the dataset but that had no quantification of a specific protein. This fixes issue #198.
+
 # protti 1.0.0
 
 ## New features 

@@ -127,6 +127,10 @@ peptide_profile_plot <- function(data,
                                  export_name = "peptide_profile_plots") {
   . <- NULL
   n_samples <- length(unique(dplyr::pull(data, {{ sample }})))
+  all_samples <- {
+    samples <- dplyr::pull(data, {{ sample }})
+    if (is.factor(samples)) levels(samples) else unique(samples)
+  }
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
   if (missing(targets)) stop("Please provide at least one target to plot!")
@@ -172,6 +176,7 @@ peptide_profile_plot <- function(data,
           col = "Peptides"
         ) +
         ggplot2::theme_bw() +
+        ggplot2::scale_x_discrete(limits = all_samples, drop = FALSE) +
         {
           if (length(unique(dplyr::pull(.x, {{ peptide }}))) > 25) ggplot2::theme(legend.position = "none")
         } +
