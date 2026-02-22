@@ -17,16 +17,16 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_gt(nrow(proteome), 10)
   })
 
-if (!identical(Sys.info()[["sysname"]], "Darwin")){
-  # the function does not work reliably on GHA on MacOS. We skip it.
-  test_that("fetch_mobidb works", {
-    unis <- c("iRT", "P25437", "P30870", "P0A6P9")
-    expect_warning(mobidb <- fetch_mobidb(unis))
-    expect_is(mobidb, "data.frame")
-    expect_equal(nrow(mobidb), 221)
-    expect_equal(ncol(mobidb), 6)
-  })
-}
+  if (!identical(Sys.info()[["sysname"]], "Darwin")) {
+    # the function does not work reliably on GHA on MacOS. We skip it.
+    test_that("fetch_mobidb works", {
+      unis <- c("iRT", "P25437", "P30870", "P0A6P9")
+      expect_warning(mobidb <- fetch_mobidb(unis))
+      expect_is(mobidb, "data.frame")
+      expect_equal(nrow(mobidb), 221)
+      expect_equal(ncol(mobidb), 6)
+    })
+  }
 
   database <- fetch_chebi(stars = c(2, 3))
   relations <- fetch_chebi(relation = TRUE)
