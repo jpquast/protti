@@ -100,7 +100,7 @@ This means that you can define **any order you like**, not just alphabetical or 
 For example, you might want to order samples by condition, time point, or replicate:
 
 ```{r reorder_samples, eval = FALSE}
-data_reordered <- data %>% 
+data_reordered <- data %>%
   # mutate() modifies the sample column
   # the levels argument defines the order in which samples will appear in plots
   mutate(sample = factor(sample, levels = c("sample_3", "sample_1", "sample_2", "sample_4", "sample_6", "sample_5")))
