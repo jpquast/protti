@@ -211,16 +211,19 @@ from the conditions and assigned their missingness. The created comparisons are:
   if (missing(retain_columns)) {
     return(result)
   } else {
+    base_cols <- colnames(result)[!colnames(result) %in% c("comparison", "missingness")]
+    retain_cols <- setdiff(names(dplyr::select(data, !!enquo(retain_columns))), base_cols)
+
     join_result <- data %>%
       dplyr::ungroup() %>%
-      dplyr::select(!!enquo(retain_columns), colnames(result)[!colnames(result) %in% c("comparison", "missingness")]) %>%
+      dplyr::select(dplyr::all_of(retain_cols), dplyr::all_of(base_cols)) %>%
       dplyr::distinct() %>%
       dplyr::right_join(result, by = colnames(result)[!colnames(result) %in% c("comparison", "missingness")]) %>%
       # Arrange by grouping but in a numeric order of the character vector.
       dplyr::arrange(factor({{ grouping }}, levels = unique(stringr::str_sort({{ grouping }}, numeric = TRUE)))) %>%
       # propagation of consistent values to NA places
       dplyr::group_by({{ grouping }}) %>%
-      dplyr::mutate(dplyr::across(!!enquo(retain_columns), ~ {
+      dplyr::mutate(dplyr::across(dplyr::all_of(retain_cols), ~ {
         # Check if all non-NA values are the same
         if (any(is.na(.x)) & dplyr::n_distinct(na.omit(.x)) == 1 & !any(is.na(.x) & !is.na({{ intensity }}))) {
           # Replace NA with the consistent value
@@ -236,7 +239,7 @@ from the conditions and assigned their missingness. The created comparisons are:
     # Above we annotated any columns that had a consistent value for every group, here the inconsistent ones are annotated
 
     sample_annotations <- join_result %>%
-      dplyr::select(!!enquo(retain_columns), {{ intensity }}, {{ sample }}) %>%
+      dplyr::select(dplyr::all_of(retain_cols), {{ intensity }}, {{ sample }}) %>%
       dplyr::select(
         dplyr::where(~ !any(is.na(.x) & !is.na(dplyr::pull(join_result, {{ intensity }}))) & any(is.na(.x))),
         {{ sample }},

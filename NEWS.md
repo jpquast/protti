@@ -11,6 +11,7 @@
 * The `show_progress` argument of `fetch_interpro()` now works correctly.
 * `calculate_go_enrichment()` now correctly excludes groups that do not contain any significant proteins. This fixes issue #289.
 * Fix issue #271. Improved documentation and behaviour of `normalise()`.
+* `assign_missingness()` now correctly handles retained columns that are already part of the data. No more error will be thrown.
 
 # protti 1.0.0
 
