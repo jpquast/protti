@@ -4,6 +4,7 @@
 
 * `calculate_peptide_abundance()` new function to calculate peptide abundances from precursor abundances.
 * `fit_drc_4p()` received the `show_progress` argument that is by default `TRUE` and allows the user to show or hide progress bars. This closes issue #278.
+* `assign_missingness()` gained the `completeness_MNAR_reference` argument, allowing users to control how complete a condition must be to be considered sufficiently observed when assigning MNAR missingness. This closes issue #200.
 
 ## Bug fixes
 

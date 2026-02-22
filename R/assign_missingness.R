@@ -14,34 +14,47 @@
 #' @param ref_condition a character vector providing the condition that is used as a reference for
 #' missingness determination. Instead of providing one reference condition, "all" can be supplied,
 #' which will create all pairwise condition pairs. By default \code{ref_condition = "all"}.
-#' @param completeness_MAR a numeric value that specifies the minimal degree of data completeness to
+#' @param completeness_MAR a numeric value that specifies the minimal degree of data completeness (proportion of non-missing observations) to
 #' be considered as MAR. Value has to be between 0 and 1, default is 0.7. It is multiplied with
-#' the number of replicates and then adjusted downward. The resulting number is the minimal number
+#' the number of replicates and then rounded down (floor). The resulting number is the minimal number
 #' of observations for each condition to be considered as MAR. This number is always at least 1.
-#' @param completeness_MNAR a numeric value that specifies the maximal degree of data completeness to
+#' @param completeness_MNAR a numeric value that specifies the maximal degree of data completeness (proportion of non-missing observations) to
 #' be considered as MNAR. Value has to be between 0 and 1, default is 0.20. It is multiplied with
-#' the number of replicates and then adjusted downward. The resulting number is the maximal number
-#' of observations for one condition to be considered as MNAR when the other condition is complete.
+#' the number of replicates and then rounded down (floor). The resulting number is the maximal number
+#' of observations for one condition to be considered as MNAR when the other condition meets the
+#' completeness threshold defined by `completeness_MNAR_reference.`
+#' @param completeness_MNAR_reference a numeric value between 0 and 1 that specifies the minimal
+#' degree of data completeness (proportion of non-missing observations) required for the more complete condition in a comparison to be considered
+#' complete when assigning MNAR missingness. It is multiplied with the number of replicates and then
+#' rounded down (floor). The resulting number is the minimal number of observations required for that
+#' condition to qualify as sufficiently complete in an MNAR comparison. The default is `1`, meaning all
+#' replicates are required in the more complete condition.
 #' @param retain_columns a vector that indicates columns that should be retained from the input
 #' data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
 #' columns can be retained by providing their names (not in quotations marks, just like other
 #' column names, but in a vector).
+#'
+#' @details
+#' For meaningful classification of missingness, it is recommended that
+#' `completeness_MNAR < completeness_MAR` and
+#' `completeness_MNAR_reference >= completeness_MAR`.
+#' Otherwise, MNAR classifications may dominate and MAR classifications may be reduced or absent.
 #'
 #' @return A data frame that contains the reference condition paired with each treatment condition.
 #' The \code{comparison} column contains the comparison name for the specific treatment/reference
 #' pair. The \code{missingness} column reports the type of missingness.
 #' * "complete": No missing values for every replicate of this reference/treatment pair for
 #' the specific grouping variable.
-#' * "MNAR": Missing not at random. All replicates of either the reference or treatment
-#' condition have missing values for the specific grouping variable.
-#' * "MAR": Missing at random. At least n-1 replicates have missing values for the
-#' reference/treatment pair for the specific grouping varible.
+#' * "MNAR": Missing not at random. One condition has at most the number of observations defined
+#' by `completeness_MNAR`, while the other condition meets the completeness threshold defined
+#' by `completeness_MNAR_reference`.
+#' * "MAR": Missing at random. Both conditions meet the minimal completeness defined by `completeness_MAR`.
 #' * NA: The comparison is not complete enough to fall into any other category. It will not
 #' be imputed if imputation is performed. For statistical significance testing these comparisons
 #' are filtered out after the test and prior to p-value adjustment. This can be prevented by setting
 #' `filter_NA_missingness = FALSE` in the `calculate_diff_abundance()` function.
 #'
-#' The type of missingness has an influence on the way values are imputeted if imputation is
+#' The type of missingness has an influence on the way values are imputed if imputation is
 #' performed subsequently using the `impute()` function. How each type of missingness is
 #' specifically imputed can be found in the function description. The type of missingness
 #' assigned to a comparison does not have any influence on the statistical test in the
@@ -91,11 +104,33 @@ assign_missingness <- function(data,
                                ref_condition = "all",
                                completeness_MAR = 0.7,
                                completeness_MNAR = 0.20,
+                               completeness_MNAR_reference = 1,
                                retain_columns = NULL) {
   . <- NULL
   if (!(ref_condition %in% unique(dplyr::pull(data, {{ condition }}))) & ref_condition != "all") {
     stop(strwrap("The name provided to ref_condition cannot be found in your conditions!
 Please provide a valid reference condition.", prefix = "\n", initial = ""))
+  }
+
+  # Check for problematic parameter combinations
+  if (completeness_MNAR >= completeness_MAR) {
+    warning(
+      paste(
+        "completeness_MNAR should be smaller than completeness_MAR.",
+        "Otherwise, MNAR may dominate and MAR classifications may not occur."
+      ),
+      call. = FALSE
+    )
+  }
+
+  if (completeness_MNAR_reference < completeness_MAR) {
+    warning(
+      paste(
+        "completeness_MNAR_reference is smaller than completeness_MAR.",
+        "This may lead to MNAR being assigned even when both conditions are only moderately complete."
+      ),
+      call. = FALSE
+    )
   }
 
   if (ref_condition == "all") {
@@ -194,17 +229,20 @@ from the conditions and assigned their missingness. The created comparisons are:
       dplyr::group_by({{ grouping }}) %>%
       tidyr::fill("n_detect_treated", "n_detect_control", "n_replicates_treated", "n_replicates_control", .direction = "updown") %>%
       dplyr::ungroup() %>%
-      dplyr::mutate(missingness = dplyr::case_when(
+      dplyr::mutate(
+        n_complete_control = pmax(floor(.data$n_replicates_control * completeness_MNAR_reference), 1),
+        n_complete_treated = pmax(floor(.data$n_replicates_treated * completeness_MNAR_reference), 1),
+        missingness = dplyr::case_when(
         .data$n_detect_control == .data$n_replicates_control &
           .data$n_detect_treated == .data$n_replicates_treated ~ "complete",
         .data$n_detect_control <= floor(n_replicates_control * completeness_MNAR) &
-          .data$n_detect_treated == .data$n_replicates_treated ~ "MNAR",
-        .data$n_detect_control == .data$n_replicates_control &
+          .data$n_detect_treated >= .data$n_complete_treated ~ "MNAR",
+        .data$n_detect_control >= .data$n_complete_control &
           .data$n_detect_treated <= floor(n_replicates_treated * completeness_MNAR) ~ "MNAR",
         .data$n_detect_control >= max(floor(.data$n_replicates_control * completeness_MAR), 1) &
-          .data$n_detect_treated >= max(floor(.data$n_replicates_control * completeness_MAR), 1) ~ "MAR"
+          .data$n_detect_treated >= max(floor(.data$n_replicates_treated * completeness_MAR), 1) ~ "MAR"
       ))) %>%
-    dplyr::select(-c("n_detect_control", "n_detect_treated", "n_replicates_control", "n_replicates_treated")) %>%
+    dplyr::select(-c("n_detect_control", "n_detect_treated", "n_replicates_control", "n_replicates_treated", "n_complete_control", "n_complete_treated")) %>%
     # Arrange by grouping but in a numeric order of the character vector.
     dplyr::arrange(factor({{ grouping }}, levels = unique(stringr::str_sort({{ grouping }}, numeric = TRUE))))
 
