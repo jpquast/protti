@@ -19,6 +19,8 @@
 #' data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
 #' columns can be retained by providing their names (not in quotations marks, just like other
 #' column names, but in a vector).
+#' @param method a character argument selecting the method used for score calculation.
+#' supported are "multiplicative" = -log10(adj_pval) * abs(diff) (default) or "additive" = -log10(adj_pval) + abs(diff)
 #'
 #' @return A data frame that contains the aggregated scores per amino acid position, enabling to
 #' draw fingerprints for each individual protein.
@@ -51,12 +53,18 @@ calculate_aa_scores <- function(data,
                                 adj_pval = adj_pval,
                                 start_position,
                                 end_position,
-                                retain_columns = NULL) {
+                                retain_columns = NULL,
+                                method = "multiplicative") {
   output <- data %>%
     dplyr::ungroup() %>%
     dplyr::distinct({{ protein }}, {{ diff }}, {{ adj_pval }}, {{ start_position }}, {{ end_position }}) %>%
     tidyr::drop_na({{ diff }}, {{ adj_pval }}) %>%
-    dplyr::mutate(score = -log10({{ adj_pval }}) * abs({{ diff }})) %>%
+    dplyr::mutate(
+      score = dplyr::case_when(
+        method == "multiplicative" ~ -log10({{ adj_pval }}) * abs({{ diff }}),
+        method == "additive"       ~ -log10({{ adj_pval }}) + abs({{ diff }})
+      )
+    ) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(residue = list(seq({{ start_position }}, {{ end_position }}))) %>%
     tidyr::unnest("residue") %>%
@@ -64,17 +72,34 @@ calculate_aa_scores <- function(data,
     dplyr::mutate(amino_acid_score = mean(.data$score)) %>%
     dplyr::distinct({{ protein }}, .data$residue, .data$amino_acid_score)
 
+  # normalization (per protein)
+  output <- output %>%
+    dplyr::group_by({{ protein }}) %>%
+    dplyr::mutate(
+      amino_acid_score_normalized = {
+        min_val <- min(amino_acid_score, na.rm = TRUE)
+        max_val <- max(amino_acid_score, na.rm = TRUE)
+        if (max_val == min_val) {
+          1  # avoid division by zero; constant protein gets 1
+        } else {
+          (amino_acid_score - min_val) / (max_val - min_val)
+        }
+      }
+    ) %>%
+    dplyr::ungroup()
 
   if (!missing(retain_columns)) {
     output <- data %>%
       dplyr::select(!!enquo(retain_columns), colnames(output)[!colnames(output) %in% c(
         "residue",
-        "amino_acid_score"
+        "amino_acid_score",
+        "amino_acid_score_normalized"
       )]) %>%
       dplyr::distinct() %>%
       dplyr::right_join(output, by = colnames(output)[!colnames(output) %in% c(
         "residue",
-        "amino_acid_score"
+        "amino_acid_score",
+        "amino_acid_score_normalized"
       )])
   }
 
