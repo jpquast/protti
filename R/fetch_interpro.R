@@ -58,7 +58,7 @@ fetch_interpro <- function(uniprot_ids = NULL,
       clear = TRUE
     )
   } else {
-    NULL
+    FALSE
   }
   progress_option_domain <- if (show_progress) {
     list(
@@ -67,7 +67,7 @@ fetch_interpro <- function(uniprot_ids = NULL,
       clear = TRUE
     )
   } else {
-    NULL
+    FALSE
   }
 
   # check for internet connection

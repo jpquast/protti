@@ -13,6 +13,7 @@ assign_missingness(
   ref_condition = "all",
   completeness_MAR = 0.7,
   completeness_MNAR = 0.2,
+  completeness_MNAR_reference = 1,
   retain_columns = NULL
 )
 }
@@ -34,15 +35,23 @@ relate to the \code{grouping} variable.}
 missingness determination. Instead of providing one reference condition, "all" can be supplied,
 which will create all pairwise condition pairs. By default \code{ref_condition = "all"}.}
 
-\item{completeness_MAR}{a numeric value that specifies the minimal degree of data completeness to
+\item{completeness_MAR}{a numeric value that specifies the minimal degree of data completeness (proportion of non-missing observations) to
 be considered as MAR. Value has to be between 0 and 1, default is 0.7. It is multiplied with
-the number of replicates and then adjusted downward. The resulting number is the minimal number
+the number of replicates and then rounded down (floor). The resulting number is the minimal number
 of observations for each condition to be considered as MAR. This number is always at least 1.}
 
-\item{completeness_MNAR}{a numeric value that specifies the maximal degree of data completeness to
+\item{completeness_MNAR}{a numeric value that specifies the maximal degree of data completeness (proportion of non-missing observations) to
 be considered as MNAR. Value has to be between 0 and 1, default is 0.20. It is multiplied with
-the number of replicates and then adjusted downward. The resulting number is the maximal number
-of observations for one condition to be considered as MNAR when the other condition is complete.}
+the number of replicates and then rounded down (floor). The resulting number is the maximal number
+of observations for one condition to be considered as MNAR when the other condition meets the
+completeness threshold defined by \code{completeness_MNAR_reference.}}
+
+\item{completeness_MNAR_reference}{a numeric value between 0 and 1 that specifies the minimal
+degree of data completeness (proportion of non-missing observations) required for the more complete condition in a comparison to be considered
+complete when assigning MNAR missingness. It is multiplied with the number of replicates and then
+rounded down (floor). The resulting number is the minimal number of observations required for that
+condition to qualify as sufficiently complete in an MNAR comparison. The default is \code{1}, meaning all
+replicates are required in the more complete condition.}
 
 \item{retain_columns}{a vector that indicates columns that should be retained from the input
 data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
@@ -56,17 +65,17 @@ pair. The \code{missingness} column reports the type of missingness.
 \itemize{
 \item "complete": No missing values for every replicate of this reference/treatment pair for
 the specific grouping variable.
-\item "MNAR": Missing not at random. All replicates of either the reference or treatment
-condition have missing values for the specific grouping variable.
-\item "MAR": Missing at random. At least n-1 replicates have missing values for the
-reference/treatment pair for the specific grouping varible.
+\item "MNAR": Missing not at random. One condition has at most the number of observations defined
+by \code{completeness_MNAR}, while the other condition meets the completeness threshold defined
+by \code{completeness_MNAR_reference}.
+\item "MAR": Missing at random. Both conditions meet the minimal completeness defined by \code{completeness_MAR}.
 \item NA: The comparison is not complete enough to fall into any other category. It will not
 be imputed if imputation is performed. For statistical significance testing these comparisons
 are filtered out after the test and prior to p-value adjustment. This can be prevented by setting
 \code{filter_NA_missingness = FALSE} in the \code{calculate_diff_abundance()} function.
 }
 
-The type of missingness has an influence on the way values are imputeted if imputation is
+The type of missingness has an influence on the way values are imputed if imputation is
 performed subsequently using the \code{impute()} function. How each type of missingness is
 specifically imputed can be found in the function description. The type of missingness
 assigned to a comparison does not have any influence on the statistical test in the
@@ -75,6 +84,12 @@ assigned to a comparison does not have any influence on the statistical test in 
 \description{
 The type of missingness (missing at random, missing not at random) is assigned based on the
 comparison of a reference condition and every other condition.
+}
+\details{
+For meaningful classification of missingness, it is recommended that
+\code{completeness_MNAR < completeness_MAR} and
+\code{completeness_MNAR_reference >= completeness_MAR}.
+Otherwise, MNAR classifications may dominate and MAR classifications may be reduced or absent.
 }
 \examples{
 set.seed(123) # Makes example reproducible

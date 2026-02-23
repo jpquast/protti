@@ -24,8 +24,9 @@ median_normalisation <- function(...) {
 #' original intensity minus the run median plus the global median. This is also the way it is
 #' implemented in the Spectronaut search engine.
 #'
-#' @param data a data frame containing at least sample names and intensity values. Please note that if the
-#' data frame is grouped, the normalisation will be computed by group.
+#' @param data a data frame containing at least sample names and intensity values. If the
+#' data frame is grouped, the normalisation is performed within the existing groups. To ignore
+#' existing groups, call \code{dplyr::ungroup()} before using this function.
 #' @param sample a character column in the \code{data} data frame that contains the sample names.
 #' @param intensity_log2 a numeric column in the \code{data} data frame that contains the log2 transformed
 #' intensity values to be normalised.
@@ -56,18 +57,27 @@ normalise <-
            sample,
            intensity_log2,
            method = "median") {
+    . <- NULL
     # Ensure method is valid
     if (!(method %in% c("median"))) {
       stop("Invalid method. Available methods: median")
     }
 
+    # check if data is already grouped by sample
+    has_sample_group <- rlang::as_name(rlang::enquo(sample)) %in% dplyr::group_vars(data)
+
     if (method == "median") {
       median_normalised <- data %>%
         dplyr::distinct() %>%
+        {
+          if (has_sample_group) dplyr::ungroup(., {{ sample }}) else .
+        } %>% # remove sample grouping for global computation
         dplyr::mutate(global_median = stats::median({{ intensity_log2 }}, na.rm = TRUE)) %>%
-        dplyr::group_by({{ sample }}, .add = TRUE) %>%
+        dplyr::group_by(., {{ sample }}, .add = TRUE) %>%
         dplyr::mutate(run_median = stats::median({{ intensity_log2 }}, na.rm = TRUE)) %>%
-        dplyr::ungroup({{ sample }}) %>%
+        {
+          if (!has_sample_group) dplyr::ungroup(., {{ sample }}) else .
+        } %>%
         dplyr::mutate(normalised_intensity_log2 = {{ intensity_log2 }} - .data$run_median + .data$global_median) %>%
         dplyr::select(-c("run_median", "global_median"))
 
