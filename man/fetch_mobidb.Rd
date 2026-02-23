@@ -8,7 +8,7 @@ fetch_mobidb(
   uniprot_ids = NULL,
   organism_id = NULL,
   show_progress = TRUE,
-  timeout = 60,
+  timeout = 180,
   max_tries = 2
 )
 }
@@ -24,7 +24,7 @@ argument is mutually exclusive to the \code{uniprot_ids} argument.}
 Default is \code{TRUE}.}
 
 \item{timeout}{a numeric value specifying the time in seconds until the download of an organism
-archive times out. The default is 60 seconds.}
+archive times out. The default is 180 seconds.}
 
 \item{max_tries}{a numeric value that specifies the number of times the function tries to download
 the data in case an error occurs. The default is 2.}

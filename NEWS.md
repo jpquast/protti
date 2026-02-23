@@ -1,3 +1,10 @@
+# protti 1.0.0.9000
+
+## New features 
+
+* `calculate_peptide_abundance()` new function to calculate peptide abundances from precursor abundances.
+
+
 # protti 1.0.0
 
 ## New features 
