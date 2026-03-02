@@ -62,7 +62,7 @@ calculate_aa_scores <- function(data,
     dplyr::mutate(
       score = dplyr::case_when(
         method == "multiplicative" ~ -log10({{ adj_pval }}) * abs({{ diff }}),
-        method == "additive"       ~ -log10({{ adj_pval }}) + abs({{ diff }})
+        method == "additive" ~ -log10({{ adj_pval }}) + abs({{ diff }})
       )
     ) %>%
     dplyr::rowwise() %>%
@@ -80,7 +80,7 @@ calculate_aa_scores <- function(data,
         min_val <- min(.data$amino_acid_score, na.rm = TRUE)
         max_val <- max(.data$amino_acid_score, na.rm = TRUE)
         if (max_val == min_val) {
-          1  # avoid division by zero; constant protein gets 1
+          1 # avoid division by zero; constant protein gets 1
         } else {
           (.data$amino_acid_score - min_val) / (max_val - min_val)
         }
