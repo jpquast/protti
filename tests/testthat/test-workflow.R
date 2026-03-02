@@ -852,7 +852,7 @@ test_that("calculate_aa_scores works", {
 
   expect_is(aa_fingerprint, "data.frame")
   expect_equal(nrow(aa_fingerprint), 45)
-  expect_equal(ncol(aa_fingerprint), 3)
+  expect_equal(ncol(aa_fingerprint), 4)
 })
 
 # Test for random forest imputation

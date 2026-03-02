@@ -77,12 +77,12 @@ calculate_aa_scores <- function(data,
     dplyr::group_by({{ protein }}) %>%
     dplyr::mutate(
       amino_acid_score_normalized = {
-        min_val <- min(amino_acid_score, na.rm = TRUE)
-        max_val <- max(amino_acid_score, na.rm = TRUE)
+        min_val <- min(.data$amino_acid_score, na.rm = TRUE)
+        max_val <- max(.data$amino_acid_score, na.rm = TRUE)
         if (max_val == min_val) {
           1  # avoid division by zero; constant protein gets 1
         } else {
-          (amino_acid_score - min_val) / (max_val - min_val)
+          (.data$amino_acid_score - min_val) / (max_val - min_val)
         }
       }
     ) %>%
