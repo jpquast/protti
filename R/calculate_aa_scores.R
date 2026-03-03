@@ -55,6 +55,9 @@ calculate_aa_scores <- function(data,
                                 end_position,
                                 retain_columns = NULL,
                                 method = "multiplicative") {
+# validate method input
+method <- match.arg(method, c("multiplicative", "additive"))
+
   output <- data %>%
     dplyr::ungroup() %>%
     dplyr::distinct({{ protein }}, {{ diff }}, {{ adj_pval }}, {{ start_position }}, {{ end_position }}) %>%
