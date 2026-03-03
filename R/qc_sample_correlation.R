@@ -136,7 +136,7 @@ qc_sample_correlation <- function(data,
     heatmap_interactive <-
       heatmaply::heatmaply(
         correlation,
-        main = "Correlation based hirachical clustering of samples",
+        main = "Correlation based hierarchical clustering of samples",
         col_side_colors = annotation,
         col_side_palette = c(
           annotation_colours[[1]],
@@ -190,7 +190,7 @@ qc_sample_correlation <- function(data,
         cluster_cols = stats::as.hclust(dendrogram_column),
         annotation = annotation,
         annotation_colors = annotation_colours,
-        main = "Correlation based hierachical clustering of samples",
+        main = "Correlation based hierarchical clustering of samples",
         color = viridis_colours,
         silent = TRUE
       )
