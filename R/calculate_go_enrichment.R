@@ -385,7 +385,7 @@ if you used the right organism ID.", prefix = "\n", initial = ""))
     groups_to_skip <- cont_table %>%
       dplyr::group_by({{ group }}) %>%
       dplyr::summarise(n_levels = dplyr::n_distinct({{ is_significant }}), .groups = "drop") %>%
-      dplyr::filter(n_levels < 2) %>%
+      dplyr::filter(.data$n_levels < 2) %>%
       dplyr::pull({{ group }})
 
     cont_table <- cont_table %>%
