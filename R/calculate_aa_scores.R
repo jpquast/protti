@@ -63,10 +63,11 @@ method <- match.arg(method, c("multiplicative", "additive"))
     dplyr::distinct({{ protein }}, {{ diff }}, {{ adj_pval }}, {{ start_position }}, {{ end_position }}) %>%
     tidyr::drop_na({{ diff }}, {{ adj_pval }}) %>%
     dplyr::mutate(
-      score = dplyr::case_when(
-        method == "multiplicative" ~ -log10({{ adj_pval }}) * abs({{ diff }}),
-        method == "additive" ~ -log10({{ adj_pval }}) + abs({{ diff }})
-      )
+      score = if (method == "multiplicative") {
+      -log10({{ adj_pval }}) * abs({{ diff }})
+    } else if (method == "additive") {
+      -log10({{ adj_pval }}) + abs({{ diff }})
+    }
     ) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(residue = list(seq({{ start_position }}, {{ end_position }}))) %>%
