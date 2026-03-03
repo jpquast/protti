@@ -20,7 +20,7 @@
 #' columns can be retained by providing their names (not in quotations marks, just like other
 #' column names, but in a vector).
 #' @param method a character argument selecting the method used for score calculation.
-#' supported are "multiplicative" = -log10(adj_pval) * abs(diff) (default) or "additive" = -log10(adj_pval) + abs(diff)
+#' Supported are "multiplicative" = `-log10(adj_pval) * abs(diff)` (default) or "additive" = `-log10(adj_pval) + abs(diff)`.
 #'
 #' @return A data frame that contains the aggregated scores per amino acid position, enabling to
 #' draw fingerprints for each individual protein.
