@@ -127,6 +127,10 @@ peptide_profile_plot <- function(data,
                                  export_name = "peptide_profile_plots") {
   . <- NULL
   n_samples <- length(unique(dplyr::pull(data, {{ sample }})))
+  all_samples <- {
+    samples <- dplyr::pull(data, {{ sample }})
+    if (is.factor(samples)) levels(samples) else unique(samples)
+  }
   protti_colours <- "placeholder" # assign a placeholder to prevent a missing global variable warning
   utils::data("protti_colours", envir = environment()) # then overwrite it with real data
   if (missing(targets)) stop("Please provide at least one target to plot!")
@@ -167,17 +171,17 @@ peptide_profile_plot <- function(data,
         ggplot2::geom_line(size = 1) +
         ggplot2::labs(
           title = paste("Peptide profiles:", .y),
-          x = "Sample",
           y = "Intensity [log2]",
           col = "Peptides"
         ) +
         ggplot2::theme_bw() +
+        ggplot2::scale_x_discrete(limits = all_samples, drop = FALSE) +
         {
           if (length(unique(dplyr::pull(.x, {{ peptide }}))) > 25) ggplot2::theme(legend.position = "none")
         } +
         ggplot2::theme(
           plot.title = ggplot2::element_text(size = 20),
-          axis.title.x = ggplot2::element_text(size = 15),
+          axis.title.x = ggplot2::element_blank(),
           axis.text.y = ggplot2::element_text(size = 15),
           axis.text.x = ggplot2::element_text(size = 12, angle = 75, hjust = 1),
           axis.title.y = ggplot2::element_text(size = 15),

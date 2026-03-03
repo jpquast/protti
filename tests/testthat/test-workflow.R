@@ -184,6 +184,58 @@ if (Sys.getenv("TEST_PROTTI") == "true") {
     expect_equal(nrow(protein_abundance_all), 4005)
     expect_equal(ncol(protein_abundance_all), 4)
   })
+
+  # We convert the peptide-level data here to fake precursor data for a more accurate test.
+  set.seed(123) # Set seed for reproducibility
+  missing_data_peptide <- missing_data %>%
+    rename(precursor = peptide) %>%
+    mutate(precursor = str_replace(precursor, "peptide", "precursor")) %>%
+    group_by(protein) %>%
+    mutate(
+      peptide = paste0("peptide", str_extract(protein, "_\\d+$"), "_", rep(
+        seq_along(sample(1:3, n_distinct(precursor), replace = TRUE)),
+        sample(1:3, n_distinct(precursor), replace = TRUE)
+      )[seq_len(n_distinct(precursor))][match(precursor, unique(precursor))])
+    ) %>%
+    group_by(protein, peptide) %>%
+    mutate(precursor = paste0("precursor", str_extract(peptide, "_\\d+_\\d+$"), "_", dense_rank(precursor))) %>%
+    ungroup()
+
+  peptide_abundance <- calculate_peptide_abundance(
+    data = missing_data_peptide,
+    sample = sample,
+    precursor = precursor,
+    peptide = peptide,
+    intensity_log2 = normalised_intensity_log2,
+    method = "iq",
+    retain_columns = c(condition, protein)
+  )
+  peptide_abundance_all <- calculate_peptide_abundance(
+    data = missing_data_peptide,
+    sample = sample,
+    precursor = precursor,
+    peptide = peptide,
+    intensity_log2 = normalised_intensity_log2,
+    method = "sum",
+    for_plot = TRUE,
+    retain_columns = c(condition, protein)
+  )
+
+  test_that("calculate_peptide_abundance works", {
+    arranged_data <- peptide_abundance %>%
+      dplyr::filter(peptide == "peptide_1_2")
+    expect_is(peptide_abundance, "data.frame")
+    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(15.92, 16.04, 15.87, 15.93, 15.92, 15.95))
+    expect_equal(nrow(peptide_abundance), 2089)
+    expect_equal(ncol(peptide_abundance), 5)
+
+    arranged_data <- peptide_abundance_all %>%
+      dplyr::filter(peptide == "peptide_1_2" & precursor == "peptide_intensity")
+    expect_equal(round(arranged_data$normalised_intensity_log2, digits = 2), c(17.43, 17.68, 17.45, 17.38, 17.53, 17.57))
+    expect_is(peptide_abundance_all, "data.frame")
+    expect_equal(nrow(peptide_abundance_all), 5847)
+    expect_equal(ncol(peptide_abundance_all), 6)
+  })
 }
 
 if (Sys.getenv("TEST_PROTTI") == "true") {
@@ -800,7 +852,7 @@ test_that("calculate_aa_scores works", {
 
   expect_is(aa_fingerprint, "data.frame")
   expect_equal(nrow(aa_fingerprint), 45)
-  expect_equal(ncol(aa_fingerprint), 3)
+  expect_equal(ncol(aa_fingerprint), 4)
 })
 
 # Test for random forest imputation

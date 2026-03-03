@@ -1,3 +1,28 @@
+# protti 1.0.0.9000
+
+## New features 
+
+* `calculate_peptide_abundance()` new function to calculate peptide abundances from precursor abundances.
+* `fit_drc_4p()` received the `show_progress` argument that is by default `TRUE` and allows the user to show or hide progress bars. This closes issue #278.
+* `assign_missingness()` gained the `completeness_MNAR_reference` argument, allowing users to control how complete a condition must be to be considered sufficiently observed when assigning MNAR missingness. This closes issue #200.
+* `calculate_aa_scores()` gained a `methods` argument, allowing user to choose between additive or the new multiplicative score calculation mode. The function now also returns min-max normalised scores in addition to raw values.
+
+## Bug fixes
+
+* Fixed issue #262. `qc_peptide_type()` consistently has no x-axis title now.
+* The `show_progress` argument of `fetch_interpro()` now works correctly.
+* `calculate_go_enrichment()` now correctly excludes groups that do not contain any significant proteins. This fixes issue #289.
+* Fix issue #271. Improved documentation and behaviour of `normalise()`.
+* `assign_missingness()` now correctly handles retained columns that are already part of the data. No more error will be thrown.
+
+## Documentation updates
+
+* Updated the "Quality Control" Vignette to describe how factors can be used to define a custom order of e.g. samples or conditions. This closes issue #196. The reqested numeric sample order of this issue is already largely implemented in most QC functions.
+
+## Additional changes
+
+* `peptide_profile_plot()` now also keeps samples on the x-axis that are part of the dataset but that had no quantification of a specific protein. This fixes issue #198.
+
 # protti 1.0.0
 
 ## New features 
@@ -23,7 +48,7 @@
 * Fixed issue #279. The x-axis of `calculate_go_enrichment()` is correctly displayed.
 * `fetch_uniprot()` received a new default for `batchsize`, which is `100` and dictated by the new limit of UniProt.
 
-## Additional Changes
+## Additional changes
 
 * *IMPORTANT!* There has been a change to the hyperparameter estimation of the limma package (3.61.8) in the `eBayes()` function. This leads to a change of results when `method = "moderated_t-test"` is used in the `calculate_diff_abundance()` function. Therefore, we introduced the new argument `limma_legacy_estimation` that allows you to go back to the old method. The default behaviour is the new and improved estimation of parameters.
 * `assign_peptide_type` now takes the `start` argument, containing the start position of a peptide. If a protein does not have any peptide starting at position `1` and there is a peptide starting at position `2`, this peptide will be considered "tryptic" at the N-terminus. This is because the initial Methionine is likely missing due to processing for every copy of the protein and therefore position `2` is the true N-terminus.
@@ -57,7 +82,7 @@
 * `fetch_uniprot()` previously had an issue where it incorrectly identified certain IDs as UniProt IDs, such as ENSEMBL IDs. For example, it would incorrectly interpret `"CON_ENSEMBL:ENSBTAP00000037665"` as `"P00000"`. To address this, the function now requires that UniProt IDs are not preceded or followed by letters or digits. This means that UniProt IDs should be recognized only if they stand alone or are separated by non-alphanumeric characters. For instance, in the string `"P02545;P20700"`, both `"P02545"` and `"P20700"` are correctly identified as UniProt IDs because they are separated by a semicolon and not attached to any other letters or digits. Fixes issue #245.
 * `calculate_go_enrichment()` now correctly uses the total number of provided proteins for the contingency table. Previously it falsely only considered proteins with a GO annotation for the enrichment analysis.
 
-## Additional Changes
+## Additional changes
 
 * `fetch_uniprot()` and `fetch_uniprot_proteome()` are more resistant to database connection issues. They also give more informative messages as to why the data could not be retrieved. Fixes issue #252.
 * `qc_csv()` now properly works if the column supplied to the `condition` argument is a factor. Fixes issue #254.
@@ -113,7 +138,7 @@
 * `fit_drc_4p()` and `parallel_fit_drc_4p()` now correctly calculates the ANOVA p-value. Previously the number of observations for each concentration was not provided correctly.
 * `fetch_uniprot()` now correctly retrieves information if an input ID was also part of a non-conform input ID combination. When e.g. `c("P02545", "P02545;P20700")` was provided, previously the `"P02545"` accession was dropped from the `input_id` column even though it is also present on its own and not only in combination with `"P20700"`. The new output now contains 3 rows, one for each ID, with `"P02545"` having one row with the `input_id` ``"P02545"` and one with the `input_id` `"P02545;P20700"`. This also means that the `input_id` column now always contains the provided input IDs and not only if they were non-conform input ID combinations.
 
-## Additional Changes
+## Additional changes
 
 * For `fit_drc_4p()` and `parallel_fit_drc_4p()` the arguments `replicate_completeness` and `condition_completeness` are now deprecated. Please use `n_replicate_completeness` and `n_condition_completeness` instead.
 * Improved label positions of `qc_charge_states()`, `qc_peptide_type()` and `qc_missed_cleavages()`. Also made appearance more uniform between methods `"count"` and `"intensity"`.

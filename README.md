@@ -352,4 +352,4 @@ result %>%
   )
 ```
 
-<img src="man/figures/README-volcano-1.png" alt="" width="100%" />
+<img src="man/figures/README-volcano-1.png" width="100%" />

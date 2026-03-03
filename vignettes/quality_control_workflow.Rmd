@@ -92,6 +92,22 @@ data <- create_synthetic_data(
 )
 ```
 
+### Tips and Tricks
+
+If you want to control how names (e.g. samples) are displayed on the x-axis, you can convert the corresponding column in your data frame to a `factor`. Factors have an inherent order of levels, which will be used when creating plots.
+
+This means that you can define **any order you like**, not just alphabetical or numerical order.
+For example, you might want to order samples by condition, time point, or replicate:
+
+```{r reorder_samples, eval = FALSE}
+data_reordered <- data %>%
+  # mutate() modifies the sample column
+  # the levels argument defines the order in which samples will appear in plots
+  mutate(sample = factor(sample, levels = c("sample_3", "sample_1", "sample_2", "sample_4", "sample_6", "sample_5")))
+```
+
+This can be useful if you want to highlight a specific order in your experiment (e.g. time course or treatment groups).
+
 ## Quality control
 
 ### Coefficients of variation

@@ -11,7 +11,8 @@ calculate_aa_scores(
   adj_pval = adj_pval,
   start_position,
   end_position,
-  retain_columns = NULL
+  retain_columns = NULL,
+  method = "multiplicative"
 )
 }
 \arguments{
@@ -33,6 +34,9 @@ precursor.}
 data frame. Default is not retaining additional columns \code{retain_columns = NULL}. Specific
 columns can be retained by providing their names (not in quotations marks, just like other
 column names, but in a vector).}
+
+\item{method}{a character argument selecting the method used for score calculation.
+supported are "multiplicative" = -log10(adj_pval) * abs(diff) (default) or "additive" = -log10(adj_pval) + abs(diff)}
 }
 \value{
 A data frame that contains the aggregated scores per amino acid position, enabling to

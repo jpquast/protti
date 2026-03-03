@@ -7,8 +7,9 @@
 normalise(data, sample, intensity_log2, method = "median")
 }
 \arguments{
-\item{data}{a data frame containing at least sample names and intensity values. Please note that if the
-data frame is grouped, the normalisation will be computed by group.}
+\item{data}{a data frame containing at least sample names and intensity values. If the
+data frame is grouped, the normalisation is performed within the existing groups. To ignore
+existing groups, call \code{dplyr::ungroup()} before using this function.}
 
 \item{sample}{a character column in the \code{data} data frame that contains the sample names.}
 
