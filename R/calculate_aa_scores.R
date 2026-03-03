@@ -55,8 +55,8 @@ calculate_aa_scores <- function(data,
                                 end_position,
                                 retain_columns = NULL,
                                 method = "multiplicative") {
-# validate method input
-method <- match.arg(method, c("multiplicative", "additive"))
+  # validate method input
+  method <- match.arg(method, c("multiplicative", "additive"))
 
   output <- data %>%
     dplyr::ungroup() %>%
@@ -64,10 +64,10 @@ method <- match.arg(method, c("multiplicative", "additive"))
     tidyr::drop_na({{ diff }}, {{ adj_pval }}) %>%
     dplyr::mutate(
       score = if (method == "multiplicative") {
-      -log10({{ adj_pval }}) * abs({{ diff }})
-    } else if (method == "additive") {
-      -log10({{ adj_pval }}) + abs({{ diff }})
-    }
+        -log10({{ adj_pval }}) * abs({{ diff }})
+      } else if (method == "additive") {
+        -log10({{ adj_pval }}) + abs({{ diff }})
+      }
     ) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(residue = list(seq({{ start_position }}, {{ end_position }}))) %>%
